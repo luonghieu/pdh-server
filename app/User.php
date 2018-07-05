@@ -9,21 +9,24 @@ class User extends Authenticatable
 {
     use Notifiable;
 
-    /**
-     * The attributes that are mass assignable.
-     *
-     * @var array
-     */
-    protected $fillable = [
-        'name', 'email', 'password',
+    const TYPES = [
+        'user' => 1,
+        'cast' => 2,
+        'admin' => 3,
     ];
 
-    /**
-     * The attributes that should be hidden for arrays.
-     *
-     * @var array
-     */
     protected $hidden = [
         'password', 'remember_token',
     ];
+
+    public function notifications()
+    {
+        return $this->morphMany(Notification::class, 'notifiable');
+    }
+
+    public function favorites()
+    {
+        return $this->hasMany(Favorite::class, 'favorited_id', 'id');
+    }
+
 }
