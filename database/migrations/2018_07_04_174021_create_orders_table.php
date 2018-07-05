@@ -1,8 +1,8 @@
 <?php
 
-use Illuminate\Support\Facades\Schema;
-use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
 
 class CreateOrdersTable extends Migration
 {
@@ -23,6 +23,7 @@ class CreateOrdersTable extends Migration
             $table->time('end_time');
             $table->text('address');
             $table->tinyInteger('total_cast');
+            $table->tinyInteger('points');
             $table->tinyInteger('status');
 
             $table->timestamp('accept_time')->nullable();

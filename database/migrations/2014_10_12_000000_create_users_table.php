@@ -1,8 +1,8 @@
 <?php
 
-use Illuminate\Support\Facades\Schema;
-use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
 
 class CreateUsersTable extends Migration
 {
@@ -27,12 +27,12 @@ class CreateUsersTable extends Migration
             $table->string('thumbnail')->nullable();
             $table->string('info')->nullable();
             $table->integer('height')->nullable();
-            $table->string('body_type')->nullable();
+            $table->integer('body_type')->nullable();
             $table->string('address')->nullable();
             $table->string('hometown')->nullable();
             $table->string('current_job')->nullable();
             $table->string('hobbies')->nullable();
-            $table->string('drink_volume')->nullable();
+            $table->tinyInteger('drink_volume')->nullable();
             $table->boolean('smoke')->default(false);
             $table->string('siblings')->nullable();
             $table->string('living_with')->nullable();
