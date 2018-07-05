@@ -23,4 +23,10 @@ class User extends Authenticatable
     {
         return $this->morphMany(Notification::class, 'notifiable');
     }
+
+    public function favorites()
+    {
+        return $this->hasMany(Favorite::class, 'favorited_id', 'id');
+    }
+
 }
