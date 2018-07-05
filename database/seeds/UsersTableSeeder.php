@@ -12,6 +12,7 @@ class UsersTableSeeder extends Seeder
      */
     public function run()
     {
+        DB::table('users')->truncate();
         $faker = Faker\Factory::create();
 
         // create an admin
@@ -38,12 +39,11 @@ class UsersTableSeeder extends Seeder
                 'password' => bcrypt('123456789'),
                 'fullname' => $faker->name,
                 'nickname' => 'suzuka',
-                'date_of_birth' => $faker->dateTimeThisCentury('-20 years'),
+                'dob' => $faker->dateTimeThisCentury('-20 years'),
                 'gender' => rand(1, 2),
                 'prefecture_id' => 1,
                 'avatar' => $faker->randomElement($images),
                 'thumbnail' => 'abc',
-                'phone' => '0123456789',
                 'rank' => 1,
                 'point' => 1,
                 'type' => rand(1, 2),

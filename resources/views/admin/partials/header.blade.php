@@ -12,7 +12,9 @@
     </div>
 
     <ul class="nav navbar-nav navbar-right">
-      <li><a href=""><i class="fa fa-power-off"></i></a></li>
+      @if(Auth::user())
+      <li><a href="{{ route('admin.logout') }}"><i class="fa fa-power-off"></i></a></li>
+      @endif
     </ul>
     <div class="notify">
       <a  class='bag' href="">
