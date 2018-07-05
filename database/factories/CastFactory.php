@@ -2,23 +2,13 @@
 
 use Faker\Generator as Faker;
 
-/*
-|--------------------------------------------------------------------------
-| Model Factories
-|--------------------------------------------------------------------------
-|
-| This directory should contain each of the model factory definitions for
-| your application. Factories provide a convenient way to generate new
-| model instances for testing / seeding your application's database.
-|
- */
 $faker = \Faker\Factory::create();
 $images = [];
 for ($i = 0; $i < 5; $i++) {
     $images[] = generateStorageImage($faker);
 }
 
-$factory->define(App\User::class, function (Faker $faker) use ($images) {
+$factory->define(App\Cast::class, function (Faker $faker) use ($images) {
     return [
         'email' => $faker->unique()->email,
         'facebook_id' => '123',
@@ -43,7 +33,7 @@ $factory->define(App\User::class, function (Faker $faker) use ($images) {
         'height' => '123',
         'rank' => rand(1, 3),
         'point' => rand(10000, 100000),
-        'type' => 1,
+        'type' => 2,
         'created_at' => \Carbon\Carbon::now(),
         'updated_at' => \Carbon\Carbon::now(),
     ];
