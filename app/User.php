@@ -4,8 +4,9 @@ namespace App;
 
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Tymon\JWTAuth\Contracts\JWTSubject;
 
-class User extends Authenticatable
+class User extends Authenticatable implements JWTSubject
 {
     use Notifiable;
 
@@ -19,9 +20,24 @@ class User extends Authenticatable
         'password', 'remember_token',
     ];
 
+    protected $guarded = ['password_confirmation'];
+
+    protected $fillable = [];
+
+    public function getJWTIdentifier()
+    {
+        return $this->getKey();
+    }
+
+    public function getJWTCustomClaims()
+    {
+        return [];
+    }
+
     public function getIsAdminAttribute()
     {
         return self::TYPES['admin'] == $this->type;
+
     }
 
     public function notifications()
