@@ -14,18 +14,7 @@ class User extends Authenticatable
         'cast' => 2,
         'admin' => 3,
     ];
-    /**
-     * The attributes that are mass assignable.
-     *
-     * @var array
-     */
-    protected $fillable = [];
 
-    /**
-     * The attributes that should be hidden for arrays.
-     *
-     * @var array
-     */
     protected $hidden = [
         'password', 'remember_token',
     ];
@@ -33,5 +22,15 @@ class User extends Authenticatable
     public function getIsAdminAttribute()
     {
         return self::TYPES['admin'] == $this->type;
+    }
+
+    public function notifications()
+    {
+        return $this->morphMany(Notification::class, 'notifiable');
+    }
+
+    public function favorites()
+    {
+        return $this->hasMany(Favorite::class, 'favorited_id', 'id');
     }
 }

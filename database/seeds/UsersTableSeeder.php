@@ -1,6 +1,4 @@
 <?php
-
-use Carbon\Carbon;
 use Illuminate\Database\Seeder;
 
 class UsersTableSeeder extends Seeder
@@ -12,7 +10,6 @@ class UsersTableSeeder extends Seeder
      */
     public function run()
     {
-        DB::table('users')->truncate();
         $faker = Faker\Factory::create();
 
         // create an admin
@@ -24,34 +21,7 @@ class UsersTableSeeder extends Seeder
         ];
         DB::table('users')->insert($admin);
 
-        // create fake users
-        $limit = 50;
-        $images = [];
-        for ($i = 0; $i < 5; $i++) {
-            $images[] = generateStorageImage($faker);
-        }
-
-        $datas = [];
-        for ($i = 0; $i < $limit; $i++) {
-            $datas[] = [
-                'email' => $faker->unique()->email,
-                'facebook_id' => '123',
-                'password' => bcrypt('123456789'),
-                'fullname' => $faker->name,
-                'nickname' => 'suzuka',
-                'dob' => $faker->dateTimeThisCentury('-20 years'),
-                'gender' => rand(1, 2),
-                'prefecture_id' => 1,
-                'avatar' => $faker->randomElement($images),
-                'thumbnail' => 'abc',
-                'rank' => 1,
-                'point' => 1,
-                'type' => rand(1, 2),
-                'created_at' => Carbon::now(),
-                'updated_at' => Carbon::now(),
-            ];
-        }
-
-        DB::table('users')->insert($datas);
+        factory(App\User::class, 15)->create();
+        factory(App\Cast::class, 15)->create();
     }
 }
