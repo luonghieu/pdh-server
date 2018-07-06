@@ -18,7 +18,7 @@
           <strong>{{ Session::get('msg') }}</strong>
         </div>
         @endif
-        <form class="form-horizontal login" action="" method="POST" data-toggle="validator">
+        <form class="form-horizontal login" action="{{ route('admin.login') }}" method="POST" data-toggle="validator">
           {{ csrf_field() }}
           <fieldset class="col-sm-12">
             <div class="form-group {{ $errors->has('email') ? 'has-error' : '' }}">

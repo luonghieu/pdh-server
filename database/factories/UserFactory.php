@@ -27,7 +27,6 @@ $factory->define(App\User::class, function (Faker $faker) use ($images) {
         'nickname' => 'suzuka',
         'dob' => $faker->dateTimeThisCentury('-20 years'),
         'gender' => rand(1, 2),
-        'prefecture_id' => 1,
         'avatar' => $faker->randomElement($images),
         'sub_avatar' => $faker->randomElement($images) . ',' . $faker->randomElement($images),
         'thumbnail' => 'abc',

@@ -1,5 +1,4 @@
 <?php
-
 use Illuminate\Database\Seeder;
 
 class UsersTableSeeder extends Seeder
@@ -22,7 +21,7 @@ class UsersTableSeeder extends Seeder
         ];
         DB::table('users')->insert($admin);
 
-        factory(App\User::class, 3)->create();
-        factory(App\Cast::class, 3)->create();
+        factory(App\User::class, 15)->create();
+        factory(App\Cast::class, 15)->create();
     }
 }
