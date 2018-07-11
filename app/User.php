@@ -2,19 +2,14 @@
 
 namespace App;
 
-use Illuminate\Foundation\Auth\User as Authenticatable;
-use Illuminate\Notifications\Notifiable;
+use App\Enums\UserType;
 use Tymon\JWTAuth\Contracts\JWTSubject;
+use Illuminate\Notifications\Notifiable;
+use Illuminate\Foundation\Auth\User as Authenticatable;
 
 class User extends Authenticatable implements JWTSubject
 {
     use Notifiable;
-
-    const TYPES = [
-        'user' => 1,
-        'cast' => 2,
-        'admin' => 3,
-    ];
 
     protected $hidden = [
         'password', 'remember_token',
@@ -36,8 +31,7 @@ class User extends Authenticatable implements JWTSubject
 
     public function getIsAdminAttribute()
     {
-        return self::TYPES['admin'] == $this->type;
-
+        return UserType::ADMIN == $this->type;
     }
 
     public function notifications()
@@ -48,5 +42,10 @@ class User extends Authenticatable implements JWTSubject
     public function favorites()
     {
         return $this->hasMany(Favorite::class, 'favorited_id', 'id');
+    }
+
+    public function avatars()
+    {
+        return $this->hasMany(Avatar::class);
     }
 }
