@@ -2,6 +2,7 @@
 
 Route::group(['prefix' => 'v1'], function () {
     Route::get('prefectures', ['as' => 'prefectures', 'uses' => 'PrefectureController@index']);
+    Route::get('hometowns', ['as' => 'hometowns', 'uses' => 'PrefectureController@getHometowns']);
     Route::get('municipalities', ['as' => 'municipalities', 'uses' => 'MunicipalityController@index']);
     Route::get('salaries', ['as' => 'salaries', 'uses' => 'SalaryController@index']);
     Route::get('jobs', ['as' => 'jobs', 'uses' => 'JobController@index']);
