@@ -2,6 +2,7 @@
 
 Route::group(['prefix' => 'v1'], function () {
     Route::get('prefectures', ['as' => 'prefectures', 'uses' => 'PrefectureController@index']);
+    Route::get('hometowns', ['as' => 'hometowns', 'uses' => 'PrefectureController@getHometowns']);
     Route::get('municipalities', ['as' => 'index', 'uses' => 'MunicipalityController@index']);
 
     Route::group(['prefix' => 'auth', 'as' => 'auth.'], function () {

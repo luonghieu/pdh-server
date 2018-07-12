@@ -34,4 +34,12 @@ class PrefectureController extends ApiController
             return $this->respondWithData(PrefectureResource::collection($prefectures));
         }
     }
+
+    public function getHometowns(Request $request)
+    {
+        $prefectures = $this->repository->all();
+        $prefectures->prepend($prefectures->pull(48));
+
+        return $this->respondWithData(PrefectureResource::collection($prefectures));
+    }
 }
