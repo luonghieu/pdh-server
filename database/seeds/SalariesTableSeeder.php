@@ -1,7 +1,6 @@
 <?php
 
 use Illuminate\Database\Seeder;
-use App\Salary;
 
 class SalariesTableSeeder extends Seeder
 {
@@ -12,6 +11,22 @@ class SalariesTableSeeder extends Seeder
      */
     public function run()
     {
-        factory(Salary::class, 12)->create();
+        DB::table('salaries')->truncate();
+        $salaries = array('非公開',
+            '200万未満',
+            '200万～400万',
+            '400万～600万',
+            '600万~800万',
+            '800万~1000万',
+            '1000万~1500万',
+            '1500万~2000万',
+            '2000万~3000万',
+            '3000万~4000万',
+            '4000万~5000万',
+            '5000万以上');
+        $salaries = array_map(function ($name) {
+            return compact('name');
+        }, $salaries);
+        DB::table('salaries')->insert($salaries);
     }
 }
