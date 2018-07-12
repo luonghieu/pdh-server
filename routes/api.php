@@ -9,6 +9,9 @@ Route::group(['prefix' => 'v1'], function () {
         Route::post('refresh', ['as' => 'refresh', 'uses' => 'AuthController@refresh']);
         Route::get('logout', ['as' => 'logout', 'uses' => 'AuthController@logout']);
         Route::post('facebook', ['as' => 'login_facebook', 'uses' => 'FacebookAuthController@login']);
+        Route::group(['middleware' => ['auth:api']], function () {
+            Route::get('me', ['as' => 'me', 'uses' => 'AuthController@me']);
+        });
     });
     Route::get('jobs', ['as' => 'jobs', 'uses' => 'JobController@index']);
 });
