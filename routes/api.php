@@ -8,4 +8,5 @@ Route::group(['prefix' => 'v1'], function () {
         Route::get('logout', ['as' => 'logout', 'uses' => 'AuthController@logout']);
         Route::post('facebook', ['as' => 'login_facebook', 'uses' => 'FacebookAuthController@login']);
     });
+    Route::get('jobs', ['as' => 'jobs', 'uses' => 'JobController@index']);
 });
