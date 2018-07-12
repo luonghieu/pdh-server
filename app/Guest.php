@@ -5,7 +5,7 @@ namespace App;
 use App\Enums\UserType;
 use App\Traits\HasParentModel;
 
-class Cast extends User
+class Guest extends User
 {
     use HasParentModel;
 
@@ -14,7 +14,7 @@ class Cast extends User
         parent::boot();
 
         static::addGlobalScope(function ($query) {
-            $query->where('type', UserType::CAST);
+            $query->where('type', UserType::GUEST);
         });
     }
 }
