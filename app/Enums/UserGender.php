@@ -6,8 +6,8 @@ use BenSampo\Enum\Enum;
 
 final class UserGender extends Enum
 {
-    const FEMALE = 0;
     const MALE = 1;
+    const FEMALE = 2;
 
     /**
      * Get the description for an enum value
