@@ -13,5 +13,6 @@ Route::group(['prefix' => 'v1'], function () {
             Route::get('me', ['as' => 'me', 'uses' => 'AuthController@me']);
         });
     });
+    Route::get('body_types', ['as' => 'bodyTypes', 'uses' => 'BodyTypeController@index']);
     Route::get('jobs', ['as' => 'jobs', 'uses' => 'JobController@index']);
 });
