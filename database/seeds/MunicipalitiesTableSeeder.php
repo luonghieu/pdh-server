@@ -12,6 +12,8 @@ class MunicipalitiesTableSeeder extends Seeder
      */
     public function run()
     {
+        DB::table('municipalities')->truncate();
+
         $filePath = storage_path() . '/data/municipalities.csv';
 
         if (($handle = fopen($filePath, 'r')) !== false) {

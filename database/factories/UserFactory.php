@@ -1,48 +1,34 @@
 <?php
 
+use App\Job;
 use Faker\Generator as Faker;
 
-/*
-|--------------------------------------------------------------------------
-| Model Factories
-|--------------------------------------------------------------------------
-|
-| This directory should contain each of the model factory definitions for
-| your application. Factories provide a convenient way to generate new
-| model instances for testing / seeding your application's database.
-|
- */
 $faker = \Faker\Factory::create();
-$images = [];
-for ($i = 0; $i < 5; $i++) {
-    $images[] = generateStorageImage($faker);
-}
 
-$factory->define(App\User::class, function (Faker $faker) use ($images) {
+$factory->define(App\User::class, function (Faker $faker) {
+    $jobs = Job::all();
+
     return [
         'email' => $faker->unique()->email,
-        'facebook_id' => '123',
-        'password' => bcrypt('123456789'),
+        'password' => bcrypt('123123123'),
         'fullname' => $faker->name,
-        'nickname' => 'suzuka',
-        'dob' => $faker->dateTimeThisCentury('-20 years'),
+        'nickname' => $faker->word,
+        'date_of_birth' => $faker->dateTimeThisCentury('-20 years'),
         'gender' => rand(1, 2),
-        'avatar' => $faker->randomElement($images),
-        'sub_avatar' => $faker->randomElement($images) . ',' . $faker->randomElement($images),
-        'thumbnail' => 'abc',
-        'info' => 'abc',
-        'body_type' => 1,
-        'address' => $faker->address,
-        'hometown' => $faker->address,
-        'current_job' => 'cast',
-        'hobbies' => 'music',
-        'drink_volume' => 1,
-        'living_with' => 'mom',
-        'smoke' => rand(true, false),
-        'height' => '123',
-        'rank' => rand(1, 3),
+        'height' => rand(130, 200),
+        'salary_id' => rand(1, 12),
+        'body_type_id' => rand(1, 8),
+        'prefecture_id' => 13,
+        'hometown_id' => rand(1, 49),
+        'job_id' => $faker->randomElement($jobs->pluck('id')->toArray()),
+        'drink_volume_type' => rand(1, 3),
+        'smoking_type' => rand(1, 3),
+        'siblings_type' => rand(1, 3),
+        'cohabitant_type' => rand(1, 4),
+        'intro' => $faker->sentence,
         'point' => rand(10000, 100000),
-        'type' => 1,
+        'type' => rand(1, 2),
+        'status' => rand(0, 1),
         'created_at' => \Carbon\Carbon::now(),
         'updated_at' => \Carbon\Carbon::now(),
     ];

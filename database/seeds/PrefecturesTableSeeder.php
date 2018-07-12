@@ -12,6 +12,8 @@ class PrefecturesTableSeeder extends Seeder
      */
     public function run()
     {
+        DB::table('prefectures')->truncate();
+
         $filePath = storage_path() . '/data/prefectures.csv';
 
         if (($handle = fopen($filePath, 'r')) !== false) {
