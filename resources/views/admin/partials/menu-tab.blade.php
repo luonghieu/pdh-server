@@ -1,7 +1,7 @@
 @php
   $currentRouteName = Route::currentRouteName();
   $routes = [
-    ['name' => 'admin.accounts.show', 'value' => '基本情報', 'url' => route('admin.accounts.show')],
+    ['name' => 'admin.users.show', 'value' => '基本情報', 'url' => route('admin.users.show')],
     ['name' => '#', 'value' => '予約履歴', 'url' => '#'],
     ['name' => '#', 'value' => 'ポイント購入履歴', 'url' => '#'],
     ['name' => '#', 'value' => '領収書発行履歴', 'url' => '#'],

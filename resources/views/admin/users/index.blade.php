@@ -6,7 +6,7 @@
       <div class="panel panel-default">
         <div class="panel-body handling">
           <div class="search">
-            <form class="navbar-form navbar-left form-search" action="{{route('admin.accounts.index')}}" method="GET">
+            <form class="navbar-form navbar-left form-search" action="{{route('admin.users.index')}}" method="GET">
               <input type="text" class="form-control input-search" placeholder="ユーザーID,名前" name="search" value="{{request()->search}}">
               <label for="">From date: </label>
               <input type="text" class="form-control date-picker input-search" name="from_date" id="date01" data-date-format="yyyy/mm/dd" value="{{request()->from_date}}" placeholder="yyyy/mm/dd" />
@@ -18,7 +18,7 @@
         </div>
         <div class="clearfix"></div>
         <div class="panel-body">
-          <form class="navbar-form navbar-left form-search" action="{{route('admin.accounts.index')}}" id="limit-page" method="GET">
+          <form class="navbar-form navbar-left form-search" action="{{route('admin.users.index')}}" id="limit-page" method="GET">
             <div class="form-group">
               <label class="col-md-1 limit-page">表示件数：</label>
               <div class="col-md-1">
@@ -37,41 +37,54 @@
             <thead>
               <tr>
                 <th>No.</th>
-                <th class="sorting">
-                  <a href="#">ユーザーID</a>
+                <th class="sorting{{ (request()->id) ? '_' . request()->id: '' }}">
+                  <a href="{{ route('admin.users.index',
+                    ['page' => request()->page,
+                     'id' => (request()->id == 'asc') ? 'desc' : 'asc',
+                     ]) }}">ユーザーID
+                   </a>
                 </th>
                 <th>名前</th>
-                <th class="sorting">
-                  <a href="#">年齢</a>
-                </th>
+                <th>年齢</th>
                 <th>会員区分</th>
-                <th class="sorting{{ (request()->created_at) ? '_' . request()->created_at: '' }}">
-                  <a href="#">ステータス</a>
+                <th class="sorting{{ (request()->status) ? '_' . request()->status: '' }}">
+                  <a href="{{ route('admin.users.index',
+                    ['page' => request()->page,
+                     'status' => (request()->status == 'asc') ? 'desc' : 'asc',
+                     ]) }}">ステータス
+                   </a>
                 </th>
                 <th>登録日時</th>
                 <th></th>
               </tr>
             </thead>
             <tbody>
+              @foreach ($users as $key => $user)
               <tr>
-                <td>1</td>
-                <td>0001</td>
-                <td>Suzuka</td>
-                <td>24</td>
-                <td>有効</td>
-                <td>ゲスト</td>
-                <td>YYYY/MM/DD hh:mm</td>
-                <td><a href="{{ route('admin.accounts.show') }}"><button>詳細</button></a></td>
+                <td>{{ $users->firstItem() +$key }}</td>
+                <td>{{ $user->id }}</td>
+                <td>{{ $user->fullname }}</td>
+                <td>{{ Carbon\Carbon::parse($user->date_of_birth)->age }}</td>
+                <td>{{ App\Enums\UserType::getDescription($user->type) }}</td>
+                <td>{{ App\Enums\Status::getDescription($user->status) }}</td>
+                <td>{{ Carbon\Carbon::parse($user->created_at)->format('Y/m/d H:i') }}</td>
+                <td><a href="{{ route('admin.users.show') }}"><button>詳細</button></a></td>
               </tr>
+              @endforeach
             </tbody>
           </table>
         </div>
         <div class="col-lg-12">
           <div class="dataTables_info" id="DataTables_Table_0_info">
+            @if ($users->total())
+              全 {{ $users->total() }}件中 {{ $users->firstItem() }}~{{ $users->lastItem() }}件を表示しています
+            @endif
           </div>
         </div>
         <div class="pagination-outter">
-          <ul class="pagination"></ul>
+          <ul class="pagination">
+            {{ $users->appends(request()->all())->links() }}
+          </ul>
         </div>
       </div>
     </div>
