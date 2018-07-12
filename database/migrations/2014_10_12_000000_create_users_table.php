@@ -1,9 +1,9 @@
 <?php
 
 use App\Enums\UserType;
-use Illuminate\Support\Facades\Schema;
-use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
 
 class CreateUsersTable extends Migration
 {
@@ -23,7 +23,7 @@ class CreateUsersTable extends Migration
             $table->string('fullname')->nullable();
             $table->tinyInteger('gender')->nullable();
             $table->date('date_of_birth')->nullable();
-            $table->tinyInteger('height')->nullable();
+            $table->smallInteger('height')->nullable();
             $table->tinyInteger('salary_id')->nullable();
             $table->tinyInteger('body_type_id')->nullable();
             $table->unsignedInteger('prefecture_id')->nullable();

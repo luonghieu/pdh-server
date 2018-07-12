@@ -4,11 +4,11 @@ $currentRouteName = Route::currentRouteName();
 $routes = [
     'account' => [
         [
-            'name' => 'admin.accounts.index',
+            'name' => 'admin.users.index',
             'value' => '全アカウント管理',
-            'url' => route('admin.accounts.index'),
+            'url' => route('admin.users.index'),
             'submenu' => [
-                'admin.accounts.show'
+                'admin.users.show'
             ],
         ],
     ],

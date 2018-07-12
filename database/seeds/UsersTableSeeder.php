@@ -21,9 +21,9 @@ class UsersTableSeeder extends Seeder
             'fullname' => $faker->name,
             'type' => 3,
         ];
+
         DB::table('users')->insert($admin);
 
-        factory(App\User::class, 15)->create();
-        factory(App\Cast::class, 15)->create();
+        factory(App\User::class, 50)->create();
     }
 }
