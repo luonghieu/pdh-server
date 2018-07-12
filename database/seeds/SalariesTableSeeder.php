@@ -12,7 +12,9 @@ class SalariesTableSeeder extends Seeder
     public function run()
     {
         DB::table('salaries')->truncate();
-        $salaries = array('非公開',
+
+        $salaries = [
+            '非公開',
             '200万未満',
             '200万～400万',
             '400万～600万',
@@ -23,10 +25,13 @@ class SalariesTableSeeder extends Seeder
             '2000万~3000万',
             '3000万~4000万',
             '4000万~5000万',
-            '5000万以上');
+            '5000万以上'
+        ];
+
         $salaries = array_map(function ($name) {
             return compact('name');
         }, $salaries);
+
         DB::table('salaries')->insert($salaries);
     }
 }
