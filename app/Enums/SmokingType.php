@@ -22,7 +22,7 @@ final class SmokingType extends Enum
             return '吸う';
         } elseif ($value === self::OPTIONAL) {
             return '相手が嫌なら吸わない';
-        } elseif ($value === self::OPTIONAL) {
+        } elseif ($value === self::NO) {
             return '吸わない';
         }
 
