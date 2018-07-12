@@ -26,9 +26,12 @@ $factory->define(App\User::class, function (Faker $faker) {
         'siblings_type' => rand(1, 3),
         'cohabitant_type' => rand(1, 4),
         'intro' => $faker->sentence,
+        'cost' => $faker->randomElement([1000, 2000, 3000, 4000, 5000, 6000, 7000, 8000, 9000, 10000, 15000, 20000]),
         'point' => rand(10000, 100000),
         'type' => rand(1, 2),
         'status' => rand(0, 1),
+        'working_today' => rand(0, 1),
+        'class_id' => rand(1, 3),
         'created_at' => \Carbon\Carbon::now(),
         'updated_at' => \Carbon\Carbon::now(),
     ];
