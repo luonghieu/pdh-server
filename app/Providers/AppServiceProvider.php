@@ -13,7 +13,8 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        //
+        // Fixing for RDS old version
+        Schema::defaultStringLength(191);
     }
 
     /**
