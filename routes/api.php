@@ -10,5 +10,6 @@ Route::group(['prefix' => 'v1'], function () {
         Route::get('logout', ['as' => 'logout', 'uses' => 'AuthController@logout']);
         Route::post('facebook', ['as' => 'login_facebook', 'uses' => 'FacebookAuthController@login']);
     });
+    Route::get('body_types', ['as' => 'bodyTypes', 'uses' => 'BodyTypeController@index']);
     Route::get('jobs', ['as' => 'jobs', 'uses' => 'JobController@index']);
 });
