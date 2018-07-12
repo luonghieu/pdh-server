@@ -32,10 +32,6 @@ class FacebookAuthController extends ApiController
 
             $user = $this->findOrCreate($fbResponse->user);
 
-            if (!$user) {
-                return $this->respondErrorMessage(trans('messages.account_exists'), 409);
-            }
-
             $token = JWTAuth::fromUser($user);
 
             return $this->respondWithData($this->respondWithToken($token)->getData());
@@ -53,11 +49,6 @@ class FacebookAuthController extends ApiController
         $user = User::where('facebook_id', $fbResponse['id'])->first();
 
         if (!$user) {
-            $user = User::where('facebook_id', $fbResponse['id'])->first();
-
-            if ($user) {
-                return false;
-            }
 
             $user = User::create([
                 'email' => $fbResponse['email'],
