@@ -12,7 +12,7 @@ tags:
   - name: Guest
     description: End point used for Guest
   - name: Cast
-    description: End point used for  Cast
+    description: End point used for Cast
 schemes:
   - http
 paths:
