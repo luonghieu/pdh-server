@@ -2,6 +2,9 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Enums\UserType;
+use App\Http\Resources\CastResource;
+use App\Http\Resources\GuestResource;
 use App\User;
 use Illuminate\Http\Request;
 
@@ -49,5 +52,15 @@ class AuthController extends ApiController
         $this->guard()->logout();
 
         return $this->respondWithNoData(trans('messages.logout_success'));
+    }
+
+    public function me()
+    {
+        $user = $this->guard()->user();
+        if (UserType::CAST == $user->type) {
+            return $this->respondWithData(CastResource::make($user));
+        }
+
+        return $this->respondWithData(GuestResource::make($user));
     }
 }

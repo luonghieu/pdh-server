@@ -21,7 +21,9 @@ class PrefectureController extends ApiController
         $filter = $request->filter;
 
         if (!isset($filter) || 'supported' != $filter) {
-            $prefectures = $this->repository->all();
+            $prefectures = $this->repository->findWhere([
+                ['id', '<=', 47],
+            ]);
 
             return $this->respondWithData(PrefectureResource::collection($prefectures));
         } else {
