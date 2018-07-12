@@ -31,8 +31,8 @@ class CreateUsersTable extends Migration
             $table->unsignedInteger('job_id')->nullable();
             $table->tinyInteger('drink_volume_type')->nullable();
             $table->tinyInteger('smoking_type')->nullable();
-            $table->string('siblings_type')->nullable();
-            $table->string('cohabitant_type')->nullable();
+            $table->tinyInteger('siblings_type')->nullable();
+            $table->tinyInteger('cohabitant_type')->nullable();
             $table->text('intro')->nullable();
             $table->tinyInteger('type')->default(UserType::GUEST);
             $table->boolean('status')->default(true);

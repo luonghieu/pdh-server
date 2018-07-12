@@ -2,9 +2,11 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Enums\UserGender;
 use App\Enums\UserType;
 use App\Services\LogService;
 use App\User;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Laravel\Socialite\Facades\Socialite;
 use Tymon\JWTAuth\Facades\JWTAuth;
@@ -26,7 +28,9 @@ class FacebookAuthController extends ApiController
         try {
             $fbResponse = Socialite::driver('facebook')
                 ->fields([
-                    'email', 'name', 'gender', 'picture.width(400).height(400)',
+                    'email', 'name', 'first_name', 'last_name', 'gender',
+                    'picture.width(400).height(400)', 'age_range', 'birthday', 'location',
+                    'link'
                 ])->stateless()
                 ->userFromToken($token);
 
@@ -53,8 +57,10 @@ class FacebookAuthController extends ApiController
             $user = User::create([
                 'email' => $fbResponse['email'],
                 'fullname' => $fbResponse['name'],
-                'nickname' => $fbResponse['name'],
+                'nickname' => $fbResponse['first_name'],
                 'facebook_id' => $fbResponse['id'],
+                'date_of_birth' => Carbon::parse($fbResponse['birthday']),
+                'gender' => ($fbResponse['gender'] == 'male') ? UserGender::MALE : UserGender::FEMALE,
                 'type' => UserType::GUEST,
             ]);
 
