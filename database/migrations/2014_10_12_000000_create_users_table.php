@@ -36,7 +36,10 @@ class CreateUsersTable extends Migration
             $table->text('intro')->nullable();
             $table->tinyInteger('type')->default(UserType::GUEST);
             $table->boolean('status')->default(true);
+            $table->integer('cost')->nullable();
             $table->integer('point')->nullable();
+            $table->boolean('working_today')->default(false);
+            $table->tinyInteger('class_id')->nullable();
             $table->rememberToken();
             $table->timestamps();
         });
