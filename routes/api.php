@@ -8,4 +8,8 @@ Route::group(['prefix' => 'v1'], function () {
         Route::get('logout', ['as' => 'logout', 'uses' => 'AuthController@logout']);
         Route::post('facebook', ['as' => 'login_facebook', 'uses' => 'FacebookAuthController@login']);
     });
+
+    Route::group(['middleware' => ['auth:api'], 'prefix' => 'casts', 'as' => 'casts.'], function () {
+        Route::get('/', ['as' => 'index', 'uses' => 'CastController@index']);
+    });
 });

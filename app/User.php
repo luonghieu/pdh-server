@@ -37,9 +37,31 @@ class User extends Authenticatable implements JWTSubject
         }
     }
 
+    public function getCreatedAtAttribute($value)
+    {
+        return Carbon::parse($value)->format('Y-m-d H:i');
+    }
+
+    public function getUpdatedAtAttribute($value)
+    {
+        return Carbon::parse($value)->format('Y-m-d H:i');
+    }
+
     public function getIsAdminAttribute()
     {
         return UserType::ADMIN == $this->type;
+    }
+
+    public function getAvatarAttribute()
+    {
+        $avatar = $this->avatars()->where('is_default', true)->first();
+        return $avatar ? $avatar->path : '';
+    }
+
+    public function getThumbnailsAttribute()
+    {
+        $thumbnails = $this->avatars()->pluck('thumbnail');
+        return $thumbnails;
     }
 
     public function notifications()

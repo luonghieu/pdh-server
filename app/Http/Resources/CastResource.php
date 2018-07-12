@@ -12,7 +12,7 @@ use App\Enums\DrinkVolumeType;
 use App\Repositories\PrefectureRepository;
 use Illuminate\Http\Resources\Json\Resource;
 
-class GuestResource extends Resource
+class CastResource extends Resource
 {
     /**
      * Transform the resource into an array.
@@ -29,6 +29,8 @@ class GuestResource extends Resource
             'nickname' => $this->nickname,
             'fullname' => $this->fullname,
             'gender' => $this->gender,
+            'avatar' => $this->avatar,
+            'thumbnails' => $this->thumbnails,
             'date_of_birth' => $this->date_of_birth,
             'age' => $this->age,
             'height' => $this->height,
@@ -56,6 +58,7 @@ class GuestResource extends Resource
             'point' => $this->point,
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
+
         ];
     }
 }
