@@ -26,7 +26,9 @@ class FacebookAuthController extends ApiController
         try {
             $fbResponse = Socialite::driver('facebook')
                 ->fields([
-                    'email', 'name', 'gender', 'picture.width(400).height(400)',
+                    'email', 'name', 'first_name', 'last_name', 'gender',
+                    'picture.width(400).height(400)', 'age_range', 'birthday', 'location',
+                    'link'
                 ])->stateless()
                 ->userFromToken($token);
 
