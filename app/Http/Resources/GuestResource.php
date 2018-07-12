@@ -29,6 +29,8 @@ class GuestResource extends Resource
             'nickname' => $this->nickname,
             'fullname' => $this->fullname,
             'gender' => $this->gender,
+            'avatar' => $this->avatar,
+            'thumbnails' => $this->thumbnails,
             'date_of_birth' => $this->date_of_birth,
             'age' => $this->age,
             'height' => $this->height,

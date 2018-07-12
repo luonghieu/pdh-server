@@ -12,4 +12,8 @@ Route::group(['prefix' => 'v1'], function () {
     Route::group(['middleware' => ['auth:api'], 'prefix' => 'casts', 'as' => 'casts.'], function () {
         Route::get('/', ['as' => 'index', 'uses' => 'CastController@index']);
     });
+
+    Route::group(['middleware' => ['auth:api'], 'prefix' => 'guests', 'as' => 'guests.'], function () {
+        Route::get('/', ['as' => 'index', 'uses' => 'GuestController@index']);
+    });
 });
