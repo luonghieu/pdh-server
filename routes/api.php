@@ -18,4 +18,8 @@ Route::group(['prefix' => 'v1'], function () {
             Route::get('me', ['as' => 'me', 'uses' => 'AuthController@me']);
         });
     });
+
+    Route::group(['middleware' => ['auth:api'], 'prefix' => 'casts', 'as' => 'casts.'], function () {
+        Route::get('/', ['as' => 'index', 'uses' => 'CastController@index']);
+    });
 });

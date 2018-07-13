@@ -30,6 +30,7 @@ class CastResource extends Resource
             'nickname' => $this->nickname,
             'fullname' => $this->fullname,
             'gender' => $this->gender,
+            'avatars' => $this->avatars,
             'date_of_birth' => $this->date_of_birth,
             'age' => $this->age,
             'height' => $this->height,
@@ -61,6 +62,7 @@ class CastResource extends Resource
             'class' => $this->class_id ? CastClass::find($this->class_id)->name : '',
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
+
         ];
     }
 }
