@@ -34,7 +34,7 @@
                 <td>{{ Carbon\Carbon::parse($user->date_of_birth)->format('Y年m月d日') }}</td>
               </tr>
               <tr>
-                <th>年齢層</th>
+                <th>年齢</th>
                 <td>{{ $user->age }}</td>
               </tr>
               <tr>
@@ -73,6 +73,10 @@
               </tr>
               <tr>
                 <th>基本情報：兄弟姉妹</th>
+                <td>{{ App\Enums\SiblingsType::getDescription($user->siblings_type) }}</td>
+              </tr>
+              <tr>
+                <th>基本情報：同居人</th>
                 <td>{{ App\Enums\CohabitantType::getDescription($user->cohabitant_type) }}</td>
               </tr>
               <tr>
