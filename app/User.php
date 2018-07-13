@@ -2,9 +2,8 @@
 
 namespace App;
 
-use App\Http\Resources\AvatarResource;
-use Carbon\Carbon;
 use App\Enums\UserType;
+use Carbon\Carbon;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Tymon\JWTAuth\Contracts\JWTSubject;
@@ -55,6 +54,11 @@ class User extends Authenticatable implements JWTSubject
         return UserType::ADMIN == $this->type;
     }
 
+    public function isFavoritedUser($userId)
+    {
+        return $this->favorites()->pluck('users.id')->contains($userId);
+    }
+
     public function notifications()
     {
         return $this->morphMany(Notification::class, 'notifiable');
@@ -62,7 +66,12 @@ class User extends Authenticatable implements JWTSubject
 
     public function favorites()
     {
-        return $this->hasMany(Favorite::class, 'favorited_id', 'id');
+        return $this->belongsToMany(User::class, 'favorites', 'user_id', 'favorited_id')->withPivot('id', 'user_id', 'favorited_id', 'created_at', 'updated_at');
+    }
+
+    public function favoriters()
+    {
+        return $this->belongsToMany(User::class, 'favorites', 'favorited_id', 'user_id')->withPivot('id', 'user_id', 'favorited_id', 'created_at', 'updated_at');
     }
 
     public function avatars()

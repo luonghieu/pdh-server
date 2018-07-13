@@ -2,17 +2,17 @@
 
 namespace App\Http\Resources;
 
-use App\Job;
-use App\Salary;
 use App\BodyType;
-use App\Enums\SmokingType;
-use App\Enums\SiblingsType;
 use App\Enums\CohabitantType;
 use App\Enums\DrinkVolumeType;
+use App\Enums\SiblingsType;
+use App\Enums\SmokingType;
 use App\Http\Resources\AvatarResource;
+use App\Job;
 use App\Repositories\PrefectureRepository;
-use Illuminate\Http\Resources\Json\Resource;
+use App\Salary;
 use App\Traits\ResourceResponse;
+use Illuminate\Http\Resources\Json\Resource;
 
 class GuestResource extends Resource
 {
