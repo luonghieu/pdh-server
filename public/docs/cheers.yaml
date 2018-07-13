@@ -4,7 +4,7 @@ info:
     This is Cheers server.
   version: 1.3.0
   title: Cheers
-host: cheer.test
+host: https://app.dev.cheers.style
 basePath: /api/v1
 tags:
   - name: Common
