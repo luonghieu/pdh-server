@@ -12,10 +12,13 @@ use App\Enums\CohabitantType;
 use App\Enums\DrinkVolumeType;
 use App\Http\Resources\AvatarResource;
 use App\Repositories\PrefectureRepository;
+use App\Traits\ResourceResponse;
 use Illuminate\Http\Resources\Json\Resource;
 
 class CastResource extends Resource
 {
+    use ResourceResponse;
+
     /**
      * Transform the resource into an array.
      *
@@ -24,7 +27,7 @@ class CastResource extends Resource
      */
     public function toArray($request)
     {
-        return [
+        return $this->filterNull([
             'id' => $this->id,
             'facebook_id' => $this->facebook_id,
             'email' => $this->email,
@@ -64,6 +67,6 @@ class CastResource extends Resource
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
 
-        ];
+        ]);
     }
 }

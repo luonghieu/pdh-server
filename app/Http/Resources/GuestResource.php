@@ -12,18 +12,21 @@ use App\Enums\DrinkVolumeType;
 use App\Http\Resources\AvatarResource;
 use App\Repositories\PrefectureRepository;
 use Illuminate\Http\Resources\Json\Resource;
+use App\Traits\ResourceResponse;
 
 class GuestResource extends Resource
 {
+    use ResourceResponse;
+
     /**
      * Transform the resource into an array.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param  \Illuminate\Http\Request $request
      * @return array
      */
     public function toArray($request)
     {
-        return [
+        return $this->filterNull([
             'id' => $this->id,
             'facebook_id' => $this->facebook_id,
             'email' => $this->email,
@@ -58,6 +61,6 @@ class GuestResource extends Resource
             'avatars' => AvatarResource::collection($this->avatars),
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
-        ];
+        ]);
     }
 }
