@@ -23,7 +23,15 @@
               </tr>
               <tr>
                 <th>ニックネーム</th>
-                <td>{{$user->nickname}}</td>
+                <td>{{ $user->nickname }}</td>
+              </tr>
+              <tr>
+                <th>性別</th>
+                <td>{{ App\Enums\UserGender::getDescription($user->gender) }}</td>
+              </tr>
+              <tr>
+                <th>生年月日</th>
+                <td>{{ Carbon\Carbon::parse($user->date_of_birth)->format('Y年m月d日') }}</td>
               </tr>
               <tr>
                 <th>年齢層</th>
@@ -70,6 +78,10 @@
               <tr>
                 <th>自己紹介</th>
                 <td>{{ $user->intro }}</td>
+              </tr>
+              <tr>
+                <th>ひとこと</th>
+                <td>{{ $user->description }}</td>
               </tr>
               <tr>
                 <th>会員区分</th>
