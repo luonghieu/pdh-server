@@ -10,7 +10,7 @@ class Avatar extends Model
     protected $fillable = [
         'path',
         'thumbnail',
-        'is_default'
+        'is_default',
     ];
 
     public function getPathAttribute($value)

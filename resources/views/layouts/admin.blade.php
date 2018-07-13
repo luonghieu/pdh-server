@@ -9,7 +9,7 @@
     <meta name="keyword" content="CleverAdmin, Dashboard, Bootstrap, Admin, Template, Theme, Responsive, Fluid, Retina">
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <link rel="icon" href="" >
-    <title>MikkeAdmin</title>
+    <title>Cheers Admin</title>
     <!-- Bootstrap core CSS -->
     <link href="/assets/admin/css/bootstrap.min.css" rel="stylesheet">
     <!-- page css files -->

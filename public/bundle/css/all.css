@@ -186,6 +186,23 @@ td {
   padding-top: 5px;
 }
 
+.list-avatar {
+  display: inline;
+}
+
+.list-avatar img {
+  width: 140px;
+  margin: 1%;
+}
+
+.list-avatar img:first-child {
+  width: 200px;
+}
+
+.list-avatar img:not(:first-child) {
+  margin-top: 45px;
+}
+
 .title-avatar .images {
   margin-top: 30px;
 }
@@ -615,7 +632,12 @@ tbody td {
   background-color: #8388A4;
   color: #fff;
 }
-.modal-body span {
+
+.modal-body {
+  text-align: center;
+}
+
+.modal-body p {
   font-size: 17px;
   font-weight: bold;
 }
@@ -731,7 +753,7 @@ tbody td {
 }
 
 .active-user {
-  margin-top: 118px;
+  margin-top: 20px;
   float: right;
 }
 

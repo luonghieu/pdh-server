@@ -44,7 +44,7 @@
                      ]) }}">ユーザーID
                    </a>
                 </th>
-                <th>名前</th>
+                <th>ニックネーム</th>
                 <th>年齢</th>
                 <th>会員区分</th>
                 <th class="sorting{{ (request()->status) ? '_' . request()->status: '' }}">
@@ -63,12 +63,12 @@
               <tr>
                 <td>{{ $users->firstItem() +$key }}</td>
                 <td>{{ $user->id }}</td>
-                <td>{{ $user->fullname }}</td>
-                <td>{{ Carbon\Carbon::parse($user->date_of_birth)->age }}</td>
+                <td>{{ $user->nickname }}</td>
+                <td>{{ $user->age }}</td>
                 <td>{{ App\Enums\UserType::getDescription($user->type) }}</td>
                 <td>{{ App\Enums\Status::getDescription($user->status) }}</td>
                 <td>{{ Carbon\Carbon::parse($user->created_at)->format('Y/m/d H:i') }}</td>
-                <td><a href="{{ route('admin.users.show') }}"><button>詳細</button></a></td>
+                <td><a href="{{ route('admin.users.show', ['user' => $user->id]) }}"><button>詳細</button></a></td>
               </tr>
               @endforeach
             </tbody>
