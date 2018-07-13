@@ -10,7 +10,14 @@ class GuestController extends ApiController
 {
     public function index(Request $request)
     {
-        $casts = Guest::latest()->paginate($request->per_page)->appends($request->query());
+
+        $guests = Guest::query();
+
+        if ($request->filter == 'favorited') {
+            $guests->has('favorites');
+        }
+
+        $casts = $guests->latest()->paginate($request->per_page)->appends($request->query());
 
         return $this->respondWithData(GuestResource::collection($casts));
     }
