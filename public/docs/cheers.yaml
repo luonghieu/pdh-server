@@ -4,160 +4,24 @@ info:
     This is Cheers server.
   version: 1.3.0
   title: Cheers
-host: 127.0.0.1:8000
+host: app.dev.cheers.style
 basePath: /api/v1
 tags:
   - name: Common
-    description: Operations about Guest/Cast
+    description: End point used for bolth Guest/Cast
   - name: Guest
-    description: Operations about Guest
+    description: End point used for Guest
   - name: Cast
-    description: Operations about Cast
+    description: End point used for Cast
 schemes:
   - http
 paths:
-  /auth/login:
-    post:
-      tags:
-        - Common
-      summary: Logs user into the app
-      description: ''
-      operationId: loginUser
-      consumes:
-        - multipart/form-data
-      parameters:
-        - name: email
-          in: formData
-          description: The email for login
-          required: true
-          type: string
-        - name: password
-          in: formData
-          description: The password for login in clear text
-          required: true
-          type: string
-        - name: type
-          in: formData
-          description: The password for login in clear text
-          required: true
-          type: integer
-      responses:
-        200:
-          description: successful operation
-          schema:
-            type: object
-            properties:
-              status:
-                type: boolean
-              data:
-                type: object
-                properties:
-                  access_token:
-                    type: string
-                  token_type:
-                    type: string
-                  expires_in:
-                    type: integer
-            example: {
-              status: true,
-              data: {
-                access_token: eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOlwvXC8xMjcuMC4wLjE6ODAwMFw
-                vYXBpXC92MVwvYXV0aFwvcmVmcmVzaCIsImlhdCI6MTUzMDg2NzMyOCwiZXhwIjoxNTMwODcwOTUxLCJuYmYiOjE1MzA4NjczNTEsImp0
-                aSI6IkpmamhmemFsaTFQdFFRVEYiLCJzdWIiOjIsInBydiI6Ijg3ZTBhZjFlZjlmZDE1ODEyZmRlYzk3MTUzYTE0ZTBiMDQ3NTQ2YWEifQ._7vKM0kkTAbpK8wJm6d3q138fxIYZ0QMErFMNk-6i_Q,
-                token_type: bearer,
-                expires_in: 3600
-              }
-            }
-        400:
-          description: Error validation
-          schema:
-            type: object
-            properties:
-              status:
-                type: boolean
-                default: false
-              error:
-                type: object
-                example: {
-                  email: emailは、有効なメールアドレス形式で指定してください。
-                }
-        401:
-          description: Error login
-          schema:
-            type: object
-            properties:
-              status:
-                type: boolean
-                default: false
-              error:
-                type: string
-            example: {
-              status: false,
-              error: メールアドレスまたはパスワードの入力に誤りがあるか登録されていません
-            }
+  /auth/facebook:
+    $ref: ./api/common/login.yaml
   /auth/logout:
-    get:
-      tags:
-        - Common
-      security:
-        - CheersAuth: []
-      summary: Logout user
-      description: ''
-      operationId: logoutUser
-      produces:
-        - application/json
-      responses:
-        200:
-          description: successful operation
-          schema:
-            type: array
-            example: {
-              status: true,
-              data: [],
-              message: 正常にログアウトしました
-            }
-        401:
-          description: Unauthorized
+    $ref: ./api/common/logout.yaml
   /auth/refresh:
-    post:
-      tags:
-        - Common
-      security:
-        - CheersAuth: []
-      summary: Refresh token user
-      description: ''
-      operationId: refreshToken
-      produces:
-        - application/json
-      responses:
-        200:
-          description: successful operation
-          schema:
-            type: object
-            properties:
-              status:
-                type: boolean
-              data:
-                type: object
-                properties:
-                  access_token:
-                    type: string
-                  token_type:
-                    type: string
-                  expires_in:
-                    type: integer
-            example: {
-              status: true,
-              data: {
-                access_token: eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOlwvXC8xMjcuMC4wLjE6ODAwMFw
-                vYXBpXC92MVwvYXV0aFwvcmVmcmVzaCIsImlhdCI6MTUzMDg2NzMyOCwiZXhwIjoxNTMwODcwOTUxLCJuYmYiOjE1MzA4NjczNTEsImp0
-                aSI6IkpmamhmemFsaTFQdFFRVEYiLCJzdWIiOjIsInBydiI6Ijg3ZTBhZjFlZjlmZDE1ODEyZmRlYzk3MTUzYTE0ZTBiMDQ3NTQ2YWEifQ._7vKM0kkTAbpK8wJm6d3q138fxIYZ0QMErFMNk-6i_Q,
-                token_type: bearer,
-                expires_in: 3600
-              }
-            }
-        401:
-          description: Unauthorized
+    $ref: ./api/common/refresh.yaml
 securityDefinitions:
   CheersAuth:
     type: apiKey

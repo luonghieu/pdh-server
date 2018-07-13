@@ -2,6 +2,7 @@
 
 namespace App;
 
+use App\Http\Resources\AvatarResource;
 use Carbon\Carbon;
 use App\Enums\UserType;
 use Tymon\JWTAuth\Contracts\JWTSubject;
@@ -52,16 +53,10 @@ class User extends Authenticatable implements JWTSubject
         return UserType::ADMIN == $this->type;
     }
 
-    public function getAvatarAttribute()
+    public function getAvatarsAttribute()
     {
-        $avatar = $this->avatars()->where('is_default', true)->first();
-        return $avatar ? $avatar->path : '';
-    }
-
-    public function getThumbnailsAttribute()
-    {
-        $thumbnails = $this->avatars()->pluck('thumbnail');
-        return $thumbnails;
+        $avatars = $this->avatars()->orderBy('is_default', 'desc')->get();
+        return AvatarResource::collection($avatars);
     }
 
     public function notifications()
