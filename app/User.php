@@ -5,9 +5,9 @@ namespace App;
 use App\Http\Resources\AvatarResource;
 use Carbon\Carbon;
 use App\Enums\UserType;
-use Tymon\JWTAuth\Contracts\JWTSubject;
-use Illuminate\Notifications\Notifiable;
 use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Notifications\Notifiable;
+use Tymon\JWTAuth\Contracts\JWTSubject;
 
 class User extends Authenticatable implements JWTSubject
 {
@@ -69,5 +69,25 @@ class User extends Authenticatable implements JWTSubject
     {
         return $this->hasMany(Avatar::class)
             ->orderBy('is_default', 'desc');
+    }
+
+    public function prefecture()
+    {
+        return $this->belongsTo(Prefecture::class);
+    }
+
+    public function job()
+    {
+        return $this->belongsTo(Job::class);
+    }
+
+    public function salary()
+    {
+        return $this->belongsTo(Salary::class);
+    }
+
+    public function bodyType()
+    {
+        return $this->belongsTo(BodyType::class);
     }
 }

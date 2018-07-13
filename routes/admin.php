@@ -5,6 +5,7 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.'], function () {
     Route::get('logout', ['as' => 'logout', 'uses' => 'AuthController@logout']);
     Route::group(['namespace' => 'User', 'prefix' => 'users', 'as' => 'users.', 'middleware' => 'is_admin'], function () {
         Route::get('/', ['as' => 'index', 'uses' => 'UserController@index']);
-        Route::get('/show', ['as' => 'show', 'uses' => 'UserController@show']);
+        Route::get('{user}', ['as' => 'show', 'uses' => 'UserController@show'])->where('user', '[0-9]+');
+        Route::put('{user}', ['as' => 'change_active', 'uses' => 'UserController@changeActive'])->where('user', '[0-9]+');
     });
 });

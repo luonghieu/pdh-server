@@ -16,3 +16,14 @@ if (!function_exists('generateStorageImage')) {
         return $image;
     }
 }
+
+if (!function_exists('getUserHeight')) {
+    function getUserHeight($height)
+    {
+        if (0 == $height) {
+            return '非公開';
+        }
+
+        return $height;
+    }
+}

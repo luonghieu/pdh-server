@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Admin\User;
 
+use App\Enums\Status;
 use App\Enums\UserType;
 use App\Http\Controllers\Controller;
 use App\User;
@@ -48,8 +49,17 @@ class UserController extends Controller
         return view('admin.users.index', compact('users'));
     }
 
-    public function show()
+    public function show(User $user)
     {
-        return view('admin.users.show');
+        return view('admin.users.show', compact('user'));
+    }
+
+    public function changeActive(User $user)
+    {
+        $user->status = !$user->status;
+
+        $user->save();
+
+        return redirect()->route('admin.users.show', ['user' => $user->id]);
     }
 }
