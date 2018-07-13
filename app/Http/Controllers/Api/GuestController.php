@@ -4,7 +4,6 @@ namespace App\Http\Controllers\Api;
 
 use App\Guest;
 use App\Http\Resources\GuestResource;
-use function foo\func;
 use Illuminate\Http\Request;
 
 class GuestController extends ApiController
