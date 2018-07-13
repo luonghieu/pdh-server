@@ -65,13 +65,13 @@ class FacebookAuthController extends ApiController
             ];
             $user = User::create($data);
 
-            $user = User::find($user->id);
-
             $user->avatars()->create([
                 'path' => $fbResponse['picture']['data']['url'],
                 'thumbnail' => $fbResponse['picture']['data']['url'],
                 'is_default' => true
             ]);
+
+            $user = User::find($user->id);
             // Return user with full attributes.
             return $user;
         }
