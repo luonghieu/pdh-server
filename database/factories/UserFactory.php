@@ -32,6 +32,7 @@ $factory->define(App\User::class, function (Faker $faker) {
         'status' => rand(0, 1),
         'working_today' => rand(0, 1),
         'class_id' => rand(1, 3),
+        'last_active_at' => \Carbon\Carbon::now(),
         'created_at' => \Carbon\Carbon::now(),
         'updated_at' => \Carbon\Carbon::now(),
     ];

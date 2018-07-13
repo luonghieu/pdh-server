@@ -14,9 +14,9 @@ $routes = [
     ],
     'cast' => [
         [
-            'name' => '',
+            'name' => 'admin.casts.index',
             'value' => 'キャスト管理',
-            'url' => '#',
+            'url' => route('admin.casts.index'),
             'submenu' => [],
         ],
     ],
