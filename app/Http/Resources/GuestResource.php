@@ -29,7 +29,6 @@ class GuestResource extends Resource
             'nickname' => $this->nickname,
             'fullname' => $this->fullname,
             'gender' => $this->gender,
-            'avatars' => $this->avatars,
             'date_of_birth' => $this->date_of_birth,
             'age' => $this->age,
             'height' => $this->height,
@@ -55,6 +54,7 @@ class GuestResource extends Resource
             'type' => $this->type,
             'status' => $this->status,
             'point' => $this->point,
+            'avatars' => AvatarResource::collection($this->avatars),
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
         ];

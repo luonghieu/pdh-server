@@ -21,6 +21,8 @@ class User extends Authenticatable implements JWTSubject
 
     protected $fillable = [];
 
+    protected $with = ['avatars'];
+
     public function getJWTIdentifier()
     {
         return $this->getKey();
@@ -53,12 +55,6 @@ class User extends Authenticatable implements JWTSubject
         return UserType::ADMIN == $this->type;
     }
 
-    public function getAvatarsAttribute()
-    {
-        $avatars = $this->avatars()->orderBy('is_default', 'desc')->get();
-        return AvatarResource::collection($avatars);
-    }
-
     public function notifications()
     {
         return $this->morphMany(Notification::class, 'notifiable');
@@ -71,6 +67,7 @@ class User extends Authenticatable implements JWTSubject
 
     public function avatars()
     {
-        return $this->hasMany(Avatar::class);
+        return $this->hasMany(Avatar::class)
+            ->orderBy('is_default', 'desc');
     }
 }
