@@ -36,7 +36,7 @@ class AuthController extends ApiController
         $credentials = request()->only('email', 'password');
 
         if (($token = $this->guard()->attempt($credentials)) && request('type') == $this->guard()->user()->type) {
-            return $this->respondWithData($this->respondWithToken($token)->getData());
+            return $this->respondWithData($this->respondWithToken($token, $this->guard()->user())->getData());
         }
 
         return $this->respondErrorMessage(trans('messages.login_error'), 401);

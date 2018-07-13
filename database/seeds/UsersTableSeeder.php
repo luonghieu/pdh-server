@@ -36,9 +36,9 @@ class UsersTableSeeder extends Seeder
         foreach ($users as $user) {
             $numberOfImages = rand(1, 10);
 
-            for ($j=0; $j < $numberOfImages; $j++) {
+            for ($j = 0; $j < $numberOfImages; $j++) {
                 $user->avatars()->create([
-                    'path' => $faker->randomElement($images)
+                    'path' => $faker->randomElement($images),
                 ]);
             }
         }
