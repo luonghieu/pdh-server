@@ -38,7 +38,7 @@ class FacebookAuthController extends ApiController
 
             $token = JWTAuth::fromUser($user);
 
-            return $this->respondWithData($this->respondWithToken($token)->getData());
+            return $this->respondWithData($this->respondWithToken($token, $user)->getData());
         } catch (\Exception $e) {
             if ($e->getCode() == 400) {
                 return $this->respondErrorMessage(trans('messages.facebook_invalid_token'), $e->getCode());
@@ -54,15 +54,16 @@ class FacebookAuthController extends ApiController
 
         if (!$user) {
 
-            $user = User::create([
-                'email' => $fbResponse['email'],
+            $data = [
+                'email' => (isset($fbResponse['email'])) ? $fbResponse['email'] : '',
                 'fullname' => $fbResponse['name'],
-                'nickname' => $fbResponse['first_name'],
+                'nickname' => (isset($fbResponse['first_name'])) ? $fbResponse['first_name'] : '',
                 'facebook_id' => $fbResponse['id'],
-                'date_of_birth' => Carbon::parse($fbResponse['birthday']),
-                'gender' => ($fbResponse['gender'] == 'male') ? UserGender::MALE : UserGender::FEMALE,
+                'date_of_birth' => (isset($fbResponse['birthday'])) ? Carbon::parse($fbResponse['birthday']) : null,
+                'gender' => (isset($fbResponse['gender'])) ? ($fbResponse['gender'] == 'male') ? UserGender::MALE : UserGender::FEMALE : null,
                 'type' => UserType::GUEST,
-            ]);
+            ];
+            $user = User::create($data);
 
             $user = User::find($user->id);
 
