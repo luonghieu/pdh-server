@@ -29,7 +29,7 @@ class Avatar extends Model
     public function getThumbnailAttribute($value)
     {
         if (empty($value)) {
-            return '';
+            return $this->avatar;
         }
 
         if (strpos($value, 'https') !== false) {

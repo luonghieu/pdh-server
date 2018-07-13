@@ -26,6 +26,4 @@ Route::group(['prefix' => 'v1'], function () {
     Route::group(['middleware' => ['auth:api'], 'prefix' => 'guests', 'as' => 'guests.'], function () {
         Route::get('/', ['as' => 'index', 'uses' => 'GuestController@index']);
     });
-
-    Route::get('jobs', ['as' => 'jobs', 'uses' => 'JobController@index']);
 });
