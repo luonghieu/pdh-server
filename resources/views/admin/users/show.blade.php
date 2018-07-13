@@ -9,12 +9,15 @@
         @include('admin.partials.notification')
         <div class="clearfix"></div>
         <div class="panel-body">
-          <div class="info-table col-lg-6">
+          <div class="col-lg-12">
             <div class="list-avatar">
               @foreach ($user->avatars as $avatar)
                 <img src="{{ $avatar->path }}" alt="avatar">
               @endforeach
             </div>
+          </div>
+          <div class="clearfix"></div>
+          <div class="info-table col-lg-6">
             <table class="table table-bordered">
               <!--  table-striped -->
               <tr>
