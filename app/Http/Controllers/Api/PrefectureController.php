@@ -21,7 +21,9 @@ class PrefectureController extends ApiController
         $filter = $request->filter;
 
         if (!isset($filter) || 'supported' != $filter) {
-            $prefectures = $this->repository->all();
+            $prefectures = $this->repository->findWhere([
+                ['id', '<=', 47],
+            ]);
 
             return $this->respondWithData(PrefectureResource::collection($prefectures));
         } else {
@@ -31,5 +33,13 @@ class PrefectureController extends ApiController
 
             return $this->respondWithData(PrefectureResource::collection($prefectures));
         }
+    }
+
+    public function getHometowns(Request $request)
+    {
+        $prefectures = $this->repository->all();
+        $prefectures->prepend($prefectures->pull(48));
+
+        return $this->respondWithData(PrefectureResource::collection($prefectures));
     }
 }

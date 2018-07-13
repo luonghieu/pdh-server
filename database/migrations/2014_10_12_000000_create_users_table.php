@@ -31,12 +31,15 @@ class CreateUsersTable extends Migration
             $table->unsignedInteger('job_id')->nullable();
             $table->tinyInteger('drink_volume_type')->nullable();
             $table->tinyInteger('smoking_type')->nullable();
-            $table->string('siblings_type')->nullable();
-            $table->string('cohabitant_type')->nullable();
+            $table->tinyInteger('siblings_type')->nullable();
+            $table->tinyInteger('cohabitant_type')->nullable();
             $table->text('intro')->nullable();
             $table->tinyInteger('type')->default(UserType::GUEST);
             $table->boolean('status')->default(true);
+            $table->integer('cost')->nullable();
             $table->integer('point')->nullable();
+            $table->boolean('working_today')->default(false);
+            $table->tinyInteger('class_id')->nullable();
             $table->rememberToken();
             $table->timestamps();
         });
