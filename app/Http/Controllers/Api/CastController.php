@@ -20,11 +20,24 @@ class CastController extends ApiController
             return $this->respondWithValidationError($validator->errors()->messages());
         }
 
-        $params = $request->except(['order_by']);
+        $params = $request->only([
+            'favorited',
+            'working_today',
+            'prefecture_id',
+            'class_id',
+            'height',
+            'salary_id',
+            'body_type_id',
+        ]);
+
         $casts = Cast::query();
+        $user = $this->guard()->user();
+
         foreach ($params as $key => $value) {
             if ($key == 'favorited') {
-                $casts->has('favorites');
+                $casts->whereHas('favorites', function($query) use ($user) {
+                    $query->where('user_id', $user->id);
+                });
             } else {
                 $casts->where($key, $value);
             }
