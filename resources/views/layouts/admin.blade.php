@@ -4,12 +4,13 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="description" content="MikkeAdmin">
+    <meta name="description" content="CheersAdmin">
     <meta name="author" content="Łukasz Holeczek">
     <meta name="keyword" content="CleverAdmin, Dashboard, Bootstrap, Admin, Template, Theme, Responsive, Fluid, Retina">
     <meta name="csrf-token" content="{{ csrf_token() }}">
     <link rel="icon" href="" >
     <title>Cheers Admin</title>
+    <link rel="shortcut icon" href="/assets/admin/img/logo/icon.png">
     <!-- Bootstrap core CSS -->
     <link href="/assets/admin/css/bootstrap.min.css" rel="stylesheet">
     <!-- page css files -->
@@ -17,6 +18,8 @@
     <link href="/assets/admin/css/jquery-ui.min.css" rel="stylesheet">
     <!-- Custom styles for this template -->
     <link href="/assets/admin/css/style.min.css" rel="stylesheet">
+    <!-- Custom page css cast -->
+    <link href="/assets/admin/css/cast/cast.css" rel="stylesheet">
     <!-- user-info css  -->
     <link href="{{ mix('/bundle/css/all.css') }}" rel="stylesheet">
     <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->

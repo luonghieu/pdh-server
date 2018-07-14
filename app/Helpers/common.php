@@ -27,3 +27,20 @@ if (!function_exists('getUserHeight')) {
         return $height;
     }
 }
+
+if (!function_exists('online')) {
+    function online($previousTime)
+    {
+        $now = Carbon\Carbon::now();
+        $previousTime = Carbon\Carbon::parse($previousTime);
+        $time = $now->diffInMinutes($previousTime);
+
+        if ($time <= 1) {
+            return 'オンライン中';
+        } elseif ($time > 1 && $time <= 1440) {
+            return '24時間以内';
+        }
+
+        return '2日以内';
+    }
+}
