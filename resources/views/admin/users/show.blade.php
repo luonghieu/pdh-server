@@ -9,12 +9,15 @@
         @include('admin.partials.notification')
         <div class="clearfix"></div>
         <div class="panel-body">
-          <div class="info-table col-lg-6">
+          <div class="col-lg-12">
             <div class="list-avatar">
               @foreach ($user->avatars as $avatar)
                 <img src="{{ $avatar->path }}" alt="avatar">
               @endforeach
             </div>
+          </div>
+          <div class="clearfix"></div>
+          <div class="info-table col-lg-6">
             <table class="table table-bordered">
               <!--  table-striped -->
               <tr>
@@ -23,10 +26,18 @@
               </tr>
               <tr>
                 <th>ニックネーム</th>
-                <td>{{$user->nickname}}</td>
+                <td>{{ $user->nickname }}</td>
               </tr>
               <tr>
-                <th>年齢層</th>
+                <th>性別</th>
+                <td>{{ App\Enums\UserGender::getDescription($user->gender) }}</td>
+              </tr>
+              <tr>
+                <th>生年月日</th>
+                <td>{{ Carbon\Carbon::parse($user->date_of_birth)->format('Y年m月d日') }}</td>
+              </tr>
+              <tr>
+                <th>年齢</th>
                 <td>{{ $user->age }}</td>
               </tr>
               <tr>
@@ -65,11 +76,19 @@
               </tr>
               <tr>
                 <th>基本情報：兄弟姉妹</th>
+                <td>{{ App\Enums\SiblingsType::getDescription($user->siblings_type) }}</td>
+              </tr>
+              <tr>
+                <th>基本情報：同居人</th>
                 <td>{{ App\Enums\CohabitantType::getDescription($user->cohabitant_type) }}</td>
               </tr>
               <tr>
                 <th>自己紹介</th>
                 <td>{{ $user->intro }}</td>
+              </tr>
+              <tr>
+                <th>ひとこと</th>
+                <td>{{ $user->description }}</td>
               </tr>
               <tr>
                 <th>会員区分</th>

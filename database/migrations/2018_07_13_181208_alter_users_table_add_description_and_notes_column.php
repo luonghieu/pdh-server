@@ -1,10 +1,10 @@
 <?php
 
-use Illuminate\Support\Facades\Schema;
-use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
 
-class AddLastActiveAtToUsersTable extends Migration
+class AlterUsersTableAddDescriptionAndNotesColumn extends Migration
 {
     /**
      * Run the migrations.
@@ -14,7 +14,8 @@ class AddLastActiveAtToUsersTable extends Migration
     public function up()
     {
         Schema::table('users', function (Blueprint $table) {
-            $table->timestamp('last_active_at')->nullable()->after('class_id');
+            $table->text('description')->after('intro')->nullable();
+            $table->text('note')->after('description')->nullable();
         });
     }
 
@@ -25,8 +26,6 @@ class AddLastActiveAtToUsersTable extends Migration
      */
     public function down()
     {
-        Schema::table('users', function (Blueprint $table) {
-            $table->dropColumn('last_active_at');
-        });
+        //
     }
 }

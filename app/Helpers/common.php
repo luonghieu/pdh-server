@@ -28,19 +28,14 @@ if (!function_exists('getUserHeight')) {
     }
 }
 
-if (!function_exists('online')) {
-    function online($previousTime)
+if (!function_exists('latestOnlineStatus')) {
+    function latestOnlineStatus($previousTime)
     {
+        Carbon\Carbon::setLocale('ja');
         $now = Carbon\Carbon::now();
         $previousTime = Carbon\Carbon::parse($previousTime);
-        $time = $now->diffInMinutes($previousTime);
+        $divTime = $now->diffForHumans($previousTime);
 
-        if ($time <= 1) {
-            return 'オンライン中';
-        } elseif ($time > 1 && $time <= 1440) {
-            return '24時間以内';
-        }
-
-        return '2日以内';
+        return $divTime;
     }
 }

@@ -36,7 +36,7 @@ class CastController extends Controller
             });
         }
 
-        $casts = $casts->paginate($request->limit ?: 10);
+        $casts = $casts->orderBy('created_at', 'DESC')->paginate($request->limit ?: 10);
 
         return view('admin.casts.index', compact('casts'));
     }

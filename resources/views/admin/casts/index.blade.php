@@ -1,6 +1,6 @@
 @extends('layouts.admin')
 @section('admin.content')
-<div class="col-md-10 col-sm-11 main ">
+<div class="col-md-10 col-sm-11 main">
   <div class="row">
     <div class="col-lg-12">
       <div class="panel panel-default">
@@ -12,26 +12,28 @@
               <input type="text" class="form-control date-picker input-search" name="from_date" id="date01" data-date-format="yyyy/mm/dd" value="{{ request()->from_date }}" placeholder="yyyy/mm/dd" />
               <label for="">To date: </label>
               <input type="text" class="form-control date-picker" name="to_date" id="date01" data-date-format="yyyy/mm/dd" value="{{ request()->to_date }}" placeholder="yyyy/mm/dd"/>
-              <button type="submit" class="fa fa-search btn-search"></button>
+              <button type="submit" class="fa fa-search btn btn-search"></button>
             </form>
           </div>
         </div>
         <div class="clearfix"></div>
         <div class="panel-body">
-          <form class="navbar-form navbar-left form-search" action="{{ route('admin.casts.index') }}" id="limit-page" method="GET">
-            <div class="form-group">
-              <label class="col-md-1 limit-page">表示件数：</label>
-              <div class="col-md-1">
-                <select id="select-limit" name="limit" class="form-control">
-                  @foreach ([10, 20, 50, 100] as $limit)
-                    <option value="{{ $limit }}" {{ request()->limit == $limit ? 'selected' : '' }}>{{ $limit }}</option>
-                  @endforeach
-                </select>
+          <div class="col-md-8">
+            <form class="navbar-form navbar-left form-search" action="{{ route('admin.casts.index') }}" id="limit-page" method="GET">
+              <div class="form-group">
+                <label class="col-md-1 limit-page">表示件数：</label>
+                <div class="col-md-1">
+                  <select id="select-limit" name="limit" class="form-control">
+                    @foreach ([10, 20, 50, 100] as $limit)
+                      <option value="{{ $limit }}" {{ request()->limit == $limit ? 'selected' : '' }}>{{ $limit }}</option>
+                    @endforeach
+                  </select>
+                </div>
               </div>
-            </div>
-          </form>
-          <div>
-            <button type="submit" class="btn btn-default">キャスト新規登録</button>
+            </form>
+          </div>
+          <div class="col-md-4">
+            <button type="submit" class="btn btn-default navbar-right mt-1">キャスト新規登録</button>
           </div>
         </div>
         <div class="panel-body">
@@ -55,17 +57,17 @@
             <tbody>
               @foreach ($casts as $key => $cast)
               <tr>
-                <td><input type="checkbox" name="" /></td>
+                <td><input type="checkbox" name="" value="" /></td>
                 <td>{{ $casts->firstItem() + $key }}</td>
-                <td><a href="">{{ $cast->id }}</a></td>
+                <td><a href="{{ route('admin.users.show', ['user' => $cast->id]) }}">{{ $cast->id }}</a></td>
                 <td>{{ $cast->nickname }}</td>
                 <td>{{ $cast->age }}</td>
                 <td>{{ App\Enums\UserType::getDescription($cast->type) }}</td>
                 <td>{{ App\Enums\Status::getDescription($cast->status) }}</td>
-                <td>{{ online($cast->last_active_at) }}</td>
+                <td>{{ latestOnlineStatus($cast->last_active_at) }}</td>
                 <td>{{ App\Enums\WorkingType::getDescription($cast->working_today) }}</td>
                 <td>{{ Carbon\Carbon::parse($cast->created_at)->format('Y/m/d H:i') }}</td>
-                <td><a href="#"><button>詳細</button></a></td>
+                <td><a href="{{ route('admin.users.show', ['user' => $cast->id]) }}"><button class="btn btn-default">詳細</button></a></td>
               </tr>
               @endforeach
             </tbody>

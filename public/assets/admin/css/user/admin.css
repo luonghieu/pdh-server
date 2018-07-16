@@ -151,14 +151,6 @@ td {
   margin: 1%;
 }
 
-.list-avatar img:first-child {
-  width: 200px;
-}
-
-.list-avatar img:not(:first-child) {
-  margin-top: 45px;
-}
-
 .title-avatar .images {
   margin-top: 30px;
 }
@@ -938,4 +930,20 @@ tbody td {
     margin-top: 7%;
     margin-left: 40%;
   }
+}
+
+.css-init-checkbox .icheckbox_square-blue {
+  float: none;
+  margin: 0 auto;
+  width: 15px;
+  height: 15px;
+  border: 1px solid #a0aeb1ad;
+}
+
+.css-init-checkbox .icheckbox_square-blue.checked {
+  background-position: -52px -4px;
+}
+
+.mt-1 {
+  margin-top: 0.5rem;
 }

@@ -27,4 +27,8 @@ Route::group(['prefix' => 'v1'], function () {
     Route::group(['middleware' => ['auth:api'], 'prefix' => 'guests', 'as' => 'guests.'], function () {
         Route::get('/', ['as' => 'index', 'uses' => 'GuestController@index']);
     });
+
+    Route::group(['middleware' => ['auth:api']], function () {
+        Route::post('favorites/{id}', ['as' => 'favorite', 'uses' => 'FavoriteController@favorite']);
+    });
 });
