@@ -63,7 +63,7 @@ class CastResource extends Resource
             'avatars' => AvatarResource::collection($this->avatars),
             'working_today' => $this->working_today,
             'class_id' => $this->class_id,
-            'class' => $this->class_id ? $this->cast_class->name : '',
+            'class' => $this->class_id ? CastClass::find($this->class_id)->name : '',
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
         ]);
