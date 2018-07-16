@@ -20,24 +20,17 @@ class UserController extends ApiController
     public function show(Request $request)
     {
         try {
-
             $userId = $request->id;
-
             $user = $this->repository->find($userId);
-
             if (UserType::CAST == $user->type) {
-
                 return $this->respondWithData(new CastResource($user));
             }
-
             return $this->respondWithData(new GuestResource($user));
-
         } catch (\Exception $e) {
-
-            report($e);
-
-            return $this->respondErrorMessage(trans('User not found'), 404);
+            if ($e->getCode() == 404) {
+                return $this->respondErrorMessage(trans('User not found'), $e->getCode());
+            }
+            return $this->respondServerError();
         }
-
     }
 }
