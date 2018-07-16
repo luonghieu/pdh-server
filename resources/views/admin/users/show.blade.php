@@ -34,7 +34,7 @@
               </tr>
               <tr>
                 <th>生年月日</th>
-                <td>{{ Carbon\Carbon::parse($user->date_of_birth)->format('Y年m月d日') }}</td>
+                <td>{{ ($user->date_of_birth) ? Carbon\Carbon::parse($user->date_of_birth)->format('Y年m月d日') : "" }}</td>
               </tr>
               <tr>
                 <th>年齢</th>
@@ -84,11 +84,11 @@
               </tr>
               <tr>
                 <th>自己紹介</th>
-                <td>{{ $user->intro }}</td>
+                <td>{{ $user->description }}</td>
               </tr>
               <tr>
                 <th>ひとこと</th>
-                <td>{{ $user->description }}</td>
+                <td>{{ $user->intro}}</td>
               </tr>
               <tr>
                 <th>会員区分</th>

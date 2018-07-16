@@ -7,6 +7,7 @@ $faker = \Faker\Factory::create();
 
 $factory->define(App\User::class, function (Faker $faker) {
     $jobs = Job::all();
+    $lastActiveAt = ['2018-05-9 00:00:00', '2018-06-10 00:00:00', '2018-07-12 00:00:00'];
 
     return [
         'email' => $faker->unique()->email,
@@ -32,6 +33,7 @@ $factory->define(App\User::class, function (Faker $faker) {
         'status' => rand(0, 1),
         'working_today' => rand(0, 1),
         'class_id' => rand(1, 3),
+        'last_active_at' => $faker->randomElement($lastActiveAt),
         'created_at' => \Carbon\Carbon::now(),
         'updated_at' => \Carbon\Carbon::now(),
     ];

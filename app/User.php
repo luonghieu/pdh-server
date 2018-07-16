@@ -39,6 +39,24 @@ class User extends Authenticatable implements JWTSubject
         }
     }
 
+    public function getPointAttribute($value)
+    {
+        if (!$value) {
+            return 0;
+        }
+
+        return $value;
+    }
+
+    public function getCostAttribute($value)
+    {
+        if (!$value) {
+            return 0;
+        }
+
+        return $value;
+    }
+
     public function getCreatedAtAttribute($value)
     {
         return Carbon::parse($value)->format('Y-m-d H:i');
