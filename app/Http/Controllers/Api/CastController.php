@@ -49,7 +49,7 @@ class CastController extends ApiController
             $max = $request->max_point;
             $casts->whereBetween('cost', [$min, $max]);
         }
-        $casts = $casts->latest()->paginate($request->per_page)->appends($request->query());
+        $casts = $casts->latest()->active()->paginate($request->per_page)->appends($request->query());
 
         return $this->respondWithData(CastResource::collection($casts));
     }

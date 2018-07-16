@@ -9,4 +9,6 @@ return [
     'favorite_success' => 'Favorited successfully',
     'unfavorite_success' => 'Unfavorite successfully',
     'user_not_found' => 'User not found',
+    'cast_not_found' => 'Cast not found',
+    'login_forbidden' => 'Login Forbidden',
 ];
