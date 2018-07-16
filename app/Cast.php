@@ -18,7 +18,7 @@ class Cast extends User
         });
     }
 
-    public function cast_class() {
+    public function castClass() {
         return $this->belongsTo(CastClass::class, 'class_id', 'id');
     }
 }

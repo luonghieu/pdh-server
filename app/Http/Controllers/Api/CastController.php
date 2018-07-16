@@ -47,7 +47,7 @@ class CastController extends ApiController
         if (isset($request->min_point) && isset($request->max_point)) {
             $min = $request->min_point;
             $max = $request->max_point;
-            $casts->whereHas('cast_class', function($query) use ($min, $max){
+            $casts->whereHas('castClass', function($query) use ($min, $max){
                 $query->whereBetween('cost', [$min, $max]);
             });
         }
