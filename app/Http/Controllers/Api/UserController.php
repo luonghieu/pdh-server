@@ -28,7 +28,7 @@ class UserController extends ApiController
             return $this->respondWithData(new GuestResource($user));
         } catch (\Exception $e) {
             if ($e->getCode() == 404) {
-                return $this->respondErrorMessage(trans('User not found'), $e->getCode());
+                return $this->respondErrorMessage(trans('messages.user_not_found'), $e->getCode());
             }
             return $this->respondServerError();
         }
