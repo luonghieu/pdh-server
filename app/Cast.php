@@ -17,4 +17,8 @@ class Cast extends User
             $query->where('type', UserType::CAST);
         });
     }
+
+    public function cast_class() {
+        return $this->belongsTo(CastClass::class, 'class_id', 'id');
+    }
 }

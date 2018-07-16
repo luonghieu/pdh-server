@@ -39,7 +39,7 @@ class CreateUsersTable extends Migration
             $table->integer('cost')->nullable();
             $table->integer('point')->nullable();
             $table->boolean('working_today')->default(false);
-            $table->tinyInteger('class_id')->nullable();
+            $table->unsignedInteger('class_id')->nullable();
             $table->rememberToken();
             $table->timestamps();
         });
