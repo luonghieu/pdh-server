@@ -18,30 +18,24 @@
         </div>
         <div class="clearfix"></div>
         <div class="panel-body">
-          <div class="col-md-8">
-            <form class="navbar-form navbar-left form-search" action="{{ route('admin.casts.index') }}" id="limit-page" method="GET">
-              <div class="form-group">
-                <label class="col-md-1 limit-page">表示件数：</label>
-                <div class="col-md-1">
-                  <select id="select-limit" name="limit" class="form-control">
-                    @foreach ([10, 20, 50, 100] as $limit)
-                      <option value="{{ $limit }}" {{ request()->limit == $limit ? 'selected' : '' }}>{{ $limit }}</option>
-                    @endforeach
-                  </select>
-                </div>
+          <form class="navbar-form navbar-left form-search" action="{{ route('admin.casts.index') }}" id="limit-page" method="GET">
+            <div class="form-group">
+              <label class="col-md-1 limit-page">表示件数：</label>
+              <div class="col-md-1">
+                <select id="select-limit" name="limit" class="form-control">
+                  @foreach ([10, 20, 50, 100] as $limit)
+                    <option value="{{ $limit }}" {{ request()->limit == $limit ? 'selected' : '' }}>{{ $limit }}</option>
+                  @endforeach
+                </select>
               </div>
-            </form>
-          </div>
-          <div class="col-md-4">
-            <button type="submit" class="btn btn-default navbar-right mt-1">キャスト新規登録</button>
-          </div>
+            </div>
+          </form>
         </div>
         <div class="panel-body">
           @include('admin.partials.notification')
-          <table class="table table-striped table-bordered bootstrap-datatable css-init-checkbox">
+          <table class="table table-striped table-bordered bootstrap-datatable">
             <thead>
               <tr>
-                <th></th>
                 <th>No.</th>
                 <th>ユーザーID</th>
                 <th>ニックネーム</th>
@@ -57,12 +51,11 @@
             <tbody>
               @if (empty($casts->count()))
                 <tr>
-                  <td colspan="11">{{ trans('messages.cast_not_found') }}</td>
+                  <td colspan="10">{{ trans('messages.cast_not_found') }}</td>
                 </tr>
               @else
                 @foreach ($casts as $key => $cast)
                 <tr>
-                  <td><input type="checkbox" name="" value="" /></td>
                   <td>{{ $casts->firstItem() + $key }}</td>
                   <td><a href="{{ route('admin.users.show', ['user' => $cast->id]) }}">{{ $cast->id }}</a></td>
                   <td>{{ $cast->nickname }}</td>
