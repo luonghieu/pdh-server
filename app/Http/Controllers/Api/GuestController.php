@@ -19,7 +19,7 @@ class GuestController extends ApiController
             });
         }
 
-        $casts = $guests->latest()->paginate($request->per_page)->appends($request->query());
+        $casts = $guests->latest()->active()->paginate($request->per_page)->appends($request->query());
 
         return $this->respondWithData(GuestResource::collection($casts));
     }
