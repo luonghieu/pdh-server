@@ -2,16 +2,16 @@
 
 namespace App\Http\Resources;
 
-use App\Job;
-use App\Salary;
 use App\BodyType;
 use App\CastClass;
-use App\Enums\SmokingType;
-use App\Enums\SiblingsType;
 use App\Enums\CohabitantType;
 use App\Enums\DrinkVolumeType;
+use App\Enums\SiblingsType;
+use App\Enums\SmokingType;
 use App\Http\Resources\AvatarResource;
+use App\Job;
 use App\Repositories\PrefectureRepository;
+use App\Salary;
 use App\Traits\ResourceResponse;
 use Illuminate\Http\Resources\Json\Resource;
 
@@ -30,9 +30,11 @@ class CastResource extends Resource
         return $this->filterNull([
             'id' => $this->id,
             'facebook_id' => $this->facebook_id,
+            'line_id' => $this->line_id,
             'email' => $this->email,
             'nickname' => $this->nickname,
             'fullname' => $this->fullname,
+            'phone' => $this->phone,
             'gender' => $this->gender,
             'date_of_birth' => $this->date_of_birth,
             'age' => $this->age,

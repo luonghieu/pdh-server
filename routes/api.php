@@ -17,6 +17,7 @@ Route::group(['prefix' => 'v1'], function () {
 
         Route::group(['middleware' => ['auth:api']], function () {
             Route::get('me', ['as' => 'me', 'uses' => 'AuthController@me']);
+            Route::post('update', ['as' => 'update', 'uses' => 'AuthController@update']);
         });
     });
 
