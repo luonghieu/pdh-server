@@ -55,21 +55,27 @@
               </tr>
             </thead>
             <tbody>
-              @foreach ($casts as $key => $cast)
-              <tr>
-                <td><input type="checkbox" name="" value="" /></td>
-                <td>{{ $casts->firstItem() + $key }}</td>
-                <td><a href="{{ route('admin.users.show', ['user' => $cast->id]) }}">{{ $cast->id }}</a></td>
-                <td>{{ $cast->nickname }}</td>
-                <td>{{ $cast->age }}</td>
-                <td>{{ App\Enums\UserType::getDescription($cast->type) }}</td>
-                <td>{{ App\Enums\Status::getDescription($cast->status) }}</td>
-                <td>{{ latestOnlineStatus($cast->last_active_at) }}</td>
-                <td>{{ App\Enums\WorkingType::getDescription($cast->working_today) }}</td>
-                <td>{{ Carbon\Carbon::parse($cast->created_at)->format('Y/m/d H:i') }}</td>
-                <td><a href="{{ route('admin.users.show', ['user' => $cast->id]) }}"><button class="btn btn-default">詳細</button></a></td>
-              </tr>
-              @endforeach
+              @if (empty($casts->count()))
+                <tr>
+                  <td colspan="11">{{ trans('messages.cast_not_found') }}</td>
+                </tr>
+              @else
+                @foreach ($casts as $key => $cast)
+                <tr>
+                  <td><input type="checkbox" name="" value="" /></td>
+                  <td>{{ $casts->firstItem() + $key }}</td>
+                  <td><a href="{{ route('admin.users.show', ['user' => $cast->id]) }}">{{ $cast->id }}</a></td>
+                  <td>{{ $cast->nickname }}</td>
+                  <td>{{ $cast->age }}</td>
+                  <td>{{ App\Enums\UserType::getDescription($cast->type) }}</td>
+                  <td>{{ App\Enums\Status::getDescription($cast->status) }}</td>
+                  <td>{{ latestOnlineStatus($cast->last_active_at) }}</td>
+                  <td>{{ App\Enums\WorkingType::getDescription($cast->working_today) }}</td>
+                  <td>{{ Carbon\Carbon::parse($cast->created_at)->format('Y/m/d H:i') }}</td>
+                  <td><a href="{{ route('admin.users.show', ['user' => $cast->id]) }}"><button class="btn btn-default">詳細</button></a></td>
+                </tr>
+                @endforeach
+              @endif
             </tbody>
           </table>
         </div>
