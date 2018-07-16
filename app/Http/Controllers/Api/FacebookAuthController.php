@@ -36,7 +36,7 @@ class FacebookAuthController extends ApiController
 
             $user = $this->findOrCreate($fbResponse->user);
 
-            if (!$user) {
+            if (!$user->status) {
                 return $this->respondErrorMessage(trans('messages.login_forbidden'), 403);
             }
 
@@ -77,10 +77,6 @@ class FacebookAuthController extends ApiController
             $user = User::find($user->id);
             // Return user with full attributes.
             return $user;
-        }
-
-        if (!$user->status) {
-            return false;
         }
 
         return $user;
