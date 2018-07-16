@@ -27,3 +27,15 @@ if (!function_exists('getUserHeight')) {
         return $height;
     }
 }
+
+if (!function_exists('latestOnlineStatus')) {
+    function latestOnlineStatus($previousTime)
+    {
+        Carbon\Carbon::setLocale('ja');
+        $now = Carbon\Carbon::now();
+        $previousTime = Carbon\Carbon::parse($previousTime);
+        $divTime = $now->diffForHumans($previousTime);
+
+        return $divTime;
+    }
+}

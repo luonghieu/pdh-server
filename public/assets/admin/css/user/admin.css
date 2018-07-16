@@ -931,3 +931,19 @@ tbody td {
     margin-left: 40%;
   }
 }
+
+.css-init-checkbox .icheckbox_square-blue {
+  float: none;
+  margin: 0 auto;
+  width: 15px;
+  height: 15px;
+  border: 1px solid #a0aeb1ad;
+}
+
+.css-init-checkbox .icheckbox_square-blue.checked {
+  background-position: -52px -4px;
+}
+
+.mt-1 {
+  margin-top: 0.5rem;
+}
