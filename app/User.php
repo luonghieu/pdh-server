@@ -99,4 +99,9 @@ class User extends Authenticatable implements JWTSubject
     {
         return $this->belongsTo(BodyType::class);
     }
+
+    public function scopeActive($query)
+    {
+        return $query->where('status', true);
+    }
 }

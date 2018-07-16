@@ -36,6 +36,10 @@ class FacebookAuthController extends ApiController
 
             $user = $this->findOrCreate($fbResponse->user);
 
+            if (!$user) {
+                return $this->respondErrorMessage(trans('messages.login_forbidden'), 403);
+            }
+
             $token = JWTAuth::fromUser($user);
 
             return $this->respondWithData($this->respondWithToken($token, $user)->getData());
@@ -53,7 +57,6 @@ class FacebookAuthController extends ApiController
         $user = User::where('facebook_id', $fbResponse['id'])->first();
 
         if (!$user) {
-
             $data = [
                 'email' => (isset($fbResponse['email'])) ? $fbResponse['email'] : '',
                 'fullname' => $fbResponse['name'],
@@ -74,6 +77,10 @@ class FacebookAuthController extends ApiController
             $user = User::find($user->id);
             // Return user with full attributes.
             return $user;
+        }
+
+        if (!$user->status) {
+            return false;
         }
 
         return $user;
