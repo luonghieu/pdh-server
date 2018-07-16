@@ -10,5 +10,5 @@ return [
     'unfavorite_success' => 'イイネ解除',
     'user_not_found' => 'ユーザーが見つかれません',
     'cast_not_found' => 'キャストが見つかれません',
-    'login_forbidden' => 'Login Forbidden',
+    'login_forbidden' => 'アカウントが凍結されています',
 ];
