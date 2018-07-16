@@ -12,6 +12,8 @@ class CastController extends ApiController
     {
         $rules = [
             'per_page' => 'numeric|min:1',
+            'min_point' => 'numeric',
+            'max_point' => 'numeric|required_with:min_point'
         ];
 
         $validator = validator($request->all(), $rules);
@@ -26,7 +28,6 @@ class CastController extends ApiController
             'prefecture_id',
             'class_id',
             'height',
-            'salary_id',
             'body_type_id',
         ]);
 
@@ -35,7 +36,7 @@ class CastController extends ApiController
 
         foreach ($params as $key => $value) {
             if ($key == 'favorited') {
-                $casts->whereHas('favorites', function($query) use ($user) {
+                $casts->whereHas('favorites', function ($query) use ($user) {
                     $query->where('user_id', $user->id);
                 });
             } else {
@@ -43,6 +44,11 @@ class CastController extends ApiController
             }
         }
 
+        if (isset($request->min_point) && isset($request->max_point)) {
+            $min = $request->min_point;
+            $max = $request->max_point;
+            $casts->whereBetween('cost', [$min, $max]);
+        }
         $casts = $casts->latest()->paginate($request->per_page)->appends($request->query());
 
         return $this->respondWithData(CastResource::collection($casts));

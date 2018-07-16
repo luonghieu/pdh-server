@@ -67,7 +67,6 @@ class CastResource extends Resource
             'class' => $this->class_id ? CastClass::find($this->class_id)->name : '',
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
-
         ]);
     }
 }
