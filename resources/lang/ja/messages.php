@@ -16,4 +16,5 @@ return [
     'login_forbidden' => 'アカウントが凍結されています',
     'avatar_not_found' => 'プロフィール写真が存在しません',
     'set_avatar_default_success' => 'プロフィール写真をインストールしました',
+    'delete_avatar_success' => '写真削除',
 ];
