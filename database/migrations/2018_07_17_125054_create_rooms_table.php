@@ -1,5 +1,6 @@
 <?php
 
+use App\Enums\RoomType;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
@@ -13,20 +14,21 @@ class CreateRoomsTable extends Migration
      */
     public function up()
     {
+        Schema::dropIfExists('messages');
+        Schema::dropIfExists('rooms');
+
         Schema::create('rooms', function (Blueprint $table) {
             $table->increments('id');
-            $table->unsignedInteger('user_id');
-            $table->unsignedInteger('order_id');
-            $table->boolean('active')->default(true);
+            $table->unsignedInteger('order_id')->nullable();
+            $table->tinyInteger('type')->default(RoomType::SYSTEM);
+            $table->boolean('is_active')->default(true);
             $table->timestamps();
+        });
 
-            $table->foreign('user_id')
-                ->references('id')
-                ->on('users');
-
-            $table->foreign('order_id')
-                ->references('id')
-                ->on('orders');
+        Schema::create('room_user', function (Blueprint $table) {
+            $table->increments('id');
+            $table->unsignedInteger('room_id');
+            $table->unsignedInteger('user_id');
         });
     }
 
