@@ -11,4 +11,6 @@ return [
     'user_not_found' => 'User not found',
     'cast_not_found' => 'Cast not found',
     'login_forbidden' => 'Login Forbidden',
+    'block_success' => 'Block successfully',
+    'unblock_success' => 'Unblock successfully',
 ];
