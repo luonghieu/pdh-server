@@ -5,6 +5,8 @@ namespace App\Http\Controllers\Admin\Cast;
 use App\BankAccount;
 use App\Cast;
 use App\CastClass;
+use App\Enums\MessageType;
+use App\Enums\RoomType;
 use App\Enums\UserType;
 use App\Http\Controllers\Controller;
 use App\User;
@@ -158,13 +160,33 @@ class CastController extends Controller
             'type' => UserType::CAST,
         ];
 
-        User::where('id', $user->id)->update($data);
+        $user->update($data);
         BankAccount::create([
             'user_id' => $user->id,
             'bank_name' => $request->bank_name,
             'branch_name' => $request->branch_name,
             'number' => $request->number,
         ]);
+
+        $room = $user->rooms()
+            ->where('rooms.type', RoomType::SYSTEM)
+            ->where('rooms.is_active', true)->first();
+
+        if ($room) {
+            $message = '"\"' . '\おめでとうございます！マッチングが確定しました♪ //'
+                .'- ご予約内容 -'
+                .'場所：渋谷'
+                .'合流予定時間：22:00～'
+                .'ゲストの方はキャストに来て欲しい場所の詳細をお伝えください。'
+                .'尚、ご不明点がある場合は運営までお問い合わせください。'
+                .'それでは素敵な時間をお楽しみください♪';
+
+            $room->messages()->create([
+                'user_id' => 1,
+                'type' => MessageType::SYSTEM,
+                'message' => $message
+            ]);
+        }
 
         return redirect()->route('admin.casts.index');
     }
