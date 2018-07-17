@@ -80,6 +80,10 @@ class User extends Authenticatable implements JWTSubject
 
     public function getIsFavoritedAttribute()
     {
+        if (!Auth::check()) {
+            return 0;
+        }
+
         $user = Auth::user();
 
         return $this->favoriters->contains($user->id) ? 1 : 0;
@@ -87,6 +91,10 @@ class User extends Authenticatable implements JWTSubject
 
     public function getIsBlockedAttribute()
     {
+        if (!Auth::check()) {
+            return 0;
+        }
+
         $user = Auth::user();
 
         return $this->blockers->contains($user->id) ? 1 : 0;
