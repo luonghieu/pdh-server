@@ -90,4 +90,53 @@ class AvatarController extends ApiController
 
         return $this->respondWithNoData(trans('messages.delete_avatar_success'));
     }
+
+    public function update(Request $request, $id)
+    {
+        $user = $this->guard()->user();
+
+        $avatar = $user->avatars->find($id);
+        if (!$avatar) {
+            return $this->respondErrorMessage(trans('messages.avatar_not_found'), 404);
+        }
+
+        $rules = [
+            'image' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:5120',
+        ];
+
+        $validator = validator(request()->all(), $rules);
+
+        if ($validator->fails()) {
+            return $this->respondWithValidationError($validator->errors()->messages());
+        }
+
+        if (request()->has('image')) {
+            $nameImageOld = $user->avatars->find($id);
+            if ($nameImageOld) {
+                Storage::delete($nameImageOld->getOriginal()['path']);
+            };
+
+            $image = request()->file('image');
+            $imageName = Uuid::generate()->string . '.' . strtolower($image->getClientOriginalExtension());
+            $fileUploaded = Storage::put($imageName, file_get_contents($image), 'public');
+
+            if ($fileUploaded) {
+                $input['path'] = $imageName;
+            }
+        }
+
+        try {
+            $avatarUpdate = $avatar->update($input);
+
+            if ($avatarUpdate) {
+                $avatar = $user->avatars->find($id);
+                MakeAvatarThumbnail::dispatch($avatar);
+            }
+        } catch (\Exception $e) {
+            LogService::writeErrorLog($e);
+            return $this->respondServerError();
+        }
+
+        return $this->respondWithNoData(trans('messages.update_avatar_success'));
+    }
 }

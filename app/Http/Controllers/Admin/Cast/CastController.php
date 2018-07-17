@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers\Admin\Cast;
 
+use App\BankAccount;
 use App\Cast;
 use App\CastClass;
+use App\Enums\UserType;
 use App\Http\Controllers\Controller;
 use App\User;
 use Carbon\Carbon;
@@ -16,18 +18,20 @@ class CastController extends Controller
     public function index(Request $request)
     {
         $keyword = $request->search;
-        $fromDate = Carbon::parse($request->from_date)->startOfDay();
-        $toDate = Carbon::parse($request->to_date)->endOfDay();
 
         $casts = Cast::query();
 
-        if ($request->has('from_date')) {
+        if ($request->has('from_date') && !empty($request->from_date)) {
+            $fromDate = Carbon::parse($request->from_date)->startOfDay();
+            $toDate = Carbon::parse($request->to_date)->endOfDay();
             $casts->where(function ($query) use ($fromDate, $toDate) {
                 $query->where('created_at', '>=', $fromDate);
             });
         }
 
-        if ($request->has('to_date')) {
+        if ($request->has('to_date') && !empty($request->to_date)) {
+            $fromDate = Carbon::parse($request->from_date)->startOfDay();
+            $toDate = Carbon::parse($request->to_date)->endOfDay();
             $casts->where(function ($query) use ($fromDate, $toDate) {
                 $query->where('created_at', '<=', $toDate);
             });
@@ -61,12 +65,8 @@ class CastController extends Controller
                 'last_name_kana' => 'required',
                 'first_name_kana' => 'required',
                 'nick_name' => 'required',
-                'phone' => 'required',
+                'phone' => 'required|regex:/^[0-9]+$/',
                 'line' => 'required',
-                'bank_name' => 'required',
-                'branch_name' => 'required',
-                'number' => 'required',
-                'note' => 'required',
                 'front_side' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:5120',
                 'back_side' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:5120',
             ]
@@ -78,6 +78,7 @@ class CastController extends Controller
         if (!checkdate($month, $date, $year)) {
             return false;
         }
+        $age = Carbon::createFromDate($year, $month, $date)->age;
 
         $data = [
             'lastname' => $request->last_name,
@@ -87,12 +88,20 @@ class CastController extends Controller
             'nickname' => $request->nick_name,
             'phone' => $request->phone,
             'line_id' => $request->line,
-            'bank_name' => $request->bank_name,
-            'branch_name' => $request->branch_name,
-            'number' => $request->number,
             'note' => $request->note,
-            'date_of_birth' => $year . '-' . $month . '-' . $date,
+            'gender' => $request->gender,
+            'class_id' => $request->cast_class,
+            'year' => $year,
+            'month' => $month,
+            'date' => $date,
+            'age' => $age,
         ];
+
+        if ($request->bank_name && $request->number && $request->branch_name) {
+            $data['branch_name'] = $request->branch_name;
+            $data['bank_name'] = $request->bank_name;
+            $data['number'] = $request->number;
+        }
 
         $frontImage = request()->file('front_side');
         $backImage = request()->file('back_side');
@@ -120,5 +129,47 @@ class CastController extends Controller
 
             return redirect()->route('admin.casts.register', compact('user'));
         }
+
+        return view('admin.casts.confirm', compact('data', 'user'));
+    }
+
+    public function saveCast(Request $request, User $user)
+    {
+        $castClass = CastClass::where('id', $request->class_id)->first();
+
+        $year = $request->year;
+        $month = $request->month;
+        $date = $request->date;
+
+        $data = [
+            'lastname' => $request->lastname,
+            'firstname' => $request->firstname,
+            'lastname_kana' => $request->lastname_kana,
+            'firstname_kana' => $request->firstname_kana,
+            'nickname' => $request->nickname,
+            'phone' => $request->phone,
+            'line_id' => $request->line_id,
+            'note' => $request->note,
+            'gender' => $request->gender,
+            'class_id' => $request->class_id,
+            'front_id_image' => $request->front_id_image,
+            'back_id_image' => $request->back_id_image,
+            'cost' => $castClass->cost,
+            'date_of_birth' => $year . '-' . $month . '-' . $date,
+            'type' => UserType::CAST,
+        ];
+
+        User::where('id', $user->id)->update($data);
+
+        if (isset($request->bank_name)) {
+            BankAccount::create([
+                'user_id' => $user->id,
+                'bank_name' => $request->bank_name,
+                'branch_name' => $request->branch_name,
+                'number' => $request->number,
+            ]);
+        }
+
+        return redirect()->route('admin.casts.index');
     }
 }
