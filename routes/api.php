@@ -38,4 +38,8 @@ Route::group(['prefix' => 'v1'], function () {
         Route::get('/{id}', ['as' => 'show', 'uses' => 'UserController@show']);
     });
 
+    Route::group(['middleware' => ['auth:api'], 'prefix' => 'avatars', 'as' => 'avatars.'], function () {
+        Route::patch('/{id}', ['as' => 'set_avatar_default', 'uses' => 'AvatarController@setAvatarDefault']);
+    });
+
 });

@@ -10,10 +10,21 @@ class GuestController extends ApiController
 {
     public function index(Request $request)
     {
+        $rules = [
+            'per_page' => 'numeric|min:1',
+            'favorited' => 'boolean'
+        ];
+
+        $validator = validator($request->all(), $rules);
+
+        if ($validator->fails()) {
+            return $this->respondWithValidationError($validator->errors()->messages());
+        }
+
         $guests = Guest::query();
         $user = $this->guard()->user();
 
-        if ($request->filter == 'favorited') {
+        if ($request->favorited) {
             $guests->whereHas('favorites', function($query) use ($user) {
                 $query->where('user_id', $user->id);
             });

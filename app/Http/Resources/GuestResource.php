@@ -61,6 +61,8 @@ class GuestResource extends Resource
             'type' => $this->type,
             'status' => $this->status,
             'point' => $this->point,
+            'is_favorited' => $this->is_favorited,
+            'is_blocked' => $this->is_blocked,
             'avatars' => AvatarResource::collection($this->avatars),
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,

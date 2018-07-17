@@ -9,8 +9,11 @@ return [
     'favorite_success' => 'イイネ済',
     'unfavorite_success' => 'イイネ解除',
     'user_not_found' => 'ユーザーが見つかれません',
+    'date_not_valid' => '日付の形式が有効ではありません',
     'cast_not_found' => 'キャストが見つかれません',
     'block_success' => 'ブロック済',
     'unblock_success' => 'ブロック解除',
     'login_forbidden' => 'アカウントが凍結されています',
+    'avatar_not_found' => 'プロフィール写真が存在しません',
+    'set_avatar_default_success' => 'プロフィール写真をインストールしました',
 ];
