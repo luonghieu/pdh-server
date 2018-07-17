@@ -17,19 +17,19 @@ class CastController extends Controller
 
         $casts = Cast::query();
 
-        if (isset($request->from_date)) {
+        if ($request->has('from_date')) {
             $casts->where(function ($query) use ($fromDate, $toDate) {
                 $query->where('created_at', '>=', $fromDate);
             });
         }
 
-        if (isset($request->to_date)) {
+        if ($request->has('to_date')) {
             $casts->where(function ($query) use ($fromDate, $toDate) {
                 $query->where('created_at', '<=', $toDate);
             });
         }
 
-        if (isset($keyword)) {
+        if ($request->has('search')) {
             $casts->where(function ($query) use ($keyword) {
                 $query->where('id', "$keyword")
                     ->orWhere('nickname', 'like', "%$keyword%");
