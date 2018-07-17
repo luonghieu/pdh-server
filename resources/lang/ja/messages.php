@@ -10,5 +10,7 @@ return [
     'unfavorite_success' => 'イイネ解除',
     'user_not_found' => 'ユーザーが見つかれません',
     'cast_not_found' => 'キャストが見つかれません',
+    'block_success' => 'ブロック済',
+    'unblock_success' => 'ブロック解除',
     'login_forbidden' => 'アカウントが凍結されています',
 ];
