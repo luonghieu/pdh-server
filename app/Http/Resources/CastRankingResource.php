@@ -16,8 +16,10 @@ class CastRankingResource extends Resource
     {
         return [
             'id' => $this->id,
-            'user_id' => $this->user_id,
-            'point' => $this->point,
+            'nickname' => $this->nickname,
+            'fullname' => $this->fullname,
+            'date_of_birth ' => $this->date_of_birth,
+            'avatars' => $this->avatars
         ];
     }
 }
