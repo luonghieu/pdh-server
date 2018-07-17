@@ -2,10 +2,14 @@
 
 namespace App\Http\Controllers\Admin\Cast;
 
-use App\Http\Controllers\Controller;
 use App\Cast;
+use App\CastClass;
+use App\Http\Controllers\Controller;
+use App\User;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
+use Webpatser\Uuid\Uuid;
 
 class CastController extends Controller
 {
@@ -39,5 +43,82 @@ class CastController extends Controller
         $casts = $casts->orderBy('created_at', 'DESC')->paginate($request->limit ?: 10);
 
         return view('admin.casts.index', compact('casts'));
+    }
+
+    public function registerCast(User $user)
+    {
+        $castClass = CastClass::all();
+
+        return view('admin.casts.register', compact('user', 'castClass'));
+    }
+
+    public function validRegister($request)
+    {
+        $rules = $this->validate($request,
+            [
+                'last_name' => 'required',
+                'first_name' => 'required',
+                'last_name_kana' => 'required',
+                'first_name_kana' => 'required',
+                'nick_name' => 'required',
+                'phone' => 'required',
+                'line' => 'required',
+                'bank_name' => 'required',
+                'branch_name' => 'required',
+                'number' => 'required',
+                'note' => 'required',
+                'front_side' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:5120',
+                'back_side' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:5120',
+            ]
+        );
+
+        $year = $request->start_year;
+        $month = $request->start_month;
+        $date = $request->start_date;
+        if (!checkdate($month, $date, $year)) {
+            return false;
+        }
+
+        $data = [
+            'lastname' => $request->last_name,
+            'firstname' => $request->first_name,
+            'lastname_kana' => $request->last_name_kana,
+            'firstname_kana' => $request->first_name_kana,
+            'nickname' => $request->nick_name,
+            'phone' => $request->phone,
+            'line_id' => $request->line,
+            'bank_name' => $request->bank_name,
+            'branch_name' => $request->branch_name,
+            'number' => $request->number,
+            'note' => $request->note,
+            'date_of_birth' => $year . '-' . $month . '-' . $date,
+        ];
+
+        $frontImage = request()->file('front_side');
+        $backImage = request()->file('back_side');
+
+        $frontImageName = Uuid::generate()->string . '.' . strtolower($frontImage->getClientOriginalExtension());
+        $backImageName = Uuid::generate()->string . '.' . strtolower($backImage->getClientOriginalExtension());
+
+        $frontFileUploaded = Storage::put($frontImageName, file_get_contents($frontImage), 'public');
+        $backFileUploaded = Storage::put($backImageName, file_get_contents($backImage), 'public');
+
+        if ($frontFileUploaded && $backFileUploaded) {
+            $data['front_id_image'] = $frontImageName;
+            $data['back_id_image'] = $backImageName;
+        }
+
+        return $data;
+    }
+
+    public function confirmRegister(Request $request, User $user)
+    {
+        $data = $this->validRegister($request);
+
+        if (!$data) {
+            $request->session()->flash('msgdate', trans('messages.date_not_valid'));
+
+            return redirect()->route('admin.casts.register', compact('user'));
+        }
     }
 }

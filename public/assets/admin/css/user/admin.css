@@ -146,6 +146,18 @@ td {
   display: inline;
 }
 
+.list-avatar input[type=file] {
+  display: inline;
+}
+
+.list-avatar ul {
+  display: inline-block;
+  margin: 0px 100px 40px;
+}
+
+.list-avatar ul li {
+  margin-bottom: 10px;
+}
 .list-avatar img {
   width: 140px;
   margin: 1%;
@@ -850,11 +862,11 @@ tbody td {
 
 .notify-type {
   width: 100% !important;
-  margin: 10px;
+  margin: 10px 0px;
 }
 
-.coupon-confirm {
-  text-align: center;
+.cast-confirm {
+  text-align: right;
 }
 
 .coupon-confirm a{
