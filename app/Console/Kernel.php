@@ -24,7 +24,7 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule)
     {
-         $schedule->command('name:cast_ranking')->dailyAt(5);
+         $schedule->command('cheers:update_cast_ranking')->dailyAt(5);
     }
 
     /**

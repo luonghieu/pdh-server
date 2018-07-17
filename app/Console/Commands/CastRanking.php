@@ -3,7 +3,8 @@
 namespace App\Console\Commands;
 
 use Illuminate\Console\Command;
-use Illuminate\Support\Facades\Log;
+use App\User;
+use App\Services\LogService;
 
 class CastRanking extends Command
 {
@@ -12,7 +13,7 @@ class CastRanking extends Command
      *
      * @var string
      */
-    protected $signature = 'name:cast_ranking';
+    protected $signature = 'cheers:update_cast_ranking';
 
     /**
      * The console command description.
@@ -39,10 +40,23 @@ class CastRanking extends Command
     public function handle()
     {
         try{
-            Log::info("Cast Ranking Begin By Cron Job.");
-            dispatch(new \App\Jobs\CastRanking());
+            \App\CastRanking::truncate();
+            $users = User::select('id', 'point')
+                ->orderBy('point', 'desc')
+                ->orderBy('created_at', 'asc')
+                ->take(10)
+                ->get();
+            foreach ($users as $user){
+                $data[] = [
+                    'user_id' => $user->id,
+                    'point' => $user->point,
+                    'created_at' => \Carbon\Carbon::now(),
+                    'updated_at' => \Carbon\Carbon::now()
+                ];
+            }
+            \DB::table('cast_rankings')->insert($data);
         } catch (\Exception $e){
-            Log::info('Cron Job Error' . $e->getMessage());
+            LogService::writeErrorLog($e);
         }
     }
 }
