@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Enums\MessageType;
 use App\Enums\UserGender;
 use App\Enums\UserType;
 use App\Services\LogService;
@@ -74,8 +75,17 @@ class FacebookAuthController extends ApiController
                 'is_default' => true
             ]);
 
-            $user = User::find($user->id);
-            // Return user with full attributes.
+            $user = User::find($user->id); // Return user with full attributes.
+
+            $message = 'ようこそCheersへ！'
+                .'\nCheersはプライベートでの飲み会や接待など様々なシーンにCast を呼べるマッチングアプリです。'
+                .'\nクオリティの高いCast と今すぐ出会えるのはCheersだけ！';
+            $room = $user->rooms()->create();
+            $room->messages()->create([
+                'user_id' => 1,
+                'type' => MessageType::SYSTEM,
+                'message' => $message
+            ]);
             return $user;
         }
 
