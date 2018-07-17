@@ -22,7 +22,7 @@
               <!--  table-striped -->
               <tr>
                 <th>ユーザーID</th>
-                <td>{{ $user->id}}</td>
+                <td>{{ $user->id }}</td>
               </tr>
               <tr>
                 <th>ニックネーム</th>
@@ -34,7 +34,7 @@
               </tr>
               <tr>
                 <th>生年月日</th>
-                <td>{{ Carbon\Carbon::parse($user->date_of_birth)->format('Y年m月d日') }}</td>
+                <td>{{ ($user->date_of_birth) ? Carbon\Carbon::parse($user->date_of_birth)->format('Y年m月d日') : "" }}</td>
               </tr>
               <tr>
                 <th>年齢</th>
@@ -84,11 +84,11 @@
               </tr>
               <tr>
                 <th>自己紹介</th>
-                <td>{{ $user->intro }}</td>
+                <td>{{ $user->description }}</td>
               </tr>
               <tr>
                 <th>ひとこと</th>
-                <td>{{ $user->description }}</td>
+                <td>{{ $user->intro}}</td>
               </tr>
               <tr>
                 <th>会員区分</th>
@@ -113,7 +113,25 @@
                   $title = "凍結を解除する";
                 }
               @endphp
+                @if($user->type == App\Enums\UserType::GUEST)
+                  <button type="button" class="btn btn-info" data-toggle="modal" data-target="#register_cast">キャストへ変更する</button>
+                @endif
                 <button type="submit" class="btn btn-info" data-toggle="modal" data-target="{{ $nameId }}">{{ $title }}</button>
+            </div>
+          </div>
+        </div>
+        <div class="modal fade" id="register_cast" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+          <div class="modal-dialog" role="document">
+            <div class="modal-content">
+              <div class="modal-body">
+                <p>このゲストを、キャストへ変更しますか？</p>
+              </div>
+              <div class="modal-footer">
+                <form action="{{ route('admin.casts.register',['user' => $user->id]) }}" method="get">
+                  <button type="button" class="btn btn-canceled" data-dismiss="modal">キャンセル</button>
+                  <button type="submit" class="btn btn-accept">はい</button>
+                </form>
+              </div>
             </div>
           </div>
         </div>

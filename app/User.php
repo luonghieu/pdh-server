@@ -2,11 +2,12 @@
 
 namespace App;
 
-use App\Enums\UserType;
 use Carbon\Carbon;
-use Illuminate\Foundation\Auth\User as Authenticatable;
-use Illuminate\Notifications\Notifiable;
+use App\Enums\UserType;
+use Illuminate\Support\Facades\Auth;
 use Tymon\JWTAuth\Contracts\JWTSubject;
+use Illuminate\Notifications\Notifiable;
+use Illuminate\Foundation\Auth\User as Authenticatable;
 
 class User extends Authenticatable implements JWTSubject
 {
@@ -30,6 +31,11 @@ class User extends Authenticatable implements JWTSubject
     public function getJWTCustomClaims()
     {
         return [];
+    }
+
+    public function scopeActive($query)
+    {
+        return $query->where('status', true);
     }
 
     public function getAgeAttribute($value)
@@ -72,9 +78,28 @@ class User extends Authenticatable implements JWTSubject
         return UserType::ADMIN == $this->type;
     }
 
+    public function getIsFavoritedAttribute()
+    {
+        $user = Auth::user();
+
+        return $this->favoriters->contains($user->id);
+    }
+
+    public function getIsBlockedAttribute()
+    {
+        $user = Auth::user();
+
+        return $this->blockers->contains($user->id);
+    }
+
     public function isFavoritedUser($userId)
     {
         return $this->favorites()->pluck('users.id')->contains($userId);
+    }
+
+    public function isBlockedUser($userId)
+    {
+        return $this->blocks()->pluck('users.id')->contains($userId);
     }
 
     public function notifications()
@@ -84,12 +109,14 @@ class User extends Authenticatable implements JWTSubject
 
     public function favorites()
     {
-        return $this->belongsToMany(User::class, 'favorites', 'user_id', 'favorited_id')->withPivot('id', 'user_id', 'favorited_id', 'created_at', 'updated_at');
+        return $this->belongsToMany(User::class, 'favorites', 'user_id', 'favorited_id')
+            ->withPivot('id', 'user_id', 'favorited_id', 'created_at', 'updated_at');
     }
 
     public function favoriters()
     {
-        return $this->belongsToMany(User::class, 'favorites', 'favorited_id', 'user_id')->withPivot('id', 'user_id', 'favorited_id', 'created_at', 'updated_at');
+        return $this->belongsToMany(User::class, 'favorites', 'favorited_id', 'user_id')
+            ->withPivot('id', 'user_id', 'favorited_id', 'created_at', 'updated_at');
     }
 
     public function avatars()
@@ -116,5 +143,17 @@ class User extends Authenticatable implements JWTSubject
     public function bodyType()
     {
         return $this->belongsTo(BodyType::class);
+    }
+
+    public function blocks()
+    {
+        return $this->belongsToMany(User::class, 'blocks', 'user_id', 'blocked_id')
+            ->withPivot('id', 'user_id', 'blocked_id', 'created_at', 'updated_at');
+    }
+
+    public function blockers()
+    {
+        return $this->belongsToMany(User::class, 'blocks', 'blocked_id', 'user_id')
+            ->withPivot('id', 'user_id', 'blocked_id', 'created_at', 'updated_at');
     }
 }

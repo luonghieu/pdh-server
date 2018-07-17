@@ -146,6 +146,18 @@ td {
   display: inline;
 }
 
+.list-avatar input[type=file] {
+  display: inline;
+}
+
+.list-avatar ul {
+  display: inline-block;
+  margin: 0px 100px 40px;
+}
+
+.list-avatar ul li {
+  margin-bottom: 10px;
+}
 .list-avatar img {
   width: 140px;
   margin: 1%;
@@ -850,11 +862,11 @@ tbody td {
 
 .notify-type {
   width: 100% !important;
-  margin: 10px;
+  margin: 10px 0px;
 }
 
-.coupon-confirm {
-  text-align: center;
+.cast-confirm {
+  text-align: right;
 }
 
 .coupon-confirm a{
@@ -930,20 +942,4 @@ tbody td {
     margin-top: 7%;
     margin-left: 40%;
   }
-}
-
-.css-init-checkbox .icheckbox_square-blue {
-  float: none;
-  margin: 0 auto;
-  width: 15px;
-  height: 15px;
-  border: 1px solid #a0aeb1ad;
-}
-
-.css-init-checkbox .icheckbox_square-blue.checked {
-  background-position: -52px -4px;
-}
-
-.mt-1 {
-  margin-top: 0.5rem;
 }

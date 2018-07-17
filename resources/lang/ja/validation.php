@@ -125,8 +125,14 @@ return [
      */
 
     'custom' => [
-        'attribute-name' => [
-            'rule-name' => 'custom-message',
+        'nickname' => [
+            'max' => '20文字以内で入力してください',
+        ],
+        'intro' => [
+            'max' => '30文字以内で入力してください',
+        ],
+        'description' => [
+            'max' => '1000文字以内で入力してください',
         ],
     ],
 
@@ -141,5 +147,20 @@ return [
     |
      */
 
-    'attributes' => [],
+    'attributes' => [
+        'nickname' => 'ニックネーム',
+        'gender' => '性別',
+        'date_of_birth' => '生年月日',
+        'phone' => '電話番号',
+        'height' => '身長',
+        'body_type_id' => '体型',
+        'prefecture_id' => '居住地',
+        'hometown_id' => '出身地',
+        'job_id' => 'お仕事',
+        'drink_volume_type' => 'お酒',
+        'smoking_type' => 'タバコ',
+        'cohabitant_type' => '同居人',
+        'intro' => 'ひとこと',
+        'description' => '自己紹介',
+    ],
 ];
