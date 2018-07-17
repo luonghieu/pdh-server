@@ -65,12 +65,8 @@ class CastController extends Controller
                 'last_name_kana' => 'required',
                 'first_name_kana' => 'required',
                 'nick_name' => 'required',
-                'phone' => 'required',
+                'phone' => 'required|regex:/^[0-9]+$/',
                 'line' => 'required',
-                'bank_name' => 'required',
-                'branch_name' => 'required',
-                'number' => 'required',
-                'note' => 'required',
                 'front_side' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:5120',
                 'back_side' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:5120',
             ]
@@ -92,9 +88,6 @@ class CastController extends Controller
             'nickname' => $request->nick_name,
             'phone' => $request->phone,
             'line_id' => $request->line,
-            'bank_name' => $request->bank_name,
-            'branch_name' => $request->branch_name,
-            'number' => $request->number,
             'note' => $request->note,
             'gender' => $request->gender,
             'class_id' => $request->cast_class,
@@ -103,6 +96,12 @@ class CastController extends Controller
             'date' => $date,
             'age' => $age,
         ];
+
+        if ($request->bank_name && $request->number && $request->branch_name) {
+            $data['branch_name'] = $request->branch_name;
+            $data['bank_name'] = $request->bank_name;
+            $data['number'] = $request->number;
+        }
 
         $frontImage = request()->file('front_side');
         $backImage = request()->file('back_side');
@@ -161,12 +160,15 @@ class CastController extends Controller
         ];
 
         User::where('id', $user->id)->update($data);
-        BankAccount::create([
-            'user_id' => $user->id,
-            'bank_name' => $request->bank_name,
-            'branch_name' => $request->branch_name,
-            'number' => $request->number,
-        ]);
+
+        if (isset($request->bank_name)) {
+            BankAccount::create([
+                'user_id' => $user->id,
+                'bank_name' => $request->bank_name,
+                'branch_name' => $request->branch_name,
+                'number' => $request->number,
+            ]);
+        }
 
         return redirect()->route('admin.casts.index');
     }
