@@ -12,31 +12,28 @@
             </div>
             <div class="panel-body">
               <div class="wrapper" >
-                <form method="POST" action="{{ route('admin.casts.confirm', ['id' => $user->id ]) }}" id="formEditCoupon" enctype='multipart/form-data' >
-                  {{ csrf_field() }}
+                <form method="GET" action="{{ route('admin.casts.register', ['id' => $user->id ]) }}" id="formEditCoupon" >
                   <div class="list-avatar">
                     <ul>
                       <li>
-                        <img src="" id="front_side-img" />
+                        <img src="{{ getImages($data['front_id_image']) }}" id="front_side-img" class="image-confirm" />
                       </li>
                       <li>
                         おもて面
                       </li>
                       <li>
-                        <input type="file" name="front_side" id="front_side">
                       </li>
                     </ul>
                   </div>
                   <div class="list-avatar">
                     <ul>
                       <li>
-                        <img src="" id="back_side-img"/>
+                        <img src="{{ getImages($data['back_id_image']) }}" id="front_side-img" class="image-confirm"/>
                       </li>
                       <li>
                         うら面
                       </li>
                       <li>
-                        <input type="file" name="back_side" id="back_side">
                       </li>
                     </ul>
                   </div>
@@ -50,314 +47,142 @@
                       <tr>
                         <th>*氏名</th>
                         <td>
-                          <div class="form-group">
-                            <div class="col-sm-3 col-sm-offset-1">
-                              <input type="text" name="last_name" id="" placeholder="姓"  value=""  >
+                          <div class="form-group confirm-cast">
+                            <div class="col-sm-1 col-sm-offset-5">
+                              {{ $data['lastname'] }}
                             </div>
-                            <div class="col-sm-3 col-sm-offset-1">
-                              <input type="text" name="first_name" id=""  value="" placeholder="名" required >
+                            <div class="col-sm-1">
+                              {{ $data['firstname'] }}
                             </div>
                           </div>
-                          @if ($errors->has('last_name'))
-                            <div class="form-group">
-                              <div class="alert alert-danger fade in col-sm-5 col-sm-offset-1">
-                                <button data-dismiss="alert" class="close close-sm" type="button">
-                                  <i class="icon-remove"></i>
-                                </button>
-                                <strong>
-                                  {{ $errors->first('last_name') }}
-                                </strong>
-                              </div>
-                            </div>
-                          @endif
-                          @if ($errors->has('first_name'))
-                            <div class="form-group">
-                              <div class="alert alert-danger fade in col-sm-5 col-sm-offset-1">
-                                <button data-dismiss="alert" class="close close-sm" type="button">
-                                  <i class="icon-remove"></i>
-                                </button>
-                                <strong>
-                                  {{ $errors->first('first_name') }}
-                                </strong>
-                              </div>
-                            </div>
-                          @endif
                         </td>
                       </tr>
                       <tr>
                         <th>*ふりがな</th>
                         <td>
                           <div class="form-group">
-                            <div class="col-sm-3 col-sm-offset-1">
-                              <input type="text" name="last_name_kana" id="" placeholder="せい"  value="" required >
+                            <div class="col-sm-1 col-sm-offset-5">
+                              {{ $data['lastname_kana'] }}
                             </div>
-                            <div class="col-sm-3 col-sm-offset-1">
-                              <input type="text" name="first_name_kana" id=""  value="" placeholder="めい" required >
+                            <div class="col-sm-1">
+                              {{ $data['firstname_kana'] }}
                             </div>
                           </div>
-                          @if ($errors->has('last_name_kana'))
-                            <div class="form-group">
-                              <div class="alert alert-danger fade in col-sm-5 col-sm-offset-1">
-                                <button data-dismiss="alert" class="close close-sm" type="button">
-                                  <i class="icon-remove"></i>
-                                </button>
-                                <strong>
-                                  {{ $errors->first('last_name_kana') }}
-                                </strong>
-                              </div>
-                            </div>
-                          @endif
-                          @if ($errors->has('first_name_kana'))
-                            <div class="form-group">
-                              <div class="alert alert-danger fade in col-sm-5 col-sm-offset-1">
-                                <button data-dismiss="alert" class="close close-sm" type="button">
-                                  <i class="icon-remove"></i>
-                                </button>
-                                <strong>
-                                  {{ $errors->first('first_name_kana') }}
-                                </strong>
-                              </div>
-                            </div>
-                          @endif
                         </td>
                       </tr>
                       <tr>
                         <th>*ニックネーム</th>
                         <td>
                           <div class="form-group " >
-                            <div class="col-sm-3 col-sm-offset-1">
-                              <input type="text" name="nick_name" id="" placeholder="せい"  value="" required >
+                            <div class="col-sm-1 col-sm-offset-5">
+                              {{ $data['nickname'] }}
                             </div>
                           </div>
-                          @if ($errors->has('nick_name'))
-                            <div class="form-group">
-                              <div class="alert alert-danger fade in col-sm-5 col-sm-offset-1">
-                                <button data-dismiss="alert" class="close close-sm" type="button">
-                                  <i class="icon-remove"></i>
-                                </button>
-                                <strong>
-                                  {{ $errors->first('nick_name') }}
-                                </strong>
-                              </div>
-                            </div>
-                          @endif
                         </td>
                       </tr>
                       <tr>
                         <th>*生年月日</th>
                         <td>
                           <div class="form-group">
-                            <div class="col-sm-3 col-sm-offset-1">
-                              <select id="" name="start_year" class="form-control select-time" >
-                                @foreach (range(2018,2025) as $year)
-                                  <option value="{{ $year }}">{{ $year }}</option>
-                                @endforeach
-                              </select>
-                            </div>
-                            <div class="col-sm-3 ">
-                               <select id="" name="start_month" class="form-control select-time">
-                                @foreach (range(01,12) as $month)
-                                  <option value="{{ $month }}" >{{ $month }}月</option>
-                                @endforeach
-                              </select>
+                            <div class="col-sm-2 col-sm-offset-3">
+                              {{ $data['year'] }} 年
                             </div>
                             <div class="col-sm-2">
-                              <select id="" name="start_date" class="form-control select-time">
-                                @foreach (range(01,31) as $date)
-                                  <option value="{{ $date }}">{{ $date }}日</option>
-                                @endforeach
-                              </select>
+                               {{ $data['month'] }} 月
                             </div>
-                            <div class="col-sm-2"></div>
-                          </div>
-                          @if(Session::has('msgstartdate'))
-                          <div class="form-group error-end-coupon" >
-                            <div class="alert alert-danger fade in col-sm-5 col-sm-offset-1">
-                              <button data-dismiss="alert" class="close close-sm" type="button">
-                                <i class="icon-remove"></i>
-                              </button>
-                              <strong>
-                                {{ Session::get('msgstartdate') }}
-                              </strong>
+                            <div class="col-sm-2">
+                              {{ $data['date'] }} 日
+                            </div>
+                            <div class="col-sm-2">
+                              {{ $data['age'] }} 歳
                             </div>
                           </div>
-                          @endif
                         </td>
                       </tr>
                       <tr>
                         <th>*性別</th>
                         <td>
                           <div class="form-group">
-                            <div class="col-sm-3 col-sm-offset-1">
-                              <select id="" name="gender" class="form-control select-time notify-type" >
-                                <option value="1"  class="for_user" >女性</option>
-                                <option value="2"  class="for_staff" >男性</option>
-                              </select>
+                            <div class="col-sm-1 col-sm-offset-5">
+                              {{ $data['gender'] == 1 ? '女性' :'男性' }}
                             </div>
                           </div>
-                          @if(Session::has('gender'))
-                          <div class="form-group error-end-coupon" >
-                            <div class="alert alert-danger fade in col-sm-5 col-sm-offset-1">
-                              <button data-dismiss="alert" class="close close-sm" type="button">
-                                <i class="icon-remove"></i>
-                              </button>
-                              <strong>
-                                {{ Session::get('gender') }}
-                              </strong>
-                            </div>
-                          </div>
-                          @endif
                         </td>
                       </tr>
                       <tr>
                         <th>*キャストクラス</th>
                         <td>
                           <div class="form-group">
-                            <div class="col-sm-3 col-sm-offset-1">
-                              <select id="" name="cast_class" class="form-control select-time notify-type" >
-                                @foreach($castClass as $val)
-                                <option value=" {{ $val->id }}"  class="for_user" >{{ $val->name }}</option>
-                                @endforeach
-                              </select>
+                            <div class="col-sm-2 col-sm-offset-5">
+                              @if ($data['class_id'] == 1)
+                                 ブロンズ
+                              @elseif ($data['class_id'] == 2)
+                                プラチナ'
+                              @else
+                                ダイヤモンド
+                              @endif
                             </div>
                           </div>
-                          @if(Session::has('cast_class'))
-                          <div class="form-group error-end-coupon" >
-                            <div class="alert alert-danger fade in col-sm-5 col-sm-offset-1">
-                              <button data-dismiss="alert" class="close close-sm" type="button">
-                                <i class="icon-remove"></i>
-                              </button>
-                              <strong>
-                                {{ Session::get('cast_class') }}
-                              </strong>
-                            </div>
-                          </div>
-                          @endif
                         </td>
                       </tr>
                       <tr>
                         <th>*電話番号</th>
                         <td>
                           <div class="form-group">
-                            <div class="col-sm-3 col-sm-offset-1">
-                              <input type="text" name="phone" id="" placeholder="半角数字を入力してください"  value="" required >
+                            <div class="col-sm-1 col-sm-offset-5">
+                              {{ $data['phone'] }}
                             </div>
                           </div>
-                          @if ($errors->has('phone'))
-                            <div class="form-group">
-                              <div class="alert alert-danger fade in col-sm-5 col-sm-offset-1">
-                                <button data-dismiss="alert" class="close close-sm" type="button">
-                                  <i class="icon-remove"></i>
-                                </button>
-                                <strong>
-                                  {{ $errors->first('phone') }}
-                                </strong>
-                              </div>
-                            </div>
-                          @endif
                         </td>
                       </tr>
                       <tr>
                         <th>*LINE ID</th>
                         <td>
                           <div class="form-group">
-                            <div class="col-sm-3 col-sm-offset-1">
-                              <input type="text" name="line" id="" placeholder="LINE IDを入力してください"  value="" required >
+                            <div class="col-sm-1 col-sm-offset-5">
+                              {{ $data['line_id'] }}
                             </div>
                           </div>
-                          @if ($errors->has('line'))
-                            <div class="form-group">
-                              <div class="alert alert-danger fade in col-sm-5 col-sm-offset-1">
-                                <button data-dismiss="alert" class="close close-sm" type="button">
-                                  <i class="icon-remove"></i>
-                                </button>
-                                <strong>
-                                  {{ $errors->first('line') }}
-                                </strong>
-                              </div>
-                            </div>
-                          @endif
                         </td>
                       </tr>
                       <tr>
                         <th>振込口座</th>
                         <td>
                           <div class="form-group">
-                            <div class="col-sm-3 col-sm-offset-1">
-                              <label for="bank_name">銀行名</label>
-                              <input type="text" name="bank_name" id="bank_name" placeholder="姓"  value="" required >
+                            <div class="col-sm-1 col-sm-offset-2">
+                              <label >銀行名</label>
                             </div>
-                            <div class="col-sm-3 col-sm-offset-1">
-                              <label for="branch_name">支店名</label>
-                              <input type="text" name="branch_name" id="branch_name" placeholder="姓"  value="" required >
+                            <div class="col-sm-2">
+                              {{ $data['bank_name'] }}
                             </div>
-                            <div class="col-sm-3 col-sm-offset-1">
-                              <label for="number">口座番号</label>
-                              <input type="text" name="number" id="number" placeholder="姓"  value="" required >
+                            <div class="col-sm-1 ">
+                              <label >支店名</label>
+                            </div>
+                            <div class="col-sm-2">
+                              {{ $data['branch_name'] }}
+                            </div>
+                            <div class="col-sm-1 ">
+                              <label >口座番号</label>
+                            </div>
+                            <div class="col-sm-2">
+                              {{ $data['number'] }}
                             </div>
                           </div>
-                          @if ($errors->has('bank_name'))
-                            <div class="form-group">
-                              <div class="alert alert-danger fade in col-sm-5 col-sm-offset-1">
-                                <button data-dismiss="alert" class="close close-sm" type="button">
-                                  <i class="icon-remove"></i>
-                                </button>
-                                <strong>
-                                  {{ $errors->first('bank_name') }}
-                                </strong>
-                              </div>
-                            </div>
-                          @endif
-                          @if ($errors->has('branch_name'))
-                            <div class="form-group">
-                              <div class="alert alert-danger fade in col-sm-5 col-sm-offset-1">
-                                <button data-dismiss="alert" class="close close-sm" type="button">
-                                  <i class="icon-remove"></i>
-                                </button>
-                                <strong>
-                                  {{ $errors->first('branch_name') }}
-                                </strong>
-                              </div>
-                            </div>
-                          @endif
-                          @if ($errors->has('number'))
-                            <div class="form-group">
-                              <div class="alert alert-danger fade in col-sm-5 col-sm-offset-1">
-                                <button data-dismiss="alert" class="close close-sm" type="button">
-                                  <i class="icon-remove"></i>
-                                </button>
-                                <strong>
-                                  {{ $errors->first('number') }}
-                                </strong>
-                              </div>
-                            </div>
-                          @endif
                         </td>
                       </tr>
                       <tr>
                         <th>備考</th>
                         <td>
                           <div class="form-group">
-                            <textarea class="form-control" rows="5" id="note" name='note' placeholder="入力してください"></textarea>
+                            {{ $data['note'] }}
                           </div>
-                          @if ($errors->has('note'))
-                            <div class="form-group">
-                              <div class="alert alert-danger fade in col-sm-5 col-sm-offset-1">
-                                <button data-dismiss="alert" class="close close-sm" type="button">
-                                  <i class="icon-remove"></i>
-                                </button>
-                                <strong>
-                                  {{ $errors->first('note') }}
-                                </strong>
-                              </div>
-                            </div>
-                          @endif
                         </td>
                       </tr>
                     </table>
                   </div>
                   <div class="cast-confirm">
-                    <button type="submit" class="btn btn-accept">確認画面へ</button>
+                    <button type="submit" class="btn btn-accept">戻る</button>
+                    <button type="button" class="btn btn-accept" data-toggle="modal" data-target="#saveCast">登録する</button>
                   </div>
                 </form>
               </div>
@@ -372,5 +197,38 @@
     <!--/col-->
   </div>
   <!--/row-->
+</div>
+<div class="modal fade" id="saveCast" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-body">
+        <span>登録が完了しました。</span><br/>
+      </div>
+      <div class="modal-footer">
+        <form action="{{ route('admin.casts.save', ['id' => $user->id ]) }}" method="POST">
+          {{ csrf_field() }}
+          <input type="hidden" name="lastname" value="{{ $data['lastname'] }}">
+          <input type="hidden" name="firstname" value="{{ $data['lastname'] }}">
+          <input type="hidden" name="lastname_kana" value="{{ $data['lastname_kana'] }}">
+          <input type="hidden" name="firstname_kana" value="{{ $data['firstname_kana'] }}">
+          <input type="hidden" name="nickname" value="{{ $data['nickname'] }}">
+          <input type="hidden" name="phone" value="{{ $data['phone'] }}">
+          <input type="hidden" name="line_id" value="{{ $data['line_id'] }}">
+          <input type="hidden" name="bank_name" value="{{ $data['bank_name'] }}">
+           <input type="hidden" name="branch_name" value="{{ $data['branch_name'] }}">
+          <input type="hidden" name="number" value="{{ $data['number'] }}">
+          <input type="hidden" name="note" value="{{ $data['note'] }}">
+          <input type="hidden" name="gender" value="{{ $data['gender'] }}">
+          <input type="hidden" name="class_id" value="{{ $data['class_id'] }}">
+          <input type="hidden" name="year" value="{{ $data['year'] }}">
+          <input type="hidden" name="month" value="{{ $data['month'] }}">
+          <input type="hidden" name="date" value="{{ $data['date'] }}">
+          <input type="hidden" name="front_id_image" value="{{ $data['front_id_image'] }}">
+          <input type="hidden" name="back_id_image" value="{{ $data['back_id_image'] }}">
+          <button type="submit" class="btn btn-accept">はい</button>
+        </form>
+      </div>
+    </div>
+  </div>
 </div>
 @endsection

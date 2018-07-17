@@ -174,4 +174,11 @@ class User extends Authenticatable implements JWTSubject
     {
         return $this->hasMany(Message::class);
     }
+
+    public function reports()
+    {
+        return $this
+            ->belongsToMany(User::class, 'reports', 'user_id', 'reported_id')
+            ->withPivot('id', 'user_id', 'reported_id', 'content', 'created_at', 'updated_at');
+    }
 }

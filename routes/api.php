@@ -32,6 +32,7 @@ Route::group(['prefix' => 'v1'], function () {
     Route::group(['middleware' => ['auth:api']], function () {
         Route::post('favorites/{id}', ['as' => 'favorite', 'uses' => 'FavoriteController@favorite']);
         Route::post('blocks/{id}', ['as' => 'block', 'uses' => 'BlockController@block']);
+        Route::post('reports/{id}', ['as' => 'report', 'uses' => 'ReportController@report']);
     });
 
     Route::group(['middleware' => ['auth:api'], 'prefix' => 'users', 'as' => 'users.'], function () {
