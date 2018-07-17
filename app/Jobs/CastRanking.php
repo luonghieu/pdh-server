@@ -35,6 +35,7 @@ class CastRanking implements ShouldQueue
             \App\CastRanking::truncate();
             $users = User::select('id', 'point')
                 ->orderBy('point', 'desc')
+                ->orderBy('created_at', 'asc')
                 ->take(10)
                 ->get();
             foreach ($users as $user){
