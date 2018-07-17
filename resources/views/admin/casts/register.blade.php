@@ -80,7 +80,7 @@
                         <td>
                           <div class="form-group">
                             <div class="col-sm-3 col-sm-offset-1">
-                              <input type="text" name="last_name" id="" placeholder="姓"  value=""  >
+                              <input type="text" name="last_name" id="" placeholder="姓"  value="" required >
                             </div>
                             <div class="col-sm-3 col-sm-offset-1">
                               <input type="text" name="first_name" id=""  value="" placeholder="名" required >
@@ -177,7 +177,7 @@
                           <div class="form-group">
                             <div class="col-sm-3 col-sm-offset-1">
                               <select id="" name="start_year" class="form-control select-time" >
-                                @foreach (range(2018,2025) as $year)
+                                @foreach (range(1950,2025) as $year)
                                   <option value="{{ $year }}">{{ $year }}</option>
                                 @endforeach
                               </select>
