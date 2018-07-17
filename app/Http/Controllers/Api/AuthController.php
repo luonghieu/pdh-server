@@ -6,6 +6,7 @@ use App\Enums\UserType;
 use App\Http\Resources\CastResource;
 use App\Http\Resources\GuestResource;
 use App\Rules\CheckHeight;
+use App\Services\LogService;
 use App\User;
 use Illuminate\Http\Request;
 

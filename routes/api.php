@@ -37,4 +37,8 @@ Route::group(['prefix' => 'v1'], function () {
         Route::get('/{id}', ['as' => 'show', 'uses' => 'UserController@show']);
     });
 
+    Route::group(['middleware' => ['auth:api'], 'prefix' => 'avatars', 'as' => 'avatars.'], function () {
+        Route::post('/', ['as' => 'upload', 'uses' => 'AvatarController@upload']);
+    });
+
 });
