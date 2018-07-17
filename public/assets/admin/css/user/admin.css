@@ -900,6 +900,10 @@ tbody td {
   margin-right: 30px;
 }
 
+.image-confirm {
+  height: 300px !important;
+  width: 400px !important;;
+}
 @media (max-width: 767px) {
   .navbar {
     background: #20a8d817;
