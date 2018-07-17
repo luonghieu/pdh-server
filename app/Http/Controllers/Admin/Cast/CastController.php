@@ -18,18 +18,20 @@ class CastController extends Controller
     public function index(Request $request)
     {
         $keyword = $request->search;
-        $fromDate = Carbon::parse($request->from_date)->startOfDay();
-        $toDate = Carbon::parse($request->to_date)->endOfDay();
 
         $casts = Cast::query();
 
-        if ($request->has('from_date')) {
+        if ($request->has('from_date') && !empty($request->from_date)) {
+            $fromDate = Carbon::parse($request->from_date)->startOfDay();
+            $toDate = Carbon::parse($request->to_date)->endOfDay();
             $casts->where(function ($query) use ($fromDate, $toDate) {
                 $query->where('created_at', '>=', $fromDate);
             });
         }
 
-        if ($request->has('to_date')) {
+        if ($request->has('to_date') && !empty($request->to_date)) {
+            $fromDate = Carbon::parse($request->from_date)->startOfDay();
+            $toDate = Carbon::parse($request->to_date)->endOfDay();
             $casts->where(function ($query) use ($fromDate, $toDate) {
                 $query->where('created_at', '<=', $toDate);
             });
