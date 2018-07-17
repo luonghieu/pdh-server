@@ -20,7 +20,7 @@ class ApiController extends Controller
      */
     protected function respondWithToken($token, $user)
     {
-        if ($user->type == UserType::GUEST) {
+        if (UserType::GUEST == $user->type) {
             $userResource = GuestResource::make($user);
         } else {
             $userResource = CastResource::make($user);
@@ -30,7 +30,7 @@ class ApiController extends Controller
             'access_token' => $token,
             'token_type' => 'bearer',
             'expires_in' => $this->guard()->factory()->getTTL() * 60,
-            'user' => $userResource
+            'user' => $userResource,
         ]);
     }
 

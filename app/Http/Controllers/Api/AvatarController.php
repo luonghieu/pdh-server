@@ -70,4 +70,24 @@ class AvatarController extends ApiController
         }
         return $this->respondWithNoData(trans('messages.set_avatar_default_success'));
     }
+
+    public function delete($id)
+    {
+        $user = $this->guard()->user();
+
+        $avatar = $user->avatars->find($id);
+
+        if (!$avatar) {
+            return $this->respondErrorMessage(trans('messages.avatar_not_found'), 404);
+        }
+
+        try {
+            $avatar->delete();
+        } catch (\Exception $e) {
+            LogService::writeErrorLog($e);
+            return $this->respondServerError();
+        }
+
+        return $this->respondWithNoData(trans('messages.delete_avatar_success'));
+    }
 }
