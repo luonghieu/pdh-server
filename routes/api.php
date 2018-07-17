@@ -40,6 +40,7 @@ Route::group(['prefix' => 'v1'], function () {
 
     Route::group(['middleware' => ['auth:api'], 'prefix' => 'avatars', 'as' => 'avatars.'], function () {
         Route::post('/', ['as' => 'upload', 'uses' => 'AvatarController@upload']);
+        Route::patch('/{id}', ['as' => 'set_avatar_default', 'uses' => 'AvatarController@setAvatarDefault']);
     });
 
 });
