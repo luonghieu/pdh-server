@@ -78,9 +78,17 @@ class FacebookAuthController extends ApiController
             $user = User::find($user->id); // Return user with full attributes.
 
             $message = 'ようこそCheersへ！'
-                .'\nCheersはプライベートでの飲み会や接待など様々なシーンにCast を呼べるマッチングアプリです。'
-                .'\nクオリティの高いCast と今すぐ出会えるのはCheersだけ！';
+                .'\nCheersはプライベートでの飲み会や接待など様々なシーンにキャストを呼べるマッチングアプリです。'
+                .'\nクオリティの高いキャストと今すぐ出会えるのはCheersだけ！'
+                .'\n呼びたいときに、呼びたい人数・場所を入力するだけ。'
+                .'\n最短20分でキャストがゲストの元に駆けつけます♪'
+                .'\n「キャスト一覧」からお気に入りのキャストを見つけてアピールすることも可能です！'
+                .'\nまずはHomeの「今すぐキャストを呼ぶ」からキャストを呼んで素敵な時間をお過ごし下さい♪'
+                .'\nご不明点はお気軽にお問い合わせください。';
+
             $room = $user->rooms()->create();
+            $room->users()->attach(1);
+
             $room->messages()->create([
                 'user_id' => 1,
                 'type' => MessageType::SYSTEM,
