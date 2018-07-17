@@ -45,8 +45,8 @@ Route::group(['prefix' => 'v1'], function () {
         Route::delete('/{id}', ['as' => 'delete', 'uses' => 'AvatarController@delete']);
     });
 
-//    Route::group(['middleware' => ['auth:api'], 'prefix' => 'cast_rankings', 'as' => 'cast_rankings.'], function () {
-//        Route::get('/', ['as' => 'show', 'uses' => 'CastRankingController@index']);
-//    });
-    Route::get('cast_rankings', ['as' => 'cast_rankings', 'uses' => 'CastRankingController@index']);
+    Route::group(['middleware' => ['auth:api'], 'prefix' => 'cast_rankings', 'as' => 'cast_rankings.'], function () {
+        Route::get('/', ['as' => 'show', 'uses' => 'CastRankingController@index']);
+    });
+
 });
