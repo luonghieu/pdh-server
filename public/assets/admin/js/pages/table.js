@@ -342,15 +342,15 @@ $(document).ready(function(){
   });
 
   function readURL(input, id) {
-        if (input.files && input.files[0]) {
-          var reader = new FileReader();
-          reader.onload = function (e) {
-              $(id).attr('src', e.target.result).height(300).width(400);;
-          }
+    if (input.files && input.files[0]) {
+      var reader = new FileReader();
+      reader.onload = function (e) {
+          $(id).attr('src', e.target.result).height(300).width(400);;
+      }
 
-          reader.readAsDataURL(input.files[0]);
-        }
+      reader.readAsDataURL(input.files[0]);
     }
+  }
 
   $("#front_side").change(function(){
       readURL(this, "#front_side-img");
