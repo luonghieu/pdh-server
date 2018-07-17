@@ -18,4 +18,5 @@ return [
     'avatar_not_found' => 'Avatar not found',
     'set_avatar_default_success' => 'Successfully installed image profile',
     'delete_avatar_success' => 'Photo successfully deleted',
+    'update_avatar_success' => 'Photo successfully updated.',
 ];
