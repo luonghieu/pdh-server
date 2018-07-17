@@ -37,6 +37,6 @@ class CheckHeight implements Rule
      */
     public function message()
     {
-        return '非公開又は130から200を選択してください';
+        return ':attributeは必ず選択してください';
     }
 }

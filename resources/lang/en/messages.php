@@ -14,4 +14,6 @@ return [
     'date_not_valid' => 'The date format is not valid',
     'block_success' => 'Block successfully',
     'unblock_success' => 'Unblock successfully',
+    'avatar_not_found' => 'Avatar not found',
+    'set_avatar_default_success' => 'Successfully installed image profile',
 ];
