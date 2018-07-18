@@ -207,7 +207,7 @@
         <span>登録が完了しました。</span><br/>
       </div>
       <div class="modal-footer">
-        <form action="{{ route('admin.casts.save', ['id' => $user->id ]) }}" method="POST">
+        <form action="{{ route('admin.casts.save', ['id' => $user->id ]) }}" method="POST" class="form-cast">
           {{ csrf_field() }}
           <input type="hidden" name="lastname" value="{{ $data['lastname'] }}">
           <input type="hidden" name="firstname" value="{{ $data['lastname'] }}">

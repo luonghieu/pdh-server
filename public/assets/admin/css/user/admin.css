@@ -904,6 +904,18 @@ tbody td {
   height: 300px !important;
   width: 400px !important;;
 }
+
+.form-cast {
+  text-align: center;
+}
+
+.time {
+  display: inline-block;
+  float: right;
+  position: relative;
+  top: -23px;
+}
+
 @media (max-width: 767px) {
   .navbar {
     background: #20a8d817;
