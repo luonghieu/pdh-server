@@ -2,9 +2,8 @@
 
 namespace App\Console\Commands;
 
-use App\Enums\UserType;
+use App\Cast;
 use App\Services\LogService;
-use App\User;
 use Illuminate\Console\Command;
 
 class WorkingToday extends Command
@@ -42,7 +41,7 @@ class WorkingToday extends Command
     {
         try {
             \DB::table('users')
-                ->whereIn('id', User::where('type', UserType::CAST)->get()->pluck('id'))
+                ->whereIn('id', Cast::get()->pluck('id'))
                 ->update(['working_today' => false]);
         } catch (\Exception $e) {
             LogService::writeErrorLog($e);
