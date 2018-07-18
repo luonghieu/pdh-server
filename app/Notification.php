@@ -11,11 +11,6 @@ class Notification extends DatabaseNotification
         'admin' => 3,
     ];
 
-    public function cast()
-    {
-        return $this->belongsTo(Cast::class);
-    }
-
     public function user()
     {
         return $this->belongsTo(User::class);
