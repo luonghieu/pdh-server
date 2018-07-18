@@ -72,7 +72,7 @@
                     <table class="table table-bordered">
                       <!--  table-striped -->
                       <tr>
-                        <th>userID</th>
+                        <th>ユーザーID</th>
                         <td>{{ $user->id }}</td>
                       </tr>
                       <tr>
@@ -154,7 +154,7 @@
                         <td>
                           <div class="form-group " >
                             <div class="col-sm-3 col-sm-offset-1">
-                              <input type="text" name="nick_name" id="" placeholder="せい"  value="" required >
+                              <input type="text" name="nick_name" id="" placeholder="せい"  value="{{ ($user->nickname) ? $user->nickname :'' }}" required >
                             </div>
                           </div>
                           @if ($errors->has('nick_name'))
@@ -175,24 +175,29 @@
                         <th>*生年月日</th>
                         <td>
                           <div class="form-group">
+                            @php
+                              $bdDate = ($user->date_of_birth) ? Carbon\Carbon::parse($user->date_of_birth)->format('d') :'';
+                              $bdMonth = ($user->date_of_birth) ? Carbon\Carbon::parse($user->date_of_birth)->format('m') :'';
+                              $bdYear = ($user->date_of_birth) ? Carbon\Carbon::parse($user->date_of_birth)->format('Y') :'';
+                            @endphp
                             <div class="col-sm-3 col-sm-offset-1">
                               <select id="" name="start_year" class="form-control select-time" >
-                                @foreach (range(1950,2025) as $year)
-                                  <option value="{{ $year }}">{{ $year }}</option>
+                                @foreach (range(1940,1998) as $year)
+                                  <option value="{{ $year }}" {{ $year == $bdYear ? 'selected' :'' }} >{{ $year }} 年</option>
                                 @endforeach
                               </select>
                             </div>
                             <div class="col-sm-3 ">
                                <select id="" name="start_month" class="form-control select-time">
                                 @foreach (range(01,12) as $month)
-                                  <option value="{{ $month }}" >{{ $month }}月</option>
+                                  <option value="{{ $month }}" {{ ($month) == $bdMonth ? 'selected' :'' }} >{{ $month }}月</option>
                                 @endforeach
                               </select>
                             </div>
                             <div class="col-sm-2">
                               <select id="" name="start_date" class="form-control select-time">
                                 @foreach (range(01,31) as $date)
-                                  <option value="{{ $date }}">{{ $date }}日</option>
+                                  <option value="{{ $date }}" {{ ($date) == $bdDate ? 'selected' :'' }}>{{ $date }}</option>
                                 @endforeach
                               </select>
                             </div>
@@ -267,7 +272,7 @@
                         <th>*電話番号</th>
                         <td>
                           <div class="form-group">
-                            <div class="col-sm-3 col-sm-offset-1">
+                            <div class="col-sm-5 col-sm-offset-1">
                               <input type="text" name="phone" id="" placeholder="半角数字を入力してください"  value="" required >
                             </div>
                           </div>
@@ -289,7 +294,7 @@
                         <th>*LINE ID</th>
                         <td>
                           <div class="form-group">
-                            <div class="col-sm-3 col-sm-offset-1">
+                            <div class="col-sm-5 col-sm-offset-1">
                               <input type="text" name="line" id="" placeholder="LINE IDを入力してください"  value="" required >
                             </div>
                           </div>
@@ -313,15 +318,15 @@
                           <div class="form-group">
                             <div class="col-sm-3 col-sm-offset-1">
                               <label for="bank_name">銀行名</label>
-                              <input type="text" name="bank_name" id="bank_name" placeholder="姓"  value="" required >
+                              <input type="text" name="bank_name" id="bank_name" value="" >
                             </div>
                             <div class="col-sm-3 col-sm-offset-1">
                               <label for="branch_name">支店名</label>
-                              <input type="text" name="branch_name" id="branch_name" placeholder="姓"  value="" required >
+                              <input type="text" name="branch_name" id="branch_name" value="" >
                             </div>
                             <div class="col-sm-3 col-sm-offset-1">
                               <label for="number">口座番号</label>
-                              <input type="text" name="number" id="number" placeholder="姓"  value="" required >
+                              <input type="text" name="number" id="number"  value="" >
                             </div>
                           </div>
                           @if ($errors->has('bank_name'))

@@ -41,7 +41,7 @@
                     <table class="table table-bordered">
                       <!--  table-striped -->
                       <tr>
-                        <th>userID</th>
+                        <th>ユーザーID</th>
                         <td>{{ $user->id }}</td>
                       </tr>
                       <tr>
@@ -145,6 +145,7 @@
                           </div>
                         </td>
                       </tr>
+                      @if (isset($data['bank_name']))
                       <tr>
                         <th>振込口座</th>
                         <td>
@@ -170,6 +171,7 @@
                           </div>
                         </td>
                       </tr>
+                      @endif
                       <tr>
                         <th>備考</th>
                         <td>
@@ -214,9 +216,11 @@
           <input type="hidden" name="nickname" value="{{ $data['nickname'] }}">
           <input type="hidden" name="phone" value="{{ $data['phone'] }}">
           <input type="hidden" name="line_id" value="{{ $data['line_id'] }}">
+          @if (isset($data['bank_name']))
           <input type="hidden" name="bank_name" value="{{ $data['bank_name'] }}">
-           <input type="hidden" name="branch_name" value="{{ $data['branch_name'] }}">
+          <input type="hidden" name="branch_name" value="{{ $data['branch_name'] }}">
           <input type="hidden" name="number" value="{{ $data['number'] }}">
+          @endif
           <input type="hidden" name="note" value="{{ $data['note'] }}">
           <input type="hidden" name="gender" value="{{ $data['gender'] }}">
           <input type="hidden" name="class_id" value="{{ $data['class_id'] }}">
