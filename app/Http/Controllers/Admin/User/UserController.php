@@ -15,24 +15,26 @@ class UserController extends Controller
     {
         $orderBy = $request->only('id', 'status');
         $keyword = $request->search;
-        $fromDate = Carbon::parse($request->from_date)->startOfDay();
-        $toDate = Carbon::parse($request->to_date)->endOfDay();
 
         $users = User::where('type', '<>', UserType::ADMIN);
 
-        if (isset($request->from_date)) {
+        if ($request->has('from_date') && !empty($request->from_date)) {
+            $fromDate = Carbon::parse($request->from_date)->startOfDay();
+            $toDate = Carbon::parse($request->to_date)->endOfDay();
             $users->where(function ($query) use ($fromDate, $toDate) {
                 $query->where('created_at', '>=', $fromDate);
             });
         }
 
-        if (isset($request->to_date)) {
+        if ($request->has('to_date') && !empty($request->to_date)) {
+            $fromDate = Carbon::parse($request->from_date)->startOfDay();
+            $toDate = Carbon::parse($request->to_date)->endOfDay();
             $users->where(function ($query) use ($fromDate, $toDate) {
                 $query->where('created_at', '<=', $toDate);
             });
         }
 
-        if (isset($keyword)) {
+        if ($request->has('search')) {
             $users->where(function ($query) use ($keyword) {
                 $query->where('id', "$keyword")
                     ->orWhere('nickname', 'like', "%$keyword%");

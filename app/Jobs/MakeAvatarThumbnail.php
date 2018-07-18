@@ -31,6 +31,11 @@ class MakeAvatarThumbnail implements ShouldQueue
      */
     public function handle()
     {
+        if (!empty($this->avatar->getOriginal('thumbnail'))) {
+            $nameThumbnailOld = $this->avatar->getOriginal('thumbnail');
+            \Storage::delete($nameThumbnailOld);
+        }
+
         $info = pathinfo($this->avatar->path);
         $contents = file_get_contents($this->avatar->path);
         $imageName = Uuid::generate()->string . '.' . strtolower($info['extension']);

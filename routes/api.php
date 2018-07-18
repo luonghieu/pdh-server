@@ -32,6 +32,7 @@ Route::group(['prefix' => 'v1'], function () {
     Route::group(['middleware' => ['auth:api']], function () {
         Route::post('favorites/{id}', ['as' => 'favorite', 'uses' => 'FavoriteController@favorite']);
         Route::post('blocks/{id}', ['as' => 'block', 'uses' => 'BlockController@block']);
+        Route::post('reports/{id}', ['as' => 'report', 'uses' => 'ReportController@report']);
     });
 
     Route::group(['middleware' => ['auth:api'], 'prefix' => 'users', 'as' => 'users.'], function () {
@@ -40,6 +41,7 @@ Route::group(['prefix' => 'v1'], function () {
 
     Route::group(['middleware' => ['auth:api'], 'prefix' => 'avatars', 'as' => 'avatars.'], function () {
         Route::post('/', ['as' => 'upload', 'uses' => 'AvatarController@upload']);
+        Route::post('/{id}', ['as' => 'update', 'uses' => 'AvatarController@update']);
         Route::patch('/{id}', ['as' => 'set_avatar_default', 'uses' => 'AvatarController@setAvatarDefault']);
         Route::delete('/{id}', ['as' => 'delete', 'uses' => 'AvatarController@delete']);
     });

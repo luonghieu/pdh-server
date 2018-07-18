@@ -134,6 +134,12 @@ return [
         'description' => [
             'max' => '1000文字以内で入力してください',
         ],
+        'front_side' => [
+            'required' => 'おもて面は、必ず指定してください。',
+        ],
+        'back_side' => [
+            'required' => 'うら面は、必ず指定してください。',
+        ],
     ],
 
     /*
@@ -162,5 +168,6 @@ return [
         'cohabitant_type' => '同居人',
         'intro' => 'ひとこと',
         'description' => '自己紹介',
+
     ],
 ];

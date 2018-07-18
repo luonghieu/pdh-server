@@ -39,3 +39,10 @@ if (!function_exists('latestOnlineStatus')) {
         return $divTime;
     }
 }
+
+if (!function_exists('getImages')) {
+    function getImages($path)
+    {
+        return Storage::url($path);
+    }
+}

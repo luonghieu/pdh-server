@@ -80,16 +80,24 @@ class User extends Authenticatable implements JWTSubject
 
     public function getIsFavoritedAttribute()
     {
+        if (!Auth::check()) {
+            return 0;
+        }
+
         $user = Auth::user();
 
-        return $this->favoriters->contains($user->id);
+        return $this->favoriters->contains($user->id) ? 1 : 0;
     }
 
     public function getIsBlockedAttribute()
     {
+        if (!Auth::check()) {
+            return 0;
+        }
+
         $user = Auth::user();
 
-        return $this->blockers->contains($user->id);
+        return $this->blockers->contains($user->id) ? 1 : 0;
     }
 
     public function isFavoritedUser($userId)
@@ -155,5 +163,12 @@ class User extends Authenticatable implements JWTSubject
     {
         return $this->belongsToMany(User::class, 'blocks', 'blocked_id', 'user_id')
             ->withPivot('id', 'user_id', 'blocked_id', 'created_at', 'updated_at');
+    }
+
+    public function reports()
+    {
+        return $this
+            ->belongsToMany(User::class, 'reports', 'user_id', 'reported_id')
+            ->withPivot('id', 'user_id', 'reported_id', 'content', 'created_at', 'updated_at');
     }
 }

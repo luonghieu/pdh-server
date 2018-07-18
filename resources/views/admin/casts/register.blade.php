@@ -27,17 +27,17 @@
                       </li>
                       <li>
                       @if ($errors->has('front_side'))
-                          <div class="form-group">
-                            <div class="alert alert-danger fade in col-sm-5 col-sm-offset-1">
-                              <button data-dismiss="alert" class="close close-sm" type="button">
-                                <i class="icon-remove"></i>
-                              </button>
-                              <strong>
-                                {{ $errors->first('front_side') }}
-                              </strong>
-                            </div>
+                        <div class="form-group">
+                          <div class="alert alert-danger fade in col-sm-5 col-sm-offset-1">
+                            <button data-dismiss="alert" class="close close-sm" type="button">
+                              <i class="icon-remove"></i>
+                            </button>
+                            <strong>
+                              {{ $errors->first('front_side') }}
+                            </strong>
                           </div>
-                        @endif
+                        </div>
+                      @endif
                       </li>
                     </ul>
                   </div>
@@ -54,17 +54,17 @@
                       </li>
                       <li>
                       @if ($errors->has('back_side'))
-                          <div class="form-group">
-                            <div class="alert alert-danger fade in col-sm-5 col-sm-offset-1">
-                              <button data-dismiss="alert" class="close close-sm" type="button">
-                                <i class="icon-remove"></i>
-                              </button>
-                              <strong>
-                                {{ $errors->first('back_side') }}
-                              </strong>
-                            </div>
+                        <div class="form-group">
+                          <div class="alert alert-danger fade in col-sm-5 col-sm-offset-1">
+                            <button data-dismiss="alert" class="close close-sm" type="button">
+                              <i class="icon-remove"></i>
+                            </button>
+                            <strong>
+                              {{ $errors->first('back_side') }}
+                            </strong>
                           </div>
-                        @endif
+                        </div>
+                      @endif
                       </li>
                     </ul>
                   </div>
@@ -72,7 +72,7 @@
                     <table class="table table-bordered">
                       <!--  table-striped -->
                       <tr>
-                        <th>userID</th>
+                        <th>ユーザーID</th>
                         <td>{{ $user->id }}</td>
                       </tr>
                       <tr>
@@ -80,10 +80,10 @@
                         <td>
                           <div class="form-group">
                             <div class="col-sm-3 col-sm-offset-1">
-                              <input type="text" name="last_name" id="" placeholder="姓"  value=""  >
+                              <input type="text" name="last_name" id="" placeholder="姓"  value="{{ old('last_name') }}" required >
                             </div>
                             <div class="col-sm-3 col-sm-offset-1">
-                              <input type="text" name="first_name" id=""  value="" placeholder="名" required >
+                              <input type="text" name="first_name" id=""  value="{{ old('first_name') }}" placeholder="名" required >
                             </div>
                           </div>
                           @if ($errors->has('last_name'))
@@ -117,10 +117,10 @@
                         <td>
                           <div class="form-group">
                             <div class="col-sm-3 col-sm-offset-1">
-                              <input type="text" name="last_name_kana" id="" placeholder="せい"  value="" required >
+                              <input type="text" name="last_name_kana" id="" placeholder="せい"  value="{{ old('last_name_kana') }}" required >
                             </div>
                             <div class="col-sm-3 col-sm-offset-1">
-                              <input type="text" name="first_name_kana" id=""  value="" placeholder="めい" required >
+                              <input type="text" name="first_name_kana" id=""  value="{{ old('first_name_kana') }}" placeholder="めい" required >
                             </div>
                           </div>
                           @if ($errors->has('last_name_kana'))
@@ -154,7 +154,7 @@
                         <td>
                           <div class="form-group " >
                             <div class="col-sm-3 col-sm-offset-1">
-                              <input type="text" name="nick_name" id="" placeholder="せい"  value="" required >
+                              <input type="text" name="nick_name" id="" placeholder="ニックネーム"  value="{{ ($user->nickname) ? $user->nickname :'' }}" required >
                             </div>
                           </div>
                           @if ($errors->has('nick_name'))
@@ -175,37 +175,47 @@
                         <th>*生年月日</th>
                         <td>
                           <div class="form-group">
-                            <div class="col-sm-3 col-sm-offset-1">
+                            @php
+                              $bdDate = ($user->date_of_birth) ? Carbon\Carbon::parse($user->date_of_birth)->format('d') :'';
+                              $bdMonth = ($user->date_of_birth) ? Carbon\Carbon::parse($user->date_of_birth)->format('m') :'';
+                              $bdYear = ($user->date_of_birth) ? Carbon\Carbon::parse($user->date_of_birth)->format('Y') :'';
+                            @endphp
+                            <div class="col-sm-2 col-sm-offset-1">
                               <select id="" name="start_year" class="form-control select-time" >
-                                @foreach (range(2018,2025) as $year)
-                                  <option value="{{ $year }}">{{ $year }}</option>
+                                @foreach (range(1940,1998) as $year)
+                                  <option value="{{ $year }}" {{ $year == $bdYear ? 'selected' :'' }} >{{ $year }} </option>
                                 @endforeach
                               </select>
+                              <span class="time">年</span>
                             </div>
-                            <div class="col-sm-3 ">
+                            <div class="col-sm-2 ">
                                <select id="" name="start_month" class="form-control select-time">
                                 @foreach (range(01,12) as $month)
-                                  <option value="{{ $month }}" >{{ $month }}月</option>
+                                  <option value="{{ $month }}" {{ ($month) == $bdMonth ? 'selected' :'' }} >{{ $month }}</option>
                                 @endforeach
                               </select>
+                              <span class="time">月</span>
                             </div>
                             <div class="col-sm-2">
                               <select id="" name="start_date" class="form-control select-time">
                                 @foreach (range(01,31) as $date)
-                                  <option value="{{ $date }}">{{ $date }}日</option>
+                                  <option value="{{ $date }}" {{ ($date) == $bdDate ? 'selected' :'' }}>{{ $date }}</option>
                                 @endforeach
                               </select>
+                              <span class="time">日</span>
                             </div>
-                            <div class="col-sm-2"></div>
+                            <div class="col-sm-3">
+                              現在の年齢 : {{ $user->age.'歳' }}
+                            </div>
                           </div>
-                          @if(Session::has('msgstartdate'))
+                          @if(Session::has('msgdate'))
                           <div class="form-group error-end-coupon" >
                             <div class="alert alert-danger fade in col-sm-5 col-sm-offset-1">
                               <button data-dismiss="alert" class="close close-sm" type="button">
                                 <i class="icon-remove"></i>
                               </button>
                               <strong>
-                                {{ Session::get('msgstartdate') }}
+                                {{ Session::get('msgdate') }}
                               </strong>
                             </div>
                           </div>
@@ -267,8 +277,8 @@
                         <th>*電話番号</th>
                         <td>
                           <div class="form-group">
-                            <div class="col-sm-3 col-sm-offset-1">
-                              <input type="text" name="phone" id="" placeholder="半角数字を入力してください"  value="" required >
+                            <div class="col-sm-5 col-sm-offset-1">
+                              <input type="text" name="phone" id="" placeholder="半角数字を入力してください"  value="{{ old('phone') }}" required >
                             </div>
                           </div>
                           @if ($errors->has('phone'))
@@ -289,8 +299,8 @@
                         <th>*LINE ID</th>
                         <td>
                           <div class="form-group">
-                            <div class="col-sm-3 col-sm-offset-1">
-                              <input type="text" name="line" id="" placeholder="LINE IDを入力してください"  value="" required >
+                            <div class="col-sm-5 col-sm-offset-1">
+                              <input type="text" name="line" id="" placeholder="LINE IDを入力してください"  value="{{ old('line') }}" required >
                             </div>
                           </div>
                           @if ($errors->has('line'))
@@ -313,15 +323,15 @@
                           <div class="form-group">
                             <div class="col-sm-3 col-sm-offset-1">
                               <label for="bank_name">銀行名</label>
-                              <input type="text" name="bank_name" id="bank_name" placeholder="姓"  value="" required >
+                              <input type="text" name="bank_name" id="bank_name"  value="{{ old('bank_name') }}" >
                             </div>
                             <div class="col-sm-3 col-sm-offset-1">
                               <label for="branch_name">支店名</label>
-                              <input type="text" name="branch_name" id="branch_name" placeholder="姓"  value="" required >
+                              <input type="text" name="branch_name" id="branch_name"  value="{{ old('branch_name') }}" >
                             </div>
                             <div class="col-sm-3 col-sm-offset-1">
                               <label for="number">口座番号</label>
-                              <input type="text" name="number" id="number" placeholder="姓"  value="" required >
+                              <input type="text" name="number" id="number" value="{{ old('number') }}" >
                             </div>
                           </div>
                           @if ($errors->has('bank_name'))
