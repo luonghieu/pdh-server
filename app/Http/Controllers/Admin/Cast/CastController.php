@@ -165,10 +165,10 @@ class CastController extends Controller
 
         if (isset($request->bank_name)) {
             BankAccount::create([
-            'user_id' => $user->id,
-            'bank_name' => $request->bank_name,
-            'branch_name' => $request->branch_name,
-            'number' => $request->number,
+                'user_id' => $user->id,
+                'bank_name' => $request->bank_name,
+                'branch_name' => $request->branch_name,
+                'number' => $request->number,
             ]);
         }
 
