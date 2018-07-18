@@ -13,7 +13,7 @@ class Kernel extends ConsoleKernel
      * @var array
      */
     protected $commands = [
-        Commands\CastRanking::class
+        Commands\CastRankingSchedule::class
     ];
 
     /**
@@ -24,7 +24,7 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule)
     {
-         $schedule->command('cheers:update_cast_ranking')->dailyAt(5);
+         $schedule->command('cheers:update_cast_ranking')->dailyAt('5')->onOneServer()->runInBackground();
     }
 
     /**

@@ -2,11 +2,13 @@
 
 namespace App\Console\Commands;
 
+use App\Cast;
 use Illuminate\Console\Command;
-use App\User;
 use App\Services\LogService;
+use App\CastRanking;
+use Carbon\Carbon;
 
-class CastRanking extends Command
+class CastRankingSchedule extends Command
 {
     /**
      * The name and signature of the console command.
@@ -39,23 +41,23 @@ class CastRanking extends Command
      */
     public function handle()
     {
-        try{
-            \App\CastRanking::truncate();
-            $users = User::select('id', 'point')
+        try {
+            CastRanking::truncate();
+            $users = Cast::select('id', 'point')
                 ->orderBy('point', 'desc')
                 ->orderBy('created_at', 'asc')
                 ->take(10)
                 ->get();
-            foreach ($users as $user){
+            foreach ($users as $user) {
                 $data[] = [
                     'user_id' => $user->id,
                     'point' => $user->point,
-                    'created_at' => \Carbon\Carbon::now(),
-                    'updated_at' => \Carbon\Carbon::now()
+                    'created_at' => Carbon::now(),
+                    'updated_at' => Carbon::now()
                 ];
             }
             \DB::table('cast_rankings')->insert($data);
-        } catch (\Exception $e){
+        } catch (\Exception $e) {
             LogService::writeErrorLog($e);
         }
     }
