@@ -188,7 +188,6 @@
                               </select>
                               <span class="time">年</span>
                             </div>
-                            <!-- <div class="col-sm-1">年</div> -->
                             <div class="col-sm-2 ">
                                <select id="" name="start_month" class="form-control select-time">
                                 @foreach (range(01,12) as $month)
@@ -197,7 +196,6 @@
                               </select>
                               <span class="time">月</span>
                             </div>
-                            <!-- <div class="col-sm-1">月</div> -->
                             <div class="col-sm-2">
                               <select id="" name="start_date" class="form-control select-time">
                                 @foreach (range(01,31) as $date)
