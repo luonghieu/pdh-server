@@ -34,6 +34,7 @@ Route::group(['prefix' => 'v1'], function () {
         Route::post('blocks/{id}', ['as' => 'block', 'uses' => 'BlockController@block']);
         Route::post('reports/{id}', ['as' => 'report', 'uses' => 'ReportController@report']);
         Route::get('cast_rankings', ['as' => 'cast_rankings', 'uses' => 'CastRankingController@index']);
+        Route::patch('working_today', ['as' => 'working_today', 'uses' => 'WorkingTodayController@update']);
     });
 
     Route::group(['middleware' => ['auth:api'], 'prefix' => 'users', 'as' => 'users.'], function () {

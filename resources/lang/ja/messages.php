@@ -19,4 +19,5 @@ return [
     'set_avatar_default_success' => 'メイン画像を変更しました',
     'delete_avatar_success' => '削除しました',
     'update_avatar_success' => '更新しました',
+    'update_working_today_success' => '更新しました',
 ];

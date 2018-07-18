@@ -19,4 +19,5 @@ return [
     'set_avatar_default_success' => 'Successfully installed image profile',
     'delete_avatar_success' => 'Photo successfully deleted',
     'update_avatar_success' => 'Photo successfully updated.',
+    'update_working_today_success' => 'Update working today successfully',
 ];
