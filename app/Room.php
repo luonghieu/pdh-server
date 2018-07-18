@@ -44,4 +44,9 @@ class Room extends Model
     {
         return $this->belongsTo(Order::class);
     }
+
+    public function users()
+    {
+        return $this->belongsToMany(User::class);
+    }
 }

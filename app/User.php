@@ -165,6 +165,16 @@ class User extends Authenticatable implements JWTSubject
             ->withPivot('id', 'user_id', 'blocked_id', 'created_at', 'updated_at');
     }
 
+    public function rooms()
+    {
+        return $this->belongsToMany(Room::class);
+    }
+
+    public function messages()
+    {
+        return $this->hasMany(Message::class);
+    }
+
     public function reports()
     {
         return $this
