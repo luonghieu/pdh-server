@@ -5,8 +5,11 @@ namespace App\Http\Controllers\Admin\Cast;
 use App\BankAccount;
 use App\Cast;
 use App\CastClass;
+use App\Enums\MessageType;
+use App\Enums\RoomType;
 use App\Enums\UserType;
 use App\Http\Controllers\Controller;
+use App\Notifications\CreateCast;
 use App\User;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -159,7 +162,7 @@ class CastController extends Controller
             'type' => UserType::CAST,
         ];
 
-        User::where('id', $user->id)->update($data);
+        $user->update($data);
 
         if (isset($request->bank_name)) {
             BankAccount::create([
@@ -169,6 +172,8 @@ class CastController extends Controller
                 'number' => $request->number,
             ]);
         }
+
+        $user->notify(new CreateCast());
 
         return redirect()->route('admin.casts.index');
     }

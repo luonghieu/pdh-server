@@ -69,7 +69,7 @@ class FacebookAuthController extends ApiController
                 'gender' => (isset($fbResponse['gender'])) ? ($fbResponse['gender'] == 'male') ? UserGender::MALE : UserGender::FEMALE : null,
                 'type' => UserType::GUEST,
             ];
-            $user = Guest::create($data);
+            $user = User::create($data);
 
             $user->avatars()->create([
                 'path' => $fbResponse['picture']['data']['url'],
