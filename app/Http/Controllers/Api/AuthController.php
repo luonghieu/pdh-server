@@ -64,9 +64,6 @@ class AuthController extends ApiController
             return $this->respondWithData(CastResource::make($user));
         }
 
-        $guest = Guest::find($user->id);
-        $guest->notify(new CreateGuest());
-
         return $this->respondWithData(GuestResource::make($user));
     }
 
