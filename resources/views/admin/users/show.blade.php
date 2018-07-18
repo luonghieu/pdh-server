@@ -4,7 +4,11 @@
   <div class="row">
     <div class="col-lg-12">
       <div class="panel panel-default">
-        @include('admin.partials.menu-tab',compact('user'))
+        @if ($user->is_cast)
+          @include('admin.partials.menu-tab-cast',compact('user'))
+        @else
+          @include('admin.partials.menu-tab',compact('user'))
+        @endif
         <div class="clearfix"></div>
         @include('admin.partials.notification')
         <div class="clearfix"></div>
@@ -24,10 +28,30 @@
                 <th>ユーザーID</th>
                 <td>{{ $user->id }}</td>
               </tr>
+              @if ($user->is_cast)
+              <tr>
+                <th>氏名</th>
+                <td>{{ $user->fullname }}</td>
+              </tr>
+              <tr>
+                <th>ふりがな</th>
+                <td>{{ $user->fullname_kana }}</td>
+              </tr>
+              <tr>
+                <th>キャストクラス</th>
+                <td>{{ $user->castClass ? $user->castClass->name : "" }}</td>
+              </tr>
+              @endif
               <tr>
                 <th>ニックネーム</th>
                 <td>{{ $user->nickname }}</td>
               </tr>
+              @if ($user->is_cast)
+              <tr>
+                <th>30分あたりのポイント</th>
+                <td>{{ $user->point }}</td>
+              </tr>
+              @endif
               <tr>
                 <th>性別</th>
                 <td>{{ App\Enums\UserGender::getDescription($user->gender) }}</td>
@@ -40,6 +64,16 @@
                 <th>年齢</th>
                 <td>{{ $user->age }}</td>
               </tr>
+              @if ($user->is_cast)
+              <tr>
+                <th>電話番号</th>
+                <td>{{ $user->phone }}</td>
+              </tr>
+              <tr>
+                <th>LINE ID</th>
+                <td>{{ $user->line_id }}</td>
+              </tr>
+              @endif
               <tr>
                 <th>基本情報：身長</th>
                 <td>{{ getUserHeight($user->height) }}</td>
@@ -57,7 +91,7 @@
                 <td>{{ $user->prefecture ? $user->prefecture->name : "" }}</td>
               </tr>
               <tr>
-                <th>基本情報；出身地</th>
+                <th>基本情報：出身地</th>
                 <td>{{ $user->prefecture ? $user->prefecture->name : "" }}</td>
               </tr>
               <tr>
@@ -113,7 +147,7 @@
                   $title = "凍結を解除する";
                 }
               @endphp
-                @if($user->type == App\Enums\UserType::GUEST)
+                @if($user->is_guest)
                   <button type="button" class="btn btn-info" data-toggle="modal" data-target="#register_cast">キャストへ変更する</button>
                 @endif
                 <button type="submit" class="btn btn-info" data-toggle="modal" data-target="{{ $nameId }}">{{ $title }}</button>
