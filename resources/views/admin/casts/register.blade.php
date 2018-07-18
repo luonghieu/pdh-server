@@ -27,17 +27,17 @@
                       </li>
                       <li>
                       @if ($errors->has('front_side'))
-                          <div class="form-group">
-                            <div class="alert alert-danger fade in col-sm-5 col-sm-offset-1">
-                              <button data-dismiss="alert" class="close close-sm" type="button">
-                                <i class="icon-remove"></i>
-                              </button>
-                              <strong>
-                                {{ $errors->first('front_side') }}
-                              </strong>
-                            </div>
+                        <div class="form-group">
+                          <div class="alert alert-danger fade in col-sm-5 col-sm-offset-1">
+                            <button data-dismiss="alert" class="close close-sm" type="button">
+                              <i class="icon-remove"></i>
+                            </button>
+                            <strong>
+                              {{ $errors->first('front_side') }}
+                            </strong>
                           </div>
-                        @endif
+                        </div>
+                      @endif
                       </li>
                     </ul>
                   </div>
@@ -54,17 +54,17 @@
                       </li>
                       <li>
                       @if ($errors->has('back_side'))
-                          <div class="form-group">
-                            <div class="alert alert-danger fade in col-sm-5 col-sm-offset-1">
-                              <button data-dismiss="alert" class="close close-sm" type="button">
-                                <i class="icon-remove"></i>
-                              </button>
-                              <strong>
-                                {{ $errors->first('back_side') }}
-                              </strong>
-                            </div>
+                        <div class="form-group">
+                          <div class="alert alert-danger fade in col-sm-5 col-sm-offset-1">
+                            <button data-dismiss="alert" class="close close-sm" type="button">
+                              <i class="icon-remove"></i>
+                            </button>
+                            <strong>
+                              {{ $errors->first('back_side') }}
+                            </strong>
                           </div>
-                        @endif
+                        </div>
+                      @endif
                       </li>
                     </ul>
                   </div>
@@ -180,30 +180,30 @@
                               $bdMonth = ($user->date_of_birth) ? Carbon\Carbon::parse($user->date_of_birth)->format('m') :'';
                               $bdYear = ($user->date_of_birth) ? Carbon\Carbon::parse($user->date_of_birth)->format('Y') :'';
                             @endphp
-                            <div class="col-sm-1 col-sm-offset-1">
+                            <div class="col-sm-2 col-sm-offset-1">
                               <select id="" name="start_year" class="form-control select-time" >
                                 @foreach (range(1940,1998) as $year)
                                   <option value="{{ $year }}" {{ $year == $bdYear ? 'selected' :'' }} >{{ $year }} </option>
                                 @endforeach
                               </select>
+                              <span class="time">年</span>
                             </div>
-                            <div class="col-sm-1">年</div>
-                            <div class="col-sm-1 ">
+                            <div class="col-sm-2 ">
                                <select id="" name="start_month" class="form-control select-time">
                                 @foreach (range(01,12) as $month)
                                   <option value="{{ $month }}" {{ ($month) == $bdMonth ? 'selected' :'' }} >{{ $month }}</option>
                                 @endforeach
                               </select>
+                              <span class="time">月</span>
                             </div>
-                            <div class="col-sm-1">月</div>
-                            <div class="col-sm-1">
+                            <div class="col-sm-2">
                               <select id="" name="start_date" class="form-control select-time">
                                 @foreach (range(01,31) as $date)
                                   <option value="{{ $date }}" {{ ($date) == $bdDate ? 'selected' :'' }}>{{ $date }}</option>
                                 @endforeach
                               </select>
+                              <span class="time">日</span>
                             </div>
-                            <div class="col-sm-1">日</div>
                             <div class="col-sm-3">
                               現在の年齢 : {{ $user->age.'歳' }}
                             </div>

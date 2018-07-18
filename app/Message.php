@@ -38,4 +38,9 @@ class Message extends Model
     {
         return $this->belongsTo(User::class);
     }
+
+    public function recipients()
+    {
+        return $this->belongsToMany(User::class, 'message_recipient')->withPivot('room_id')->withTimestamps();
+    }
 }
