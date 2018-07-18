@@ -16,7 +16,6 @@ class CustomDatabaseChannel
             'content' => $data['content'],
             'data' => $data,
             'read_at' => null,
-            'user_id' => $data['user_id'],
             'send_from' => $data['send_from'],
         ]);
     }

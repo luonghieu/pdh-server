@@ -75,7 +75,6 @@ class CreateGuest extends Notification implements ShouldQueue
 
         return [
             'content' => $message,
-            'user_id' => $notifiable->id,
             'send_from' => UserType::ADMIN,
         ];
     }
