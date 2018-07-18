@@ -33,6 +33,7 @@ Route::group(['prefix' => 'v1'], function () {
         Route::post('favorites/{id}', ['as' => 'favorite', 'uses' => 'FavoriteController@favorite']);
         Route::post('blocks/{id}', ['as' => 'block', 'uses' => 'BlockController@block']);
         Route::post('reports/{id}', ['as' => 'report', 'uses' => 'ReportController@report']);
+        Route::get('cast_rankings', ['as' => 'cast_rankings', 'uses' => 'CastRankingController@index']);
     });
 
     Route::group(['middleware' => ['auth:api'], 'prefix' => 'users', 'as' => 'users.'], function () {
