@@ -78,6 +78,16 @@ class User extends Authenticatable implements JWTSubject
         return UserType::ADMIN == $this->type;
     }
 
+    public function getIsCastAttribute()
+    {
+        return UserType::CAST == $this->type;
+    }
+
+    public function getIsGuestAttribute()
+    {
+        return UserType::GUEST == $this->type;
+    }
+
     public function getIsFavoritedAttribute()
     {
         if (!Auth::check()) {
