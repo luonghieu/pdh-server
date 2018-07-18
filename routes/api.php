@@ -35,6 +35,7 @@ Route::group(['prefix' => 'v1'], function () {
         Route::post('reports/{id}', ['as' => 'report', 'uses' => 'ReportController@report']);
         Route::get('cast_rankings', ['as' => 'cast_rankings', 'uses' => 'CastRankingController@index']);
         Route::post('rooms', ['as' => 'rooms', 'uses' => 'RoomController@store']);
+
     });
 
     Route::group(['middleware' => ['auth:api'], 'prefix' => 'users', 'as' => 'users.'], function () {
