@@ -20,18 +20,20 @@ class CastController extends Controller
     public function index(Request $request)
     {
         $keyword = $request->search;
-        $fromDate = Carbon::parse($request->from_date)->startOfDay();
-        $toDate = Carbon::parse($request->to_date)->endOfDay();
 
         $casts = Cast::query();
 
-        if ($request->has('from_date')) {
+        if ($request->has('from_date') && !empty($request->from_date)) {
+            $fromDate = Carbon::parse($request->from_date)->startOfDay();
+            $toDate = Carbon::parse($request->to_date)->endOfDay();
             $casts->where(function ($query) use ($fromDate, $toDate) {
                 $query->where('created_at', '>=', $fromDate);
             });
         }
 
-        if ($request->has('to_date')) {
+        if ($request->has('to_date') && !empty($request->to_date)) {
+            $fromDate = Carbon::parse($request->from_date)->startOfDay();
+            $toDate = Carbon::parse($request->to_date)->endOfDay();
             $casts->where(function ($query) use ($fromDate, $toDate) {
                 $query->where('created_at', '<=', $toDate);
             });
@@ -65,12 +67,8 @@ class CastController extends Controller
                 'last_name_kana' => 'required',
                 'first_name_kana' => 'required',
                 'nick_name' => 'required',
-                'phone' => 'required',
+                'phone' => 'required|regex:/^[0-9]+$/',
                 'line' => 'required',
-                'bank_name' => 'required',
-                'branch_name' => 'required',
-                'number' => 'required',
-                'note' => 'required',
                 'front_side' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:5120',
                 'back_side' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:5120',
             ]
@@ -92,9 +90,6 @@ class CastController extends Controller
             'nickname' => $request->nick_name,
             'phone' => $request->phone,
             'line_id' => $request->line,
-            'bank_name' => $request->bank_name,
-            'branch_name' => $request->branch_name,
-            'number' => $request->number,
             'note' => $request->note,
             'gender' => $request->gender,
             'class_id' => $request->cast_class,
@@ -103,6 +98,12 @@ class CastController extends Controller
             'date' => $date,
             'age' => $age,
         ];
+
+        if ($request->bank_name && $request->number && $request->branch_name) {
+            $data['branch_name'] = $request->branch_name;
+            $data['bank_name'] = $request->bank_name;
+            $data['number'] = $request->number;
+        }
 
         $frontImage = request()->file('front_side');
         $backImage = request()->file('back_side');
@@ -167,26 +168,6 @@ class CastController extends Controller
             'branch_name' => $request->branch_name,
             'number' => $request->number,
         ]);
-
-        $room = $user->rooms()
-            ->where('rooms.type', RoomType::SYSTEM)
-            ->where('rooms.is_active', true)->first();
-
-        if ($room) {
-            $message = '"\"' . '\おめでとうございます！マッチングが確定しました♪ //'
-                .'- ご予約内容 -'
-                .'場所：渋谷'
-                .'合流予定時間：22:00～'
-                .'ゲストの方はキャストに来て欲しい場所の詳細をお伝えください。'
-                .'尚、ご不明点がある場合は運営までお問い合わせください。'
-                .'それでは素敵な時間をお楽しみください♪';
-
-            $room->messages()->create([
-                'user_id' => 1,
-                'type' => MessageType::SYSTEM,
-                'message' => $message
-            ]);
-        }
 
         return redirect()->route('admin.casts.index');
     }

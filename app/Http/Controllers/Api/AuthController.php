@@ -2,9 +2,13 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Cast;
 use App\Enums\UserType;
+use App\Guest;
 use App\Http\Resources\CastResource;
 use App\Http\Resources\GuestResource;
+use App\Notifications\CreateCast;
+use App\Notifications\CreateGuest;
 use App\Rules\CheckHeight;
 use App\Services\LogService;
 use App\User;
@@ -36,7 +40,6 @@ class AuthController extends ApiController
         }
 
         $credentials = request()->only('email', 'password');
-
         if (($token = $this->guard()->attempt($credentials)) && request('type') == $this->guard()->user()->type) {
             return $this->respondWithData($this->respondWithToken($token, $this->guard()->user())->getData());
         }
@@ -59,9 +62,12 @@ class AuthController extends ApiController
     public function me()
     {
         $user = $this->guard()->user();
+        $cast = Cast::find($user->id);
+        $cast->notify(new CreateCast());
         if (UserType::CAST == $user->type) {
             return $this->respondWithData(CastResource::make($user));
         }
+
 
         return $this->respondWithData(GuestResource::make($user));
     }

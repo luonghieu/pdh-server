@@ -2,8 +2,11 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Enums\MessageType;
 use App\Enums\UserGender;
 use App\Enums\UserType;
+use App\Guest;
+use App\Notifications\CreateGuest;
 use App\Services\LogService;
 use App\User;
 use Carbon\Carbon;
@@ -66,7 +69,7 @@ class FacebookAuthController extends ApiController
                 'gender' => (isset($fbResponse['gender'])) ? ($fbResponse['gender'] == 'male') ? UserGender::MALE : UserGender::FEMALE : null,
                 'type' => UserType::GUEST,
             ];
-            $user = User::create($data);
+            $user = Guest::create($data);
 
             $user->avatars()->create([
                 'path' => $fbResponse['picture']['data']['url'],
@@ -74,8 +77,8 @@ class FacebookAuthController extends ApiController
                 'is_default' => true
             ]);
 
-            $user = User::find($user->id);
-            // Return user with full attributes.
+            $user->notify(new CreateGuest());
+
             return $user;
         }
 
