@@ -71,6 +71,10 @@ class CastResource extends Resource
             'is_blocked' => $this->is_blocked,
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
+            'last_active_at' => $this->last_active_at,
+            'last_active' => $this->last_active,
+            'is_online' => $this->is_online,
+            'rating_score' => $this->rating_score,
         ]);
     }
 }
