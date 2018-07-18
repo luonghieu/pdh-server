@@ -8,6 +8,7 @@ Route::group(['prefix' => 'v1'], function () {
     Route::get('cast_classes', ['as' => 'cast_classes', 'uses' => 'CastClassController@index']);
     Route::get('jobs', ['as' => 'jobs', 'uses' => 'JobController@index']);
     Route::get('body_types', ['as' => 'body_types', 'uses' => 'BodyTypeController@index']);
+    Route::get('cast_rankings', ['as' => 'cast_rankings', 'uses' => 'CastRankingController@index']);
 
     Route::group(['prefix' => 'auth', 'as' => 'auth.'], function () {
         Route::post('login', ['as' => 'login', 'uses' => 'AuthController@login']);
@@ -44,10 +45,6 @@ Route::group(['prefix' => 'v1'], function () {
         Route::post('/{id}', ['as' => 'update', 'uses' => 'AvatarController@update']);
         Route::patch('/{id}', ['as' => 'set_avatar_default', 'uses' => 'AvatarController@setAvatarDefault']);
         Route::delete('/{id}', ['as' => 'delete', 'uses' => 'AvatarController@delete']);
-    });
-
-    Route::group(['middleware' => ['auth:api'], 'prefix' => 'cast_rankings', 'as' => 'cast_rankings.'], function () {
-        Route::get('/', ['as' => 'show', 'uses' => 'CastRankingController@index']);
     });
 
 });
