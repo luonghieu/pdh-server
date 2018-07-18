@@ -40,9 +40,7 @@ class WorkingToday extends Command
     public function handle()
     {
         try {
-            \DB::table('users')
-                ->whereIn('id', Cast::get()->pluck('id'))
-                ->update(['working_today' => false]);
+            Cast::query()->update(['working_today' => false]);
         } catch (\Exception $e) {
             LogService::writeErrorLog($e);
         }
