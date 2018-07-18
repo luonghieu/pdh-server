@@ -41,14 +41,9 @@ class WorkingToday extends Command
     public function handle()
     {
         try {
-            $users = User::select('id', 'type')->get();
-            foreach ($users as $user) {
-                if (UserType::CAST == $user->type) {
-                    \DB::table('users')
-                        ->where('id', $user->id)
-                        ->update(['working_today' => false]);
-                }
-            }
+            \DB::table('users')
+                ->whereIn('id', User::where('type', UserType::CAST)->get()->pluck('id'))
+                ->update(['working_today' => false]);
         } catch (\Exception $e) {
             LogService::writeErrorLog($e);
         }

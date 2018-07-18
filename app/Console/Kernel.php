@@ -20,14 +20,15 @@ class Kernel extends ConsoleKernel
     /**
      * Define the application's command schedule.
      *
-     * @param  \Illuminate\Console\Scheduling\Schedule  $schedule
+     * @param  \Illuminate\Console\Scheduling\Schedule $schedule
      * @return void
      */
     protected function schedule(Schedule $schedule)
     {
-        $schedule->command('cheers:update_cast_ranking')->dailyAt(5);
-        $schedule->command('cheers:reset_working_today')->dailyAt(5)->onOneServer();
+        $schedule->command('cheers:update_cast_ranking')->dailyAt(5)->onOneServer()->runInBackground();
+        $schedule->command('cheers:reset_working_today')->dailyAt(5)->onOneServer()->runInBackground();
     }
+
 
     /**
      * Register the commands for the application.
