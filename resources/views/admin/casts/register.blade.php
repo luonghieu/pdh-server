@@ -27,17 +27,17 @@
                       </li>
                       <li>
                       @if ($errors->has('front_side'))
-                          <div class="form-group">
-                            <div class="alert alert-danger fade in col-sm-5 col-sm-offset-1">
-                              <button data-dismiss="alert" class="close close-sm" type="button">
-                                <i class="icon-remove"></i>
-                              </button>
-                              <strong>
-                                {{ $errors->first('front_side') }}
-                              </strong>
-                            </div>
+                        <div class="form-group">
+                          <div class="alert alert-danger fade in col-sm-5 col-sm-offset-1">
+                            <button data-dismiss="alert" class="close close-sm" type="button">
+                              <i class="icon-remove"></i>
+                            </button>
+                            <strong>
+                              {{ $errors->first('front_side') }}
+                            </strong>
                           </div>
-                        @endif
+                        </div>
+                      @endif
                       </li>
                     </ul>
                   </div>
@@ -54,17 +54,17 @@
                       </li>
                       <li>
                       @if ($errors->has('back_side'))
-                          <div class="form-group">
-                            <div class="alert alert-danger fade in col-sm-5 col-sm-offset-1">
-                              <button data-dismiss="alert" class="close close-sm" type="button">
-                                <i class="icon-remove"></i>
-                              </button>
-                              <strong>
-                                {{ $errors->first('back_side') }}
-                              </strong>
-                            </div>
+                        <div class="form-group">
+                          <div class="alert alert-danger fade in col-sm-5 col-sm-offset-1">
+                            <button data-dismiss="alert" class="close close-sm" type="button">
+                              <i class="icon-remove"></i>
+                            </button>
+                            <strong>
+                              {{ $errors->first('back_side') }}
+                            </strong>
                           </div>
-                        @endif
+                        </div>
+                      @endif
                       </li>
                     </ul>
                   </div>
@@ -204,7 +204,6 @@
                               </select>
                               <span class="time">日</span>
                             </div>
-                            <!-- <div class="col-sm-1">日</div> -->
                             <div class="col-sm-3">
                               現在の年齢 : {{ $user->age.'歳' }}
                             </div>
