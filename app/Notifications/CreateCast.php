@@ -53,13 +53,11 @@ class CreateCast extends Notification implements ShouldQueue
      */
     public function toArray($notifiable)
     {
-        $message = '\\\\ おめでとうございます！マッチングが確定しました♪ //'
-            . '\n \n - ご予約内容 -'
-            . '\n 場所：渋谷 '
-            . '\n 合流予定時間：22:00～'
-            . '\n \n ゲストの方はキャストに来て欲しい場所の詳細をお伝えください。'
-            . '\n 尚、ご不明点がある場合は運営までお問い合わせください。'
-            . '\n \n それでは素敵な時間をお楽しみください♪';
+        $message = 'キャスト登録おめでとうございます♪'
+            . '\n あなたは立派なCheers familyです☆'
+            . '\n \n 解散後のメッセージで心をつかんでリピートも狙ってみましょう！'
+            . '\n \n まずはゲストにメッセージを送ってアピールしてみてください！'
+            . '\n \n 不安なこと、分からないことがあればいつでもCheers運営側にお問い合わせくださいね♪';
 
         $room = $notifiable->rooms()
             ->where('rooms.type', RoomType::SYSTEM)
@@ -81,13 +79,11 @@ class CreateCast extends Notification implements ShouldQueue
 
     public function pushData($notifiable)
     {
-        $content = '\\\\ おめでとうございます！マッチングが確定しました♪ //'
-            . '\n \n - ご予約内容 -'
-            . '\n 場所：渋谷 '
-            . '\n 合流予定時間：22:00～'
-            . '\n \n ゲストの方はキャストに来て欲しい場所の詳細をお伝えください。'
-            . '\n 尚、ご不明点がある場合は運営までお問い合わせください。'
-            . '\n \n それでは素敵な時間をお楽しみください♪';
+        $content = 'キャスト登録おめでとうございます♪'
+            . '\n あなたは立派なCheers familyです☆'
+            . '\n \n 解散後のメッセージで心をつかんでリピートも狙ってみましょう！'
+            . '\n \n まずはゲストにメッセージを送ってアピールしてみてください！'
+            . '\n \n 不安なこと、分からないことがあればいつでもCheers運営側にお問い合わせくださいね♪';
         $namedUser = 'user_' . $notifiable->id;
         $send_from = UserType::ADMIN;
         $pushId = 'c_1';
