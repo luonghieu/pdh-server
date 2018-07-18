@@ -161,13 +161,16 @@ class CastController extends Controller
             'type' => UserType::CAST,
         ];
 
-        $user->update($data);
-        BankAccount::create([
+        User::where('id', $user->id)->update($data);
+
+        if (isset($request->bank_name)) {
+            BankAccount::create([
             'user_id' => $user->id,
             'bank_name' => $request->bank_name,
             'branch_name' => $request->branch_name,
             'number' => $request->number,
-        ]);
+            ]);
+        }
 
         return redirect()->route('admin.casts.index');
     }
