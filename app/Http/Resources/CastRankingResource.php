@@ -19,6 +19,7 @@ class CastRankingResource extends Resource
             'nickname' => $this->nickname,
             'fullname' => $this->fullname,
             'date_of_birth ' => $this->date_of_birth,
+            'age' => $this->age,
             'avatars' => $this->avatars
         ];
     }
