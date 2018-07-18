@@ -5,11 +5,13 @@ namespace App\Http\Resources;
 use App\BodyType;
 use App\Enums\CohabitantType;
 use App\Enums\DrinkVolumeType;
+use App\Enums\RoomType;
 use App\Enums\SiblingsType;
 use App\Enums\SmokingType;
 use App\Http\Resources\AvatarResource;
 use App\Job;
 use App\Repositories\PrefectureRepository;
+use App\Room;
 use App\Salary;
 use App\Traits\ResourceResponse;
 use Illuminate\Http\Resources\Json\Resource;
@@ -64,6 +66,9 @@ class GuestResource extends Resource
             'is_favorited' => $this->is_favorited,
             'is_blocked' => $this->is_blocked,
             'avatars' => AvatarResource::collection($this->avatars),
+            'room_id' => null ? Room::whereHas('users', function ($query) {
+                $query->where('user_id', $this->id);
+            })->where('type', '=', RoomType::DIRECT)->get()->pluck('id')->first() : '',
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
         ]);

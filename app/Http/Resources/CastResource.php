@@ -6,11 +6,13 @@ use App\BodyType;
 use App\CastClass;
 use App\Enums\CohabitantType;
 use App\Enums\DrinkVolumeType;
+use App\Enums\RoomType;
 use App\Enums\SiblingsType;
 use App\Enums\SmokingType;
 use App\Http\Resources\AvatarResource;
 use App\Job;
 use App\Repositories\PrefectureRepository;
+use App\Room;
 use App\Salary;
 use App\Traits\ResourceResponse;
 use Illuminate\Http\Resources\Json\Resource;
@@ -22,7 +24,7 @@ class CastResource extends Resource
     /**
      * Transform the resource into an array.
      *
-     * @param  \Illuminate\Http\Request  $request
+     * @param  \Illuminate\Http\Request $request
      * @return array
      */
     public function toArray($request)
@@ -69,7 +71,10 @@ class CastResource extends Resource
             'class' => $this->class_id ? CastClass::find($this->class_id)->name : '',
             'is_favorited' => $this->is_favorited,
             'is_blocked' => $this->is_blocked,
-            'created_at' => $this->created_at,
+            'room_id' => null ? Room::whereHas('users', function ($query) {
+                $query->where('user_id', $this->id);
+            })->where('type', '=', RoomType::DIRECT)->get()->pluck('id')->first() : '',
+        'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
         ]);
     }
