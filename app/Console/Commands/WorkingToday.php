@@ -41,18 +41,15 @@ class WorkingToday extends Command
     public function handle()
     {
         try {
-            \Log::info('abc');
-            $userTypes = User::select('id', 'type')->get();
-            foreach ($userTypes as $type) {
-                if (UserType::CAST == $type->type) {
-                    \DB::table('cast_rankings')
-                        ->where('id', $type->id)
-                        ->update(['working_today' => fasle]);
+            $users = User::select('id', 'type')->get();
+            foreach ($users as $user) {
+                if (UserType::CAST == $user->type) {
+                    \DB::table('users')
+                        ->where('id', $user->id)
+                        ->update(['working_today' => false]);
                 }
-                \Log::info('abcd');
             }
         } catch (\Exception $e) {
-            \Log::info('abcef');
             LogService::writeErrorLog($e);
         }
     }

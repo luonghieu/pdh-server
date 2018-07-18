@@ -26,7 +26,7 @@ class Kernel extends ConsoleKernel
     protected function schedule(Schedule $schedule)
     {
         $schedule->command('cheers:update_cast_ranking')->dailyAt(5);
-        $schedule->command('cheers:reset_working_today')->everyMinute()->onOneServer();
+        $schedule->command('cheers:reset_working_today')->dailyAt(5)->onOneServer();
     }
 
     /**
