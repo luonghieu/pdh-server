@@ -15,4 +15,8 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.'], function () {
         Route::post('{user}/confirm', ['as' => 'confirm', 'uses' => 'CastController@confirmRegister']);
         Route::post('{user}/save', ['as' => 'save', 'uses' => 'CastController@saveCast']);
     });
+
+    Route::group(['namespace' => 'Cast_Ranking', 'prefix' => 'cast_rankings', 'as' => 'cast_rankings.', 'middleware' => 'is_admin'], function () {
+        Route::get('/', ['as' => 'index', 'uses' => 'CastRankingController@index']);
+    });
 });
