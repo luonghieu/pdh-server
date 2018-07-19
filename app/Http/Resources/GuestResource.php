@@ -12,6 +12,7 @@ use App\Job;
 use App\Repositories\PrefectureRepository;
 use App\Salary;
 use App\Traits\ResourceResponse;
+use App\User;
 use Illuminate\Http\Resources\Json\Resource;
 
 class GuestResource extends Resource
