@@ -35,7 +35,6 @@ class RoomResource extends Resource
                 return new CastResource($user);
             }),
             'latest_message' => new MessageResource($this->whenLoaded('latestMessage')),
-            'order' => new OrderResource($this->whenLoaded('order')),
         ]);
     }
 }

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Enums\RoomType;
 use App\Http\Resources\RoomResource;
 use App\Room;
 use App\User;
@@ -31,12 +32,12 @@ class RoomController extends ApiController
         if (isset($request->favorited) && 1 == $request->favorited) {
             $isFavoritedIds = $user->favorites()->pluck('favorited_id')->toArray();
 
-            $rooms->whereHas('users', function ($query) use ($isFavoritedIds) {
+            $rooms->where('type', RoomType::DIRECT)->whereHas('users', function ($query) use ($isFavoritedIds) {
                 $query->whereIn('user_id', $isFavoritedIds);
             });
         }
 
-        $rooms = $rooms->with('latestMessage', 'users', 'order.pricing')->orderBy('updated_at', 'DESC')->paginate($request->per_page)->appends($request->query());
+        $rooms = $rooms->with('latestMessage', 'users')->orderBy('updated_at', 'DESC')->paginate($request->per_page)->appends($request->query());
 
         return $this->respondWithData(RoomResource::collection($rooms));
     }
