@@ -4,6 +4,7 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Facades\Storage;
 
 class Message extends Model
 {
@@ -37,13 +38,13 @@ class Message extends Model
         return $this->belongsTo(Room::class);
     }
 
-    public function sender()
+    public function user()
     {
         return $this->belongsTo(User::class);
     }
 
     public function recipients()
     {
-        return $this->belongsToMany(User::class, 'message_recipient')->withPivot('room_id')->withTimestamps();
+        return $this->belongsToMany(User::class, 'message_recipient')->withPivot('room_id', 'read_at')->withTimestamps();
     }
 }

@@ -22,4 +22,5 @@ return [
     'delete_message_success' => 'Delete message successfully',
     'message_exits' => 'Message not found',
     'update_working_today_success' => 'Update working today successfully',
+    'room_not_found' => 'This chat room not found',
 ];

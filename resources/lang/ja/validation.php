@@ -168,6 +168,7 @@ return [
         'cohabitant_type' => '同居人',
         'intro' => 'ひとこと',
         'description' => '自己紹介',
+        'type' => '口座種別',
 
     ],
 ];

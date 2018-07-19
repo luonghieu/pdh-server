@@ -2,8 +2,8 @@
 
 namespace App;
 
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Auth;
 
 class Room extends Model
 {
@@ -26,8 +26,10 @@ class Room extends Model
     public function unread($userId)
     {
         return $this->messages()
-            ->where('user_id', '!=', $userId)
-            ->whereNull('read_at');
+            ->whereHas('recipients', function ($q) use ($userId) {
+                $q->where('user_id', $userId)
+                    ->whereNull('read_at');
+            });
     }
 
     public function messages()
@@ -48,5 +50,10 @@ class Room extends Model
     public function users()
     {
         return $this->belongsToMany(User::class);
+    }
+
+    public function recipient()
+    {
+        return $this->belongsToMany(User::class, 'message_recipient', 'room_id', 'user_id')->withPivot('room_id', 'read_at')->withTimestamps();
     }
 }
