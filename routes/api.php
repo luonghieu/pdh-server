@@ -8,6 +8,7 @@ Route::group(['prefix' => 'v1'], function () {
     Route::get('cast_classes', ['as' => 'cast_classes', 'uses' => 'CastClassController@index']);
     Route::get('jobs', ['as' => 'jobs', 'uses' => 'JobController@index']);
     Route::get('body_types', ['as' => 'body_types', 'uses' => 'BodyTypeController@index']);
+    Route::get('tags', ['as' => 'tags', 'uses' => 'TagController@index']);
 
     Route::group(['prefix' => 'auth', 'as' => 'auth.'], function () {
         Route::post('login', ['as' => 'login', 'uses' => 'AuthController@login']);
@@ -34,6 +35,8 @@ Route::group(['prefix' => 'v1'], function () {
         Route::post('blocks/{id}', ['as' => 'block', 'uses' => 'BlockController@block']);
         Route::post('reports/{id}', ['as' => 'report', 'uses' => 'ReportController@report']);
         Route::get('cast_rankings', ['as' => 'cast_rankings', 'uses' => 'CastRankingController@index']);
+        Route::delete('messages/{id}', ['as' => 'messages', 'uses' => 'MessageController@delete']);
+        Route::patch('working_today', ['as' => 'working_today', 'uses' => 'WorkingTodayController@update']);
     });
 
     Route::group(['middleware' => ['auth:api'], 'prefix' => 'users', 'as' => 'users.'], function () {
@@ -47,4 +50,7 @@ Route::group(['prefix' => 'v1'], function () {
         Route::delete('/{id}', ['as' => 'delete', 'uses' => 'AvatarController@delete']);
     });
 
+    Route::group(['middleware' => ['auth:api'], 'prefix' => 'rooms', 'as' => 'rooms.'], function () {
+        Route::post('{id}/messages', ['as' => 'store', 'uses' => 'MessageController@store']);
+    });
 });

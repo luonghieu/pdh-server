@@ -1,0 +1,32 @@
+{
+	"authHost": "http://cheers.local",
+	"authEndpoint": "/broadcasting/auth",
+	"clients": [
+		{
+			"appId": "3f3b3aba080283b7",
+			"key": "26b01defec64f62147bfbe414aeca688"
+		}
+	],
+	"database": "redis",
+	"databaseConfig": {
+		"redis": {
+			"host": "localhost"
+		},
+		"sqlite": {}
+	},
+	"devMode": true,
+	"host": null,
+	"port": "6001",
+	"protocol": "http",
+	"socketio": {},
+	"sslCertPath": "",
+	"sslKeyPath": "",
+	"sslCertChainPath": "",
+	"sslPassphrase": "",
+	"apiOriginAllow": {
+		"allowCors": true,
+		"allowOrigin": "http://cheers.local",
+		"allowMethods": "GET,POST",
+		"allowHeaders": "Origin, Content-Type, X-Auth-Token, X-Requested-With, Accept, Authorization, X-CSRF-TOKEN, X-Socket-Id"
+	}
+}

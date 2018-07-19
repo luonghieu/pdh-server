@@ -2,12 +2,14 @@
 
 namespace App;
 
-use App\Enums\UserType;
 use Carbon\Carbon;
-use Illuminate\Foundation\Auth\User as Authenticatable;
-use Illuminate\Notifications\Notifiable;
+use App\Enums\UserType;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Redis;
 use Tymon\JWTAuth\Contracts\JWTSubject;
+use Illuminate\Notifications\Notifiable;
+use Illuminate\Foundation\Auth\User as Authenticatable;
 
 class User extends Authenticatable implements JWTSubject
 {
@@ -108,6 +110,36 @@ class User extends Authenticatable implements JWTSubject
         $user = Auth::user();
 
         return $this->blockers->contains($user->id) ? 1 : 0;
+    }
+
+    public function getLastActiveAtAttribute($value)
+    {
+        return Cache::get('last_active_at_' . $this->id);
+    }
+
+    public function getLastActiveAttribute()
+    {
+        return latestOnlineStatus($this->last_active_at);
+    }
+
+    public function getIsOnlineAttribute($value)
+    {
+        $isOnline = Cache::get('is_online_' . $this->id);
+
+        if (!$isOnline) {
+            return 0;
+        }
+
+        if (now()->diffInMinutes($this->last_active_at) >= 2) {
+            return 0;
+        }
+
+        return 1;
+    }
+
+    public function getRatingScoreAttribute()
+    {
+        return 1;
     }
 
     public function isFavoritedUser($userId)

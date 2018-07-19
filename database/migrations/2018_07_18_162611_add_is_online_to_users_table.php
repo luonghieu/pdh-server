@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreatePricingsTable extends Migration
+class AddIsOnlineToUsersTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,12 +13,8 @@ class CreatePricingsTable extends Migration
      */
     public function up()
     {
-        Schema::create('pricings', function (Blueprint $table) {
-            $table->increments('id');
-            $table->tinyInteger('type');
-            $table->tinyInteger('rank');
-            $table->integer('cost');
-            $table->timestamps();
+        Schema::table('users', function (Blueprint $table) {
+            $table->boolean('is_online')->default(false)->after('class_id');
         });
     }
 
@@ -29,6 +25,8 @@ class CreatePricingsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('pricings');
+        Schema::table('users', function (Blueprint $table) {
+            $table->dropColumn('is_online');
+        });
     }
 }

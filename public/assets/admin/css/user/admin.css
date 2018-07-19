@@ -46,6 +46,30 @@ td {
   font-family: arial;
 }
 
+.cast-class {
+  width: 150px !important;
+}
+
+.form-cast-class {
+  width: 100%;
+  position: relative;
+}
+
+.btn-change-cast-class {
+  position: absolute;
+  right: 0;
+  background-color: #56c2ed;
+  color: #fff;
+  border-radius: 6px;
+  box-shadow: none;
+  border: none;
+  padding: 5px;
+}
+
+.btn-change-cast-class:hover {
+  background-color: #39afea;
+  border-color: #39afea;
+}
 .title-logo {
   color: #3a4244;
   font-size: 30px;
