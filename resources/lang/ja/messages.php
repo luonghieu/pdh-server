@@ -23,5 +23,4 @@ return [
     'delete_message_success' => '削除しました',
     'message_exits' => 'メッセージが存在しません',
     'update_working_today_success' => '更新しました',
-    'room_not_found' => 'チャットルームは存在しません',
 ];
