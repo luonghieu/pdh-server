@@ -17,13 +17,13 @@ class CreateOrdersTable extends Migration
             $table->increments('id');
             $table->tinyInteger('type');
             $table->unsignedInteger('user_id');
-            $table->unsignedInteger('pricing_id');
+            $table->unsignedInteger('class_id');
             $table->date('date');
             $table->time('start_time');
             $table->time('end_time');
             $table->text('address');
             $table->tinyInteger('total_cast');
-            $table->tinyInteger('points');
+            $table->integer('points');
             $table->tinyInteger('status');
 
             $table->timestamp('accept_time')->nullable();
@@ -37,9 +37,9 @@ class CreateOrdersTable extends Migration
                 ->references('id')
                 ->on('users');
 
-            $table->foreign('pricing_id')
+            $table->foreign('class_id')
                 ->references('id')
-                ->on('pricings');
+                ->on('classes');
         });
     }
 
