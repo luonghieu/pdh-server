@@ -6,7 +6,7 @@ use App\Http\Resources\MessageResource;
 use App\Message;
 use App\Room;
 use App\Services\LogService;
-use DB;
+use App\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Webpatser\Uuid\Uuid;
@@ -32,7 +32,7 @@ class MessageController extends ApiController
     {
         $rules = [
             'message' => 'required_if:type,2',
-            'image' => 'required_if:type,3',
+            'image' => 'required_if:type,3|image|mimes:jpeg,png,jpg,gif,svg|max:5120',
             'type' => 'required',
         ];
 
@@ -69,7 +69,9 @@ class MessageController extends ApiController
         try {
             $user = $this->guard()->user();
 
-            $userIds = DB::table('room_user')->where('room_id', $id)->where('user_id', '!=', $user->id)->pluck('user_id')->toArray();
+            $userIds = User::where('id', '!=', $user->id)->whereHas('rooms', function ($query) use ($id) {
+                $query->where('room_id', $id);
+            })->pluck('id')->toArray();
 
             $message->save();
 
@@ -77,7 +79,7 @@ class MessageController extends ApiController
 
             $message = $message->load('user');
         } catch (\Exception $e) {
-
+            dd($e);
             LogService::writeErrorLog($e);
 
             return $this->respondServerError();
