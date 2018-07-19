@@ -16,7 +16,8 @@ class User extends Authenticatable implements JWTSubject
     use Notifiable;
 
     protected $hidden = [
-        'password', 'remember_token',
+        'password',
+        'remember_token',
     ];
 
     protected $guarded = ['password_confirmation'];
@@ -222,5 +223,14 @@ class User extends Authenticatable implements JWTSubject
         return $this
             ->belongsToMany(User::class, 'reports', 'user_id', 'reported_id')
             ->withPivot('id', 'user_id', 'reported_id', 'content', 'created_at', 'updated_at');
+    }
+
+    public function favoritesCount($userId)
+    {
+        return Favorite::with([
+            'user' => function ($q) use ($userId) {
+                $q->where('user_id', $userId);
+            }
+        ])->count();
     }
 }

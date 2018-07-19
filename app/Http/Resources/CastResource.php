@@ -13,6 +13,7 @@ use App\Job;
 use App\Repositories\PrefectureRepository;
 use App\Salary;
 use App\Traits\ResourceResponse;
+use App\User;
 use Illuminate\Http\Resources\Json\Resource;
 
 class CastResource extends Resource
@@ -27,6 +28,7 @@ class CastResource extends Resource
      */
     public function toArray($request)
     {
+        $user = new User();
         return $this->filterNull([
             'id' => $this->id,
             'facebook_id' => $this->facebook_id,
@@ -68,6 +70,7 @@ class CastResource extends Resource
             'class_id' => $this->class_id,
             'class' => $this->class_id ? CastClass::find($this->class_id)->name : '',
             'is_favorited' => $this->is_favorited,
+            'favorites_count' => $user->favoritesCount($this->id),
             'is_blocked' => $this->is_blocked,
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,

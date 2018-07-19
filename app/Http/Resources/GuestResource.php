@@ -26,6 +26,7 @@ class GuestResource extends Resource
      */
     public function toArray($request)
     {
+        $user = new User();
         return $this->filterNull([
             'id' => $this->id,
             'facebook_id' => $this->facebook_id,
@@ -62,6 +63,7 @@ class GuestResource extends Resource
             'status' => $this->status,
             'point' => $this->point,
             'is_favorited' => $this->is_favorited,
+            'favorites_count' => $user->favoritesCount($this->id),
             'is_blocked' => $this->is_blocked,
             'avatars' => AvatarResource::collection($this->avatars),
             'created_at' => $this->created_at,
