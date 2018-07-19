@@ -69,9 +69,7 @@ class MessageController extends ApiController
         try {
             $user = $this->guard()->user();
 
-            $userIds = $room->load(['users' => function ($query) use ($user) {
-                $query->where('user_id', '!=', $user->id);
-            }])->users->pluck('id')->toArray();
+            $userIds = $room->users()->where('users.id', '<>', $user->id)->pluck('users.id')->toArray();
 
             $message->save();
 
