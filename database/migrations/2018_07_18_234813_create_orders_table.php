@@ -14,6 +14,8 @@ class CreateOrdersTable extends Migration
      */
     public function up()
     {
+        Schema::dropIfExists('ratings');
+        Schema::dropIfExists('cast_order');
         Schema::dropIfExists('orders');
 
         Schema::create('orders', function (Blueprint $table) {
@@ -85,6 +87,10 @@ class CreateOrdersTable extends Migration
      */
     public function down()
     {
+        Schema::dropIfExists('cast_order');
+        Schema::dropIfExists('order_nominee');
+        Schema::dropIfExists('candidate_order');
+        Schema::dropIfExists('order_tag');
         Schema::dropIfExists('orders');
     }
 }
