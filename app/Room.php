@@ -51,9 +51,4 @@ class Room extends Model
     {
         return $this->belongsToMany(User::class);
     }
-
-    public function recipient()
-    {
-        return $this->belongsToMany(User::class, 'message_recipient', 'room_id', 'user_id')->withPivot('room_id', 'read_at')->withTimestamps();
-    }
 }

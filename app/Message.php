@@ -21,13 +21,6 @@ class Message extends Model
         }
     }
 
-    public function markAsRead()
-    {
-        if (is_null($this->read_at)) {
-            $this->forceFill(['read_at' => $this->freshTimestamp()])->save();
-        }
-    }
-
     public function unread()
     {
         return null === $this->read_at;
