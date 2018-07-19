@@ -5,6 +5,7 @@ namespace App;
 use Carbon\Carbon;
 use App\Enums\UserType;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Redis;
 use Tymon\JWTAuth\Contracts\JWTSubject;
 use Illuminate\Notifications\Notifiable;
@@ -113,11 +114,7 @@ class User extends Authenticatable implements JWTSubject
 
     public function getLastActiveAtAttribute($value)
     {
-        try {
-            return  Redis::get('last_active_at_' . $this->id);
-        } catch (\Exception $e) {
-            return $value;
-        }
+        return Cache::get('last_active_at_' . $this->id);
     }
 
     public function getLastActiveAttribute()
@@ -127,11 +124,17 @@ class User extends Authenticatable implements JWTSubject
 
     public function getIsOnlineAttribute($value)
     {
-        try {
-            return (int) Redis::get('is_online_' . $this->id);
-        } catch (\Exception $e) {
-            return $value;
+        $isOnline = Cache::get('is_online_' . $this->id);
+
+        if (!$isOnline) {
+            return 0;
         }
+
+        if (now()->diffInMinutes($this->last_active_at) >= 2) {
+            return 0;
+        }
+
+        return 1;
     }
 
     public function getRatingScoreAttribute()
