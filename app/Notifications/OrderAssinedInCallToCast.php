@@ -11,7 +11,7 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Support\Carbon;
 
-class OrderAssinedToCast extends Notification implements ShouldQueue
+class OrderAssinedInCallToCast extends Notification implements ShouldQueue
 {
     use Queueable;
 
