@@ -19,8 +19,8 @@ return [
     'set_avatar_default_success' => 'Successfully installed image profile',
     'delete_avatar_success' => 'Photo successfully deleted',
     'update_avatar_success' => 'Photo successfully updated.',
+    'room_not_found' => 'This chat room not found',
     'delete_message_success' => 'Delete message successfully',
     'message_exits' => 'Message not found',
     'update_working_today_success' => 'Update working today successfully',
-    'room_not_found' => 'This chat room not found',
 ];

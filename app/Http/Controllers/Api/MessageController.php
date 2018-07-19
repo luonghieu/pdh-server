@@ -8,11 +8,53 @@ use App\Room;
 use App\Services\LogService;
 use App\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 use Webpatser\Uuid\Uuid;
 
 class MessageController extends ApiController
 {
+    public function index(Request $request, $id)
+    {
+        $rules = [
+            'per_page' => 'numeric|min:1',
+        ];
+
+        $validator = validator($request->all(), $rules);
+
+        if ($validator->fails()) {
+            return $this->respondWithValidationError($validator->errors()->messages());
+        }
+
+        $user = $this->guard()->user();
+
+        $room = $user->rooms->find($id)->active()->first();
+
+        if (empty($room)) {
+            return $this->respondErrorMessage(trans('messages.room_not_found'), 404);
+        }
+
+        $messages = $room->messages()->with('user')->latest()->paginate($request->per_page);
+
+        DB::table('message_recipient')
+            ->where([
+                'user_id' => $user->id,
+                'room_id' => $room->id,
+            ])
+            ->whereNull('read_at')
+            ->update(['read_at' => now()]);
+
+        $messagesCollection = collect($messages->items());
+
+        $messages = $messagesCollection->mapToGroups(function ($item, $key) {
+            return [
+                $item->created_at->format('Y-m-d') => $item,
+            ];
+        });
+
+        return $this->respondWithData($messages);
+    }
+
     public function delete($id)
     {
         $user = $this->guard()->user();
