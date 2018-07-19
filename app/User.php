@@ -142,6 +142,21 @@ class User extends Authenticatable implements JWTSubject
         return 1;
     }
 
+    public function getRoomIdAttribute()
+    {
+        $userId = $this->id;
+
+        $room = $this->rooms()->direct()->whereHas('users', function ($q) use ($userId) {
+            $q->where('user_id', $userId);
+        })->first();
+
+        if (!$room) {
+            return '';
+        }
+
+        return $room->id;
+    }
+
     public function isFavoritedUser($userId)
     {
         return $this->favorites()->pluck('users.id')->contains($userId);
