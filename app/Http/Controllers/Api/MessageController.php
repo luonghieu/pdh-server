@@ -69,9 +69,9 @@ class MessageController extends ApiController
         try {
             $user = $this->guard()->user();
 
-            $userIds = User::where('id', '!=', $user->id)->whereHas('rooms', function ($query) use ($id) {
-                $query->where('room_id', $id);
-            })->pluck('id')->toArray();
+            $userIds = $room->load(['users' => function ($query) use ($user) {
+                $query->where('user_id', '!=', $user->id);
+            }])->users->pluck('id')->toArray();
 
             $message->save();
 
@@ -79,7 +79,6 @@ class MessageController extends ApiController
 
             $message = $message->load('user');
         } catch (\Exception $e) {
-
             LogService::writeErrorLog($e);
 
             return $this->respondServerError();
