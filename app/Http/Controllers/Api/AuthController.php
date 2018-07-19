@@ -67,8 +67,6 @@ class AuthController extends ApiController
         if (UserType::CAST == $user->type) {
             return $this->respondWithData(CastResource::make($user));
         }
-        $orders = Order::find(3);
-        $user->notify(new CreatedOrdersAssignedForGuest($orders));
 
         return $this->respondWithData(GuestResource::make($user));
     }
