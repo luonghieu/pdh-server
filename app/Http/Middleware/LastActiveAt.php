@@ -5,6 +5,7 @@ namespace App\Http\Middleware;
 use Closure;
 use App\Services\LogService;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Redis;
 
 class LastActiveAt
@@ -22,21 +23,8 @@ class LastActiveAt
             return $next($request);
         }
 
-        try {
-            // store last_active_at to Redis
-            $redis = Redis::connection();
-            $redis->set('last_active_at_' . Auth::id(), now());
-            $redis->set('is_online_' . Auth::id(), true);
-        } catch (\Exception $e) {
-            LogService::writeErrorLog($e);
-
-            // store last_active_at to DB
-            $user = Auth::user();
-            $user->update([
-                'last_active_at' => now(),
-                'is_online' => 1,
-            ]);
-        }
+        Cache::forever('last_active_at_' . Auth::id(), now());
+        Cache::forever('is_online_' . Auth::id(), true);
 
         return $next($request);
     }
