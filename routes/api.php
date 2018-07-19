@@ -37,7 +37,6 @@ Route::group(['prefix' => 'v1'], function () {
         Route::get('cast_rankings', ['as' => 'cast_rankings', 'uses' => 'CastRankingController@index']);
         Route::delete('messages/{id}', ['as' => 'messages', 'uses' => 'MessageController@delete']);
         Route::patch('working_today', ['as' => 'working_today', 'uses' => 'WorkingTodayController@update']);
-        Route::post('rooms', ['as' => 'rooms', 'uses' => 'RoomController@store']);
     });
 
     Route::group(['middleware' => ['auth:api'], 'prefix' => 'users', 'as' => 'users.'], function () {
@@ -53,6 +52,7 @@ Route::group(['prefix' => 'v1'], function () {
 
     Route::group(['middleware' => ['auth:api'], 'prefix' => 'rooms', 'as' => 'rooms.'], function () {
         Route::get('/', ['as' => 'index', 'uses' => 'RoomController@index']);
+        Route::post('/', ['as' => 'create', 'uses' => 'RoomController@store']);
         Route::get('/{id}', ['as' => 'index', 'uses' => 'MessageController@index']);
         Route::post('{id}/messages', ['as' => 'store', 'uses' => 'MessageController@store']);
     });
