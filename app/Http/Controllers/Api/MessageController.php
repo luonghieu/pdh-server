@@ -44,7 +44,15 @@ class MessageController extends ApiController
             ->whereNull('read_at')
             ->update(['read_at' => now()]);
 
-        return $this->respondWithData(MessageResource::collection($messages));
+        $messagesCollection = collect($messages->items());
+
+        $messages = $messagesCollection->mapToGroups(function ($item, $key) {
+            return [
+                $item->created_at->format('Y-m-d') => $item,
+            ];
+        });
+
+        return $this->respondWithData($messages);
     }
 
     public function delete($id)
