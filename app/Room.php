@@ -23,6 +23,15 @@ class Room extends Model
         return $query->where('is_active', true);
     }
 
+    public function unread($userId)
+    {
+        return $this->messages()
+            ->whereHas('recipients', function ($q) use ($userId) {
+                $q->where('user_id', $userId)
+                    ->whereNull('read_at');
+            });
+    }
+
     public function messages()
     {
         return $this->hasMany(Message::class);
