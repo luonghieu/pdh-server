@@ -50,4 +50,7 @@ Route::group(['prefix' => 'v1'], function () {
         Route::delete('/{id}', ['as' => 'delete', 'uses' => 'AvatarController@delete']);
     });
 
+    Route::group(['middleware' => ['auth:api'], 'prefix' => 'rooms', 'as' => 'rooms.'], function () {
+        Route::post('{id}/messages', ['as' => 'store', 'uses' => 'MessageController@store']);
+    });
 });

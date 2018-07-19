@@ -3,9 +3,13 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Facades\Storage;
 
 class Message extends Model
 {
+    use SoftDeletes;
+
     protected $guarded = [];
 
     protected $touches = ['room'];
@@ -34,7 +38,7 @@ class Message extends Model
         return $this->belongsTo(Room::class);
     }
 
-    public function sender()
+    public function user()
     {
         return $this->belongsTo(User::class);
     }

@@ -5,12 +5,20 @@ namespace App\Http\Controllers\Admin\User;
 use App\Enums\Status;
 use App\Enums\UserType;
 use App\Http\Controllers\Controller;
+use App\Repositories\CastClassRepository;
 use App\User;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 
 class UserController extends Controller
 {
+    protected $castClass;
+
+    public function __construct()
+    {
+        $this->castClass = app(CastClassRepository::class);
+    }
+
     public function index(Request $request)
     {
         $orderBy = $request->only('id', 'status');
@@ -56,12 +64,26 @@ class UserController extends Controller
 
     public function show(User $user)
     {
-        return view('admin.users.show', compact('user'));
+        $castClasses = $this->castClass->all();
+
+        return view('admin.users.show', compact('user', 'castClasses'));
     }
 
     public function changeActive(User $user)
     {
         $user->status = !$user->status;
+
+        $user->save();
+
+        return redirect()->route('admin.users.show', ['user' => $user->id]);
+    }
+
+    public function changeCastClass(User $user, Request $request)
+    {
+        $newClass = $this->castClass->find($request->cast_class);
+
+        $user->class_id = $newClass->id;
+        $user->cost = $newClass->cost;
 
         $user->save();
 
