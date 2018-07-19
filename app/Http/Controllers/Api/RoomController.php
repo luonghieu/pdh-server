@@ -61,20 +61,17 @@ class RoomController extends ApiController
         }
 
         try {
-            $room = $user->rooms()->where('type', '=', RoomType::DIRECT)->whereHas(
-                'users',
-                function ($q) use ($userId) {
-                    $q->where('user_id', $userId);
-                }
-            )->first();
+            $room = $user->rooms()->direct()->whereHas('users', function ($q) use ($userId) {
+                $q->where('user_id', $userId);
+            })->first();
 
             if (!$room) {
-                $room = new Room();
+                $room = new Room;
                 $room->type = $type;
+                $room->is_active = true;
                 $room->save();
-                $room->users()->attach([$userId, $user->id]);
 
-                return $this->respondWithData(RoomResource::make($room));
+                $room->users()->attach([$userId, $user->id]);
             }
 
             return $this->respondWithData(RoomResource::make($room));

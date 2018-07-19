@@ -19,9 +19,19 @@ class Room extends Model
         return 0;
     }
 
+    public function getIsActiveAttribute($value)
+    {
+        return $value ? 1 : 0;
+    }
+
     public function scopeActive($query)
     {
         return $query->where('is_active', true);
+    }
+
+    public function scopeDirect($query)
+    {
+        return $query->where('type', RoomType::DIRECT);
     }
 
     public function unread($userId)
@@ -52,14 +62,4 @@ class Room extends Model
     {
         return $this->belongsToMany(User::class);
     }
-
-    public function getRomID($userId)
-    {
-        return $this->whereHas(
-            'users', function ($query) use ($userId) {
-            $query->where('user_id', $userId);
-        }
-        )->where('type', '=', RoomType::DIRECT)->get()->pluck('id')->first();
-    }
-
 }
