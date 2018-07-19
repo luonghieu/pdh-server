@@ -25,7 +25,7 @@ class AvatarController extends ApiController
             return $this->respondWithValidationError($validator->errors()->messages());
         }
 
-        $input['is_default'] = true;
+        $input['is_default'] = false;
         $input['thumbnail'] = '';
 
         if (request()->has('image')) {
