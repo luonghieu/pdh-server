@@ -24,22 +24,22 @@ class RoomController extends ApiController
         if (!$type) {
             $type = RoomType::DIRECT;
         }
-        $userIds = [$userId, $user];
         try {
-            $findRom = Room::whereHas('users', function ($query) use ($userIds) {
-                $query->whereIn('user_id', $userIds);
-            })->where('type','=', RoomType::DIRECT)->get()->pluck('id')->first();
-            if (!$findRom) {
+            $room = $user->rooms()->where('type', '=', RoomType::DIRECT)->whereHas('users',
+                function ($q) use ($userId) {
+                    $q->where('user_id', $userId);
+                })->first();
+            if (!$room) {
                 $room = new Room();
                 $room->type = $type;
                 $room->save();
-                $room->users()->attach($userId);
-                $room->users()->attach($user);
+                $room->users()->attach([$userId, $user->id]);
                 return $this->respondWithData(RoomResource::make($room));
             }
-            return $this->respondWithData(RoomResource::make($findRom));
+            return $this->respondWithData(RoomResource::make($room));
         } catch (\Exception $e) {
             LogService::writeErrorLog($e);
+            return $this->respondServerError();
         }
     }
 }

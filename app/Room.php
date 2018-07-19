@@ -2,6 +2,7 @@
 
 namespace App;
 
+use App\Enums\RoomType;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Database\Eloquent\Model;
 
@@ -48,5 +49,14 @@ class Room extends Model
     public function users()
     {
         return $this->belongsToMany(User::class);
+    }
+
+    public function getRomID($userId)
+    {
+        return $this->whereHas(
+            'users', function ($query) use ($userId) {
+            $query->where('user_id', $userId);
+        }
+        )->where('type', '=', RoomType::DIRECT)->get()->pluck('id')->first();
     }
 }

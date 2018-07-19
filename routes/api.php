@@ -37,7 +37,6 @@ Route::group(['prefix' => 'v1'], function () {
         Route::delete('messages/{id}', ['as' => 'messages', 'uses' => 'MessageController@delete']);
         Route::patch('working_today', ['as' => 'working_today', 'uses' => 'WorkingTodayController@update']);
         Route::post('rooms', ['as' => 'rooms', 'uses' => 'RoomController@store']);
-
     });
 
     Route::group(['middleware' => ['auth:api'], 'prefix' => 'users', 'as' => 'users.'], function () {

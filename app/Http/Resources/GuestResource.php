@@ -28,6 +28,7 @@ class GuestResource extends Resource
      */
     public function toArray($request)
     {
+        $room = new Room();
         return $this->filterNull([
             'id' => $this->id,
             'facebook_id' => $this->facebook_id,
@@ -66,11 +67,7 @@ class GuestResource extends Resource
             'is_favorited' => $this->is_favorited,
             'is_blocked' => $this->is_blocked,
             'avatars' => AvatarResource::collection($this->avatars),
-            'room_id' => Room::whereHas(
-                'users', function ($query) {
-                $query->where('user_id', $this->id);
-            }
-            )->where('type', '=', RoomType::DIRECT)->get()->pluck('id')->first(),
+            'room_id' => $room->getRomID($this->id),
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
             'last_active_at' => $this->last_active_at,
