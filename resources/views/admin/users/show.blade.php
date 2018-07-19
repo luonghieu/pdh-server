@@ -39,7 +39,16 @@
               </tr>
               <tr>
                 <th>キャストクラス</th>
-                <td>{{ $user->castClass ? $user->castClass->name : "" }}</td>
+                <td>
+                  <form action="{{ route('admin.users.change_cast_class', ['user' => $user->id]) }}" class="form-cast-class" method="post">
+                    {{ csrf_field() }}
+                    <select class="cast-class" name="cast_class">
+                      @foreach ($castClasses as $castClass)
+                        <option value="{{ $castClass->id }}" {{ ($user->class_id == $castClass->id) ? 'selected' : '' }}>{{ $castClass->name }}</option>
+                      @endforeach
+                    </select>
+                    <button type="submit" class="btn-change-cast-class">変更する</button>
+                  </form>
               </tr>
               @endif
               <tr>
