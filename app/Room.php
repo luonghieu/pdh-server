@@ -59,4 +59,5 @@ class Room extends Model
         }
         )->where('type', '=', RoomType::DIRECT)->get()->pluck('id')->first();
     }
+
 }
