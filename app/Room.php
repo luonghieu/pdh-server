@@ -27,8 +27,10 @@ class Room extends Model
     public function unread($userId)
     {
         return $this->messages()
-            ->where('user_id', '!=', $userId)
-            ->whereNull('read_at');
+            ->whereHas('recipients', function ($q) use ($userId) {
+                $q->where('user_id', $userId)
+                    ->whereNull('read_at');
+            });
     }
 
     public function messages()
