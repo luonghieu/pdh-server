@@ -79,7 +79,7 @@ class MessageController extends ApiController
 
             $message = $message->load('user');
         } catch (\Exception $e) {
-            dd($e);
+
             LogService::writeErrorLog($e);
 
             return $this->respondServerError();
