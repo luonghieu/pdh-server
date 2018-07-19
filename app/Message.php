@@ -21,13 +21,6 @@ class Message extends Model
         }
     }
 
-    public function markAsRead()
-    {
-        if (is_null($this->read_at)) {
-            $this->forceFill(['read_at' => $this->freshTimestamp()])->save();
-        }
-    }
-
     public function unread()
     {
         return null === $this->read_at;
@@ -45,6 +38,6 @@ class Message extends Model
 
     public function recipients()
     {
-        return $this->belongsToMany(User::class, 'message_recipient')->withPivot('room_id')->withTimestamps();
+        return $this->belongsToMany(User::class, 'message_recipient')->withPivot('room_id', 'read_at')->withTimestamps();
     }
 }
