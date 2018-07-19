@@ -1,10 +1,11 @@
 <?php
 
+use App\Enums\TagType;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreatePricingsTable extends Migration
+class CreateTagsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,11 +14,10 @@ class CreatePricingsTable extends Migration
      */
     public function up()
     {
-        Schema::create('pricings', function (Blueprint $table) {
+        Schema::create('tags', function (Blueprint $table) {
             $table->increments('id');
-            $table->tinyInteger('type');
-            $table->tinyInteger('rank');
-            $table->integer('cost');
+            $table->string('name');
+            $table->tinyInteger('type')->default(TagType::DESIRE);
             $table->timestamps();
         });
     }
@@ -29,6 +29,6 @@ class CreatePricingsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('pricings');
+        Schema::dropIfExists('tags');
     }
 }
