@@ -1,6 +1,7 @@
 <?php
 
 use App\Enums\OrderStatus;
+use App\Enums\CastOrderType;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
@@ -37,8 +38,6 @@ class CreateOrdersTable extends Migration
             $table->tinyInteger('class_id')->nullable();
             $table->tinyInteger('type');
             $table->tinyInteger('status')->default(OrderStatus::OPEN);
-            $table->timestamp('accepted_at')->nullable();
-            $table->timestamp('canceled_at')->nullable();
             $table->timestamp('actual_started_at')->nullable();
             $table->timestamp('actual_ended_at')->nullable();
             $table->timestamps();
@@ -55,21 +54,10 @@ class CreateOrdersTable extends Migration
             $table->unsignedInteger('order_id');
             $table->unsignedInteger('user_id');
             $table->integer('point')->nullable();
-        });
-
-        Schema::create('order_nominee', function (Blueprint $table) {
-            $table->increments('id');
-            $table->unsignedInteger('order_id');
-            $table->unsignedInteger('user_id');
-            $table->boolean('is_accepted')->nullable();
-            $table->timestamps();
-        });
-
-        Schema::create('candidate_order', function (Blueprint $table) {
-            $table->increments('id');
-            $table->unsignedInteger('order_id');
-            $table->unsignedInteger('user_id');
-            $table->boolean('is_accepted')->nullable();
+            $table->tinyInteger('type')->default(CastOrderType::NOMINEE);
+            $table->boolean('status')->nullable();
+            $table->timestamp('accepted_at')->nullable();
+            $table->timestamp('canceled_at')->nullable();
             $table->timestamps();
         });
 
@@ -88,8 +76,6 @@ class CreateOrdersTable extends Migration
     public function down()
     {
         Schema::dropIfExists('cast_order');
-        Schema::dropIfExists('order_nominee');
-        Schema::dropIfExists('candidate_order');
         Schema::dropIfExists('order_tag');
         Schema::dropIfExists('orders');
     }
