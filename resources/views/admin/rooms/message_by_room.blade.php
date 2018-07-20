@@ -70,7 +70,11 @@
                 <td>{{ $messages->firstItem() +$key }}</td>
                 <td>{{ $message->user ? App\Enums\UserType::getDescription($message->user->type) : "" }}</td>
                 <td><a href="{{ $message->user ? route('admin.users.show', ['user' => $message->user->id]) : '#' }}">{{ $message->user ? $message->user->fullname : ""}}</a></td>
+                @if (empty($message->message))
+                <td class="long-text"><img src="{{ $message->image }}" alt="" class="image-message"></td>
+                @else
                 <td class="long-text">{{ $message->message }}</td>
+                @endif
                 <td>{{ Carbon\Carbon::parse($message->created_at)->format('Y/m/d H:i') }}</td>
               </tr>
               @endforeach

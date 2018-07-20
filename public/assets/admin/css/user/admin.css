@@ -46,6 +46,10 @@ td {
   font-family: arial;
 }
 
+.image-message {
+  width: 200px;
+}
+
 .change-active-room {
   position: relative;
 }
