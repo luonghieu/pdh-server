@@ -9,7 +9,6 @@ use App\Enums\DrinkVolumeType;
 use App\Enums\RoomType;
 use App\Enums\SiblingsType;
 use App\Enums\SmokingType;
-use App\Http\Resources\AvatarResource;
 use App\Job;
 use App\Repositories\PrefectureRepository;
 use App\Room;
