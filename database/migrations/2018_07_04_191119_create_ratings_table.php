@@ -33,10 +33,10 @@ class CreateRatingsTable extends Migration
                 ->on('users')
                 ->onDelete('cascade');
 
-            $table->foreign('order_id')
-                ->references('id')
-                ->on('orders')
-                ->onDelete('cascade');
+            // $table->foreign('order_id')
+            //     ->references('id')
+            //     ->on('orders')
+            //     ->onDelete('cascade');
         });
     }
 

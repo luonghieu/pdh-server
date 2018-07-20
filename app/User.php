@@ -243,4 +243,9 @@ class User extends Authenticatable implements JWTSubject
             ->belongsToMany(User::class, 'reports', 'user_id', 'reported_id')
             ->withPivot('id', 'user_id', 'reported_id', 'content', 'created_at', 'updated_at');
     }
+
+    public function orders()
+    {
+        return $this->hasMany(Order::class);
+    }
 }

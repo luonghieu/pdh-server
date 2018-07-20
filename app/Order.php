@@ -2,12 +2,26 @@
 
 namespace App;
 
-use App\Enums\CastOrderType;
 use App\Enums\CastOrderStatus;
+use App\Enums\CastOrderType;
 use Illuminate\Database\Eloquent\Model;
 
 class Order extends Model
 {
+    protected $fillable = [
+        'prefecture_id',
+        'address',
+        'date',
+        'start_time',
+        'end_time',
+        'duration',
+        'total_cast',
+        'temp_point',
+        'class_id',
+        'type',
+        'status',
+    ];
+
     public function user()
     {
         return $this->belongsTo(User::class);
@@ -22,7 +36,7 @@ class Order extends Model
     public function nominees()
     {
         return $this->belongsToMany(Cast::class)
-            ->where('cast_order.type', CastOrderType::NOMINEE);
+            ->where('cast_order.type', CastOrderType::NOMINEE)->withTimestamps();
     }
 
     public function candidates()
