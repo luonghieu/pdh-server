@@ -3,6 +3,7 @@
 namespace App\Notifications;
 
 use App\Enums\MessageType;
+use App\Enums\RoomType;
 use App\Enums\UserType;
 use App\User;
 use Illuminate\Bus\Queueable;
@@ -66,7 +67,7 @@ class CreateChatRoomForOrderAssignedInCall extends Notification
             .'\n \n それでは素敵な時間をお楽しみください♪';
 
         if ($notifiable->type == UserType::GUEST) {
-            $room = $notifiable->rooms()->create(['order_id' => $this->order->id]);
+            $room = $notifiable->rooms()->create(['order_id' => $this->order->id, 'type' => RoomType::GROUP]);
             $room->users()->attach(1);
 
             $roomMessage = $room->messages()->create([
