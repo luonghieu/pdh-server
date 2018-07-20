@@ -38,8 +38,6 @@ class CreateOrdersTable extends Migration
             $table->tinyInteger('class_id')->nullable();
             $table->tinyInteger('type');
             $table->tinyInteger('status')->default(OrderStatus::OPEN);
-            $table->timestamp('accepted_at')->nullable();
-            $table->timestamp('canceled_at')->nullable();
             $table->timestamp('actual_started_at')->nullable();
             $table->timestamp('actual_ended_at')->nullable();
             $table->timestamps();
@@ -58,6 +56,8 @@ class CreateOrdersTable extends Migration
             $table->integer('point')->nullable();
             $table->tinyInteger('type')->default(CastOrderType::NOMINEE);
             $table->boolean('status')->nullable();
+            $table->timestamp('accepted_at')->nullable();
+            $table->timestamp('canceled_at')->nullable();
             $table->timestamps();
         });
 
