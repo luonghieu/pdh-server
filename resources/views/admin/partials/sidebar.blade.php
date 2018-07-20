@@ -26,7 +26,7 @@ $routes = [
         [
             'name' => '',
             'value' => 'キャストランキング管理',
-            'url' => '#',
+            'url' => route('admin.cast_rankings.index'),
             'submenu' => [],
         ],
     ],
