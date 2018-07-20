@@ -225,12 +225,4 @@ class User extends Authenticatable implements JWTSubject
             ->withPivot('id', 'user_id', 'reported_id', 'content', 'created_at', 'updated_at');
     }
 
-    public function favoritesCount($userId)
-    {
-        return Favorite::with([
-            'user' => function ($q) use ($userId) {
-                $q->where('user_id', $userId);
-            }
-        ])->count();
-    }
 }

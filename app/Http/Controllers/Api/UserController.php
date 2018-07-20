@@ -12,10 +12,9 @@ use App\Http\Resources\GuestResource;
 class UserController extends ApiController
 {
 
-    public function show(Request $request)
+    public function show(Request $request, $id)
     {
-        $userId = $request->id;
-        $user = User::find($userId);
+        $user = User::find($id);
         if (!$user) {
             return $this->respondErrorMessage(trans('messages.user_not_found'), 404);
         }
