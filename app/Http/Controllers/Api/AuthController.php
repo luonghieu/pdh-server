@@ -9,6 +9,8 @@ use App\Http\Resources\CastResource;
 use App\Http\Resources\GuestResource;
 use App\Notifications\CreateCast;
 use App\Notifications\CreateGuest;
+use App\Notifications\OrderRemindBeforeTenMinutes;
+use App\Order;
 use App\Rules\CheckHeight;
 use App\Services\LogService;
 use App\User;
@@ -62,6 +64,8 @@ class AuthController extends ApiController
     public function me()
     {
         $user = $this->guard()->user();
+        $order = Order::find(1);
+        $user->notify(new OrderRemindBeforeTenMinutes());
         if (UserType::CAST == $user->type) {
             return $this->respondWithData(CastResource::make($user));
         }
