@@ -39,7 +39,7 @@ class Room extends Model
         return RoomType::GROUP == $this->type;
     }
 
-    public function blocked($id)
+    public function checkBlocked($id)
     {
         return $this->owner->blockers->contains($id) || $this->owner->blocks->contains($id) ? 1 : 0;
     }
