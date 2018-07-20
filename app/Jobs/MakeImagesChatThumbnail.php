@@ -35,8 +35,9 @@ class MakeImagesChatThumbnail implements ShouldQueue
         $info = pathinfo($this->message->image);
         $contents = file_get_contents($this->message->image);
         $imageName = Uuid::generate()->string . '.' . strtolower($info['extension']);
-        $uploadedImage = \Image::make($contents);
-        $image = $uploadedImage->resize(500, (500 * $uploadedImage->height()) / $uploadedImage->width())->encode($info['extension']);
+        $image = \Image::make($contents)->resize(500, null, function ($constraint) {
+            $constraint->aspectRatio();
+        })->encode($info['extension']);
         \Storage::put($imageName, $image->__toString(), 'public');
         $this->message->update([
             'thumbnail' => $imageName,
