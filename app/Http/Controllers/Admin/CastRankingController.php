@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Admin\Cast_Ranking;
+namespace App\Http\Controllers\Admin;
 
 use App\Cast;
 use App\CastRanking;
