@@ -25,7 +25,7 @@ class RoomController extends ApiController
 
         $user = $this->guard()->user();
 
-        $rooms = Room::active()->where('type', '<>', RoomType::SYSTEM)->whereHas('users', function ($query) use ($user) {
+        $rooms = Room::active()->whereHas('users', function ($query) use ($user) {
             $query->where('user_id', $user->id);
         });
 

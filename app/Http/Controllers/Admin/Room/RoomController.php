@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Admin\Room;
 
+use App\Enums\RoomType;
 use App\Http\Controllers\Controller;
 use App\Room;
 use Carbon\Carbon;
@@ -56,7 +57,7 @@ class RoomController extends Controller
     {
         $keyword = $request->search;
 
-        $rooms = Room::with('users');
+        $rooms = Room::where('type', '<>', RoomType::SYSTEM)->with('users');
 
         if ($request->has('from_date') && !empty($request->from_date)) {
             $fromDate = Carbon::parse($request->from_date)->startOfDay();
