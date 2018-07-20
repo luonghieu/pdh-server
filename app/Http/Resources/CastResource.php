@@ -8,12 +8,10 @@ use App\Enums\CohabitantType;
 use App\Enums\DrinkVolumeType;
 use App\Enums\SiblingsType;
 use App\Enums\SmokingType;
-use App\Http\Resources\AvatarResource;
 use App\Job;
 use App\Repositories\PrefectureRepository;
 use App\Salary;
 use App\Traits\ResourceResponse;
-use App\User;
 use Illuminate\Http\Resources\Json\Resource;
 
 class CastResource extends Resource
