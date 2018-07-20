@@ -14,15 +14,17 @@ class MakeImagesChatThumbnail implements ShouldQueue
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
     public $message;
+    public $height;
 
     /**
      * Create a new job instance.
      *
      * @return void
      */
-    public function __construct($message)
+    public function __construct($message, $height)
     {
         $this->message = $message;
+        $this->height = $height;
     }
 
     /**
@@ -35,8 +37,8 @@ class MakeImagesChatThumbnail implements ShouldQueue
         $info = pathinfo($this->message->image);
         $contents = file_get_contents($this->message->image);
         $imageName = Uuid::generate()->string . '.' . strtolower($info['extension']);
-        $image = \Image::make($contents)->resize(500, null)->encode($info['extension']);
-
+        $uploadedImage = \Image::make($contents);
+        $image = $uploadedImage->resize(500, (500 * $uploadedImage->height()) / $uploadedImage->width())->encode($info['extension']);
         \Storage::put($imageName, $image->__toString(), 'public');
         $this->message->update([
             'thumbnail' => $imageName,

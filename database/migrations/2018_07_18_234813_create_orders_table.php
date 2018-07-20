@@ -1,10 +1,10 @@
 <?php
 
-use App\Enums\OrderStatus;
 use App\Enums\CastOrderType;
-use Illuminate\Support\Facades\Schema;
-use Illuminate\Database\Schema\Blueprint;
+use App\Enums\OrderStatus;
 use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
 
 class CreateOrdersTable extends Migration
 {
