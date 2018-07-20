@@ -18,9 +18,8 @@ class TagController extends ApiController
 
     public function index(Request $request)
     {
-        if (! empty($type = $request->type) &&
-            ($type == TagType::DESIRE || $type == TagType::SITUATION)
-        ) {
+        $type = $request->type;
+        if ($type == TagType::DESIRE || $type == TagType::SITUATION) {
             $tags = $this->repository->findByField('type', $type);
         } else {
             $tags = $this->repository->all();
