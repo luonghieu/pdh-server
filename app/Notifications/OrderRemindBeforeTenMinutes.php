@@ -58,7 +58,7 @@ class OrderRemindBeforeTenMinutes extends Notification implements ShouldQueue
             . '\n ゲストとのチャット画面にスタートボタンが出現します。'
             . '\n 合流後、ゲストに確認してからスタートボタンを押してください！'
             . '\n \n それでは素敵な時間を楽しんで来てくださいね♪'
-            . '\n また予定時刻に遅れそうな場合は、チャットルームで予め遅れる旨を伝えましょう！';
+            . '\n \n また予定時刻に遅れそうな場合は、チャットルームで予め遅れる旨を伝えましょう！';
 
         $room = $notifiable->rooms()
             ->where('rooms.type', RoomType::SYSTEM)
@@ -84,10 +84,10 @@ class OrderRemindBeforeTenMinutes extends Notification implements ShouldQueue
             . '\n ゲストとのチャット画面にスタートボタンが出現します。'
             . '\n 合流後、ゲストに確認してからスタートボタンを押してください！'
             . '\n \n それでは素敵な時間を楽しんで来てくださいね♪'
-            . '\n また予定時刻に遅れそうな場合は、チャットルームで予め遅れる旨を伝えましょう！';
-        $namedUser = 'mikke_dev';
+            . '\n \n また予定時刻に遅れそうな場合は、チャットルームで予め遅れる旨を伝えましょう！';
+        $namedUser = 'user_' . $notifiable->id;
         $send_from = UserType::ADMIN;
-        $pushId = 'c_1';
+        $pushId = 'c_4';
 
         return [
             'audienceOptions' => ['named_user' => $namedUser],
