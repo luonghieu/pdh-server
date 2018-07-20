@@ -4,6 +4,7 @@ namespace App\Notifications;
 
 use App\Enums\MessageType;
 use App\Enums\UserType;
+use App\User;
 use Illuminate\Bus\Queueable;
 use Illuminate\Notifications\Notification;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -56,7 +57,6 @@ class CreateChatRoomForOrderAssignedInCall extends Notification
     public function toArray($notifiable)
     {
         $startTime = Carbon::parse($this->order->date . ' ' . $this->order->start_time);
-
         $message = '\\\\ おめでとうございます！マッチングが確定しました♪ //'
             .'\n \n- ご予約内容 - '
             .'\n 場所：' . $this->order->address
@@ -65,16 +65,22 @@ class CreateChatRoomForOrderAssignedInCall extends Notification
             .'\n 尚、ご不明点がある場合は運営までお問い合わせください。'
             .'\n \n それでは素敵な時間をお楽しみください♪';
 
-        $room = $notifiable->rooms()->create();
-        $room->users()->attach(1);
+        if ($notifiable->type == UserType::GUEST) {
+            $room = $notifiable->rooms()->create(['order_id' => $this->order->id]);
+            $room->users()->attach(1);
 
-        $roomMessage = $room->messages()->create([
-            'user_id' => 1,
-            'type' => MessageType::SYSTEM,
-            'message' => $message
-        ]);
+            $roomMessage = $room->messages()->create([
+                'user_id' => 1,
+                'type' => MessageType::SYSTEM,
+                'message' => $message
+            ]);
 
-        $roomMessage->recipients()->attach([$notifiable->id, 1], ['room_id' => $room->id]);
+            $roomMessage->recipients()->attach($notifiable->id, ['room_id' => $room->id]);
+        } else {
+            $room = $this->order->room;
+            $systemMessage = $room->messages()->where('type', MessageType::SYSTEM)->latest()->first();
+            $systemMessage->recipients()->attach($notifiable->id, ['room_id' => $room->id]);
+        }
 
         return [
             'content' => $message,
@@ -93,9 +99,14 @@ class CreateChatRoomForOrderAssignedInCall extends Notification
             .'\n \n ゲストの方はキャストに来て欲しい場所の詳細をお伝えください。'
             .'\n 尚、ご不明点がある場合は運営までお問い合わせください。'
             .'\n \n それでは素敵な時間をお楽しみください♪';
-        $namedUser = 'mikke_dev';
+        $namedUser = 'user_' . $notifiable->id;
         $send_from = UserType::ADMIN;
-        $pushId = 'g_1';
+
+        if ($notifiable->type == UserType::GUEST) {
+            $pushId = 'g_3';
+        } else {
+            $pushId = 'c_3';
+        }
 
         return [
             'audienceOptions' => ['named_user' => $namedUser],

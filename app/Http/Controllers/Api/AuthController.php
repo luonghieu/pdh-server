@@ -2,18 +2,11 @@
 
 namespace App\Http\Controllers\Api;
 
-use App\Cast;
 use App\Enums\UserType;
-use App\Guest;
 use App\Http\Resources\CastResource;
 use App\Http\Resources\GuestResource;
-use App\Notifications\CreateCast;
-use App\Notifications\CreateChatRoomForOrderAssignedInCall;
-use App\Notifications\CreateGuest;
-use App\Order;
 use App\Rules\CheckHeight;
 use App\Services\LogService;
-use App\User;
 use Illuminate\Http\Request;
 
 class AuthController extends ApiController
@@ -67,8 +60,7 @@ class AuthController extends ApiController
         if (UserType::CAST == $user->type) {
             return $this->respondWithData(CastResource::make($user));
         }
-        $order = Order::find(3);
-        $user->notify(new CreateChatRoomForOrderAssignedInCall($order));
+
         return $this->respondWithData(GuestResource::make($user));
     }
 
