@@ -14,11 +14,33 @@ class Message extends Model
 
     protected $touches = ['room'];
 
+    protected $fillable = [
+        'room_id',
+        'user_id',
+        'thumbnail',
+        'message',
+        'image',
+        'type',
+    ];
+
     public function getImageAttribute($value)
     {
         if ($value) {
             return Storage::url($value);
         }
+    }
+
+    public function getThumbnailAttribute($value)
+    {
+        if (empty($value)) {
+            return $this->image;
+        }
+
+        if (strpos($value, 'https') !== false) {
+            return $value;
+        }
+
+        return Storage::url($value);
     }
 
     public function unread()

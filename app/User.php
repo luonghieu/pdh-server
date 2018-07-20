@@ -2,14 +2,13 @@
 
 namespace App;
 
-use Carbon\Carbon;
 use App\Enums\UserType;
+use Carbon\Carbon;
+use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cache;
-use Illuminate\Support\Facades\Redis;
 use Tymon\JWTAuth\Contracts\JWTSubject;
-use Illuminate\Notifications\Notifiable;
-use Illuminate\Foundation\Auth\User as Authenticatable;
 
 class User extends Authenticatable implements JWTSubject
 {
@@ -111,6 +110,11 @@ class User extends Authenticatable implements JWTSubject
         $user = Auth::user();
 
         return $this->blockers->contains($user->id) ? 1 : 0;
+    }
+
+    public function getBlocked($id)
+    {
+        return $this->blockers->contains($id) || $this->blocks->contains($id) ? 1 : 0;
     }
 
     public function getLastActiveAtAttribute($value)
@@ -239,5 +243,4 @@ class User extends Authenticatable implements JWTSubject
             ->belongsToMany(User::class, 'reports', 'user_id', 'reported_id')
             ->withPivot('id', 'user_id', 'reported_id', 'content', 'created_at', 'updated_at');
     }
-
 }

@@ -2,7 +2,9 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Enums\RoomType;
 use App\Http\Resources\MessageResource;
+use App\Jobs\MakeImagesChatThumbnail;
 use App\Message;
 use App\Room;
 use App\Services\LogService;
@@ -115,7 +117,14 @@ class MessageController extends ApiController
 
             $message->save();
 
-            $message->recipients()->attach($userIds, ['room_id' => $id]);
+            if (request()->has('image')) {
+                MakeImagesChatThumbnail::dispatch($message);
+            }
+            if (RoomType::DIRECT == $room->type && $user->getBlocked($userIds[0])) {
+                $message->recipients()->attach($userIds, ['room_id' => $id, 'is_show' => false]);
+            } else {
+                $message->recipients()->attach($userIds, ['room_id' => $id]);
+            }
 
             $message = $message->load('user');
         } catch (\Exception $e) {

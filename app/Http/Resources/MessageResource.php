@@ -23,6 +23,7 @@ class MessageResource extends Resource
             'user' => $this->user->is_guest ? new GuestResource($this->user) : new CastResource($this->user),
             'message' => $this->message,
             'image' => $this->image,
+            'thumbnail' => $this->thumbnail,
             'type' => $this->type,
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
