@@ -59,7 +59,7 @@
                 <td>
                   @if ($room->is_group)
                   <a href="{{ route('admin.rooms.messages_by_room', ['room' => $room->id]) }}">
-                    {{ $room->countUser().'人' }}
+                    {{ $room->users->count().'人' }}
                   </a>
                   @else
                   <a href="{{ route('admin.users.show',
