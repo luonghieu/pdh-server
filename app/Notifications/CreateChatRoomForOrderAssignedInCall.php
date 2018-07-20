@@ -79,6 +79,8 @@ class CreateChatRoomForOrderAssignedInCall extends Notification
         } else {
             $room = $this->order->room;
             $systemMessage = $room->messages()->where('type', MessageType::SYSTEM)->latest()->first();
+
+            $room->users()->attach($notifiable->id);
             $systemMessage->recipients()->attach($notifiable->id, ['room_id' => $room->id]);
         }
 
