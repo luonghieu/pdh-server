@@ -52,6 +52,8 @@ class CastController extends ApiController
 
         $casts = $casts->latest()->active()->WhereDoesntHave('blockers', function($query) use ($user) {
             $query->where('user_id', $user->id);
+        })->WhereDoesntHave('blocks', function($q) use ($user) {
+            $q->where('blocked_id', $user->id);
         })->paginate($request->per_page)->appends($request->query());
 
         return $this->respondWithData(CastResource::collection($casts));

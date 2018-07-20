@@ -32,6 +32,8 @@ class GuestController extends ApiController
 
         $casts = $guests->latest()->active()->WhereDoesntHave('blockers', function($q) use ($user) {
             $q->where('user_id', $user->id);
+        })->WhereDoesntHave('blocks', function($q) use ($user) {
+            $q->where('blocked_id', $user->id);
         })->paginate($request->per_page)->appends($request->query());
 
         return $this->respondWithData(GuestResource::collection($casts));
