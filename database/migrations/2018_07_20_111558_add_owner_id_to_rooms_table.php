@@ -14,11 +14,7 @@ class AddOwnerIdToRoomsTable extends Migration
     public function up()
     {
         Schema::table('rooms', function (Blueprint $table) {
-            $table->unsignedInteger('owner_id')->after('order_id');
-            $table->foreign('owner_id')
-                ->references('id')
-                ->on('users')
-                ->onDelete('cascade');
+            $table->unsignedInteger('owner_id')->after('order_id')->nullable();
         });
     }
 
