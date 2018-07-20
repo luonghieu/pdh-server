@@ -14,17 +14,15 @@ class MakeImagesChatThumbnail implements ShouldQueue
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
     public $message;
-    public $height;
 
     /**
      * Create a new job instance.
      *
      * @return void
      */
-    public function __construct($message, $height)
+    public function __construct($message)
     {
         $this->message = $message;
-        $this->height = $height;
     }
 
     /**
