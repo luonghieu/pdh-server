@@ -23,4 +23,5 @@ return [
     'delete_message_success' => '削除しました',
     'message_exits' => 'メッセージが存在しません',
     'update_working_today_success' => '更新しました',
+    'avatar_at_least' => 'プロフィール写真は、1枚以上の登録が必要です',
 ];

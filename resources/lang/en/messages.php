@@ -23,4 +23,5 @@ return [
     'delete_message_success' => 'Delete message successfully',
     'message_exits' => 'Message not found',
     'update_working_today_success' => 'Update working today successfully',
+    'avatar_at_least' => 'You need to register at least one profile picture',
 ];
