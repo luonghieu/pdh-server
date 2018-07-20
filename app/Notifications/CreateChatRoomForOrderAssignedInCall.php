@@ -8,6 +8,7 @@ use Illuminate\Bus\Queueable;
 use Illuminate\Notifications\Notification;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
+use Illuminate\Support\Carbon;
 
 class CreateChatRoomForOrderAssignedInCall extends Notification
 {
@@ -54,15 +55,15 @@ class CreateChatRoomForOrderAssignedInCall extends Notification
      */
     public function toArray($notifiable)
     {
+        $startTime = Carbon::parse($this->order->date . ' ' . $this->order->start_time);
 
-        $message = 'ようこそCheersへ！'
-            .'\nCheersはプライベートでの飲み会や接待など様々なシーンにキャストを呼べるマッチングアプリです。'
-            .'\n \nクオリティの高いキャストと今すぐ出会えるのはCheersだけ！'
-            .'\n \n呼びたいときに、呼びたい人数・場所を入力するだけ。'
-            .'\n最短20分でキャストがゲストの元に駆けつけます♪'
-            .'\n \n「キャスト一覧」からお気に入りのキャストを見つけてアピールすることも可能です！'
-            .'\n \nまずはHomeの「今すぐキャストを呼ぶ」からキャストを呼んで素敵な時間をお過ごし下さい♪'
-            .'\n \nご不明点はお気軽にお問い合わせください。';
+        $message = '\\\\ おめでとうございます！マッチングが確定しました♪ //'
+            .'\n \n- ご予約内容 - '
+            .'\n 場所：' . $this->order->address
+            .'\n 合流予定時間：'. $startTime->format('H:i') .'～'
+            .'\n \n ゲストの方はキャストに来て欲しい場所の詳細をお伝えください。'
+            .'\n 尚、ご不明点がある場合は運営までお問い合わせください。'
+            .'\n \n それでは素敵な時間をお楽しみください♪';
 
         $room = $notifiable->rooms()->create();
         $room->users()->attach(1);
@@ -83,15 +84,16 @@ class CreateChatRoomForOrderAssignedInCall extends Notification
 
     public function pushData($notifiable)
     {
-        $content = 'ようこそCheersへ！'
-            .'\nCheersはプライベートでの飲み会や接待など様々なシーンにキャストを呼べるマッチングアプリです。'
-            .'\n \nクオリティの高いキャストと今すぐ出会えるのはCheersだけ！'
-            .'\n \n呼びたいときに、呼びたい人数・場所を入力するだけ。'
-            .'\n最短20分でキャストがゲストの元に駆けつけます♪'
-            .'\n \n「キャスト一覧」からお気に入りのキャストを見つけてアピールすることも可能です！'
-            .'\n \nまずはHomeの「今すぐキャストを呼ぶ」からキャストを呼んで素敵な時間をお過ごし下さい♪'
-            .'\n \nご不明点はお気軽にお問い合わせください。';
-        $namedUser = 'user_' . $notifiable->id;
+        $startTime = Carbon::parse($this->order->date . ' ' . $this->order->start_time);
+
+        $content = '\\\\ おめでとうございます！マッチングが確定しました♪ //'
+            .'\n \n- ご予約内容 - '
+            .'\n 場所：' . $this->order->address
+            .'\n 合流予定時間：'. $startTime->format('H:i') .'～'
+            .'\n \n ゲストの方はキャストに来て欲しい場所の詳細をお伝えください。'
+            .'\n 尚、ご不明点がある場合は運営までお問い合わせください。'
+            .'\n \n それでは素敵な時間をお楽しみください♪';
+        $namedUser = 'mikke_dev';
         $send_from = UserType::ADMIN;
         $pushId = 'g_1';
 

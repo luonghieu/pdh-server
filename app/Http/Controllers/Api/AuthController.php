@@ -8,7 +8,9 @@ use App\Guest;
 use App\Http\Resources\CastResource;
 use App\Http\Resources\GuestResource;
 use App\Notifications\CreateCast;
+use App\Notifications\CreateChatRoomForOrderAssignedInCall;
 use App\Notifications\CreateGuest;
+use App\Order;
 use App\Rules\CheckHeight;
 use App\Services\LogService;
 use App\User;
@@ -65,7 +67,8 @@ class AuthController extends ApiController
         if (UserType::CAST == $user->type) {
             return $this->respondWithData(CastResource::make($user));
         }
-
+        $order = Order::find(3);
+        $user->notify(new CreateChatRoomForOrderAssignedInCall($order));
         return $this->respondWithData(GuestResource::make($user));
     }
 
