@@ -3,8 +3,8 @@
 namespace App;
 
 use App\Enums\RoomType;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Auth;
 
 class Room extends Model
 {
@@ -22,6 +22,26 @@ class Room extends Model
     public function getIsActiveAttribute($value)
     {
         return $value ? 1 : 0;
+    }
+
+    public function getIsSystemAttribute()
+    {
+        return RoomType::SYSTEM == $this->type;
+    }
+
+    public function getIsDirectAttribute()
+    {
+        return RoomType::DIRECT == $this->type;
+    }
+
+    public function getIsGroupAttribute()
+    {
+        return RoomType::GROUP == $this->type;
+    }
+
+    public function blocked($id)
+    {
+        return $this->owner->blockers->contains($id) || $this->owner->blocks->contains($id) ? 1 : 0;
     }
 
     public function scopeActive($query)
@@ -61,5 +81,15 @@ class Room extends Model
     public function users()
     {
         return $this->belongsToMany(User::class);
+    }
+
+    public function owner()
+    {
+        return $this->belongsTo(User::class);
+    }
+
+    public function countUser()
+    {
+        return $this->users()->count();
     }
 }

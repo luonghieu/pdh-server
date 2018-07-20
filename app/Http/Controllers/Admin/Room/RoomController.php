@@ -51,4 +51,37 @@ class RoomController extends Controller
 
         return redirect()->route('admin.rooms.messages_by_room', ['room' => $room->id]);
     }
+
+    public function index(Request $request)
+    {
+        $keyword = $request->search;
+
+        $rooms = Room::with('users');
+
+        if ($request->has('from_date') && !empty($request->from_date)) {
+            $fromDate = Carbon::parse($request->from_date)->startOfDay();
+            $toDate = Carbon::parse($request->to_date)->endOfDay();
+            $rooms->where(function ($query) use ($fromDate, $toDate) {
+                $query->where('created_at', '>=', $fromDate);
+            });
+        }
+
+        if ($request->has('to_date') && !empty($request->to_date)) {
+            $fromDate = Carbon::parse($request->from_date)->startOfDay();
+            $toDate = Carbon::parse($request->to_date)->endOfDay();
+            $rooms->where(function ($query) use ($fromDate, $toDate) {
+                $query->where('created_at', '<=', $toDate);
+            });
+        }
+
+        if ($request->has('search')) {
+            $rooms->where(function ($query) use ($keyword) {
+                $query->where('id', "$keyword");
+                $query->orWhere('owner_id', "$keyword");
+            });
+        }
+        $rooms = $rooms->orderBy('created_at', 'DESC')->paginate($request->limit ?: 10);
+
+        return view('admin.rooms.index', compact('rooms'));
+    }
 }
