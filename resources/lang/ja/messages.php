@@ -19,8 +19,9 @@ return [
     'set_avatar_default_success' => 'メイン画像を変更しました',
     'delete_avatar_success' => '削除しました',
     'update_avatar_success' => '更新しました',
+    'room_not_found' => 'このチャットルームは存在しません',
     'delete_message_success' => '削除しました',
     'message_exits' => 'メッセージが存在しません',
     'update_working_today_success' => '更新しました',
-    'room_not_found' => 'チャットルームは存在しません',
+    'avatar_at_least' => 'プロフィール写真は、1枚以上の登録が必要です',
 ];

@@ -49,9 +49,11 @@ $routes = [
     'chatroom' => [
         [
             'name' => '',
-            'value' => 'チャットルーム管理',
+            'value' => '運営者専用チャット',
             'url' => '#',
-            'submenu' => [],
+            'submenu' => [
+                'admin.rooms.messages_by_room'
+            ],
         ],
     ],
     'sale' => [

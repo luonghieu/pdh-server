@@ -16,7 +16,8 @@ class User extends Authenticatable implements JWTSubject
     use Notifiable;
 
     protected $hidden = [
-        'password', 'remember_token',
+        'password',
+        'remember_token',
     ];
 
     protected $guarded = ['password_confirmation'];
@@ -142,6 +143,21 @@ class User extends Authenticatable implements JWTSubject
         return 1;
     }
 
+    public function getRoomIdAttribute()
+    {
+        $userId = $this->id;
+
+        $room = $this->rooms()->direct()->whereHas('users', function ($q) use ($userId) {
+            $q->where('user_id', $userId);
+        })->first();
+
+        if (!$room) {
+            return '';
+        }
+
+        return $room->id;
+    }
+
     public function isFavoritedUser($userId)
     {
         return $this->favorites()->pluck('users.id')->contains($userId);
@@ -223,4 +239,5 @@ class User extends Authenticatable implements JWTSubject
             ->belongsToMany(User::class, 'reports', 'user_id', 'reported_id')
             ->withPivot('id', 'user_id', 'reported_id', 'content', 'created_at', 'updated_at');
     }
+
 }

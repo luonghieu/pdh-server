@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Resources\AvatarResource;
 use App\Jobs\MakeAvatarThumbnail;
+use App\Rules\CheckAvatarLessThanTen;
 use App\Services\LogService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
@@ -16,7 +17,7 @@ class AvatarController extends ApiController
         $user = $this->guard()->user();
 
         $rules = [
-            'image' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:5120',
+            'image' => ['required', 'image', 'mimes:jpeg,png,jpg,gif,svg', 'max:5120', new CheckAvatarLessThanTen],
         ];
 
         $validator = validator(request()->all(), $rules);
@@ -25,7 +26,7 @@ class AvatarController extends ApiController
             return $this->respondWithValidationError($validator->errors()->messages());
         }
 
-        $input['is_default'] = true;
+        $input['is_default'] = false;
         $input['thumbnail'] = '';
 
         if (request()->has('image')) {
@@ -74,6 +75,12 @@ class AvatarController extends ApiController
     public function delete($id)
     {
         $user = $this->guard()->user();
+
+        $amountAvatar = $user->avatars->count();
+
+        if ($amountAvatar <= 1) {
+            return $this->respondErrorMessage(trans('messages.avatar_at_least'), 400);
+        }
 
         $avatar = $user->avatars->find($id);
 
