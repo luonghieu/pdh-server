@@ -35,4 +35,9 @@ class Order extends Model
     {
         return $this->belongsToMany(Tag::class);
     }
+
+    public function room()
+    {
+        return $this->hasOne(Room::class);
+    }
 }
