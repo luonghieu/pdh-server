@@ -2,11 +2,11 @@
 
 namespace App\Http\Controllers\Api;
 
-use Illuminate\Http\Request;
-use App\Room;
 use App\Enums\RoomType;
 use App\Http\Resources\RoomResource;
+use App\Room;
 use App\Services\LogService;
+use Illuminate\Http\Request;
 
 class RoomController extends ApiController
 {
@@ -25,7 +25,7 @@ class RoomController extends ApiController
 
         $user = $this->guard()->user();
 
-        $rooms = Room::active()->whereHas('users', function ($query) use ($user) {
+        $rooms = Room::active()->where('type', '<>', RoomType::SYSTEM)->whereHas('users', function ($query) use ($user) {
             $query->where('user_id', $user->id);
         });
 
@@ -45,7 +45,7 @@ class RoomController extends ApiController
     public function store(Request $request)
     {
         $validator = validator($request->all(), [
-            'user_id' => 'required'
+            'user_id' => 'required',
         ]);
 
         if ($validator->fails()) {
