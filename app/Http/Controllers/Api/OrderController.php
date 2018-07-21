@@ -49,7 +49,7 @@ class OrderController extends ApiController
         ]);
 
         if (null == $input['prefecture_id']) {
-            $input['prefecture_id'] == 13;
+            $input['prefecture_id'] = 13;
         }
 
         if ($request->tags) {
