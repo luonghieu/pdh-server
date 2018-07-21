@@ -4,6 +4,7 @@ namespace App;
 
 use App\Enums\CastOrderStatus;
 use App\Enums\CastOrderType;
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 
 class Order extends Model
@@ -53,7 +54,8 @@ class Order extends Model
     public function deny($userId)
     {
         try {
-            $this->nominees()->updateExistingPivot($userId, ['status' => CastOrderStatus::DENIED], false);
+            $this->nominees()->updateExistingPivot($userId,
+                ['status' => CastOrderStatus::DENIED, 'canceled_at' => Carbon::now()], false);
 
             return true;
         } catch (\Exception $e) {
