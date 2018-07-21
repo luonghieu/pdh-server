@@ -80,7 +80,7 @@ class OrderController extends ApiController
 
     public function show($id)
     {
-        $order = Order::with('tags', 'user', 'nominees')->find($id);
+        $order = Order::with('tags', 'user', 'casts')->find($id);
 
         if (!$order) {
             return $this->respondErrorMessage(trans('messages.order_not_found'), 404);
