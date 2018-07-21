@@ -75,7 +75,7 @@
                 @endif
                 @if (App\Enums\OrderType::CALL == $order->type)
                   @if ($order->casts->count() > 1)
-                    <td><a href="#">{{ $order->casts->count() }} 名</a></td>
+                    <td><a href="{{ route('admin.orders.candidates', ['order' => $order->id]) }}">{{ $order->casts->count() }} 名</a></td>
                   @else
                   <td><a href="{{ $order->casts->first() ? route('admin.users.show', ['user' => $order->casts->first()->id]) : '#' }}">{{ $order->casts->first() ? $order->casts->first()->id : "" }}</a></td>
                   @endif
