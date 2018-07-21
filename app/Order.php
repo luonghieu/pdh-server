@@ -52,9 +52,8 @@ class Order extends Model
 
     public function deny($userId)
     {
-        $user = User::find($userId);
         try {
-            $this->nominees()->updateExistingPivot($user, ['status' => CastOrderStatus::DENIED], false);
+            $this->nominees()->updateExistingPivot($userId, ['status' => CastOrderStatus::DENIED], false);
 
             return true;
         } catch (\Exception $e) {
