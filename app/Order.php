@@ -4,6 +4,7 @@ namespace App;
 
 use App\Enums\CastOrderStatus;
 use App\Enums\CastOrderType;
+use App\Enums\OrderStatus;
 use Illuminate\Database\Eloquent\Model;
 
 class Order extends Model
@@ -54,6 +55,17 @@ class Order extends Model
     {
         try {
             $this->nominees()->updateExistingPivot($userId, ['status' => CastOrderStatus::DENIED], false);
+
+            return true;
+        } catch (\Exception $e) {
+            return false;
+        }
+    }
+
+    public function cancel()
+    {
+        try {
+            $this->update(['status' => OrderStatus::CANCELED]);
 
             return true;
         } catch (\Exception $e) {
