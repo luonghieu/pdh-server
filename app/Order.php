@@ -49,4 +49,15 @@ class Order extends Model
     {
         return $this->belongsToMany(Tag::class);
     }
+
+    public function deny($userId)
+    {
+        try {
+            $this->nominees()->updateExistingPivot($userId, ['status' => CastOrderStatus::DENIED], false);
+
+            return true;
+        } catch (\Exception $e) {
+            return false;
+        }
+    }
 }
