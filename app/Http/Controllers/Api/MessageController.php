@@ -36,7 +36,15 @@ class MessageController extends ApiController
             return $this->respondErrorMessage(trans('messages.room_not_found'), 404);
         }
 
-        $messages = $room->messages()->with('user')->latest()->paginate($request->per_page);
+        $messages = $room->messages()->with('user')->latest();
+
+        if ($room->is_direct) {
+            $messages = $messages->whereHas('recipients', function ($q) {
+                $q->where('is_show', true);
+            });
+        }
+
+        $messages = $messages->paginate($request->per_page);
 
         DB::table('message_recipient')
             ->where([
