@@ -45,7 +45,7 @@ class Order extends Model
     public function candidates()
     {
         return $this->belongsToMany(Cast::class)
-            ->where('cast_order.type', CastOrderType::CANDIDATE);
+            ->where('cast_order.type', CastOrderType::CANDIDATE)->withTimestamps();
     }
 
     public function tags()

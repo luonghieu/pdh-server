@@ -2,9 +2,9 @@
 
 namespace App\Criteria\Order;
 
-use App\Enums\UserType;
 use Prettus\Repository\Contracts\CriteriaInterface;
 use Prettus\Repository\Contracts\RepositoryInterface;
+use Illuminate\Support\Facades\Auth;
 
 /**
  * Class OnlyGuestCriteria.
@@ -23,8 +23,8 @@ class OnlyGuestCriteria implements CriteriaInterface
      */
     public function apply($model, RepositoryInterface $repository)
     {
-        return $model->whereHas('user', function ($query) {
-            $query->where('type', UserType::GUEST);
-        });
+        $user = Auth::user();
+
+        return $model->where('user_id', $user->id);
     }
 }
