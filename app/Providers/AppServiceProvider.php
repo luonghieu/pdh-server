@@ -2,6 +2,8 @@
 
 namespace App\Providers;
 
+use App\Message;
+use App\Observers\MessageObserver;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\ServiceProvider;
 
@@ -16,6 +18,8 @@ class AppServiceProvider extends ServiceProvider
     {
         // Fixing for RDS old version
         Schema::defaultStringLength(191);
+
+        Message::observe(MessageObserver::class);
     }
 
     /**
