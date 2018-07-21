@@ -61,5 +61,6 @@ class Kernel extends HttpKernel
         'throttle' => \Illuminate\Routing\Middleware\ThrottleRequests::class,
         'is_admin' => \App\Http\Middleware\IsAdmin::class,
         'last_active_at' => \App\Http\Middleware\LastActiveAt::class,
+        'cast' => \App\Http\Middleware\RestrictToCastOnly::class,
     ];
 }
