@@ -2,18 +2,17 @@
 
 namespace App\Http\Controllers\Api;
 
-use App\Room;
-use App\User;
-use App\Message;
 use App\Enums\RoomType;
-use Webpatser\Uuid\Uuid;
-use App\Services\LogService;
-use Illuminate\Http\Request;
 use App\Events\MessageCreated;
-use Illuminate\Support\Facades\DB;
-use App\Jobs\MakeImagesChatThumbnail;
 use App\Http\Resources\MessageResource;
+use App\Jobs\MakeImagesChatThumbnail;
+use App\Message;
+use App\Services\LogService;
+use App\User;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
+use Webpatser\Uuid\Uuid;
 
 class MessageController extends ApiController
 {
@@ -86,7 +85,10 @@ class MessageController extends ApiController
         if ($validator->fails()) {
             return $this->respondWithValidationError($validator->errors()->messages());
         }
-        $room = Room::active()->find($id);
+
+        $user = $this->guard()->user();
+
+        $room = $user->rooms()->active()->find($id);
 
         if (!$room) {
             return $this->respondErrorMessage(trans('messages.room_not_found'), 404);
@@ -112,8 +114,6 @@ class MessageController extends ApiController
         }
 
         try {
-            $user = $this->guard()->user();
-
             $userIds = $room->users()->where('users.id', '<>', $user->id)->pluck('users.id')->toArray();
 
             $message->save();

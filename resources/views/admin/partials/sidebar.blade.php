@@ -32,10 +32,12 @@ $routes = [
     ],
     'call' => [
         [
-            'name' => '',
-            'value' => 'コール管理',
-            'url' => '#',
-            'submenu' => [],
+            'name' => 'admin.orders.index',
+            'value' => '予約管理',
+            'url' => route('admin.orders.index'),
+            'submenu' => [
+              'admin.orders.nominees'
+            ],
         ],
     ],
     'order' => [
