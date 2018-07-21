@@ -67,6 +67,7 @@ Route::group(['prefix' => 'v1'], function () {
 
     Route::group(['middleware' => ['auth:api'], 'prefix' => 'orders', 'as' => 'orders.'], function () {
         Route::post('/', ['as' => 'create', 'uses' => 'OrderController@create']);
+        Route::get('/{id}', ['as' => 'show', 'uses' => 'OrderController@show']);
     });
 
     Route::group(['middleware' => ['auth:api', 'cast']], function () {
