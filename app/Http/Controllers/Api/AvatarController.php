@@ -144,6 +144,6 @@ class AvatarController extends ApiController
             return $this->respondServerError();
         }
 
-        return $this->respondWithNoData(trans('messages.update_avatar_success'));
+        return $this->respondWithData(AvatarResource::make($avatar));
     }
 }
