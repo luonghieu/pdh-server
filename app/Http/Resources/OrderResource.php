@@ -40,7 +40,7 @@ class OrderResource extends Resource
             'actual_ended_at' => $this->actual_ended_at,
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
-            'user' => new GuestResource($this->whenLoaded('user')),
+            'user' => new UserResource($this->whenLoaded('user')),
         ]);
     }
 }
