@@ -56,7 +56,8 @@ class OrderController extends ApiController
             $tagIds = Tag::whereIn('name', $listTags)->pluck('id');
         }
 
-        $input['end_time'] = \Carbon\Carbon::parse($input['start_time'])->addMinute($input['duration'])->format('H:i');
+        $input['end_time'] = \Carbon\Carbon::parse($input['start_time'])->addHours($input['duration'])->format('H:i');
+
         $input['status'] = OrderStatus::OPEN;
 
         try {
