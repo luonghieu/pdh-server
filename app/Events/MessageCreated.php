@@ -52,4 +52,25 @@ class MessageCreated implements ShouldBroadcast
             'message' => MessageResource::make($this->message),
         ];
     }
+
+    public function broadcastWhen()
+    {
+        $room = $this->message->room;
+
+        if (!$room->is_direct) {
+            return true;
+        }
+
+        $recipient = $this->message->recipients()->first();
+
+        if (!$recipient) {
+            return true;
+        }
+
+        if (!$room->checkBlocked($recipient->id)) {
+            return true;
+        }
+
+        return false;
+    }
 }
