@@ -41,4 +41,11 @@ class OrderController extends Controller
 
         return view('admin.orders.index', compact('orders'));
     }
+
+    public function nomineeCastList(Order $order)
+    {
+        $casts = $order->nominees()->paginate();
+
+        return view('admin.orders.nominee_casts', compact('casts', 'order'));
+    }
 }
