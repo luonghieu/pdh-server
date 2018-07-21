@@ -55,4 +55,11 @@ class OrderController extends Controller
 
         return view('admin.orders.candidates', compact('casts', 'order'));
     }
+
+    public function orderCall(Order $order)
+    {
+        $order = $order->with('candidates', 'nominees', 'user', 'castClass', 'room', 'casts', 'tags')->first();
+
+        return view('admin.orders.order_call', compact('order'));
+    }
 }
