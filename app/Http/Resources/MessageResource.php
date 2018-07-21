@@ -20,7 +20,7 @@ class MessageResource extends Resource
             'id' => $this->id,
             'room_id' => $this->room_id,
             'user_id' => $this->user_id,
-            'user' => $this->user->is_guest ? new GuestResource($this->user) : new CastResource($this->user),
+            'user' => UserResource::make($this->user),
             'message' => $this->message,
             'image' => $this->image,
             'thumbnail' => $this->thumbnail,
