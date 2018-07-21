@@ -68,4 +68,11 @@ Route::group(['prefix' => 'v1'], function () {
     Route::group(['middleware' => ['auth:api'], 'prefix' => 'orders', 'as' => 'orders.'], function () {
         Route::post('/', ['as' => 'create', 'uses' => 'OrderController@create']);
     });
+
+    Route::group(['middleware' => ['auth:api', 'cast']], function () {
+        Route::group(['prefix' => 'orders', 'as' => 'orders.'], function () {
+            Route::post('/{id}/deny', ['as' => 'deny', 'uses' => 'Cast\OrderController@deny'])
+                ->where('id', '[0-9]+');
+        });
+    });
 });

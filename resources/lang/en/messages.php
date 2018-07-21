@@ -24,4 +24,7 @@ return [
     'message_exits' => 'Message not found',
     'update_working_today_success' => 'Update working today successfully',
     'avatar_at_least' => 'You need to register at least one profile picture',
+    'order_not_found' => 'Order is not found',
+    'action_not_performed' => 'This action can not be performed',
+    'denied_order' => 'Successfully deny order',
 ];
