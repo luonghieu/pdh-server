@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Enums\OrderStatus;
 use App\Enums\OrderType;
 use App\Http\Resources\OrderResource;
+use App\Order;
 use App\Services\LogService;
 use App\Tag;
 use Illuminate\Http\Request;
@@ -75,5 +76,16 @@ class OrderController extends ApiController
         }
 
         return $this->respondWithData(OrderResource::make($order));
+    }
+
+    public function show($id)
+    {
+        $order = Order::with('tags', 'user', 'nominees')->find($id);
+
+        if (!$order) {
+            return $this->respondErrorMessage(trans('messages.order_not_found'), 404);
+        }
+
+        return $this->respondWithData(new OrderResource($order));
     }
 }

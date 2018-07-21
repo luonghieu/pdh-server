@@ -24,4 +24,5 @@ return [
     'message_exits' => 'メッセージが存在しません',
     'update_working_today_success' => '更新しました',
     'avatar_at_least' => 'プロフィール写真は、1枚以上の登録が必要です',
+    'order_not_found' => '開始時間とプランは必ず選択してください',
 ];

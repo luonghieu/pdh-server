@@ -41,6 +41,12 @@ class OrderResource extends Resource
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
             'user' => new GuestResource($this->whenLoaded('user')),
+            'tags' => $this->whenLoaded('tags')->map(function ($tag) {
+                return new TagResource($tag);
+            }),
+            'casts' => $this->whenLoaded('nominees')->map(function ($nominee) {
+                return new CastResource($nominee);
+            }),
         ]);
     }
 }
