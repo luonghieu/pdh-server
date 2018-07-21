@@ -61,6 +61,10 @@ Route::group(['prefix' => 'v1'], function () {
         Route::get('/orders', ['as' => 'index', 'uses' => 'Guest\OrderController@index']);
     });
 
+    Route::group(['middleware' => ['auth:api'], 'prefix' => 'cast', 'as' => 'cast.'], function () {
+        Route::get('/orders', ['as' => 'index', 'uses' => 'Cast\OrderController@index']);
+    });
+
     Route::group(['middleware' => ['auth:api'], 'prefix' => 'orders', 'as' => 'orders.'], function () {
         Route::post('/', ['as' => 'create', 'uses' => 'OrderController@create']);
         Route::get('/{id}', ['as' => 'show', 'uses' => 'OrderController@show']);
