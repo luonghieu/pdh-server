@@ -36,7 +36,7 @@ class Order extends Model
     public function nominees()
     {
         return $this->belongsToMany(Cast::class)
-            ->where('cast_order.type', CastOrderType::NOMINEE)->withTimestamps();
+            ->where('cast_order.type', CastOrderType::NOMINEE)->withPivot('status')->withTimestamps();
     }
 
     public function candidates()

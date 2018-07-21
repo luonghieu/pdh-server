@@ -35,7 +35,9 @@ $routes = [
             'name' => 'admin.orders.index',
             'value' => '予約管理',
             'url' => route('admin.orders.index'),
-            'submenu' => [],
+            'submenu' => [
+              'admin.orders.nominees'
+            ],
         ],
     ],
     'order' => [

@@ -29,6 +29,7 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.'], function () {
 
     Route::group(['namespace' => 'Order', 'prefix' => 'orders', 'as' => 'orders.', 'middleware' => 'is_admin'], function () {
         Route::get('/', ['as' => 'index', 'uses' => 'OrderController@index']);
+        Route::get('/{order}/nominees', ['as' => 'nominees', 'uses' => 'OrderController@nomineeCastList'])->where('order', '[0-9]+');
     });
 
 });
