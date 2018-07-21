@@ -23,6 +23,11 @@ class Message extends Model
         'type',
     ];
 
+    protected $casts = [
+        'room_id' => 'integer',
+        'type' => 'integer',
+    ];
+
     public function getImageAttribute($value)
     {
         if ($value) {
@@ -60,6 +65,8 @@ class Message extends Model
 
     public function recipients()
     {
-        return $this->belongsToMany(User::class, 'message_recipient')->withPivot('room_id', 'read_at')->withTimestamps();
+        return $this->belongsToMany(User::class, 'message_recipient')
+            ->withPivot('room_id', 'read_at')
+            ->withTimestamps();
     }
 }
