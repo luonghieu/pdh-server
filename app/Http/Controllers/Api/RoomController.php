@@ -69,6 +69,7 @@ class RoomController extends ApiController
                 $room = new Room;
                 $room->type = $type;
                 $room->is_active = true;
+                $room->owner_id = $user->id;
                 $room->save();
 
                 $room->users()->attach([$userId, $user->id]);
