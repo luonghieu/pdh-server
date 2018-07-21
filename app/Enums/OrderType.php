@@ -18,6 +18,14 @@ final class OrderType extends Enum
      */
     public static function getDescription($value): string
     {
+        if (self::NOMINATED_CALL === $value) {
+            return 'コール内指名';
+        } elseif (self::CALL === $value) {
+            return 'コール';
+        } elseif (self::NOMINATION === $value) {
+            return '指名予約';
+        }
+
         return parent::getDescription($value);
     }
 }
