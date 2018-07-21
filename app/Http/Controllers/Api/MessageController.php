@@ -30,7 +30,7 @@ class MessageController extends ApiController
 
         $user = $this->guard()->user();
 
-        $room = $user->rooms->active()->find($id);
+        $room = $user->rooms()->active()->find($id);
 
         if (empty($room)) {
             return $this->respondErrorMessage(trans('messages.room_not_found'), 404);
