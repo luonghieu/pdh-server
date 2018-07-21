@@ -76,4 +76,11 @@ Route::group(['prefix' => 'v1'], function () {
                 ->where('id', '[0-9]+');
         });
     });
+
+    Route::group(['middleware' => ['auth:api', 'guest']], function () {
+        Route::group(['prefix' => 'orders', 'as' => 'orders.'], function () {
+            Route::post('/{id}/cancel', ['as' => 'cancel', 'uses' => 'Guest\OrderController@cancel'])
+                ->where('id', '[0-9]+');
+        });
+    });
 });

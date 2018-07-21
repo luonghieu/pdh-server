@@ -27,4 +27,5 @@ return [
     'order_not_found' => 'Order is not found',
     'action_not_performed' => 'This action can not be performed',
     'denied_order' => 'Successfully deny order',
+    'cancel_order_success' => 'The order was canceled.',
 ];
