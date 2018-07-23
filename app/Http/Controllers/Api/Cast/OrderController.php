@@ -64,10 +64,14 @@ class OrderController extends ApiController
 
     public function apply($id)
     {
-        $order = Order::where('type', OrderType::CALL)->find($id);
+        $order = Order::with('casts')->where('type', OrderType::CALL)->find($id);
 
         if (!$order) {
             return $this->respondErrorMessage(trans('messages.order_not_found'), 404);
+        }
+
+        if ($order->casts->count() == $order->total_cast) {
+            return $this->respondErrorMessage(trans('messages.action_not_performed'), 422);
         }
 
         $user = $this->guard()->user();
