@@ -22,7 +22,7 @@ class OrderStarted extends Notification
      * @param $order
      * @param null $cast
      */
-    public function __construct($order, $cast = null)
+    public function __construct($order, $cast)
     {
         $this->order = $order;
         $this->cast = $cast;
@@ -58,26 +58,25 @@ class OrderStarted extends Notification
     public function toArray($notifiable)
     {
         $room = $this->order->room;
+        $message = '「' . $this->cast->nickname . 'さんが合流しました。」';
+        $roomMessage = $room->messages()->create([
+            'user_id' => 1,
+            'type' => MessageType::SYSTEM,
+            'message' => $message
+        ]);
 
-        if ($notifiable->type == UserType::GUEST) {
-            $roomMessage = $room->messages()->create([
-                'user_id' => 1,
-                'type' => MessageType::SYSTEM,
-                'message' => '「' . $this->cast->nickname . 'さんが合流しました。」'
-            ]);
+        $roomMessage->recipients()->attach($notifiable->id, ['room_id' => $room->id]);
 
-            $roomMessage->recipients()->attach($notifiable->id, ['room_id' => $room->id]);
-        }
-
+        return [
+            'content' => $message,
+            'send_from' => UserType::ADMIN,
+        ];
     }
 
     public function pushData($notifiable)
     {
-        if ($notifiable->type == UserType::GUEST) {
-            $content = '「' . $this->cast->nickname . 'さんが合流しました。」';
-            $pushId = 'g_4';
-        }
-
+        $content = '「' . $this->cast->nickname . 'さんが合流しました。」';
+        $pushId = 'g_4';
         $namedUser = 'user_' . $notifiable->id;
         $send_from = UserType::ADMIN;
 
