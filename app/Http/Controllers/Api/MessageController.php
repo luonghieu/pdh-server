@@ -64,11 +64,11 @@ class MessageController extends ApiController
 
         $messagesData = $messagesCollection->mapToGroups(function ($item, $key) {
             return [
-                MessageResource::make($item),
+                $item->created_at->format('Y-m-d') => MessageResource::make($item),
             ];
         });
 
-        $messages->setCollection($messagesData);
+        $messages->setCollection(collect($messagesData->values()->all()));
 
         return $this->respondWithData($messages);
     }
