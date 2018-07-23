@@ -9,16 +9,8 @@
                             <form class="navbar-form navbar-left form-search"
                                   action="{{ route('admin.cast_rankings.index') }}"
                                   method="GET">
-                                <input type="text" class="form-control input-search" placeholder="ユーザーID,名前"
+                                <input type="text" class="form-control" placeholder="ユーザーID,名前"
                                        name="search" value="{{ request()->search }}">
-                                <label for="">From date: </label>
-                                <input type="text" class="form-control date-picker input-search" name="from_date"
-                                       id="date01" data-date-format="yyyy/mm/dd" value="{{ request()->from_date }}"
-                                       placeholder="yyyy/mm/dd"/>
-                                <label for="">To date: </label>
-                                <input type="text" class="form-control date-picker" name="to_date" id="date01"
-                                       data-date-format="yyyy/mm/dd" value="{{ request()->to_date }}"
-                                       placeholder="yyyy/mm/dd"/>
                                 <button type="submit" class="fa fa-search btn btn-search"></button>
                             </form>
                         </div>
