@@ -6,6 +6,7 @@ use App\Criteria\Order\FilterByScopeCriteria;
 use App\Criteria\Order\FilterByStatusCriteria;
 use App\Criteria\Order\OnlyCastCriteria;
 use App\Enums\OrderStatus;
+use App\Enums\OrderType;
 use App\Http\Controllers\Api\ApiController;
 use App\Http\Resources\OrderResource;
 use App\Order;
@@ -59,5 +60,26 @@ class OrderController extends ApiController
         }
 
         return $this->respondWithNoData(trans('messages.denied_order'));
+    }
+
+    public function apply($id)
+    {
+        $order = Order::with('casts')->where('type', OrderType::CALL)->find($id);
+
+        if (!$order) {
+            return $this->respondErrorMessage(trans('messages.order_not_found'), 404);
+        }
+
+        if ($order->casts->count() == $order->total_cast) {
+            return $this->respondErrorMessage(trans('messages.action_not_performed'), 422);
+        }
+
+        $user = $this->guard()->user();
+
+        if (!$order->apply($user->id)) {
+            return $this->respondServerError();
+        }
+
+        return $this->respondWithNoData(trans('messages.confirm_order'));
     }
 }
