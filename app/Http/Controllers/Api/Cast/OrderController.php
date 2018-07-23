@@ -2,35 +2,61 @@
 
 namespace App\Http\Controllers\Api\Cast;
 
-use App\Criteria\Order\FilterByScopeCriteria;
-use App\Criteria\Order\FilterByStatusCriteria;
-use App\Criteria\Order\OnlyCastCriteria;
+use App\Enums\OrderScope;
 use App\Enums\OrderStatus;
 use App\Enums\OrderType;
 use App\Http\Controllers\Api\ApiController;
 use App\Http\Resources\OrderResource;
 use App\Order;
-use App\Repositories\OrderRepository;
+use Carbon\Carbon;
+use Illuminate\Http\Request;
 
 class OrderController extends ApiController
 {
-    protected $repository;
-
-    public function __construct()
+    public function index(Request $request)
     {
-        $this->repository = app(OrderRepository::class);
-    }
+        $rules = [
+            'scope' => 'numeric|in:1,2',
+            'status' => 'numeric|min:1|max:7',
+        ];
 
-    public function index()
-    {
-        $this->repository->pushCriteria(OnlyCastCriteria::class);
-        $this->repository->pushCriteria(FilterByStatusCriteria::class);
+        $validator = validator($request->all(), $rules);
 
-        if (!empty(request()->scope)) {
-            $this->repository->pushCriteria(FilterByScopeCriteria::class);
+        if ($validator->fails()) {
+            return $this->respondWithValidationError($validator->errors()->messages());
         }
 
-        $orders = $this->repository->with('user')->paginate();
+        $user = $this->guard()->user();
+
+        $orders = Order::with('user');
+
+        $status = [OrderStatus::OPEN, OrderStatus::ACTIVE];
+        if ($request->status) {
+            $status = [$request->status];
+        }
+
+        if (isset($request->scope)) {
+            if ($request->scope == OrderScope::OPEN_TODAY) {
+                $today = Carbon::today();
+                $orders->whereDate('date', $today);
+            } else {
+                $tomorow = Carbon::tomorrow();
+                $orders->whereDate('date', '>=', $tomorow);
+            }
+
+            $orders->where(function($query) use ($user) {
+                $query->whereHas('nominees', function ($query) use ($user) {
+                    $query->where('user_id', $user->id);
+                })->orWhere('type', OrderType::CALL);
+            });
+        } else {
+            $orders->whereHas('nominees', function ($query) use ($user) {
+                $query->where('user_id', $user->id);
+            });
+        }
+
+        $orders->whereIn('status', $status);
+        $orders = $orders->paginate($request->per_page)->appends($request->query());
 
         return $this->respondWithData(OrderResource::collection($orders));
     }
