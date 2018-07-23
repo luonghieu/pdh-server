@@ -25,7 +25,7 @@ class GuestController extends ApiController
         $user = $this->guard()->user();
 
         if ($request->favorited) {
-            $guests->whereHas('favorites', function($query) use ($user) {
+            $guests->whereHas('favoriters', function($query) use ($user) {
                 $query->where('user_id', $user->id);
             });
         }

@@ -39,7 +39,7 @@ class CastController extends ApiController
         }
 
         if ($request->favorited) {
-            $casts->whereHas('favorites', function ($query) use ($user) {
+            $casts->whereHas('favoriters', function ($query) use ($user) {
                 $query->where('user_id', $user->id);
             });
         }
