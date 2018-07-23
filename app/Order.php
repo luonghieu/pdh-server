@@ -83,7 +83,11 @@ class Order extends Model
     {
         try {
             $this->casts()->attach($userId,
-                ['status' => CastOrderStatus::ACCEPTED, 'accepted_at' => Carbon::now()]);
+                [
+                    'status' => CastOrderStatus::ACCEPTED,
+                    'accepted_at' => Carbon::now(),
+                    'type' => CastOrderType::CANDIDATE,
+                ]);
 
             return true;
         } catch (\Exception $e) {

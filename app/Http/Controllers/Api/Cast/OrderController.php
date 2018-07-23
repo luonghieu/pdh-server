@@ -72,10 +72,6 @@ class OrderController extends ApiController
 
         $user = $this->guard()->user();
 
-        if ($order->casts->contains($user->id)) {
-            return $this->respondErrorMessage(trans('messages.action_not_performed'), 422);
-        }
-
         if (!$order->apply($user->id)) {
             return $this->respondServerError();
         }
