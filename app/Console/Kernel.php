@@ -14,7 +14,7 @@ class Kernel extends ConsoleKernel
      */
     protected $commands = [
         Commands\CastRankingSchedule::class,
-        Commands\WorkingToday::class
+        Commands\WorkingToday::class,
     ];
 
     /**
@@ -25,8 +25,9 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule)
     {
-         $schedule->command('cheers:update_cast_ranking')->dailyAt(5)->onOneServer()->runInBackground();
-         $schedule->command('cheers:reset_working_today')->dailyAt(5)->onOneServer()->runInBackground();
+        $schedule->command('cheers:update_cast_ranking')->dailyAt(5)->onOneServer()->runInBackground();
+        $schedule->command('cheers:reset_working_today')->dailyAt(5)->onOneServer()->runInBackground();
+        $schedule->command('cheers:update_nominated_call')->everyMinute()->onOneServer()->runInBackground();
     }
 
     /**
@@ -36,7 +37,7 @@ class Kernel extends ConsoleKernel
      */
     protected function commands()
     {
-        $this->load(__DIR__.'/Commands');
+        $this->load(__DIR__ . '/Commands');
 
         require base_path('routes/console.php');
     }
