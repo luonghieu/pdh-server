@@ -14,15 +14,18 @@ class OrderStarted extends Notification
     use Queueable;
 
     public $order;
+    public $cast;
 
     /**
      * Create a new notification instance.
      *
      * @param $order
+     * @param null $cast
      */
-    public function __construct($order)
+    public function __construct($order, $cast = null)
     {
         $this->order = $order;
+        $this->cast = $cast;
     }
 
     /**
@@ -55,20 +58,28 @@ class OrderStarted extends Notification
     public function toArray($notifiable)
     {
         $room = $this->order->room;
-        $casts = $this->order->cast;
-        $roomMessage = $room->messages()->create([
-            'user_id' => 1,
-            'type' => MessageType::SYSTEM,
-            'message' => ''
-        ]);
+
+        if ($notifiable->type == UserType::GUEST) {
+            $roomMessage = $room->messages()->create([
+                'user_id' => 1,
+                'type' => MessageType::SYSTEM,
+                'message' => '「' . $this->cast->nickname . 'さんが合流しました。」'
+            ]);
+
+            $roomMessage->recipients()->attach($notifiable->id, ['room_id' => $room->id]);
+        }
+
     }
 
     public function pushData($notifiable)
     {
-        $content = '';
+        if ($notifiable->type == UserType::GUEST) {
+            $content = '「' . $this->cast->nickname . 'さんが合流しました。」';
+            $pushId = 'g_4';
+        }
+
         $namedUser = 'user_' . $notifiable->id;
         $send_from = UserType::ADMIN;
-        $pushId = 'g_1';
 
         return [
             'audienceOptions' => ['named_user' => $namedUser],
