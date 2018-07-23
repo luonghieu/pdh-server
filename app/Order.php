@@ -53,6 +53,16 @@ class Order extends Model
         return $this->belongsToMany(Tag::class);
     }
 
+    public function castClass()
+    {
+        return $this->hasOne(CastClass::class, 'id', 'class_id');
+    }
+
+    public function room()
+    {
+        return $this->hasOne(Room::class);
+    }
+
     public function deny($userId)
     {
         try {
