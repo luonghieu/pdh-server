@@ -45,7 +45,7 @@ class RoomController extends ApiController
     public function store(Request $request)
     {
         $validator = validator($request->all(), [
-            'user_id' => 'required',
+            'user_id' => 'required|exists:users,id',
         ]);
 
         if ($validator->fails()) {
