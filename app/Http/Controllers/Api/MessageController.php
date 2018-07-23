@@ -19,7 +19,9 @@ class MessageController extends ApiController
     public function index(Request $request, $id)
     {
         $rules = [
+            'current_id' => 'numeric|min:1',
             'per_page' => 'numeric|min:1',
+            'action' => 'required_with:current_id|in:1,2',
         ];
 
         $validator = validator($request->all(), $rules);
@@ -36,7 +38,19 @@ class MessageController extends ApiController
             return $this->respondErrorMessage(trans('messages.room_not_found'), 404);
         }
 
-        $messages = $room->messages()->with('user')->latest()->paginate($request->per_page);
+        $messages = $room->messages()->with('user')->latest();
+
+        if ($request->action) {
+            $action = $request->action;
+            $currentId = $request->current_id;
+            if (1 == $action) {
+                $messages = $messages->where('id', '<', $currentId);
+            } else {
+                $messages = $messages->where('id', '>', $currentId);
+            }
+        }
+
+        $messages = $messages->paginate($request->per_page);
 
         DB::table('message_recipient')
             ->where([
@@ -50,7 +64,7 @@ class MessageController extends ApiController
 
         $messagesData = $messagesCollection->mapToGroups(function ($item, $key) {
             return [
-                $item->created_at->format('Y-m-d') => MessageResource::make($item),
+                MessageResource::make($item),
             ];
         });
 
