@@ -35,7 +35,7 @@ class MessageController extends ApiController
         if (empty($room)) {
             return $this->respondErrorMessage(trans('messages.room_not_found'), 404);
         }
-
+        dd($room->checkBlocked(3));
         $messages = $room->messages()->with('user')->latest();
 
         if ($room->is_direct) {
