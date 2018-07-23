@@ -35,7 +35,7 @@ class MessageController extends ApiController
         if (empty($room)) {
             return $this->respondErrorMessage(trans('messages.room_not_found'), 404);
         }
-        dd($room->checkBlocked(3));
+        dd($room->checkBlocked(2));
         $messages = $room->messages()->with('user')->latest();
 
         if ($room->is_direct) {
@@ -56,11 +56,13 @@ class MessageController extends ApiController
 
         $messagesCollection = collect($messages->items());
 
-        $messages = $messagesCollection->mapToGroups(function ($item, $key) {
+        $messagesData = $messagesCollection->mapToGroups(function ($item, $key) {
             return [
-                $item->created_at->format('Y-m-d') => $item,
+                $item->created_at->format('Y-m-d') => MessageResource::make($item),
             ];
         });
+
+        $messages->setCollection($messagesData);
 
         return $this->respondWithData($messages);
     }
