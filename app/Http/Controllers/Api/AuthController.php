@@ -4,11 +4,8 @@ namespace App\Http\Controllers\Api;
 
 use App\Cast;
 use App\Enums\UserType;
-use App\Guest;
 use App\Http\Resources\CastResource;
 use App\Http\Resources\GuestResource;
-use App\Notifications\CreateCast;
-use App\Notifications\CreateGuest;
 use App\Rules\CheckHeight;
 use App\Services\LogService;
 use App\User;
@@ -88,6 +85,7 @@ class AuthController extends ApiController
             'job_id' => 'numeric|exists:jobs,id',
             'drink_volume_type' => 'numeric|between:1,3',
             'smoking_type' => 'numeric|between:1,3',
+            'siblings_type' => 'numeric|between:1,3',
             'cohabitant_type' => 'numeric|between:1,4',
             'line_id' => 'string',
         ];
@@ -114,6 +112,7 @@ class AuthController extends ApiController
             'job_id',
             'drink_volume_type',
             'smoking_type',
+            'siblings_type',
             'cohabitant_type',
             'line_id',
         ]);
