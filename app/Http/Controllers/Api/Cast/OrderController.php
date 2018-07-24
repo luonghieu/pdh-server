@@ -8,6 +8,7 @@ use App\Enums\OrderType;
 use App\Http\Controllers\Api\ApiController;
 use App\Http\Resources\OrderResource;
 use App\Order;
+use App\Jobs\ValidateOrder;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 

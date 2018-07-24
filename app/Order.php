@@ -5,6 +5,7 @@ namespace App;
 use App\Enums\CastOrderStatus;
 use App\Enums\CastOrderType;
 use App\Enums\OrderStatus;
+use App\Jobs\ValidateOrder;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 
@@ -69,6 +70,8 @@ class Order extends Model
             $this->nominees()->updateExistingPivot($userId,
                 ['status' => CastOrderStatus::DENIED, 'canceled_at' => Carbon::now()], false);
 
+            ValidateOrder::dispatch($this);
+
             return true;
         } catch (\Exception $e) {
             return false;
@@ -99,6 +102,8 @@ class Order extends Model
                     'type' => CastOrderType::CANDIDATE,
                 ]);
 
+            ValidateOrder::dispatch($this);
+
             return true;
         } catch (\Exception $e) {
             return false;
@@ -110,6 +115,8 @@ class Order extends Model
         try {
             $this->nominees()->updateExistingPivot($userId,
                 ['status' => CastOrderStatus::ACCEPTED, 'accepted_at' => Carbon::now()], false);
+
+            ValidateOrder::dispatch($this);
 
             return true;
         } catch (\Exception $e) {
