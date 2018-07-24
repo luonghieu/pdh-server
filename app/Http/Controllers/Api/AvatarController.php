@@ -137,7 +137,9 @@ class AvatarController extends ApiController
 
             if ($avatarUpdate) {
                 $avatar = $user->avatars->find($id);
+
                 MakeAvatarThumbnail::dispatch($avatar);
+                $avatar->thumbnail = null;
             }
         } catch (\Exception $e) {
             LogService::writeErrorLog($e);

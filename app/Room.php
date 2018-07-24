@@ -41,7 +41,6 @@ class Room extends Model
 
     public function checkBlocked($id)
     {
-        // dd($this->owner->blocks);
         return $this->owner->blockers->contains($id) || $this->owner->blocks->contains($id) ? 1 : 0;
     }
 

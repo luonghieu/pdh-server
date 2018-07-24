@@ -28,4 +28,5 @@ return [
     'action_not_performed' => 'この操作は実行できません',
     'denied_order' => '予約を辞退しました',
     'cancel_order_success' => '予約はキャンセルされました',
+    'confirm_order' => '予約を受け付けました',
 ];

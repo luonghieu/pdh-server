@@ -33,7 +33,7 @@ class Order extends Model
     public function casts()
     {
         return $this->belongsToMany(Cast::class)
-            ->where('cast_order.status', CastOrderStatus::ACCEPTED);
+            ->where('cast_order.status', CastOrderStatus::ACCEPTED)->withTimestamps();
     }
 
     public function nominees()
@@ -51,6 +51,16 @@ class Order extends Model
     public function tags()
     {
         return $this->belongsToMany(Tag::class);
+    }
+
+    public function castClass()
+    {
+        return $this->hasOne(CastClass::class, 'id', 'class_id');
+    }
+
+    public function room()
+    {
+        return $this->hasOne(Room::class);
     }
 
     public function deny($userId)
@@ -72,6 +82,22 @@ class Order extends Model
                 'status' => OrderStatus::CANCELED,
                 'canceled_at' => Carbon::now(),
             ]);
+
+            return true;
+        } catch (\Exception $e) {
+            return false;
+        }
+    }
+
+    public function apply($userId)
+    {
+        try {
+            $this->casts()->attach($userId,
+                [
+                    'status' => CastOrderStatus::ACCEPTED,
+                    'accepted_at' => Carbon::now(),
+                    'type' => CastOrderType::CANDIDATE,
+                ]);
 
             return true;
         } catch (\Exception $e) {

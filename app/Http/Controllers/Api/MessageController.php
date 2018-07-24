@@ -19,7 +19,9 @@ class MessageController extends ApiController
     public function index(Request $request, $id)
     {
         $rules = [
+            'current_id' => 'numeric|min:1',
             'per_page' => 'numeric|min:1',
+            'action' => 'required_with:current_id|in:1,2',
         ];
 
         $validator = validator($request->all(), $rules);
@@ -35,13 +37,28 @@ class MessageController extends ApiController
         if (empty($room)) {
             return $this->respondErrorMessage(trans('messages.room_not_found'), 404);
         }
-        dd($room->checkBlocked(2));
+
+        $ownerId = $room->owner_id;
+        $partner = $room->users->where('id', '<>', $ownerId)->first()->id;
         $messages = $room->messages()->with('user')->latest();
 
-        if ($room->is_direct) {
-            $messages = $messages->whereHas('recipients', function ($q) {
-                $q->where('is_show', true);
+        if ($room->is_direct && $room->checkBlocked($partner)) {
+            $messages = $messages->whereDoesntHave('recipients', function ($q) use ($user) {
+                $q->where([
+                    ['user_id', '=', $user->id],
+                    ['is_show', '=', false],
+                ]);
             });
+        }
+
+        if ($request->action) {
+            $action = $request->action;
+            $currentId = $request->current_id;
+            if (1 == $action) {
+                $messages = $messages->where('id', '<', $currentId);
+            } else {
+                $messages = $messages->where('id', '>', $currentId);
+            }
         }
 
         $messages = $messages->paginate($request->per_page);
@@ -62,7 +79,7 @@ class MessageController extends ApiController
             ];
         });
 
-        $messages->setCollection($messagesData);
+        $messages->setCollection(collect($messagesData->values()->all()));
 
         return $this->respondWithData($messages);
     }
