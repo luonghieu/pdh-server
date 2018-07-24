@@ -108,4 +108,31 @@ class OrderController extends ApiController
 
         return $this->respondWithNoData(trans('messages.confirm_order'));
     }
+
+    public function accept($id)
+    {
+        $order = Order::find($id);
+
+        if (!$order) {
+            return $this->respondErrorMessage(trans('messages.order_not_found'), 404);
+        }
+
+        if (OrderStatus::OPEN != $order->status) {
+            return $this->respondErrorMessage(trans('messages.action_not_performed'), 422);
+        }
+
+        $nomineesIds = $order->nominees()->pluck('cast_order.user_id')->toArray();
+
+        $user = $this->guard()->user();
+
+        if (!in_array($user->id, $nomineesIds)) {
+            return $this->respondErrorMessage(trans('messages.action_not_performed'), 422);
+        }
+
+        if (!$order->accept($user->id)) {
+            return $this->respondServerError();
+        }
+
+        return $this->respondWithNoData(trans('messages.accepted_order'));
+    }
 }
