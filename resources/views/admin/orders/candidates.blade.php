@@ -11,26 +11,30 @@
         </div>
         <div class="panel-body">
           @include('admin.partials.notification')
-          <table class="table table-striped table-bordered bootstrap-datatable">
-            <thead>
-              <tr>
-                <th>No.</th>
-                <th>ユーザーID</th>
-                <th>ニックネーム</th>
-                <th>応募時間</th>
-              </tr>
-            </thead>
-            <tbody>
-              @foreach ($casts as $key => $cast)
-              <tr>
-                <td>{{ $casts->firstItem() +$key }}</td>
-                <td><a href="{{ route('admin.users.show', ['user' => $cast->id]) }}">{{ $cast->id }}</a></td>
-                <td>{{ $cast->nickname }}</td>
-                <td>{{ Carbon\Carbon::parse($cast->pivot->create_at)->format('Y/m/d H:i') }}</td>
-              </tr>
-              @endforeach
-            </tbody>
-          </table>
+          <div class="row">
+            <div class="col-lg-8">
+              <table class="table table-striped table-bordered bootstrap-datatable">
+                <thead>
+                  <tr>
+                    <th>No.</th>
+                    <th>ユーザーID</th>
+                    <th>ニックネーム</th>
+                    <th>応募時間</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  @foreach ($casts as $key => $cast)
+                  <tr>
+                    <td>{{ $casts->firstItem() +$key }}</td>
+                    <td><a href="{{ route('admin.users.show', ['user' => $cast->id]) }}">{{ $cast->id }}</a></td>
+                    <td>{{ $cast->nickname }}</td>
+                    <td>{{ Carbon\Carbon::parse($cast->pivot->create_at)->format('Y/m/d H:i') }}</td>
+                  </tr>
+                  @endforeach
+                </tbody>
+              </table>
+            </div>
+          </div>
         </div>
         <div class="col-lg-12">
           <div class="dataTables_info" id="DataTables_Table_0_info">
