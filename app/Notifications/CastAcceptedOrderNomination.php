@@ -114,6 +114,7 @@ class CastAcceptedOrderNomination extends Notification implements ShouldQueue
                     'extra' => [
                         'push_id' => $pushId,
                         'send_from' => $send_from,
+                        'order_id' => $this->order->id
                     ],
                 ],
             ],
