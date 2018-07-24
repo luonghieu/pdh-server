@@ -10,7 +10,7 @@ use Illuminate\Notifications\Notification;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 
-class CastAcceptedNominationOrders extends Notification implements ShouldQueue
+class CastAcceptNominationOrders extends Notification implements ShouldQueue
 {
     use Queueable;
 
