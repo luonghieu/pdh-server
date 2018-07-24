@@ -86,5 +86,11 @@ Route::group(['prefix' => 'v1'], function () {
             Route::post('/{id}/cancel', ['as' => 'cancel', 'uses' => 'Guest\OrderController@cancel'])
                 ->where('id', '[0-9]+');
         });
+
+        Route::group(['prefix' => 'cards', 'as' => 'cards.'], function () {
+            Route::get('/', ['as' => 'index', 'uses' => 'CardController@index']);
+            Route::post('/', ['as' => 'create', 'uses' => 'CardController@create']);
+            Route::delete('{id}', ['as' => 'delete', 'uses' => 'CardController@destroy']);
+        });
     });
 });
