@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Api\User;
+namespace App\Http\Controllers\Api;
 
 use App\Card;
 use App\Http\Controllers\Api\ApiController;
@@ -52,7 +52,7 @@ class CardController extends ApiController
 
             $card = $customer->sources->create(['source' => $request->token]);
 
-            if (!in_array($card->brand, Card::TYPES)) {
+            if (!in_array($card->brand, Card::BRANDS)) {
                 $customer->sources->retrieve($card->id)->delete();
 
                 return $this->respondErrorMessage(trans('messages.payment_method_not_supported'));
