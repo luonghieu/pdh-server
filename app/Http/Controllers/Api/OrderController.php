@@ -8,6 +8,7 @@ use App\Http\Resources\OrderResource;
 use App\Order;
 use App\Services\LogService;
 use App\Tag;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 
 class OrderController extends ApiController
@@ -48,6 +49,26 @@ class OrderController extends ApiController
             'type',
         ]);
 
+        $start_time = Carbon::parse($request->start_time);
+        $end_time = Carbon::parse($input['start_time'])->addHours($input['duration']);
+
+        $orders = $user->orders()
+            ->where('date', $request->date)
+            ->where(function ($query) use ($start_time, $end_time) {
+                $query->orWhereBetween('start_time', [$start_time, $end_time]);
+                $query->orWhereBetween('end_time', [$start_time, $end_time]);
+                $query->orWhere([
+                    ['start_time', '<', $start_time],
+                    ['end_time', '>', $start_time],
+                ]);
+            });
+
+        if ($orders->count() > 0) {
+            return $this->respondErrorMessage(trans('messages.order_same_time'), 409);
+        }
+
+        $input['end_time'] = $end_time->format('H:i');
+
         if (null == $input['prefecture_id']) {
             $input['prefecture_id'] = 13;
         }
@@ -60,8 +81,6 @@ class OrderController extends ApiController
         if (!$request->nominee_ids) {
             $input['type'] = OrderType::CALL;
         }
-
-        $input['end_time'] = \Carbon\Carbon::parse($input['start_time'])->addHours($input['duration'])->format('H:i');
 
         $input['status'] = OrderStatus::OPEN;
 

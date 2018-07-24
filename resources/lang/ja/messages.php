@@ -30,4 +30,5 @@ return [
     'accepted_order' => '予約を承認しました',
     'cancel_order_success' => '予約はキャンセルされました',
     'confirm_order' => '予約を受け付けました',
+    'order_same_time' => 'すでに予約があります',
 ];
