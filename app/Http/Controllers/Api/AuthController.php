@@ -87,7 +87,6 @@ class AuthController extends ApiController
             'smoking_type' => 'numeric|between:1,3',
             'siblings_type' => 'numeric|between:1,3',
             'cohabitant_type' => 'numeric|between:1,4',
-            'line_id' => 'string',
         ];
 
         $validator = validator(request()->all(), $rules);
