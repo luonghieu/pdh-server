@@ -73,7 +73,7 @@ class OrderController extends ApiController
             return $this->respondErrorMessage(trans('messages.action_not_performed'), 422);
         }
 
-        $nomineesIds = $order->nominees()->pluck('cast_order.user_id')->toArray();
+        $nomineesIds = $order->nominees()->whereNull('canceled_at')->pluck('cast_order.user_id')->toArray();
 
         $user = $this->guard()->user();
 
