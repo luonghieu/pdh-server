@@ -20,7 +20,7 @@ class OrderController extends ApiController
         $rules = [
             'prefecture_id' => 'nullable|exists:prefectures,id',
             'address' => 'required',
-            'date' => 'required|date|after_or_equal:today',
+            'date' => 'required|date|date_format:Y-m-d|after_or_equal:today',
             'start_time' => 'required|date_format:H:i',
             'duration' => 'required|numeric|min:1|max:10',
             'total_cast' => 'required|min:1',
@@ -73,11 +73,6 @@ class OrderController extends ApiController
             $input['prefecture_id'] = 13;
         }
 
-        if ($request->tags) {
-            $listTags = explode(",", trim($request->tags, ","));
-            $tagIds = Tag::whereIn('name', $listTags)->pluck('id');
-        }
-
         if (!$request->nominee_ids) {
             $input['type'] = OrderType::CALL;
         }
@@ -87,7 +82,11 @@ class OrderController extends ApiController
         try {
             $order = $user->orders()->create($input);
 
-            $order->tags()->attach($tagIds);
+            if ($request->tags) {
+                $listTags = explode(",", trim($request->tags, ","));
+                $tagIds = Tag::whereIn('name', $listTags)->pluck('id');
+                $order->tags()->attach($tagIds);
+            }
 
             if ((OrderType::NOMINATED_CALL == $request->type) && $request->nominee_ids) {
                 $listNomineeIds = explode(",", trim($request->nominee_ids, ","));
