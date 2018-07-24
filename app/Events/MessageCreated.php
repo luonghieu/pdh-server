@@ -40,7 +40,7 @@ class MessageCreated implements ShouldBroadcast
 
         $recipients = $this->message->recipients;
         foreach ($recipients as $recipient) {
-            $channels[] = new PrivateChannel('user.' . $recipient->user_id);
+            $channels[] = new PrivateChannel('user.' . $recipient->id);
         }
 
         return $channels;
