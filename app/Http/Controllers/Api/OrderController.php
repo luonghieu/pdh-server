@@ -57,6 +57,7 @@ class OrderController extends ApiController
 
         $orders = $user->orders()
             ->where('date', $request->date)
+            ->whereIn('status', [OrderStatus::OPEN, OrderStatus::ACTIVE, OrderStatus::PROCESSING])
             ->where(function ($query) use ($start_time, $end_time) {
                 $query->orWhereBetween('start_time', [$start_time, $end_time]);
                 $query->orWhereBetween('end_time', [$start_time, $end_time]);
