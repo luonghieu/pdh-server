@@ -252,4 +252,20 @@ class User extends Authenticatable implements JWTSubject
     {
         return $this->hasMany(Order::class);
     }
+
+    public function card()
+    {
+        $defaultCard = $this->cards()->where('is_default', true);
+
+        if ($defaultCard->exists()) {
+            return $defaultCard;
+        }
+
+        return $this->cards()->first();
+    }
+
+    public function cards()
+    {
+        return $this->hasMany(Card::class);
+    }
 }
