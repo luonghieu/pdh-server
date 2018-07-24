@@ -46,12 +46,12 @@ class NominatedCallSchedule extends Command
             ->where('type', OrderType::NOMINATED_CALL)
             ->where('created_at', '>=', Carbon::now()->subMinutes(5))
             ->whereHas('nominees', function ($query) {
-                $query->where('cast_order.status', null);
+                $query->whereNull('cast_order.status');
             })->get();
 
         foreach ($orders as $order) {
             $nomineeIds = $order->nominees()
-                ->where('cast_order.status', null)
+                ->whereNull('cast_order.status')
                 ->pluck('cast_order.user_id')->toArray();
 
             foreach ($nomineeIds as $id) {
