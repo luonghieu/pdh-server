@@ -27,6 +27,7 @@ return [
     'order_not_found' => '開始時間とプランは必ず選択してください',
     'action_not_performed' => 'この操作は実行できません',
     'denied_order' => '予約を辞退しました',
+    'accepted_order' => '予約を承認しました',
     'cancel_order_success' => '予約はキャンセルされました',
     'confirm_order' => '予約を受け付けました',
 ];

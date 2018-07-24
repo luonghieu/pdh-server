@@ -74,6 +74,8 @@ Route::group(['prefix' => 'v1'], function () {
         Route::group(['prefix' => 'orders', 'as' => 'orders.'], function () {
             Route::post('/{id}/deny', ['as' => 'deny', 'uses' => 'Cast\OrderController@deny'])
                 ->where('id', '[0-9]+');
+            Route::post('/{id}/accept', ['as' => 'accept', 'uses' => 'Cast\OrderController@accept'])
+                ->where('id', '[0-9]+');
             Route::post('/{id}/apply', ['as' => 'apply', 'uses' => 'Cast\OrderController@apply'])
                 ->where('id', '[0-9]+');
         });

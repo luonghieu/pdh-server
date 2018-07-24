@@ -104,4 +104,16 @@ class Order extends Model
             return false;
         }
     }
+
+    public function accept($userId)
+    {
+        try {
+            $this->nominees()->updateExistingPivot($userId,
+                ['status' => CastOrderStatus::ACCEPTED, 'accepted_at' => Carbon::now()], false);
+
+            return true;
+        } catch (\Exception $e) {
+            return false;
+        }
+    }
 }
