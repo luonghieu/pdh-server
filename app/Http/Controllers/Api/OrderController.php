@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Cast;
+use App\Enums\CastOrderType;
 use App\Enums\OrderStatus;
 use App\Enums\OrderType;
 use App\Http\Resources\OrderResource;
@@ -9,6 +11,7 @@ use App\Order;
 use App\Services\LogService;
 use App\Tag;
 use Carbon\Carbon;
+use DB;
 use Illuminate\Http\Request;
 
 class OrderController extends ApiController
@@ -69,7 +72,7 @@ class OrderController extends ApiController
 
         $input['end_time'] = $end_time->format('H:i');
 
-        if (null == $input['prefecture_id']) {
+        if (!$request->prefecture_id) {
             $input['prefecture_id'] = 13;
         }
 
@@ -80,6 +83,7 @@ class OrderController extends ApiController
         $input['status'] = OrderStatus::OPEN;
 
         try {
+            DB::beginTransaction();
             $order = $user->orders()->create($input);
 
             if ($request->tags) {
@@ -88,12 +92,18 @@ class OrderController extends ApiController
                 $order->tags()->attach($tagIds);
             }
 
-            if ((OrderType::NOMINATED_CALL == $request->type) && $request->nominee_ids) {
+            if (OrderType::CALL != $input['type']) {
                 $listNomineeIds = explode(",", trim($request->nominee_ids, ","));
+                $counter = Cast::whereIn('id', $listNomineeIds)->count();
+                if (count($listNomineeIds) != $counter) {
+                    return $this->respondErrorMessage(trans('messages.action_not_performed'), 402);
+                }
 
-                $order->nominees()->attach($listNomineeIds);
+                $order->nominees()->attach($listNomineeIds, ['type' => CastOrderType::NOMINEE]);
             }
+            DB::commit();
         } catch (\Exception $e) {
+            DB::rollback();
             LogService::writeErrorLog($e);
             return $this->respondServerError();
         }
