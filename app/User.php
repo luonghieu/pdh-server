@@ -149,10 +149,14 @@ class User extends Authenticatable implements JWTSubject
 
     public function getRoomIdAttribute()
     {
-        $userId = $this->id;
+        if (!Auth::check()) {
+            return '';
+        }
 
-        $room = $this->rooms()->direct()->whereHas('users', function ($q) use ($userId) {
-            $q->where('user_id', $userId);
+        $user = Auth::user();
+
+        $room = $this->rooms()->direct()->whereHas('users', function ($q) use ($user) {
+            $q->where('user_id', $user->id);
         })->first();
 
         if (!$room) {
