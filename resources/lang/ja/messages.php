@@ -29,4 +29,5 @@ return [
     'denied_order' => '予約を辞退しました',
     'cancel_order_success' => '予約はキャンセルされました',
     'confirm_order' => '予約を受け付けました',
+    'order_same_time' => 'すでに予約があります',
 ];
