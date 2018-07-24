@@ -36,7 +36,7 @@ class OrderController extends ApiController
         }
 
         if (isset($request->scope)) {
-            if ($request->scope == OrderScope::OPEN_TODAY) {
+            if (OrderScope::OPEN_TODAY == $request->scope) {
                 $today = Carbon::today();
                 $orders->whereDate('date', $today);
             } else {
@@ -44,7 +44,7 @@ class OrderController extends ApiController
                 $orders->whereDate('date', '>=', $tomorow);
             }
 
-            $orders->where(function($query) use ($user) {
+            $orders->where(function ($query) use ($user) {
                 $query->whereHas('nominees', function ($query) use ($user) {
                     $query->where('user_id', $user->id);
                 })->orWhere('type', OrderType::CALL);
@@ -73,11 +73,11 @@ class OrderController extends ApiController
             return $this->respondErrorMessage(trans('messages.action_not_performed'), 422);
         }
 
-        $nomineesIds = $order->nominees()->whereNull('canceled_at')->pluck('cast_order.user_id')->toArray();
-
         $user = $this->guard()->user();
 
-        if (!in_array($user->id, $nomineesIds)) {
+        $nomineeExists = $order->nominees()->where('user_id', $user->id)->whereNull('canceled_at')->first();
+
+        if (!$nomineeExists) {
             return $this->respondErrorMessage(trans('messages.action_not_performed'), 422);
         }
 
@@ -96,11 +96,11 @@ class OrderController extends ApiController
             return $this->respondErrorMessage(trans('messages.order_not_found'), 404);
         }
 
-        if ($order->casts->count() == $order->total_cast) {
+        $user = $this->guard()->user();
+
+        if ($order->casts->count() == $order->total_cast || $order->candidates->contains($user->id)) {
             return $this->respondErrorMessage(trans('messages.action_not_performed'), 422);
         }
-
-        $user = $this->guard()->user();
 
         if (!$order->apply($user->id)) {
             return $this->respondServerError();
@@ -121,11 +121,10 @@ class OrderController extends ApiController
             return $this->respondErrorMessage(trans('messages.action_not_performed'), 422);
         }
 
-        $nomineesIds = $order->nominees()->pluck('cast_order.user_id')->toArray();
-
         $user = $this->guard()->user();
+        $nomineeExists = $order->nominees()->where('user_id', $user->id)->whereNull('accepted_at')->first();
 
-        if (!in_array($user->id, $nomineesIds)) {
+        if (!$nomineeExists) {
             return $this->respondErrorMessage(trans('messages.action_not_performed'), 422);
         }
 
