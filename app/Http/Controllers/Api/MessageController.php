@@ -38,7 +38,18 @@ class MessageController extends ApiController
             return $this->respondErrorMessage(trans('messages.room_not_found'), 404);
         }
 
+        $ownerId = $room->owner_id;
+        $partner = $room->users->where('id', '<>', $ownerId)->first()->id;
         $messages = $room->messages()->with('user')->latest();
+
+        if ($room->is_direct && $room->checkBlocked($partner)) {
+            $messages = $messages->whereDoesntHave('recipients', function ($q) use ($user) {
+                $q->where([
+                    ['user_id', '=', $user->id],
+                    ['is_show', '=', false],
+                ]);
+            });
+        }
 
         if ($request->action) {
             $action = $request->action;
