@@ -19,6 +19,12 @@ final class CastOrderStatus extends Enum
      */
     public static function getDescription($value): string
     {
+        if (self::ACCEPTED === $value) {
+            return '承諾済み';
+        } elseif (self::CANCELED === $value) {
+            return 'キャンセル';
+        }
+
         return parent::getDescription($value);
     }
 }

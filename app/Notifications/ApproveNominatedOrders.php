@@ -12,7 +12,7 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Support\Carbon;
 
-class CreateChatRoomForOrderAssignedInCall extends Notification
+class ApproveNominatedOrders extends Notification
 {
     use Queueable;
 
@@ -65,25 +65,6 @@ class CreateChatRoomForOrderAssignedInCall extends Notification
             .'\n \n ゲストの方はキャストに来て欲しい場所の詳細をお伝えください。'
             .'\n 尚、ご不明点がある場合は運営までお問い合わせください。'
             .'\n \n それでは素敵な時間をお楽しみください♪';
-
-        if ($notifiable->type == UserType::GUEST) {
-            $room = $notifiable->rooms()->create(['order_id' => $this->order->id, 'type' => RoomType::GROUP]);
-            $room->users()->attach(1);
-
-            $roomMessage = $room->messages()->create([
-                'user_id' => 1,
-                'type' => MessageType::SYSTEM,
-                'message' => $message
-            ]);
-
-            $roomMessage->recipients()->attach($notifiable->id, ['room_id' => $room->id]);
-        } else {
-            $room = $this->order->room;
-            $systemMessage = $room->messages()->where('type', MessageType::SYSTEM)->latest()->first();
-
-            $room->users()->attach($notifiable->id);
-            $systemMessage->recipients()->attach($notifiable->id, ['room_id' => $room->id]);
-        }
 
         return [
             'content' => $message,

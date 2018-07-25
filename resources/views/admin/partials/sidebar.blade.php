@@ -26,16 +26,18 @@ $routes = [
         [
             'name' => '',
             'value' => 'キャストランキング管理',
-            'url' => '#',
+            'url' => route('admin.cast_rankings.index'),
             'submenu' => [],
         ],
     ],
     'call' => [
         [
-            'name' => '',
-            'value' => 'コール管理',
-            'url' => '#',
-            'submenu' => [],
+            'name' => 'admin.orders.index',
+            'value' => '予約管理',
+            'url' => route('admin.orders.index'),
+            'submenu' => [
+              'admin.orders.nominees', 'admin.orders.candidates','admin.orders.call'
+            ],
         ],
     ],
     'order' => [
@@ -50,7 +52,7 @@ $routes = [
         [
             'name' => '',
             'value' => '運営者専用チャット',
-            'url' => '#',
+            'url' => route('admin.rooms.index'),
             'submenu' => [
                 'admin.rooms.messages_by_room'
             ],

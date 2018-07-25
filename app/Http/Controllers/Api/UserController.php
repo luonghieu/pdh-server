@@ -3,11 +3,10 @@
 namespace App\Http\Controllers\Api;
 
 use App\Enums\UserType;
-use App\Favorite;
-use App\User;
-use Illuminate\Http\Request;
 use App\Http\Resources\CastResource;
 use App\Http\Resources\GuestResource;
+use App\User;
+use Illuminate\Http\Request;
 
 class UserController extends ApiController
 {

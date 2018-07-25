@@ -2,11 +2,11 @@
 
 namespace App\Http\Controllers\Api;
 
-use Illuminate\Http\Request;
-use App\Room;
 use App\Enums\RoomType;
 use App\Http\Resources\RoomResource;
+use App\Room;
 use App\Services\LogService;
+use Illuminate\Http\Request;
 
 class RoomController extends ApiController
 {
@@ -14,7 +14,7 @@ class RoomController extends ApiController
     {
         $rules = [
             'per_page' => 'numeric|min:1',
-            'favorited' => 'numeric',
+            'favorited' => 'boolean',
         ];
 
         $validator = validator($request->all(), $rules);
@@ -29,7 +29,7 @@ class RoomController extends ApiController
             $query->where('user_id', $user->id);
         });
 
-        if (isset($request->favorited) && 1 == $request->favorited) {
+        if ($request->favorited) {
             $isFavoritedIds = $user->favorites()->pluck('favorited_id')->toArray();
 
             $rooms->where('type', RoomType::DIRECT)->whereHas('users', function ($query) use ($isFavoritedIds) {
@@ -45,7 +45,7 @@ class RoomController extends ApiController
     public function store(Request $request)
     {
         $validator = validator($request->all(), [
-            'user_id' => 'required'
+            'user_id' => 'required|exists:users,id',
         ]);
 
         if ($validator->fails()) {
@@ -69,6 +69,7 @@ class RoomController extends ApiController
                 $room = new Room;
                 $room->type = $type;
                 $room->is_active = true;
+                $room->owner_id = $user->id;
                 $room->save();
 
                 $room->users()->attach([$userId, $user->id]);
