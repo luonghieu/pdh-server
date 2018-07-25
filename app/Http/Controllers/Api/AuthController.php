@@ -116,10 +116,6 @@ class AuthController extends ApiController
             'line_id',
         ]);
 
-        if (0 == $request->date_of_birth) {
-            $input['date_of_birth'] = null;
-        }
-
         try {
             $user->update($input);
         } catch (\Exception $e) {
