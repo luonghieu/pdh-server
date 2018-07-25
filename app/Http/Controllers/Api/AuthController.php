@@ -6,9 +6,7 @@ use App\Cast;
 use App\Enums\UserType;
 use App\Http\Resources\CastResource;
 use App\Http\Resources\GuestResource;
-use App\Rules\CheckDateOfBirth;
 use App\Rules\CheckHeight;
-use App\Rules\CheckPrefecture;
 use App\Services\LogService;
 use App\User;
 use Illuminate\Http\Request;
@@ -73,17 +71,17 @@ class AuthController extends ApiController
         $user = $this->guard()->user();
         $rules = [
             'nickname' => 'max:20',
-            'date_of_birth' => [new CheckDateOfBirth],
+            'date_of_birth' => 'date|before:today',
             'gender' => 'in:0,1,2',
             'intro' => 'max:30',
             'description' => 'max:1000',
             'phone' => 'max:13',
-            'prefecture_id' => [new CheckPrefecture()],
+            'prefecture_id' => 'numeric|exists:prefectures,id',
             'cost' => 'numeric',
             'salary_id' => 'numeric|exists:salaries,id',
             'height' => ['numeric', new CheckHeight],
             'body_type_id' => 'numeric|exists:body_types,id',
-            'hometown_id' => ['numeric', new CheckPrefecture],
+            'hometown_id' => 'numeric|exists:prefectures,id',
             'job_id' => 'numeric|exists:jobs,id',
             'drink_volume_type' => 'numeric|between:0,3',
             'smoking_type' => 'numeric|between:0,3',
