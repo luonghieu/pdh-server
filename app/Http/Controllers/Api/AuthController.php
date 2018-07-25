@@ -83,8 +83,8 @@ class AuthController extends ApiController
             'job_id' => 'numeric|exists:jobs,id',
             'drink_volume_type' => 'numeric|between:1,3',
             'smoking_type' => 'numeric|between:1,3',
+            'siblings_type' => 'numeric|between:1,3',
             'cohabitant_type' => 'numeric|between:1,4',
-            'line_id' => 'string',
         ];
 
         $validator = validator(request()->all(), $rules);
@@ -109,6 +109,7 @@ class AuthController extends ApiController
             'job_id',
             'drink_volume_type',
             'smoking_type',
+            'siblings_type',
             'cohabitant_type',
             'line_id',
         ]);

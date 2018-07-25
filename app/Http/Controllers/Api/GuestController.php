@@ -25,12 +25,16 @@ class GuestController extends ApiController
         $user = $this->guard()->user();
 
         if ($request->favorited) {
-            $guests->whereHas('favorites', function($query) use ($user) {
+            $guests->whereHas('favoriters', function($query) use ($user) {
                 $query->where('user_id', $user->id);
             });
         }
 
-        $casts = $guests->latest()->active()->paginate($request->per_page)->appends($request->query());
+        $casts = $guests->latest()->active()->WhereDoesntHave('blockers', function($q) use ($user) {
+            $q->where('user_id', $user->id);
+        })->WhereDoesntHave('blocks', function($q) use ($user) {
+            $q->where('blocked_id', $user->id);
+        })->paginate($request->per_page)->appends($request->query());
 
         return $this->respondWithData(GuestResource::collection($casts));
     }

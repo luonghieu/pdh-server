@@ -11,7 +11,7 @@ use Illuminate\Notifications\Notification;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 
-class CreatedOrdersAssignedInCallForGuest extends Notification implements ShouldQueue
+class CreateNominatedOrdersForGuest extends Notification implements ShouldQueue
 {
     use Queueable;
 

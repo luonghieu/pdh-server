@@ -5,8 +5,6 @@ namespace App\Http\Controllers\Admin\Cast;
 use App\BankAccount;
 use App\Cast;
 use App\CastClass;
-use App\Enums\MessageType;
-use App\Enums\RoomType;
 use App\Enums\UserType;
 use App\Http\Controllers\Controller;
 use App\Notifications\CreateCast;
@@ -69,7 +67,7 @@ class CastController extends Controller
                 'first_name_kana' => 'required',
                 'nick_name' => 'required',
                 'phone' => 'required|regex:/^[0-9]+$/',
-                'line' => 'required',
+                'line' => 'required|regex:/^[0-9]+$/',
                 'front_side' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:5120',
                 'back_side' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:5120',
             ]

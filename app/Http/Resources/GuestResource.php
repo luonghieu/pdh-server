@@ -5,11 +5,12 @@ namespace App\Http\Resources;
 use App\BodyType;
 use App\Enums\CohabitantType;
 use App\Enums\DrinkVolumeType;
+use App\Enums\RoomType;
 use App\Enums\SiblingsType;
 use App\Enums\SmokingType;
-use App\Http\Resources\AvatarResource;
 use App\Job;
 use App\Repositories\PrefectureRepository;
+use App\Room;
 use App\Salary;
 use App\Traits\ResourceResponse;
 use Illuminate\Http\Resources\Json\Resource;
@@ -70,6 +71,8 @@ class GuestResource extends Resource
             'last_active' => $this->last_active,
             'is_online' => $this->is_online,
             'rating_score' => $this->rating_score,
+            'room_id' => $this->room_id,
+            'card' => $this->card() ? CardResource::make($this->card()) : ''
         ]);
     }
 }
