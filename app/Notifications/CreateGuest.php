@@ -71,7 +71,7 @@ class CreateGuest extends Notification implements ShouldQueue
             'message' => $message
         ]);
 
-        $roomMessage->recipients()->attach([$notifiable->id, 1], ['room_id' => $room->id]);
+        $roomMessage->recipients()->attach($notifiable->id, ['room_id' => $room->id]);
 
         return [
             'content' => $message,
