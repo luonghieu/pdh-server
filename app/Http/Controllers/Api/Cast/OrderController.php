@@ -8,7 +8,6 @@ use App\Enums\OrderType;
 use App\Http\Controllers\Api\ApiController;
 use App\Http\Resources\OrderResource;
 use App\Order;
-use App\Jobs\ValidateOrder;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 
@@ -91,42 +90,26 @@ class OrderController extends ApiController
 
     public function apply($id)
     {
-        $order = Order::with('casts')->where('type', OrderType::CALL)->find($id);
+        $order = Order::where('status', OrderStatus::OPEN)->find($id);
 
         if (!$order) {
             return $this->respondErrorMessage(trans('messages.order_not_found'), 404);
-        }
-
-        $user = $this->guard()->user();
-
-        if ($order->casts->count() == $order->total_cast || $order->candidates->contains($user->id)) {
-            return $this->respondErrorMessage(trans('messages.action_not_performed'), 422);
-        }
-
-        if (!$order->apply($user->id)) {
-            return $this->respondServerError();
-        }
-
-        return $this->respondWithNoData(trans('messages.confirm_order'));
-    }
-
-    public function accept($id)
-    {
-        $order = Order::find($id);
-
-        if (!$order) {
-            return $this->respondErrorMessage(trans('messages.order_not_found'), 404);
-        }
-
-        if (OrderStatus::OPEN != $order->status) {
-            return $this->respondErrorMessage(trans('messages.action_not_performed'), 422);
         }
 
         $user = $this->guard()->user();
         $nomineeExists = $order->nominees()->where('user_id', $user->id)->whereNull('accepted_at')->first();
 
         if (!$nomineeExists) {
-            return $this->respondErrorMessage(trans('messages.action_not_performed'), 422);
+            if ((OrderType::CALL != $order->type) || $order->casts->count() == $order->total_cast
+                || $order->candidates->contains($user->id)) {
+                return $this->respondErrorMessage(trans('messages.action_not_performed'), 422);
+            }
+
+            if (!$order->apply($user->id)) {
+                return $this->respondServerError();
+            }
+
+            return $this->respondWithNoData(trans('messages.accepted_order'));
         }
 
         if (!$order->accept($user->id)) {
