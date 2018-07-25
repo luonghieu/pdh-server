@@ -11,7 +11,7 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Support\Carbon;
 
-class OrderAssinedInCallToCast extends Notification implements ShouldQueue
+class CreateNominatedOrdersForCast extends Notification implements ShouldQueue
 {
     use Queueable;
 
@@ -56,8 +56,19 @@ class OrderAssinedInCallToCast extends Notification implements ShouldQueue
      */
     public function toArray($notifiable)
     {
-        $message = '指名予約が入りました。'
-            . '\n 5分以内に承諾、キャンセルの処理を行ってください！';
+        $startTime = Carbon::parse($this->order->date . ' ' . $this->order->start_time);
+        $endTime = Carbon::parse($this->order->date . ' ' . $this->order->end_time);
+
+        $message = 'おめでとう！指名予約が入りました♪'
+            . '\n ------------------------------------------'
+            . '\n \n - ご予約内容 -'
+            . '\n 日時：' . $startTime->format('Y/m/d H:i') . '~'
+            . '\n 時間：' . $this->order->duration . '時間'
+            . '\n クラス：' . $this->order->castClass->name
+            . '\n 人数：' . $this->order->total_cast . '人'
+            . '\n 場所：' . $this->order->address
+            . '\n 獲得ポイント：' . number_format($notifiable->cost * ($startTime->diffInMinutes($endTime) / 30))
+            . '\n --------------------------------------------------';
 
         $room = $notifiable->rooms()
             ->where('rooms.type', RoomType::SYSTEM)
