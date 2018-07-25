@@ -9,6 +9,7 @@ Route::group(['prefix' => 'v1'], function () {
     Route::get('jobs', ['as' => 'jobs', 'uses' => 'JobController@index']);
     Route::get('body_types', ['as' => 'body_types', 'uses' => 'BodyTypeController@index']);
     Route::get('tags', ['as' => 'tags', 'uses' => 'TagController@index']);
+    Route::get('glossaries', ['as' => 'glossaries', 'uses' => 'GlossaryController@glossary']);
 
     Route::group(['prefix' => 'auth', 'as' => 'auth.'], function () {
         Route::post('login', ['as' => 'login', 'uses' => 'AuthController@login']);
@@ -55,5 +56,42 @@ Route::group(['prefix' => 'v1'], function () {
         Route::post('/', ['as' => 'create', 'uses' => 'RoomController@store']);
         Route::get('/{id}', ['as' => 'index', 'uses' => 'MessageController@index']);
         Route::post('{id}/messages', ['as' => 'store', 'uses' => 'MessageController@store']);
+    });
+
+    Route::group(['middleware' => ['auth:api'], 'prefix' => 'guest', 'as' => 'guest.'], function () {
+        Route::get('/orders', ['as' => 'index', 'uses' => 'Guest\OrderController@index']);
+    });
+
+    Route::group(['middleware' => ['auth:api'], 'prefix' => 'cast', 'as' => 'cast.'], function () {
+        Route::get('/orders', ['as' => 'index', 'uses' => 'Cast\OrderController@index']);
+    });
+
+    Route::group(['middleware' => ['auth:api'], 'prefix' => 'orders', 'as' => 'orders.'], function () {
+        Route::post('/', ['as' => 'create', 'uses' => 'OrderController@create']);
+        Route::get('/{id}', ['as' => 'show', 'uses' => 'OrderController@show']);
+    });
+
+    Route::group(['middleware' => ['auth:api', 'cast']], function () {
+        Route::group(['prefix' => 'orders', 'as' => 'orders.'], function () {
+            Route::post('/{id}/deny', ['as' => 'deny', 'uses' => 'Cast\OrderController@deny'])
+                ->where('id', '[0-9]+');
+            Route::post('/{id}/accept', ['as' => 'accept', 'uses' => 'Cast\OrderController@accept'])
+                ->where('id', '[0-9]+');
+            Route::post('/{id}/apply', ['as' => 'apply', 'uses' => 'Cast\OrderController@apply'])
+                ->where('id', '[0-9]+');
+        });
+    });
+
+    Route::group(['middleware' => ['auth:api', 'guest']], function () {
+        Route::group(['prefix' => 'orders', 'as' => 'orders.'], function () {
+            Route::post('/{id}/cancel', ['as' => 'cancel', 'uses' => 'Guest\OrderController@cancel'])
+                ->where('id', '[0-9]+');
+        });
+
+        Route::group(['prefix' => 'cards', 'as' => 'cards.'], function () {
+            Route::get('/', ['as' => 'index', 'uses' => 'CardController@index']);
+            Route::post('/', ['as' => 'create', 'uses' => 'CardController@create']);
+            Route::delete('{id}', ['as' => 'delete', 'uses' => 'CardController@destroy']);
+        });
     });
 });

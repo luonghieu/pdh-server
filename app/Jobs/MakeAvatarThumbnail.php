@@ -38,12 +38,13 @@ class MakeAvatarThumbnail implements ShouldQueue
 
         $info = pathinfo($this->avatar->path);
         $contents = file_get_contents($this->avatar->path);
-        $imageName = Uuid::generate()->string . '.' . strtolower($info['extension']);
+        $thumbnailName = Uuid::generate()->string . '.' . strtolower($info['extension']);
         $image = \Image::make($contents)->resize(200, 200)->encode($info['extension']);
 
-        \Storage::put($imageName, $image->__toString(), 'public');
+        \Storage::put($thumbnailName, $image->__toString(), 'public');
+
         $this->avatar->update([
-            'thumbnail' => $imageName,
+            'thumbnail' => $thumbnailName,
         ]);
     }
 }
