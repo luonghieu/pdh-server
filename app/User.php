@@ -2,21 +2,21 @@
 
 namespace App;
 
-use Carbon\Carbon;
 use App\Enums\UserType;
+use Carbon\Carbon;
+use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cache;
-use Illuminate\Support\Facades\Redis;
 use Tymon\JWTAuth\Contracts\JWTSubject;
-use Illuminate\Notifications\Notifiable;
-use Illuminate\Foundation\Auth\User as Authenticatable;
 
 class User extends Authenticatable implements JWTSubject
 {
     use Notifiable;
 
     protected $hidden = [
-        'password', 'remember_token',
+        'password',
+        'remember_token',
     ];
 
     protected $guarded = ['password_confirmation'];
@@ -112,6 +112,11 @@ class User extends Authenticatable implements JWTSubject
         return $this->blockers->contains($user->id) ? 1 : 0;
     }
 
+    public function getBlocked($id)
+    {
+        return $this->blockers->contains($id) || $this->blocks->contains($id) ? 1 : 0;
+    }
+
     public function getLastActiveAtAttribute($value)
     {
         return Cache::get('last_active_at_' . $this->id);
@@ -140,6 +145,25 @@ class User extends Authenticatable implements JWTSubject
     public function getRatingScoreAttribute()
     {
         return 1;
+    }
+
+    public function getRoomIdAttribute()
+    {
+        if (!Auth::check()) {
+            return '';
+        }
+
+        $user = Auth::user();
+
+        $room = $this->rooms()->direct()->whereHas('users', function ($q) use ($user) {
+            $q->where('user_id', $user->id);
+        })->first();
+
+        if (!$room) {
+            return '';
+        }
+
+        return $room->id;
     }
 
     public function isFavoritedUser($userId)
@@ -222,5 +246,20 @@ class User extends Authenticatable implements JWTSubject
         return $this
             ->belongsToMany(User::class, 'reports', 'user_id', 'reported_id')
             ->withPivot('id', 'user_id', 'reported_id', 'content', 'created_at', 'updated_at');
+    }
+
+    public function orders()
+    {
+        return $this->hasMany(Order::class);
+    }
+
+    public function card()
+    {
+        return $this->cards()->latest()->first();
+    }
+
+    public function cards()
+    {
+        return $this->hasMany(Card::class);
     }
 }

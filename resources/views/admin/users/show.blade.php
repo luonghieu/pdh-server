@@ -58,7 +58,7 @@
               @if ($user->is_cast)
               <tr>
                 <th>30分あたりのポイント</th>
-                <td>{{ $user->point }}</td>
+                <td>{{ $user->cost }}</td>
               </tr>
               @endif
               <tr>

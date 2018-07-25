@@ -14,7 +14,7 @@ class Guest extends User
         parent::boot();
 
         static::addGlobalScope(function ($query) {
-            $query->where('type', UserType::GUEST);
+            $query->where('users.type', UserType::GUEST);
         });
     }
 }

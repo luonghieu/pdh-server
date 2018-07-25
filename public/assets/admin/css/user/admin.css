@@ -46,6 +46,24 @@ td {
   font-family: arial;
 }
 
+.image-message {
+  width: 200px;
+}
+
+.change-active-room {
+  position: relative;
+}
+
+.display-room-id {
+  display: inline-block;
+}
+
+.inactive-room {
+  display: inline-block;
+  position: absolute;
+  right: 15px;
+}
+
 .cast-class {
   width: 150px !important;
 }

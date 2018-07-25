@@ -14,6 +14,20 @@ class Message extends Model
 
     protected $touches = ['room'];
 
+    protected $fillable = [
+        'room_id',
+        'user_id',
+        'thumbnail',
+        'message',
+        'image',
+        'type',
+    ];
+
+    protected $casts = [
+        'room_id' => 'integer',
+        'type' => 'integer',
+    ];
+
     public function getImageAttribute($value)
     {
         if ($value) {
@@ -21,11 +35,17 @@ class Message extends Model
         }
     }
 
-    public function markAsRead()
+    public function getThumbnailAttribute($value)
     {
-        if (is_null($this->read_at)) {
-            $this->forceFill(['read_at' => $this->freshTimestamp()])->save();
+        if (empty($value)) {
+            return $this->image;
         }
+
+        if (strpos($value, 'https') !== false) {
+            return $value;
+        }
+
+        return Storage::url($value);
     }
 
     public function unread()
@@ -45,6 +65,8 @@ class Message extends Model
 
     public function recipients()
     {
-        return $this->belongsToMany(User::class, 'message_recipient')->withPivot('room_id')->withTimestamps();
+        return $this->belongsToMany(User::class, 'message_recipient')
+            ->withPivot('room_id', 'read_at')
+            ->withTimestamps();
     }
 }

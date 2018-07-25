@@ -39,7 +39,7 @@ class CastController extends ApiController
         }
 
         if ($request->favorited) {
-            $casts->whereHas('favorites', function ($query) use ($user) {
+            $casts->whereHas('favoriters', function ($query) use ($user) {
                 $query->where('user_id', $user->id);
             });
         }
@@ -49,7 +49,12 @@ class CastController extends ApiController
             $max = $request->max_point;
             $casts->whereBetween('cost', [$min, $max]);
         }
-        $casts = $casts->latest()->active()->paginate($request->per_page)->appends($request->query());
+
+        $casts = $casts->latest()->active()->WhereDoesntHave('blockers', function($query) use ($user) {
+            $query->where('user_id', $user->id);
+        })->WhereDoesntHave('blocks', function($q) use ($user) {
+            $q->where('blocked_id', $user->id);
+        })->paginate($request->per_page)->appends($request->query());
 
         return $this->respondWithData(CastResource::collection($casts));
     }
