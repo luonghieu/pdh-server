@@ -6,7 +6,9 @@ use App\Cast;
 use App\Enums\UserType;
 use App\Http\Resources\CastResource;
 use App\Http\Resources\GuestResource;
+use App\Rules\CheckDateOfBirth;
 use App\Rules\CheckHeight;
+use App\Rules\CheckPrefecture;
 use App\Services\LogService;
 use App\User;
 use Illuminate\Http\Request;
@@ -71,22 +73,22 @@ class AuthController extends ApiController
         $user = $this->guard()->user();
         $rules = [
             'nickname' => 'max:20',
-            'date_of_birth' => 'date|before:today',
-            'gender' => 'in:1,2',
+            'date_of_birth' => [new CheckDateOfBirth],
+            'gender' => 'in:0,1,2',
             'intro' => 'max:30',
             'description' => 'max:1000',
             'phone' => 'max:13',
-            'prefecture_id' => 'numeric|exists:prefectures,id',
+            'prefecture_id' => [new CheckPrefecture()],
             'cost' => 'numeric',
             'salary_id' => 'numeric|exists:salaries,id',
             'height' => ['numeric', new CheckHeight],
             'body_type_id' => 'numeric|exists:body_types,id',
-            'hometown_id' => 'numeric|exists:prefectures,id',
+            'hometown_id' => ['numeric', new CheckPrefecture],
             'job_id' => 'numeric|exists:jobs,id',
-            'drink_volume_type' => 'numeric|between:1,3',
-            'smoking_type' => 'numeric|between:1,3',
-            'siblings_type' => 'numeric|between:1,3',
-            'cohabitant_type' => 'numeric|between:1,4',
+            'drink_volume_type' => 'numeric|between:0,3',
+            'smoking_type' => 'numeric|between:0,3',
+            'siblings_type' => 'numeric|between:0,3',
+            'cohabitant_type' => 'numeric|between:0,4',
         ];
 
         $validator = validator(request()->all(), $rules);
@@ -115,6 +117,10 @@ class AuthController extends ApiController
             'cohabitant_type',
             'line_id',
         ]);
+
+        if (0 == $request->date_of_birth) {
+            $input['date_of_birth'] = null;
+        }
 
         try {
             $user->update($input);
