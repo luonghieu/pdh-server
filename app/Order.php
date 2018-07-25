@@ -123,9 +123,4 @@ class Order extends Model
             return false;
         }
     }
-
-    public function orderClass()
-    {
-        return $this->belongsTo(CastClass::class, 'class_id', 'id');
-    }
 }
