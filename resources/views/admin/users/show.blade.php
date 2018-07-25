@@ -159,6 +159,10 @@
                 @if($user->is_guest)
                   <button type="button" class="btn btn-info" data-toggle="modal" data-target="#register_cast">キャストへ変更する</button>
                 @endif
+                @if($user->is_cast)
+                  <button type="button" class="btn btn-info" data-toggle="modal" data-target="#register_guest">ゲストに変更する</button>
+                @endif
+
                 <button type="submit" class="btn btn-info" data-toggle="modal" data-target="{{ $nameId }}">{{ $title }}</button>
             </div>
           </div>
@@ -171,6 +175,23 @@
               </div>
               <div class="modal-footer">
                 <form action="{{ route('admin.casts.register',['user' => $user->id]) }}" method="get">
+                  <button type="button" class="btn btn-canceled" data-dismiss="modal">キャンセル</button>
+                  <button type="submit" class="btn btn-accept">はい</button>
+                </form>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="modal fade" id="register_guest" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+          <div class="modal-dialog" role="document">
+            <div class="modal-content">
+              <div class="modal-body">
+                <p>このユーザーのステータスをゲストに変更しますか？</p>
+              </div>
+              <div class="modal-footer">
+                <form action="{{ route('admin.users.register_guest',['user' => $user->id]) }}" method="post">
+                  {{ csrf_field() }}
+                  {{ method_field('PUT') }}
                   <button type="button" class="btn btn-canceled" data-dismiss="modal">キャンセル</button>
                   <button type="submit" class="btn btn-accept">はい</button>
                 </form>
