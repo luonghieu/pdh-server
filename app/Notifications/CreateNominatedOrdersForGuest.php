@@ -65,7 +65,7 @@ class CreateNominatedOrdersForGuest extends Notification implements ShouldQueue
             . '\n \n - ご予約内容 -'
             . '\n 日時：' . $startTime->format('Y/m/d H:i') . '~'
             . '\n 時間：' . $startTime->diffInMinutes($endTime) / 60 . '時間'
-            . '\n クラス：' . $this->order->orderClass->name
+            . '\n クラス：' . $this->order->castClass->name
             . '\n 人数：' . $this->order->total_cast . '人'
             . '\n 場所：' . $this->order->address
             . '\n \n 現在、キャストの調整を行っております。'
