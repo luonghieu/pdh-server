@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Enums\RoomType;
 use App\Events\MessageCreated;
 use App\Http\Resources\MessageResource;
+use App\Http\Resources\OrderResource;
 use App\Jobs\MakeImagesChatThumbnail;
 use App\Message;
 use App\Services\LogService;
@@ -81,7 +82,7 @@ class MessageController extends ApiController
 
         $messages->setCollection(collect($messagesData->values()->all()));
         $messages = $messages->toArray();
-        $messages['order'] = $room->order;
+        $messages['order'] = OrderResource::make($room->room_order);
 
         return $this->respondWithData($messages);
     }
