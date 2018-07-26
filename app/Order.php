@@ -125,6 +125,33 @@ class Order extends Model
         }
     }
 
+    public function stop($userId)
+    {
+        try {
+            $this->casts()->updateExistingPivot($userId, [
+                'stopped_at' => Carbon::now(),
+                'status' => CastOrderStatus::DONE,
+            ], false);
+            return true;
+        } catch (\Exception $e) {
+            return false;
+        }
+    }
+
+    public function start($userId)
+    {
+        try {
+            $this->casts()->updateExistingPivot($userId, [
+                'started_at' => Carbon::now(),
+                'status' => CastOrderStatus::PROCESSING,
+            ], false);
+
+            return true;
+        } catch (\Exception $e) {
+            return false;
+        }
+    }
+
     public function isNominated()
     {
         if (Auth::check()) {
