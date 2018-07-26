@@ -42,8 +42,11 @@ class OrderController extends ApiController
             $orders->where(function ($query) use ($user) {
                 $query->whereDoesntHave('nominees', function ($query) use ($user) {
                     $query->where('user_id', $user->id);
-                })->where('type', OrderType::CALL);
+                })->whereDoesntHave('casts', function ($query) use ($user) {
+                    $query->where('user_id', $user->id);
+                });
             })
+            ->where('type', OrderType::CALL)
             ->where('status', OrderStatus::OPEN)
             ->orderBy('date')
             ->orderBy('start_time');
