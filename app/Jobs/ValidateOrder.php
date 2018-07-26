@@ -66,23 +66,7 @@ class ValidateOrder implements ShouldQueue
                     $involvedUsers[] = $cast;
                 }
                 $room->users()->attach($data);
-
-                $startTime = Carbon::parse($this->order->date . ' ' . $this->order->start_time);
-                $message = '\\\\ おめでとうございます！マッチングが確定しました♪ //'
-                    .'\n \n- ご予約内容 - '
-                    .'\n 場所：' . $this->order->address
-                    .'\n 合流予定時間：'. $startTime->format('H:i') .'～'
-                    .'\n \n ゲストの方はキャストに来て欲しい場所の詳細をお伝えください。'
-                    .'\n 尚、ご不明点がある場合は運営までお問い合わせください。'
-                    .'\n \n それでは素敵な時間をお楽しみください♪';
-                $roomMessage = $room->messages()->create([
-                    'user_id' => 1,
-                    'type' => MessageType::SYSTEM,
-                    'message' => $message
-                ]);
-                $data[] = $this->order->user->id;
-                $roomMessage->recipients()->attach($data, ['room_id' => $room->id]);
-                \Notification::send($involvedUsers, new ApproveNominatedOrders($this->order));
+                $this->sendNotification($involvedUsers);
 
                 \DB::commit();
             } catch (\Exception $e) {
@@ -103,5 +87,31 @@ class ValidateOrder implements ShouldQueue
                 $this->order->update();
             }
         }
+    }
+
+    private function sendNotification($users)
+    {
+        $room = $this->order->room;
+        $startTime = Carbon::parse($this->order->date . ' ' . $this->order->start_time);
+        $message = '\\\\ おめでとうございます！マッチングが確定しました♪ //'
+            .'\n \n- ご予約内容 - '
+            .'\n 場所：' . $this->order->address
+            .'\n 合流予定時間：'. $startTime->format('H:i') .'～'
+            .'\n \n ゲストの方はキャストに来て欲しい場所の詳細をお伝えください。'
+            .'\n 尚、ご不明点がある場合は運営までお問い合わせください。'
+            .'\n \n それでは素敵な時間をお楽しみください♪';
+        $roomMessage = $room->messages()->create([
+            'user_id' => 1,
+            'type' => MessageType::SYSTEM,
+            'message' => $message
+        ]);
+
+        $userIds = [];
+        foreach ($users as $user) {
+            $userIds[] = $user->id;
+        }
+
+        $roomMessage->recipients()->attach($userIds, ['room_id' => $room->id]);
+        \Notification::send($users, new ApproveNominatedOrders($this->order));
     }
 }
