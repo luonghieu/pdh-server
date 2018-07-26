@@ -76,8 +76,16 @@ class ValidateOrder implements ShouldQueue
 
             $numOfNominee = $this->order->nominees()->count();
 
-            if ($numOfReply == $numOfNominee) {
-                $this->order->type = OrderType::CALL;
+            if ($numOfReply == $numOfNominee && $numOfNominee > 0) {
+                // When Cast deny order,
+                // If OrderType is NOMINATION (1-1) then update status
+                $isNomination = ($this->order->type == OrderType::NOMINATION) ? 1 : 0;
+                if ($isNomination) {
+                    $this->order->status = OrderStatus::DENIED;
+                } else {
+                    $this->order->type = OrderType::CALL;
+                }
+
                 $this->order->update();
             }
         }
