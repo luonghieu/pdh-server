@@ -82,7 +82,7 @@ class MessageController extends ApiController
 
         $messages->setCollection(collect($messagesData->values()->all()));
         $messages = $messages->toArray();
-        $messages['order'] = OrderResource::make($room->room_order);
+        $messages['order'] = $room->room_order ? OrderResource::make($room->room_order) : '';
 
         return $this->respondWithData($messages);
     }
