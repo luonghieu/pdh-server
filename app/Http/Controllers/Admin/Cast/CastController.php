@@ -67,7 +67,7 @@ class CastController extends Controller
                 'first_name_kana' => 'required',
                 'nick_name' => 'required',
                 'phone' => 'required|regex:/^[0-9]+$/',
-                'line' => 'required|regex:/^[0-9]+$/',
+                'line' => 'required',
                 'front_side' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:5120',
                 'back_side' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:5120',
             ]
