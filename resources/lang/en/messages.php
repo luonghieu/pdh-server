@@ -31,5 +31,6 @@ return [
     'cancel_order_success' => 'The order was canceled.',
     'confirm_order' => 'The order is confirmed successfully',
     'order_same_time' => 'Order exists at this time',
+    'start_order' => 'Successfully start order',
     'card_not_exist' => 'There is no payment method available. Please add one',
 ];

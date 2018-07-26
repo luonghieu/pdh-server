@@ -77,6 +77,8 @@ Route::group(['prefix' => 'v1'], function () {
                 ->where('id', '[0-9]+');
             Route::post('/{id}/apply', ['as' => 'apply', 'uses' => 'Cast\OrderController@apply'])
                 ->where('id', '[0-9]+');
+            Route::post('/{id}/start', ['as' => 'start', 'uses' => 'Cast\OrderController@start'])
+                ->where('id', '[0-9]+');
         });
     });
 
