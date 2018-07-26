@@ -118,4 +118,30 @@ class OrderController extends ApiController
 
         return $this->respondWithNoData(trans('messages.accepted_order'));
     }
+
+    public function stop($id)
+    {
+        $order = Order::find($id);
+        if (!$order) {
+            return $this->respondErrorMessage(trans('messages.order_not_found'), 404);
+        }
+
+        $user = $this->guard()->user();
+        $castExists = $order->casts()->where('user_id', $user->id)->whereNull('stopped_at')->first();
+
+        $validStatus = [
+            OrderStatus::PROCESSING,
+            OrderStatus::DONE,
+        ];
+
+        if (!$castExists || !in_array($order->status, $validStatus)) {
+            return $this->respondErrorMessage(trans('messages.action_not_performed'), 422);
+        }
+
+        if (!$order->stop($user->id)) {
+            return $this->respondServerError();
+        }
+
+        return $this->respondWithNoData(trans('messages.stop_order'));
+    }
 }

@@ -31,4 +31,5 @@ return [
     'cancel_order_success' => '予約はキャンセルされました',
     'confirm_order' => '予約を受け付けました',
     'order_same_time' => 'すでに予約があります',
+    'stop_order' => 'ストップしました',
 ];
