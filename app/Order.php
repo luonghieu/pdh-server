@@ -128,7 +128,10 @@ class Order extends Model
     public function start($userId)
     {
         try {
-            $this->casts()->updateExistingPivot($userId, ['started_at' => Carbon::now()], false);
+            $this->casts()->updateExistingPivot($userId, [
+                'started_at' => Carbon::now(),
+                'status' => CastOrderStatus::PROCESSING,
+            ], false);
 
             return true;
         } catch (\Exception $e) {
