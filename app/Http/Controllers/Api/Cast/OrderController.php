@@ -42,11 +42,11 @@ class OrderController extends ApiController
             $orders->where(function ($query) use ($user) {
                 $query->whereDoesntHave('nominees', function ($query) use ($user) {
                     $query->where('user_id', $user->id);
-                })->orWhere('type', OrderType::CALL);
+                })->where('type', OrderType::CALL);
             })
-                ->where('status', OrderStatus::OPEN)
-                ->orderBy('date')
-                ->orderBy('start_time');
+            ->where('status', OrderStatus::OPEN)
+            ->orderBy('date')
+            ->orderBy('start_time');
         } elseif (isset($request->status)) {
             $orders->where(function ($query) use ($user) {
                 $query->whereHas('nominees', function ($query) use ($user) {
@@ -61,8 +61,8 @@ class OrderController extends ApiController
                     $query->where('user_id', $user->id)->whereNotNull('cast_order.accepted_at');
                 });
             })
-                ->orderBy('date')
-                ->orderBy('start_time');
+            ->orderBy('date')
+            ->orderBy('start_time');
         }
 
         $orders = $orders->paginate($request->per_page)->appends($request->query());
