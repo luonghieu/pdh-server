@@ -29,6 +29,7 @@ class RoomResource extends Resource
             'latest_message' => new MessageResource($this->whenLoaded('latestMessage')),
             'created_at' => Carbon::parse($this->created_at)->format('Y-m-d H:i'),
             'updated_at' => Carbon::parse($this->updated_at)->format('Y-m-d H:i'),
+            'order' => OrderResource::make($this->room_order),
         ]);
     }
 }
