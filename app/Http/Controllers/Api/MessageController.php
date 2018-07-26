@@ -80,6 +80,8 @@ class MessageController extends ApiController
         });
 
         $messages->setCollection(collect($messagesData->values()->all()));
+        $messages = $messages->toArray();
+        $messages['order'] = $room->order;
 
         return $this->respondWithData($messages);
     }
