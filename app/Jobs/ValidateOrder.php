@@ -45,27 +45,38 @@ class ValidateOrder implements ShouldQueue
 
         $acceptByCast = $this->order->casts->count();
 
+        $orderType = $this->order->type;
+
         if ($this->order->total_cast == $acceptByCast) {
             $this->order->status = OrderStatus::ACTIVE;
             $this->order->update();
 
             // Create room chat
+            \DB::beginTransaction();
             try {
-                \DB::beginTransaction();
-                $room = new Room;
+                if ($orderType == OrderType::NOMINATED_CALL || $orderType == OrderType::CALL) {
+                    $room = new Room;
 
-                $room->order_id = $this->order->id;
-                $room->owner_id = $this->order->user_id;
-                $room->type = RoomType::GROUP;
-                $room->save();
+                    $room->order_id = $this->order->id;
+                    $room->owner_id = $this->order->user_id;
+                    $room->type = RoomType::GROUP;
+                    $room->save();
 
-                $data = [];
-                $involvedUsers = [$this->order->user];
-                foreach ($this->order->casts as $cast) {
-                    $data = array_merge($data, [$cast->pivot->user_id]);
-                    $involvedUsers[] = $cast;
+                    $data = [];
+                    $involvedUsers = [$this->order->user];
+                    foreach ($this->order->casts as $cast) {
+                        $data = array_merge($data, [$cast->pivot->user_id]);
+                        $involvedUsers[] = $cast;
+                    }
+
+                    $room->users()->attach($data);
+                } else {
+                    $involvedUsers = [$this->order->user];
+                    foreach ($this->order->casts as $cast) {
+                        $involvedUsers[] = $cast;
+                    }
                 }
-                $room->users()->attach($data);
+
                 $this->sendNotification($involvedUsers);
 
                 \DB::commit();
@@ -85,7 +96,7 @@ class ValidateOrder implements ShouldQueue
             if ($numOfReply == $numOfNominee && $numOfNominee > 0) {
                 // When Cast deny order,
                 // If OrderType is NOMINATION (1-1) then update status
-                $isNomination = ($this->order->type == OrderType::NOMINATION) ? 1 : 0;
+                $isNomination = ($orderType == OrderType::NOMINATION) ? 1 : 0;
                 if ($isNomination) {
                     $this->order->status = OrderStatus::DENIED;
                 } else {
