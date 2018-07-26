@@ -58,27 +58,17 @@ class CastDenyNominationOrders extends Notification
         $order = $this->order;
         $room = $order->room;
 
-        if ($notifiable->type == UserType::CAST) {
-            $castMessage = '提案がキャンセルされました。';
-
-            $roomMessage = $room->messages()->create([
-                'user_id' => 1,
-                'type' => MessageType::SYSTEM,
-                'message' => $castMessage
-            ]);
-
-            $roomMessage->recipients()->attach($notifiable->id, ['room_id' => $room->id, 'is_show' => false]);
-        }
-
-        $message = '残念ながらマッチングが成立しませんでした（；；）';
+        $castMessage = '提案がキャンセルされました。';
 
         $roomMessage = $room->messages()->create([
             'user_id' => 1,
             'type' => MessageType::SYSTEM,
-            'message' => $message
+            'message' => $castMessage
         ]);
 
-        $roomMessage->recipients()->attach($notifiable->id, ['room_id' => $room->id, 'is_show' => false]);
+        $roomMessage->recipients()->attach($notifiable->id, ['room_id' => $room->id]);
+
+        $message = '残念ながらマッチングが成立しませんでした（；；）';
 
         return [
             'content' => $message,
@@ -92,7 +82,7 @@ class CastDenyNominationOrders extends Notification
 
         $namedUser = 'user_' . $notifiable->id;
         $send_from = UserType::ADMIN;
-        $pushId = ($notifiable->type == UserType::GUEST) ? 'g_9' : 'c_9';
+        $pushId = 'g_9';
 
         return [
             'audienceOptions' => ['named_user' => $namedUser],
