@@ -31,4 +31,5 @@ return [
     'cancel_order_success' => 'The order was canceled.',
     'confirm_order' => 'The order is confirmed successfully',
     'order_same_time' => 'Order exists at this time',
+    'start_order' => 'Successfully start order',
 ];

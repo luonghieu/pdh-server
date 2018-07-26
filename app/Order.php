@@ -123,4 +123,15 @@ class Order extends Model
             return false;
         }
     }
+
+    public function start($userId)
+    {
+        try {
+            $this->casts()->updateExistingPivot($userId, ['started_at' => Carbon::now()], false);
+
+            return true;
+        } catch (\Exception $e) {
+            return false;
+        }
+    }
 }
