@@ -10,7 +10,8 @@ final class CastOrderStatus extends Enum
     const DENIED = 2;
     const CANCELED = 3;
     const TIMEOUT = 4;
-
+    const PROCESSING = 5;
+    const DONE = 6;
     /**
      * Get the description for an enum value
      *

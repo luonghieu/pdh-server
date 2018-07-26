@@ -24,7 +24,7 @@ return [
     'message_exits' => 'メッセージが存在しません',
     'update_working_today_success' => '更新しました',
     'avatar_at_least' => 'プロフィール写真は、1枚以上の登録が必要です',
-    'order_not_found' => '開始時間とプランは必ず選択してください',
+    'order_not_found' => '予約が存在しません',
     'action_not_performed' => 'この操作は実行できません',
     'denied_order' => '予約を辞退しました',
     'accepted_order' => '予約を承認しました',
@@ -32,4 +32,6 @@ return [
     'confirm_order' => '予約を受け付けました',
     'order_same_time' => 'すでに予約があります',
     'stop_order' => 'ストップしました',
+    'start_order' => 'お仕事を開始しました',
+    'card_not_exist' => '支払い方法が未登録です',
 ];

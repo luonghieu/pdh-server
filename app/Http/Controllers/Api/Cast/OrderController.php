@@ -28,12 +28,7 @@ class OrderController extends ApiController
 
         $user = $this->guard()->user();
 
-        $orders = Order::with('user');
-
-        $status = [OrderStatus::OPEN, OrderStatus::ACTIVE];
-        if ($request->status) {
-            $status = [$request->status];
-        }
+        $orders = Order::with('user', 'tags');
 
         if (isset($request->scope)) {
             if (OrderScope::OPEN_TODAY == $request->scope) {
@@ -45,17 +40,34 @@ class OrderController extends ApiController
             }
 
             $orders->where(function ($query) use ($user) {
+                $query->whereDoesntHave('nominees', function ($query) use ($user) {
+                    $query->where('user_id', $user->id);
+                })->whereDoesntHave('casts', function ($query) use ($user) {
+                    $query->where('user_id', $user->id);
+                });
+            })
+                ->where('type', OrderType::CALL)
+                ->where('status', OrderStatus::OPEN)
+                ->orderBy('date')
+                ->orderBy('start_time');
+        } elseif (isset($request->status)) {
+            $orders->where(function ($query) use ($user) {
                 $query->whereHas('nominees', function ($query) use ($user) {
                     $query->where('user_id', $user->id);
-                })->orWhere('type', OrderType::CALL);
+                });
             });
+
+            $orders->where('status', $request->status);
         } else {
-            $orders->whereHas('nominees', function ($query) use ($user) {
-                $query->where('user_id', $user->id);
-            });
+            $orders->where(function ($query) use ($user) {
+                $query->whereHas('nominees', function ($query) use ($user) {
+                    $query->where('user_id', $user->id)->whereNotNull('cast_order.accepted_at');
+                });
+            })
+                ->orderBy('date')
+                ->orderBy('start_time');
         }
 
-        $orders->whereIn('status', $status);
         $orders = $orders->paginate($request->per_page)->appends($request->query());
 
         return $this->respondWithData(OrderResource::collection($orders));
@@ -117,6 +129,32 @@ class OrderController extends ApiController
         }
 
         return $this->respondWithNoData(trans('messages.accepted_order'));
+    }
+
+    public function start($id)
+    {
+        $order = Order::find($id);
+        if (!$order) {
+            return $this->respondErrorMessage(trans('messages.order_not_found'), 404);
+        }
+
+        $user = $this->guard()->user();
+        $castExists = $order->casts()->where('user_id', $user->id)->whereNull('started_at')->first();
+
+        $validStatus = [
+            OrderStatus::ACTIVE,
+            OrderStatus::PROCESSING,
+        ];
+
+        if (!$castExists || !in_array($order->status, $validStatus)) {
+            return $this->respondErrorMessage(trans('messages.action_not_performed'), 422);
+        }
+
+        if (!$order->start($user->id)) {
+            return $this->respondServerError();
+        }
+
+        return $this->respondWithNoData(trans('messages.start_order'));
     }
 
     public function stop($id)

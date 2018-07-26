@@ -6,6 +6,7 @@ use App\Enums\CastOrderStatus;
 use App\Enums\CastOrderType;
 use App\Enums\OrderStatus;
 use App\Jobs\ValidateOrder;
+use Auth;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 
@@ -127,11 +128,38 @@ class Order extends Model
     public function stop($userId)
     {
         try {
-            $this->casts()->updateExistingPivot($userId, ['stopped_at' => Carbon::now()], false);
+            $this->casts()->updateExistingPivot($userId, [
+                'stopped_at' => Carbon::now(),
+                'status' => CastOrderStatus::DONE,
+            ], false);
+            return true;
+        } catch (\Exception $e) {
+            return false;
+        }
+    }
+
+    public function start($userId)
+    {
+        try {
+            $this->casts()->updateExistingPivot($userId, [
+                'started_at' => Carbon::now(),
+                'status' => CastOrderStatus::PROCESSING,
+            ], false);
 
             return true;
         } catch (\Exception $e) {
             return false;
         }
+    }
+
+    public function isNominated()
+    {
+        if (Auth::check()) {
+            $user = Auth::user();
+        } else {
+            return null;
+        }
+
+        return ($this->nominees()->where('user_id', $user->id)->first()) ? 1 : 0;
     }
 }

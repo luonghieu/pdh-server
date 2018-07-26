@@ -43,6 +43,7 @@ class OrderResource extends Resource
             'tags' => TagResource::collection($this->whenLoaded('tags')),
             'casts' => UserCollection::make($this->whenLoaded('casts')),
             'user' => new UserResource($this->whenLoaded('user')),
+            'is_nominated' => $this->isNominated(),
         ]);
     }
 }
