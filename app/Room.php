@@ -2,7 +2,9 @@
 
 namespace App;
 
+use App\Enums\OrderStatus;
 use App\Enums\RoomType;
+use App\Order;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Auth;
 
@@ -86,5 +88,38 @@ class Room extends Model
     public function owner()
     {
         return $this->belongsTo(User::class);
+    }
+
+    public function getRoomOrderAttribute()
+    {
+        $order = null;
+
+        switch ($this->type) {
+            case RoomType::GROUP:
+                $order = $this->order;
+                break;
+            case RoomType::DIRECT:
+                $data = [
+                    OrderStatus::PROCESSING,
+                    OrderStatus::ACTIVE,
+                    OrderStatus::DONE,
+                ];
+
+                $userIds = $this->users->pluck('id');
+
+                $order = Order::where(function ($q) use ($userIds) {
+                    $q->whereHas('nominees', function ($q) use ($userIds) {
+                        $q->whereIn('user_id', $userIds);
+                    });
+                })
+                    ->whereIn('status', $data)
+                    ->orderByRaw('FIELD(status, ' . implode(',', $data) . ' )')
+                    ->first();
+                break;
+
+            default:break;
+        }
+
+        return $order;
     }
 }

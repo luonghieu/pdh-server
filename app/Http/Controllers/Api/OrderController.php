@@ -71,6 +71,10 @@ class OrderController extends ApiController
             return $this->respondErrorMessage(trans('messages.order_same_time'), 409);
         }
 
+        if (!$user->cards->first()) {
+            return $this->respondErrorMessage(trans('messages.card_not_exist'), 404);
+        }
+
         $input['end_time'] = $end_time->format('H:i');
 
         if (!$request->prefecture_id) {
@@ -79,6 +83,13 @@ class OrderController extends ApiController
 
         if (!$request->nominee_ids) {
             $input['type'] = OrderType::CALL;
+        } else {
+            $listNomineeIds = explode(",", trim($request->nominee_ids, ","));
+            $counter = Cast::whereIn('id', $listNomineeIds)->count();
+
+            if (1 == $counter) {
+                $input['type'] = OrderType::NOMINATION;
+            }
         }
 
         $input['status'] = OrderStatus::OPEN;
@@ -94,8 +105,6 @@ class OrderController extends ApiController
             }
 
             if (OrderType::CALL != $input['type']) {
-                $listNomineeIds = explode(",", trim($request->nominee_ids, ","));
-                $counter = Cast::whereIn('id', $listNomineeIds)->count();
                 if (count($listNomineeIds) != $counter) {
                     return $this->respondErrorMessage(trans('messages.action_not_performed'), 402);
                 }
