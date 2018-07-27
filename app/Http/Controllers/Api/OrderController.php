@@ -73,9 +73,9 @@ class OrderController extends ApiController
             return $this->respondErrorMessage(trans('messages.order_same_time'), 409);
         }
 
-        // if (!$user->cards->first()) {
-        //     return $this->respondErrorMessage(trans('messages.card_not_exist'), 404);
-        // }
+        if (!$user->cards->first()) {
+            return $this->respondErrorMessage(trans('messages.card_not_exist'), 404);
+        }
 
         $input['end_time'] = $end_time->format('H:i');
 
