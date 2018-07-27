@@ -73,9 +73,9 @@ class OrderController extends ApiController
             return $this->respondErrorMessage(trans('messages.order_same_time'), 409);
         }
 
-        if (!$user->cards->first()) {
-            return $this->respondErrorMessage(trans('messages.card_not_exist'), 404);
-        }
+        // if (!$user->cards->first()) {
+        //     return $this->respondErrorMessage(trans('messages.card_not_exist'), 404);
+        // }
 
         $input['end_time'] = $end_time->format('H:i');
 
@@ -115,15 +115,17 @@ class OrderController extends ApiController
 
                 if (OrderType::NOMINATION == $order->type) {
                     $nominee = $order->nominees()->first()->id;
-                    $roomExist = Room::active()->where('type', RoomType::DIRECT)->where('owner_id', $order->user_id)
+                    $isRoomExists = Room::active()->where('type', RoomType::DIRECT)
                         ->whereHas('users', function ($query) use ($nominee) {
                             $query->where('user_id', $nominee);
-                        })->count();
+                        })
+                        ->whereHas('users', function ($query) use ($order) {
+                            $query->where('user_id', $order->user_id);
+                        })
+                        ->count();
 
-                    if (!$roomExist) {
+                    if (!$isRoomExists) {
                         $room = new Room;
-
-                        $room->order_id = $order->id;
                         $room->owner_id = $order->user_id;
                         $room->type = RoomType::DIRECT;
                         $room->save();
