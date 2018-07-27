@@ -50,6 +50,12 @@ class Order extends Model
             ->where('cast_order.type', CastOrderType::CANDIDATE)->withTimestamps();
     }
 
+    public function processing()
+    {
+        return $this->belongsToMany(Cast::class)
+            ->where('cast_order.status', CastOrderStatus::PROCESSING)->withTimestamps();
+    }
+
     public function tags()
     {
         return $this->belongsToMany(Tag::class);

@@ -165,7 +165,7 @@ class OrderController extends ApiController
         }
 
         $user = $this->guard()->user();
-        $castExists = $order->casts()->where('user_id', $user->id)->whereNull('stopped_at')->first();
+        $castExists = $order->processing()->where('user_id', $user->id)->whereNull('stopped_at')->first();
 
         $validStatus = [
             OrderStatus::PROCESSING,
