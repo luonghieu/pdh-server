@@ -29,7 +29,7 @@ class OrderController extends ApiController
             'total_cast' => 'required|min:1',
             'temp_point' => 'required',
             'class_id' => 'required|exists:cast_classes,id',
-            'type' => 'required|in:1,2,3',
+            'type' => 'nullable|in:1,2,3',
             'tags' => '',
             'nominee_ids' => '',
         ];
@@ -51,6 +51,10 @@ class OrderController extends ApiController
             'class_id',
             'type',
         ]);
+
+        if (!$request->type) {
+            $input['type'] = OrderType::NOMINATED_CALL;
+        }
 
         $start_time = Carbon::parse($request->start_time);
         $end_time = Carbon::parse($input['start_time'])->addHours($input['duration']);
