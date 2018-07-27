@@ -39,7 +39,9 @@ class MakeAvatarThumbnail implements ShouldQueue
         $info = pathinfo($this->avatar->path);
         $contents = file_get_contents($this->avatar->path);
         $thumbnailName = Uuid::generate()->string . '.' . strtolower($info['extension']);
-        $image = \Image::make($contents)->resize(200, 200)->encode($info['extension']);
+        $image = \Image::make($contents)->resize(200, null, function ($constraint) {
+            $constraint->aspectRatio();
+        })->encode($info['extension']);
 
         \Storage::put($thumbnailName, $image->__toString(), 'public');
 
