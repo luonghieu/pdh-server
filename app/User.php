@@ -255,7 +255,7 @@ class User extends Authenticatable implements JWTSubject
 
     public function card()
     {
-        return $this->cards()->latest()->first();
+        return $this->hasOne(Card::class)->latest();
     }
 
     public function cards()
