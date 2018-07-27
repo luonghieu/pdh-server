@@ -8,6 +8,7 @@ use App\Enums\OrderType;
 use App\Http\Controllers\Api\ApiController;
 use App\Http\Resources\OrderResource;
 use App\Order;
+use App\Services\LogService;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 
@@ -94,6 +95,8 @@ class OrderController extends ApiController
         }
 
         if (!$order->deny($user->id)) {
+            LogService::writeErrorLog($e);
+
             return $this->respondServerError();
         }
 
@@ -109,23 +112,30 @@ class OrderController extends ApiController
         }
 
         $user = $this->guard()->user();
-        $nomineeExists = $order->nominees()->where('user_id', $user->id)->whereNull('accepted_at')->first();
 
-        if (!$nomineeExists) {
-            if ((OrderType::CALL != $order->type) || $order->casts->count() == $order->total_cast
-                || $order->candidates->contains($user->id)) {
+        if (OrderType::CALL == $order->type) {
+            if ($order->casts->count() == $order->total_cast
+                || $order->candidates->contains($user->id) || $order->nominees->contains($user->id)) {
                 return $this->respondErrorMessage(trans('messages.action_not_performed'), 422);
             }
 
             if (!$order->apply($user->id)) {
+                LogService::writeErrorLog($e);
+
                 return $this->respondServerError();
             }
+        } else {
+            $nomineeExists = $order->nominees()->where('user_id', $user->id)->whereNull('accepted_at')->first();
 
-            return $this->respondWithNoData(trans('messages.accepted_order'));
-        }
+            if (!$nomineeExists) {
+                return $this->respondErrorMessage(trans('messages.action_not_performed'), 422);
+            }
 
-        if (!$order->accept($user->id)) {
-            return $this->respondServerError();
+            if (!$order->accept($user->id)) {
+                LogService::writeErrorLog($e);
+
+                return $this->respondServerError();
+            }
         }
 
         return $this->respondWithNoData(trans('messages.accepted_order'));
@@ -151,6 +161,8 @@ class OrderController extends ApiController
         }
 
         if (!$order->start($user->id)) {
+            LogService::writeErrorLog($e);
+
             return $this->respondServerError();
         }
 
@@ -177,6 +189,8 @@ class OrderController extends ApiController
         }
 
         if (!$order->stop($user->id)) {
+            LogService::writeErrorLog($e);
+
             return $this->respondServerError();
         }
 
