@@ -110,7 +110,7 @@ class OrderController extends ApiController
 
             if (OrderType::CALL != $input['type']) {
                 if (count($listNomineeIds) != $counter) {
-                    return $this->respondErrorMessage(trans('messages.action_not_performed'), 402);
+                    return $this->respondErrorMessage(trans('messages.action_not_performed'), 422);
                 }
 
                 $order->nominees()->attach($listNomineeIds, ['type' => CastOrderType::NOMINEE]);
