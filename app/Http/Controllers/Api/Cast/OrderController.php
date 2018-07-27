@@ -48,6 +48,7 @@ class OrderController extends ApiController
             })
                 ->where('type', OrderType::CALL)
                 ->where('status', OrderStatus::OPEN)
+                ->where('class_id', $user->class_id)
                 ->orderBy('date')
                 ->orderBy('start_time');
         } elseif (isset($request->status)) {
