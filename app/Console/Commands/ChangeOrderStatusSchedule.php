@@ -51,8 +51,6 @@ class ChangeOrderStatusSchedule extends Command
                 ->update(['status' => OrderStatus::PROCESSING]);
         } catch (\Exception $e) {
             LogService::writeErrorLog($e);
-
-            return $this->respondServerError();
         }
     }
 }

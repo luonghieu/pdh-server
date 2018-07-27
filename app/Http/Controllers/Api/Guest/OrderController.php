@@ -42,7 +42,9 @@ class OrderController extends ApiController
             return $this->respondErrorMessage(trans('messages.action_not_performed'), 422);
         }
 
-        $order->cancel();
+        if (!$order->cancel()) {
+            return $this->respondServerError();
+        }
 
         return $this->respondWithNoData(trans('messages.cancel_order_success'));
     }

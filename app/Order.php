@@ -6,6 +6,7 @@ use App\Enums\CastOrderStatus;
 use App\Enums\CastOrderType;
 use App\Enums\OrderStatus;
 use App\Jobs\ValidateOrder;
+use App\Services\LogService;
 use Auth;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
@@ -72,10 +73,12 @@ class Order extends Model
                 ['status' => CastOrderStatus::DENIED, 'canceled_at' => Carbon::now()], false);
 
             ValidateOrder::dispatch($this);
+
+            return true;
         } catch (\Exception $e) {
             LogService::writeErrorLog($e);
 
-            return $this->respondServerError();
+            return false;
         }
     }
 
@@ -86,10 +89,12 @@ class Order extends Model
                 'status' => OrderStatus::CANCELED,
                 'canceled_at' => Carbon::now(),
             ]);
+
+            return true;
         } catch (\Exception $e) {
             LogService::writeErrorLog($e);
 
-            return $this->respondServerError();
+            return false;
         }
     }
 
@@ -104,10 +109,12 @@ class Order extends Model
                 ]);
 
             ValidateOrder::dispatch($this);
+
+            return true;
         } catch (\Exception $e) {
             LogService::writeErrorLog($e);
 
-            return $this->respondServerError();
+            return false;
         }
     }
 
@@ -118,10 +125,12 @@ class Order extends Model
                 ['status' => CastOrderStatus::ACCEPTED, 'accepted_at' => Carbon::now()], false);
 
             ValidateOrder::dispatch($this);
+
+            return true;
         } catch (\Exception $e) {
             LogService::writeErrorLog($e);
 
-            return $this->respondServerError();
+            return false;
         }
     }
 
@@ -132,10 +141,11 @@ class Order extends Model
                 'stopped_at' => Carbon::now(),
                 'status' => CastOrderStatus::DONE,
             ], false);
+            return true;
         } catch (\Exception $e) {
             LogService::writeErrorLog($e);
 
-            return $this->respondServerError();
+            return false;
         }
     }
 
@@ -146,10 +156,12 @@ class Order extends Model
                 'started_at' => Carbon::now(),
                 'status' => CastOrderStatus::PROCESSING,
             ], false);
+
+            return true;
         } catch (\Exception $e) {
             LogService::writeErrorLog($e);
 
-            return $this->respondServerError();
+            return false;
         }
     }
 

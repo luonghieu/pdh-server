@@ -93,7 +93,9 @@ class OrderController extends ApiController
             return $this->respondErrorMessage(trans('messages.action_not_performed'), 422);
         }
 
-        $order->deny($user->id);
+        if (!$order->deny($user->id)) {
+            return $this->respondServerError();
+        }
 
         return $this->respondWithNoData(trans('messages.denied_order'));
     }
@@ -114,7 +116,9 @@ class OrderController extends ApiController
                 return $this->respondErrorMessage(trans('messages.action_not_performed'), 422);
             }
 
-            $order->apply($user->id);
+            if (!$order->apply($user->id)) {
+                return $this->respondServerError();
+            }
         } else {
             $nomineeExists = $order->nominees()->where('user_id', $user->id)->whereNull('accepted_at')->first();
 
@@ -122,7 +126,9 @@ class OrderController extends ApiController
                 return $this->respondErrorMessage(trans('messages.action_not_performed'), 422);
             }
 
-            $order->accept($user->id);
+            if (!$order->accept($user->id)) {
+                return $this->respondServerError();
+            }
         }
 
         return $this->respondWithNoData(trans('messages.accepted_order'));
@@ -147,7 +153,9 @@ class OrderController extends ApiController
             return $this->respondErrorMessage(trans('messages.action_not_performed'), 422);
         }
 
-        $order->start($user->id);
+        if (!$order->start($user->id)) {
+            return $this->respondServerError();
+        }
 
         return $this->respondWithNoData(trans('messages.start_order'));
     }
@@ -171,7 +179,9 @@ class OrderController extends ApiController
             return $this->respondErrorMessage(trans('messages.action_not_performed'), 422);
         }
 
-        $order->stop($user->id);
+        if (!$order->stop($user->id)) {
+            return $this->respondServerError();
+        }
 
         return $this->respondWithNoData(trans('messages.stop_order'));
     }
