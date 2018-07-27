@@ -8,7 +8,6 @@ use App\Enums\OrderType;
 use App\Http\Controllers\Api\ApiController;
 use App\Http\Resources\OrderResource;
 use App\Order;
-use App\Services\LogService;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 
@@ -94,11 +93,7 @@ class OrderController extends ApiController
             return $this->respondErrorMessage(trans('messages.action_not_performed'), 422);
         }
 
-        if (!$order->deny($user->id)) {
-            LogService::writeErrorLog($e);
-
-            return $this->respondServerError();
-        }
+        $order->deny($user->id);
 
         return $this->respondWithNoData(trans('messages.denied_order'));
     }
@@ -119,11 +114,7 @@ class OrderController extends ApiController
                 return $this->respondErrorMessage(trans('messages.action_not_performed'), 422);
             }
 
-            if (!$order->apply($user->id)) {
-                LogService::writeErrorLog($e);
-
-                return $this->respondServerError();
-            }
+            $order->apply($user->id);
         } else {
             $nomineeExists = $order->nominees()->where('user_id', $user->id)->whereNull('accepted_at')->first();
 
@@ -131,11 +122,7 @@ class OrderController extends ApiController
                 return $this->respondErrorMessage(trans('messages.action_not_performed'), 422);
             }
 
-            if (!$order->accept($user->id)) {
-                LogService::writeErrorLog($e);
-
-                return $this->respondServerError();
-            }
+            $order->accept($user->id);
         }
 
         return $this->respondWithNoData(trans('messages.accepted_order'));
@@ -160,11 +147,7 @@ class OrderController extends ApiController
             return $this->respondErrorMessage(trans('messages.action_not_performed'), 422);
         }
 
-        if (!$order->start($user->id)) {
-            LogService::writeErrorLog($e);
-
-            return $this->respondServerError();
-        }
+        $order->start($user->id);
 
         return $this->respondWithNoData(trans('messages.start_order'));
     }
@@ -188,11 +171,7 @@ class OrderController extends ApiController
             return $this->respondErrorMessage(trans('messages.action_not_performed'), 422);
         }
 
-        if (!$order->stop($user->id)) {
-            LogService::writeErrorLog($e);
-
-            return $this->respondServerError();
-        }
+        $order->stop($user->id);
 
         return $this->respondWithNoData(trans('messages.stop_order'));
     }

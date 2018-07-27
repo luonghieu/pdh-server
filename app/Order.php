@@ -72,10 +72,10 @@ class Order extends Model
                 ['status' => CastOrderStatus::DENIED, 'canceled_at' => Carbon::now()], false);
 
             ValidateOrder::dispatch($this);
-
-            return true;
         } catch (\Exception $e) {
-            return false;
+            LogService::writeErrorLog($e);
+
+            return $this->respondServerError();
         }
     }
 
@@ -86,10 +86,10 @@ class Order extends Model
                 'status' => OrderStatus::CANCELED,
                 'canceled_at' => Carbon::now(),
             ]);
-
-            return true;
         } catch (\Exception $e) {
-            return false;
+            LogService::writeErrorLog($e);
+
+            return $this->respondServerError();
         }
     }
 
@@ -104,10 +104,10 @@ class Order extends Model
                 ]);
 
             ValidateOrder::dispatch($this);
-
-            return true;
         } catch (\Exception $e) {
-            return false;
+            LogService::writeErrorLog($e);
+
+            return $this->respondServerError();
         }
     }
 
@@ -118,10 +118,10 @@ class Order extends Model
                 ['status' => CastOrderStatus::ACCEPTED, 'accepted_at' => Carbon::now()], false);
 
             ValidateOrder::dispatch($this);
-
-            return true;
         } catch (\Exception $e) {
-            return false;
+            LogService::writeErrorLog($e);
+
+            return $this->respondServerError();
         }
     }
 
@@ -132,9 +132,10 @@ class Order extends Model
                 'stopped_at' => Carbon::now(),
                 'status' => CastOrderStatus::DONE,
             ], false);
-            return true;
         } catch (\Exception $e) {
-            return false;
+            LogService::writeErrorLog($e);
+
+            return $this->respondServerError();
         }
     }
 
@@ -145,10 +146,10 @@ class Order extends Model
                 'started_at' => Carbon::now(),
                 'status' => CastOrderStatus::PROCESSING,
             ], false);
-
-            return true;
         } catch (\Exception $e) {
-            return false;
+            LogService::writeErrorLog($e);
+
+            return $this->respondServerError();
         }
     }
 
