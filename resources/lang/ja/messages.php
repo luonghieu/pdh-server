@@ -22,7 +22,6 @@ return [
     'room_not_found' => 'このチャットルームは存在しません',
     'delete_message_success' => '削除しました',
     'message_exits' => 'メッセージが存在しません',
-    'update_working_today_success' => '更新しました',
     'avatar_at_least' => 'プロフィール写真は、1枚以上の登録が必要です',
     'order_not_found' => '予約が存在しません',
     'action_not_performed' => 'この操作は実行できません',
