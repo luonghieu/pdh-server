@@ -3,6 +3,7 @@
 namespace App\Http\Resources;
 
 use App\CastClass;
+use App\Http\Resources\CastClassResource;
 use App\Repositories\PrefectureRepository;
 use App\Traits\ResourceResponse;
 use Illuminate\Http\Resources\Json\Resource;
@@ -37,7 +38,7 @@ class OrderResource extends Resource
             'fee_point' => $this->fee_point,
             'total_point' => $this->total_point,
             'class_id' => $this->class_id,
-            'class' => $this->class_id ? CastClass::find($this->class_id)->name : '',
+            'cast_class' => CastClassResource::make($this->castClass),
             'type' => $this->type,
             'status' => $this->status,
             'actual_started_at' => $this->actual_started_at,
