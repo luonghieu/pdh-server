@@ -11,7 +11,7 @@ class OrderObserver
 {
     public function created(Order $order)
     {
-        if ($order->type == OrderType::NOMINATED_CALL || $order->type == OrderType::CALL) {
+        if (OrderType::NOMINATED_CALL == $order->type || OrderType::CALL == $order->type) {
             $nominees = $order->nominees;
             $order->user->notify(new CreateNominatedOrdersForGuest($order));
             if (count($nominees)) {
