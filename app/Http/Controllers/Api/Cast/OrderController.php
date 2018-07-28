@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers\Api\Cast;
 
+use App\Cast;
+use App\Enums\CastOrderStatus;
 use App\Enums\OrderScope;
 use App\Enums\OrderStatus;
 use App\Enums\OrderType;
@@ -169,7 +171,9 @@ class OrderController extends ApiController
         }
 
         $user = $this->guard()->user();
-        $castExists = $order->casts()->where('user_id', $user->id)->whereNull('stopped_at')->first();
+        $castExists = $order->belongsToMany(Cast::class)
+            ->where('cast_order.status', CastOrderStatus::PROCESSING)->withTimestamps()
+            ->where('user_id', $user->id)->whereNull('stopped_at')->first();
 
         $validStatus = [
             OrderStatus::PROCESSING,
