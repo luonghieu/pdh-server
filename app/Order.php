@@ -6,6 +6,7 @@ use App\Enums\CastOrderStatus;
 use App\Enums\CastOrderType;
 use App\Enums\OrderStatus;
 use App\Jobs\ValidateOrder;
+use App\Services\LogService;
 use Auth;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
@@ -75,6 +76,8 @@ class Order extends Model
 
             return true;
         } catch (\Exception $e) {
+            LogService::writeErrorLog($e);
+
             return false;
         }
     }
@@ -89,6 +92,8 @@ class Order extends Model
 
             return true;
         } catch (\Exception $e) {
+            LogService::writeErrorLog($e);
+
             return false;
         }
     }
@@ -107,6 +112,8 @@ class Order extends Model
 
             return true;
         } catch (\Exception $e) {
+            LogService::writeErrorLog($e);
+
             return false;
         }
     }
@@ -121,6 +128,8 @@ class Order extends Model
 
             return true;
         } catch (\Exception $e) {
+            LogService::writeErrorLog($e);
+
             return false;
         }
     }
@@ -134,6 +143,8 @@ class Order extends Model
             ], false);
             return true;
         } catch (\Exception $e) {
+            LogService::writeErrorLog($e);
+
             return false;
         }
     }
@@ -148,6 +159,8 @@ class Order extends Model
 
             return true;
         } catch (\Exception $e) {
+            LogService::writeErrorLog($e);
+
             return false;
         }
     }

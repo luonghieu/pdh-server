@@ -110,23 +110,26 @@ class OrderController extends ApiController
         }
 
         $user = $this->guard()->user();
-        $nomineeExists = $order->nominees()->where('user_id', $user->id)->whereNull('accepted_at')->first();
 
-        if (!$nomineeExists) {
-            if ((OrderType::CALL != $order->type) || $order->casts->count() == $order->total_cast
-                || $order->candidates->contains($user->id)) {
+        if (OrderType::CALL == $order->type) {
+            if ($order->casts->count() == $order->total_cast
+                || $order->candidates->contains($user->id) || $order->nominees->contains($user->id)) {
                 return $this->respondErrorMessage(trans('messages.action_not_performed'), 422);
             }
 
             if (!$order->apply($user->id)) {
                 return $this->respondServerError();
             }
+        } else {
+            $nomineeExists = $order->nominees()->where('user_id', $user->id)->whereNull('accepted_at')->first();
 
-            return $this->respondWithNoData(trans('messages.accepted_order'));
-        }
+            if (!$nomineeExists) {
+                return $this->respondErrorMessage(trans('messages.action_not_performed'), 422);
+            }
 
-        if (!$order->accept($user->id)) {
-            return $this->respondServerError();
+            if (!$order->accept($user->id)) {
+                return $this->respondServerError();
+            }
         }
 
         return $this->respondWithNoData(trans('messages.accepted_order'));

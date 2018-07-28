@@ -4,6 +4,7 @@ namespace App\Console\Commands;
 
 use App\Enums\OrderStatus;
 use App\Order;
+use App\Services\LogService;
 use Carbon\Carbon;
 use Illuminate\Console\Command;
 
