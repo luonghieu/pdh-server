@@ -31,7 +31,7 @@ class RatingController extends ApiController
 
         $orderId = $request->order_id;
 
-        $order = Order::where('type', OrderStatus::DONE)->find($orderId);
+        $order = Order::where('status', OrderStatus::DONE)->find($orderId);
 
         if (!$order) {
             return $this->respondErrorMessage(trans('messages.order_not_found'), 404);
