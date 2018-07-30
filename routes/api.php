@@ -96,4 +96,8 @@ Route::group(['prefix' => 'v1'], function () {
             Route::delete('{id}', ['as' => 'delete', 'uses' => 'CardController@destroy']);
         });
     });
+
+    Route::group(['middleware' => ['auth:api']], function () {
+        Route::post('/ratings', ['as' => 'create_rating', 'uses' => 'RatingController@create']);
+    });
 });

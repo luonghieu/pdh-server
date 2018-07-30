@@ -33,4 +33,6 @@ return [
     'stop_order' => 'Cast stops the order successfully',
     'start_order' => 'Successfully start order',
     'card_not_exist' => 'There is no payment method available. Please add one',
+    'rating_success' => "Create rating successfully",
+    'order_is_rated' => "This order has been rated",
 ];
