@@ -3,18 +3,14 @@
 namespace App\Http\Controllers\Api;
 
 use App\BodyType;
-use App\Cast;
-use App\Enums\CastOrderStatus;
 use App\Enums\CohabitantType;
 use App\Enums\DrinkVolumeType;
 use App\Enums\SiblingsType;
 use App\Enums\SmokingType;
 use App\Enums\UserGender;
 use App\Job;
-use App\Order;
 use App\Prefecture;
 use App\Salary;
-use Carbon\Carbon;
 
 class GlossaryController extends ApiController
 {
