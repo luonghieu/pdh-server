@@ -27,11 +27,6 @@ class Order extends Model
         'canceled_at',
     ];
 
-    public function freshTimestamp()
-    {
-        return Carbon::now()->second(0);
-    }
-
     public function user()
     {
         return $this->belongsTo(User::class);
