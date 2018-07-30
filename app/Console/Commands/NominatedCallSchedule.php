@@ -50,7 +50,6 @@ class NominatedCallSchedule extends Command
         foreach ($orders as $order) {
             $nomineeIds = $order->nominees()
                 ->whereNull('cast_order.status')
-                ->orWhere('cast_order.status', CastOrderStatus::DENIED)
                 ->pluck('cast_order.user_id')->toArray();
 
             foreach ($nomineeIds as $id) {
