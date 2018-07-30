@@ -204,6 +204,11 @@ class User extends Authenticatable implements JWTSubject
         return $this->belongsTo(Prefecture::class);
     }
 
+    public function hometown()
+    {
+        return $this->belongsTo(Prefecture::class, 'hometown_id');
+    }
+
     public function job()
     {
         return $this->belongsTo(Job::class);
