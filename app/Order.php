@@ -249,7 +249,7 @@ class Order extends Model
             $cost = $cast->cost;
         }
 
-        return $cost;
+        return $cost * ((60 * $this->duration) / 30);
     }
 
     private function extraTime($stoppedAt)
