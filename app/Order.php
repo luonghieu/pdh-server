@@ -152,6 +152,8 @@ class Order extends Model
             $this->casts()->updateExistingPivot($userId, [
                 'stopped_at' => $stoppedAt,
                 'status' => CastOrderStatus::DONE,
+                'order_point' => $orderPoint,
+                'order_time' => (60 * $this->duration),
                 'night_time' => $nightTime,
                 'extra_time' => $extraTime,
                 'total_time' => $orderTotalTime,
