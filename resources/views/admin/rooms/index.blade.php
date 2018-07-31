@@ -50,39 +50,45 @@
               </tr>
             </thead>
             <tbody>
-              @foreach ($rooms as $key => $room)
-              <tr>
-                <td>{{ $rooms->firstItem() +$key }}</td>
-                <td>{{ $room->id }}</td>
-                <td><a href="{{ route('admin.users.show', ['user' => $room->owner_id]) }}">{{ $room->owner_id }}</a></td>
-                <td>{{ $room->is_group ? 'グループ' : '個別' }}</td>
-                <td>
-                  @if ($room->is_group)
-                  <a href="{{ route('admin.rooms.members', ['room' => $room->id]) }}">
-                    {{ $room->users->count().'人' }}
-                  </a>
-                  @else
-                  <a href="{{ route('admin.users.show',
-                  ['user' => ($room->users[0]->id == $room->owner_id) ? $room->users[1]->id : $room->users[0]->id]) }}">
-                    {{ ($room->users[0]->id == $room->owner_id) ? $room->users[1]->id : $room->users[0]->id }}
-                  </a>
-                  @endif
-                </td>
-                <td>{{ Carbon\Carbon::parse($room->created_at)->format('Y/m/d H:i') }}</td>
-                <td>
-                  @if ($room->is_direct && $room->checkBlocked(($room->users[0]->id == $room->owner_id) ? $room->users[1]->id : $room->users[0]->id))
-                  'ブロック中'
-                  @else
-                  {{ App\Enums\Status::getDescription($room->is_active) }}
-                  @endif
-                </td>
-                <td>
-                  <a href="{{ route('admin.rooms.messages_by_room', ['room' => $room->id]) }}">
-                    {{ route('admin.rooms.messages_by_room', ['room' => $room->id]) }}
-                  </a>
-                </td>
-              </tr>
-              @endforeach
+              @if (empty($rooms->count()))
+                <tr>
+                  <td colspan="8">{{ trans('messages.room_not_found') }}</td>
+                </tr>
+              @else
+                @foreach ($rooms as $key => $room)
+                <tr>
+                  <td>{{ $rooms->firstItem() +$key }}</td>
+                  <td><a href="{{ route('admin.rooms.messages_by_room', ['room' => $room->id]) }}">{{ $room->id }}</td>
+                  <td><a href="{{ route('admin.users.show', ['user' => $room->owner_id]) }}">{{ $room->owner_id }}</a></td>
+                  <td>{{ $room->is_group ? 'グループ' : '個別' }}</td>
+                  <td>
+                    @if ($room->is_group)
+                    <a href="{{ route('admin.rooms.members', ['room' => $room->id]) }}">
+                      {{ $room->users->count().'人' }}
+                    </a>
+                    @else
+                    <a href="{{ route('admin.users.show',
+                    ['user' => ($room->users[0]->id == $room->owner_id) ? $room->users[1]->id : $room->users[0]->id]) }}">
+                      {{ ($room->users[0]->id == $room->owner_id) ? $room->users[1]->id : $room->users[0]->id }}
+                    </a>
+                    @endif
+                  </td>
+                  <td>{{ Carbon\Carbon::parse($room->created_at)->format('Y/m/d H:i') }}</td>
+                  <td>
+                    @if ($room->is_direct && $room->checkBlocked(($room->users[0]->id == $room->owner_id) ? $room->users[1]->id : $room->users[0]->id))
+                    'ブロック中'
+                    @else
+                    {{ App\Enums\Status::getDescription($room->is_active) }}
+                    @endif
+                  </td>
+                  <td>
+                    <a href="{{ route('admin.rooms.messages_by_room', ['room' => $room->id]) }}">
+                      {{ route('admin.rooms.messages_by_room', ['room' => $room->id]) }}
+                    </a>
+                  </td>
+                </tr>
+                @endforeach
+              @endif
             </tbody>
           </table>
         </div>
