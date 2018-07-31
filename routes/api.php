@@ -60,6 +60,7 @@ Route::group(['prefix' => 'v1'], function () {
 
     Route::group(['middleware' => ['auth:api'], 'prefix' => 'guest', 'as' => 'guest.'], function () {
         Route::get('/orders', ['as' => 'index', 'uses' => 'Guest\OrderController@index']);
+        Route::get('/cast_histories', ['as' => 'cast_histories', 'uses' => 'Guest\GuestController@castHistories']);
     });
 
     Route::group(['middleware' => ['auth:api'], 'prefix' => 'cast', 'as' => 'cast.'], function () {
