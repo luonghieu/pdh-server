@@ -58,7 +58,7 @@
                 <td>{{ $room->is_group ? 'グループ' : '個別' }}</td>
                 <td>
                   @if ($room->is_group)
-                  <a href="">
+                  <a href="{{ route('admin.rooms.members', ['room' => $room->id]) }}">
                     {{ $room->users->count().'人' }}
                   </a>
                   @else
