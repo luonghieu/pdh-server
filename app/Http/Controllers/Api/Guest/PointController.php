@@ -27,8 +27,9 @@ class PointController extends ApiController
             return $this->respondErrorMessage(trans('messages.card_not_exist'), 404);
         }
 
-        \DB::beginTransaction();
         try {
+            \DB::beginTransaction();
+
             $point = new Point;
             $point->point = $request->amount;
             $point->user_id = $user->id;
