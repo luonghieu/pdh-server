@@ -31,11 +31,16 @@ class RatingController extends ApiController
 
         $orderId = $request->order_id;
 
-        $order = Order::where('status', OrderStatus::DONE)->find($orderId);
+        $order = Order::find($orderId);
 
         if (!$order) {
             return $this->respondErrorMessage(trans('messages.order_not_found'), 404);
         }
+
+        if (OrderStatus::DONE != $orders->status) {
+            return $this->respondErrorMessage(trans('messages.action_not_performed'), 422);
+        }
+
         $user = $this->guard()->user();
 
         $isRated = Rating::where('user_id', $this->guard()->user()->id)->where('order_id', $orderId)->exists();
