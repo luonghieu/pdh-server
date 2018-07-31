@@ -27,6 +27,7 @@ class PointController extends ApiController
             return $this->respondErrorMessage(trans('messages.card_not_exist'), 404);
         }
 
+        \DB::beginTransaction();
         try {
             $point = new Point;
             $point->point = $request->amount;
@@ -43,8 +44,11 @@ class PointController extends ApiController
             $payment->point_id = $point->id;
             $payment->save();
 
+            \DB::commit();
+
             return $this->respondWithNoData(trans('messages.buy_point_success'));
         } catch (\Exception $e) {
+            \DB::rollBack();
             LogService::writeErrorLog($e);
 
             return $this->respondServerError();
