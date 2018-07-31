@@ -18,7 +18,23 @@ class Cast extends User
         });
     }
 
-    public function castClass() {
+    public function castClass()
+    {
         return $this->belongsTo(CastClass::class, 'class_id', 'id');
+    }
+
+    public function orders()
+    {
+        return $this->belongsToMany(Order::class, 'cast_order', 'user_id', 'order_id');
+    }
+
+    public function getLatestOrderAttribute()
+    {
+        return $this
+            ->orders()
+            ->whereNotNull('cast_order.accepted_at')
+            ->whereNull('cast_order.canceled_at')
+            ->latest()
+            ->first();
     }
 }
