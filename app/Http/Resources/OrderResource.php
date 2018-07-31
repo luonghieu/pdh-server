@@ -49,6 +49,7 @@ class OrderResource extends Resource
             'casts' => UserCollection::make($this->whenLoaded('casts')),
             'user' => new UserResource($this->whenLoaded('user')),
             'is_nominated' => $this->isNominated(),
+            'user_status' => $this->user_status,
         ]);
     }
 }
