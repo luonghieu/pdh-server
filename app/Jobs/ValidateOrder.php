@@ -62,26 +62,24 @@ class ValidateOrder implements ShouldQueue
                         $room->owner_id = $this->order->user_id;
                         $room->type = RoomType::GROUP;
                         $room->save();
+
+                        $data = [$this->order->user_id];
+                        foreach ($this->order->casts as $cast) {
+                            $data = array_merge($data, [$cast->pivot->user_id]);
+                        }
+
+                        $room->users()->attach($data);
                     } else {
                         $ownerId = $this->order->user_id;
                         $userId = $this->order->casts()->first()->id;
 
                         $this->createDirectRoom($ownerId, $userId);
                     }
+                }
 
-                    $data = [$this->order->user_id];
-                    $involvedUsers = [$this->order->user];
-                    foreach ($this->order->casts as $cast) {
-                        $data = array_merge($data, [$cast->pivot->user_id]);
-                        $involvedUsers[] = $cast;
-                    }
-
-                    $room->users()->attach($data);
-                } else {
-                    $involvedUsers = [$this->order->user];
-                    foreach ($this->order->casts as $cast) {
-                        $involvedUsers[] = $cast;
-                    }
+                $involvedUsers = [$this->order->user];
+                foreach ($this->order->casts as $cast) {
+                    $involvedUsers[] = $cast;
                 }
 
                 $this->sendNotification($involvedUsers);
