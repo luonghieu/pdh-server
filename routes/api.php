@@ -96,5 +96,9 @@ Route::group(['prefix' => 'v1'], function () {
             Route::post('/', ['as' => 'create', 'uses' => 'CardController@create']);
             Route::delete('{id}', ['as' => 'delete', 'uses' => 'CardController@destroy']);
         });
+
+        Route::group(['prefix' => 'points', 'as' => 'points.'], function () {
+            Route::post('/', ['as' => 'buy', 'uses' => 'Guest\PointController@buy']);
+        });
     });
 });

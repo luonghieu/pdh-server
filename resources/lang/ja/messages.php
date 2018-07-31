@@ -33,6 +33,7 @@ return [
     'stop_order' => 'ストップしました',
     'start_order' => 'お仕事を開始しました',
     'card_not_exist' => '支払い方法が未登録です',
+    'buy_point_success' => '購入が完了しました',
     'rating_success' => "評価が完了しました",
     'order_is_rated' => "既に評価は完了しています",
 ];
