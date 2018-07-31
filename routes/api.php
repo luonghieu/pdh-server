@@ -98,6 +98,7 @@ Route::group(['prefix' => 'v1'], function () {
         });
 
         Route::group(['prefix' => 'points', 'as' => 'points.'], function () {
+            Route::get('/', ['as' => 'points', 'uses' => 'PointController@points']);
             Route::post('/', ['as' => 'buy', 'uses' => 'Guest\PointController@buy']);
         });
     });
