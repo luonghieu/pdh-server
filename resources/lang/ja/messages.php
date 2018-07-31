@@ -36,4 +36,5 @@ return [
     'buy_point_success' => '購入が完了しました',
     'rating_success' => "評価が完了しました",
     'order_is_rated' => "既に評価は完了しています",
+    'send_message_thanks' => "送信が完了しました",
 ];
