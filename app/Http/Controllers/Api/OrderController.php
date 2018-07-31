@@ -2,22 +2,25 @@
 
 namespace App\Http\Controllers\Api;
 
-use App\Cast;
-use App\Enums\CastOrderType;
-use App\Enums\OrderStatus;
-use App\Enums\OrderType;
-use App\Enums\RoomType;
-use App\Http\Resources\OrderResource;
-use App\Order;
-use App\Room;
-use App\Services\LogService;
-use App\Tag;
-use Carbon\Carbon;
 use DB;
+use App\Tag;
+use App\Cast;
+use App\Room;
+use App\Order;
+use Carbon\Carbon;
+use App\Enums\RoomType;
+use App\Enums\OrderType;
+use App\Enums\OrderStatus;
+use App\Traits\DirectRoom;
+use App\Enums\CastOrderType;
+use App\Services\LogService;
 use Illuminate\Http\Request;
+use App\Http\Resources\OrderResource;
 
 class OrderController extends ApiController
 {
+    use DirectRoom;
+
     public function create(Request $request)
     {
         $user = $this->guard()->user();
@@ -118,24 +121,10 @@ class OrderController extends ApiController
                 $order->nominees()->attach($listNomineeIds, ['type' => CastOrderType::NOMINEE]);
 
                 if (OrderType::NOMINATION == $order->type) {
-                    $nominee = $order->nominees()->first()->id;
-                    $isRoomExists = Room::active()->where('type', RoomType::DIRECT)
-                        ->whereHas('users', function ($query) use ($nominee) {
-                            $query->where('user_id', $nominee);
-                        })
-                        ->whereHas('users', function ($query) use ($order) {
-                            $query->where('user_id', $order->user_id);
-                        })
-                        ->count();
+                    $ownerId = $order->user_id;
+                    $nomineeId = $order->nominees()->first()->id;
 
-                    if (!$isRoomExists) {
-                        $room = new Room;
-                        $room->owner_id = $order->user_id;
-                        $room->type = RoomType::DIRECT;
-                        $room->save();
-
-                        $room->users()->attach([$nominee, $order->user_id]);
-                    }
+                    $this->createDirectRoom($ownerId, $nomineeId);
                 }
             }
 
