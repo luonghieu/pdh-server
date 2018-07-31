@@ -37,7 +37,9 @@ class Order extends Model
     public function casts()
     {
         return $this->belongsToMany(Cast::class)
-            ->where('cast_order.status', CastOrderStatus::ACCEPTED)->withTimestamps();
+            ->whereNotNull('cast_order.accepted_at')
+            ->whereNull('cast_order.canceled_at')
+            ->withTimestamps();
     }
 
     public function nominees()
@@ -77,6 +79,7 @@ class Order extends Model
 
             return true;
         } catch (\Exception $e) {
+            LogService::writeErrorLog($e);
             return false;
         }
     }
@@ -91,6 +94,7 @@ class Order extends Model
 
             return true;
         } catch (\Exception $e) {
+            LogService::writeErrorLog($e);
             return false;
         }
     }
@@ -109,6 +113,7 @@ class Order extends Model
 
             return true;
         } catch (\Exception $e) {
+            LogService::writeErrorLog($e);
             return false;
         }
     }
@@ -123,6 +128,7 @@ class Order extends Model
 
             return true;
         } catch (\Exception $e) {
+            LogService::writeErrorLog($e);
             return false;
         }
     }
@@ -160,6 +166,7 @@ class Order extends Model
 
             return true;
         } catch (\Exception $e) {
+            LogService::writeErrorLog($e);
             return false;
         }
     }

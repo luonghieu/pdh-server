@@ -4,12 +4,12 @@ namespace App\Enums;
 
 use BenSampo\Enum\Enum;
 
-final class MessageType extends Enum
+final class PaymentStatus extends Enum
 {
-    const SYSTEM = 1;
-    const MESSAGE = 2;
-    const IMAGE = 3;
-    const THANKFUL = 4;
+    const OPEN = 1;
+    const DONE = 2;
+    const FAILED = 3;
+    const DELETED = 4;
 
     /**
      * Get the description for an enum value

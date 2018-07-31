@@ -2,20 +2,25 @@
 
 namespace App\Http\Controllers\Api;
 
-use App\Cast;
-use App\Enums\CastOrderType;
-use App\Enums\OrderStatus;
-use App\Enums\OrderType;
-use App\Http\Resources\OrderResource;
-use App\Order;
-use App\Services\LogService;
-use App\Tag;
-use Carbon\Carbon;
 use DB;
+use App\Tag;
+use App\Cast;
+use App\Room;
+use App\Order;
+use Carbon\Carbon;
+use App\Enums\RoomType;
+use App\Enums\OrderType;
+use App\Enums\OrderStatus;
+use App\Traits\DirectRoom;
+use App\Enums\CastOrderType;
+use App\Services\LogService;
 use Illuminate\Http\Request;
+use App\Http\Resources\OrderResource;
 
 class OrderController extends ApiController
 {
+    use DirectRoom;
+
     public function create(Request $request)
     {
         $user = $this->guard()->user();
@@ -114,11 +119,20 @@ class OrderController extends ApiController
                 }
 
                 $order->nominees()->attach($listNomineeIds, ['type' => CastOrderType::NOMINEE]);
+
+                if (OrderType::NOMINATION == $order->type) {
+                    $ownerId = $order->user_id;
+                    $nomineeId = $order->nominees()->first()->id;
+
+                    $this->createDirectRoom($ownerId, $nomineeId);
+                }
             }
+
             DB::commit();
         } catch (\Exception $e) {
             DB::rollback();
             LogService::writeErrorLog($e);
+
             return $this->respondServerError();
         }
 

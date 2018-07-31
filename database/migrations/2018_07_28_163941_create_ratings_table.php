@@ -13,14 +13,18 @@ class CreateRatingsTable extends Migration
      */
     public function up()
     {
+        Schema::dropIfExists('ratings');
+
         Schema::create('ratings', function (Blueprint $table) {
             $table->increments('id');
-            $table->unsignedInteger('user_id');
             $table->unsignedInteger('rated_id');
+            $table->unsignedInteger('user_id');
             $table->unsignedInteger('order_id');
-            $table->float('rate')->default(0.0);
+            $table->float('satisfaction')->nullable();
+            $table->float('appearance')->nullable();
+            $table->float('friendliness')->nullable();
+            $table->float('score')->default(0.0);
             $table->text('comment')->nullable();
-            $table->boolean('is_active')->default(true);
             $table->timestamps();
 
             $table->foreign('user_id')
@@ -33,10 +37,10 @@ class CreateRatingsTable extends Migration
                 ->on('users')
                 ->onDelete('cascade');
 
-            // $table->foreign('order_id')
-            //     ->references('id')
-            //     ->on('orders')
-            //     ->onDelete('cascade');
+            $table->foreign('order_id')
+                ->references('id')
+                ->on('orders')
+                ->onDelete('cascade');
         });
     }
 

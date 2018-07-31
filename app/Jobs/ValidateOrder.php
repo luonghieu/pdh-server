@@ -2,25 +2,26 @@
 
 namespace App\Jobs;
 
-use App\Enums\CastOrderStatus;
+use App\Room;
+use App\Order;
+use App\Enums\RoomType;
+use App\Enums\OrderType;
 use App\Enums\MessageType;
 use App\Enums\OrderStatus;
-use App\Enums\OrderType;
-use App\Enums\RoomType;
-use App\Notifications\ApproveNominatedOrders;
-use App\Order;
-use App\Room;
+use App\Traits\DirectRoom;
 use App\Services\LogService;
 use Illuminate\Bus\Queueable;
+use App\Enums\CastOrderStatus;
+use Illuminate\Support\Carbon;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
-use Illuminate\Support\Carbon;
+use App\Notifications\ApproveNominatedOrders;
 
 class ValidateOrder implements ShouldQueue
 {
-    use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
+    use Dispatchable, InteractsWithQueue, Queueable, SerializesModels, DirectRoom;
 
     public $order;
 
@@ -55,26 +56,30 @@ class ValidateOrder implements ShouldQueue
             \DB::beginTransaction();
             try {
                 if ($orderType == OrderType::NOMINATED_CALL || $orderType == OrderType::CALL) {
-                    $room = new Room;
+                    if ($this->order->total_cast > 1) {
+                        $room = new Room;
+                        $room->order_id = $this->order->id;
+                        $room->owner_id = $this->order->user_id;
+                        $room->type = RoomType::GROUP;
+                        $room->save();
 
-                    $room->order_id = $this->order->id;
-                    $room->owner_id = $this->order->user_id;
-                    $room->type = RoomType::GROUP;
-                    $room->save();
+                        $data = [$this->order->user_id];
+                        foreach ($this->order->casts as $cast) {
+                            $data = array_merge($data, [$cast->pivot->user_id]);
+                        }
 
-                    $data = [];
-                    $involvedUsers = [$this->order->user];
-                    foreach ($this->order->casts as $cast) {
-                        $data = array_merge($data, [$cast->pivot->user_id]);
-                        $involvedUsers[] = $cast;
+                        $room->users()->attach($data);
+                    } else {
+                        $ownerId = $this->order->user_id;
+                        $userId = $this->order->casts()->first()->id;
+
+                        $this->createDirectRoom($ownerId, $userId);
                     }
+                }
 
-                    $room->users()->attach($data);
-                } else {
-                    $involvedUsers = [$this->order->user];
-                    foreach ($this->order->casts as $cast) {
-                        $involvedUsers[] = $cast;
-                    }
+                $involvedUsers = [$this->order->user];
+                foreach ($this->order->casts as $cast) {
+                    $involvedUsers[] = $cast;
                 }
 
                 $this->sendNotification($involvedUsers);

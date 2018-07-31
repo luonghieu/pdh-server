@@ -80,10 +80,10 @@
                         <td>
                           <div class="form-group">
                             <div class="col-sm-3 col-sm-offset-1">
-                              <input type="text" name="last_name" id="" placeholder="姓"  value="{{ old('last_name') }}" required >
+                              <input type="text" name="last_name" id="" placeholder="姓"  value="{{ ($user->lastname) ? $user->lastname : old('last_name') }}" required >
                             </div>
                             <div class="col-sm-3 col-sm-offset-1">
-                              <input type="text" name="first_name" id=""  value="{{ old('first_name') }}" placeholder="名" required >
+                              <input type="text" name="first_name" id=""  value="{{ ($user->firstname) ? $user->firstname : old('first_name') }}" placeholder="名" required >
                             </div>
                           </div>
                           @if ($errors->has('last_name'))
@@ -117,10 +117,10 @@
                         <td>
                           <div class="form-group">
                             <div class="col-sm-3 col-sm-offset-1">
-                              <input type="text" name="last_name_kana" id="" placeholder="せい"  value="{{ old('last_name_kana') }}" required >
+                              <input type="text" name="last_name_kana" id="" placeholder="せい"  value="{{ ($user->lastname_kana) ? $user->lastname_kana : old('last_name_kana') }}" required >
                             </div>
                             <div class="col-sm-3 col-sm-offset-1">
-                              <input type="text" name="first_name_kana" id=""  value="{{ old('first_name_kana') }}" placeholder="めい" required >
+                              <input type="text" name="first_name_kana" id=""  value="{{ ($user->firstname_kana) ? $user->firstname_kana : old('first_name_kana') }}" placeholder="めい" required >
                             </div>
                           </div>
                           @if ($errors->has('last_name_kana'))
@@ -154,7 +154,7 @@
                         <td>
                           <div class="form-group " >
                             <div class="col-sm-3 col-sm-offset-1">
-                              <input type="text" name="nick_name" id="" placeholder="ニックネーム"  value="{{ ($user->nickname) ? $user->nickname :'' }}" required >
+                              <input type="text" name="nick_name" id="" placeholder="ニックネーム"  value="{{ ($user->nickname) ? $user->nickname : old('nick_name') }}" required >
                             </div>
                           </div>
                           @if ($errors->has('nick_name'))
@@ -278,7 +278,7 @@
                         <td>
                           <div class="form-group">
                             <div class="col-sm-5 col-sm-offset-1">
-                              <input type="text" name="phone" id="" placeholder="半角数字を入力してください"  value="{{ old('phone') }}" required >
+                              <input type="text" name="phone" id="" placeholder="半角数字を入力してください"  value="{{ ($user->phone) ? $user->phone : old('phone') }}" required >
                             </div>
                           </div>
                           @if ($errors->has('phone'))
@@ -300,7 +300,7 @@
                         <td>
                           <div class="form-group">
                             <div class="col-sm-5 col-sm-offset-1">
-                              <input type="text" name="line" id="" placeholder="LINE IDを入力してください"  value="{{ old('line') }}" required >
+                              <input type="text" name="line" id="" placeholder="LINE IDを入力してください"  value="{{ ($user->line_id) ? $user->line_id : old('line') }}" required >
                             </div>
                           </div>
                           @if ($errors->has('line'))
