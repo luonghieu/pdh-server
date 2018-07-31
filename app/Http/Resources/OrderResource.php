@@ -2,6 +2,9 @@
 
 namespace App\Http\Resources;
 
+use App\CastClass;
+use App\Http\Resources\CastClassResource;
+use App\Repositories\PrefectureRepository;
 use App\Traits\ResourceResponse;
 use Illuminate\Http\Resources\Json\Resource;
 
@@ -21,6 +24,7 @@ class OrderResource extends Resource
             'id' => $this->id,
             'user_id' => $this->user_id,
             'prefecture_id' => $this->prefecture_id,
+            'prefecture' => $this->prefecture_id ? app(PrefectureRepository::class)->find($this->prefecture_id)->name : '',
             'address' => $this->address,
             'date' => $this->date,
             'start_time' => $this->start_time,
@@ -34,6 +38,7 @@ class OrderResource extends Resource
             'fee_point' => $this->fee_point,
             'total_point' => $this->total_point,
             'class_id' => $this->class_id,
+            'cast_class' => CastClassResource::make($this->castClass),
             'type' => $this->type,
             'status' => $this->status,
             'actual_started_at' => $this->actual_started_at,

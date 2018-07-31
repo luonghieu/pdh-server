@@ -6,6 +6,7 @@ use App\Enums\CastOrderStatus;
 use App\Enums\CastOrderType;
 use App\Enums\OrderStatus;
 use App\Jobs\ValidateOrder;
+use App\Services\LogService;
 use Auth;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
@@ -35,7 +36,9 @@ class Order extends Model
     public function casts()
     {
         return $this->belongsToMany(Cast::class)
-            ->where('cast_order.status', CastOrderStatus::ACCEPTED)->withTimestamps();
+            ->whereNotNull('cast_order.accepted_at')
+            ->whereNull('cast_order.canceled_at')
+            ->withTimestamps();
     }
 
     public function nominees()
@@ -75,6 +78,8 @@ class Order extends Model
 
             return true;
         } catch (\Exception $e) {
+            LogService::writeErrorLog($e);
+
             return false;
         }
     }
@@ -89,6 +94,8 @@ class Order extends Model
 
             return true;
         } catch (\Exception $e) {
+            LogService::writeErrorLog($e);
+
             return false;
         }
     }
@@ -107,6 +114,8 @@ class Order extends Model
 
             return true;
         } catch (\Exception $e) {
+            LogService::writeErrorLog($e);
+
             return false;
         }
     }
@@ -121,6 +130,8 @@ class Order extends Model
 
             return true;
         } catch (\Exception $e) {
+            LogService::writeErrorLog($e);
+
             return false;
         }
     }
@@ -134,6 +145,8 @@ class Order extends Model
             ], false);
             return true;
         } catch (\Exception $e) {
+            LogService::writeErrorLog($e);
+
             return false;
         }
     }
@@ -148,6 +161,8 @@ class Order extends Model
 
             return true;
         } catch (\Exception $e) {
+            LogService::writeErrorLog($e);
+
             return false;
         }
     }

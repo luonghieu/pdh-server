@@ -22,7 +22,6 @@ return [
     'room_not_found' => 'このチャットルームは存在しません',
     'delete_message_success' => '削除しました',
     'message_exits' => 'メッセージが存在しません',
-    'update_working_today_success' => '更新しました',
     'avatar_at_least' => 'プロフィール写真は、1枚以上の登録が必要です',
     'order_not_found' => '予約が存在しません',
     'action_not_performed' => 'この操作は実行できません',
@@ -34,4 +33,6 @@ return [
     'stop_order' => 'ストップしました',
     'start_order' => 'お仕事を開始しました',
     'card_not_exist' => '支払い方法が未登録です',
+    'rating_success' => "評価が完了しました",
+    'order_is_rated' => "既に評価は完了しています",
 ];

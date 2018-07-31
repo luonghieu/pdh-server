@@ -38,6 +38,7 @@ Route::group(['prefix' => 'v1'], function () {
         Route::get('cast_rankings', ['as' => 'cast_rankings', 'uses' => 'CastRankingController@index']);
         Route::delete('messages/{id}', ['as' => 'messages', 'uses' => 'MessageController@delete']);
         Route::patch('working_today', ['as' => 'working_today', 'uses' => 'WorkingTodayController@update']);
+        Route::post('/ratings', ['as' => 'create_rating', 'uses' => 'RatingController@create']);
     });
 
     Route::group(['middleware' => ['auth:api'], 'prefix' => 'users', 'as' => 'users.'], function () {

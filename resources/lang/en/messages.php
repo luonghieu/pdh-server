@@ -22,7 +22,6 @@ return [
     'room_not_found' => 'This chat room not found',
     'delete_message_success' => 'Delete message successfully',
     'message_exits' => 'Message not found',
-    'update_working_today_success' => 'Update working today successfully',
     'avatar_at_least' => 'You need to register at least one profile picture',
     'order_not_found' => 'Order is not found',
     'action_not_performed' => 'This action can not be performed',
@@ -34,4 +33,6 @@ return [
     'stop_order' => 'Cast stops the order successfully',
     'start_order' => 'Successfully start order',
     'card_not_exist' => 'There is no payment method available. Please add one',
+    'rating_success' => "Create rating successfully",
+    'order_is_rated' => "This order has been rated",
 ];
