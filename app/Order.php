@@ -135,9 +135,7 @@ class Order extends Model
 
     public function stop($userId)
     {
-        $cast = $this->belongsToMany(Cast::class)->where('cast_order.status', CastOrderStatus::PROCESSING)
-            ->withTimestamps()->withPivot('started_at', 'stopped_at', 'type')
-            ->where('user_id', $userId)->first();
+        $cast = $this->casts()->where('user_id', $userId)->first();
 
         $stoppedAt = Carbon::now();
         $orderStartTime = Carbon::parse($this->date . ' ' . $this->start_time);

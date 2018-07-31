@@ -35,6 +35,7 @@ class AddMoreFieldsToCastOrderTable extends Migration
             $table->dropColumn('extra_time');
             $table->dropColumn('night_time');
             $table->dropColumn('total_time');
+            $table->dropColumn('fee_point');
             $table->dropColumn('extra_point');
             $table->dropColumn('allowance_point');
             $table->renameColumn('total_point', 'point');
