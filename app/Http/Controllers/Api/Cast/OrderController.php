@@ -64,7 +64,10 @@ class OrderController extends ApiController
         } else {
             $orders->where(function ($query) use ($user) {
                 $query->whereHas('nominees', function ($query) use ($user) {
-                    $query->where('user_id', $user->id)->whereNotNull('cast_order.accepted_at');
+                    $query->where('user_id', $user->id);
+                });
+                $query->orWhereHas('candidates', function ($query) use ($user) {
+                    $query->where('user_id', $user->id);
                 });
             })
                 ->orderBy('date')
