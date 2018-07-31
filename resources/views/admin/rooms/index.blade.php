@@ -53,7 +53,7 @@
               @foreach ($rooms as $key => $room)
               <tr>
                 <td>{{ $rooms->firstItem() +$key }}</td>
-                <td>{{ $room->id }}</td>
+                <td><a href="{{ route('admin.rooms.messages_by_room', ['room' => $room->id]) }}">{{ $room->id }}</td>
                 <td><a href="{{ route('admin.users.show', ['user' => $room->owner_id]) }}">{{ $room->owner_id }}</a></td>
                 <td>{{ $room->is_group ? 'グループ' : '個別' }}</td>
                 <td>
