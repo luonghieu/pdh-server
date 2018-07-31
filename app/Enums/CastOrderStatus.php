@@ -6,6 +6,7 @@ use BenSampo\Enum\Enum;
 
 final class CastOrderStatus extends Enum
 {
+    const OPEN = 0;
     const ACCEPTED = 1;
     const DENIED = 2;
     const CANCELED = 3;

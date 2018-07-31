@@ -54,6 +54,11 @@ class Order extends Model
             ->where('cast_order.type', CastOrderType::CANDIDATE)->withTimestamps();
     }
 
+    public function castOrder()
+    {
+        return $this->belongsToMany(Cast::class)->withPivot('status')->withTimestamps();
+    }
+
     public function tags()
     {
         return $this->belongsToMany(Tag::class);
@@ -293,5 +298,22 @@ class Order extends Model
         }
 
         return $extraPoint;
+    }
+
+    public function getUserStatusAttribute()
+    {
+        if (!Auth::check()) {
+            return null;
+        }
+
+        $user = Auth::user();
+
+        $order = $this->castOrder->where('id', $user->id)->first();
+
+        if (!$order) {
+            return null;
+        }
+
+        return $order->pivot->status ?: 0;
     }
 }
