@@ -85,4 +85,12 @@ class RoomController extends Controller
 
         return view('admin.rooms.index', compact('rooms'));
     }
+
+    public function getMember(Room $room)
+    {
+        $ownerId = $room->owner_id;
+        $members = $room->users;
+
+        return view('admin.rooms.room_group', compact('members', 'ownerId'));
+    }
 }

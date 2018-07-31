@@ -26,6 +26,7 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.'], function () {
         Route::get('{room}/messages', ['as' => 'messages_by_room', 'uses' => 'RoomController@getMessageByRoom'])->where('room', '[0-9]+');
         Route::put('{room}', ['as' => 'change_active', 'uses' => 'RoomController@changeActive'])->where('room', '[0-9]+');
         Route::get('/', ['as' => 'index', 'uses' => 'RoomController@index']);
+        Route::get('/{room}/members', ['as' => 'members', 'uses' => 'RoomController@getMember']);
     });
 
     Route::group(['namespace' => 'Order', 'prefix' => 'orders', 'as' => 'orders.', 'middleware' => 'is_admin'], function () {
