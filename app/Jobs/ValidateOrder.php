@@ -54,7 +54,9 @@ class ValidateOrder implements ShouldQueue
             // Create room chat
             \DB::beginTransaction();
             try {
-                if ($orderType == OrderType::NOMINATED_CALL || $orderType == OrderType::CALL) {
+                if (($orderType == OrderType::NOMINATED_CALL || $orderType == OrderType::CALL)
+                    && $this->order->total_cast > 1
+                ) {
                     $room = new Room;
 
                     $room->order_id = $this->order->id;
@@ -62,7 +64,7 @@ class ValidateOrder implements ShouldQueue
                     $room->type = RoomType::GROUP;
                     $room->save();
 
-                    $data = [];
+                    $data = [$this->order->user_id];
                     $involvedUsers = [$this->order->user];
                     foreach ($this->order->casts as $cast) {
                         $data = array_merge($data, [$cast->pivot->user_id]);
