@@ -24,6 +24,7 @@ class OrderController extends ApiController
         $this->repository->pushCriteria(FilterByStatusCriteria::class);
 
         $orders = $this->repository->with('user')->paginate();
+        $orders->load('casts');
 
         return $this->respondWithData(OrderResource::collection($orders));
     }
