@@ -41,7 +41,7 @@ class PointController extends ApiController
 
             $payment = new Payment;
             $payment->user_id = $user->id;
-            $payment->amount = $request->amount;
+            $payment->amount = ($request->amount) * 1.1;
             $payment->point_id = $point->id;
             $payment->save();
 
