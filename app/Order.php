@@ -7,6 +7,7 @@ use App\Enums\CastOrderType;
 use App\Enums\OrderStatus;
 use App\Enums\OrderType;
 use App\Jobs\ValidateOrder;
+use App\Services\LogService;
 use Auth;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
@@ -129,14 +130,22 @@ class Order extends Model
     public function stop($userId)
     {
         try {
+            $castStopDetails = $this->getCastStopOrderDetails($userId);
             $this->casts()->updateExistingPivot($userId, [
                 'stopped_at' => Carbon::now(),
                 'status' => CastOrderStatus::DONE,
-                'point' => $this->receivePoint($userId)
+                'night_time' => $castStopDetails->night_time,
+                'extra_time' => $castStopDetails->extra_time,
+                'total_time' => $castStopDetails->total_time,
+                'fee_point' => $castStopDetails->fee_point,
+                'allowance_point' => $castStopDetails->allowance_point,
+                'extra_point' => $castStopDetails->extra_point,
+                'total_point' => $castStopDetails->total_point,
             ], false);
 
             return true;
         } catch (\Exception $e) {
+            LogService::writeErrorLog($e);
             return false;
         }
     }
@@ -168,6 +177,11 @@ class Order extends Model
 
     private function allowance()
     {
+        $allowanceInfo = (object)[
+            'night_time' => 0,
+            'allowance' => 0
+        ];
+
         $order = $this;
         $allowanceStartTime = Carbon::parse('00:01:00');
         $allowanceEndTime = Carbon::parse('04:00:00');
@@ -181,25 +195,34 @@ class Order extends Model
         $startTime = Carbon::parse(Carbon::parse($orderStartDate->format('H:i:s')));
         $endTime = Carbon::parse(Carbon::parse($orderEndDate->format('H:i:s')));
 
-        $allowance = 4000;
+        $isAllowance = false;
         if ($startDay->diffInDays($endDay) != 0 && $orderEndDate->diffInMinutes($endDay) != 0) {
-            return $allowance;
+            $isAllowance = true;
         }
 
-        if ($startTime->between($allowanceStartTime, $allowanceEndTime) || $endTime->between($allowanceStartTime,
-                $allowanceEndTime)) {
-            return $allowance;
+        if ($startTime->between($allowanceStartTime, $allowanceEndTime) || $endTime->between($allowanceStartTime, $allowanceEndTime)) {
+            $isAllowance = true;
         }
 
         if ($startTime < $allowanceStartTime  && $endTime > $allowanceEndTime) {
-            return $allowance;
+            $isAllowance = true;
         }
 
-        return 0;
+        if ($isAllowance) {
+            $allowanceInfo->night_time = $orderEndDate->diffInMinutes($endDay);
+            $allowanceInfo->allowance = 4000;
+        }
+
+        return $allowanceInfo;
     }
 
-    private function extraPoint($cast)
+    private function extraInfo($cast)
     {
+        $extraInfo = (object)[
+            'extra_time' => 0,
+            'extra_point' => 0
+        ];
+
         $order = $this;
         $extralTime = 0;
         $orderStartDate = Carbon::parse($order->date . ' ' . $order->start_time);
@@ -208,6 +231,7 @@ class Order extends Model
         $castStoppedAt = Carbon::now();
         if ($castStoppedAt > $orderEndDate) {
             $extralTime = $castStoppedAt->diffInMinutes($orderEndDate);
+            $extraInfo->extra_time = $extralTime;
         }
 
         $multiplier = 0;
@@ -223,17 +247,19 @@ class Order extends Model
                 $costPerFifteenMins = $cast->cost / 2;
             }
 
-            return ($costPerFifteenMins * 1.3) * $multiplier;
+            $extraInfo->extra_point = ($costPerFifteenMins * 1.3) * $multiplier;
+
+            return $extraInfo;
         }
 
-        return 0;
+        return $extraInfo;
     }
 
-    private function receivePoint($castId)
+    private function getCastStopOrderDetails($castId)
     {
         $order = $this;
         $cast = $order->belongsToMany(Cast::class)->where('cast_order.status', CastOrderStatus::PROCESSING)
-            ->withTimestamps()->withPivot('started_at', 'stopped_at')
+            ->withTimestamps()->withPivot('started_at', 'stopped_at', 'type')
             ->where('user_id', $castId)->first();
 
         if ($cast) {
@@ -244,12 +270,23 @@ class Order extends Model
             }
 
             $orderPoint = $cost * ((60 * $order->duration) / 30);
-            $allowance = $this->allowance();
-            $extraPoint = $this->extraPoint($cast);
+            $allowanceInfo = $this->allowance();
+            $extraInfo = $this->extraInfo($cast);
 
-            $ordersFee = ($order->type == OrderType::CALL) ? 0 : 3000;
+            $ordersFee = ($cast->pivot->type == CastOrderType::NOMINEE) ? 3000 : 0;
 
-            return $orderPoint + $ordersFee + $allowance + $extraPoint;
+            $orderStartTime = Carbon::parse($order->date . ' ' . $order->start_time);
+            $orderTotalTime = $orderStartTime->diffInMinutes(Carbon::now());
+
+            return (object) [
+                'night_time' => $allowanceInfo->night_time,
+                'extra_time' => $extraInfo->extra_time,
+                'total_time' => $orderTotalTime,
+                'fee_point' => $ordersFee,
+                'allowance_point' => $allowanceInfo->allowance,
+                'extra_point' => $extraInfo->extra_point,
+                'total_point' => $orderPoint + $ordersFee + $allowanceInfo->allowance + $extraInfo->extra_point,
+            ];
         }
 
         return null;
