@@ -32,6 +32,7 @@ class Kernel extends ConsoleKernel
         $schedule->command('cheers:update_nominated_call')->everyMinute()->onOneServer()->runInBackground();
         $schedule->command('cheers:change_order_status')->everyMinute()->onOneServer()->runInBackground();
         $schedule->command('cheers:set_timeout_for_call_order')->everyMinute()->onOneServer()->runInBackground();
+        $schedule->command('cheers:inactive_chatroom_when_order_done')->hourly()->onOneServer()->runInBackground();
     }
 
     /**
