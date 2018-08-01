@@ -37,6 +37,7 @@ return [
     'rating_success' => "Create rating successfully",
     'order_is_rated' => "This order has been rated",
     'send_message_thanks' => "Send message successfully",
+    'create_payment_request_success' => "Create payment request successfully",
     'time_invalid' => "Invalid time",
     'receipt_not_found' => 'Receipt not found',
     'point_not_found' => 'Point not found',

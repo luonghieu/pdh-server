@@ -12,6 +12,7 @@ use App\Http\Controllers\Api\ApiController;
 use App\Http\Resources\OrderResource;
 use App\Message;
 use App\Order;
+use App\Services\LogService;
 use App\Traits\DirectRoom;
 use Carbon\Carbon;
 use DB;

@@ -44,6 +44,7 @@ class Order extends Model
         return $this->belongsToMany(Cast::class)
             ->whereNotNull('cast_order.accepted_at')
             ->whereNull('cast_order.canceled_at')
+            ->withPivot('order_time', 'extra_time', 'order_point', 'extra_point', 'allowance_point', 'fee_point', 'total_point')
             ->withTimestamps();
     }
 
@@ -62,6 +63,11 @@ class Order extends Model
     public function castOrder()
     {
         return $this->belongsToMany(Cast::class)->withPivot('status')->withTimestamps();
+    }
+
+    public function paymentRequests()
+    {
+        return $this->hasMany(PaymentRequest::class);
     }
 
     public function tags()
@@ -181,6 +187,7 @@ class Order extends Model
             $paymentRequest->order_point = $orderPoint;
             $paymentRequest->allowance_point = $allowance;
             $paymentRequest->fee_point = $ordersFee;
+            $paymentRequest->extra_time = $extraTime;
             $paymentRequest->old_extra_time = $extraTime;
             $paymentRequest->extra_point = $extraPoint;
             $paymentRequest->total_point = $totalPoint;
@@ -219,6 +226,17 @@ class Order extends Model
         }
 
         return ($this->nominees()->where('user_id', $user->id)->first()) ? 1 : 0;
+    }
+
+    public function isPaymentRequested()
+    {
+        if (Auth::check()) {
+            $user = Auth::user();
+        } else {
+            return null;
+        }
+
+        return ($this->paymentRequests()->where('cast_id', $user->id)->first()) ? 1 : 0;
     }
 
     private function nightTime($stoppedAt)
@@ -295,7 +313,7 @@ class Order extends Model
         return $extralTime;
     }
 
-    private function extraPoint($cast, $extraTime)
+    public function extraPoint($cast, $extraTime)
     {
         $order = $this;
         $eTime = $extraTime;
