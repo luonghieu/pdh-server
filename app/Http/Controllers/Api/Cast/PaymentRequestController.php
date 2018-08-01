@@ -51,7 +51,7 @@ class PaymentRequestController extends ApiController
 
             $paymentRequest->save();
 
-            return $this->respondWithNoData(trans('messages.create_paymentRequest_success'));
+            return $this->respondWithNoData(trans('messages.create_payment_request_success'));
         } catch (\Exception $e) {
             LogService::writeErrorLog($e);
 

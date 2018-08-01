@@ -85,10 +85,7 @@ Route::group(['prefix' => 'v1'], function () {
                 ->where('id', '[0-9]+');
             Route::post('/{id}/thank', ['as' => 'thanks', 'uses' => 'Cast\OrderController@thanks'])
                 ->where('id', '[0-9]+');
-        });
-
-        Route::group(['prefix' => 'cast', 'as' => 'cast.'], function () {
-            Route::post('/payment_requests/{id}/', ['as' => 'payment_requests',
+            Route::post('/{id}/payment_requests/', ['as' => 'payment_requests',
                 'uses' => 'Cast\PaymentRequestController@createPayment'])->where('id', '[0-9]+');
         });
     });
@@ -109,5 +106,9 @@ Route::group(['prefix' => 'v1'], function () {
             Route::get('/', ['as' => 'points', 'uses' => 'PointController@points']);
             Route::post('/', ['as' => 'buy', 'uses' => 'Guest\PointController@buy']);
         });
+    });
+
+    Route::group(['middleware' => ['auth:api'], 'prefix' => 'receipts', 'as' => 'receipts.'], function () {
+        Route::post('/', ['as' => 'create', 'uses' => 'ReceiptController@create']);
     });
 });
