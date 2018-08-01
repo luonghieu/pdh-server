@@ -2,18 +2,22 @@
 
 namespace App;
 
-use App\Enums\CastOrderStatus;
-use App\Enums\CastOrderType;
-use App\Enums\OrderStatus;
-use App\Enums\OrderType;
-use App\Jobs\ValidateOrder;
-use App\Services\LogService;
 use Auth;
 use Carbon\Carbon;
+use App\Enums\RoomType;
+use App\Enums\OrderType;
+use App\Enums\OrderStatus;
+use App\Traits\DirectRoom;
+use App\Jobs\ValidateOrder;
+use App\Enums\CastOrderType;
+use App\Services\LogService;
+use App\Enums\CastOrderStatus;
 use Illuminate\Database\Eloquent\Model;
 
 class Order extends Model
 {
+    use DirectRoom;
+
     protected $fillable = [
         'prefecture_id',
         'address',
@@ -39,6 +43,7 @@ class Order extends Model
         return $this->belongsToMany(Cast::class)
             ->whereNotNull('cast_order.accepted_at')
             ->whereNull('cast_order.canceled_at')
+            ->withPivot('order_time', 'extra_time', 'order_point', 'extra_point', 'allowance_point', 'fee_point', 'total_point')
             ->withTimestamps();
     }
 
@@ -57,6 +62,11 @@ class Order extends Model
     public function castOrder()
     {
         return $this->belongsToMany(Cast::class)->withPivot('status')->withTimestamps();
+    }
+
+    public function paymentRequests()
+    {
+        return $this->hasMany(PaymentRequest::class);
     }
 
     public function tags()
@@ -150,7 +160,7 @@ class Order extends Model
         $extraTime = $this->extraTime($stoppedAt);
         $extraPoint = $this->extraPoint($cast, $extraTime);
         $orderPoint = $this->orderPoint($cast);
-        $ordersFee = ($cast->pivot->type == CastOrderType::NOMINEE) ? 3000 : 0;
+        $ordersFee = (CastOrderType::NOMINEE == $cast->pivot->type) ? 3000 : 0;
         $allowance = $this->allowance($nightTime);
 
         try {
@@ -199,6 +209,17 @@ class Order extends Model
         }
 
         return ($this->nominees()->where('user_id', $user->id)->first()) ? 1 : 0;
+    }
+
+    public function isPaymentRequested()
+    {
+        if (Auth::check()) {
+            $user = Auth::user();
+        } else {
+            return null;
+        }
+
+        return ($this->paymentRequests()->where('cast_id', $user->id)->first()) ? 1 : 0;
     }
 
     private function nightTime($stoppedAt)
@@ -250,7 +271,7 @@ class Order extends Model
 
     private function orderPoint($cast)
     {
-        if ($this->type != OrderType::NOMINATION) {
+        if (OrderType::NOMINATION != $this->type) {
             $cost = $this->castClass->cost;
         } else {
             $cost = $cast->cost;
@@ -275,7 +296,7 @@ class Order extends Model
         return $extralTime;
     }
 
-    private function extraPoint($cast, $extraTime)
+    public function extraPoint($cast, $extraTime)
     {
         $order = $this;
         $eTime = $extraTime;
@@ -288,7 +309,7 @@ class Order extends Model
                 $eTime = $eTime - 15;
             }
 
-            if ($order->type != OrderType::NOMINATION) {
+            if (OrderType::NOMINATION != $order->type) {
                 $costPerFifteenMins = $cast->castClass->cost / 2;
             } else {
                 $costPerFifteenMins = $cast->cost / 2;
@@ -315,5 +336,42 @@ class Order extends Model
         }
 
         return $order->pivot->status ?: 0;
+    }
+
+    public function getIsMatchingAttribute()
+    {
+        $matchingStatuses = [
+            OrderStatus::ACTIVE,
+            OrderStatus::PROCESSING,
+            OrderStatus::DONE,
+        ];
+
+        return in_array($this->status, $matchingStatuses) ? 1 : 0;
+    }
+
+    public function getRoomIdAttribute()
+    {
+        if (!$this->is_matching) {
+            return '';
+        }
+
+        if ($this->total_cast > 1) {
+            $room = Room::active()
+                ->where('type', RoomType::GROUP)
+                ->where('order_id', $this->id)
+                ->first();
+
+            if (!$room) {
+                return '';
+            }
+
+            return $room->id;
+        }
+
+        $ownerId = $this->user_id;
+        $castId = $this->casts()->first()->id;
+        $room = $this->createDirectRoom($ownerId, $castId);
+
+        return $room->id;
     }
 }

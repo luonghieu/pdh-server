@@ -37,4 +37,5 @@ return [
     'rating_success' => "評価が完了しました",
     'order_is_rated' => "既に評価は完了しています",
     'send_message_thanks' => "送信が完了しました",
+    'create_paymentRequest_success' => "申請が完了しました",
 ];
