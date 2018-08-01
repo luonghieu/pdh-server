@@ -16,5 +16,5 @@ yarn-error.log
 deploy
 .DS_Store
 package-lock.json
-storage/fonts/*
-!storage/fonts/ja.ttf
+#storage/fonts/*
+#!storage/fonts/ja.ttf

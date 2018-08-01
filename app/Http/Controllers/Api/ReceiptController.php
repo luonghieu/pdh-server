@@ -17,6 +17,18 @@ class ReceiptController extends ApiController
 {
     public function download(Request $request)
     {
+        $rules = [
+            'point_id' => 'required',
+            'address' => 'required',
+            'content' => 'required',
+        ];
+
+        $validator = validator($request->all(), $rules);
+
+        if ($validator->fails()) {
+            return $this->respondWithValidationError($validator->errors()->messages());
+        }
+
         $user = $this->guard()->user();
         $receipt = Receipt::where('point_id', $request->point_id)->first();
 
