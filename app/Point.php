@@ -21,4 +21,14 @@ class Point extends Model
     {
         return $this->belongsTo(User::class);
     }
+
+    public function receipt()
+    {
+        return $this->hasOne(Receipt::class);
+    }
+
+    public function payment()
+    {
+        return $this->hasOne(Payment::class);
+    }
 }
