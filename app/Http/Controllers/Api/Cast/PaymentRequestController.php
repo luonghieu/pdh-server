@@ -84,10 +84,12 @@ class PaymentRequestController extends ApiController
 
         try {
             if ($request->extra_time) {
-                $paymentRequest->extra_time = $request->extra_time;
                 $extraPoint = $order->extraPoint($cast, $request->extra_time);
+                $totalPoint = $paymentRequest->order_point + $paymentRequest->allowance_point + $paymentRequest->fee_point + $extraPoint;
+
+                $paymentRequest->extra_time = $request->extra_time;
                 $paymentRequest->extra_point = $extraPoint;
-                $paymentRequest->total_point = $paymentRequest->total_point + $extraPoint;
+                $paymentRequest->total_point = $totalPoint;
                 $paymentRequest->status = PaymentRequestStatus::UPDATED;
             } else {
                 $paymentRequest->status = PaymentRequestStatus::REQUESTED;

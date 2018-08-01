@@ -187,6 +187,7 @@ class Order extends Model
             $paymentRequest->order_point = $orderPoint;
             $paymentRequest->allowance_point = $allowance;
             $paymentRequest->fee_point = $ordersFee;
+            $paymentRequest->extra_time = $extraTime;
             $paymentRequest->old_extra_time = $extraTime;
             $paymentRequest->extra_point = $extraPoint;
             $paymentRequest->total_point = $totalPoint;
