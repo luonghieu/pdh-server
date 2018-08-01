@@ -19,11 +19,11 @@ class PaymentRequestResource extends Resource
     {
         return $this->filterNull([
             'id' => $this->id,
-            'cast_id' => $this->user_id,
-            'guest_id' => $this->user_id,
+            'cast_id' => $this->cast_id,
+            'guest_id' => $this->guest_id,
             'order_id' => $this->order_id,
             'order_time' => $this->order_time,
-            'old_extra_time' => $this->extra_time,
+            'old_extra_time' => $this->old_extra_time,
             'extra_time' => $this->extra_time,
             'order_point' => $this->order_point,
             'extra_point' => $this->extra_point,
