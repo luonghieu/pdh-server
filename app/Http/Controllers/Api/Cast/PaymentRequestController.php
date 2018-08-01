@@ -72,15 +72,13 @@ class PaymentRequestController extends ApiController
             }
 
             $paymentRequest->extra_point = $extraPoint;
-            $totalPoint = $totalPoint + $extraPoint;
 
-            $paymentRequest->total_point = $totalPoint;
+            $paymentRequest->total_point = $totalPoint + $extraPoint;
 
             $paymentRequest->save();
 
             return $this->respondWithNoData(trans('messages.create_paymentRequest_success'));
         } catch (\Exception $e) {
-            dd($e);
             LogService::writeErrorLog($e);
 
             return $this->respondServerError();
