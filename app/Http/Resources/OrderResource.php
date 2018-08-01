@@ -50,6 +50,7 @@ class OrderResource extends Resource
             'user' => new UserResource($this->whenLoaded('user')),
             'is_nominated' => $this->isNominated(),
             'user_status' => $this->user_status,
+            'room_id' => $this->room_id,
         ]);
     }
 }

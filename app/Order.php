@@ -2,18 +2,22 @@
 
 namespace App;
 
-use App\Enums\CastOrderStatus;
-use App\Enums\CastOrderType;
-use App\Enums\OrderStatus;
-use App\Enums\OrderType;
-use App\Jobs\ValidateOrder;
-use App\Services\LogService;
 use Auth;
 use Carbon\Carbon;
+use App\Enums\RoomType;
+use App\Enums\OrderType;
+use App\Enums\OrderStatus;
+use App\Traits\DirectRoom;
+use App\Jobs\ValidateOrder;
+use App\Enums\CastOrderType;
+use App\Services\LogService;
+use App\Enums\CastOrderStatus;
 use Illuminate\Database\Eloquent\Model;
 
 class Order extends Model
 {
+    use DirectRoom;
+
     protected $fillable = [
         'prefecture_id',
         'address',
@@ -315,5 +319,42 @@ class Order extends Model
         }
 
         return $order->pivot->status ?: 0;
+    }
+
+    public function getIsMatchingAttribute()
+    {
+        $matchingStatuses = [
+            OrderStatus::ACTIVE,
+            OrderStatus::PROCESSING,
+            OrderStatus::DONE,
+        ];
+
+        return in_array($this->status, $matchingStatuses) ? 1 : 0;
+    }
+
+    public function getRoomIdAttribute()
+    {
+        if (!$this->is_matching) {
+            return '';
+        }
+
+        if ($this->total_cast > 1) {
+            $room = Room::active()
+                ->where('type', RoomType::GROUP)
+                ->where('order_id', $this->id)
+                ->first();
+
+            if (!$room) {
+                return '';
+            }
+
+            return $room->id;
+        }
+
+        $ownerId = $this->user_id;
+        $castId = $this->casts()->first()->id;
+        $room = $this->createDirectRoom($ownerId, $castId);
+
+        return $room->id;
     }
 }
