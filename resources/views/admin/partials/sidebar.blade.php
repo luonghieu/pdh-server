@@ -8,7 +8,7 @@ $routes = [
             'value' => '全アカウント管理',
             'url' => route('admin.users.index'),
             'submenu' => [
-                'admin.users.show'
+                'admin.users.show', 'admin.users.orders_history'
             ],
         ],
     ],
