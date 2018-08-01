@@ -55,11 +55,10 @@ class OrderController extends ApiController
             'type',
         ]);
 
-        $start_time = Carbon::parse($request->start_time);
-        $end_time = Carbon::parse($input['start_time'])->addHours($input['duration']);
-        $now = Carbon::now()->addMinutes(19);
+        $start_time = Carbon::parse($request->date . ' ' . $request->start_time);
+        $end_time = $start_time->copy()->addHours($input['duration']);
 
-        if ($start_time->format('H:i') < $now->format('H:i')) {
+        if (now()->diffInMinutes($start_time, false) < 19) {
             return $this->respondErrorMessage(trans('messages.time_invalid'), 400);
         }
 
@@ -67,7 +66,7 @@ class OrderController extends ApiController
             $input['type'] = OrderType::NOMINATED_CALL;
         }
 
-        $orders = $user->orders()
+        /* $orders = $user->orders()
             ->where('date', $request->date)
             ->whereIn('status', [OrderStatus::OPEN, OrderStatus::ACTIVE, OrderStatus::PROCESSING])
             ->where(function ($query) use ($start_time, $end_time) {
@@ -81,7 +80,7 @@ class OrderController extends ApiController
 
         if ($orders->count() > 0) {
             return $this->respondErrorMessage(trans('messages.order_same_time'), 409);
-        }
+        } */
 
         if (!$user->cards->first()) {
             return $this->respondErrorMessage(trans('messages.card_not_exist'), 404);
@@ -99,7 +98,7 @@ class OrderController extends ApiController
             $listNomineeIds = explode(",", trim($request->nominee_ids, ","));
             $counter = Cast::whereIn('id', $listNomineeIds)->count();
 
-            if (1 == $counter) {
+            if ((1 == $counter) && $input['total_cast'] == 1) {
                 $input['type'] = OrderType::NOMINATION;
             }
         }
