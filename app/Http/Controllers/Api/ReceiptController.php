@@ -73,6 +73,6 @@ class ReceiptController extends ApiController
             return $this->respondServerError();
         }
 
-        return ReceiptResource::make($receipt);
+        return $this->respondWithData(ReceiptResource::make($receipt));
     }
 }
