@@ -2,16 +2,16 @@
 
 namespace App;
 
+use App\Enums\CastOrderStatus;
+use App\Enums\CastOrderType;
+use App\Enums\OrderStatus;
+use App\Enums\OrderType;
+use App\Enums\RoomType;
+use App\Jobs\ValidateOrder;
+use App\Services\LogService;
+use App\Traits\DirectRoom;
 use Auth;
 use Carbon\Carbon;
-use App\Enums\RoomType;
-use App\Enums\OrderType;
-use App\Enums\OrderStatus;
-use App\Traits\DirectRoom;
-use App\Jobs\ValidateOrder;
-use App\Enums\CastOrderType;
-use App\Services\LogService;
-use App\Enums\CastOrderStatus;
 use Illuminate\Database\Eloquent\Model;
 
 class Order extends Model
@@ -43,6 +43,7 @@ class Order extends Model
         return $this->belongsToMany(Cast::class)
             ->whereNotNull('cast_order.accepted_at')
             ->whereNull('cast_order.canceled_at')
+            ->withPivot('id', 'order_time', 'extra_time', 'order_point', 'extra_point', 'allowance_point', 'fee_point', 'total_point', 'night_time', 'total_time', 'type', 'status', 'accepted_at', 'canceled_at', 'started_at', 'stopped_at')
             ->withTimestamps();
     }
 
@@ -154,7 +155,7 @@ class Order extends Model
         $extraTime = $this->extraTime($stoppedAt);
         $extraPoint = $this->extraPoint($cast, $extraTime);
         $orderPoint = $this->orderPoint($cast);
-        $ordersFee = ($cast->pivot->type == CastOrderType::NOMINEE) ? 3000 : 0;
+        $ordersFee = (CastOrderType::NOMINEE == $cast->pivot->type) ? 3000 : 0;
         $allowance = $this->allowance($nightTime);
 
         try {
@@ -254,7 +255,7 @@ class Order extends Model
 
     private function orderPoint($cast)
     {
-        if ($this->type != OrderType::NOMINATION) {
+        if (OrderType::NOMINATION != $this->type) {
             $cost = $this->castClass->cost;
         } else {
             $cost = $cast->cost;
@@ -292,7 +293,7 @@ class Order extends Model
                 $eTime = $eTime - 15;
             }
 
-            if ($order->type != OrderType::NOMINATION) {
+            if (OrderType::NOMINATION != $order->type) {
                 $costPerFifteenMins = $cast->castClass->cost / 2;
             } else {
                 $costPerFifteenMins = $cast->cost / 2;
