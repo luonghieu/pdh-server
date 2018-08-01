@@ -26,6 +26,8 @@ class AlterTableReceiptChangeFieldAddressToName extends Migration
      */
     public function down()
     {
-        //
+        Schema::table('receipts', function (Blueprint $table) {
+            $table->dropIfExists('name');
+        });
     }
 }
