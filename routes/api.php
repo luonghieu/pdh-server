@@ -85,7 +85,7 @@ Route::group(['prefix' => 'v1'], function () {
                 ->where('id', '[0-9]+');
             Route::post('/{id}/thank', ['as' => 'thanks', 'uses' => 'Cast\OrderController@thanks'])
                 ->where('id', '[0-9]+');
-            Route::post('/{id}/payment_requests/', ['as' => 'payment_requests',
+            Route::post('/{id}/payment_request', ['as' => 'payment_request',
                 'uses' => 'Cast\PaymentRequestController@createPayment'])->where('id', '[0-9]+');
         });
     });

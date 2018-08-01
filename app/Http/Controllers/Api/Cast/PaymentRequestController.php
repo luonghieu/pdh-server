@@ -2,10 +2,11 @@
 
 namespace App\Http\Controllers\Api\Cast;
 
+use App\Enums\CastOrderStatus;
+use App\Enums\OrderStatus;
 use App\Enums\PaymentRequestStatus;
 use App\Http\Controllers\Api\ApiController;
 use App\Order;
-use App\PaymentRequest;
 use App\Services\LogService;
 use Illuminate\Http\Request;
 
@@ -25,16 +26,27 @@ class PaymentRequestController extends ApiController
 
         $user = $this->guard()->user();
 
-        $paymentRequest = PaymentRequest::find($id);
+        $order = Order::find($id);
 
-        $order = Order::find($paymentRequest->order_id);
         if (!$order) {
             return $this->respondErrorMessage(trans('messages.order_not_found'), 404);
         }
 
-        $cast = $order->casts()->where('user_id', $user->id)->with('castClass')->first();
+        $cast = $order->casts()
+            ->where([
+                ['user_id', $user->id],
+                ['order_id', $id],
+                ['cast_order.status', CastOrderStatus::DONE],
+            ])
+            ->with('castClass')->first();
 
-        if (PaymentRequestStatus::OPEN != $paymentRequest->status || !$cast) {
+        $paymentRequest = $order->paymentRequests()->where([
+            ['cast_id', $user->id],
+            ['order_id', $id],
+            ['payment_requests.status', PaymentRequestStatus::OPEN],
+        ])->first();
+
+        if (OrderStatus::DONE != $order->status || !$cast || !$paymentRequest) {
             return $this->respondErrorMessage(trans('messages.action_not_performed'), 422);
         }
 
