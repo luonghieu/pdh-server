@@ -19,7 +19,7 @@ class ReceiptController extends ApiController
     {
         $rules = [
             'point_id' => 'required',
-            'address' => 'required',
+            'name' => 'required',
             'content' => 'required',
         ];
 
@@ -29,7 +29,6 @@ class ReceiptController extends ApiController
             return $this->respondWithValidationError($validator->errors()->messages());
         }
 
-        $user = $this->guard()->user();
         $receipt = Receipt::where('point_id', $request->point_id)->first();
 
         if ($receipt) {
@@ -47,16 +46,16 @@ class ReceiptController extends ApiController
             $receipt = Receipt::create([
                 'point_id' => $request->point_id,
                 'date' => Carbon::today(),
-                'address' => $request->address,
+                'name' => $request->name,
                 'content' => $request->get('content')
             ]);
 
             $data = [
                 'no' => $receipt->id,
-                'name' => $user->nickname,
+                'name' => $receipt->name,
                 'amount' => $point->payment->amount,
                 'created_at' => $receipt->created_at,
-                'type' => PointType::getDescription($receipt->point->type)
+                'content' => $receipt->content
             ];
 
             $pdf = PDF::loadView('pdf.invoice', $data)->setPaper('a4', 'portrait');
@@ -68,6 +67,7 @@ class ReceiptController extends ApiController
 
             DB::commit();
         } catch (\Exception $e) {
+            dd($e->getMessage());
             DB::rollBack();
             LogService::writeErrorLog($e);
             return $this->respondServerError();

@@ -10,7 +10,7 @@ class Receipt extends Model
     protected $fillable = [
         'point_id',
         'date',
-        'address',
+        'name',
         'content'
     ];
 

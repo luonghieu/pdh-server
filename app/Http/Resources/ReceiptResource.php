@@ -21,7 +21,7 @@ class ReceiptResource extends Resource
             'id' => $this->id,
             'point_id' => $this->point_id,
             'date' => $this->date,
-            'address' => $this->address,
+            'name' => $this->name,
             'content' => $this->content,
             'file' => $this->file,
             'created_at' => $this->created_at,

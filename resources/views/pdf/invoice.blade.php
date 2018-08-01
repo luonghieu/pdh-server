@@ -48,7 +48,7 @@
         <div class="info" style="display: table; width: 100%; margin-top: 30px;">
             <div style="display: table-cell; vertical-align: middle;">
                 <div class="text" style="width: 290px; margin-right: auto; margin-left: auto;">
-                    <span style="display: block; font-size: 24px">但し{{ $type }}飲食代として</span>
+                    <span style="display: block; font-size: 24px">但し{{ $content }}飲食代として</span>
                     <span style="display: block; font-size: 24px">上記正に領収いたしました</span>
                 </div>
             </div>
