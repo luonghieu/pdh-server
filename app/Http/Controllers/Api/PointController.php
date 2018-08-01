@@ -11,7 +11,7 @@ class PointController extends ApiController
     {
         $user = $this->guard()->user();
 
-        $points = $user->points()->latest()->paginate($request->per_page)->appends($request->query());
+        $points = $user->points()->with('receipt')->latest()->paginate($request->per_page)->appends($request->query());
 
         return $this->respondWithData(PointResource::collection($points));
     }
