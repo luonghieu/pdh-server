@@ -2,16 +2,17 @@
 
 namespace App;
 
+use App\Enums\CastOrderStatus;
+use App\Enums\CastOrderType;
+use App\Enums\OrderStatus;
+use App\Enums\OrderType;
+use App\Enums\RoomType;
+use App\Jobs\ValidateOrder;
+use App\PaymentRequest;
+use App\Services\LogService;
+use App\Traits\DirectRoom;
 use Auth;
 use Carbon\Carbon;
-use App\Enums\RoomType;
-use App\Enums\OrderType;
-use App\Enums\OrderStatus;
-use App\Traits\DirectRoom;
-use App\Jobs\ValidateOrder;
-use App\Enums\CastOrderType;
-use App\Services\LogService;
-use App\Enums\CastOrderStatus;
 use Illuminate\Database\Eloquent\Model;
 
 class Order extends Model
@@ -154,9 +155,9 @@ class Order extends Model
         $extraTime = $this->extraTime($stoppedAt);
         $extraPoint = $this->extraPoint($cast, $extraTime);
         $orderPoint = $this->orderPoint($cast);
-        $ordersFee = ($cast->pivot->type == CastOrderType::NOMINEE) ? 3000 : 0;
+        $ordersFee = (CastOrderType::NOMINEE == $cast->pivot->type) ? 3000 : 0;
         $allowance = $this->allowance($nightTime);
-
+        $totalPoint = $orderPoint + $ordersFee + $allowance + $extraPoint;
         try {
             $this->casts()->updateExistingPivot($userId, [
                 'stopped_at' => $stoppedAt,
@@ -169,12 +170,27 @@ class Order extends Model
                 'fee_point' => $ordersFee,
                 'allowance_point' => $allowance,
                 'extra_point' => $extraPoint,
-                'total_point' => $orderPoint + $ordersFee + $allowance + $extraPoint,
+                'total_point' => $totalPoint,
             ], false);
+
+            $paymentRequest = new PaymentRequest;
+            $paymentRequest->cast_id = $userId;
+            $paymentRequest->guest_id = $this->user_id;
+            $paymentRequest->order_id = $cast->pivot->order_id;
+            $paymentRequest->order_time = (60 * $this->duration);
+            $paymentRequest->order_point = $orderPoint;
+            $paymentRequest->allowance_point = $allowance;
+            $paymentRequest->fee_point = $ordersFee;
+            $paymentRequest->old_extra_time = $extraTime;
+            $paymentRequest->extra_point = $extraPoint;
+            $paymentRequest->total_point = $totalPoint;
+
+            $paymentRequest->save();
 
             return true;
         } catch (\Exception $e) {
             LogService::writeErrorLog($e);
+
             return false;
         }
     }
@@ -254,7 +270,7 @@ class Order extends Model
 
     private function orderPoint($cast)
     {
-        if ($this->type != OrderType::NOMINATION) {
+        if (OrderType::NOMINATION != $this->type) {
             $cost = $this->castClass->cost;
         } else {
             $cost = $cast->cost;
@@ -292,7 +308,7 @@ class Order extends Model
                 $eTime = $eTime - 15;
             }
 
-            if ($order->type != OrderType::NOMINATION) {
+            if (OrderType::NOMINATION != $order->type) {
                 $costPerFifteenMins = $cast->castClass->cost / 2;
             } else {
                 $costPerFifteenMins = $cast->cost / 2;

@@ -1,8 +1,8 @@
 <?php
 
-use Illuminate\Support\Facades\Schema;
-use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
 
 class AddMoreFieldsToCastOrderTable extends Migration
 {
@@ -14,12 +14,12 @@ class AddMoreFieldsToCastOrderTable extends Migration
     public function up()
     {
         Schema::table('cast_order', function (Blueprint $table) {
-            $table->tinyInteger('extra_time')->nullable()->after('point');
-            $table->tinyInteger('night_time')->nullable()->after('extra_time');
-            $table->tinyInteger('total_time')->nullable()->after('night_time');
-            $table->tinyInteger('order_time')->nullable()->after('total_time');
-            $table->tinyInteger('order_point')->nullable()->after('order_time');
-            $table->tinyInteger('fee_point')->nullable()->after('order_point');
+            $table->smallInteger('extra_time')->nullable()->after('point');
+            $table->smallInteger('night_time')->nullable()->after('extra_time');
+            $table->smallInteger('total_time')->nullable()->after('night_time');
+            $table->smallInteger('order_time')->nullable()->after('total_time');
+            $table->smallInteger('order_point')->nullable()->after('order_time');
+            $table->smallInteger('fee_point')->nullable()->after('order_point');
             $table->integer('extra_point')->nullable()->after('user_id');
             $table->integer('allowance_point')->nullable()->after('extra_point');
             $table->renameColumn('point', 'total_point');
