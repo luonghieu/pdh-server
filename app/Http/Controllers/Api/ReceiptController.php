@@ -67,9 +67,9 @@ class ReceiptController extends ApiController
 
             DB::commit();
         } catch (\Exception $e) {
-            dd($e->getMessage());
             DB::rollBack();
             LogService::writeErrorLog($e);
+
             return $this->respondServerError();
         }
 
