@@ -38,8 +38,8 @@ class PaymentRequestController extends ApiController
             ['order_id', $id],
             ['cast_id', $user->id],
             ['status', PaymentRequestStatus::OPEN],
-        ])->with('cast', 'guest')->get();
+        ])->with('cast', 'guest')->first();
 
-        return $this->respondWithData(PaymentRequestResource::collection($paymentRequest));
+        return $this->respondWithData(PaymentRequestResource::make($paymentRequest));
     }
 }
