@@ -2,20 +2,18 @@
 
 namespace App\Http\Controllers\Api;
 
-use DB;
-use App\Tag;
 use App\Cast;
-use App\Room;
-use App\Order;
-use Carbon\Carbon;
-use App\Enums\RoomType;
-use App\Enums\OrderType;
-use App\Enums\OrderStatus;
-use App\Traits\DirectRoom;
 use App\Enums\CastOrderType;
-use App\Services\LogService;
-use Illuminate\Http\Request;
+use App\Enums\OrderStatus;
+use App\Enums\OrderType;
 use App\Http\Resources\OrderResource;
+use App\Order;
+use App\Services\LogService;
+use App\Tag;
+use App\Traits\DirectRoom;
+use Carbon\Carbon;
+use DB;
+use Illuminate\Http\Request;
 
 class OrderController extends ApiController
 {
@@ -57,12 +55,17 @@ class OrderController extends ApiController
             'type',
         ]);
 
+        $start_time = Carbon::parse($request->start_time);
+        $end_time = Carbon::parse($input['start_time'])->addHours($input['duration']);
+        $now = Carbon::now();
+
+        if ($start_time < $now->addMinutes(20)) {
+            return $this->respondErrorMessage(trans('messages.time_invalid'), 400);
+        }
+
         if (!$request->type) {
             $input['type'] = OrderType::NOMINATED_CALL;
         }
-
-        $start_time = Carbon::parse($request->start_time);
-        $end_time = Carbon::parse($input['start_time'])->addHours($input['duration']);
 
         $orders = $user->orders()
             ->where('date', $request->date)
