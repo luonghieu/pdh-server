@@ -15,7 +15,7 @@ use Webpatser\Uuid\Uuid;
 
 class ReceiptController extends ApiController
 {
-    public function download(Request $request)
+    public function create(Request $request)
     {
         $rules = [
             'point_id' => 'required',

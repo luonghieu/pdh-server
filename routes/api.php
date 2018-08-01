@@ -107,6 +107,6 @@ Route::group(['prefix' => 'v1'], function () {
     });
 
     Route::group(['middleware' => ['auth:api'], 'prefix' => 'receipts', 'as' => 'receipts.'], function () {
-        Route::post('/', ['as' => 'download', 'uses' => 'ReceiptController@download']);
+        Route::post('/', ['as' => 'download', 'uses' => 'ReceiptController@create']);
     });
 });
