@@ -110,14 +110,16 @@ class Room extends Model
                 $order = Order::where(function ($q) use ($userIds) {
                     $q->whereHas('nominees', function ($q) use ($userIds) {
                         $q->whereIn('user_id', $userIds);
+                    })->orWhereHas('candidates', function ($q) use ($userIds) {
+                        $q->whereIn('user_id', $userIds);
                     });
                 })
-                    ->whereIn('status', $data)
-                    ->orderByRaw('FIELD(status, ' . implode(',', $data) . ' )')
-                    ->first();
+                ->whereIn('status', $data)
+                ->orderByRaw('FIELD(status, ' . implode(',', $data) . ' )')
+                ->first();
                 break;
-
-            default:break;
+            default:
+                break;
         }
 
         return $order;

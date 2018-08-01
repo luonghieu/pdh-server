@@ -1,9 +1,9 @@
 <?php
 
 use App\Enums\PaymentRequestStatus;
-use Illuminate\Support\Facades\Schema;
-use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
 
 class CreatePaymentRequestsTable extends Migration
 {
@@ -19,8 +19,8 @@ class CreatePaymentRequestsTable extends Migration
             $table->unsignedInteger('cast_id');
             $table->unsignedInteger('guest_id');
             $table->unsignedInteger('order_id');
-            $table->tinyInteger('order_time')->nullable();
-            $table->tinyInteger('extra_time')->nullable();
+            $table->smallInteger('order_time')->nullable();
+            $table->smallInteger('extra_time')->nullable();
             $table->integer('order_point')->nullable();
             $table->integer('extra_point')->nullable();
             $table->integer('allowance_point')->nullable();

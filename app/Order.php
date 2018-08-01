@@ -8,6 +8,7 @@ use App\Enums\OrderStatus;
 use App\Enums\OrderType;
 use App\Enums\RoomType;
 use App\Jobs\ValidateOrder;
+use App\PaymentRequest;
 use App\Services\LogService;
 use App\Traits\DirectRoom;
 use Auth;
@@ -43,7 +44,6 @@ class Order extends Model
         return $this->belongsToMany(Cast::class)
             ->whereNotNull('cast_order.accepted_at')
             ->whereNull('cast_order.canceled_at')
-            ->withPivot('id', 'order_time', 'extra_time', 'order_point', 'extra_point', 'allowance_point', 'fee_point', 'total_point', 'night_time', 'total_time', 'type', 'status', 'accepted_at', 'canceled_at', 'started_at', 'stopped_at')
             ->withTimestamps();
     }
 
@@ -157,7 +157,7 @@ class Order extends Model
         $orderPoint = $this->orderPoint($cast);
         $ordersFee = (CastOrderType::NOMINEE == $cast->pivot->type) ? 3000 : 0;
         $allowance = $this->allowance($nightTime);
-
+        $totalPoint = $orderPoint + $ordersFee + $allowance + $extraPoint;
         try {
             $this->casts()->updateExistingPivot($userId, [
                 'stopped_at' => $stoppedAt,
@@ -170,12 +170,27 @@ class Order extends Model
                 'fee_point' => $ordersFee,
                 'allowance_point' => $allowance,
                 'extra_point' => $extraPoint,
-                'total_point' => $orderPoint + $ordersFee + $allowance + $extraPoint,
+                'total_point' => $totalPoint,
             ], false);
+
+            $paymentRequest = new PaymentRequest;
+            $paymentRequest->cast_id = $userId;
+            $paymentRequest->guest_id = $this->user_id;
+            $paymentRequest->order_id = $cast->pivot->order_id;
+            $paymentRequest->order_time = (60 * $this->duration);
+            $paymentRequest->order_point = $orderPoint;
+            $paymentRequest->allowance_point = $allowance;
+            $paymentRequest->fee_point = $ordersFee;
+            $paymentRequest->old_extra_time = $extraTime;
+            $paymentRequest->extra_point = $extraPoint;
+            $paymentRequest->total_point = $totalPoint;
+
+            $paymentRequest->save();
 
             return true;
         } catch (\Exception $e) {
             LogService::writeErrorLog($e);
+
             return false;
         }
     }
