@@ -41,21 +41,22 @@ class SetTimeOutForCallOrder extends Command
      */
     public function handle()
     {
-        $day = Carbon::today()->format('Y-m-d');
-        $time = Carbon::now()->format('H:i:s');
+        $time = Carbon::now();
 
-        Order::whereDate('created_at', $day)
-            ->where('status', OrderStatus::OPEN)
-            ->where('type', OrderType::CALL)
-            ->whereRaw("(time_to_sec(timediff(time(start_time), time(created_at))) / 60) > 60")
-            ->whereRaw("(time_to_sec(timediff(time(start_time), '$time')) / 60) < 30")
+        Order::where([
+            ['status', '=', OrderStatus::OPEN],
+            ['type', '=', OrderType::CALL],
+        ])
+            ->whereRaw("(time_to_sec(timediff(concat_ws(' ',`date`,`start_time`), created_at))/60) > 60")
+            ->whereRaw("(time_to_sec(timediff(concat_ws(' ',`date`,`start_time`), '$time'))/60) < 30")
             ->update(['status' => OrderStatus::TIMEOUT]);
 
-        Order::whereDate('created_at', $day)
-            ->where('status', OrderStatus::OPEN)
-            ->where('type', OrderType::CALL)
-            ->whereRaw("(time_to_sec(timediff(time(start_time), time(created_at))) / 60) <= 60")
-            ->whereRaw("((time_to_sec(timediff(time(created_at), time(start_time))) / 60) /2) < '$time'")
+        Order::where([
+            ['status', '=', OrderStatus::OPEN],
+            ['type', '=', OrderType::CALL],
+        ])
+            ->whereRaw("(time_to_sec(timediff(concat_ws(' ',`date`,`start_time`), created_at))/60) <= 60")
+            ->whereRaw("(time_to_sec(timediff(concat_ws(' ',`date`,`start_time`), '$time'))/60) < ((time_to_sec(timediff(concat_ws(' ',`date`,`start_time`), created_at))/60) /2)")
             ->update(['status' => OrderStatus::TIMEOUT]);
     }
 }

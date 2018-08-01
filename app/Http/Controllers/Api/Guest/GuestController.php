@@ -33,7 +33,7 @@ class GuestController extends ApiController
 
         if ($request->nickname) {
             $nickname = $request->nickname;
-            $casts = $casts->where('nickname', $nickname);
+            $casts = $casts->where('nickname', 'like', "%$nickname%");
         }
 
         $casts = $casts->paginate($request->per_page)->appends($request->query());
