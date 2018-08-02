@@ -17,6 +17,8 @@ class UpdateOrdersTable extends Migration
             $table->dropColumn('fee_point');
 
             $table->unsignedInteger('room_id')->nullable()->after('status');
+            $table->tinyInteger('payment_status')->nullable()->after('status');
+            $table->tinyInteger('cancel_fee_percent')->nullable()->after('payment_status');
         });
 
         Schema::table('cast_order', function (Blueprint $table) {
@@ -33,6 +35,8 @@ class UpdateOrdersTable extends Migration
     {
         Schema::table('orders', function (Blueprint $table) {
             $table->dropColumn('room_id');
+            $table->dropColumn('payment_status');
+            $table->dropColumn('cancel_fee_percent');
 
             $table->integer('fee_point')->after('temp_point');
         });
