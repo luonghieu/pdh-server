@@ -106,16 +106,6 @@ class PaymentRequestController extends ApiController
 
     public function getPaymentHistory(Request $request)
     {
-        $rules = [
-            'nickname' => 'max:20',
-        ];
-
-        $validator = validator($request->all(), $rules);
-
-        if ($validator->fails()) {
-            return $this->respondWithValidationError($validator->errors()->messages());
-        }
-
         $user = $this->guard()->user();
 
         $paymentRequests = PaymentRequest::where('cast_id', $user->id)->with('cast', 'guest', 'order.casts');
