@@ -116,11 +116,7 @@ class ValidateOrder implements ShouldQueue
     private function sendNotification($users)
     {
         if ($this->order->total_cast == 1) {
-            $owner = $users[0];
-            $cast = $users[1];
-            $room = Room::where('owner_id', $owner->id)->whereHas('users', function($q) use ($cast) {
-                $q->where('users.id', $cast->id);
-            })->first();
+            $room = Room::find($this->order->room_id);
         } else {
             $room = $this->order->room;
         }
