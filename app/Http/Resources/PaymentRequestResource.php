@@ -31,6 +31,7 @@ class PaymentRequestResource extends Resource
             'total_point' => $this->total_point,
             'status' => $this->status,
             'cast' => CastResource::make($this->whenLoaded('cast')),
+            'order' => OrderResource::make($this->whenLoaded('order')),
             'guest' => GuestResource::make($this->whenLoaded('guest')),
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
