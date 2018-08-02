@@ -49,7 +49,7 @@ class OrderResource extends Resource
             'user' => new UserResource($this->whenLoaded('user')),
             'is_nominated' => $this->isNominated(),
             'user_status' => $this->user_status,
-            'is_payment_requested' => $this->isPaymentRequested(),
+            // 'is_payment_requested' => $this->isPaymentRequested(),
             'room_id' => $this->room_id,
             'payment_status' => $this->payment_status,
             'cancel_fee_percent' => $this->cancel_fee_percent,
