@@ -66,21 +66,21 @@ class OrderController extends ApiController
             $input['type'] = OrderType::NOMINATED_CALL;
         }
 
-        /* $orders = $user->orders()
-            ->where('date', $request->date)
+        $orders = $user->orders()
             ->whereIn('status', [OrderStatus::OPEN, OrderStatus::ACTIVE, OrderStatus::PROCESSING])
             ->where(function ($query) use ($start_time, $end_time) {
-                $query->orWhereBetween('start_time', [$start_time, $end_time]);
-                $query->orWhereBetween('end_time', [$start_time, $end_time]);
-                $query->orWhere([
-                    ['start_time', '<', $start_time],
-                    ['end_time', '>', $start_time],
-                ]);
+                $query->orWhereRaw("concat_ws(' ',`date`,`start_time`) >= '$start_time' and concat_ws(' ',`date`,`start_time`) <= '$end_time'"
+                );
+
+                $query->orWhereRaw("DATE_ADD(concat_ws(' ',`date`,`start_time`), INTERVAL `duration` HOUR) >= '$start_time' and DATE_ADD(concat_ws(' ',`date`,`start_time`), INTERVAL `duration` HOUR) <= '$end_time'"
+                );
+                $query->orWhereRaw("concat_ws(' ',`date`,`start_time`) <= '$start_time' and DATE_ADD(concat_ws(' ',`date`,`start_time`), INTERVAL `duration` HOUR) >= '$end_time'"
+                );
             });
 
         if ($orders->count() > 0) {
             return $this->respondErrorMessage(trans('messages.order_same_time'), 409);
-        } */
+        }
 
         if (!$user->cards->first()) {
             return $this->respondErrorMessage(trans('messages.card_not_exist'), 404);
@@ -98,7 +98,7 @@ class OrderController extends ApiController
             $listNomineeIds = explode(",", trim($request->nominee_ids, ","));
             $counter = Cast::whereIn('id', $listNomineeIds)->count();
 
-            if ((1 == $counter) && $input['total_cast'] == 1) {
+            if ((1 == $counter) && 1 == $input['total_cast']) {
                 $input['type'] = OrderType::NOMINATION;
             }
         }
