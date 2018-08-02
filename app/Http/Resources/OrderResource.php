@@ -53,6 +53,8 @@ class OrderResource extends Resource
             'room_id' => $this->room_id,
             'payment_status' => $this->payment_status,
             'cancel_fee_percent' => $this->cancel_fee_percent,
+            'payment_requested_at' => $this->payment_requested_at,
+            'paid_at' => $this->paid_at,
         ]);
     }
 }

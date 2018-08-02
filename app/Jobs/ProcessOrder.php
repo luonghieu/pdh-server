@@ -38,6 +38,7 @@ class ProcessOrder implements ShouldQueue
 
             if ($startedCasts) {
                 $this->order->status = OrderStatus::PROCESSING;
+                $this->order->actual_started_at = now();
                 $this->order->save();
             }
         }

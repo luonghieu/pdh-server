@@ -38,6 +38,7 @@ class StopOrder implements ShouldQueue
 
             if ($this->order->total_cast == $stoppedCasts) {
                 $this->order->status = OrderStatus::DONE;
+                $this->order->actual_ended_at = now();
                 $this->order->save();
             }
         }
