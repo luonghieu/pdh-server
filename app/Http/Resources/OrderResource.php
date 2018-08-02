@@ -35,7 +35,6 @@ class OrderResource extends Resource
             'total_time' => $this->total_time,
             'total_cast' => $this->total_cast,
             'temp_point' => $this->temp_point,
-            'fee_point' => $this->fee_point,
             'total_point' => $this->total_point,
             'class_id' => $this->class_id,
             'cast_class' => CastClassResource::make($this->castClass),
@@ -52,6 +51,8 @@ class OrderResource extends Resource
             'user_status' => $this->user_status,
             'is_payment_requested' => $this->isPaymentRequested(),
             'room_id' => $this->room_id,
+            'payment_status' => $this->payment_status,
+            'cancel_fee_percent' => $this->cancel_fee_percent,
         ]);
     }
 }
