@@ -49,12 +49,9 @@ class ValidateOrder implements ShouldQueue
         $orderType = $this->order->type;
 
         if ($this->order->total_cast == $acceptByCast) {
-            $this->order->status = OrderStatus::ACTIVE;
-            $this->order->update();
-
-            // Create room chat
-            \DB::beginTransaction();
             try {
+                \DB::beginTransaction();
+
                 if ($orderType == OrderType::NOMINATED_CALL || $orderType == OrderType::CALL) {
                     if ($this->order->total_cast > 1) {
                         $room = new Room;
@@ -73,9 +70,14 @@ class ValidateOrder implements ShouldQueue
                         $ownerId = $this->order->user_id;
                         $userId = $this->order->casts()->first()->id;
 
-                        $this->createDirectRoom($ownerId, $userId);
+                        $room = $this->createDirectRoom($ownerId, $userId);
                     }
                 }
+
+                // activate order
+                $this->order->status = OrderStatus::ACTIVE;
+                $this->order->room_id = $room->id;
+                $this->order->update();
 
                 $involvedUsers = [$this->order->user];
                 foreach ($this->order->casts as $cast) {
@@ -115,13 +117,7 @@ class ValidateOrder implements ShouldQueue
 
     private function sendNotification($users)
     {
-        if ($this->order->total_cast == 1) {
-            $room = Room::find($this->order->room_id);
-        } else {
-            $room = $this->order->room;
-        }
-
-
+        $room = $this->order->room;
         $startTime = Carbon::parse($this->order->date . ' ' . $this->order->start_time);
         $message = '\\\\ おめでとうございます！マッチングが確定しました♪ //'
             .'\n \n- ご予約内容 - '
