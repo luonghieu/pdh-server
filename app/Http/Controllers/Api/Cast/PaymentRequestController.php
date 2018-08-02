@@ -38,7 +38,7 @@ class PaymentRequestController extends ApiController
         $paymentRequest = PaymentRequest::where([
             ['order_id', $id],
             ['cast_id', $user->id],
-        ])->with('cast', 'guest', 'order')->first();
+        ])->with('cast', 'guest', 'order.casts')->first();
 
         return $this->respondWithData(PaymentRequestResource::make($paymentRequest));
     }

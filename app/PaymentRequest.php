@@ -18,6 +18,6 @@ class PaymentRequest extends Model
 
     public function order()
     {
-        return $this->belongsTo(Order::class)->with('casts');
+        return $this->belongsTo(Order::class);
     }
 }
