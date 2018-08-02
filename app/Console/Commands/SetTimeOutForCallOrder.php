@@ -41,20 +41,16 @@ class SetTimeOutForCallOrder extends Command
      */
     public function handle()
     {
-        $time = Carbon::now();
+        $time = Carbon::now()->format('Y-m-d H:i:s');
 
-        Order::where([
-            ['status', '=', OrderStatus::OPEN],
-            ['type', '=', OrderType::CALL],
-        ])
+        Order::where('status', OrderStatus::OPEN)
+            ->whereIn('type', [OrderType::CALL, OrderType::NOMINATION])
             ->whereRaw("(time_to_sec(timediff(concat_ws(' ',`date`,`start_time`), created_at))/60) > 60")
             ->whereRaw("(time_to_sec(timediff(concat_ws(' ',`date`,`start_time`), '$time'))/60) < 30")
             ->update(['status' => OrderStatus::TIMEOUT]);
 
-        Order::where([
-            ['status', '=', OrderStatus::OPEN],
-            ['type', '=', OrderType::CALL],
-        ])
+        Order::where('status', OrderStatus::OPEN)
+            ->whereIn('type', [OrderType::CALL, OrderType::NOMINATION])
             ->whereRaw("(time_to_sec(timediff(concat_ws(' ',`date`,`start_time`), created_at))/60) <= 60")
             ->whereRaw("(time_to_sec(timediff(concat_ws(' ',`date`,`start_time`), '$time'))/60) < ((time_to_sec(timediff(concat_ws(' ',`date`,`start_time`), created_at))/60) /2)")
             ->update(['status' => OrderStatus::TIMEOUT]);
