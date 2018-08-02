@@ -165,6 +165,7 @@ class Order extends Model
         $allowance = $this->allowance($nightTime);
         $totalPoint = $orderPoint + $ordersFee + $allowance + $extraPoint;
         try {
+            \DB::beginTransaction();
             $this->casts()->updateExistingPivot($userId, [
                 'stopped_at' => $stoppedAt,
                 'status' => CastOrderStatus::DONE,
@@ -193,9 +194,10 @@ class Order extends Model
             $paymentRequest->total_point = $totalPoint;
 
             $paymentRequest->save();
-
+            \DB::commit();
             return true;
         } catch (\Exception $e) {
+            \DB::rollBack();
             LogService::writeErrorLog($e);
 
             return false;
