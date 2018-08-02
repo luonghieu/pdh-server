@@ -15,4 +15,9 @@ class PaymentRequest extends Model
     {
         return $this->belongsTo(Guest::class);
     }
+
+    public function order()
+    {
+        return $this->belongsTo(Order::class);
+    }
 }

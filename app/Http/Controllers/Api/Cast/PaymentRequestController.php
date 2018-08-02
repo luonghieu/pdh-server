@@ -38,8 +38,7 @@ class PaymentRequestController extends ApiController
         $paymentRequest = PaymentRequest::where([
             ['order_id', $id],
             ['cast_id', $user->id],
-            ['status', PaymentRequestStatus::OPEN],
-        ])->with('cast', 'guest')->first();
+        ])->with('cast', 'guest', 'order.casts')->first();
 
         return $this->respondWithData(PaymentRequestResource::make($paymentRequest));
     }
@@ -107,10 +106,27 @@ class PaymentRequestController extends ApiController
 
     public function getPaymentHistory(Request $request)
     {
+        $rules = [
+            'nickname' => 'max:20',
+        ];
+
+        $validator = validator($request->all(), $rules);
+
+        if ($validator->fails()) {
+            return $this->respondWithValidationError($validator->errors()->messages());
+        }
+
         $user = $this->guard()->user();
 
-        $paymentRequests = PaymentRequest::where('cast_id', $user->id)->with('cast', 'guest')
-            ->latest()->paginate($request->per_page)->appends($request->query());
+        $paymentRequests = PaymentRequest::where('cast_id', $user->id)->with('cast', 'guest', 'order.casts');
+
+        $nickName = $request->nickname;
+        if ($nickName) {
+            $paymentRequests->whereHas('guest', function ($query) use ($nickName) {
+                $query->where('users.nickname', 'like', "%$nickName%");
+            });
+        }
+        $paymentRequests = $paymentRequests->latest()->paginate($request->per_page)->appends($request->query());
 
         return $this->respondWithData(PaymentRequestResource::collection($paymentRequests));
     }
