@@ -55,6 +55,7 @@ class SetTimeOutForCallOrder extends Command
                 $timeout = $startTime->copy()->subMinute(30);
                 if ($timeout < $now) {
                     $order->status = OrderStatus::TIMEOUT;
+                    $order->canceled_at = now();
                     $order->save();
                 }
             }
@@ -64,6 +65,7 @@ class SetTimeOutForCallOrder extends Command
                 $timeout = $startTime->copy()->subMinute($timeApplyHalf);
                 if ($timeout < $now) {
                     $order->status = OrderStatus::TIMEOUT;
+                    $order->canceled_at = now();
                     $order->save();
                 }
             }

@@ -53,10 +53,14 @@ class NominatedCallSchedule extends Command
                 ->pluck('cast_order.user_id')->toArray();
 
             foreach ($nomineeIds as $id) {
-                $order->nominees()->updateExistingPivot($id,
+                $order->nominees()->updateExistingPivot(
+                    $id,
                     [
                         'status' => CastOrderStatus::TIMEOUT,
-                    ], false);
+                        'canceled_at' => now()
+                    ],
+                    false
+                );
             }
 
             $order->update(['type' => OrderType::CALL]);
