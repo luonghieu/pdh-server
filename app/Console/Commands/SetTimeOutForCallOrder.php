@@ -41,18 +41,32 @@ class SetTimeOutForCallOrder extends Command
      */
     public function handle()
     {
-        $time = Carbon::now()->format('Y-m-d H:i:s');
+        $now = Carbon::now();
 
-        Order::where('status', OrderStatus::OPEN)
-            ->whereIn('type', [OrderType::CALL, OrderType::NOMINATION])
-            ->whereRaw("(time_to_sec(timediff(concat_ws(' ',`date`,`start_time`), created_at))/60) > 60")
-            ->whereRaw("(time_to_sec(timediff(concat_ws(' ',`date`,`start_time`), '$time'))/60) < 30")
-            ->update(['status' => OrderStatus::TIMEOUT]);
+        $orders = Order::where('status', OrderStatus::OPEN)
+            ->whereIn('type', [OrderType::CALL, OrderType::NOMINATION])->get();
 
-        Order::where('status', OrderStatus::OPEN)
-            ->whereIn('type', [OrderType::CALL, OrderType::NOMINATION])
-            ->whereRaw("(time_to_sec(timediff(concat_ws(' ',`date`,`start_time`), created_at))/60) <= 60")
-            ->whereRaw("(time_to_sec(timediff(concat_ws(' ',`date`,`start_time`), '$time'))/60) < ((time_to_sec(timediff(concat_ws(' ',`date`,`start_time`), created_at))/60) /2)")
-            ->update(['status' => OrderStatus::TIMEOUT]);
+        foreach ($orders as $order) {
+            $startTime = Carbon::createFromFormat('Y-m-d H:i:s', $order->date . ' ' . $order->start_time);
+            $createdAt = $order->created_at;
+            $timeApply = $startTime->copy()->diffInMinutes($createdAt);
+
+            if (($timeApply > 60)) {
+                $timeout = $startTime->copy()->subMinute(30);
+                if ($timeout < $now) {
+                    $order->status = OrderStatus::TIMEOUT;
+                    $order->save();
+                }
+            }
+
+            if (($timeApply <= 60)) {
+                $timeApplyHalf = $startTime->copy()->diffInMinutes($createdAt) / 2;
+                $timeout = $startTime->copy()->subMinute($timeApplyHalf);
+                if ($timeout < $now) {
+                    $order->status = OrderStatus::TIMEOUT;
+                    $order->save();
+                }
+            }
+        }
     }
 }
