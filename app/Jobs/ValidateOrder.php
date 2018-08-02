@@ -115,7 +115,17 @@ class ValidateOrder implements ShouldQueue
 
     private function sendNotification($users)
     {
-        $room = $this->order->room;
+        if ($this->order->total_cast == 1) {
+            $owner = $users[0];
+            $cast = $users[1];
+            $room = Room::where('owner_id', $owner->id)->whereHas('users', function($q) use ($cast) {
+                $q->where('users.id', $cast->id);
+            })->first();
+        } else {
+            $room = $this->order->room;
+        }
+
+
         $startTime = Carbon::parse($this->order->date . ' ' . $this->order->start_time);
         $message = '\\\\ おめでとうございます！マッチングが確定しました♪ //'
             .'\n \n- ご予約内容 - '
@@ -124,6 +134,7 @@ class ValidateOrder implements ShouldQueue
             .'\n \n ゲストの方はキャストに来て欲しい場所の詳細をお伝えください。'
             .'\n 尚、ご不明点がある場合は運営までお問い合わせください。'
             .'\n \n それでは素敵な時間をお楽しみください♪';
+
         $roomMessage = $room->messages()->create([
             'user_id' => 1,
             'type' => MessageType::SYSTEM,
