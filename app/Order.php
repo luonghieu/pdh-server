@@ -5,6 +5,7 @@ namespace App;
 use Auth;
 use Carbon\Carbon;
 use App\Enums\RoomType;
+use App\Jobs\StopOrder;
 use App\PaymentRequest;
 use App\Enums\OrderType;
 use App\Enums\OrderStatus;
@@ -215,6 +216,8 @@ class Order extends Model
             $paymentRequest->save();
 
             \DB::commit();
+
+            StopOrder::dispatch($this);
 
             return true;
         } catch (\Exception $e) {
