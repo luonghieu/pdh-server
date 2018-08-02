@@ -161,10 +161,11 @@ class Order extends Model
         $extraTime = $this->extraTime($stoppedAt);
         $extraPoint = $this->extraPoint($cast, $extraTime);
         $orderPoint = $this->orderPoint($cast);
-        $ordersFee = (CastOrderType::NOMINEE == $cast->pivot->type) ? 3000 : 0;
+        $ordersFee = $this->orderFee($cast, $extraTime);
         $allowance = $this->allowance($nightTime);
         $totalPoint = $orderPoint + $ordersFee + $allowance + $extraPoint;
         try {
+            \DB::beginTransaction();
             $this->casts()->updateExistingPivot($userId, [
                 'stopped_at' => $stoppedAt,
                 'status' => CastOrderStatus::DONE,
@@ -193,9 +194,10 @@ class Order extends Model
             $paymentRequest->total_point = $totalPoint;
 
             $paymentRequest->save();
-
+            \DB::commit();
             return true;
         } catch (\Exception $e) {
+            \DB::rollBack();
             LogService::writeErrorLog($e);
 
             return false;
@@ -295,6 +297,34 @@ class Order extends Model
         }
 
         return $cost * ((60 * $this->duration) / 30);
+    }
+
+    private function orderFee($cast, $extraTime)
+    {
+        $order = $this;
+        $eTime = $extraTime;
+        $orderFee = 0;
+        $multiplier = 0;
+
+        $orderDuration = $this->duration * 60;
+        if ($order->type != OrderType::NOMINATION && $cast->pivot->type == CastOrderType::NOMINEE) {
+            while ($orderDuration / 15 >= 1) {
+                $multiplier++;
+                $orderDuration -= 15;
+            }
+
+            if ($eTime > 15) {
+                while ($eTime / 15 > 1) {
+                    $multiplier++;
+                    $eTime -= 15;
+                }
+            }
+
+            $orderFee = 500 * $multiplier;
+            return $orderFee;
+        }
+
+        return $orderFee;
     }
 
     private function extraTime($stoppedAt)
