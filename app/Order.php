@@ -91,7 +91,7 @@ class Order extends Model
 
     public function room()
     {
-        return $this->hasOne(Room::class);
+        return $this->belongsTo(Room::class);
     }
 
     public function deny($userId)
@@ -416,8 +416,12 @@ class Order extends Model
         return in_array($this->status, $matchingStatuses) ? 1 : 0;
     }
 
-    public function getRoomIdAttribute()
+    public function getRoomIdAttribute($value)
     {
+        if ($value) {
+            return $value;
+        }
+
         if (!$this->is_matching) {
             return '';
         }
