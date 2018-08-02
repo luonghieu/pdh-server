@@ -44,6 +44,7 @@ class Order extends Model
         return $this->belongsToMany(Cast::class)
             ->whereNotNull('cast_order.accepted_at')
             ->whereNull('cast_order.canceled_at')
+            ->whereNull('cast_order.deleted_at')
             ->withPivot('order_time', 'extra_time', 'order_point', 'extra_point', 'allowance_point', 'fee_point', 'total_point')
             ->withTimestamps();
     }
@@ -51,18 +52,26 @@ class Order extends Model
     public function nominees()
     {
         return $this->belongsToMany(Cast::class)
-            ->where('cast_order.type', CastOrderType::NOMINEE)->withPivot('status')->withTimestamps();
+            ->where('cast_order.type', CastOrderType::NOMINEE)
+            ->whereNull('cast_order.deleted_at')
+            ->withPivot('status')
+            ->withTimestamps();
     }
 
     public function candidates()
     {
         return $this->belongsToMany(Cast::class)
-            ->where('cast_order.type', CastOrderType::CANDIDATE)->withTimestamps();
+            ->where('cast_order.type', CastOrderType::CANDIDATE)
+            ->whereNull('cast_order.deleted_at')
+            ->withTimestamps();
     }
 
     public function castOrder()
     {
-        return $this->belongsToMany(Cast::class)->withPivot('status')->withTimestamps();
+        return $this->belongsToMany(Cast::class)
+            ->whereNull('cast_order.deleted_at')
+            ->withPivot('status')
+            ->withTimestamps();
     }
 
     public function paymentRequests()
@@ -88,8 +97,11 @@ class Order extends Model
     public function deny($userId)
     {
         try {
-            $this->nominees()->updateExistingPivot($userId,
-                ['status' => CastOrderStatus::DENIED, 'canceled_at' => Carbon::now()], false);
+            $this->nominees()->updateExistingPivot(
+                $userId,
+                ['status' => CastOrderStatus::DENIED, 'canceled_at' => Carbon::now()],
+                false
+            );
 
             ValidateOrder::dispatch($this);
 
@@ -118,12 +130,14 @@ class Order extends Model
     public function apply($userId)
     {
         try {
-            $this->casts()->attach($userId,
+            $this->casts()->attach(
+                $userId,
                 [
                     'status' => CastOrderStatus::ACCEPTED,
                     'accepted_at' => Carbon::now(),
                     'type' => CastOrderType::CANDIDATE,
-                ]);
+                ]
+            );
 
             ValidateOrder::dispatch($this);
 
@@ -137,8 +151,11 @@ class Order extends Model
     public function accept($userId)
     {
         try {
-            $this->nominees()->updateExistingPivot($userId,
-                ['status' => CastOrderStatus::ACCEPTED, 'accepted_at' => Carbon::now()], false);
+            $this->nominees()->updateExistingPivot(
+                $userId,
+                ['status' => CastOrderStatus::ACCEPTED, 'accepted_at' => Carbon::now()],
+                false
+            );
 
             ValidateOrder::dispatch($this);
 
@@ -164,8 +181,10 @@ class Order extends Model
         $ordersFee = $this->orderFee($cast, $extraTime);
         $allowance = $this->allowance($nightTime);
         $totalPoint = $orderPoint + $ordersFee + $allowance + $extraPoint;
+
         try {
             \DB::beginTransaction();
+
             $this->casts()->updateExistingPivot($userId, [
                 'stopped_at' => $stoppedAt,
                 'status' => CastOrderStatus::DONE,
@@ -192,9 +211,10 @@ class Order extends Model
             $paymentRequest->old_extra_time = $extraTime;
             $paymentRequest->extra_point = $extraPoint;
             $paymentRequest->total_point = $totalPoint;
-
             $paymentRequest->save();
+
             \DB::commit();
+
             return true;
         } catch (\Exception $e) {
             \DB::rollBack();
