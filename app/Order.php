@@ -2,17 +2,18 @@
 
 namespace App;
 
-use App\Enums\CastOrderStatus;
-use App\Enums\CastOrderType;
-use App\Enums\OrderStatus;
-use App\Enums\OrderType;
-use App\Enums\RoomType;
-use App\Jobs\ValidateOrder;
-use App\PaymentRequest;
-use App\Services\LogService;
-use App\Traits\DirectRoom;
 use Auth;
 use Carbon\Carbon;
+use App\Enums\RoomType;
+use App\PaymentRequest;
+use App\Enums\OrderType;
+use App\Enums\OrderStatus;
+use App\Jobs\ProcessOrder;
+use App\Traits\DirectRoom;
+use App\Jobs\ValidateOrder;
+use App\Enums\CastOrderType;
+use App\Services\LogService;
+use App\Enums\CastOrderStatus;
 use Illuminate\Database\Eloquent\Model;
 
 class Order extends Model
@@ -231,6 +232,8 @@ class Order extends Model
                 'started_at' => Carbon::now(),
                 'status' => CastOrderStatus::PROCESSING,
             ], false);
+
+            ProcessOrder::dispatch($this);
 
             return true;
         } catch (\Exception $e) {
