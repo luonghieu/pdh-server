@@ -104,4 +104,14 @@ class PaymentRequestController extends ApiController
             return $this->respondServerError();
         }
     }
+
+    public function getPaymentHistory(Request $request)
+    {
+        $user = $this->guard()->user();
+
+        $paymentRequests = PaymentRequest::where('cast_id', $user->id)->with('cast', 'guest')
+            ->latest()->paginate($request->per_page)->appends($request->query());
+
+        return $this->respondWithData(PaymentRequestResource::collection($paymentRequests));
+    }
 }
