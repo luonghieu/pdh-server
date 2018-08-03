@@ -60,8 +60,12 @@ Route::group(['prefix' => 'v1'], function () {
     });
 
     Route::group(['middleware' => ['auth:api', 'guest'], 'prefix' => 'guest', 'as' => 'guest.'], function () {
-        Route::get('/orders', ['as' => 'index', 'uses' => 'Guest\OrderController@index']);
         Route::get('/cast_histories', ['as' => 'cast_histories', 'uses' => 'Guest\GuestController@castHistories']);
+
+        Route::group(['prefix' => 'orders'], function () {
+            Route::get('/', ['as' => 'index', 'uses' => 'Guest\OrderController@index']);
+            Route::patch('/{id}/payment_requests', ['as' => 'payment_requests', 'uses' => 'Guest\PaymentRequestController@payment']);
+        });
     });
 
     Route::group(['middleware' => ['auth:api', 'cast'], 'prefix' => 'cast', 'as' => 'cast.'], function () {
