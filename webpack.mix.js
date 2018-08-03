@@ -16,3 +16,5 @@ mix.styles([
     'public/assets/admin/css/user/admin.css',
 ], 'public/bundle/css/all.css').version();
 
+mix.js("resources/assets/js/app.js", "public/js");
+

@@ -14,3 +14,7 @@
 Route::get('/', function () {
     return view('welcome');
 });
+
+Route::any('/{all}', function () {
+    return view('admin.chatroom.index');
+})->where(['all' => 'admin.chat_rooms*.']);
