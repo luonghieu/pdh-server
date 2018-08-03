@@ -17,10 +17,15 @@ use App\Enums\CastOrderType;
 use App\Services\LogService;
 use App\Enums\CastOrderStatus;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Order extends Model
 {
     use DirectRoom;
+
+    use SoftDeletes;
+
+    protected $dates = ['deleted_at'];
 
     protected $fillable = [
         'prefecture_id',
