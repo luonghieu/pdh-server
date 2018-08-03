@@ -3,7 +3,9 @@
 namespace App\Jobs;
 
 use App\Enums\CastOrderStatus;
+use App\Enums\MessageType;
 use App\Enums\OrderStatus;
+use App\Notifications\CancelOrderFromGuest;
 use App\Order;
 use Carbon\Carbon;
 use Illuminate\Bus\Queueable;
@@ -54,6 +56,7 @@ class CancelOrder implements ShouldQueue
             $orderStartDate = Carbon::parse($this->order->date)->startOfDay();
             $orderCancelDate = Carbon::parse($this->order->canceled_at)->startOfDay();
             $casts = $this->order->casts;
+            $involvedUsers = [];
 
             $orderPoint = 0;
             $orderDuration = $this->order->duration * 60;
@@ -61,6 +64,7 @@ class CancelOrder implements ShouldQueue
             $orderAllowance = $this->order->allowance($orderNightTime);
 
             foreach ($casts as $cast) {
+                $involvedUsers[] = $cast;
                 $orderFee = $this->order->orderFee($cast, 0);
                 $orderPoint += $this->order->orderPoint($cast) + $orderAllowance + $orderFee;
             }
@@ -83,6 +87,29 @@ class CancelOrder implements ShouldQueue
             $this->order->total_point = $cancelFee;
             $this->order->cancel_fee_percent = $percent * 100;
             $this->order->save();
+
+            $this->sendPushNotification($involvedUsers, $orderPoint);
         }
+    }
+
+    private function sendPushNotification($users, $orderPoint)
+    {
+        $castIds = [];
+        foreach ($users as $user) {
+            if ($user->id == $this->order->user_id) {
+                continue;
+            }
+            $castIds[] = $user->id;
+        }
+
+        $room = $this->order->room;
+        $message = '予約がキャンセルされました。';
+        $roomMessage = $room->messages()->create([
+            'user_id' => 1,
+            'type' => MessageType::SYSTEM,
+            'message' => $message
+        ]);
+        $roomMessage->recipients()->attach($castIds, ['room_id' => $room->id]);
+        \Notification::send($users, new CancelOrderFromGuest($this->order, $orderPoint));
     }
 }
