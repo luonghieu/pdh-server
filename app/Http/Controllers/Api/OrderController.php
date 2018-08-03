@@ -29,10 +29,10 @@ class OrderController extends ApiController
             'date' => 'required|date|date_format:Y-m-d|after_or_equal:today',
             'start_time' => 'required|date_format:H:i',
             'duration' => 'required|numeric|min:1|max:10',
-            'total_cast' => 'required|min:1',
+            'total_cast' => 'required|numeric|min:1',
             'temp_point' => 'required',
             'class_id' => 'required|exists:cast_classes,id',
-            'type' => 'nullable|in:1,2,3',
+            'type' => 'required|in:1,2,3',
             'tags' => '',
             'nominee_ids' => '',
         ];
@@ -60,10 +60,6 @@ class OrderController extends ApiController
 
         if (now()->diffInMinutes($start_time, false) < 19) {
             return $this->respondErrorMessage(trans('messages.time_invalid'), 400);
-        }
-
-        if (!$request->type) {
-            $input['type'] = OrderType::NOMINATED_CALL;
         }
 
         $orders = $user->orders()
@@ -97,10 +93,6 @@ class OrderController extends ApiController
         } else {
             $listNomineeIds = explode(",", trim($request->nominee_ids, ","));
             $counter = Cast::whereIn('id', $listNomineeIds)->count();
-
-            if ((1 == $counter) && 1 == $input['total_cast']) {
-                $input['type'] = OrderType::NOMINATION;
-            }
         }
 
         $input['status'] = OrderStatus::OPEN;
