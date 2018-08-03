@@ -134,7 +134,7 @@ class OrderController extends ApiController
         ];
 
         $orderCheck = Order::whereIn('status', [OrderStatus::OPEN, OrderStatus::ACTIVE, OrderStatus::PROCESSING])
-            ->whereHas('castOrder', function ($query) use ($user) {
+            ->whereHas('castOrder', function ($query) use ($user, $validStatus) {
                 $query->where('user_id', $user->id);
                 $query->whereIn('cast_order.status', $validStatus);
             })
