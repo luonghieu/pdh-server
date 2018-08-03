@@ -42,5 +42,7 @@ return [
     'receipt_not_found' => 'Receipt not found',
     'point_not_found' => 'Point not found',
     'receipt_exists' => 'Receipt exists',
+    'apply_error' => 'Apply order error',
+    'order_time_error' => 'Order exists at this time',
     'delete_order_success' => 'Delete order successfully',
 ];
