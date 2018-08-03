@@ -281,17 +281,14 @@ class OrderController extends ApiController
         $user = $this->guard()->user();
 
         $castExists = $order->castOrder()->where('cast_order.user_id', $user->id)
-            ->where('cast_order.order_id', $id)->exists();
+            ->where('cast_order.order_id', $id)->whereIn('cast_order.status', $validStatus)->exists();
 
         if (!$castExists) {
             return $this->respondErrorMessage(trans('messages.action_not_performed'), 422);
         }
 
         try {
-            $order->castOrder()->where('cast_order.user_id', $user->id)
-                ->where('cast_order.order_id', $id)
-                ->whereIn('cast_order.status', $validStatus)
-                ->updateExistingPivot($user->id, ['deleted_at' => Carbon::now()], false);
+            $order->castOrder()->updateExistingPivot($user->id, ['deleted_at' => Carbon::now()], false);
 
             return $this->respondWithNoData(trans('messages.delete_order_success'));
         } catch (\Exception $e) {
