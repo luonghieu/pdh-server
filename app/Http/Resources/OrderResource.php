@@ -46,6 +46,7 @@ class OrderResource extends Resource
             'updated_at' => $this->updated_at,
             'tags' => TagResource::collection($this->whenLoaded('tags')),
             'casts' => UserCollection::make($this->whenLoaded('casts')),
+            'paymentRequests' => PaymentRequestResource::collection($this->whenLoaded('paymentRequests')),
             'nominees' => UserCollection::make($this->whenLoaded('nominees')),
             'user' => new UserResource($this->whenLoaded('user')),
             'is_nominated' => $this->isNominated(),

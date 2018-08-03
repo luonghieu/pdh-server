@@ -65,6 +65,8 @@ Route::group(['prefix' => 'v1'], function () {
         Route::group(['prefix' => 'orders'], function () {
             Route::get('/', ['as' => 'index', 'uses' => 'Guest\OrderController@index']);
             Route::patch('/{id}/payment_requests', ['as' => 'payment_requests', 'uses' => 'Guest\PaymentRequestController@payment']);
+            Route::get('/{id}/payment_requests', ['as' => 'get_payment_requests',
+                'uses' => 'Guest\PaymentRequestController@getPaymentRequest']);
         });
     });
 

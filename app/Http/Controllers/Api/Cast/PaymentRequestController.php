@@ -32,7 +32,7 @@ class PaymentRequestController extends ApiController
             ])
             ->whereNotNull('stopped_at')->get();
 
-        if (!$cast || OrderStatus::DONE != $order->status) {
+        if (!$cast) {
             return $this->respondErrorMessage(trans('messages.action_not_performed'), 422);
         }
 
