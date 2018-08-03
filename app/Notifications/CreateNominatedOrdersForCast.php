@@ -60,15 +60,15 @@ class CreateNominatedOrdersForCast extends Notification implements ShouldQueue
         $endTime = Carbon::parse($this->order->date . ' ' . $this->order->end_time);
 
         $message = 'おめでとう！指名予約が入りました♪'
-            . '\n ------------------------------------------'
-            . '\n \n - ご予約内容 -'
-            . '\n 日時：' . $startTime->format('Y/m/d H:i') . '~'
-            . '\n 時間：' . $this->order->duration . '時間'
-            . '\n クラス：' . $this->order->castClass->name
-            . '\n 人数：' . $this->order->total_cast . '人'
-            . '\n 場所：' . $this->order->address
-            . '\n 獲得ポイント：' . number_format($notifiable->cost * ($startTime->diffInMinutes($endTime) / 30))
-            . '\n --------------------------------------------------';
+            . PHP_EOL . '------------------------------------------'
+            . PHP_EOL . PHP_EOL . '- ご予約内容 -'
+            . PHP_EOL . PHP_EOL . '日時：' . $startTime->format('Y/m/d H:i') . '~'
+            . PHP_EOL . PHP_EOL . '時間：' . $this->order->duration . '時間'
+            . PHP_EOL . 'クラス：' . $this->order->castClass->name
+            . PHP_EOL . '人数：' . $this->order->total_cast . '人'
+            . PHP_EOL . '場所：' . $this->order->address
+            . PHP_EOL . '獲得ポイント：' . number_format($notifiable->cost * ($startTime->diffInMinutes($endTime) / 30))
+            . PHP_EOL . '--------------------------------------------------';
 
         $room = $notifiable->rooms()
             ->where('rooms.type', RoomType::SYSTEM)
@@ -91,7 +91,7 @@ class CreateNominatedOrdersForCast extends Notification implements ShouldQueue
     public function pushData($notifiable)
     {
         $content = '指名予約が入りました。'
-            . '\n 5分以内に承諾、キャンセルの処理を行ってください！';
+            . PHP_EOL . '5分以内に承諾、キャンセルの処理を行ってください！';
         $namedUser = 'user_' . $notifiable->id;
         $send_from = UserType::ADMIN;
         $pushId = 'c_2';
