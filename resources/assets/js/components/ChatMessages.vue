@@ -1,7 +1,6 @@
 <template>
     <div class="msg_history">
         <div v-for="message in list_message">
-            {{message.id}}
             <div class="outgoing_msg" v-if="message.user_id == user_id">
                 <div class="sent_msg">
                     <div class="delete_message">
