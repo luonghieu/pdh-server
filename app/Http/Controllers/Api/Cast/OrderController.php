@@ -126,6 +126,27 @@ class OrderController extends ApiController
         }
 
         $user = $this->guard()->user();
+        $startTime = Carbon::parse($order->date . ' ' . $order->start_time);
+
+        $endTime = Carbon::parse($order->date . ' ' . $order->end_time);
+
+        $orderCheck = Order::whereIn('status', [OrderStatus::ACTIVE, OrderStatus::PROCESSING])
+            ->whereHas('castOrder', function ($query) use ($user) {
+                $query->where('user_id', $user->id);
+            })
+            ->where(function ($query) use ($startTime, $endTime) {
+                $query->orWhereRaw("concat_ws(' ',`date`,`start_time`) >= '$startTime' and concat_ws(' ',`date`,`start_time`) <= '$endTime'"
+                );
+
+                $query->orWhereRaw("DATE_ADD(concat_ws(' ',`date`,`start_time`), INTERVAL `duration` HOUR) >= '$startTime' and DATE_ADD(concat_ws(' ',`date`,`start_time`), INTERVAL `duration` HOUR) <= '$endTime'"
+                );
+                $query->orWhereRaw("concat_ws(' ',`date`,`start_time`) <= '$startTime' and DATE_ADD(concat_ws(' ',`date`,`start_time`), INTERVAL `duration` HOUR) >= '$endTime'"
+                );
+            });
+
+        if ($orderCheck->count() > 0) {
+            return $this->respondErrorMessage(trans('messages.order_time_error'), 409);
+        }
 
         if (OrderType::CALL == $order->type) {
             if ($order->casts->count() == $order->total_cast
