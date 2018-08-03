@@ -86,7 +86,6 @@ class PaymentRequestController extends ApiController
             if ($request->extra_time) {
                 $extraPoint = $order->extraPoint($cast, $request->extra_time);
                 $feePoint = $order->orderFee($cast, $request->extra_time);
-                $totalPoint = $paymentRequest->order_point + $paymentRequest->allowance_point + $feePoint + $extraPoint;
 
                 $startDate = Carbon::parse($order->date . ' ' . $order->start_time);
                 $endDate = $startDate->copy()->addMinutes($order->duration * 60);
@@ -94,7 +93,7 @@ class PaymentRequestController extends ApiController
 
                 $nightTime = $order->nightTime($stoppedAt);
                 $allowance = $order->allowance($nightTime);
-
+                $totalPoint = $paymentRequest->order_point + $allowance + $feePoint + $extraPoint;
                 $paymentRequest->allowance_point = $allowance;
                 $paymentRequest->extra_time = $request->extra_time;
                 $paymentRequest->extra_point = $extraPoint;
