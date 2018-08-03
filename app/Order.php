@@ -110,7 +110,7 @@ class Order extends Model
                 false
             );
 
-            ValidateOrder::dispatch($this);
+            ValidateOrder::dispatchNow($this);
 
             return true;
         } catch (\Exception $e) {
@@ -127,7 +127,7 @@ class Order extends Model
                 'canceled_at' => Carbon::now(),
             ]);
 
-            CancelOrder::dispatch($this);
+            CancelOrder::dispatchNow($this);
 
             return true;
         } catch (\Exception $e) {
@@ -148,7 +148,7 @@ class Order extends Model
                 ]
             );
 
-            ValidateOrder::dispatch($this);
+            ValidateOrder::dispatchNow($this);
 
             return true;
         } catch (\Exception $e) {
@@ -166,7 +166,7 @@ class Order extends Model
                 false
             );
 
-            ValidateOrder::dispatch($this);
+            ValidateOrder::dispatchNow($this);
 
             return true;
         } catch (\Exception $e) {
@@ -224,7 +224,7 @@ class Order extends Model
 
             \DB::commit();
 
-            StopOrder::dispatch($this);
+            StopOrder::dispatchNow($this);
 
             return true;
         } catch (\Exception $e) {
@@ -243,7 +243,7 @@ class Order extends Model
                 'status' => CastOrderStatus::PROCESSING,
             ], false);
 
-            ProcessOrder::dispatch($this);
+            ProcessOrder::dispatchNow($this);
 
             return true;
         } catch (\Exception $e) {
