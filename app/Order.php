@@ -2,20 +2,19 @@
 
 namespace App;
 
+use App\Jobs\CancelOrder;
 use Auth;
 use Carbon\Carbon;
 use App\Enums\RoomType;
 use App\Jobs\StopOrder;
-use App\PaymentRequest;
 use App\Enums\OrderType;
-use App\Jobs\CancelOrder;
 use App\Enums\OrderStatus;
-use App\Jobs\ProcessOrder;
-use App\Traits\DirectRoom;
-use App\Jobs\ValidateOrder;
-use App\Enums\CastOrderType;
-use App\Services\LogService;
 use App\Enums\CastOrderStatus;
+use App\Enums\CastOrderType;
+use App\Jobs\ProcessOrder;
+use App\Jobs\ValidateOrder;
+use App\Services\LogService;
+use App\Traits\DirectRoom;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
@@ -53,7 +52,7 @@ class Order extends Model
             ->whereNotNull('cast_order.accepted_at')
             ->whereNull('cast_order.canceled_at')
             ->whereNull('cast_order.deleted_at')
-            ->withPivot('order_time', 'extra_time', 'order_point', 'extra_point', 'allowance_point', 'fee_point', 'total_point')
+            ->withPivot('order_time', 'extra_time', 'order_point', 'extra_point', 'allowance_point', 'fee_point', 'total_point', 'type')
             ->withTimestamps();
     }
 
@@ -111,7 +110,7 @@ class Order extends Model
                 false
             );
 
-            ValidateOrder::dispatch($this);
+            ValidateOrder::dispatchNow($this);
 
             return true;
         } catch (\Exception $e) {
@@ -128,7 +127,7 @@ class Order extends Model
                 'canceled_at' => Carbon::now(),
             ]);
 
-            CancelOrder::dispatch($this);
+            CancelOrder::dispatchNow($this);
 
             return true;
         } catch (\Exception $e) {
@@ -149,7 +148,7 @@ class Order extends Model
                 ]
             );
 
-            ValidateOrder::dispatch($this);
+            ValidateOrder::dispatchNow($this);
 
             return true;
         } catch (\Exception $e) {
@@ -167,7 +166,7 @@ class Order extends Model
                 false
             );
 
-            ValidateOrder::dispatch($this);
+            ValidateOrder::dispatchNow($this);
 
             return true;
         } catch (\Exception $e) {
@@ -225,7 +224,7 @@ class Order extends Model
 
             \DB::commit();
 
-            StopOrder::dispatch($this);
+            StopOrder::dispatchNow($this);
 
             return true;
         } catch (\Exception $e) {
@@ -244,7 +243,7 @@ class Order extends Model
                 'status' => CastOrderStatus::PROCESSING,
             ], false);
 
-            ProcessOrder::dispatch($this);
+            ProcessOrder::dispatchNow($this);
 
             return true;
         } catch (\Exception $e) {
@@ -275,7 +274,7 @@ class Order extends Model
         return ($this->paymentRequests()->where('cast_id', $user->id)->first()) ? 1 : 0;
     }
 
-    private function nightTime($stoppedAt)
+    public function nightTime($stoppedAt)
     {
         $order = $this;
 
@@ -313,7 +312,7 @@ class Order extends Model
         return $nightTime;
     }
 
-    private function allowance($nightTime)
+    public function allowance($nightTime)
     {
         if ($nightTime) {
             return 4000;
@@ -322,7 +321,7 @@ class Order extends Model
         return 0;
     }
 
-    private function orderPoint($cast)
+    public function orderPoint($cast)
     {
         if (OrderType::NOMINATION != $this->type) {
             $cost = $this->castClass->cost;
@@ -333,15 +332,14 @@ class Order extends Model
         return $cost * ((60 * $this->duration) / 30);
     }
 
-    private function orderFee($cast, $extraTime)
+    public function orderFee($cast, $extraTime)
     {
         $order = $this;
         $eTime = $extraTime;
         $orderFee = 0;
         $multiplier = 0;
-
         $orderDuration = $this->duration * 60;
-        if ($order->type != OrderType::NOMINATION && $cast->pivot->type == CastOrderType::NOMINEE) {
+        if (OrderType::NOMINATION != $order->type && CastOrderType::NOMINEE == $cast->pivot->type) {
             while ($orderDuration / 15 >= 1) {
                 $multiplier++;
                 $orderDuration -= 15;
