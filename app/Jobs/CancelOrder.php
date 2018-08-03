@@ -2,10 +2,11 @@
 
 namespace App\Jobs;
 
-use App\Order;
-use App\Enums\OrderStatus;
-use Illuminate\Bus\Queueable;
 use App\Enums\CastOrderStatus;
+use App\Enums\OrderStatus;
+use App\Order;
+use Carbon\Carbon;
+use Illuminate\Bus\Queueable;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -20,7 +21,7 @@ class CancelOrder implements ShouldQueue
     /**
      * Create a new job instance.
      *
-     * @return void
+     * @param Order $order
      */
     public function __construct(Order $order)
     {
@@ -49,6 +50,39 @@ class CancelOrder implements ShouldQueue
                     false
                 );
             }
+
+            $orderStartDate = Carbon::parse($this->order->date)->startOfDay();
+            $orderCancelDate = Carbon::parse($this->order->canceled_at)->startOfDay();
+            $casts = $this->order->casts;
+
+            $orderPoint = 0;
+            $orderDuration = $this->order->duration * 60;
+            $orderNightTime = $this->order->nightTime($orderStartDate->addMinutes($orderDuration));
+            $orderAllowance = $this->order->allowance($orderNightTime);
+
+            foreach ($casts as $cast) {
+                $orderFee = $this->order->orderFee($cast, 0);
+                $orderPoint += $this->order->orderPoint($cast) + $orderAllowance + $orderFee;
+            }
+
+            $percent = 0;
+            if ($orderCancelDate->diffInDays($orderStartDate) <= 7) {
+                $percent = 0.3;
+            }
+
+            if ($orderCancelDate->diffInDays($orderStartDate) == 1) {
+                $percent = 0.5;
+            }
+
+            if ($orderCancelDate->diffInDays($orderStartDate) == 0) {
+                $percent = 1;
+            }
+
+            $cancelFee = $orderPoint * $percent;
+
+            $this->order->total_point = $cancelFee;
+            $this->order->cancel_fee_percent = $percent * 100;
+            $this->order->save();
         }
     }
 }

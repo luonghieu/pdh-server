@@ -2,20 +2,19 @@
 
 namespace App;
 
-use App\Enums\CastOrderStatus;
-use App\Enums\CastOrderType;
-use App\Enums\OrderStatus;
-use App\Enums\OrderType;
-use App\Enums\RoomType;
 use App\Jobs\CancelOrder;
-use App\Jobs\ProcessOrder;
-use App\Jobs\StopOrder;
-use App\Jobs\ValidateOrder;
-use App\PaymentRequest;
-use App\Services\LogService;
-use App\Traits\DirectRoom;
 use Auth;
 use Carbon\Carbon;
+use App\Enums\RoomType;
+use App\Jobs\StopOrder;
+use App\Enums\OrderType;
+use App\Enums\OrderStatus;
+use App\Enums\CastOrderStatus;
+use App\Enums\CastOrderType;
+use App\Jobs\ProcessOrder;
+use App\Jobs\ValidateOrder;
+use App\Services\LogService;
+use App\Traits\DirectRoom;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
@@ -322,7 +321,7 @@ class Order extends Model
         return 0;
     }
 
-    private function orderPoint($cast)
+    public function orderPoint($cast)
     {
         if (OrderType::NOMINATION != $this->type) {
             $cost = $this->castClass->cost;
