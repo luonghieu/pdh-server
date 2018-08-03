@@ -15,7 +15,7 @@ class AlterTableReportRoomIdField extends Migration
     {
         Schema::table('reports', function (Blueprint $table) {
             $table->unsignedInteger('room_id')->after('user_id');
-            $table->boolean('status')->default(false);
+            $table->boolean('status')->after('content')->default(false);
             $table->foreign('room_id')->references('id')->on('rooms');
         });
     }
