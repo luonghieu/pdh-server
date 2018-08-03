@@ -193,6 +193,18 @@ class User extends Authenticatable implements JWTSubject
             ->withPivot('id', 'user_id', 'favorited_id', 'created_at', 'updated_at');
     }
 
+    // ratings by other users
+    public function ratings()
+    {
+        return $this->hasMany(Rating::class, 'rated_id');
+    }
+
+    // rated by this user
+    public function rates()
+    {
+        return $this->hasMany(Rating::class);
+    }
+
     public function avatars()
     {
         return $this->hasMany(Avatar::class)
