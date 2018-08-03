@@ -2,10 +2,11 @@
 
 namespace App\Console\Commands;
 
-use App\Enums\OrderStatus;
-use App\Enums\OrderType;
 use App\Order;
 use Carbon\Carbon;
+use App\Enums\OrderType;
+use App\Enums\OrderStatus;
+use App\Enums\CastOrderStatus;
 use Illuminate\Console\Command;
 
 class SetTimeOutForCallOrder extends Command
@@ -54,9 +55,7 @@ class SetTimeOutForCallOrder extends Command
             if (($timeApply > 60)) {
                 $timeout = $startTime->copy()->subMinute(30);
                 if ($timeout < $now) {
-                    $order->status = OrderStatus::TIMEOUT;
-                    $order->canceled_at = now();
-                    $order->save();
+                    $this->setTimeoutForOrder($order);
                 }
             }
 
@@ -64,11 +63,31 @@ class SetTimeOutForCallOrder extends Command
                 $timeApplyHalf = $startTime->copy()->diffInMinutes($createdAt) / 2;
                 $timeout = $startTime->copy()->subMinute($timeApplyHalf);
                 if ($timeout < $now) {
-                    $order->status = OrderStatus::TIMEOUT;
-                    $order->canceled_at = now();
-                    $order->save();
+                    $this->setTimeoutForOrder($order);
                 }
             }
+        }
+    }
+
+    protected function setTimeoutForOrder(Order $order)
+    {
+        $order->status = OrderStatus::TIMEOUT;
+        $order->canceled_at = now();
+        $order->save();
+
+        $castIds = $order->castOrder()
+            ->pluck('cast_order.user_id')
+            ->toArray();
+
+        foreach ($castIds as $id) {
+            $order->castOrder()->updateExistingPivot(
+                $id,
+                [
+                    'status' => CastOrderStatus::TIMEOUT,
+                    'canceled_at' => now()
+                ],
+                false
+            );
         }
     }
 }

@@ -14,7 +14,7 @@ class CancelOrder implements ShouldQueue
 {
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
-    public $order;
+    protected $order;
 
     /**
      * Create a new job instance.
