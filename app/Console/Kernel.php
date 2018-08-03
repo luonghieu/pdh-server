@@ -17,6 +17,7 @@ class Kernel extends ConsoleKernel
         Commands\WorkingToday::class,
         Commands\NominatedCallSchedule::class,
         Commands\DeleteCanceledOrderSchedule::class,
+        Commands\DeleteCastCanceledOrderSchedule::class,
     ];
 
     /**
@@ -33,6 +34,7 @@ class Kernel extends ConsoleKernel
         $schedule->command('cheers:set_timeout_for_call_order')->everyMinute()->onOneServer()->runInBackground();
         $schedule->command('cheers:inactive_chatroom_when_order_done')->hourly()->onOneServer()->runInBackground();
         $schedule->command('cheers:delete_canceled_order')->hourly()->onOneServer()->runInBackground();
+        $schedule->command('cheers:delete_cast_canceled_order')->hourly()->onOneServer()->runInBackground();
     }
 
     /**
