@@ -2,10 +2,11 @@
 
 namespace App\Console\Commands;
 
-use App\Enums\OrderStatus;
-use App\Enums\OrderType;
 use App\Order;
 use Carbon\Carbon;
+use App\Enums\OrderType;
+use App\Enums\OrderStatus;
+use App\Enums\CastOrderStatus;
 use Illuminate\Console\Command;
 
 class SetTimeOutForCallOrder extends Command
@@ -74,12 +75,12 @@ class SetTimeOutForCallOrder extends Command
         $order->canceled_at = now();
         $order->save();
 
-        $nomineeIds = $order->nominees()
+        $castIds = $order->castOrder()
             ->pluck('cast_order.user_id')
             ->toArray();
 
-        foreach ($nomineeIds as $id) {
-            $order->nominees()->updateExistingPivot(
+        foreach ($castIds as $id) {
+            $order->castOrder()->updateExistingPivot(
                 $id,
                 [
                     'status' => CastOrderStatus::TIMEOUT,
