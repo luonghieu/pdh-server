@@ -41,4 +41,5 @@ return [
     'time_invalid' => "開始時間は現在以降の時間を指定してください",
     'receipt_not_found' => '領収書が存在しません',
     'receipt_exists' => '領収書が存在しません',
+    'delete_order_success' => '削除が完了しました',
 ];
