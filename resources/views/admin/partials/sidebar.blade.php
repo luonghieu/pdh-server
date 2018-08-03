@@ -8,7 +8,7 @@ $routes = [
             'value' => '全アカウント管理',
             'url' => route('admin.users.index'),
             'submenu' => [
-                'admin.users.show'
+                'admin.users.show', 'admin.users.orders_history'
             ],
         ],
     ],
@@ -54,7 +54,8 @@ $routes = [
             'value' => '運営者専用チャット',
             'url' => route('admin.rooms.index'),
             'submenu' => [
-                'admin.rooms.messages_by_room'
+                'admin.rooms.messages_by_room',
+                'admin.rooms.members'
             ],
         ],
     ],

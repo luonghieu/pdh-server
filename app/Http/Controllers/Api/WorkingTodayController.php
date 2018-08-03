@@ -13,6 +13,8 @@ class WorkingTodayController extends ApiController
         $user->working_today = !$user->working_today;
         $user->update();
 
-        return $this->respondWithNoData(trans('messages.update_working_today_success'));
+        $workingToday = ($user->working_today) ? 1 : 0;
+
+        return $this->respondWithData(['working_today' => $workingToday]);
     }
 }

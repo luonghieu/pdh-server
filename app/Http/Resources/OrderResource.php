@@ -2,6 +2,9 @@
 
 namespace App\Http\Resources;
 
+use App\CastClass;
+use App\Http\Resources\CastClassResource;
+use App\Repositories\PrefectureRepository;
 use App\Traits\ResourceResponse;
 use Illuminate\Http\Resources\Json\Resource;
 
@@ -21,6 +24,7 @@ class OrderResource extends Resource
             'id' => $this->id,
             'user_id' => $this->user_id,
             'prefecture_id' => $this->prefecture_id,
+            'prefecture' => $this->prefecture_id ? app(PrefectureRepository::class)->find($this->prefecture_id)->name : '',
             'address' => $this->address,
             'date' => $this->date,
             'start_time' => $this->start_time,
@@ -31,9 +35,9 @@ class OrderResource extends Resource
             'total_time' => $this->total_time,
             'total_cast' => $this->total_cast,
             'temp_point' => $this->temp_point,
-            'fee_point' => $this->fee_point,
             'total_point' => $this->total_point,
             'class_id' => $this->class_id,
+            'cast_class' => CastClassResource::make($this->castClass),
             'type' => $this->type,
             'status' => $this->status,
             'actual_started_at' => $this->actual_started_at,
@@ -42,7 +46,16 @@ class OrderResource extends Resource
             'updated_at' => $this->updated_at,
             'tags' => TagResource::collection($this->whenLoaded('tags')),
             'casts' => UserCollection::make($this->whenLoaded('casts')),
+            'nominees' => UserCollection::make($this->whenLoaded('nominees')),
             'user' => new UserResource($this->whenLoaded('user')),
+            'is_nominated' => $this->isNominated(),
+            'user_status' => $this->user_status,
+            // 'is_payment_requested' => $this->isPaymentRequested(),
+            'room_id' => $this->room_id,
+            'payment_status' => $this->payment_status,
+            'cancel_fee_percent' => $this->cancel_fee_percent,
+            'payment_requested_at' => $this->payment_requested_at,
+            'paid_at' => $this->paid_at,
         ]);
     }
 }

@@ -28,7 +28,7 @@
                     <td>{{ $casts->firstItem() +$key }}</td>
                     <td><a href="{{ route('admin.users.show', ['user' => $cast->id]) }}">{{ $cast->id }}</a></td>
                     <td>{{ $cast->nickname }}</td>
-                    <td>{{ Carbon\Carbon::parse($cast->pivot->create_at)->format('Y/m/d H:i') }}</td>
+                    <td>{{ Carbon\Carbon::parse($cast->pivot->created_at)->format('Y/m/d H:i') }}</td>
                   </tr>
                   @endforeach
                 </tbody>

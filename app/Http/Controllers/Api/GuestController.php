@@ -12,7 +12,7 @@ class GuestController extends ApiController
     {
         $rules = [
             'per_page' => 'numeric|min:1',
-            'favorited' => 'boolean'
+            'favorited' => 'boolean',
         ];
 
         $validator = validator($request->all(), $rules);
@@ -25,14 +25,14 @@ class GuestController extends ApiController
         $user = $this->guard()->user();
 
         if ($request->favorited) {
-            $guests->whereHas('favoriters', function($query) use ($user) {
+            $guests->whereHas('favoriters', function ($query) use ($user) {
                 $query->where('user_id', $user->id);
             });
         }
 
-        $casts = $guests->latest()->active()->WhereDoesntHave('blockers', function($q) use ($user) {
+        $casts = $guests->latest()->active()->WhereDoesntHave('blockers', function ($q) use ($user) {
             $q->where('user_id', $user->id);
-        })->WhereDoesntHave('blocks', function($q) use ($user) {
+        })->WhereDoesntHave('blocks', function ($q) use ($user) {
             $q->where('blocked_id', $user->id);
         })->paginate($request->per_page)->appends($request->query());
 

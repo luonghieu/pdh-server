@@ -58,7 +58,7 @@
               @if ($user->is_cast)
               <tr>
                 <th>30分あたりのポイント</th>
-                <td>{{ $user->cost }}</td>
+                <td>{{ number_format($user->cost) }}</td>
               </tr>
               @endif
               <tr>
@@ -85,7 +85,7 @@
               @endif
               <tr>
                 <th>基本情報：身長</th>
-                <td>{{ getUserHeight($user->height) }}</td>
+                <td>{{ ($user->height === null) ? '':getUserHeight($user->height) }}</td>
               </tr>
               <tr>
                 <th>基本情報：年収</th>
@@ -101,7 +101,7 @@
               </tr>
               <tr>
                 <th>基本情報：出身地</th>
-                <td>{{ $user->prefecture ? $user->prefecture->name : "" }}</td>
+                <td>{{ $user->hometown ? $user->hometown->name : "" }}</td>
               </tr>
               <tr>
                 <th>基本情報：お仕事</th>

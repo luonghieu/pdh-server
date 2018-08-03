@@ -140,6 +140,18 @@ return [
         'back_side' => [
             'required' => 'うら面は、必ず指定してください。',
         ],
+        'satisfaction' => [
+            'required_without' => '満足度を選択してください',
+        ],
+        'appearance' => [
+            'required_without' => 'ルックス・身だしなみを選択してください',
+        ],
+        'friendliness' => [
+            'required_without' => '愛想・気遣いを選択してください',
+        ],
+        'comment' => [
+            'required_without' => 'コメントを記入してください',
+        ],
     ],
 
     /*
