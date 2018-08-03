@@ -72,11 +72,13 @@ class ValidateOrder implements ShouldQueue
 
                         $room = $this->createDirectRoom($ownerId, $userId);
                     }
+
+                    $this->order->room_id = $room->id;
+                    $this->order->update();
                 }
 
                 // activate order
                 $this->order->status = OrderStatus::ACTIVE;
-                $this->order->room_id = $room->id;
                 $this->order->update();
 
                 $involvedUsers = [$this->order->user];
