@@ -67,6 +67,7 @@ Route::group(['prefix' => 'v1'], function () {
     Route::group(['middleware' => ['auth:api', 'cast'], 'prefix' => 'cast', 'as' => 'cast.'], function () {
         Route::get('/orders', ['as' => 'index', 'uses' => 'Cast\OrderController@index']);
         Route::get('/payment_requests', ['as' => 'get_payment_history', 'uses' => 'Cast\PaymentRequestController@getPaymentHistory']);
+        Route::delete('/order/{id}', ['as' => 'index', 'uses' => 'Cast\OrderController@delete']);
     });
 
     Route::group(['middleware' => ['auth:api'], 'prefix' => 'orders', 'as' => 'orders.'], function () {
