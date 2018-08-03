@@ -53,32 +53,28 @@ class ValidateOrder implements ShouldQueue
                 \DB::beginTransaction();
 
                 if ($orderType == OrderType::NOMINATED_CALL || $orderType == OrderType::CALL) {
-                    if ($this->order->total_cast > 1) {
-                        $room = new Room;
-                        $room->order_id = $this->order->id;
-                        $room->owner_id = $this->order->user_id;
-                        $room->type = RoomType::GROUP;
-                        $room->save();
+                    $room = new Room;
+                    $room->order_id = $this->order->id;
+                    $room->owner_id = $this->order->user_id;
+                    $room->type = RoomType::GROUP;
+                    $room->save();
 
-                        $data = [$this->order->user_id];
-                        foreach ($this->order->casts as $cast) {
-                            $data = array_merge($data, [$cast->pivot->user_id]);
-                        }
-
-                        $room->users()->attach($data);
-                    } else {
-                        $ownerId = $this->order->user_id;
-                        $userId = $this->order->casts()->first()->id;
-
-                        $room = $this->createDirectRoom($ownerId, $userId);
+                    $data = [$this->order->user_id];
+                    foreach ($this->order->casts as $cast) {
+                        $data = array_merge($data, [$cast->pivot->user_id]);
                     }
 
-                    $this->order->room_id = $room->id;
-                    $this->order->update();
+                    $room->users()->attach($data);
+                } else {
+                    $ownerId = $this->order->user_id;
+                    $userId = $this->order->casts()->first()->id;
+
+                    $room = $this->createDirectRoom($ownerId, $userId);
                 }
 
                 // activate order
                 $this->order->status = OrderStatus::ACTIVE;
+                $this->order->room_id = $room->id;
                 $this->order->update();
 
                 $involvedUsers = [$this->order->user];
