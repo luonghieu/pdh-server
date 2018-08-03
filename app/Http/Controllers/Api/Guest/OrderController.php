@@ -23,7 +23,9 @@ class OrderController extends ApiController
         $this->repository->pushCriteria(OnlyGuestCriteria::class);
         $this->repository->pushCriteria(FilterByStatusCriteria::class);
 
-        $orders = $this->repository->with(['user', 'casts'])->paginate();
+        $orders = $this->repository->with(['user', 'casts'])
+                    ->orderBy('created_at', 'DESC')
+                    ->paginate();
 
         return $this->respondWithData(OrderResource::collection($orders));
     }
