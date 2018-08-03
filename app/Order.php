@@ -2,6 +2,7 @@
 
 namespace App;
 
+use App\Jobs\CancelOrder;
 use Auth;
 use Carbon\Carbon;
 use App\Enums\RoomType;
@@ -47,7 +48,7 @@ class Order extends Model
             ->whereNotNull('cast_order.accepted_at')
             ->whereNull('cast_order.canceled_at')
             ->whereNull('cast_order.deleted_at')
-            ->withPivot('order_time', 'extra_time', 'order_point', 'extra_point', 'allowance_point', 'fee_point', 'total_point')
+            ->withPivot('order_time', 'extra_time', 'order_point', 'extra_point', 'allowance_point', 'fee_point', 'total_point', 'type')
             ->withTimestamps();
     }
 
@@ -121,6 +122,8 @@ class Order extends Model
                 'status' => OrderStatus::CANCELED,
                 'canceled_at' => Carbon::now(),
             ]);
+
+            CancelOrder::dispatch($this);
 
             return true;
         } catch (\Exception $e) {
@@ -267,7 +270,7 @@ class Order extends Model
         return ($this->paymentRequests()->where('cast_id', $user->id)->first()) ? 1 : 0;
     }
 
-    private function nightTime($stoppedAt)
+    public function nightTime($stoppedAt)
     {
         $order = $this;
 
@@ -305,7 +308,7 @@ class Order extends Model
         return $nightTime;
     }
 
-    private function allowance($nightTime)
+    public function allowance($nightTime)
     {
         if ($nightTime) {
             return 4000;
@@ -314,7 +317,7 @@ class Order extends Model
         return 0;
     }
 
-    private function orderPoint($cast)
+    public function orderPoint($cast)
     {
         if (OrderType::NOMINATION != $this->type) {
             $cost = $this->castClass->cost;
@@ -325,7 +328,7 @@ class Order extends Model
         return $cost * ((60 * $this->duration) / 30);
     }
 
-    private function orderFee($cast, $extraTime)
+    public function orderFee($cast, $extraTime)
     {
         $order = $this;
         $eTime = $extraTime;
