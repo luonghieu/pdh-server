@@ -70,15 +70,7 @@ class CancelOrderFromGuest extends Notification
 
             $roomMessage->recipients()->attach($notifiable->id, ['room_id' => $room->id]);
         } else {
-            $room = $this->order->room;
             $message = '予約がキャンセルされました。';
-            $roomMessage = $room->messages()->create([
-                'user_id' => 1,
-                'type' => MessageType::SYSTEM,
-                'message' => $message
-            ]);
-
-            $roomMessage->recipients()->attach($notifiable->id, ['room_id' => $room->id]);
         }
 
         return [
