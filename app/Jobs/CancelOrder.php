@@ -88,11 +88,11 @@ class CancelOrder implements ShouldQueue
             $this->order->cancel_fee_percent = $percent * 100;
             $this->order->save();
 
-            $this->sendPushNotification($involvedUsers);
+            $this->sendPushNotification($involvedUsers, $orderPoint);
         }
     }
 
-    private function sendPushNotification($users)
+    private function sendPushNotification($users, $orderPoint)
     {
         $castIds = [];
         foreach ($users as $user) {
@@ -110,6 +110,6 @@ class CancelOrder implements ShouldQueue
             'message' => $message
         ]);
         $roomMessage->recipients()->attach($castIds, ['room_id' => $room->id]);
-        \Notification::send($users, new CancelOrderFromGuest($this->order));
+        \Notification::send($users, new CancelOrderFromGuest($this->order, $orderPoint));
     }
 }
