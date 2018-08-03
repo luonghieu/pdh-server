@@ -7,23 +7,16 @@ use App\Criteria\Order\OnlyGuestCriteria;
 use App\Enums\OrderStatus;
 use App\Http\Controllers\Api\ApiController;
 use App\Http\Resources\OrderResource;
+use App\Order;
 use App\Repositories\OrderRepository;
 
 class OrderController extends ApiController
 {
-    protected $repository;
-
-    public function __construct()
-    {
-        $this->repository = app(OrderRepository::class);
-    }
 
     public function index()
     {
-        $this->repository->pushCriteria(OnlyGuestCriteria::class);
-        $this->repository->pushCriteria(FilterByStatusCriteria::class);
-
-        $orders = $this->repository->with(['user', 'casts'])->paginate();
+        $user = $this->guard()->user();
+        $orders = Order::where('user_id', $user->id)->with(['user', 'casts'])->latest()->paginate();
 
         return $this->respondWithData(OrderResource::collection($orders));
     }
