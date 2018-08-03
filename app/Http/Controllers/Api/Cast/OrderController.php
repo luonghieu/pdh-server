@@ -115,10 +115,14 @@ class OrderController extends ApiController
 
     public function apply($id)
     {
-        $order = Order::where('status', OrderStatus::OPEN)->find($id);
+        $order = Order::find($id);
 
         if (!$order) {
             return $this->respondErrorMessage(trans('messages.order_not_found'), 404);
+        }
+
+        if (OrderStatus::OPEN != $order->status) {
+            return $this->respondErrorMessage(trans('messages.apply_error'), 409);
         }
 
         $user = $this->guard()->user();

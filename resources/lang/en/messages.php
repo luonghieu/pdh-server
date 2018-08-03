@@ -42,4 +42,5 @@ return [
     'receipt_not_found' => 'Receipt not found',
     'point_not_found' => 'Point not found',
     'receipt_exists' => 'Receipt exists',
+    'apply_error' => 'Apply order error',
 ];

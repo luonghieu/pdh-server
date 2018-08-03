@@ -41,4 +41,5 @@ return [
     'time_invalid' => "開始時間は現在以降の時間を指定してください",
     'receipt_not_found' => '領収書が存在しません',
     'receipt_exists' => '領収書が存在しません',
+    'apply_error' => 'この募集は終了しました( >  < )\n別のコールに応募しよう！',
 ];
