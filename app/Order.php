@@ -2,19 +2,19 @@
 
 namespace App;
 
-use App\Jobs\CancelOrder;
-use Auth;
-use Carbon\Carbon;
-use App\Enums\RoomType;
-use App\Jobs\StopOrder;
-use App\Enums\OrderType;
-use App\Enums\OrderStatus;
 use App\Enums\CastOrderStatus;
 use App\Enums\CastOrderType;
+use App\Enums\OrderStatus;
+use App\Enums\OrderType;
+use App\Enums\RoomType;
+use App\Jobs\CancelOrder;
 use App\Jobs\ProcessOrder;
+use App\Jobs\StopOrder;
 use App\Jobs\ValidateOrder;
 use App\Services\LogService;
 use App\Traits\DirectRoom;
+use Auth;
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
@@ -109,6 +109,10 @@ class Order extends Model
                 ['status' => CastOrderStatus::DENIED, 'canceled_at' => Carbon::now()],
                 false
             );
+            if (OrderType::NOMINATION == $this->type) {
+                $this->status = OrderStatus::DENIED;
+                $this->save();
+            }
 
             ValidateOrder::dispatchNow($this);
 

@@ -93,8 +93,19 @@ class OrderController extends ApiController
             return $this->respondErrorMessage(trans('messages.order_not_found'), 404);
         }
 
-        if (OrderStatus::OPEN != $order->status) {
-            return $this->respondErrorMessage(trans('messages.action_not_performed'), 422);
+        if (OrderType::NOMINATION == $order->type) {
+            $validStatus = [
+                OrderStatus::OPEN,
+                OrderStatus::ACTIVE,
+            ];
+
+            if (!in_array($order->status, $validStatus)) {
+                return $this->respondErrorMessage(trans('messages.action_not_performed'), 422);
+            }
+        } else {
+            if (OrderStatus::OPEN != $order->status) {
+                return $this->respondErrorMessage(trans('messages.action_not_performed'), 422);
+            }
         }
 
         $user = $this->guard()->user();
