@@ -56,7 +56,7 @@ class RatingController extends ApiController
                 return $this->respondErrorMessage(trans('messages.action_not_performed'), 422);
             }
         } else {
-            $ratedIds = $user->rates()->pluck('rated_id')->toArray();
+            $ratedIds = $user->rates()->where('order_id', $orderId)->pluck('rated_id')->toArray();
 
             if (in_array($request->rated_id, $ratedIds) || $order->user_id != $user->id
                 || !in_array($request->rated_id, $castExists)) {
