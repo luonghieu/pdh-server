@@ -108,8 +108,9 @@ class OrderController extends ApiController
         if (!$order->deny($user->id)) {
             return $this->respondServerError();
         }
+        $order->load('tags', 'casts', 'nominees', 'user');
 
-        return $this->respondWithNoData(trans('messages.denied_order'));
+        return $this->respondWithData(OrderResource::make($order));
     }
 
     public function apply($id)
@@ -172,8 +173,9 @@ class OrderController extends ApiController
                 return $this->respondServerError();
             }
         }
+        $order->load('tags', 'casts', 'nominees', 'user');
 
-        return $this->respondWithNoData(trans('messages.accepted_order'));
+        return $this->respondWithData(OrderResource::make($order));
     }
 
     public function start($id)
@@ -198,8 +200,9 @@ class OrderController extends ApiController
         if (!$order->start($user->id)) {
             return $this->respondServerError();
         }
+        $order->load('tags', 'casts', 'nominees', 'user');
 
-        return $this->respondWithNoData(trans('messages.start_order'));
+        return $this->respondWithData(OrderResource::make($order));
     }
 
     public function stop($id)
@@ -228,8 +231,9 @@ class OrderController extends ApiController
         if (!$order->stop($user->id)) {
             return $this->respondServerError();
         }
+        $order->load('tags', 'casts', 'nominees', 'user');
 
-        return $this->respondWithNoData(trans('messages.stop_order'));
+        return $this->respondWithData(OrderResource::make($order));
     }
 
     public function thanks(Request $request, $id)
