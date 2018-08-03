@@ -12,13 +12,13 @@ class Card extends Model
         'Diners Club',
         'JCB',
         'MasterCard',
-        'Visa'
+        'Visa',
     ];
 
     protected $guarded = [];
 
     protected $casts = [
-        'is_default' => 'integer'
+        'is_default' => 'integer',
     ];
 
     public function getIsExpiredAttribute()
