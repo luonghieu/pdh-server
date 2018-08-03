@@ -2,21 +2,19 @@
 
 namespace App\Http\Controllers\Api\Guest;
 
-use App\Criteria\Order\FilterByStatusCriteria;
-use App\Criteria\Order\OnlyGuestCriteria;
 use App\Enums\OrderStatus;
 use App\Http\Controllers\Api\ApiController;
 use App\Http\Resources\OrderResource;
 use App\Order;
-use App\Repositories\OrderRepository;
+use Illuminate\Http\Request;
 
 class OrderController extends ApiController
 {
 
-    public function index()
+    public function index(Request $request)
     {
         $user = $this->guard()->user();
-        $orders = Order::where('user_id', $user->id)->with(['user', 'casts'])->latest()->paginate();
+        $orders = Order::where('user_id', $user->id)->with(['user', 'casts'])->latest()->paginate($request->per_page);
 
         return $this->respondWithData(OrderResource::collection($orders));
     }
