@@ -108,7 +108,6 @@ class OrderController extends ApiController
         if (!$order->deny($user->id)) {
             return $this->respondServerError();
         }
-        $order->load('tags', 'casts', 'nominees', 'user');
 
         return $this->respondWithData(OrderResource::make($order));
     }
@@ -173,7 +172,6 @@ class OrderController extends ApiController
                 return $this->respondServerError();
             }
         }
-        $order->load('tags', 'casts', 'nominees', 'user');
 
         return $this->respondWithData(OrderResource::make($order));
     }
@@ -200,7 +198,6 @@ class OrderController extends ApiController
         if (!$order->start($user->id)) {
             return $this->respondServerError();
         }
-        $order->load('tags', 'casts', 'nominees', 'user');
 
         return $this->respondWithData(OrderResource::make($order));
     }
@@ -231,7 +228,6 @@ class OrderController extends ApiController
         if (!$order->stop($user->id)) {
             return $this->respondServerError();
         }
-        $order->load('tags', 'casts', 'nominees', 'user');
 
         return $this->respondWithData(OrderResource::make($order));
     }
