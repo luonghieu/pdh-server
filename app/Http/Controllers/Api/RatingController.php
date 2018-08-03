@@ -80,6 +80,12 @@ class RatingController extends ApiController
                 $rating->score = round(($request->friendliness + $rating->appearance + $rating->satisfaction) / 3, 1);
                 $rating->save();
             }
+
+            $ratedUser = User::find($request->rated_id);
+            $ratings = $ratedUser->ratings()->get();
+
+            $ratedUser->rating_score = round($ratings->avg('score'), 1);
+            $ratedUser->save();
         } catch (\Exception $e) {
             LogService::writeErrorLog($e);
 
