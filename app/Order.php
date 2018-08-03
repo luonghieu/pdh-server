@@ -9,17 +9,22 @@ use App\Enums\RoomType;
 use App\Jobs\StopOrder;
 use App\Enums\OrderType;
 use App\Enums\OrderStatus;
-use App\Jobs\ProcessOrder;
-use App\Traits\DirectRoom;
-use App\Jobs\ValidateOrder;
-use App\Enums\CastOrderType;
-use App\Services\LogService;
 use App\Enums\CastOrderStatus;
+use App\Enums\CastOrderType;
+use App\Jobs\ProcessOrder;
+use App\Jobs\ValidateOrder;
+use App\Services\LogService;
+use App\Traits\DirectRoom;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Order extends Model
 {
     use DirectRoom;
+
+    use SoftDeletes;
+
+    protected $dates = ['deleted_at'];
 
     protected $fillable = [
         'prefecture_id',
@@ -333,9 +338,8 @@ class Order extends Model
         $eTime = $extraTime;
         $orderFee = 0;
         $multiplier = 0;
-
         $orderDuration = $this->duration * 60;
-        if ($order->type != OrderType::NOMINATION && $cast->pivot->type == CastOrderType::NOMINEE) {
+        if (OrderType::NOMINATION != $order->type && CastOrderType::NOMINEE == $cast->pivot->type) {
             while ($orderDuration / 15 >= 1) {
                 $multiplier++;
                 $orderDuration -= 15;

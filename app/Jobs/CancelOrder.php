@@ -2,6 +2,8 @@
 
 namespace App\Jobs;
 
+use App\Enums\CastOrderStatus;
+use App\Enums\OrderStatus;
 use App\Order;
 use Carbon\Carbon;
 use Illuminate\Bus\Queueable;
@@ -33,37 +35,54 @@ class CancelOrder implements ShouldQueue
      */
     public function handle()
     {
-        $orderStartDate = Carbon::parse($this->order->date)->startOfDay();
-        $orderCancelDate = Carbon::parse($this->order->canceled_at)->startOfDay();
-        $casts = $this->order->casts;
+        if ($this->order->status == OrderStatus::CANCELED) {
+            $castIds = $this->order->castOrder()
+                ->pluck('cast_order.user_id')
+                ->toArray();
 
-        $orderPoint = 0;
-        $orderDuration = $this->order->duration * 60;
-        $orderNightTime = $this->order->nightTime($orderStartDate->addMinutes($orderDuration));
-        $orderAllowance = $this->order->allowance($orderNightTime);
+            foreach ($castIds as $id) {
+                $this->order->castOrder()->updateExistingPivot(
+                    $id,
+                    [
+                        'status' => CastOrderStatus::CANCELED,
+                        'canceled_at' => $this->order->canceled_at
+                    ],
+                    false
+                );
+            }
 
-        foreach ($casts as $cast) {
-            $orderFee = $this->order->orderFee($cast, 0);
-            $orderPoint += $this->order->orderPoint($cast) + $orderAllowance + $orderFee;
+            $orderStartDate = Carbon::parse($this->order->date)->startOfDay();
+            $orderCancelDate = Carbon::parse($this->order->canceled_at)->startOfDay();
+            $casts = $this->order->casts;
+
+            $orderPoint = 0;
+            $orderDuration = $this->order->duration * 60;
+            $orderNightTime = $this->order->nightTime($orderStartDate->addMinutes($orderDuration));
+            $orderAllowance = $this->order->allowance($orderNightTime);
+
+            foreach ($casts as $cast) {
+                $orderFee = $this->order->orderFee($cast, 0);
+                $orderPoint += $this->order->orderPoint($cast) + $orderAllowance + $orderFee;
+            }
+
+            $percent = 0;
+            if ($orderCancelDate->diffInDays($orderStartDate) <= 7) {
+                $percent = 0.3;
+            }
+
+            if ($orderCancelDate->diffInDays($orderStartDate) == 1) {
+                $percent = 0.5;
+            }
+
+            if ($orderCancelDate->diffInDays($orderStartDate) == 0) {
+                $percent = 1;
+            }
+
+            $cancelFee = $orderPoint * $percent;
+
+            $this->order->total_point = $cancelFee;
+            $this->order->cancel_fee_percent = $percent * 100;
+            $this->order->save();
         }
-
-        $percent = 0;
-        if ($orderCancelDate->diffInDays($orderStartDate) <= 7) {
-            $percent = 0.3;
-        }
-
-        if ($orderCancelDate->diffInDays($orderStartDate) == 1) {
-            $percent = 0.5;
-        }
-
-        if ($orderCancelDate->diffInDays($orderStartDate) == 0) {
-            $percent = 1;
-        }
-
-        $cancelFee = $orderPoint * $percent;
-
-        $this->order->total_point = $cancelFee;
-        $this->order->cancel_fee_percent = $percent * 100;
-        $this->order->save();
     }
 }
