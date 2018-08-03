@@ -37,16 +37,31 @@ class RatingController extends ApiController
             return $this->respondErrorMessage(trans('messages.order_not_found'), 404);
         }
 
-        if (OrderStatus::DONE != $orders->status) {
+        if (OrderStatus::DONE != $order->status) {
             return $this->respondErrorMessage(trans('messages.action_not_performed'), 422);
         }
 
         $user = $this->guard()->user();
 
-        $isRated = Rating::where('user_id', $this->guard()->user()->id)->where('order_id', $orderId)->exists();
+        $castExists = $order->casts()->pluck('user_id')->toArray();
 
-        if ($isRated) {
-            return $this->respondErrorMessage(trans('messages.order_is_rated'), 409);
+        if ($user->is_cast) {
+            $isRated = Rating::where('user_id', $this->guard()->user()->id)->where('order_id', $orderId)->exists();
+
+            if ($isRated) {
+                return $this->respondErrorMessage(trans('messages.order_is_rated'), 409);
+            }
+
+            if (!$request->score || !$castExists || $request->rated_id != $order->user_id) {
+                return $this->respondErrorMessage(trans('messages.action_not_performed'), 422);
+            }
+        } else {
+            $ratedIds = $user->rates()->where('order_id', $orderId)->pluck('rated_id')->toArray();
+
+            if (in_array($request->rated_id, $ratedIds) || $order->user_id != $user->id
+                || !in_array($request->rated_id, $castExists)) {
+                return $this->respondErrorMessage(trans('messages.action_not_performed'), 422);
+            }
         }
 
         $rating = new Rating;
@@ -55,10 +70,6 @@ class RatingController extends ApiController
         $rating->rated_id = $request->rated_id;
         try {
             if ($user->is_cast) {
-                if (!$request->score) {
-                    return $this->respondErrorMessage(trans('messages.action_not_performed'), 422);
-                }
-
                 $rating->score = $request->score;
                 $rating->save();
             } else {
@@ -69,6 +80,12 @@ class RatingController extends ApiController
                 $rating->score = round(($request->friendliness + $rating->appearance + $rating->satisfaction) / 3, 1);
                 $rating->save();
             }
+
+            $ratedUser = User::find($request->rated_id);
+            $avgScore = $ratedUser->ratings()->avg('score');
+
+            $ratedUser->rating_score = round($avgScore, 1);
+            $ratedUser->save();
         } catch (\Exception $e) {
             LogService::writeErrorLog($e);
 
