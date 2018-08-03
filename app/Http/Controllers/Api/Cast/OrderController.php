@@ -67,7 +67,7 @@ class OrderController extends ApiController
                 });
             });
 
-            $orders->where('status', $request->status);
+            $orders->where('status', $request->status)->latest();
         } else {
             $orders->where(function ($query) use ($user) {
                 $query->whereHas('nominees', function ($query) use ($user) {
@@ -77,8 +77,7 @@ class OrderController extends ApiController
                     $query->where('user_id', $user->id);
                 });
             })
-                ->orderBy('date')
-                ->orderBy('start_time');
+            ->latest();
         }
 
         $orders = $orders->paginate($request->per_page)->appends($request->query());
