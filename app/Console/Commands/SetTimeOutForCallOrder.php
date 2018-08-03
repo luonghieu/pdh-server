@@ -54,9 +54,7 @@ class SetTimeOutForCallOrder extends Command
             if (($timeApply > 60)) {
                 $timeout = $startTime->copy()->subMinute(30);
                 if ($timeout < $now) {
-                    $order->status = OrderStatus::TIMEOUT;
-                    $order->canceled_at = now();
-                    $order->save();
+                    $this->setTimeoutForOrder($order);
                 }
             }
 
@@ -64,11 +62,31 @@ class SetTimeOutForCallOrder extends Command
                 $timeApplyHalf = $startTime->copy()->diffInMinutes($createdAt) / 2;
                 $timeout = $startTime->copy()->subMinute($timeApplyHalf);
                 if ($timeout < $now) {
-                    $order->status = OrderStatus::TIMEOUT;
-                    $order->canceled_at = now();
-                    $order->save();
+                    $this->setTimeoutForOrder($order);
                 }
             }
+        }
+    }
+
+    protected function setTimeoutForOrder(Order $order)
+    {
+        $order->status = OrderStatus::TIMEOUT;
+        $order->canceled_at = now();
+        $order->save();
+
+        $nomineeIds = $order->nominees()
+            ->pluck('cast_order.user_id')
+            ->toArray();
+
+        foreach ($nomineeIds as $id) {
+            $order->nominees()->updateExistingPivot(
+                $id,
+                [
+                    'status' => CastOrderStatus::TIMEOUT,
+                    'canceled_at' => now()
+                ],
+                false
+            );
         }
     }
 }
