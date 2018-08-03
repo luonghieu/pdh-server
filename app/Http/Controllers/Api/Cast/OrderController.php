@@ -77,7 +77,7 @@ class OrderController extends ApiController
                     $query->where('user_id', $user->id);
                 });
             })
-            ->latest();
+                ->latest();
         }
 
         $orders = $orders->paginate($request->per_page)->appends($request->query());
@@ -128,10 +128,15 @@ class OrderController extends ApiController
         $startTime = Carbon::parse($order->date . ' ' . $order->start_time);
 
         $endTime = Carbon::parse($order->date . ' ' . $order->end_time);
+        $validStatus = [
+            CastOrderStatus::ACCEPTED,
+            CastOrderStatus::PROCESSING,
+        ];
 
-        $orderCheck = Order::whereIn('status', [OrderStatus::ACTIVE, OrderStatus::PROCESSING])
+        $orderCheck = Order::whereIn('status', [OrderStatus::OPEN, OrderStatus::ACTIVE, OrderStatus::PROCESSING])
             ->whereHas('castOrder', function ($query) use ($user) {
                 $query->where('user_id', $user->id);
+                $query->whereIn('cast_order.status', $validStatus);
             })
             ->where(function ($query) use ($startTime, $endTime) {
                 $query->orWhereRaw("concat_ws(' ',`date`,`start_time`) >= '$startTime' and concat_ws(' ',`date`,`start_time`) <= '$endTime'"
