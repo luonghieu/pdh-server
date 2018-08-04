@@ -67,17 +67,17 @@
                 @if (App\Enums\OrderType::CALL == $order->type)
                 <td>-</td>
                 @else
-                  @if ($order->casts->count() > 1)
-                    <td><a href="{{ route('admin.orders.nominees', ['order' => $order->id]) }}">{{ $order->casts->count() }} 名</a></td>
+                  @if ($order->nominees->count() > 1)
+                    <td><a href="{{ route('admin.orders.nominees', ['order' => $order->id]) }}">{{ $order->nominees->count() }} 名</a></td>
                   @else
-                  <td><a href="{{ $order->casts->first() ? route('admin.users.show', ['user' => $order->casts->first()->id]) : '#' }}">{{ $order->casts->first() ? $order->casts->first()->id : "" }}</a></td>
+                  <td><a href="{{ $order->nominees->first() ? route('admin.users.show', ['user' => $order->nominees->first()->id]) : '#' }}">{{ $order->nominees->first() ? $order->nominees->first()->id : "" }}</a></td>
                   @endif
                 @endif
                 @if (App\Enums\OrderType::CALL == $order->type)
-                  @if ($order->casts->count() > 1)
-                    <td><a href="{{ route('admin.orders.candidates', ['order' => $order->id]) }}">{{ $order->casts->count() }} 名</a></td>
+                  @if ($order->candidates->count() > 1)
+                    <td><a href="{{ route('admin.orders.candidates', ['order' => $order->id]) }}">{{ $order->candidates->count() }} 名</a></td>
                   @else
-                  <td><a href="{{ $order->casts->first() ? route('admin.users.show', ['user' => $order->casts->first()->id]) : '#' }}">{{ $order->casts->first() ? $order->casts->first()->id : "" }}</a></td>
+                  <td><a href="{{ $order->candidates->first() ? route('admin.users.show', ['user' => $order->candidates->first()->id]) : '#' }}">{{ $order->candidates->first() ? $order->candidates->first()->id : "" }}</a></td>
                   @endif
                 @else
                 <td>-</td>

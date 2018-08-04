@@ -10,12 +10,15 @@ use App\Http\Resources\OrderResource;
 use App\Order;
 use App\Services\LogService;
 use App\Tag;
+use App\Traits\DirectRoom;
 use Carbon\Carbon;
 use DB;
 use Illuminate\Http\Request;
 
 class OrderController extends ApiController
 {
+    use DirectRoom;
+
     public function create(Request $request)
     {
         $user = $this->guard()->user();
@@ -26,7 +29,7 @@ class OrderController extends ApiController
             'date' => 'required|date|date_format:Y-m-d|after_or_equal:today',
             'start_time' => 'required|date_format:H:i',
             'duration' => 'required|numeric|min:1|max:10',
-            'total_cast' => 'required|min:1',
+            'total_cast' => 'required|numeric|min:1',
             'temp_point' => 'required',
             'class_id' => 'required|exists:cast_classes,id',
             'type' => 'required|in:1,2,3',
@@ -52,23 +55,31 @@ class OrderController extends ApiController
             'type',
         ]);
 
-        $start_time = Carbon::parse($request->start_time);
-        $end_time = Carbon::parse($input['start_time'])->addHours($input['duration']);
+        $start_time = Carbon::parse($request->date . ' ' . $request->start_time);
+        $end_time = $start_time->copy()->addHours($input['duration']);
+
+        if (now()->diffInMinutes($start_time, false) < 19) {
+            return $this->respondErrorMessage(trans('messages.time_invalid'), 400);
+        }
 
         $orders = $user->orders()
-            ->where('date', $request->date)
             ->whereIn('status', [OrderStatus::OPEN, OrderStatus::ACTIVE, OrderStatus::PROCESSING])
             ->where(function ($query) use ($start_time, $end_time) {
-                $query->orWhereBetween('start_time', [$start_time, $end_time]);
-                $query->orWhereBetween('end_time', [$start_time, $end_time]);
-                $query->orWhere([
-                    ['start_time', '<', $start_time],
-                    ['end_time', '>', $start_time],
-                ]);
+                $query->orWhereRaw("concat_ws(' ',`date`,`start_time`) >= '$start_time' and concat_ws(' ',`date`,`start_time`) <= '$end_time'"
+                );
+
+                $query->orWhereRaw("DATE_ADD(concat_ws(' ',`date`,`start_time`), INTERVAL `duration` HOUR) >= '$start_time' and DATE_ADD(concat_ws(' ',`date`,`start_time`), INTERVAL `duration` HOUR) <= '$end_time'"
+                );
+                $query->orWhereRaw("concat_ws(' ',`date`,`start_time`) <= '$start_time' and DATE_ADD(concat_ws(' ',`date`,`start_time`), INTERVAL `duration` HOUR) >= '$end_time'"
+                );
             });
 
         if ($orders->count() > 0) {
             return $this->respondErrorMessage(trans('messages.order_same_time'), 409);
+        }
+
+        if (!$user->cards->first()) {
+            return $this->respondErrorMessage(trans('messages.card_not_exist'), 404);
         }
 
         $input['end_time'] = $end_time->format('H:i');
@@ -79,6 +90,9 @@ class OrderController extends ApiController
 
         if (!$request->nominee_ids) {
             $input['type'] = OrderType::CALL;
+        } else {
+            $listNomineeIds = explode(",", trim($request->nominee_ids, ","));
+            $counter = Cast::whereIn('id', $listNomineeIds)->count();
         }
 
         $input['status'] = OrderStatus::OPEN;
@@ -94,18 +108,25 @@ class OrderController extends ApiController
             }
 
             if (OrderType::CALL != $input['type']) {
-                $listNomineeIds = explode(",", trim($request->nominee_ids, ","));
-                $counter = Cast::whereIn('id', $listNomineeIds)->count();
                 if (count($listNomineeIds) != $counter) {
-                    return $this->respondErrorMessage(trans('messages.action_not_performed'), 402);
+                    return $this->respondErrorMessage(trans('messages.action_not_performed'), 422);
                 }
 
                 $order->nominees()->attach($listNomineeIds, ['type' => CastOrderType::NOMINEE]);
+
+                if (OrderType::NOMINATION == $order->type) {
+                    $ownerId = $order->user_id;
+                    $nomineeId = $order->nominees()->first()->id;
+
+                    $this->createDirectRoom($ownerId, $nomineeId);
+                }
             }
+
             DB::commit();
         } catch (\Exception $e) {
             DB::rollback();
             LogService::writeErrorLog($e);
+
             return $this->respondServerError();
         }
 

@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Enums\RoomType;
+use App\Room;
 use App\Services\LogService;
 use App\User;
 use App\Report;
@@ -32,6 +34,20 @@ class ReportController extends ApiController
         $input['reported_id'] = $request->route('id');
         $input['user_id'] = $this->guard()->id();
 
+        $userId = $this->guard()->user()->id;
+        $reportedId = $input['reported_id'];
+
+        $room = Room::where('type', RoomType::DIRECT)->where(function($q) use ($userId, $reportedId) {
+           $q->where('owner_id', $userId)->whereHas('users', function($subQuery) use ($reportedId) {
+               $subQuery->where('user_id', $reportedId);
+           });
+        })->orWhere(function($q) use ($userId, $reportedId) {
+            $q->where('owner_id', $reportedId)->whereHas('users', function($subQuery) use ($userId) {
+                $subQuery->where('user_id', $userId);
+            });
+        })->first();
+
+        $input['room_id'] = $room->id;
         try {
             $report = Report::create($input);
         } catch (\Exception $e) {

@@ -28,9 +28,9 @@ class CreateOrdersTable extends Migration
             $table->time('start_time')->nullable();
             $table->time('end_time')->nullable();
             $table->tinyInteger('duration')->nullable();
-            $table->tinyInteger('extra_time')->nullable();
-            $table->tinyInteger('night_time')->nullable();
-            $table->tinyInteger('total_time')->nullable();
+            $table->smallInteger('extra_time')->nullable();
+            $table->smallInteger('night_time')->nullable();
+            $table->smallInteger('total_time')->nullable();
             $table->tinyInteger('total_cast')->nullable();
             $table->integer('temp_point')->nullable();
             $table->integer('fee_point')->nullable();

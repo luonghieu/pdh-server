@@ -16,87 +16,41 @@ class GlossaryController extends ApiController
 {
     public function glossary()
     {
-        $private = [
-            'id' => 0,
-            'name' => '非公開',
-        ];
+        $drinkVolumes = [];
+        $smokings = [];
+        $siblings = [];
+        $cohabitants = [];
+        $genders = [];
 
-        $data['drink_volumes'] = [
-            [
-                'id' => 1,
-                'name' => DrinkVolumeType::getDescription(DrinkVolumeType::YES),
-            ],
-            [
-                'id' => 2,
-                'name' => DrinkVolumeType::getDescription(DrinkVolumeType::OCCASIONALLY),
-            ],
-            [
-                'id' => 3,
-                'name' => DrinkVolumeType::getDescription(DrinkVolumeType::NO),
-            ],
-        ];
+        foreach (DrinkVolumeType::toArray() as $value) {
+            $drinkVolumes[] = ['id' => $value, 'name' => DrinkVolumeType::getDescription($value)];
+        }
 
-        $data['smokings'] = [
-            [
-                'id' => 1,
-                'name' => SmokingType::getDescription(SmokingType::YES),
-            ],
-            [
-                'id' => 2,
-                'name' => SmokingType::getDescription(SmokingType::OPTIONAL),
-            ],
-            [
-                'id' => 3,
-                'name' => SmokingType::getDescription(SmokingType::NO),
-            ],
-        ];
+        $data['drink_volumes'] = $drinkVolumes;
 
-        $data['siblings'] = [
-            [
-                'id' => 1,
-                'name' => SiblingsType::getDescription(SiblingsType::ELDEST),
-            ],
-            [
-                'id' => 2,
-                'name' => SiblingsType::getDescription(SiblingsType::SECOND),
-            ],
-            [
-                'id' => 3,
-                'name' => SiblingsType::getDescription(SiblingsType::OTHER),
-            ],
-        ];
+        foreach (SmokingType::toArray() as $value) {
+            $smokings[] = ['id' => $value, 'name' => SmokingType::getDescription($value)];
+        }
 
-        $data['cohabitants'] = [
+        $data['smokings'] = $smokings;
 
-            [
-                'id' => 1,
-                'name' => CohabitantType::getDescription(CohabitantType::ALONE),
-            ],
-            [
-                'id' => 2,
-                'name' => CohabitantType::getDescription(CohabitantType::FAMILY),
-            ],
-            [
-                'id' => 3,
-                'name' => CohabitantType::getDescription(CohabitantType::SHARE_HOUSE),
-            ],
-            [
-                'id' => 4,
-                'name' => CohabitantType::getDescription(CohabitantType::OTHER),
-            ],
-        ];
+        foreach (SiblingsType::toArray() as $value) {
+            $siblings[] = ['id' => $value, 'name' => SiblingsType::getDescription($value)];
+        }
 
-        $data['genders'] = [
-            $private,
-            [
-                'id' => 1,
-                'name' => UserGender::getDescription(UserGender::MALE),
-            ],
-            [
-                'id' => 2,
-                'name' => UserGender::getDescription(UserGender::FEMALE),
-            ],
-        ];
+        $data['siblings'] = $siblings;
+
+        foreach (CohabitantType::toArray() as $value) {
+            $cohabitants[] = ['id' => $value, 'name' => CohabitantType::getDescription($value)];
+        }
+
+        $data['cohabitants'] = $cohabitants;
+
+        foreach (UserGender::toArray() as $value) {
+            $genders[] = ['id' => $value, 'name' => UserGender::getDescription($value)];
+        }
+
+        $data['genders'] = $genders;
 
         $data['prefectures'] = Prefecture::where('id', '<=', 47)->get(['id', 'name'])->toArray();
 

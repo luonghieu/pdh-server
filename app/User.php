@@ -193,6 +193,18 @@ class User extends Authenticatable implements JWTSubject
             ->withPivot('id', 'user_id', 'favorited_id', 'created_at', 'updated_at');
     }
 
+    // ratings by other users
+    public function ratings()
+    {
+        return $this->hasMany(Rating::class, 'rated_id');
+    }
+
+    // rated by this user
+    public function rates()
+    {
+        return $this->hasMany(Rating::class);
+    }
+
     public function avatars()
     {
         return $this->hasMany(Avatar::class)
@@ -202,6 +214,11 @@ class User extends Authenticatable implements JWTSubject
     public function prefecture()
     {
         return $this->belongsTo(Prefecture::class);
+    }
+
+    public function hometown()
+    {
+        return $this->belongsTo(Prefecture::class, 'hometown_id');
     }
 
     public function job()
@@ -255,11 +272,16 @@ class User extends Authenticatable implements JWTSubject
 
     public function card()
     {
-        return $this->cards()->latest()->first();
+        return $this->hasOne(Card::class)->latest();
     }
 
     public function cards()
     {
         return $this->hasMany(Card::class);
+    }
+
+    public function points()
+    {
+        return $this->hasMany(Point::class);
     }
 }
