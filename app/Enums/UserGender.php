@@ -6,6 +6,7 @@ use BenSampo\Enum\Enum;
 
 final class UserGender extends Enum
 {
+    const HIDDEN = 0;
     const MALE = 1;
     const FEMALE = 2;
 
@@ -17,9 +18,11 @@ final class UserGender extends Enum
      */
     public static function getDescription($value): string
     {
-        if ($value === self::MALE) {
+        if (self::HIDDEN === $value) {
+            return '非公開';
+        } elseif (self::MALE === $value) {
             return '男性';
-        } elseif ($value === self::FEMALE) {
+        } elseif (self::FEMALE === $value) {
             return '女性';
         }
 

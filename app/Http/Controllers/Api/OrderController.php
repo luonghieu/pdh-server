@@ -2,16 +2,23 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Cast;
+use App\Enums\CastOrderType;
 use App\Enums\OrderStatus;
 use App\Enums\OrderType;
 use App\Http\Resources\OrderResource;
 use App\Order;
 use App\Services\LogService;
 use App\Tag;
+use App\Traits\DirectRoom;
+use Carbon\Carbon;
+use DB;
 use Illuminate\Http\Request;
 
 class OrderController extends ApiController
 {
+    use DirectRoom;
+
     public function create(Request $request)
     {
         $user = $this->guard()->user();
@@ -19,10 +26,10 @@ class OrderController extends ApiController
         $rules = [
             'prefecture_id' => 'nullable|exists:prefectures,id',
             'address' => 'required',
-            'date' => 'required|date|after_or_equal:today',
+            'date' => 'required|date|date_format:Y-m-d|after_or_equal:today',
             'start_time' => 'required|date_format:H:i',
             'duration' => 'required|numeric|min:1|max:10',
-            'total_cast' => 'required|min:1',
+            'total_cast' => 'required|numeric|min:1',
             'temp_point' => 'required',
             'class_id' => 'required|exists:cast_classes,id',
             'type' => 'required|in:1,2,3',
@@ -48,35 +55,78 @@ class OrderController extends ApiController
             'type',
         ]);
 
-        if (null == $input['prefecture_id']) {
-            $input['prefecture_id'] = 13;
+        $start_time = Carbon::parse($request->date . ' ' . $request->start_time);
+        $end_time = $start_time->copy()->addHours($input['duration']);
+
+        if (now()->diffInMinutes($start_time, false) < 19) {
+            return $this->respondErrorMessage(trans('messages.time_invalid'), 400);
         }
 
-        if ($request->tags) {
-            $listTags = explode(",", trim($request->tags, ","));
-            $tagIds = Tag::whereIn('name', $listTags)->pluck('id');
+        $orders = $user->orders()
+            ->whereIn('status', [OrderStatus::OPEN, OrderStatus::ACTIVE, OrderStatus::PROCESSING])
+            ->where(function ($query) use ($start_time, $end_time) {
+                $query->orWhereRaw("concat_ws(' ',`date`,`start_time`) >= '$start_time' and concat_ws(' ',`date`,`start_time`) <= '$end_time'"
+                );
+
+                $query->orWhereRaw("DATE_ADD(concat_ws(' ',`date`,`start_time`), INTERVAL `duration` HOUR) >= '$start_time' and DATE_ADD(concat_ws(' ',`date`,`start_time`), INTERVAL `duration` HOUR) <= '$end_time'"
+                );
+                $query->orWhereRaw("concat_ws(' ',`date`,`start_time`) <= '$start_time' and DATE_ADD(concat_ws(' ',`date`,`start_time`), INTERVAL `duration` HOUR) >= '$end_time'"
+                );
+            });
+
+        if ($orders->count() > 0) {
+            return $this->respondErrorMessage(trans('messages.order_same_time'), 409);
+        }
+
+        if (!$user->cards->first()) {
+            return $this->respondErrorMessage(trans('messages.card_not_exist'), 404);
+        }
+
+        $input['end_time'] = $end_time->format('H:i');
+
+        if (!$request->prefecture_id) {
+            $input['prefecture_id'] = 13;
         }
 
         if (!$request->nominee_ids) {
             $input['type'] = OrderType::CALL;
+        } else {
+            $listNomineeIds = explode(",", trim($request->nominee_ids, ","));
+            $counter = Cast::whereIn('id', $listNomineeIds)->count();
         }
-
-        $input['end_time'] = \Carbon\Carbon::parse($input['start_time'])->addHours($input['duration'])->format('H:i');
 
         $input['status'] = OrderStatus::OPEN;
 
         try {
+            DB::beginTransaction();
             $order = $user->orders()->create($input);
 
-            $order->tags()->attach($tagIds);
-
-            if ((OrderType::NOMINATED_CALL == $request->type) && $request->nominee_ids) {
-                $listNomineeIds = explode(",", trim($request->nominee_ids, ","));
-
-                $order->nominees()->attach($listNomineeIds);
+            if ($request->tags) {
+                $listTags = explode(",", trim($request->tags, ","));
+                $tagIds = Tag::whereIn('name', $listTags)->pluck('id');
+                $order->tags()->attach($tagIds);
             }
+
+            if (OrderType::CALL != $input['type']) {
+                if (count($listNomineeIds) != $counter) {
+                    return $this->respondErrorMessage(trans('messages.action_not_performed'), 422);
+                }
+
+                $order->nominees()->attach($listNomineeIds, ['type' => CastOrderType::NOMINEE]);
+
+                if (OrderType::NOMINATION == $order->type) {
+                    $ownerId = $order->user_id;
+                    $nomineeId = $order->nominees()->first()->id;
+
+                    $this->createDirectRoom($ownerId, $nomineeId);
+                }
+            }
+
+            DB::commit();
         } catch (\Exception $e) {
+            DB::rollback();
             LogService::writeErrorLog($e);
+
             return $this->respondServerError();
         }
 

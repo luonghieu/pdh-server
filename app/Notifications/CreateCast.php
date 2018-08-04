@@ -54,10 +54,10 @@ class CreateCast extends Notification implements ShouldQueue
     public function toArray($notifiable)
     {
         $message = 'キャスト登録おめでとうございます♪'
-            . '\n あなたは立派なCheers familyです☆'
-            . '\n \n 解散後のメッセージで心をつかんでリピートも狙ってみましょう！'
-            . '\n \n まずはゲストにメッセージを送ってアピールしてみてください！'
-            . '\n \n 不安なこと、分からないことがあればいつでもCheers運営側にお問い合わせくださいね♪';
+            . PHP_EOL .'あなたは立派なCheers familyです☆'
+            . PHP_EOL . PHP_EOL . '解散後のメッセージで心をつかんでリピートも狙ってみましょう！'
+            . PHP_EOL . PHP_EOL . 'まずはゲストにメッセージを送ってアピールしてみてください！'
+            . PHP_EOL . PHP_EOL . '不安なこと、分からないことがあればいつでもCheers運営側にお問い合わせくださいね♪';
 
         $room = $notifiable->rooms()
             ->where('rooms.type', RoomType::SYSTEM)
@@ -69,7 +69,7 @@ class CreateCast extends Notification implements ShouldQueue
             'message' => $message
         ]);
 
-        $roomMessage->recipients()->attach([$notifiable->id, 1], ['room_id' => $room->id]);
+        $roomMessage->recipients()->attach($notifiable->id, ['room_id' => $room->id]);
 
         return [
             'content' => $message,
@@ -80,10 +80,10 @@ class CreateCast extends Notification implements ShouldQueue
     public function pushData($notifiable)
     {
         $content = 'キャスト登録おめでとうございます♪'
-            . '\n あなたは立派なCheers familyです☆'
-            . '\n \n 解散後のメッセージで心をつかんでリピートも狙ってみましょう！'
-            . '\n \n まずはゲストにメッセージを送ってアピールしてみてください！'
-            . '\n \n 不安なこと、分からないことがあればいつでもCheers運営側にお問い合わせくださいね♪';
+            . PHP_EOL . 'あなたは立派なCheers familyです☆'
+            . PHP_EOL . PHP_EOL .'解散後のメッセージで心をつかんでリピートも狙ってみましょう！'
+            . PHP_EOL . PHP_EOL .'まずはゲストにメッセージを送ってアピールしてみてください！'
+            . PHP_EOL . PHP_EOL .'不安なこと、分からないことがあればいつでもCheers運営側にお問い合わせくださいね♪';
         $namedUser = 'user_' . $notifiable->id;
         $send_from = UserType::ADMIN;
         $pushId = 'c_1';

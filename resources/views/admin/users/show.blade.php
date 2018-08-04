@@ -58,7 +58,7 @@
               @if ($user->is_cast)
               <tr>
                 <th>30分あたりのポイント</th>
-                <td>{{ $user->point }}</td>
+                <td>{{ number_format($user->cost) }}</td>
               </tr>
               @endif
               <tr>
@@ -85,7 +85,7 @@
               @endif
               <tr>
                 <th>基本情報：身長</th>
-                <td>{{ getUserHeight($user->height) }}</td>
+                <td>{{ ($user->height === null) ? '':getUserHeight($user->height) }}</td>
               </tr>
               <tr>
                 <th>基本情報：年収</th>
@@ -101,7 +101,7 @@
               </tr>
               <tr>
                 <th>基本情報：出身地</th>
-                <td>{{ $user->prefecture ? $user->prefecture->name : "" }}</td>
+                <td>{{ $user->hometown ? $user->hometown->name : "" }}</td>
               </tr>
               <tr>
                 <th>基本情報：お仕事</th>
@@ -159,6 +159,10 @@
                 @if($user->is_guest)
                   <button type="button" class="btn btn-info" data-toggle="modal" data-target="#register_cast">キャストへ変更する</button>
                 @endif
+                @if($user->is_cast)
+                  <button type="button" class="btn btn-info" data-toggle="modal" data-target="#register_guest">ゲストに変更する</button>
+                @endif
+
                 <button type="submit" class="btn btn-info" data-toggle="modal" data-target="{{ $nameId }}">{{ $title }}</button>
             </div>
           </div>
@@ -171,6 +175,23 @@
               </div>
               <div class="modal-footer">
                 <form action="{{ route('admin.casts.register',['user' => $user->id]) }}" method="get">
+                  <button type="button" class="btn btn-canceled" data-dismiss="modal">キャンセル</button>
+                  <button type="submit" class="btn btn-accept">はい</button>
+                </form>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="modal fade" id="register_guest" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+          <div class="modal-dialog" role="document">
+            <div class="modal-content">
+              <div class="modal-body">
+                <p>このユーザーのステータスをゲストに変更しますか？</p>
+              </div>
+              <div class="modal-footer">
+                <form action="{{ route('admin.users.register_guest',['user' => $user->id]) }}" method="post">
+                  {{ csrf_field() }}
+                  {{ method_field('PUT') }}
                   <button type="button" class="btn btn-canceled" data-dismiss="modal">キャンセル</button>
                   <button type="submit" class="btn btn-accept">はい</button>
                 </form>
