@@ -1,8 +1,8 @@
 <?php
 
-use Illuminate\Support\Facades\Schema;
-use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
 
 class AlterTableReceiptChangeFieldAddressToName extends Migration
 {
@@ -14,7 +14,7 @@ class AlterTableReceiptChangeFieldAddressToName extends Migration
     public function up()
     {
         Schema::table('receipts', function (Blueprint $table) {
-            $table->string('name')->after('date');
+            $table->string('name')->nullable()->after('date');
             $table->dropColumn('address');
         });
     }
