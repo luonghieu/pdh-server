@@ -461,4 +461,9 @@ class Order extends Model
 
         return $room->id;
     }
+
+    public function point()
+    {
+        return $this->hasOne(Point::class);
+    }
 }

@@ -658,6 +658,7 @@ tbody td {
   float: left;
   margin-left: -15px;
   width: 100%;
+  position: relative;
 }
 
 .export {
@@ -676,7 +677,7 @@ tbody td {
   margin-right: 1%;
 }
 .form-search {
-  width: 90%;
+  width: 60%;
 }
 
 .notify-search {
@@ -728,18 +729,32 @@ tbody td {
   padding-right: 0;
 }
 
-.filter-search .export-btn {
-  min-height: 38px;
-  display: flex;
-  padding-right: 0;
+.export-btn {
+  background: none;
+  border: none;
+  background-color: #67c2ef;
+  padding: 9px;
+  border-radius: 9px;
+  color: #fff;
 }
 
-.filter-search .export-btn button {
+.export-btn button {
   border-radius: 5px;
   border: 1px solid #cecece;
   box-shadow: none;
   color: white;
   background: #67c2ef;
+}
+
+.export-btn:hover {
+  color: white;
+  background: #39afea;
+}
+
+.export-csv {
+    display: inline-block;
+    position: absolute;
+    right: 0;
 }
 
 #verifications_modal {
@@ -958,6 +973,37 @@ tbody td {
   top: -23px;
 }
 
+.current_point {
+  display: inline-block;
+  margin-left: 80px;
+  position: absolute;
+  top: 12px;
+}
+
+.result {
+  background-color: #D1E1F4 !important;
+}
+
+.change-point-input {
+  text-align: center;
+}
+
+.change-point-input input{
+  border: none;
+  border-bottom: 1px solid #5C5C5C;
+  outline: 0;
+}
+
+.link-change-point {
+  margin-left: 25px;
+}
+
+.search-point-type {
+  width: 130px !important;
+  height: 34px !important;
+  margin-left: 25px;
+  border: 1px solid #919191 !important;
+}
 @media (max-width: 767px) {
   .navbar {
     background: #20a8d817;
