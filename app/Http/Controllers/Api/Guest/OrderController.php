@@ -13,7 +13,8 @@ class OrderController extends ApiController
     public function index(Request $request)
     {
         $user = $this->guard()->user();
-        $orders = Order::where('user_id', $user->id)
+        $orders = Order::whereIn('status', [OrderStatus::OPEN, OrderStatus::ACTIVE])
+            ->where('user_id', $user->id)
             ->with(['user', 'casts', 'nominees'])
             ->latest()
             ->paginate($request->per_page);
