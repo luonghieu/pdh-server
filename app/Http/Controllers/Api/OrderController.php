@@ -2,18 +2,19 @@
 
 namespace App\Http\Controllers\Api;
 
-use App\Cast;
-use App\Enums\CastOrderType;
-use App\Enums\OrderStatus;
-use App\Enums\OrderType;
-use App\Http\Resources\OrderResource;
-use App\Order;
-use App\Services\LogService;
-use App\Tag;
-use App\Traits\DirectRoom;
-use Carbon\Carbon;
 use DB;
+use App\Tag;
+use App\Cast;
+use App\Order;
+use Carbon\Carbon;
+use App\Enums\OrderType;
+use App\Enums\OrderStatus;
+use App\Traits\DirectRoom;
+use App\Enums\CastOrderType;
+use App\Services\LogService;
 use Illuminate\Http\Request;
+use App\Enums\CastOrderStatus;
+use App\Http\Resources\OrderResource;
 
 class OrderController extends ApiController
 {
@@ -112,7 +113,10 @@ class OrderController extends ApiController
                     return $this->respondErrorMessage(trans('messages.action_not_performed'), 422);
                 }
 
-                $order->nominees()->attach($listNomineeIds, ['type' => CastOrderType::NOMINEE]);
+                $order->nominees()->attach($listNomineeIds, [
+                    'type' => CastOrderType::NOMINEE,
+                    'status' => CastOrderStatus::OPEN
+                ]);
 
                 if (OrderType::NOMINATION == $order->type) {
                     $ownerId = $order->user_id;
