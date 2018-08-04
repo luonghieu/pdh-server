@@ -6,9 +6,8 @@ use App\Enums\MessageType;
 use App\Enums\RoomType;
 use App\Enums\UserType;
 use Illuminate\Bus\Queueable;
-use Illuminate\Notifications\Notification;
 use Illuminate\Contracts\Queue\ShouldQueue;
-use Illuminate\Notifications\Messages\MailMessage;
+use Illuminate\Notifications\Notification;
 
 class OrderRemindBeforeTenMinutes extends Notification implements ShouldQueue
 {
@@ -67,7 +66,7 @@ class OrderRemindBeforeTenMinutes extends Notification implements ShouldQueue
         $roomMessage = $room->messages()->create([
             'user_id' => 1,
             'type' => MessageType::SYSTEM,
-            'message' => $message
+            'message' => $message,
         ]);
 
         $roomMessage->recipients()->attach($notifiable->id, ['room_id' => $room->id]);

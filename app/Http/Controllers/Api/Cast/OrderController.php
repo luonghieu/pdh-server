@@ -69,14 +69,15 @@ class OrderController extends ApiController
 
             $orders->where('status', $request->status)->latest();
         } else {
-            $orders->where(function ($query) use ($user) {
-                $query->whereHas('nominees', function ($query) use ($user) {
-                    $query->where('user_id', $user->id);
-                });
-                $query->orWhereHas('candidates', function ($query) use ($user) {
-                    $query->where('user_id', $user->id);
-                });
-            })
+            $orders->where('status', '!=', OrderStatus::DONE)
+                ->where(function ($query) use ($user) {
+                    $query->whereHas('nominees', function ($query) use ($user) {
+                        $query->where('user_id', $user->id);
+                    });
+                    $query->orWhereHas('candidates', function ($query) use ($user) {
+                        $query->where('user_id', $user->id);
+                    });
+                })
                 ->latest();
         }
 
