@@ -2,10 +2,11 @@
 
 namespace App\Notifications;
 
-use App\Enums\MessageType;
-use App\Enums\UserType;
 use Carbon\Carbon;
+use App\Enums\UserType;
+use App\Enums\MessageType;
 use Illuminate\Bus\Queueable;
+use App\Enums\SystemMessageType;
 use Illuminate\Notifications\Notification;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
@@ -15,7 +16,9 @@ class OrderCompleted extends Notification
     use Queueable;
 
     public $order;
+
     public $cast;
+
     /**
      * Create a new notification instance.
      *
@@ -59,11 +62,17 @@ class OrderCompleted extends Notification
     {
         $order = $this->order;
         $room = $order->room;
-        $message = Carbon::parse($order->actual_ended_at)->format('H:i')
-            . '\n' . $this->cast->nickname . 'が解散しました。';
+        $cast = $order->casts()
+            ->withPivot('started_at', 'stopped_at', 'type')
+            ->where('user_id', $this->cast->id)
+            ->first();
+
+        $message = Carbon::parse($cast->pivot->stopped_at)->format('H:i')
+            . PHP_EOL . $this->cast->nickname . 'が解散しました。';
         $roomMessage = $room->messages()->create([
             'user_id' => 1,
             'type' => MessageType::SYSTEM,
+            'system_type' => SystemMessageType::NOTIFY,
             'message' => $message
         ]);
 
@@ -77,8 +86,13 @@ class OrderCompleted extends Notification
 
     public function pushData($notifiable)
     {
-        $content = Carbon::parse($this->order->actual_ended_at)->format('H:i')
-            . '\n' . $this->cast->nickname . 'が解散しました。';
+        $cast = $this->order->casts()
+            ->withPivot('started_at', 'stopped_at', 'type')
+            ->where('user_id', $this->cast->id)
+            ->first();
+
+        $content = Carbon::parse($cast->pivot->stopped_at)->format('H:i')
+            . PHP_EOL . $this->cast->nickname . 'が解散しました。';
         $pushId = 'c_7';
         $namedUser = 'user_' . $notifiable->id;
         $send_from = UserType::ADMIN;
