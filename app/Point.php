@@ -2,12 +2,14 @@
 
 namespace App;
 
+use App\Enums\PointType;
 use Illuminate\Database\Eloquent\Model;
 
 class Point extends Model
 {
     protected $fillable = [
         'point',
+        'balance',
         'user_id',
         'order_id',
         'is_autocharge',
@@ -30,5 +32,25 @@ class Point extends Model
     public function payment()
     {
         return $this->hasOne(Payment::class);
+    }
+
+    public function order()
+    {
+        return $this->belongsTo(Order::class);
+    }
+
+    public function getIsBuyAttribute()
+    {
+        return PointType::BUY == $this->type;
+    }
+
+    public function getIsPayAttribute()
+    {
+        return PointType::PAY == $this->type;
+    }
+
+    public function getIsAdjustedAttribute()
+    {
+        return PointType::ADJUSTED == $this->type;
     }
 }
