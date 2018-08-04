@@ -57,6 +57,7 @@ class AuthController extends ApiController
     public function me()
     {
         $user = $this->guard()->user();
+
         if (UserType::CAST == $user->type) {
             return $this->respondWithData(CastResource::make($user));
         }
