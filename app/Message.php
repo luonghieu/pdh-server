@@ -21,6 +21,7 @@ class Message extends Model
         'message',
         'image',
         'type',
+        'system_type',
     ];
 
     protected $casts = [
