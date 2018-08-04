@@ -67,6 +67,8 @@ class RenewalReminderTenMinute extends Notification implements ShouldQueue
             'message' => $message
         ]);
 
+        $roomMessage->recipients()->attach($notifiable->id, ['room_id' => $room->id]);
+
         return [
             'content' => $message,
             'send_from' => UserType::ADMIN,
