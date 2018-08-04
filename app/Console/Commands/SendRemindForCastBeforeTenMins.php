@@ -42,8 +42,8 @@ class SendRemindForCastBeforeTenMins extends Command
     public function handle()
     {
         $now = Carbon::now()->second(0);
-
-        $orders = Order::whereIn('status', [OrderStatus::OPEN, OrderStatus::ACTIVE])->with('casts')->get();
+        $currentDate = Carbon::now()->format('Y-m-d');
+        $orders = Order::whereDate('date', $currentDate)->whereIn('status', [OrderStatus::ACTIVE])->with('casts')->get();
 
         foreach ($orders as $order) {
             $startTime = Carbon::createFromFormat('Y-m-d H:i:s', $order->date . ' ' . $order->start_time)->second(0);
