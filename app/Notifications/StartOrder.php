@@ -2,9 +2,10 @@
 
 namespace App\Notifications;
 
-use App\Enums\MessageType;
 use App\Enums\UserType;
+use App\Enums\MessageType;
 use Illuminate\Bus\Queueable;
+use App\Enums\SystemMessageType;
 use Illuminate\Notifications\Notification;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
@@ -58,10 +59,11 @@ class StartOrder extends Notification
     public function toArray($notifiable)
     {
         $room = $this->order->room;
-        $message = '「' . $this->cast->nickname . 'さんが合流しました。」';
+        $message =  $this->cast->nickname . 'さんが合流しました。';
         $roomMessage = $room->messages()->create([
             'user_id' => 1,
             'type' => MessageType::SYSTEM,
+            'system_type' => SystemMessageType::NOTIFY,
             'message' => $message
         ]);
 
@@ -75,7 +77,7 @@ class StartOrder extends Notification
 
     public function pushData($notifiable)
     {
-        $content = '「' . $this->cast->nickname . 'さんが合流しました。」';
+        $content = $this->cast->nickname . 'さんが合流しました。';
         $pushId = 'g_4';
         $namedUser = 'user_' . $notifiable->id;
         $send_from = UserType::ADMIN;
