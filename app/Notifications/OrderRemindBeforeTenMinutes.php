@@ -55,10 +55,10 @@ class OrderRemindBeforeTenMinutes extends Notification implements ShouldQueue
     public function toArray($notifiable)
     {
         $message = '合流予定時刻の10分前になりました！'
-            . '\n ゲストとのチャット画面にスタートボタンが出現します。'
-            . '\n 合流後、ゲストに確認してからスタートボタンを押してください！'
-            . '\n \n それでは素敵な時間を楽しんで来てくださいね♪'
-            . '\n \n また予定時刻に遅れそうな場合は、チャットルームで予め遅れる旨を伝えましょう！';
+            . PHP_EOL . 'ゲストとのチャット画面にスタートボタンが出現します。'
+            . PHP_EOL . '合流後、ゲストに確認してからスタートボタンを押してください！'
+            . PHP_EOL . PHP_EOL . 'それでは素敵な時間を楽しんで来てくださいね♪'
+            . PHP_EOL . PHP_EOL . 'また予定時刻に遅れそうな場合は、チャットルームで予め遅れる旨を伝えましょう！';
 
         $room = $notifiable->rooms()
             ->where('rooms.type', RoomType::SYSTEM)
@@ -81,10 +81,10 @@ class OrderRemindBeforeTenMinutes extends Notification implements ShouldQueue
     public function pushData($notifiable)
     {
         $content = '合流予定時刻の10分前になりました！'
-            . '\n ゲストとのチャット画面にスタートボタンが出現します。'
-            . '\n 合流後、ゲストに確認してからスタートボタンを押してください！'
-            . '\n \n それでは素敵な時間を楽しんで来てくださいね♪'
-            . '\n \n また予定時刻に遅れそうな場合は、チャットルームで予め遅れる旨を伝えましょう！';
+            . PHP_EOL . 'ゲストとのチャット画面にスタートボタンが出現します。'
+            . PHP_EOL . '合流後、ゲストに確認してからスタートボタンを押してください！'
+            . PHP_EOL . PHP_EOL . 'それでは素敵な時間を楽しんで来てくださいね♪'
+            . PHP_EOL . PHP_EOL . 'また予定時刻に遅れそうな場合は、チャットルームで予め遅れる旨を伝えましょう！';
         $namedUser = 'user_' . $notifiable->id;
         $send_from = UserType::ADMIN;
         $pushId = 'c_4';
