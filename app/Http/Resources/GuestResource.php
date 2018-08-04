@@ -72,6 +72,7 @@ class GuestResource extends Resource
             'is_online' => $this->is_online,
             'rating_score' => $this->rating_score,
             'room_id' => $this->room_id,
+            'card' => CardResource::make($this->card)
         ]);
     }
 }

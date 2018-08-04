@@ -2,14 +2,13 @@
 
 namespace App;
 
-use Carbon\Carbon;
 use App\Enums\UserType;
+use Carbon\Carbon;
+use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cache;
-use Illuminate\Support\Facades\Redis;
 use Tymon\JWTAuth\Contracts\JWTSubject;
-use Illuminate\Notifications\Notifiable;
-use Illuminate\Foundation\Auth\User as Authenticatable;
 
 class User extends Authenticatable implements JWTSubject
 {
@@ -113,6 +112,11 @@ class User extends Authenticatable implements JWTSubject
         return $this->blockers->contains($user->id) ? 1 : 0;
     }
 
+    public function getBlocked($id)
+    {
+        return $this->blockers->contains($id) || $this->blocks->contains($id) ? 1 : 0;
+    }
+
     public function getLastActiveAtAttribute($value)
     {
         return Cache::get('last_active_at_' . $this->id);
@@ -145,10 +149,14 @@ class User extends Authenticatable implements JWTSubject
 
     public function getRoomIdAttribute()
     {
-        $userId = $this->id;
+        if (!Auth::check()) {
+            return '';
+        }
 
-        $room = $this->rooms()->direct()->whereHas('users', function ($q) use ($userId) {
-            $q->where('user_id', $userId);
+        $user = Auth::user();
+
+        $room = $this->rooms()->direct()->whereHas('users', function ($q) use ($user) {
+            $q->where('user_id', $user->id);
         })->first();
 
         if (!$room) {
@@ -185,6 +193,18 @@ class User extends Authenticatable implements JWTSubject
             ->withPivot('id', 'user_id', 'favorited_id', 'created_at', 'updated_at');
     }
 
+    // ratings by other users
+    public function ratings()
+    {
+        return $this->hasMany(Rating::class, 'rated_id');
+    }
+
+    // rated by this user
+    public function rates()
+    {
+        return $this->hasMany(Rating::class);
+    }
+
     public function avatars()
     {
         return $this->hasMany(Avatar::class)
@@ -194,6 +214,11 @@ class User extends Authenticatable implements JWTSubject
     public function prefecture()
     {
         return $this->belongsTo(Prefecture::class);
+    }
+
+    public function hometown()
+    {
+        return $this->belongsTo(Prefecture::class, 'hometown_id');
     }
 
     public function job()
@@ -240,4 +265,23 @@ class User extends Authenticatable implements JWTSubject
             ->withPivot('id', 'user_id', 'reported_id', 'content', 'created_at', 'updated_at');
     }
 
+    public function orders()
+    {
+        return $this->hasMany(Order::class);
+    }
+
+    public function card()
+    {
+        return $this->hasOne(Card::class)->latest();
+    }
+
+    public function cards()
+    {
+        return $this->hasMany(Card::class);
+    }
+
+    public function points()
+    {
+        return $this->hasMany(Point::class);
+    }
 }

@@ -2,9 +2,12 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Enums\RoomType;
+use App\Events\MessageCreated;
 use App\Http\Resources\MessageResource;
+use App\Http\Resources\OrderResource;
+use App\Jobs\MakeImagesChatThumbnail;
 use App\Message;
-use App\Room;
 use App\Services\LogService;
 use App\User;
 use Illuminate\Http\Request;
@@ -17,7 +20,9 @@ class MessageController extends ApiController
     public function index(Request $request, $id)
     {
         $rules = [
+            'current_id' => 'numeric|min:1',
             'per_page' => 'numeric|min:1',
+            'action' => 'required_with:current_id|in:1,2',
         ];
 
         $validator = validator($request->all(), $rules);
@@ -28,13 +33,36 @@ class MessageController extends ApiController
 
         $user = $this->guard()->user();
 
-        $room = $user->rooms->find($id)->active()->first();
+        $room = $user->rooms()->active()->find($id);
 
         if (empty($room)) {
             return $this->respondErrorMessage(trans('messages.room_not_found'), 404);
         }
 
-        $messages = $room->messages()->with('user')->latest()->paginate($request->per_page);
+        $ownerId = $room->owner_id;
+        $partner = $room->users->where('id', '<>', $ownerId)->first()->id;
+        $messages = $room->messages()->with('user')->latest();
+
+        if ($room->is_direct && $room->checkBlocked($partner)) {
+            $messages = $messages->whereDoesntHave('recipients', function ($q) use ($user) {
+                $q->where([
+                    ['user_id', '=', $user->id],
+                    ['is_show', '=', false],
+                ]);
+            });
+        }
+
+        if ($request->action) {
+            $action = $request->action;
+            $currentId = $request->current_id;
+            if (1 == $action) {
+                $messages = $messages->where('id', '<', $currentId);
+            } else {
+                $messages = $messages->where('id', '>', $currentId);
+            }
+        }
+
+        $messages = $messages->paginate($request->per_page);
 
         DB::table('message_recipient')
             ->where([
@@ -46,11 +74,15 @@ class MessageController extends ApiController
 
         $messagesCollection = collect($messages->items());
 
-        $messages = $messagesCollection->mapToGroups(function ($item, $key) {
+        $messagesData = $messagesCollection->mapToGroups(function ($item, $key) {
             return [
-                $item->created_at->format('Y-m-d') => $item,
+                $item->created_at->format('Y-m-d') => MessageResource::make($item),
             ];
         });
+
+        $messages->setCollection(collect($messagesData->values()->all()));
+        $messages = $messages->toArray();
+        $messages['order'] = $room->room_order ? OrderResource::make($room->room_order->load(['casts', 'user'])) : '';
 
         return $this->respondWithData($messages);
     }
@@ -83,7 +115,10 @@ class MessageController extends ApiController
         if ($validator->fails()) {
             return $this->respondWithValidationError($validator->errors()->messages());
         }
-        $room = Room::active()->find($id);
+
+        $user = $this->guard()->user();
+
+        $room = $user->rooms()->active()->find($id);
 
         if (!$room) {
             return $this->respondErrorMessage(trans('messages.room_not_found'), 404);
@@ -109,13 +144,18 @@ class MessageController extends ApiController
         }
 
         try {
-            $user = $this->guard()->user();
-
             $userIds = $room->users()->where('users.id', '<>', $user->id)->pluck('users.id')->toArray();
 
             $message->save();
 
-            $message->recipients()->attach($userIds, ['room_id' => $id]);
+            if (request()->has('image')) {
+                MakeImagesChatThumbnail::dispatch($message);
+            }
+            if (RoomType::DIRECT == $room->type && $user->getBlocked($userIds[0])) {
+                $message->recipients()->attach($userIds, ['room_id' => $id, 'is_show' => false]);
+            } else {
+                $message->recipients()->attach($userIds, ['room_id' => $id]);
+            }
 
             $message = $message->load('user');
         } catch (\Exception $e) {
@@ -123,6 +163,8 @@ class MessageController extends ApiController
 
             return $this->respondServerError();
         }
+
+        broadcast(new MessageCreated($message))->toOthers();
 
         return $this->respondWithData(MessageResource::make($message));
     }

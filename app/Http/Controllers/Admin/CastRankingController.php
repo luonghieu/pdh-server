@@ -17,22 +17,6 @@ class CastRankingController extends Controller
         $casts = Cast::query();
         $castRankings = CastRanking::get()->pluck('user_id');
 
-        if ($request->has('from_date') && !empty($request->from_date)) {
-            $fromDate = Carbon::parse($request->from_date)->startOfDay();
-            $toDate = Carbon::parse($request->to_date)->endOfDay();
-            $casts->where(function ($query) use ($fromDate, $toDate) {
-                $query->where('created_at', '>=', $fromDate);
-            });
-        }
-
-        if ($request->has('to_date') && !empty($request->to_date)) {
-            $fromDate = Carbon::parse($request->from_date)->startOfDay();
-            $toDate = Carbon::parse($request->to_date)->endOfDay();
-            $casts->where(function ($query) use ($fromDate, $toDate) {
-                $query->where('created_at', '<=', $toDate);
-            });
-        }
-
         if ($request->has('search')) {
             $casts->where(function ($query) use ($keyword) {
                 $query->where('id', "$keyword")

@@ -71,7 +71,7 @@ class AuthController extends ApiController
         $rules = [
             'nickname' => 'max:20',
             'date_of_birth' => 'date|before:today',
-            'gender' => 'in:1,2',
+            'gender' => 'in:0,1,2',
             'intro' => 'max:30',
             'description' => 'max:1000',
             'phone' => 'max:13',
@@ -82,10 +82,10 @@ class AuthController extends ApiController
             'body_type_id' => 'numeric|exists:body_types,id',
             'hometown_id' => 'numeric|exists:prefectures,id',
             'job_id' => 'numeric|exists:jobs,id',
-            'drink_volume_type' => 'numeric|between:1,3',
-            'smoking_type' => 'numeric|between:1,3',
-            'cohabitant_type' => 'numeric|between:1,4',
-            'line_id' => 'string',
+            'drink_volume_type' => 'numeric|between:0,3',
+            'smoking_type' => 'numeric|between:0,3',
+            'siblings_type' => 'numeric|between:0,3',
+            'cohabitant_type' => 'numeric|between:0,4',
         ];
 
         $validator = validator(request()->all(), $rules);
@@ -110,6 +110,7 @@ class AuthController extends ApiController
             'job_id',
             'drink_volume_type',
             'smoking_type',
+            'siblings_type',
             'cohabitant_type',
             'line_id',
         ]);

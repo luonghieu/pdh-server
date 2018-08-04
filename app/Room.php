@@ -2,9 +2,11 @@
 
 namespace App;
 
+use App\Enums\OrderStatus;
 use App\Enums\RoomType;
-use Illuminate\Support\Facades\Auth;
+use App\Order;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Auth;
 
 class Room extends Model
 {
@@ -22,6 +24,26 @@ class Room extends Model
     public function getIsActiveAttribute($value)
     {
         return $value ? 1 : 0;
+    }
+
+    public function getIsSystemAttribute()
+    {
+        return RoomType::SYSTEM == $this->type;
+    }
+
+    public function getIsDirectAttribute()
+    {
+        return RoomType::DIRECT == $this->type;
+    }
+
+    public function getIsGroupAttribute()
+    {
+        return RoomType::GROUP == $this->type;
+    }
+
+    public function checkBlocked($id)
+    {
+        return $this->owner->blockers->contains($id) || $this->owner->blocks->contains($id) ? 1 : 0;
     }
 
     public function scopeActive($query)
@@ -61,5 +83,45 @@ class Room extends Model
     public function users()
     {
         return $this->belongsToMany(User::class);
+    }
+
+    public function owner()
+    {
+        return $this->belongsTo(User::class);
+    }
+
+    public function getRoomOrderAttribute()
+    {
+        $order = null;
+
+        switch ($this->type) {
+            case RoomType::GROUP:
+                $order = $this->order;
+                break;
+            case RoomType::DIRECT:
+                $data = [
+                    OrderStatus::PROCESSING,
+                    OrderStatus::ACTIVE,
+                    OrderStatus::DONE,
+                ];
+
+                $userIds = $this->users->pluck('id');
+
+                $order = Order::where(function ($q) use ($userIds) {
+                    $q->whereHas('nominees', function ($q) use ($userIds) {
+                        $q->whereIn('user_id', $userIds);
+                    })->orWhereHas('candidates', function ($q) use ($userIds) {
+                        $q->whereIn('user_id', $userIds);
+                    });
+                })
+                ->whereIn('status', $data)
+                ->orderByRaw('FIELD(status, ' . implode(',', $data) . ' )')
+                ->first();
+                break;
+            default:
+                break;
+        }
+
+        return $order;
     }
 }
