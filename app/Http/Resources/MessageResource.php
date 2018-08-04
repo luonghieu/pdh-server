@@ -25,6 +25,7 @@ class MessageResource extends Resource
             'image' => $this->image,
             'thumbnail' => $this->thumbnail,
             'type' => $this->type,
+            'system_type' => $this->system_type,
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
         ]);

@@ -2,10 +2,11 @@
 
 namespace App\Notifications;
 
-use App\Enums\MessageType;
 use App\Enums\RoomType;
 use App\Enums\UserType;
+use App\Enums\MessageType;
 use Illuminate\Bus\Queueable;
+use App\Enums\SystemMessageType;
 use Illuminate\Notifications\Notification;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
@@ -69,6 +70,7 @@ class TenMinBeforeOrderEnded extends Notification implements ShouldQueue
         $roomMessage = $room->messages()->create([
             'user_id' => 1,
             'type' => MessageType::SYSTEM,
+            'system_type' => SystemMessageType::NOTIFY,
             'message' => $message
         ]);
 
