@@ -48,10 +48,12 @@ class PaymentRequestObserver
                         }
                     } else {
                         $order->payment_status = OrderPaymentStatus::REQUESTING;
+                        $order->payment_requested_at = now();
                         $order->save();
                     }
                 } else {
                     $order->payment_status = OrderPaymentStatus::REQUESTING;
+                    $order->payment_requested_at = now();
                     $order->save();
                 }
             }
