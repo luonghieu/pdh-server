@@ -99,24 +99,15 @@ class Room extends Model
                 $order = $this->order;
                 break;
             case RoomType::DIRECT:
-                $data = [
+                $statuses = [
                     OrderStatus::PROCESSING,
                     OrderStatus::ACTIVE,
                     OrderStatus::DONE,
                 ];
 
-                $userIds = $this->users->pluck('id');
-
-                $order = Order::where(function ($q) use ($userIds) {
-                    $q->whereHas('nominees', function ($q) use ($userIds) {
-                        $q->whereIn('user_id', $userIds);
-                    })->orWhereHas('candidates', function ($q) use ($userIds) {
-                        $q->whereIn('user_id', $userIds);
-                    });
-                })
-                ->whereIn('status', $data)
-                ->orderByRaw('FIELD(status, ' . implode(',', $data) . ' )')
-                ->first();
+                $order = Order::where('room_id', $this->id)
+                    ->orderByRaw('FIELD(status, ' . implode(',', $statuses) . ' )')
+                    ->first();
                 break;
             default:
                 break;

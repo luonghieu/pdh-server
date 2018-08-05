@@ -44,9 +44,9 @@ class ValidateOrder implements ShouldQueue
      */
     public function handle()
     {
-        $acceptByCast = $this->order->casts->count();
+        $castsCount = $this->order->casts->count();
 
-        if ($this->order->total_cast == $acceptByCast) {
+        if ($this->order->total_cast == $castsCount) {
             try {
                 \DB::beginTransaction();
 
@@ -88,15 +88,15 @@ class ValidateOrder implements ShouldQueue
                 LogService::writeErrorLog($e);
             }
         } else {
-            $numOfReply = $this->order->nominees()
+            $repliesCount = $this->order->nominees()
                 ->whereNotNull('cast_order.status')
-                ->where('cast_order.status', '!=', 0)
+                ->where('cast_order.status', '!=', CastOrderStatus::OPEN)
                 ->count();
 
-            $numOfNominee = $this->order->nominees()->count();
+            $nomineesCount = $this->order->nominees()->count();
 
-            if ($numOfReply == $numOfNominee && $numOfNominee > 0) {
-                if ($this->order->total_cast == 1) {
+            if ($repliesCount == $nomineesCount && $nomineesCount > 0) {
+                if ($this->order->type == OrderType::NOMINATION) {
                     $this->order->status = OrderStatus::DENIED;
                 } else {
                     $this->order->type = OrderType::CALL;
