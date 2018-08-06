@@ -18,8 +18,6 @@ class ReceiptController extends ApiController
     {
         $rules = [
             'point_id' => 'required',
-            'content' => 'string|regex:/^[一-龯ぁ-んァ-ンＡ-ｚ０-９]/',
-            'name' => 'string|regex:/^[一-龯ぁ-んァ-ンＡ-ｚ０-９]/',
         ];
 
         $validator = validator($request->all(), $rules);
@@ -28,11 +26,11 @@ class ReceiptController extends ApiController
             return $this->respondWithValidationError($validator->errors()->messages());
         }
 
-        if ($request->content && strlen($request->content) > 150) {
+        if ($request->content && mb_strlen($request->content) > 50) {
             return $this->respondErrorMessage(trans('messages.content_length_err'), 400);
         }
 
-        if ($request->name && strlen($request->name) > 150) {
+        if ($request->name && mb_strlen($request->name) > 50) {
             return $this->respondErrorMessage(trans('messages.name_length_err'), 400);
         }
 
