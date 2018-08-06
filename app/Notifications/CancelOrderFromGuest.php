@@ -99,7 +99,6 @@ class CancelOrderFromGuest extends Notification
         return [
             'content' => $message,
             'send_from' => UserType::ADMIN,
-            'style' => NotificationStyle::BALL
         ];
     }
 

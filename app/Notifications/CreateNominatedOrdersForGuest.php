@@ -88,7 +88,6 @@ class CreateNominatedOrdersForGuest extends Notification implements ShouldQueue
         return [
             'content' => $message,
             'send_from' => UserType::ADMIN,
-            'style' => NotificationStyle::BALL
         ];
     }
 
