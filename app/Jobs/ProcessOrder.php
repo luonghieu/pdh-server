@@ -48,7 +48,7 @@ class ProcessOrder implements ShouldQueue
         }
 
         if ($this->cast) {
-            $this->order->user->notify(new StartOrder($this, $this->cast));
+            $this->order->user->notify(new StartOrder($this->order, $this->cast));
         }
     }
 }
