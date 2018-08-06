@@ -37,6 +37,7 @@ class Kernel extends ConsoleKernel
         $schedule->command('cheers:delete_cast_canceled_order')->hourly()->onOneServer()->runInBackground();
         $schedule->command('cheers:send_remind_before_ending_time_ten_mins')->everyMinute()->onOneServer()->runInBackground();
         $schedule->command('cheers:send_remind_for_cast_before_ten_minutes')->everyMinute()->onOneServer()->runInBackground();
+        $schedule->command('cheers:send_payment_request_when_cast_stop_order')->hourly()->onOneServer()->runInBackground();
     }
 
     /**

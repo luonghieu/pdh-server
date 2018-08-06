@@ -2,9 +2,9 @@
 
 namespace App\Observers;
 
-use App\PaymentRequest;
 use App\Enums\OrderPaymentStatus;
 use App\Enums\PaymentRequestStatus;
+use App\PaymentRequest;
 
 class PaymentRequestObserver
 {
@@ -34,7 +34,7 @@ class PaymentRequestObserver
             // check to update order payment status
             $requestedStatuses = [
                 PaymentRequestStatus::REQUESTED,
-                PaymentRequestStatus::UPDATED
+                PaymentRequestStatus::UPDATED,
             ];
 
             if (in_array($status, $requestedStatuses)) {
@@ -42,7 +42,7 @@ class PaymentRequestObserver
 
                 if ($order->total_cast > 1) {
                     if ($requestedCount != $order->total_cast) {
-                        if ($order->payment_status != OrderPaymentStatus::WAITING) {
+                        if (OrderPaymentStatus::WAITING != $order->payment_status) {
                             $order->payment_status = OrderPaymentStatus::WAITING;
                             $order->save();
                         }
