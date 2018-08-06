@@ -17,7 +17,7 @@ class UsersTableSeeder extends Seeder
 
         // create an admin
         $admin = [
-            'email' => 'admin@cheers.dev444555544',
+            'email' => 'admin@cheers.dev',
             'password' => bcrypt('123123123'),
             'fullname' => $faker->name,
             'type' => 3,
