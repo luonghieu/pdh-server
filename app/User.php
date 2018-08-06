@@ -142,11 +142,6 @@ class User extends Authenticatable implements JWTSubject
         return 1;
     }
 
-    public function getRatingScoreAttribute()
-    {
-        return 1;
-    }
-
     public function getRoomIdAttribute()
     {
         if (!Auth::check()) {
