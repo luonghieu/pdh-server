@@ -24,6 +24,12 @@ class UsersTableSeeder extends Seeder
 
         DB::table('users')->insert($admin);
 
+        \App\Avatar::create([
+            'path' => 'a2ba5c90-9925-11e8-9960-43988858caec.png',
+            'thumbnai' => 'a2ba5c90-9925-11e8-9960-43988858caec.png',
+            'is_default' => true,
+            'user_id' => 1
+        ]);
         /* factory(App\User::class, 50)->create();
 
         // generate avatars for users

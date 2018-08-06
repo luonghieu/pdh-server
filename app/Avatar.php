@@ -11,6 +11,7 @@ class Avatar extends Model
         'path',
         'thumbnail',
         'is_default',
+        'user_id'
     ];
 
     public function getPathAttribute($value)
