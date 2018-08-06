@@ -288,23 +288,6 @@ img {
 }
 
 .display_img{
-
-    display: none;
-}
-
-.dell_mess {
-    padding-right: 7px;
-    position: absolute;
-    right: 0;
-    top: 22px;
-    display: none;
-}
-
-.dell_image {
-    padding-right: 7px;
-    position: absolute;
-    right: 0;
-    top: 67px;
     display: none;
 }
 
@@ -313,23 +296,130 @@ img {
     display: inline-block;
 }
 
+.dell_mess {
+    padding-right: 7px;
+    position: absolute;
+    right: 0;
+    top: 22px;
+    display: none;
+    color: red;
+    border: none;
+    background: none;
+}
+
 .delete_message:hover .dell_mess {
     display: block;
 }
-
-.delete_message:hover .dell_image {
-    display: block;
-}
-
 
 .on_mess{
     cursor: pointer;
 }
 
-.dell_image a {
-    color: red;
+/*Popup confirm delete*/
+
+.modal_del {
+    position: fixed;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 0;
+    background: rgba(0, 0, 0, .5);
 }
 
-.dell_mess a {
-    color: red;
+.modal-window {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transition: .5s;
+    width: 100%;
+    min-width: 235px;
+    max-width: 235px;
+    background: white;
+    box-shadow: 0 0 10px rgba(0, 0, 0, .5);
+    transform: translate(-50%, -50%);
+    padding: 1em;
+    color: black;
+    text-align: center;
+    border-radius: 5px;
+}
+
+.modal-window .actions {
+    padding: 4px;
+}
+
+.actions button {
+    font-size: inherit;
+    margin: 4px;
+    border: none;
+    padding: 6px 8px;
+    cursor: pointer;
+}
+
+.actions .cancel {
+    background: darkcyan;
+    color: white;
+    border-radius: 5px;
+}
+
+.actions .confirm {
+    background: darkred;
+    color: white;
+    border-radius: 5px;
+}
+
+.appear-enter {
+    opacity: 0;
+}
+
+.appear-enter .modal-window {
+    transform: translate(-75%, -50%);
+}
+
+.appear-enter-active {
+    transition: .5s;
+}
+
+.appear-leave-active .modal-window {
+    transform: translate(0, -50%);
+}
+
+.appear-leave-active {
+    opacity: 0;
+    transition: .5s;
+}
+
+.is_online{
+    position: absolute;
+    width: 10px;
+    height: 10px;
+    background-color: #79c447;
+    color: #fff;
+    border-radius: 50px;
+    font-size: 14px;
+    line-height: 25px;
+    text-align: center;
+    z-index: 105;
+}
+.is_offline{
+    position: absolute;
+    width: 10px;
+    height: 10px;
+    background-color: #999;
+    color: #fff;
+    border-radius: 50px;
+    font-size: 14px;
+    line-height: 25px;
+    text-align: center;
+    z-index: 105;
+}
+
+.search_name{
+    position: relative;
+    z-index: 1000;
+    top: -25px;
+    left: 340px;
+}
+
+.input_search{
+    position: relative;
 }

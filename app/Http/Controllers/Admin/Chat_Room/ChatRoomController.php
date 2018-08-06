@@ -2,23 +2,21 @@
 
 namespace App\Http\Controllers\Admin\Chat_Room;
 
-use App\Enums\UserType;
 use App\Http\Controllers\Controller;
-use App\Room;
-use App\User;
 use Illuminate\Support\Facades\Auth;
 use Tymon\JWTAuth\Facades\JWTAuth;
 
-class ChatRoomGetInfoController extends Controller
+class ChatRoomController extends Controller
 {
-    public function getToken()
+
+    public function index()
     {
 
         $user = Auth::user();
         $user_id = $user->id;
         $token = JWTAuth::fromUser($user);
-        return response()->json(['token' => $token, 'user_id' => $user_id]);
-
+        return view('admin.chatroom.index', compact('token', 'user_id'));
     }
+
 
 }

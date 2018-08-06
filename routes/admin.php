@@ -38,7 +38,7 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.'], function () {
     });
 
     Route::group(['namespace' => 'Chat_Room', 'prefix' => 'chat_rooms', 'as' => 'chat_rooms.', 'middleware' => 'is_admin'], function () {
-        Route::get('/get_token', ['as' => 'getToken', 'uses' => 'ChatRoomGetInfoController@getToken']);
+        Route::get('/', ['as' => 'index', 'uses' => 'ChatRoomController@index']);
     });
 
 

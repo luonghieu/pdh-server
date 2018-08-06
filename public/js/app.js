@@ -1709,6 +1709,8 @@ module.exports = {
 
 "use strict";
 Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__ConfirmDelete__ = __webpack_require__("./resources/assets/js/components/ConfirmDelete.vue");
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__ConfirmDelete___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0__ConfirmDelete__);
 //
 //
 //
@@ -1742,19 +1744,42 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
+//
+
+
 
 /* harmony default export */ __webpack_exports__["default"] = ({
     name: "ChatMessage",
+    components: { ConfirmDelete: __WEBPACK_IMPORTED_MODULE_0__ConfirmDelete___default.a },
     props: ['list_message', 'user_id', 'created_at'],
-    message_id: '',
+    data: function data() {
+        return {
+            confirmModal: false,
+            selectedMessage: null,
+            listMessage: '',
+            message_id: ''
+        };
+    },
 
     methods: {
-        delMessage: function delMessage() {
-            var meessage = document.getElementById('mess');
-            var message_id = meessage.dataset.content;
-            window.axios.delete('../../api/v1/messages/' + message_id).then(function (response) {});
+        confirmDelete: function confirmDelete(index, list_message, id) {
+            this.selectedMessage = index;
+            this.listMessage = list_message;
+            this.message_id = id;
+            this.confirmModal = true;
+        },
+        cancelDelete: function cancelDelete() {
+            this.confirmModal = false;
+            this.selectedMessage = null;
+        },
+        deleteMessage: function deleteMessage() {
+            this.confirmModal = false;
+            this.$delete(this.listMessage, this.selectedMessage);
+            window.axios.delete('../../api/v1/messages/' + this.message_id).then(function (response) {});
+            this.selectedMessage = null;
         }
     }
+
 });
 
 /***/ }),
@@ -1819,15 +1844,15 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
             message: '',
             list_messages: [],
             users: '',
-            user_id: [],
-            userId: '',
+            user_id: '',
             image: '',
             type: 2,
             picture: '',
             none: true,
             file_upload: '',
             errors: [],
-            created_at: ''
+            created_at: '',
+            timer: ''
         };
     },
 
@@ -1841,57 +1866,51 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
     },
 
     created: function created() {
-        var _this = this;
-
-        this.getToken(function () {
-            _this.getRoom();
-        });
+        this.getToken();
+        this.getRoom();
+        this.timer = setInterval(this.getRoom, 20000);
     },
 
 
     methods: {
         init: function init(id) {
-            var _this2 = this;
+            var _this = this;
 
             window.Echo.private('room.' + id).listen('MessageCreated', function (e) {
-                _this2.list_messages.push(e.message);
+                _this.list_messages.push(e.message);
             });
         },
-        getToken: function getToken(callback) {
-            var _this3 = this;
+        getToken: function getToken() {
 
-            window.axios.get("chat_rooms/get_token").then(function (response) {
-                var access_token = response.data.token;
-                _this3.user_id = response.data.user_id;
-                window.axios.defaults.headers.common['Authorization'] = 'Bearer ' + access_token;
-                Echo.connector.options.auth.headers['Authorization'] = 'Bearer ' + access_token;
-
-                if (callback) callback();
-            });
+            var access_token = document.getElementById('token').value;
+            this.user_id = document.getElementById('userId').value;
+            window.axios.defaults.headers.common['Authorization'] = 'Bearer ' + access_token;
+            Echo.connector.options.auth.headers['Authorization'] = 'Bearer ' + access_token;
         },
         getRoom: function getRoom() {
-            var _this4 = this;
+            var _this2 = this;
 
             window.axios.get("../../api/v1/rooms").then(function (response) {
                 var rooms = response.data.data.data;
-                _this4.users = rooms;
+                _this2.users = rooms;
+                console.log(rooms);
             });
         },
         getMessagesInRoom: function getMessagesInRoom(id) {
-            var _this5 = this;
+            var _this3 = this;
 
             window.axios.get("../../api/v1/rooms/" + id).then(function (response) {
-                _this5.list_messages = [];
+                _this3.list_messages = [];
                 var room = response.data.data.data;
                 room.forEach(function (messages) {
                     messages.forEach(function (item) {
-                        _this5.list_messages.push(item);
+                        _this3.list_messages.push(item);
                     });
                 });
             });
         },
         sendMessage: function sendMessage() {
-            var _this6 = this;
+            var _this4 = this;
 
             this.picture = this.image;
             this.created_at = new Date().toLocaleTimeString().replace(/([\d]+:[\d]{2})(:[\d]{2})(.*)/, "$1$3");
@@ -1914,9 +1933,9 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
             }
 
             window.axios.post('../../api/v1/rooms/' + this.$route.params.id + '/messages', data, config).then(function (response) {
-                _this6.list_messages.push(response.data.data);
-                _this6.message = '';
-                _this6.removeImage().click();
+                _this4.list_messages.push(response.data.data);
+                _this4.message = '';
+                _this4.removeImage().click();
             });
         },
         chooseFiles: function chooseFiles() {
@@ -1975,7 +1994,7 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 
 /***/ }),
 
-/***/ "./node_modules/babel-loader/lib/index.js?{\"cacheDirectory\":true,\"presets\":[[\"env\",{\"modules\":false,\"targets\":{\"browsers\":[\"> 2%\"],\"uglify\":true}}]],\"plugins\":[\"transform-object-rest-spread\",[\"transform-runtime\",{\"polyfill\":false,\"helpers\":false}]]}!./node_modules/vue-loader/lib/selector.js?type=script&index=0!./resources/assets/js/components/ListUsers.vue":
+/***/ "./node_modules/babel-loader/lib/index.js?{\"cacheDirectory\":true,\"presets\":[[\"env\",{\"modules\":false,\"targets\":{\"browsers\":[\"> 2%\"],\"uglify\":true}}]],\"plugins\":[\"transform-object-rest-spread\",[\"transform-runtime\",{\"polyfill\":false,\"helpers\":false}]]}!./node_modules/vue-loader/lib/selector.js?type=script&index=0!./resources/assets/js/components/ConfirmDelete.vue":
 /***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
@@ -1992,29 +2011,28 @@ Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
+
+/* harmony default export */ __webpack_exports__["default"] = ({
+    name: "ConfirmDelete",
+    template: "#modal",
+    props: ["delete"],
+    methods: {
+        onConfirm: function onConfirm() {
+            this.$emit("confirm");
+        },
+        onCancel: function onCancel() {
+            this.$emit("cancel");
+        }
+    }
+});
+
+/***/ }),
+
+/***/ "./node_modules/babel-loader/lib/index.js?{\"cacheDirectory\":true,\"presets\":[[\"env\",{\"modules\":false,\"targets\":{\"browsers\":[\"> 2%\"],\"uglify\":true}}]],\"plugins\":[\"transform-object-rest-spread\",[\"transform-runtime\",{\"polyfill\":false,\"helpers\":false}]]}!./node_modules/vue-loader/lib/selector.js?type=script&index=0!./resources/assets/js/components/ListUsers.vue":
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
 //
 //
 //
@@ -6557,7 +6575,7 @@ exports = module.exports = __webpack_require__("./node_modules/css-loader/lib/cs
 
 
 // module
-exports.push([module.i, "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n", ""]);
+exports.push([module.i, "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n", ""]);
 
 // exports
 
@@ -6572,7 +6590,7 @@ exports = module.exports = __webpack_require__("./node_modules/css-loader/lib/cs
 
 
 // module
-exports.push([module.i, "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n", ""]);
+exports.push([module.i, "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n", ""]);
 
 // exports
 
@@ -6587,7 +6605,22 @@ exports = module.exports = __webpack_require__("./node_modules/css-loader/lib/cs
 
 
 // module
-exports.push([module.i, "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n", ""]);
+exports.push([module.i, "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n", ""]);
+
+// exports
+
+
+/***/ }),
+
+/***/ "./node_modules/css-loader/index.js!./node_modules/vue-loader/lib/style-compiler/index.js?{\"vue\":true,\"id\":\"data-v-49b37b38\",\"scoped\":true,\"hasInlineConfig\":true}!./node_modules/vue-loader/lib/selector.js?type=styles&index=0!./resources/assets/js/components/ConfirmDelete.vue":
+/***/ (function(module, exports, __webpack_require__) {
+
+exports = module.exports = __webpack_require__("./node_modules/css-loader/lib/css-base.js")(false);
+// imports
+
+
+// module
+exports.push([module.i, "\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n", ""]);
 
 // exports
 
@@ -46270,54 +46303,63 @@ var render = function() {
   return _c(
     "div",
     { staticClass: "msg_history" },
-    _vm._l(_vm.list_message, function(message) {
-      return _c("div", [
-        _vm._v("\n        " + _vm._s(message.id) + "\n        "),
+    _vm._l(_vm.list_message, function(message, index) {
+      return _c("div", { staticClass: "display_message" }, [
         message.user_id == _vm.user_id
           ? _c("div", { staticClass: "outgoing_msg" }, [
-              _c("div", { staticClass: "sent_msg" }, [
-                _c("div", { staticClass: "delete_message" }, [
-                  message.image
-                    ? _c("div", { staticClass: "on_mess" }, [
-                        _c("img", {
-                          attrs: { width: "100", src: message.image }
-                        })
-                      ])
-                    : _vm._e(),
-                  _vm._v(" "),
-                  message.message
-                    ? _c("p", { staticClass: "on_mess" }, [
-                        _vm._v(_vm._s(message.message))
-                      ])
-                    : _vm._e(),
-                  _vm._v(" "),
-                  _c("div", { staticClass: "dell_mess" }, [
+              _c(
+                "div",
+                { staticClass: "sent_msg" },
+                [
+                  _c("div", { staticClass: "delete_message" }, [
+                    message.image
+                      ? _c("div", { staticClass: "on_mess" }, [
+                          _c("img", {
+                            attrs: { width: "100", src: message.image }
+                          })
+                        ])
+                      : _vm._e(),
+                    _vm._v(" "),
+                    message.message
+                      ? _c("p", { key: message.id, staticClass: "on_mess" }, [
+                          _vm._v(_vm._s(message.message))
+                        ])
+                      : _vm._e(),
+                    _vm._v(" "),
                     _c(
-                      "a",
+                      "button",
                       {
-                        attrs: {
-                          href: "#",
-                          id: "mess",
-                          "data-content": message.id
-                        },
-                        on: { click: _vm.delMessage },
-                        model: {
-                          value: message.id,
-                          callback: function($$v) {
-                            _vm.$set(message, "id", $$v)
-                          },
-                          expression: "message.id"
+                        staticClass: "dell_mess",
+                        on: {
+                          click: function($event) {
+                            _vm.confirmDelete(
+                              index,
+                              _vm.list_message,
+                              message.id
+                            )
+                          }
                         }
                       },
                       [_c("i", { staticClass: "fa fa-remove" })]
                     )
+                  ]),
+                  _vm._v(" "),
+                  _vm.confirmModal
+                    ? _c("confirm-delete", {
+                        attrs: { delete: _vm.selectedMessage },
+                        on: {
+                          confirm: _vm.deleteMessage,
+                          cancel: _vm.cancelDelete
+                        }
+                      })
+                    : _vm._e(),
+                  _vm._v(" "),
+                  _c("span", { staticClass: "time_date" }, [
+                    _vm._v(_vm._s(_vm.created_at))
                   ])
-                ]),
-                _vm._v(" "),
-                _c("span", { staticClass: "time_date" }, [
-                  _vm._v(_vm._s(_vm.created_at))
-                ])
-              ])
+                ],
+                1
+              )
             ])
           : _c(
               "div",
@@ -46374,29 +46416,32 @@ var render = function() {
   var _c = _vm._self._c || _h
   return _c("div", { staticClass: "inbox_people" }, [
     _c("div", { staticClass: "panel-body handling" }, [
-      _c("div", [
-        _c("input", {
-          directives: [
-            {
-              name: "model",
-              rawName: "v-model",
-              value: _vm.searchName,
-              expression: "searchName"
-            }
-          ],
-          staticClass: "form-control",
-          attrs: { type: "text", placeholder: "ユーザーID,名前" },
-          domProps: { value: _vm.searchName },
-          on: {
-            input: function($event) {
-              if ($event.target.composing) {
-                return
-              }
-              _vm.searchName = $event.target.value
-            }
+      _c("input", {
+        directives: [
+          {
+            name: "model",
+            rawName: "v-model",
+            value: _vm.searchName,
+            expression: "searchName"
           }
-        })
-      ])
+        ],
+        staticClass: "form-control input_search",
+        attrs: { type: "text", placeholder: "名前" },
+        domProps: { value: _vm.searchName },
+        on: {
+          input: function($event) {
+            if ($event.target.composing) {
+              return
+            }
+            _vm.searchName = $event.target.value
+          }
+        }
+      }),
+      _vm._v(" "),
+      _c("i", {
+        staticClass: "fa fa-search search_name",
+        attrs: { "aria-hidden": "true" }
+      })
     ]),
     _vm._v(" "),
     _vm._m(0),
@@ -46404,233 +46449,125 @@ var render = function() {
     _c(
       "div",
       { staticClass: "inbox_chat inbox_cast", attrs: { id: "cast" } },
-      [
-        _vm._l(_vm.filteredData, function(value) {
-          return _c("div", [
-            value.unread_count >= 1
-              ? _c(
-                  "div",
-                  { class: { active_chat: _vm.isActive } },
-                  [
-                    _c(
-                      "router-link",
-                      {
-                        attrs: {
-                          to: { name: "ChatRoom", params: { id: value.id } }
-                        }
-                      },
-                      _vm._l(value.users, function(userDetail) {
-                        return userDetail.id !== _vm.user_id &&
-                          userDetail.type == _vm.cast
-                          ? _c("div", { staticClass: "chat_list" }, [
-                              _c("div", { staticClass: "chat_people" }, [
-                                userDetail.avatars
-                                  ? _c("div", { staticClass: "chat_img" }, [
-                                      _c("img", {
-                                        staticClass: "img_avatar",
-                                        attrs: { src: userDetail.avatars[0] }
-                                      })
-                                    ])
-                                  : _vm._e(),
-                                _vm._v(" "),
-                                _c("div", { staticClass: "chat_ib" }, [
-                                  _c("h5", [
-                                    _vm._v(_vm._s(userDetail.nickname))
-                                  ]),
-                                  _vm._v(" "),
-                                  value.latest_message.message
-                                    ? _c("p", [
-                                        _vm._v(
-                                          _vm._s(value.latest_message.message)
-                                        )
-                                      ])
-                                    : _vm._e()
+      _vm._l(_vm.filteredData, function(value) {
+        return _c("div", [
+          _c(
+            "div",
+            { class: value.unread_count >= 1 ? "active_chat" : "" },
+            [
+              _c(
+                "router-link",
+                {
+                  attrs: { to: { name: "ChatRoom", params: { id: value.id } } }
+                },
+                _vm._l(value.users, function(userDetail) {
+                  return userDetail.id !== _vm.user_id &&
+                    userDetail.type === _vm.cast
+                    ? _c("div", { staticClass: "chat_list" }, [
+                        _c("div", { staticClass: "chat_people" }, [
+                          userDetail.avatars
+                            ? _c("div", { staticClass: "chat_img" }, [
+                                _c("img", {
+                                  staticClass: "img_avatar",
+                                  attrs: { src: userDetail.avatars[0] }
+                                })
+                              ])
+                            : _vm._e(),
+                          _vm._v(" "),
+                          _c("span", {
+                            class:
+                              userDetail.is_online === 1
+                                ? "is_online"
+                                : "is_offline"
+                          }),
+                          _vm._v(" "),
+                          _c("div", { staticClass: "chat_ib" }, [
+                            _c("h5", [_vm._v(_vm._s(userDetail.nickname))]),
+                            _vm._v(" "),
+                            value.latest_message.message
+                              ? _c("p", [
+                                  _vm._v(_vm._s(value.latest_message.message))
                                 ])
-                              ]),
-                              _vm._v(" "),
-                              value.unread_count >= 1
-                                ? _c("span", { staticClass: "notify-chat" }, [
-                                    _vm._v(_vm._s(value.unread_count))
-                                  ])
-                                : _vm._e()
+                              : _vm._e()
+                          ])
+                        ]),
+                        _vm._v(" "),
+                        value.unread_count >= 1
+                          ? _c("span", { staticClass: "notify-chat" }, [
+                              _vm._v(_vm._s(value.unread_count))
                             ])
                           : _vm._e()
-                      })
-                    )
-                  ],
-                  1
-                )
-              : _vm._e()
-          ])
-        }),
-        _vm._v(" "),
-        _vm._l(_vm.filteredData, function(value) {
-          return _c("div", [
-            value.unread_count === 0
-              ? _c(
-                  "div",
-                  [
-                    _c(
-                      "router-link",
-                      {
-                        attrs: {
-                          to: { name: "ChatRoom", params: { id: value.id } }
-                        }
-                      },
-                      _vm._l(value.users, function(userDetail) {
-                        return userDetail.id !== _vm.user_id &&
-                          userDetail.type == _vm.cast
-                          ? _c("div", { staticClass: "chat_list" }, [
-                              _c("div", { staticClass: "chat_people" }, [
-                                userDetail.avatars
-                                  ? _c("div", { staticClass: "chat_img" }, [
-                                      _c("img", {
-                                        staticClass: "img_avatar",
-                                        attrs: { src: userDetail.avatars[0] }
-                                      })
-                                    ])
-                                  : _vm._e(),
-                                _vm._v(" "),
-                                _c("div", { staticClass: "chat_ib" }, [
-                                  _c("h5", [
-                                    _vm._v(_vm._s(userDetail.nickname))
-                                  ])
-                                ])
-                              ]),
-                              _vm._v(" "),
-                              value.unread_count >= 1
-                                ? _c("span", { staticClass: "notify-chat" }, [
-                                    _vm._v(_vm._s(value.unread_count))
-                                  ])
-                                : _vm._e()
-                            ])
-                          : _vm._e()
-                      })
-                    )
-                  ],
-                  1
-                )
-              : _vm._e()
-          ])
-        })
-      ],
-      2
+                      ])
+                    : _vm._e()
+                })
+              )
+            ],
+            1
+          )
+        ])
+      })
     ),
     _vm._v(" "),
     _c(
       "div",
       { staticClass: "inbox_chat inbox_guest", attrs: { id: "guest" } },
-      [
-        _vm._l(_vm.filteredData, function(value) {
-          return _c("div", [
-            value.unread_count >= 1
-              ? _c(
-                  "div",
-                  { class: { active_chat: _vm.isActive } },
-                  [
-                    _c(
-                      "router-link",
-                      {
-                        attrs: {
-                          to: { name: "ChatRoom", params: { id: value.id } }
-                        }
-                      },
-                      _vm._l(value.users, function(userDetail) {
-                        return userDetail.id !== _vm.user_id &&
-                          userDetail.type == _vm.guest
-                          ? _c("div", { staticClass: "chat_list" }, [
-                              _c("div", { staticClass: "chat_people" }, [
-                                userDetail.avatars
-                                  ? _c("div", { staticClass: "chat_img" }, [
-                                      _c("img", {
-                                        staticClass: "img_avatar",
-                                        attrs: { src: userDetail.avatars[0] }
-                                      })
-                                    ])
-                                  : _vm._e(),
-                                _vm._v(" "),
-                                _c("div", { staticClass: "chat_ib" }, [
-                                  _c("h5", [
-                                    _vm._v(_vm._s(userDetail.nickname))
-                                  ]),
-                                  _vm._v(" "),
-                                  value.latest_message.message
-                                    ? _c("p", [
-                                        _vm._v(
-                                          _vm._s(value.latest_message.message)
-                                        )
-                                      ])
-                                    : _vm._e()
+      _vm._l(_vm.filteredData, function(value) {
+        return _c("div", [
+          _c(
+            "div",
+            { class: value.unread_count >= 1 ? "active_chat" : "" },
+            [
+              _c(
+                "router-link",
+                {
+                  attrs: { to: { name: "ChatRoom", params: { id: value.id } } }
+                },
+                _vm._l(value.users, function(userDetail) {
+                  return userDetail.id !== _vm.user_id &&
+                    userDetail.type === _vm.guest
+                    ? _c("div", { staticClass: "chat_list" }, [
+                        _c("div", { staticClass: "chat_people" }, [
+                          userDetail.avatars
+                            ? _c("div", { staticClass: "chat_img" }, [
+                                _c("img", {
+                                  staticClass: "img_avatar",
+                                  attrs: { src: userDetail.avatars[0] }
+                                })
+                              ])
+                            : _vm._e(),
+                          _vm._v(" "),
+                          _c("span", {
+                            class:
+                              userDetail.is_online === 1
+                                ? "is_online"
+                                : "is_offline"
+                          }),
+                          _vm._v(" "),
+                          _c("div", { staticClass: "chat_ib" }, [
+                            _c("h5", [_vm._v(_vm._s(userDetail.nickname))]),
+                            _vm._v(" "),
+                            value.latest_message.message
+                              ? _c("p", [
+                                  _vm._v(_vm._s(value.latest_message.message))
                                 ])
-                              ]),
-                              _vm._v(" "),
-                              value.unread_count >= 1
-                                ? _c("span", { staticClass: "notify-chat" }, [
-                                    _vm._v(_vm._s(value.unread_count))
-                                  ])
-                                : _vm._e()
+                              : _vm._e()
+                          ])
+                        ]),
+                        _vm._v(" "),
+                        value.unread_count >= 1
+                          ? _c("span", { staticClass: "notify-chat" }, [
+                              _vm._v(_vm._s(value.unread_count))
                             ])
                           : _vm._e()
-                      })
-                    )
-                  ],
-                  1
-                )
-              : _vm._e()
-          ])
-        }),
-        _vm._v(" "),
-        _vm._l(_vm.filteredData, function(value) {
-          return _c("div", [
-            value.unread_count === 0
-              ? _c(
-                  "div",
-                  [
-                    _c(
-                      "router-link",
-                      {
-                        attrs: {
-                          to: { name: "ChatRoom", params: { id: value.id } }
-                        }
-                      },
-                      _vm._l(value.users, function(userDetail) {
-                        return userDetail.id !== _vm.user_id &&
-                          userDetail.type == _vm.guest
-                          ? _c("div", { staticClass: "chat_list" }, [
-                              _c("div", { staticClass: "chat_people" }, [
-                                userDetail.avatars
-                                  ? _c("div", { staticClass: "chat_img" }, [
-                                      _c("img", {
-                                        staticClass: "img_avatar",
-                                        attrs: { src: userDetail.avatars[0] }
-                                      })
-                                    ])
-                                  : _vm._e(),
-                                _vm._v(" "),
-                                _c("div", { staticClass: "chat_ib" }, [
-                                  _c("h5", [
-                                    _vm._v(_vm._s(userDetail.nickname))
-                                  ])
-                                ])
-                              ]),
-                              _vm._v(" "),
-                              value.unread_count >= 1
-                                ? _c("span", { staticClass: "notify-chat" }, [
-                                    _vm._v(_vm._s(value.unread_count))
-                                  ])
-                                : _vm._e()
-                            ])
-                          : _vm._e()
-                      })
-                    )
-                  ],
-                  1
-                )
-              : _vm._e()
-          ])
-        })
-      ],
-      2
+                      ])
+                    : _vm._e()
+                })
+              )
+            ],
+            1
+          )
+        ])
+      })
     )
   ])
 }
@@ -46662,6 +46599,41 @@ if (false) {
   module.hot.accept()
   if (module.hot.data) {
     require("vue-hot-reload-api")      .rerender("data-v-30f34ae3", module.exports)
+  }
+}
+
+/***/ }),
+
+/***/ "./node_modules/vue-loader/lib/template-compiler/index.js?{\"id\":\"data-v-49b37b38\",\"hasScoped\":true,\"buble\":{\"transforms\":{}}}!./node_modules/vue-loader/lib/selector.js?type=template&index=0!./resources/assets/js/components/ConfirmDelete.vue":
+/***/ (function(module, exports, __webpack_require__) {
+
+var render = function() {
+  var _vm = this
+  var _h = _vm.$createElement
+  var _c = _vm._self._c || _h
+  return _c("div", { staticClass: "modal_del" }, [
+    _c("div", { staticClass: "modal-window" }, [
+      _c("h4", [_vm._v("Are you sure want to delete?")]),
+      _vm._v(" "),
+      _c("div", { staticClass: "actions" }, [
+        _c("button", { staticClass: "cancel", on: { click: _vm.onCancel } }, [
+          _vm._v("Cancel")
+        ]),
+        _vm._v(" "),
+        _c("button", { staticClass: "confirm", on: { click: _vm.onConfirm } }, [
+          _vm._v("Delete")
+        ])
+      ])
+    ])
+  ])
+}
+var staticRenderFns = []
+render._withStripped = true
+module.exports = { render: render, staticRenderFns: staticRenderFns }
+if (false) {
+  module.hot.accept()
+  if (module.hot.data) {
+    require("vue-hot-reload-api")      .rerender("data-v-49b37b38", module.exports)
   }
 }
 
@@ -49369,6 +49341,33 @@ if(false) {
  if(!content.locals) {
    module.hot.accept("!!../../../../node_modules/css-loader/index.js!../../../../node_modules/vue-loader/lib/style-compiler/index.js?{\"vue\":true,\"id\":\"data-v-30f34ae3\",\"scoped\":true,\"hasInlineConfig\":true}!../../../../node_modules/vue-loader/lib/selector.js?type=styles&index=0!./ListUsers.vue", function() {
      var newContent = require("!!../../../../node_modules/css-loader/index.js!../../../../node_modules/vue-loader/lib/style-compiler/index.js?{\"vue\":true,\"id\":\"data-v-30f34ae3\",\"scoped\":true,\"hasInlineConfig\":true}!../../../../node_modules/vue-loader/lib/selector.js?type=styles&index=0!./ListUsers.vue");
+     if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
+     update(newContent);
+   });
+ }
+ // When the module is disposed, remove the <style> tags
+ module.hot.dispose(function() { update(); });
+}
+
+/***/ }),
+
+/***/ "./node_modules/vue-style-loader/index.js!./node_modules/css-loader/index.js!./node_modules/vue-loader/lib/style-compiler/index.js?{\"vue\":true,\"id\":\"data-v-49b37b38\",\"scoped\":true,\"hasInlineConfig\":true}!./node_modules/vue-loader/lib/selector.js?type=styles&index=0!./resources/assets/js/components/ConfirmDelete.vue":
+/***/ (function(module, exports, __webpack_require__) {
+
+// style-loader: Adds some css to the DOM by adding a <style> tag
+
+// load the styles
+var content = __webpack_require__("./node_modules/css-loader/index.js!./node_modules/vue-loader/lib/style-compiler/index.js?{\"vue\":true,\"id\":\"data-v-49b37b38\",\"scoped\":true,\"hasInlineConfig\":true}!./node_modules/vue-loader/lib/selector.js?type=styles&index=0!./resources/assets/js/components/ConfirmDelete.vue");
+if(typeof content === 'string') content = [[module.i, content, '']];
+if(content.locals) module.exports = content.locals;
+// add the styles to the DOM
+var update = __webpack_require__("./node_modules/vue-style-loader/lib/addStylesClient.js")("2e10dd30", content, false, {});
+// Hot Module Replacement
+if(false) {
+ // When the styles change, update the <style> tags
+ if(!content.locals) {
+   module.hot.accept("!!../../../../node_modules/css-loader/index.js!../../../../node_modules/vue-loader/lib/style-compiler/index.js?{\"vue\":true,\"id\":\"data-v-49b37b38\",\"scoped\":true,\"hasInlineConfig\":true}!../../../../node_modules/vue-loader/lib/selector.js?type=styles&index=0!./ConfirmDelete.vue", function() {
+     var newContent = require("!!../../../../node_modules/css-loader/index.js!../../../../node_modules/vue-loader/lib/style-compiler/index.js?{\"vue\":true,\"id\":\"data-v-49b37b38\",\"scoped\":true,\"hasInlineConfig\":true}!../../../../node_modules/vue-loader/lib/selector.js?type=styles&index=0!./ConfirmDelete.vue");
      if(typeof newContent === 'string') newContent = [[module.id, newContent, '']];
      update(newContent);
    });
@@ -60923,6 +60922,58 @@ if (false) {(function () {
     hotAPI.createRecord("data-v-187c340a", Component.options)
   } else {
     hotAPI.reload("data-v-187c340a", Component.options)
+  }
+  module.hot.dispose(function (data) {
+    disposed = true
+  })
+})()}
+
+module.exports = Component.exports
+
+
+/***/ }),
+
+/***/ "./resources/assets/js/components/ConfirmDelete.vue":
+/***/ (function(module, exports, __webpack_require__) {
+
+var disposed = false
+function injectStyle (ssrContext) {
+  if (disposed) return
+  __webpack_require__("./node_modules/vue-style-loader/index.js!./node_modules/css-loader/index.js!./node_modules/vue-loader/lib/style-compiler/index.js?{\"vue\":true,\"id\":\"data-v-49b37b38\",\"scoped\":true,\"hasInlineConfig\":true}!./node_modules/vue-loader/lib/selector.js?type=styles&index=0!./resources/assets/js/components/ConfirmDelete.vue")
+}
+var normalizeComponent = __webpack_require__("./node_modules/vue-loader/lib/component-normalizer.js")
+/* script */
+var __vue_script__ = __webpack_require__("./node_modules/babel-loader/lib/index.js?{\"cacheDirectory\":true,\"presets\":[[\"env\",{\"modules\":false,\"targets\":{\"browsers\":[\"> 2%\"],\"uglify\":true}}]],\"plugins\":[\"transform-object-rest-spread\",[\"transform-runtime\",{\"polyfill\":false,\"helpers\":false}]]}!./node_modules/vue-loader/lib/selector.js?type=script&index=0!./resources/assets/js/components/ConfirmDelete.vue")
+/* template */
+var __vue_template__ = __webpack_require__("./node_modules/vue-loader/lib/template-compiler/index.js?{\"id\":\"data-v-49b37b38\",\"hasScoped\":true,\"buble\":{\"transforms\":{}}}!./node_modules/vue-loader/lib/selector.js?type=template&index=0!./resources/assets/js/components/ConfirmDelete.vue")
+/* template functional */
+var __vue_template_functional__ = false
+/* styles */
+var __vue_styles__ = injectStyle
+/* scopeId */
+var __vue_scopeId__ = "data-v-49b37b38"
+/* moduleIdentifier (server only) */
+var __vue_module_identifier__ = null
+var Component = normalizeComponent(
+  __vue_script__,
+  __vue_template__,
+  __vue_template_functional__,
+  __vue_styles__,
+  __vue_scopeId__,
+  __vue_module_identifier__
+)
+Component.options.__file = "resources/assets/js/components/ConfirmDelete.vue"
+
+/* hot reload */
+if (false) {(function () {
+  var hotAPI = require("vue-hot-reload-api")
+  hotAPI.install(require("vue"), false)
+  if (!hotAPI.compatible) return
+  module.hot.accept()
+  if (!module.hot.data) {
+    hotAPI.createRecord("data-v-49b37b38", Component.options)
+  } else {
+    hotAPI.reload("data-v-49b37b38", Component.options)
   }
   module.hot.dispose(function (data) {
     disposed = true

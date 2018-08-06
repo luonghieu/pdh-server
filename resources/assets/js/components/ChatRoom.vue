@@ -49,8 +49,7 @@
                 message: '',
                 list_messages: [],
                 users: '',
-                user_id: [],
-                userId: '',
+                user_id: '',
                 image: '',
                 type: 2,
                 picture: '',
@@ -58,6 +57,7 @@
                 file_upload: '',
                 errors: [],
                 created_at: '',
+                timer: ''
             }
         },
 
@@ -70,9 +70,9 @@
         },
 
         created() {
-            this.getToken(() => {
-                this.getRoom();
-            });
+            this.getToken();
+            this.getRoom();
+            this.timer = setInterval(this.getRoom, 20000)
         },
 
         methods: {
@@ -83,17 +83,13 @@
                     });
             },
 
-            getToken(callback) {
-                window.axios
-                    .get("chat_rooms/get_token")
-                    .then(response => {
-                        const access_token = response.data.token;
-                        this.user_id = response.data.user_id;
-                        window.axios.defaults.headers.common['Authorization'] = 'Bearer ' + access_token;
-                        Echo.connector.options.auth.headers['Authorization'] = 'Bearer ' + access_token;
+            getToken() {
 
-                        if (callback) callback();
-                    });
+                const access_token = document.getElementById('token').value;
+                this.user_id = document.getElementById('userId').value;
+                window.axios.defaults.headers.common['Authorization'] = 'Bearer ' + access_token;
+                Echo.connector.options.auth.headers['Authorization'] = 'Bearer ' + access_token;
+
             },
 
             getRoom() {
@@ -101,6 +97,7 @@
                     .then(response => {
                         const rooms = response.data.data.data;
                         this.users = rooms
+                        console.log(rooms)
                     });
             },
 
