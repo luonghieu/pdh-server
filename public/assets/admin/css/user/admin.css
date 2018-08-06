@@ -1004,6 +1004,32 @@ tbody td {
   margin-left: 25px;
   border: 1px solid #919191 !important;
 }
+
+.select-reports {
+  width: 50px;
+  text-align: -webkit-center;
+}
+
+.btn-change-report {
+  display: inline-block;
+  position: absolute;
+  right: 32px;
+  top: 79px;
+}
+
+.btn-change-report button {
+  background: none;
+  border: none;
+  background-color: #6dc9e6;
+  color: #fff;
+  border-radius: 8px;
+  padding: 8px;
+}
+
+.btn-change-report button:hover {
+  background-color: #39afea;
+}
+
 @media (max-width: 767px) {
   .navbar {
     background: #20a8d817;

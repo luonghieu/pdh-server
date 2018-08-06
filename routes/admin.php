@@ -41,4 +41,8 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.'], function () {
         Route::get('{order}', ['as' => 'call', 'uses' => 'OrderController@orderCall'])->where('order', '[0-9]+');
     });
 
+    Route::group(['namespace' => 'Report', 'prefix' => 'reports', 'as' => 'reports.', 'middleware' => 'is_admin'], function () {
+        Route::get('/', ['as' => 'index', 'uses' => 'ReportController@index']);
+        Route::put('/', ['as' => 'make_report_done', 'uses' => 'ReportController@makeReportDone']);
+    });
 });
