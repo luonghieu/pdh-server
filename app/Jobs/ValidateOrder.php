@@ -50,47 +50,37 @@ class ValidateOrder implements ShouldQueue
         if ($this->order->total_cast == $castsCount) {
             try {
                 \DB::beginTransaction();
+                if ($this->order->total_cast > 1) {
+                    $room = new Room;
+                    $room->order_id = $this->order->id;
+                    $room->owner_id = $this->order->user_id;
+                    $room->type = RoomType::GROUP;
+                    $room->save();
 
-                if ($this->order->type == OrderType::NOMINATION) {
-                    $involvedUsers = [$this->order->user];
+                    $data = [$this->order->user_id];
                     foreach ($this->order->casts as $cast) {
-                        $involvedUsers[] = $cast;
+                        $data = array_merge($data, [$cast->pivot->user_id]);
                     }
 
-                    $this->sendNotification($involvedUsers);
+                    $room->users()->attach($data);
                 } else {
-                    if ($this->order->total_cast > 1) {
-                        $room = new Room;
-                        $room->order_id = $this->order->id;
-                        $room->owner_id = $this->order->user_id;
-                        $room->type = RoomType::GROUP;
-                        $room->save();
+                    $ownerId = $this->order->user_id;
+                    $userId = $this->order->casts()->first()->id;
 
-                        $data = [$this->order->user_id];
-                        foreach ($this->order->casts as $cast) {
-                            $data = array_merge($data, [$cast->pivot->user_id]);
-                        }
-
-                        $room->users()->attach($data);
-                    } else {
-                        $ownerId = $this->order->user_id;
-                        $userId = $this->order->casts()->first()->id;
-
-                        $room = $this->createDirectRoom($ownerId, $userId);
-                    }
-
-                    // activate order
-                    $this->order->status = OrderStatus::ACTIVE;
-                    $this->order->room_id = $room->id;
-                    $this->order->update();
-
-                    $involvedUsers = [$this->order->user];
-                    foreach ($this->order->casts as $cast) {
-                        $involvedUsers[] = $cast;
-                    }
-
-                    $this->sendNotification($involvedUsers);
+                    $room = $this->createDirectRoom($ownerId, $userId);
                 }
+
+                // activate order
+                $this->order->status = OrderStatus::ACTIVE;
+                $this->order->room_id = $room->id;
+                $this->order->update();
+
+                $involvedUsers = [$this->order->user];
+                foreach ($this->order->casts as $cast) {
+                    $involvedUsers[] = $cast;
+                }
+
+                $this->sendNotification($involvedUsers);
 
                 \DB::commit();
             } catch (\Exception $e) {
