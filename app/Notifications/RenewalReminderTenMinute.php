@@ -2,13 +2,13 @@
 
 namespace App\Notifications;
 
-use App\Enums\UserType;
 use App\Enums\MessageType;
-use Illuminate\Bus\Queueable;
+use App\Enums\RoomType;
 use App\Enums\SystemMessageType;
-use Illuminate\Notifications\Notification;
+use App\Enums\UserType;
+use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
-use Illuminate\Notifications\Messages\MailMessage;
+use Illuminate\Notifications\Notification;
 
 class RenewalReminderTenMinute extends Notification implements ShouldQueue
 {
@@ -64,7 +64,7 @@ class RenewalReminderTenMinute extends Notification implements ShouldQueue
             'user_id' => 1,
             'type' => MessageType::SYSTEM,
             'system_type' => SystemMessageType::NOTIFY,
-            'message' => $message
+            'message' => $message,
         ]);
 
         $roomMessage->recipients()->attach($notifiable->id, ['room_id' => $room->id]);
@@ -80,7 +80,7 @@ class RenewalReminderTenMinute extends Notification implements ShouldQueue
         $content = '解散予定時刻まで残り10分です！'
             . PHP_EOL . '解散予定時刻後は自動で延長されます。';
 
-        if ($notifiable->type == UserType::GUEST) {
+        if (UserType::GUEST == $notifiable->type) {
             $pushId = 'g_6';
         } else {
             $pushId = 'c_6';
