@@ -1,5 +1,6 @@
 <?php
 use Illuminate\Database\Seeder;
+use Webpatser\Uuid\Uuid;
 
 class UsersTableSeeder extends Seeder
 {
@@ -23,10 +24,13 @@ class UsersTableSeeder extends Seeder
         ];
 
         DB::table('users')->insert($admin);
+        $fileContents = \Storage::disk('local')->get("system_images/cheers_c.jpg");
+        $fileName = Uuid::generate()->string . '.jpg';
+        \Storage::put($fileName, $fileContents, 'public');
 
         \App\Avatar::create([
-            'path' => 'a2ba5c90-9925-11e8-9960-43988858caec.png',
-            'thumbnai' => 'a2ba5c90-9925-11e8-9960-43988858caec.png',
+            'path' => $fileName,
+            'thumbnai' => $fileName,
             'is_default' => true,
             'user_id' => 1
         ]);
