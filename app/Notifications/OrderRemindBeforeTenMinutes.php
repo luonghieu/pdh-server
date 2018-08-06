@@ -69,7 +69,7 @@ class OrderRemindBeforeTenMinutes extends Notification implements ShouldQueue
             'user_id' => 1,
             'type' => MessageType::SYSTEM,
             'message' => $message,
-            'system_type' => SystemMessageType::NOTIFY
+            'system_type' => SystemMessageType::NOTIFY,
         ]);
 
         $roomMessage->recipients()->attach($notifiable->id, ['room_id' => $room->id]);
@@ -103,7 +103,7 @@ class OrderRemindBeforeTenMinutes extends Notification implements ShouldQueue
                     'extra' => [
                         'push_id' => $pushId,
                         'send_from' => $send_from,
-                        'order_id' => $this->order->id
+                        'order_id' => $this->order->id,
                     ],
                 ],
             ],

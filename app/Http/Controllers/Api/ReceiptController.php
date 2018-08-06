@@ -26,6 +26,14 @@ class ReceiptController extends ApiController
             return $this->respondWithValidationError($validator->errors()->messages());
         }
 
+        if ($request->content && mb_strlen($request->content) > 50) {
+            return $this->respondErrorMessage(trans('messages.content_length_err'), 400);
+        }
+
+        if ($request->name && mb_strlen($request->name) > 50) {
+            return $this->respondErrorMessage(trans('messages.name_length_err'), 400);
+        }
+
         $point = Point::with('payment')->find($request->point_id);
 
         if (!$point) {

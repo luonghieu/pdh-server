@@ -44,4 +44,6 @@ return [
     'apply_error' => 'この募集は終了しました( >  < )' . PHP_EOL . '別のコールに応募しよう！',
     'order_time_error' => '予約時間がかぶっています' . PHP_EOL . '予約時間を確認してね',
     'delete_order_success' => '削除が完了しました',
+    'content_length_err' => '但し書きは、50文字以内で入力してください',
+    'name_length_err' => '宛名は、50文字以内で入力してください',
 ];
