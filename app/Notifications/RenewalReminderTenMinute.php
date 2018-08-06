@@ -68,11 +68,7 @@ class RenewalReminderTenMinute extends Notification implements ShouldQueue
         $content = '解散予定時刻まで残り10分です！'
             . PHP_EOL . '解散予定時刻後は自動で延長されます。';
 
-        if (UserType::GUEST == $notifiable->type) {
-            $pushId = 'g_6';
-        } else {
-            $pushId = 'c_6';
-        }
+        $pushId = 'c_6';
 
         $namedUser = 'user_' . $notifiable->id;
         $send_from = UserType::ADMIN;
