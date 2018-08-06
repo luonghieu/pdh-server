@@ -2,6 +2,7 @@
 
 namespace App\Notifications;
 
+use App\Enums\NotificationStyle;
 use Carbon\Carbon;
 use App\Enums\UserType;
 use App\Enums\MessageType;
@@ -11,7 +12,7 @@ use Illuminate\Notifications\Notification;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 
-class OrderCompleted extends Notification
+class OrderCompleted extends Notification implements ShouldQueue
 {
     use Queueable;
 
@@ -62,12 +63,8 @@ class OrderCompleted extends Notification
     {
         $order = $this->order;
         $room = $order->room;
-        $cast = $order->casts()
-            ->withPivot('started_at', 'stopped_at', 'type')
-            ->where('user_id', $this->cast->id)
-            ->first();
 
-        $message = Carbon::parse($cast->pivot->stopped_at)->format('H:i')
+        $message = Carbon::parse($this->cast->pivot->stopped_at)->format('H:i')
             . PHP_EOL . $this->cast->nickname . 'が解散しました。';
         $roomMessage = $room->messages()->create([
             'user_id' => 1,
@@ -81,19 +78,15 @@ class OrderCompleted extends Notification
         return [
             'content' => $message,
             'send_from' => UserType::ADMIN,
+            'style' => NotificationStyle::BAND
         ];
     }
 
     public function pushData($notifiable)
     {
-        $cast = $this->order->casts()
-            ->withPivot('started_at', 'stopped_at', 'type')
-            ->where('user_id', $this->cast->id)
-            ->first();
-
-        $content = Carbon::parse($cast->pivot->stopped_at)->format('H:i')
+        $content = Carbon::parse($this->cast->pivot->stopped_at)->format('H:i')
             . PHP_EOL . $this->cast->nickname . 'が解散しました。';
-        $pushId = 'c_7';
+        $pushId = 'g_11';
         $namedUser = 'user_' . $notifiable->id;
         $send_from = UserType::ADMIN;
 
@@ -109,6 +102,7 @@ class OrderCompleted extends Notification
                     'extra' => [
                         'push_id' => $pushId,
                         'send_from' => $send_from,
+                        'order_id' => $this->order->id
                     ],
                 ],
             ],

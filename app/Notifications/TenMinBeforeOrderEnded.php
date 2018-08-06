@@ -2,6 +2,7 @@
 
 namespace App\Notifications;
 
+use App\Enums\NotificationStyle;
 use App\Enums\RoomType;
 use App\Enums\UserType;
 use App\Enums\MessageType;
@@ -59,12 +60,7 @@ class TenMinBeforeOrderEnded extends Notification implements ShouldQueue
      */
     public function toArray($notifiable)
     {
-        if ($notifiable->type == UserType::GUEST) {
-            $message = $this->cast->nickname . 'の解散予定時刻まで残り10分です。';
-        } else {
-            $message = $this->order->user->nickname . 'の解散予定時刻まで残り10分です。';
-        }
-
+        $message = $this->cast->nickname . 'の解散予定時刻まで残り10分です。';
         $room = $this->order->room;
 
         $roomMessage = $room->messages()->create([
@@ -79,18 +75,14 @@ class TenMinBeforeOrderEnded extends Notification implements ShouldQueue
         return [
             'content' => $message,
             'send_from' => UserType::ADMIN,
+            'style' => NotificationStyle::BAND
         ];
     }
 
     public function pushData($notifiable)
     {
-        if ($notifiable->type == UserType::GUEST) {
-            $content = $this->cast->nickname . 'の解散予定時刻まで残り10分です。';
-            $pushId = 'g_5';
-        } else {
-            $content = $this->order->user->nickname . 'の解散予定時刻まで残り10分です。';
-            $pushId = 'c_5';
-        }
+        $content = $this->cast->nickname . 'の解散予定時刻まで残り10分です。';
+        $pushId = 'g_5';
 
         $namedUser = 'user_' . $notifiable->id;
         $send_from = UserType::ADMIN;
@@ -108,6 +100,7 @@ class TenMinBeforeOrderEnded extends Notification implements ShouldQueue
                     'extra' => [
                         'push_id' => $pushId,
                         'send_from' => $send_from,
+                        'order_id' => $this->order->id
                     ],
                 ],
             ],

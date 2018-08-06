@@ -3,7 +3,9 @@
 namespace App\Notifications;
 
 use App\Enums\MessageType;
+use App\Enums\NotificationStyle;
 use App\Enums\RoomType;
+use App\Enums\SystemMessageType;
 use App\Enums\UserType;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -14,14 +16,15 @@ class OrderRemindBeforeTenMinutes extends Notification implements ShouldQueue
     use Queueable;
 
     public $order;
+
     /**
      * Create a new notification instance.
      *
-     * @return void
+     * @param $order
      */
-    public function __construct()
+    public function __construct($order)
     {
-        //
+        $this->order = $order;
     }
 
     /**
@@ -67,6 +70,7 @@ class OrderRemindBeforeTenMinutes extends Notification implements ShouldQueue
             'user_id' => 1,
             'type' => MessageType::SYSTEM,
             'message' => $message,
+            'message_type' => SystemMessageType::NOTIFY
         ]);
 
         $roomMessage->recipients()->attach($notifiable->id, ['room_id' => $room->id]);
@@ -74,6 +78,7 @@ class OrderRemindBeforeTenMinutes extends Notification implements ShouldQueue
         return [
             'content' => $message,
             'send_from' => UserType::ADMIN,
+            'type' => NotificationStyle::BALL
         ];
     }
 
@@ -100,6 +105,7 @@ class OrderRemindBeforeTenMinutes extends Notification implements ShouldQueue
                     'extra' => [
                         'push_id' => $pushId,
                         'send_from' => $send_from,
+                        'order_id' => $this->order->id
                     ],
                 ],
             ],
