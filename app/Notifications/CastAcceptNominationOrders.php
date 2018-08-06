@@ -3,6 +3,7 @@
 namespace App\Notifications;
 
 use App\Enums\MessageType;
+use App\Enums\NotificationStyle;
 use App\Enums\UserType;
 use App\Guest;
 use Illuminate\Bus\Queueable;
@@ -55,48 +56,28 @@ class CastAcceptNominationOrders extends Notification implements ShouldQueue
      */
     public function toArray($notifiable)
     {
-        $order = $this->order;
-        $room = $order->room;
-
-        if ($notifiable->type == UserType::CAST) {
-            $castMessage = 'マッチングが確定しました。';
-
-            $roomMessage = $room->messages()->create([
-                'user_id' => 1,
-                'type' => MessageType::SYSTEM,
-                'message' => $castMessage
-            ]);
-
-            $roomMessage->recipients()->attach($notifiable->id, ['room_id' => $room->id, 'is_show' => false]);
+        if ($notifiable->type == UserType::GUEST) {
+            $message = 'おめでとうございます！'
+                . PHP_EOL . 'キャストとのマッチングが確定しました♪';
+        } else {
+            $message = 'おめでとう！ゲストとのマッチングが確定しました♪';
         }
-
-        $message = 'マッチング確定おめでとうございます♪'
-            . '\n 合流後はタイマーで時間計測を行い、解散予定の10分前には通知が届きます。'
-            . '\n ※解散予定時刻後は自動で延長されます。'
-            . '\n \n その他ご不明点がある場合は運営までお問い合わせください。'
-            . '\n \n それでは素敵な時間をお楽しみください♪';
-
-        $roomMessage = $room->messages()->create([
-            'user_id' => 1,
-            'type' => MessageType::SYSTEM,
-            'message' => $message
-        ]);
-
-        $roomMessage->recipients()->attach($notifiable->id, ['room_id' => $room->id, 'is_show' => false]);
 
         return [
             'content' => $message,
             'send_from' => UserType::ADMIN,
+            'style' => NotificationStyle::DEFAULT
         ];
     }
 
     public function pushData($notifiable)
     {
-        $content = 'マッチング確定おめでとうございます♪'
-            . '\n 合流後はタイマーで時間計測を行い、解散予定の10分前には通知が届きます。'
-            . '\n ※解散予定時刻後は自動で延長されます。'
-            . '\n \n その他ご不明点がある場合は運営までお問い合わせください。'
-            . '\n \n それでは素敵な時間をお楽しみください♪';
+        if ($notifiable->type == UserType::GUEST) {
+            $content = 'おめでとうございます！'
+                . PHP_EOL . 'キャストとのマッチングが確定しました♪';
+        } else {
+            $content = 'おめでとう！ゲストとのマッチングが確定しました♪';
+        }
 
         $namedUser = 'user_' . $notifiable->id;
         $send_from = UserType::ADMIN;
