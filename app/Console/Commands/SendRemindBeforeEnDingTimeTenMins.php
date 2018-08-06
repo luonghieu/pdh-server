@@ -62,7 +62,7 @@ class SendRemindBeforeEnDingTimeTenMins extends Command
                     'user_id' => 1,
                     'type' => MessageType::SYSTEM,
                     'message' => $messageForCast,
-                    'system_type' => SystemMessageType::NOTIFY
+                    'system_type' => SystemMessageType::NOTIFY,
                 ]);
 
                 $casts = [];
