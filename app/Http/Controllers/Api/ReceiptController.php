@@ -18,12 +18,22 @@ class ReceiptController extends ApiController
     {
         $rules = [
             'point_id' => 'required',
+            'content' => 'string|regex:/^[一-龯ぁ-んァ-ンＡ-ｚ０-９]/',
+            'name' => 'string|regex:/^[一-龯ぁ-んァ-ンＡ-ｚ０-９]/',
         ];
 
         $validator = validator($request->all(), $rules);
 
         if ($validator->fails()) {
             return $this->respondWithValidationError($validator->errors()->messages());
+        }
+
+        if ($request->content && strlen($request->content) > 150) {
+            return $this->respondErrorMessage(trans('messages.content_length_err'), 400);
+        }
+
+        if ($request->name && strlen($request->name) > 150) {
+            return $this->respondErrorMessage(trans('messages.name_length_err'), 400);
         }
 
         $point = Point::with('payment')->find($request->point_id);

@@ -50,7 +50,7 @@ class SendRemindForCastBeforeTenMins extends Command
 
             $time = $startTime->copy()->subMinute(10);
             if ($time == $now) {
-                \Notification::send($order->casts, new OrderRemindBeforeTenMinutes($order));
+                \Notification::send($order->casts, new OrderRemindBeforeTenMinutes());
             }
         }
     }

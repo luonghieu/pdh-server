@@ -12,8 +12,6 @@ use Illuminate\Notifications\Notification;
 class OrderRemindBeforeTenMinutes extends Notification implements ShouldQueue
 {
     use Queueable;
-
-    public $order;
     /**
      * Create a new notification instance.
      *
