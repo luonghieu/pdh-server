@@ -18,11 +18,11 @@ final class DrinkVolumeType extends Enum
      */
     public static function getDescription($value): string
     {
-        if ($value === self::YES) {
+        if (self::YES === $value) {
             return '飲む';
-        } elseif ($value === self::NO) {
+        } elseif (self::NO === $value) {
             return '飲まない';
-        } elseif ($value == self::OCCASIONALLY) {
+        } elseif (self::OCCASIONALLY == $value) {
             return 'たまに飲む';
         }
 

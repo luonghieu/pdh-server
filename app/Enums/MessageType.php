@@ -9,6 +9,7 @@ final class MessageType extends Enum
     const SYSTEM = 1;
     const MESSAGE = 2;
     const IMAGE = 3;
+    const THANKFUL = 4;
 
     /**
      * Get the description for an enum value

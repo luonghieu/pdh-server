@@ -149,10 +149,14 @@ class User extends Authenticatable implements JWTSubject
 
     public function getRoomIdAttribute()
     {
-        $userId = $this->id;
+        if (!Auth::check()) {
+            return '';
+        }
 
-        $room = $this->rooms()->direct()->whereHas('users', function ($q) use ($userId) {
-            $q->where('user_id', $userId);
+        $user = Auth::user();
+
+        $room = $this->rooms()->direct()->whereHas('users', function ($q) use ($user) {
+            $q->where('user_id', $user->id);
         })->first();
 
         if (!$room) {
@@ -189,6 +193,18 @@ class User extends Authenticatable implements JWTSubject
             ->withPivot('id', 'user_id', 'favorited_id', 'created_at', 'updated_at');
     }
 
+    // ratings by other users
+    public function ratings()
+    {
+        return $this->hasMany(Rating::class, 'rated_id');
+    }
+
+    // rated by this user
+    public function rates()
+    {
+        return $this->hasMany(Rating::class);
+    }
+
     public function avatars()
     {
         return $this->hasMany(Avatar::class)
@@ -198,6 +214,11 @@ class User extends Authenticatable implements JWTSubject
     public function prefecture()
     {
         return $this->belongsTo(Prefecture::class);
+    }
+
+    public function hometown()
+    {
+        return $this->belongsTo(Prefecture::class, 'hometown_id');
     }
 
     public function job()
@@ -247,5 +268,20 @@ class User extends Authenticatable implements JWTSubject
     public function orders()
     {
         return $this->hasMany(Order::class);
+    }
+
+    public function card()
+    {
+        return $this->hasOne(Card::class)->latest();
+    }
+
+    public function cards()
+    {
+        return $this->hasMany(Card::class);
+    }
+
+    public function points()
+    {
+        return $this->hasMany(Point::class);
     }
 }

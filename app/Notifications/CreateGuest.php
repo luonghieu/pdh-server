@@ -3,6 +3,7 @@
 namespace App\Notifications;
 
 use App\Enums\MessageType;
+use App\Enums\SystemMessageType;
 use App\Enums\UserType;
 use Illuminate\Bus\Queueable;
 use Illuminate\Notifications\Notification;
@@ -54,13 +55,13 @@ class CreateGuest extends Notification implements ShouldQueue
     {
 
         $message = 'ようこそCheersへ！'
-            .'\nCheersはプライベートでの飲み会や接待など様々なシーンにキャストを呼べるマッチングアプリです。'
-            .'\n \nクオリティの高いキャストと今すぐ出会えるのはCheersだけ！'
-            .'\n \n呼びたいときに、呼びたい人数・場所を入力するだけ。'
-            .'\n最短20分でキャストがゲストの元に駆けつけます♪'
-            .'\n \n「キャスト一覧」からお気に入りのキャストを見つけてアピールすることも可能です！'
-            .'\n \nまずはHomeの「今すぐキャストを呼ぶ」からキャストを呼んで素敵な時間をお過ごし下さい♪'
-            .'\n \nご不明点はお気軽にお問い合わせください。';
+            . PHP_EOL .'Cheersはプライベートでの飲み会や接待など様々なシーンにキャストを呼べるマッチングアプリです。'
+            . PHP_EOL . PHP_EOL . 'クオリティの高いキャストと今すぐ出会えるのはCheersだけ！'
+            . PHP_EOL . PHP_EOL . '呼びたいときに、呼びたい人数・場所を入力するだけ。'
+            . PHP_EOL . PHP_EOL . '最短20分でキャストがゲストの元に駆けつけます♪'
+            . PHP_EOL . PHP_EOL . '「キャスト一覧」からお気に入りのキャストを見つけてアピールすることも可能です！'
+            . PHP_EOL . PHP_EOL .'まずはHomeの「今すぐキャストを呼ぶ」からキャストを呼んで素敵な時間をお過ごし下さい♪'
+            . PHP_EOL . PHP_EOL . 'ご不明点はお気軽にお問い合わせください。';
 
         $room = $notifiable->rooms()->create();
         $room->users()->attach(1);
@@ -68,10 +69,11 @@ class CreateGuest extends Notification implements ShouldQueue
         $roomMessage = $room->messages()->create([
             'user_id' => 1,
             'type' => MessageType::SYSTEM,
-            'message' => $message
+            'message' => $message,
+            'system_type' => SystemMessageType::NOTIFY
         ]);
 
-        $roomMessage->recipients()->attach([$notifiable->id, 1], ['room_id' => $room->id]);
+        $roomMessage->recipients()->attach($notifiable->id, ['room_id' => $room->id]);
 
         return [
             'content' => $message,
@@ -82,13 +84,14 @@ class CreateGuest extends Notification implements ShouldQueue
     public function pushData($notifiable)
     {
         $content = 'ようこそCheersへ！'
-            .'\nCheersはプライベートでの飲み会や接待など様々なシーンにキャストを呼べるマッチングアプリです。'
-            .'\n \nクオリティの高いキャストと今すぐ出会えるのはCheersだけ！'
-            .'\n \n呼びたいときに、呼びたい人数・場所を入力するだけ。'
-            .'\n最短20分でキャストがゲストの元に駆けつけます♪'
-            .'\n \n「キャスト一覧」からお気に入りのキャストを見つけてアピールすることも可能です！'
-            .'\n \nまずはHomeの「今すぐキャストを呼ぶ」からキャストを呼んで素敵な時間をお過ごし下さい♪'
-            .'\n \nご不明点はお気軽にお問い合わせください。';
+            . PHP_EOL .'Cheersはプライベートでの飲み会や接待など様々なシーンにキャストを呼べるマッチングアプリです。'
+            . PHP_EOL . PHP_EOL . 'クオリティの高いキャストと今すぐ出会えるのはCheersだけ！'
+            . PHP_EOL . PHP_EOL . '呼びたいときに、呼びたい人数・場所を入力するだけ。'
+            . PHP_EOL . PHP_EOL . '最短20分でキャストがゲストの元に駆けつけます♪'
+            . PHP_EOL . PHP_EOL . '「キャスト一覧」からお気に入りのキャストを見つけてアピールすることも可能です！'
+            . PHP_EOL . PHP_EOL .'まずはHomeの「今すぐキャストを呼ぶ」からキャストを呼んで素敵な時間をお過ごし下さい♪'
+            . PHP_EOL . PHP_EOL . 'ご不明点はお気軽にお問い合わせください。';
+
         $namedUser = 'user_' . $notifiable->id;
         $send_from = UserType::ADMIN;
         $pushId = 'g_1';

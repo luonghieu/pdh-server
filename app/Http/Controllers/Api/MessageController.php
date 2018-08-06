@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Enums\RoomType;
 use App\Events\MessageCreated;
 use App\Http\Resources\MessageResource;
+use App\Http\Resources\OrderResource;
 use App\Jobs\MakeImagesChatThumbnail;
 use App\Message;
 use App\Services\LogService;
@@ -38,7 +39,18 @@ class MessageController extends ApiController
             return $this->respondErrorMessage(trans('messages.room_not_found'), 404);
         }
 
+        $ownerId = $room->owner_id;
+        $partner = $room->users->where('id', '<>', $ownerId)->first()->id;
         $messages = $room->messages()->with('user')->latest();
+
+        if ($room->is_direct && $room->checkBlocked($partner)) {
+            $messages = $messages->whereDoesntHave('recipients', function ($q) use ($user) {
+                $q->where([
+                    ['user_id', '=', $user->id],
+                    ['is_show', '=', false],
+                ]);
+            });
+        }
 
         if ($request->action) {
             $action = $request->action;
@@ -69,6 +81,8 @@ class MessageController extends ApiController
         });
 
         $messages->setCollection(collect($messagesData->values()->all()));
+        $messages = $messages->toArray();
+        $messages['order'] = $room->room_order ? OrderResource::make($room->room_order->load(['casts', 'user'])) : '';
 
         return $this->respondWithData($messages);
     }

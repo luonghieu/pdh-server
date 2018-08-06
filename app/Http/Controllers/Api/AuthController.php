@@ -2,13 +2,11 @@
 
 namespace App\Http\Controllers\Api;
 
-use App\Cast;
 use App\Enums\UserType;
 use App\Http\Resources\CastResource;
 use App\Http\Resources\GuestResource;
 use App\Rules\CheckHeight;
 use App\Services\LogService;
-use App\User;
 use Illuminate\Http\Request;
 
 class AuthController extends ApiController
@@ -59,6 +57,7 @@ class AuthController extends ApiController
     public function me()
     {
         $user = $this->guard()->user();
+
         if (UserType::CAST == $user->type) {
             return $this->respondWithData(CastResource::make($user));
         }
@@ -72,7 +71,7 @@ class AuthController extends ApiController
         $rules = [
             'nickname' => 'max:20',
             'date_of_birth' => 'date|before:today',
-            'gender' => 'in:1,2',
+            'gender' => 'in:0,1,2',
             'intro' => 'max:30',
             'description' => 'max:1000',
             'phone' => 'max:13',
@@ -83,11 +82,10 @@ class AuthController extends ApiController
             'body_type_id' => 'numeric|exists:body_types,id',
             'hometown_id' => 'numeric|exists:prefectures,id',
             'job_id' => 'numeric|exists:jobs,id',
-            'drink_volume_type' => 'numeric|between:1,3',
-            'smoking_type' => 'numeric|between:1,3',
-            'siblings_type' => 'numeric|between:1,3',
-            'cohabitant_type' => 'numeric|between:1,4',
-            'line_id' => 'string',
+            'drink_volume_type' => 'numeric|between:0,3',
+            'smoking_type' => 'numeric|between:0,3',
+            'siblings_type' => 'numeric|between:0,3',
+            'cohabitant_type' => 'numeric|between:0,4',
         ];
 
         $validator = validator(request()->all(), $rules);
