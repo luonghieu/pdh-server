@@ -44,7 +44,7 @@ class ValidateOrder implements ShouldQueue
      */
     public function handle()
     {
-        $castsCount = $this->order->casts->count();
+        $castsCount = $this->order->casts()->count();
 
         if ($this->order->total_cast == $castsCount) {
             try {
