@@ -50,7 +50,6 @@ class ValidateOrder implements ShouldQueue
         if ($this->order->total_cast == $castsCount) {
             try {
                 \DB::beginTransaction();
-
                 if ($this->order->total_cast > 1) {
                     $room = new Room;
                     $room->order_id = $this->order->id;
@@ -104,13 +103,6 @@ class ValidateOrder implements ShouldQueue
                 }
 
                 $this->order->update();
-
-                $involvedUsers = [$this->order->user];
-                foreach ($this->order->casts as $cast) {
-                    $involvedUsers[] = $cast;
-                }
-
-                $this->sendNotification($involvedUsers);
             }
         }
     }
