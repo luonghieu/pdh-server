@@ -3,7 +3,6 @@
 namespace App\Notifications;
 
 use App\Enums\MessageType;
-use App\Enums\NotificationStyle;
 use App\Enums\RoomType;
 use App\Enums\SystemMessageType;
 use App\Enums\UserType;
@@ -70,7 +69,7 @@ class OrderRemindBeforeTenMinutes extends Notification implements ShouldQueue
             'user_id' => 1,
             'type' => MessageType::SYSTEM,
             'message' => $message,
-            'message_type' => SystemMessageType::NOTIFY
+            'system_type' => SystemMessageType::NOTIFY
         ]);
 
         $roomMessage->recipients()->attach($notifiable->id, ['room_id' => $room->id]);

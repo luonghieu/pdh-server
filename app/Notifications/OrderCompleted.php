@@ -2,7 +2,6 @@
 
 namespace App\Notifications;
 
-use App\Enums\NotificationStyle;
 use Carbon\Carbon;
 use App\Enums\UserType;
 use App\Enums\MessageType;
