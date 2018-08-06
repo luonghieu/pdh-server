@@ -11,13 +11,13 @@ class UsersTableSeeder extends Seeder
      */
     public function run()
     {
-        DB::table('users')->truncate();
+//        DB::table('users')->truncate();
 
         $faker = Faker\Factory::create();
 
         // create an admin
         $admin = [
-            'email' => 'admin@cheers.dev',
+            'email' => 'admin@cheers.dev1234444',
             'password' => bcrypt('123123123'),
             'fullname' => $faker->name,
             'type' => 3,
@@ -30,7 +30,7 @@ class UsersTableSeeder extends Seeder
 
         \App\Avatar::create([
             'path' => $fileName,
-            'thumbnai' => $fileName,
+            'thumbnail' => $fileName,
             'is_default' => true,
             'user_id' => 1
         ]);
