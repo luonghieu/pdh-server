@@ -25,6 +25,8 @@ class AlterTableNotificationFieldStyle extends Migration
      */
     public function down()
     {
-        //
+        Schema::table('notifications', function (Blueprint $table) {
+            $table->dropColumn('style');
+        });
     }
 }
