@@ -4,13 +4,14 @@ namespace App\Notifications;
 
 use App\Enums\UserType;
 use App\Enums\MessageType;
+use Carbon\Carbon;
 use Illuminate\Bus\Queueable;
 use App\Enums\SystemMessageType;
 use Illuminate\Notifications\Notification;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 
-class StartOrder extends Notification
+class StartOrder extends Notification implements ShouldQueue
 {
     use Queueable;
 
@@ -59,7 +60,8 @@ class StartOrder extends Notification
     public function toArray($notifiable)
     {
         $room = $this->order->room;
-        $message =  $this->cast->nickname . 'さんが合流しました。';
+        $message =  Carbon::now()->format('H:i')
+            . PHP_EOL . $this->cast->nickname . 'さんが合流しました。';
         $roomMessage = $room->messages()->create([
             'user_id' => 1,
             'type' => MessageType::SYSTEM,
@@ -77,7 +79,8 @@ class StartOrder extends Notification
 
     public function pushData($notifiable)
     {
-        $content = $this->cast->nickname . 'さんが合流しました。';
+        $content = Carbon::now()->format('H:i')
+            . PHP_EOL . $this->cast->nickname . 'さんが合流しました。';
         $pushId = 'g_4';
         $namedUser = 'user_' . $notifiable->id;
         $send_from = UserType::ADMIN;
@@ -94,6 +97,7 @@ class StartOrder extends Notification
                     'extra' => [
                         'push_id' => $pushId,
                         'send_from' => $send_from,
+                        'order_id' => $this->order->id
                     ],
                 ],
             ],

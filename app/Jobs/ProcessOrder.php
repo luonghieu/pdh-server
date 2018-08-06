@@ -2,6 +2,7 @@
 
 namespace App\Jobs;
 
+use App\Notifications\StartOrder;
 use App\Order;
 use App\Enums\OrderStatus;
 use Illuminate\Bus\Queueable;
@@ -15,15 +16,18 @@ class ProcessOrder implements ShouldQueue
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
     protected $order;
+    protected $cast;
 
     /**
      * Create a new job instance.
      *
-     * @return void
+     * @param Order $order
+     * @param null $cast
      */
-    public function __construct(Order $order)
+    public function __construct(Order $order, $cast = null)
     {
         $this->order = $order;
+        $this->cast = $cast;
     }
 
     /**
@@ -41,6 +45,10 @@ class ProcessOrder implements ShouldQueue
                 $this->order->actual_started_at = now();
                 $this->order->save();
             }
+        }
+
+        if ($this->cast) {
+            $this->order->user->notify(new StartOrder($this, $this->cast));
         }
     }
 }
