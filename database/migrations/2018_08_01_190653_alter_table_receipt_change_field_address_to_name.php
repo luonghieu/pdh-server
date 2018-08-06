@@ -14,7 +14,7 @@ class AlterTableReceiptChangeFieldAddressToName extends Migration
     public function up()
     {
         Schema::table('receipts', function (Blueprint $table) {
-            $table->string('name')->after('date');
+            $table->string('name')->after('date')->nullable();
             $table->dropColumn('address');
         });
     }

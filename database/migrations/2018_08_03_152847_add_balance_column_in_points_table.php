@@ -14,7 +14,7 @@ class AddBalanceColumnInPointsTable extends Migration
     public function up()
     {
         Schema::table('points', function (Blueprint $table) {
-            $table->integer('balance')->after('point');
+            $table->integer('balance')->after('point')->nullable();
         });
     }
 
