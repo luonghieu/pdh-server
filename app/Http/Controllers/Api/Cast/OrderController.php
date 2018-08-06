@@ -67,18 +67,18 @@ class OrderController extends ApiController
                 });
             });
 
-            $orders->where('status', $request->status);
+            $orders->where('status', $request->status)->latest();
         } else {
-            $orders->where(function ($query) use ($user) {
-                $query->whereHas('nominees', function ($query) use ($user) {
-                    $query->where('user_id', $user->id);
-                });
-                $query->orWhereHas('candidates', function ($query) use ($user) {
-                    $query->where('user_id', $user->id);
-                });
-            })
-                ->orderBy('date')
-                ->orderBy('start_time');
+            $orders->where('status', '!=', OrderStatus::DONE)
+                ->where(function ($query) use ($user) {
+                    $query->whereHas('nominees', function ($query) use ($user) {
+                        $query->where('user_id', $user->id);
+                    });
+                    $query->orWhereHas('candidates', function ($query) use ($user) {
+                        $query->where('user_id', $user->id);
+                    });
+                })
+                ->latest();
         }
 
         $orders = $orders->paginate($request->per_page)->appends($request->query());
@@ -94,8 +94,19 @@ class OrderController extends ApiController
             return $this->respondErrorMessage(trans('messages.order_not_found'), 404);
         }
 
-        if (OrderStatus::OPEN != $order->status) {
-            return $this->respondErrorMessage(trans('messages.action_not_performed'), 422);
+        if (OrderType::NOMINATION == $order->type) {
+            $validStatus = [
+                OrderStatus::OPEN,
+                OrderStatus::ACTIVE,
+            ];
+
+            if (!in_array($order->status, $validStatus)) {
+                return $this->respondErrorMessage(trans('messages.action_not_performed'), 422);
+            }
+        } else {
+            if (OrderStatus::OPEN != $order->status) {
+                return $this->respondErrorMessage(trans('messages.action_not_performed'), 422);
+            }
         }
 
         $user = $this->guard()->user();
@@ -110,18 +121,50 @@ class OrderController extends ApiController
             return $this->respondServerError();
         }
 
-        return $this->respondWithNoData(trans('messages.denied_order'));
+        $order = $order->fresh();
+
+        return $this->respondWithData(OrderResource::make($order));
     }
 
     public function apply($id)
     {
-        $order = Order::where('status', OrderStatus::OPEN)->find($id);
+        $order = Order::find($id);
 
         if (!$order) {
             return $this->respondErrorMessage(trans('messages.order_not_found'), 404);
         }
 
+        if (OrderStatus::OPEN != $order->status) {
+            return $this->respondErrorMessage(trans('messages.apply_error'), 409);
+        }
+
         $user = $this->guard()->user();
+        $startTime = Carbon::parse($order->date . ' ' . $order->start_time);
+
+        $endTime = Carbon::parse($order->date . ' ' . $order->end_time);
+        $validStatus = [
+            CastOrderStatus::ACCEPTED,
+            CastOrderStatus::PROCESSING,
+        ];
+
+        $orderCheck = Order::whereIn('status', [OrderStatus::OPEN, OrderStatus::ACTIVE, OrderStatus::PROCESSING])
+            ->whereHas('castOrder', function ($query) use ($user, $validStatus) {
+                $query->where('user_id', $user->id);
+                $query->whereIn('cast_order.status', $validStatus);
+            })
+            ->where(function ($query) use ($startTime, $endTime) {
+                $query->orWhereRaw("concat_ws(' ',`date`,`start_time`) >= '$startTime' and concat_ws(' ',`date`,`start_time`) <= '$endTime'"
+                );
+
+                $query->orWhereRaw("DATE_ADD(concat_ws(' ',`date`,`start_time`), INTERVAL `duration` HOUR) >= '$startTime' and DATE_ADD(concat_ws(' ',`date`,`start_time`), INTERVAL `duration` HOUR) <= '$endTime'"
+                );
+                $query->orWhereRaw("concat_ws(' ',`date`,`start_time`) <= '$startTime' and DATE_ADD(concat_ws(' ',`date`,`start_time`), INTERVAL `duration` HOUR) >= '$endTime'"
+                );
+            });
+
+        if ($orderCheck->count() > 0) {
+            return $this->respondErrorMessage(trans('messages.order_time_error'), 409);
+        }
 
         if (OrderType::CALL == $order->type) {
             if ($order->casts->count() == $order->total_cast
@@ -144,7 +187,9 @@ class OrderController extends ApiController
             }
         }
 
-        return $this->respondWithNoData(trans('messages.accepted_order'));
+        $order = $order->fresh();
+
+        return $this->respondWithData(OrderResource::make($order));
     }
 
     public function start($id)
@@ -170,7 +215,9 @@ class OrderController extends ApiController
             return $this->respondServerError();
         }
 
-        return $this->respondWithNoData(trans('messages.start_order'));
+        $order = $order->fresh();
+
+        return $this->respondWithData(OrderResource::make($order));
     }
 
     public function stop($id)
@@ -200,7 +247,9 @@ class OrderController extends ApiController
             return $this->respondServerError();
         }
 
-        return $this->respondWithNoData(trans('messages.stop_order'));
+        $order = $order->fresh();
+
+        return $this->respondWithData(OrderResource::make($order));
     }
 
     public function thanks(Request $request, $id)
@@ -263,5 +312,38 @@ class OrderController extends ApiController
         }
 
         return $this->respondWithNoData(trans('messages.send_message_thanks'));
+    }
+
+    public function delete(Request $request, $id)
+    {
+        $order = Order::find($id);
+
+        if (!$order) {
+            return $this->respondErrorMessage(trans('messages.order_not_found'), 404);
+        }
+
+        $validStatus = [
+            CastOrderStatus::DENIED,
+            CastOrderStatus::CANCELED,
+            CastOrderStatus::TIMEOUT,
+        ];
+        $user = $this->guard()->user();
+
+        $castExists = $order->castOrder()->where('cast_order.user_id', $user->id)
+            ->whereIn('cast_order.status', $validStatus)->exists();
+
+        if (!$castExists) {
+            return $this->respondErrorMessage(trans('messages.action_not_performed'), 422);
+        }
+
+        try {
+            $order->castOrder()->updateExistingPivot($user->id, ['deleted_at' => Carbon::now()], false);
+
+            return $this->respondWithNoData(trans('messages.delete_order_success'));
+        } catch (\Exception $e) {
+            LogService::writeErrorLog($e);
+
+            return $this->respondServerError();
+        }
     }
 }

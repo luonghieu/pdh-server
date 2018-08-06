@@ -2,15 +2,15 @@
 
 namespace App\Notifications;
 
-use App\Enums\MessageType;
-use App\Enums\RoomType;
 use App\Enums\UserType;
+use App\Enums\MessageType;
 use Illuminate\Bus\Queueable;
+use App\Enums\SystemMessageType;
 use Illuminate\Notifications\Notification;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 
-class CreateCast extends Notification implements ShouldQueue
+class RenewalReminderTenMinute extends Notification implements ShouldQueue
 {
     use Queueable;
 
@@ -27,7 +27,7 @@ class CreateCast extends Notification implements ShouldQueue
     /**
      * Get the notification's delivery channels.
      *
-     * @param  mixed $notifiable
+     * @param  mixed  $notifiable
      * @return array
      */
     public function via($notifiable)
@@ -38,7 +38,7 @@ class CreateCast extends Notification implements ShouldQueue
     /**
      * Get the mail representation of the notification.
      *
-     * @param  mixed $notifiable
+     * @param  mixed  $notifiable
      */
     public function toMail($notifiable)
     {
@@ -48,16 +48,13 @@ class CreateCast extends Notification implements ShouldQueue
     /**
      * Get the array representation of the notification.
      *
-     * @param  mixed $notifiable
+     * @param  mixed  $notifiable
      * @return array
      */
     public function toArray($notifiable)
     {
-        $message = 'キャスト登録おめでとうございます♪'
-            . PHP_EOL .'あなたは立派なCheers familyです☆'
-            . PHP_EOL . PHP_EOL . '解散後のメッセージで心をつかんでリピートも狙ってみましょう！'
-            . PHP_EOL . PHP_EOL . 'まずはゲストにメッセージを送ってアピールしてみてください！'
-            . PHP_EOL . PHP_EOL . '不安なこと、分からないことがあればいつでもCheers運営側にお問い合わせくださいね♪';
+        $message = '解散予定時刻まで残り10分です！'
+            . PHP_EOL . '解散予定時刻後は自動で延長されます。';
 
         $room = $notifiable->rooms()
             ->where('rooms.type', RoomType::SYSTEM)
@@ -66,6 +63,7 @@ class CreateCast extends Notification implements ShouldQueue
         $roomMessage = $room->messages()->create([
             'user_id' => 1,
             'type' => MessageType::SYSTEM,
+            'system_type' => SystemMessageType::NOTIFY,
             'message' => $message
         ]);
 
@@ -79,14 +77,17 @@ class CreateCast extends Notification implements ShouldQueue
 
     public function pushData($notifiable)
     {
-        $content = 'キャスト登録おめでとうございます♪'
-            . PHP_EOL . 'あなたは立派なCheers familyです☆'
-            . PHP_EOL . PHP_EOL .'解散後のメッセージで心をつかんでリピートも狙ってみましょう！'
-            . PHP_EOL . PHP_EOL .'まずはゲストにメッセージを送ってアピールしてみてください！'
-            . PHP_EOL . PHP_EOL .'不安なこと、分からないことがあればいつでもCheers運営側にお問い合わせくださいね♪';
+        $content = '解散予定時刻まで残り10分です！'
+            . PHP_EOL . '解散予定時刻後は自動で延長されます。';
+
+        if ($notifiable->type == UserType::GUEST) {
+            $pushId = 'g_6';
+        } else {
+            $pushId = 'c_6';
+        }
+
         $namedUser = 'user_' . $notifiable->id;
         $send_from = UserType::ADMIN;
-        $pushId = 'c_1';
 
         return [
             'audienceOptions' => ['named_user' => $namedUser],

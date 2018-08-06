@@ -10,6 +10,7 @@ use App\Http\Resources\PaymentRequestResource;
 use App\Order;
 use App\PaymentRequest;
 use App\Services\LogService;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 
 class PaymentRequestController extends ApiController
@@ -31,7 +32,7 @@ class PaymentRequestController extends ApiController
             ])
             ->whereNotNull('stopped_at')->get();
 
-        if (!$cast || OrderStatus::DONE != $order->status) {
+        if (!$cast) {
             return $this->respondErrorMessage(trans('messages.action_not_performed'), 422);
         }
 
@@ -84,10 +85,19 @@ class PaymentRequestController extends ApiController
         try {
             if ($request->extra_time) {
                 $extraPoint = $order->extraPoint($cast, $request->extra_time);
-                $totalPoint = $paymentRequest->order_point + $paymentRequest->allowance_point + $paymentRequest->fee_point + $extraPoint;
+                $feePoint = $order->orderFee($cast, $request->extra_time);
 
+                $startDate = Carbon::parse($order->date . ' ' . $order->start_time);
+                $endDate = $startDate->copy()->addMinutes($order->duration * 60);
+                $stoppedAt = $endDate->addMinutes($request->extra_time);
+
+                $nightTime = $order->nightTime($stoppedAt);
+                $allowance = $order->allowance($nightTime);
+                $totalPoint = $paymentRequest->order_point + $allowance + $feePoint + $extraPoint;
+                $paymentRequest->allowance_point = $allowance;
                 $paymentRequest->extra_time = $request->extra_time;
                 $paymentRequest->extra_point = $extraPoint;
+                $paymentRequest->fee_point = $feePoint;
                 $paymentRequest->total_point = $totalPoint;
                 $paymentRequest->status = PaymentRequestStatus::UPDATED;
             } else {
@@ -95,8 +105,8 @@ class PaymentRequestController extends ApiController
             }
 
             $paymentRequest->save();
-
-            return $this->respondWithNoData(trans('messages.create_payment_request_success'));
+            $paymentRequest->load('cast', 'guest', 'order.casts');
+            return $this->respondWithData(PaymentRequestResource::make($paymentRequest));
         } catch (\Exception $e) {
             LogService::writeErrorLog($e);
 

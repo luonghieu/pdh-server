@@ -5,25 +5,23 @@ namespace App\Notifications;
 use App\Enums\MessageType;
 use App\Enums\RoomType;
 use App\Enums\UserType;
-use Carbon\Carbon;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Notification;
 
-class CreateNominatedOrdersForGuest extends Notification implements ShouldQueue
+class OrderRemindBeforeTenMinutes extends Notification implements ShouldQueue
 {
     use Queueable;
 
     public $order;
-
     /**
      * Create a new notification instance.
      *
-     * @param $order
+     * @return void
      */
-    public function __construct($order)
+    public function __construct()
     {
-        $this->order = $order;
+        //
     }
 
     /**
@@ -55,20 +53,11 @@ class CreateNominatedOrdersForGuest extends Notification implements ShouldQueue
      */
     public function toArray($notifiable)
     {
-        $startTime = Carbon::parse($this->order->date . ' ' . $this->order->start_time);
-        $endTime = Carbon::parse($this->order->date . ' ' . $this->order->end_time);
-
-        $message = 'Cheersをご利用いただきありがとうございます！'
-        . PHP_EOL . 'キャストのご予約を承りました。'
-        . PHP_EOL . '------------------------------------------'
-        . PHP_EOL . PHP_EOL . '- ご予約内容 -'
-        . PHP_EOL . '日時：' . $startTime->format('Y/m/d H:i') . '~'
-        . PHP_EOL . '時間：' . $startTime->diffInMinutes($endTime) / 60 . '時間'
-        . PHP_EOL . 'クラス：' . $this->order->castClass->name
-        . PHP_EOL . '人数：' . $this->order->total_cast . '人'
-        . PHP_EOL . '場所：' . $this->order->address
-            . PHP_EOL . PHP_EOL . '現在、キャストの調整を行っております。'
-            . PHP_EOL . 'しばらくお待ちください☆';
+        $message = '合流予定時刻の10分前になりました！'
+            . PHP_EOL . 'ゲストとのチャット画面にスタートボタンが出現します。'
+            . PHP_EOL . '合流後、ゲストに確認してからスタートボタンを押してください！'
+            . PHP_EOL . PHP_EOL . 'それでは素敵な時間を楽しんで来てくださいね♪'
+            . PHP_EOL . PHP_EOL . 'また予定時刻に遅れそうな場合は、チャットルームで予め遅れる旨を伝えましょう！';
 
         $room = $notifiable->rooms()
             ->where('rooms.type', RoomType::SYSTEM)
@@ -90,23 +79,14 @@ class CreateNominatedOrdersForGuest extends Notification implements ShouldQueue
 
     public function pushData($notifiable)
     {
-        $startTime = Carbon::parse($this->order->date . ' ' . $this->order->start_time);
-        $endTime = Carbon::parse($this->order->date . ' ' . $this->order->end_time);
-        $content = 'Cheersをご利用いただきありがとうございます！'
-        . PHP_EOL . 'キャストのご予約を承りました。'
-        . PHP_EOL . '------------------------------------------'
-        . PHP_EOL . PHP_EOL . '- ご予約内容 -'
-        . PHP_EOL . '日時：' . $startTime->format('Y/m/d H:i') . '~'
-        . PHP_EOL . '時間：' . $startTime->diffInMinutes($endTime) / 60 . '時間'
-        . PHP_EOL . 'クラス：' . $this->order->castClass->name
-        . PHP_EOL . '人数：' . $this->order->total_cast . '人'
-        . PHP_EOL . '場所：' . $this->order->address
-            . PHP_EOL . PHP_EOL . '現在、キャストの調整を行っております。'
-            . PHP_EOL . 'しばらくお待ちください☆';
-
+        $content = '合流予定時刻の10分前になりました！'
+            . PHP_EOL . 'ゲストとのチャット画面にスタートボタンが出現します。'
+            . PHP_EOL . '合流後、ゲストに確認してからスタートボタンを押してください！'
+            . PHP_EOL . PHP_EOL . 'それでは素敵な時間を楽しんで来てくださいね♪'
+            . PHP_EOL . PHP_EOL . 'また予定時刻に遅れそうな場合は、チャットルームで予め遅れる旨を伝えましょう！';
         $namedUser = 'user_' . $notifiable->id;
         $send_from = UserType::ADMIN;
-        $pushId = 'g_2';
+        $pushId = 'c_4';
 
         return [
             'audienceOptions' => ['named_user' => $namedUser],

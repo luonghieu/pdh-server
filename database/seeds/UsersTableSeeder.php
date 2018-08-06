@@ -24,7 +24,7 @@ class UsersTableSeeder extends Seeder
 
         DB::table('users')->insert($admin);
 
-        factory(App\User::class, 50)->create();
+        /* factory(App\User::class, 50)->create();
 
         // generate avatars for users
         $users = App\User::all();
@@ -41,6 +41,6 @@ class UsersTableSeeder extends Seeder
                     'path' => $faker->randomElement($images),
                 ]);
             }
-        }
+        } */
     }
 }

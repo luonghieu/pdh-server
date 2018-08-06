@@ -2,32 +2,39 @@
 
 namespace App\Notifications;
 
-use App\Enums\MessageType;
-use App\Enums\RoomType;
+use Carbon\Carbon;
 use App\Enums\UserType;
+use App\Enums\MessageType;
 use Illuminate\Bus\Queueable;
+use App\Enums\SystemMessageType;
 use Illuminate\Notifications\Notification;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 
-class CreateCast extends Notification implements ShouldQueue
+class OrderCompleted extends Notification
 {
     use Queueable;
+
+    public $order;
+
+    public $cast;
 
     /**
      * Create a new notification instance.
      *
-     * @return void
+     * @param $order
+     * @param $cast
      */
-    public function __construct()
+    public function __construct($order, $cast)
     {
-        //
+        $this->order = $order;
+        $this->cast = $cast;
     }
 
     /**
      * Get the notification's delivery channels.
      *
-     * @param  mixed $notifiable
+     * @param  mixed  $notifiable
      * @return array
      */
     public function via($notifiable)
@@ -38,7 +45,7 @@ class CreateCast extends Notification implements ShouldQueue
     /**
      * Get the mail representation of the notification.
      *
-     * @param  mixed $notifiable
+     * @param  mixed  $notifiable
      */
     public function toMail($notifiable)
     {
@@ -48,24 +55,24 @@ class CreateCast extends Notification implements ShouldQueue
     /**
      * Get the array representation of the notification.
      *
-     * @param  mixed $notifiable
+     * @param  mixed  $notifiable
      * @return array
      */
     public function toArray($notifiable)
     {
-        $message = 'キャスト登録おめでとうございます♪'
-            . PHP_EOL .'あなたは立派なCheers familyです☆'
-            . PHP_EOL . PHP_EOL . '解散後のメッセージで心をつかんでリピートも狙ってみましょう！'
-            . PHP_EOL . PHP_EOL . 'まずはゲストにメッセージを送ってアピールしてみてください！'
-            . PHP_EOL . PHP_EOL . '不安なこと、分からないことがあればいつでもCheers運営側にお問い合わせくださいね♪';
+        $order = $this->order;
+        $room = $order->room;
+        $cast = $order->casts()
+            ->withPivot('started_at', 'stopped_at', 'type')
+            ->where('user_id', $this->cast->id)
+            ->first();
 
-        $room = $notifiable->rooms()
-            ->where('rooms.type', RoomType::SYSTEM)
-            ->where('rooms.is_active', true)->first();
-
+        $message = Carbon::parse($cast->pivot->stopped_at)->format('H:i')
+            . PHP_EOL . $this->cast->nickname . 'が解散しました。';
         $roomMessage = $room->messages()->create([
             'user_id' => 1,
             'type' => MessageType::SYSTEM,
+            'system_type' => SystemMessageType::NOTIFY,
             'message' => $message
         ]);
 
@@ -79,14 +86,16 @@ class CreateCast extends Notification implements ShouldQueue
 
     public function pushData($notifiable)
     {
-        $content = 'キャスト登録おめでとうございます♪'
-            . PHP_EOL . 'あなたは立派なCheers familyです☆'
-            . PHP_EOL . PHP_EOL .'解散後のメッセージで心をつかんでリピートも狙ってみましょう！'
-            . PHP_EOL . PHP_EOL .'まずはゲストにメッセージを送ってアピールしてみてください！'
-            . PHP_EOL . PHP_EOL .'不安なこと、分からないことがあればいつでもCheers運営側にお問い合わせくださいね♪';
+        $cast = $this->order->casts()
+            ->withPivot('started_at', 'stopped_at', 'type')
+            ->where('user_id', $this->cast->id)
+            ->first();
+
+        $content = Carbon::parse($cast->pivot->stopped_at)->format('H:i')
+            . PHP_EOL . $this->cast->nickname . 'が解散しました。';
+        $pushId = 'c_7';
         $namedUser = 'user_' . $notifiable->id;
         $send_from = UserType::ADMIN;
-        $pushId = 'c_1';
 
         return [
             'audienceOptions' => ['named_user' => $namedUser],
