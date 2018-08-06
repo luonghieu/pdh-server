@@ -121,6 +121,8 @@ class OrderController extends ApiController
             return $this->respondServerError();
         }
 
+        $order = $order->fresh();
+
         return $this->respondWithData(OrderResource::make($order));
     }
 
@@ -185,6 +187,8 @@ class OrderController extends ApiController
             }
         }
 
+        $order = $order->fresh();
+
         return $this->respondWithData(OrderResource::make($order));
     }
 
@@ -210,6 +214,8 @@ class OrderController extends ApiController
         if (!$order->start($user->id)) {
             return $this->respondServerError();
         }
+
+        $order = $order->fresh();
 
         return $this->respondWithData(OrderResource::make($order));
     }
@@ -240,6 +246,8 @@ class OrderController extends ApiController
         if (!$order->stop($user->id)) {
             return $this->respondServerError();
         }
+
+        $order = $order->fresh();
 
         return $this->respondWithData(OrderResource::make($order));
     }

@@ -4,6 +4,7 @@ namespace App\Notifications;
 
 use App\Enums\MessageType;
 use App\Enums\RoomType;
+use App\Enums\SystemMessageType;
 use App\Enums\UserType;
 use Illuminate\Bus\Queueable;
 use Illuminate\Notifications\Notification;
@@ -66,7 +67,8 @@ class CreateCast extends Notification implements ShouldQueue
         $roomMessage = $room->messages()->create([
             'user_id' => 1,
             'type' => MessageType::SYSTEM,
-            'message' => $message
+            'message' => $message,
+            'system_type' => SystemMessageType::NOTIFY
         ]);
 
         $roomMessage->recipients()->attach($notifiable->id, ['room_id' => $room->id]);

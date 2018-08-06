@@ -2,12 +2,16 @@
 
 namespace App\Notifications;
 
+use App\Enums\MessageType;
+use App\Enums\NotificationStyle;
 use App\Enums\UserType;
+use App\Guest;
 use Illuminate\Bus\Queueable;
-use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Notification;
+use Illuminate\Contracts\Queue\ShouldQueue;
+use Illuminate\Notifications\Messages\MailMessage;
 
-class RenewalReminderTenMinute extends Notification implements ShouldQueue
+class CastAcceptNominationOrders extends Notification implements ShouldQueue
 {
     use Queueable;
 
@@ -52,24 +56,32 @@ class RenewalReminderTenMinute extends Notification implements ShouldQueue
      */
     public function toArray($notifiable)
     {
-        $message = '解散予定時刻まで残り10分です！'
-            . PHP_EOL . '解散予定時刻後は自動で延長されます。';
+        if ($notifiable->type == UserType::GUEST) {
+            $message = 'おめでとうございます！'
+                . PHP_EOL . 'キャストとのマッチングが確定しました♪';
+        } else {
+            $message = 'おめでとう！ゲストとのマッチングが確定しました♪';
+        }
 
         return [
             'content' => $message,
             'send_from' => UserType::ADMIN,
+            'style' => NotificationStyle::DEFAULT
         ];
     }
 
     public function pushData($notifiable)
     {
-        $content = '解散予定時刻まで残り10分です！'
-            . PHP_EOL . '解散予定時刻後は自動で延長されます。';
-
-        $pushId = 'c_6';
+        if ($notifiable->type == UserType::GUEST) {
+            $content = 'おめでとうございます！'
+                . PHP_EOL . 'キャストとのマッチングが確定しました♪';
+        } else {
+            $content = 'おめでとう！ゲストとのマッチングが確定しました♪';
+        }
 
         $namedUser = 'user_' . $notifiable->id;
         $send_from = UserType::ADMIN;
+        $pushId = ($notifiable->type == UserType::GUEST) ? 'g_8' : 'c_8';
 
         return [
             'audienceOptions' => ['named_user' => $namedUser],

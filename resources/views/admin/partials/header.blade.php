@@ -19,7 +19,7 @@
     <div class="notify">
       <a  class='bag' href="">
       <img src="/assets/admin/img/logo/notifications.png" alt="notifications">
-      <span class="indicator">1</span>
+      <span class="indicator">{{ count($notifications) }}</span>
       </a>
     </div>
       <div class="clearfix"></div>
@@ -27,9 +27,11 @@
 </div>
 <div class="col-lg-2 col-sm-6 col-xs-6 col-xxs-12 notifications" >
   <div class="smallstat">
-   <span class="value">
-    <a href="">NGワードが発言されました。</a>
-  </span>
+    @foreach ($notifications as $notification)
+     <span class="value">
+      <a href="{{ route('admin.reports.index', ['notification_id' => $notification->id]) }}">{{ $notification->content }}</a>
+    </span>
+    @endforeach
   </div>
 </div><!--/col-->
 <!-- end: Header -->

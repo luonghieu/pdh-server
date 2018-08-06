@@ -2,6 +2,7 @@
 
 namespace App\Jobs;
 
+use App\Notifications\OrderCompleted;
 use App\Order;
 use App\Enums\OrderStatus;
 use Illuminate\Bus\Queueable;
@@ -15,15 +16,18 @@ class StopOrder implements ShouldQueue
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
     protected $order;
+    protected $cast;
 
     /**
      * Create a new job instance.
      *
-     * @return void
+     * @param Order $order
+     * @param null $cast
      */
-    public function __construct(Order $order)
+    public function __construct(Order $order, $cast = null)
     {
         $this->order = $order;
+        $this->cast = $cast;
     }
 
     /**
@@ -41,6 +45,10 @@ class StopOrder implements ShouldQueue
                 $this->order->actual_ended_at = now();
                 $this->order->save();
             }
+        }
+
+        if ($this->cast) {
+            $this->order->user->notify(new OrderCompleted($this->order, $this->cast));
         }
     }
 }

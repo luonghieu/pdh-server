@@ -11,6 +11,7 @@ use App\Jobs\CancelOrder;
 use App\Jobs\ProcessOrder;
 use App\Jobs\StopOrder;
 use App\Jobs\ValidateOrder;
+use App\Notifications\StartOrder;
 use App\Services\LogService;
 use App\Traits\DirectRoom;
 use Auth;
@@ -228,7 +229,7 @@ class Order extends Model
 
             \DB::commit();
 
-            StopOrder::dispatchNow($this);
+            StopOrder::dispatchNow($this, $cast);
 
             return true;
         } catch (\Exception $e) {
@@ -247,7 +248,8 @@ class Order extends Model
                 'status' => CastOrderStatus::PROCESSING,
             ], false);
 
-            ProcessOrder::dispatchNow($this);
+            $cast = User::find($userId);
+            ProcessOrder::dispatchNow($this, $cast);
 
             return true;
         } catch (\Exception $e) {

@@ -2,6 +2,7 @@
 
 namespace App\Jobs;
 
+use App\Notifications\CastAcceptNominationOrders;
 use App\Room;
 use App\Order;
 use App\Enums\RoomType;
@@ -44,12 +45,11 @@ class ValidateOrder implements ShouldQueue
      */
     public function handle()
     {
-        $castsCount = $this->order->casts->count();
+        $castsCount = $this->order->casts()->count();
 
         if ($this->order->total_cast == $castsCount) {
             try {
                 \DB::beginTransaction();
-
                 if ($this->order->total_cast > 1) {
                     $room = new Room;
                     $room->order_id = $this->order->id;
@@ -109,30 +109,62 @@ class ValidateOrder implements ShouldQueue
 
     private function sendNotification($users)
     {
-        $room = $this->order->room;
-        $startTime = Carbon::parse($this->order->date . ' ' . $this->order->start_time);
-        $message = '\\\\ おめでとうございます！マッチングが確定しました♪ //'
-            . PHP_EOL . PHP_EOL . '- ご予約内容 - '
-            . PHP_EOL . '場所：' . $this->order->address
-            . PHP_EOL . '合流予定時間：'. $startTime->format('H:i') .'～'
-            . PHP_EOL . PHP_EOL . 'ゲストの方はキャストに来て欲しい場所の詳細をお伝えください。'
-            . PHP_EOL . '尚、ご不明点がある場合は運営までお問い合わせください。'
-            . PHP_EOL . PHP_EOL . 'それでは素敵な時間をお楽しみください♪';
+        if ($this->order->type != OrderType::NOMINATION) {
+            $room = $this->order->room;
+            $startTime = Carbon::parse($this->order->date . ' ' . $this->order->start_time);
+            $message = '\\\\ おめでとうございます！マッチングが確定しました♪ //'
+                . PHP_EOL . PHP_EOL . '- ご予約内容 - '
+                . PHP_EOL . '場所：' . $this->order->address
+                . PHP_EOL . '合流予定時間：'. $startTime->format('H:i') .'～'
+                . PHP_EOL . PHP_EOL . 'ゲストの方はキャストに来て欲しい場所の詳細をお伝えください。'
+                . PHP_EOL . '尚、ご不明点がある場合は運営までお問い合わせください。'
+                . PHP_EOL . PHP_EOL . 'それでは素敵な時間をお楽しみください♪';
 
-        $roomMessage = $room->messages()->create([
-            'user_id' => 1,
-            'type' => MessageType::SYSTEM,
-            'system_type' => SystemMessageType::NORMAL,
-            'message' => $message
-        ]);
+            $roomMessage = $room->messages()->create([
+                'user_id' => 1,
+                'type' => MessageType::SYSTEM,
+                'system_type' => SystemMessageType::NORMAL,
+                'message' => $message
+            ]);
 
-        $userIds = [];
-        foreach ($users as $user) {
-            $userIds[] = $user->id;
+            $userIds = [];
+            foreach ($users as $user) {
+                $userIds[] = $user->id;
+            }
+
+            $roomMessage->recipients()->attach($userIds, ['room_id' => $room->id]);
+
+            \Notification::send($users, new ApproveNominatedOrders($this->order));
+        } else {
+            $room = $this->order->room;
+            $userIds = [];
+            foreach ($users as $user) {
+                $userIds[] = $user->id;
+            }
+
+            $firstMessage = 'マッチングが確定しました。';
+            $roomMessage = $room->messages()->create([
+                'user_id' => 1,
+                'type' => MessageType::SYSTEM,
+                'system_type' => SystemMessageType::NOTIFY  ,
+                'message' => $firstMessage
+            ]);
+            $roomMessage->recipients()->attach($userIds, ['room_id' => $room->id]);
+
+            $secondMessage = 'マッチング確定おめでとうございます♪'
+                . PHP_EOL . '合流後はタイマーで時間計測を行い、解散予定の10分前には通知が届きます。'
+                . PHP_EOL . '※解散予定時刻後は自動で延長されます。'
+                . PHP_EOL . PHP_EOL . 'その他ご不明点がある場合は運営までお問い合わせください。'
+                . PHP_EOL . PHP_EOL . 'それでは素敵な時間をお楽しみください♪';
+            $roomMessage = $room->messages()->create([
+                'user_id' => 1,
+                'type' => MessageType::SYSTEM,
+                'system_type' => SystemMessageType::NOTIFY  ,
+                'message' => $secondMessage
+            ]);
+            $roomMessage->recipients()->attach($userIds, ['room_id' => $room->id]);
+
+            \Notification::send($users, new CastAcceptNominationOrders($this->order));
         }
-
-        $roomMessage->recipients()->attach($userIds, ['room_id' => $room->id]);
-
-        \Notification::send($users, new ApproveNominatedOrders($this->order));
     }
 }

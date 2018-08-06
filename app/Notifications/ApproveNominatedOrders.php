@@ -2,10 +2,7 @@
 
 namespace App\Notifications;
 
-use App\Enums\MessageType;
-use App\Enums\RoomType;
 use App\Enums\UserType;
-use App\User;
 use Illuminate\Bus\Queueable;
 use Illuminate\Notifications\Notification;
 use Illuminate\Contracts\Queue\ShouldQueue;

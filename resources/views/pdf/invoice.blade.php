@@ -54,9 +54,9 @@
                 <div class="text">
                     <span style="display: block; width: 500px; font-size:24px; word-wrap: break-word;">
                     @if($content)
-                    但し{{ $content }}代として
+                    但し{{ $content }}として
                     @else
-                    但し　　　　　代として
+                    但し　　　　　として
                     @endif
                     </span>
                     <span style="display: block; font-size: 24px">上記正に領収いたしました</span>
