@@ -2,11 +2,12 @@
 
 namespace App\Http\Controllers\Api\Guest;
 
-use App\Http\Controllers\Api\ApiController;
-use App\Payment;
 use App\Point;
+use App\Payment;
+use App\Enums\PaymentStatus;
 use App\Services\LogService;
 use Illuminate\Http\Request;
+use App\Http\Controllers\Api\ApiController;
 
 class PointController extends ApiController
 {
@@ -23,7 +24,7 @@ class PointController extends ApiController
         }
 
         $user = $this->guard()->user();
-        if (!$user->cards->first()) {
+        if (!$user->card) {
             return $this->respondErrorMessage(trans('messages.card_not_exist'), 404);
         }
 
@@ -33,17 +34,28 @@ class PointController extends ApiController
             $point = new Point;
             $point->point = $request->amount;
             $point->user_id = $user->id;
-            $point->status = true;
+            $point->status = false;
             $point->save();
-
-            $user->point = $user->point + $request->amount;
-            $user->save();
 
             $payment = new Payment;
             $payment->user_id = $user->id;
             $payment->amount = ($request->amount) * 1.1;
             $payment->point_id = $point->id;
+            $payment->card_id = $user->card->id;
+            $payment->status = PaymentStatus::OPEN;
             $payment->save();
+
+            // charge money
+            $charged = $payment->charge();
+
+            if ($charged) {
+                $point->status = true;
+                $point->balance = $point->point + $user->point;
+                $point->save();
+
+                $user->point = $user->point + $request->amount;
+                $user->save();
+            }
 
             \DB::commit();
 
