@@ -105,7 +105,12 @@ class ValidateOrder implements ShouldQueue
 
                 $this->order->update();
 
+                $involvedUsers = [$this->order->user];
+                foreach ($this->order->casts as $cast) {
+                    $involvedUsers[] = $cast;
+                }
 
+                $this->sendNotification($involvedUsers);
             }
         }
     }
