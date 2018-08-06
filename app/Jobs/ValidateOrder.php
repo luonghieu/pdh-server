@@ -174,6 +174,5 @@ class ValidateOrder implements ShouldQueue
 
             \Notification::send($users, new CastAcceptNominationOrders($this->order));
         }
-
     }
 }
