@@ -1,4 +1,2 @@
 *
-!system_images
-!system_images/*
 !.gitignore
