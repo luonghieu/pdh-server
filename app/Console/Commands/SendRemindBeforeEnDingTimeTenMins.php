@@ -75,7 +75,7 @@ class SendRemindBeforeEnDingTimeTenMins extends Command
                         'user_id' => 1,
                         'type' => MessageType::SYSTEM,
                         'message' => $messageForGuest,
-                        'message_type' => SystemMessageType::NOTIFY
+                        'system_type' => SystemMessageType::NOTIFY
                     ]);
                     $roomMessage->recipients()->attach($order->user_id, ['room_id' => $room->id]);
                     $order->user->notify(new TenMinBeforeOrderEnded($order, $cast));
