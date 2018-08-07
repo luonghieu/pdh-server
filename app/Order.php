@@ -104,6 +104,11 @@ class Order extends Model
         return $this->belongsTo(Room::class);
     }
 
+    public function transfers()
+    {
+        return $this->hasMany(Transfer::class);
+    }
+
     public function deny($userId)
     {
         try {
