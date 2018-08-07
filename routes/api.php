@@ -39,6 +39,7 @@ Route::group(['prefix' => 'v1'], function () {
         Route::delete('messages/{id}', ['as' => 'messages', 'uses' => 'MessageController@delete']);
         Route::patch('working_today', ['as' => 'working_today', 'uses' => 'WorkingTodayController@update']);
         Route::post('/ratings', ['as' => 'create_rating', 'uses' => 'RatingController@create']);
+        Route::get('/notifications/{id}', ['as' => 'show_notifications', 'uses' => 'NotificationController@show']);
         Route::get('/notifications', ['as' => 'notifications', 'uses' => 'NotificationController@index']);
     });
 
@@ -78,6 +79,7 @@ Route::group(['prefix' => 'v1'], function () {
 
         Route::group(['prefix' => 'bank_accounts', 'as' => 'bank_accounts.'], function () {
             Route::post('/{id}', ['as' => 'update', 'uses' => 'Cast\BankAccountController@update']);
+            Route::post('/', ['as' => 'bank_accounts', 'uses' => 'Cast\BankAccountController@create']);
         });
     });
 

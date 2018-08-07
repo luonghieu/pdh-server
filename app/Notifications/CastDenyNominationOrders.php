@@ -6,6 +6,7 @@ use App\Enums\MessageType;
 use App\Enums\RoomType;
 use App\Enums\SystemMessageType;
 use App\Enums\UserType;
+use App\Traits\DirectRoom;
 use Illuminate\Bus\Queueable;
 use Illuminate\Notifications\Notification;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -13,18 +14,21 @@ use Illuminate\Notifications\Messages\MailMessage;
 
 class CastDenyNominationOrders extends Notification
 {
-    use Queueable;
+    use Queueable, DirectRoom;
 
     public $order;
+    public $cast;
 
     /**
      * Create a new notification instance.
      *
      * @param $order
+     * @param $cast
      */
-    public function __construct($order)
+    public function __construct($order, $cast)
     {
         $this->order = $order;
+        $this->cast = $cast;
     }
 
     /**
@@ -56,7 +60,7 @@ class CastDenyNominationOrders extends Notification
      */
     public function toArray($notifiable)
     {
-        $room = $this->order->room;
+        $room = $this->createDirectRoom($this->order->user_id, $this->cast->id);
         $roomMesage = '提案がキャンセルされました。';
         $roomMessage = $room->messages()->create([
             'user_id' => 1,

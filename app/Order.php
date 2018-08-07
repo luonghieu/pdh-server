@@ -115,7 +115,8 @@ class Order extends Model
                 $this->status = OrderStatus::DENIED;
                 $this->save();
 
-                $this->user->notify(new CastDenyNominationOrders($this));
+                $cast = User::find($userId);
+                $this->user->notify(new CastDenyNominationOrders($this, $cast));
             }
 
             ValidateOrder::dispatchNow($this);
@@ -123,6 +124,26 @@ class Order extends Model
             return true;
         } catch (\Exception $e) {
             LogService::writeErrorLog($e);
+
+            return false;
+        }
+    }
+
+    public function denyAfterActived($userId)
+    {
+        try {
+            $this->casts()->updateExistingPivot(
+                $userId,
+                ['status' => CastOrderStatus::DENIED, 'canceled_at' => Carbon::now()],
+                false
+            );
+            $this->status = OrderStatus::DENIED;
+            $this->save();
+
+            return true;
+        } catch (\Exception $e) {
+            LogService::writeErrorLog($e);
+
             return false;
         }
     }
@@ -140,6 +161,7 @@ class Order extends Model
             return true;
         } catch (\Exception $e) {
             LogService::writeErrorLog($e);
+
             return false;
         }
     }
@@ -161,6 +183,7 @@ class Order extends Model
             return true;
         } catch (\Exception $e) {
             LogService::writeErrorLog($e);
+
             return false;
         }
     }
@@ -179,6 +202,7 @@ class Order extends Model
             return true;
         } catch (\Exception $e) {
             LogService::writeErrorLog($e);
+
             return false;
         }
     }
@@ -257,6 +281,7 @@ class Order extends Model
             return true;
         } catch (\Exception $e) {
             LogService::writeErrorLog($e);
+
             return false;
         }
     }
