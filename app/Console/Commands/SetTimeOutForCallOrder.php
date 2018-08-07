@@ -2,6 +2,7 @@
 
 namespace App\Console\Commands;
 
+use App\Notifications\CallOrdersTimeOut;
 use App\Order;
 use Carbon\Carbon;
 use App\Enums\OrderType;
@@ -78,6 +79,8 @@ class SetTimeOutForCallOrder extends Command
         $castIds = $order->castOrder()
             ->pluck('cast_order.user_id')
             ->toArray();
+
+        $order->user->notify(new CallOrdersTimeOut($order));
 
         foreach ($castIds as $id) {
             $order->castOrder()->updateExistingPivot(
