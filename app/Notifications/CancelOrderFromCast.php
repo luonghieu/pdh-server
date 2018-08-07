@@ -34,7 +34,7 @@ class CancelOrderFromCast extends Notification implements ShouldQueue
      */
     public function via($notifiable)
     {
-        return [CustomDatabaseChannel::class, PushNotificationChannel::class];
+        return [PushNotificationChannel::class];
     }
 
     /**
@@ -55,35 +55,7 @@ class CancelOrderFromCast extends Notification implements ShouldQueue
      */
     public function toArray($notifiable)
     {
-        if ($notifiable->type == UserType::CAST) {
-            $room = $notifiable->rooms()
-                ->where('rooms.type', RoomType::SYSTEM)
-                ->where('rooms.is_active', true)->first();
-            $message = 'キャンセルが完了しました。';
-
-            $roomMessage = $room->messages()->create([
-                'user_id' => 1,
-                'type' => MessageType::SYSTEM,
-                'message' => $message
-            ]);
-
-            $roomMessage->recipients()->attach($notifiable->id, ['room_id' => $room->id]);
-        } else {
-            $room = $this->order->room;
-            $message = '予約がキャンセルされました。';
-            $roomMessage = $room->messages()->create([
-                'user_id' => 1,
-                'type' => MessageType::SYSTEM,
-                'message' => $message
-            ]);
-
-            $roomMessage->recipients()->attach($notifiable->id, ['room_id' => $room->id]);
-        }
-
-        return [
-            'content' => $message,
-            'send_from' => UserType::ADMIN,
-        ];
+        return [];
     }
 
     public function pushData($notifiable)

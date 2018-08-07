@@ -4,14 +4,17 @@ namespace App;
 
 use App\Enums\CastOrderStatus;
 use App\Enums\CastOrderType;
+use App\Enums\MessageType;
 use App\Enums\OrderStatus;
 use App\Enums\OrderType;
 use App\Enums\PointType;
 use App\Enums\RoomType;
+use App\Enums\SystemMessageType;
 use App\Jobs\CancelOrder;
 use App\Jobs\ProcessOrder;
 use App\Jobs\StopOrder;
 use App\Jobs\ValidateOrder;
+use App\Notifications\CancelOrderFromCast;
 use App\Notifications\CastDenyNominationOrders;
 use App\Services\LogService;
 use App\Traits\DirectRoom;
@@ -140,6 +143,35 @@ class Order extends Model
             $this->status = OrderStatus::DENIED;
             $this->save();
 
+            $involvedUsers = [];
+            $owner = $this->user;
+            $cast = User::find($userId);
+            $involvedUsers[] = $owner;
+            $involvedUsers[] = $cast;
+
+            $castPrivateRoom = $cast->rooms()
+                ->where('rooms.type', RoomType::SYSTEM)
+                ->where('rooms.is_active', true)->first();
+            $message = 'キャンセルが完了しました。';
+            $castPrivateRoomMessage = $castPrivateRoom->messages()->create([
+                'user_id' => 1,
+                'type' => MessageType::SYSTEM,
+                'message' => $message,
+                'system_type' => SystemMessageType::NOTIFY
+            ]);
+            $castPrivateRoomMessage->recipients()->attach($userId, ['room_id' => $castPrivateRoom->id]);
+
+            $room = $this->room;
+            $message = '予約がキャンセルされました。';
+            $roomMessage = $room->messages()->create([
+                'user_id' => 1,
+                'type' => MessageType::SYSTEM,
+                'message' => $message,
+                'system_type' => SystemMessageType::NOTIFY
+            ]);
+            $roomMessage->recipients()->attach($owner->id, ['room_id' => $room->id]);
+
+            \Notification::send($involvedUsers, new CancelOrderFromCast($this));
             return true;
         } catch (\Exception $e) {
             LogService::writeErrorLog($e);
