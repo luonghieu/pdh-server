@@ -7,6 +7,7 @@ use App\Enums\CastOrderType;
 use App\Enums\OrderStatus;
 use App\Enums\OrderType;
 use App\Enums\RoomType;
+use App\Enums\PointType;
 use App\Jobs\CancelOrder;
 use App\Jobs\ProcessOrder;
 use App\Jobs\StopOrder;
@@ -469,5 +470,23 @@ class Order extends Model
     public function point()
     {
         return $this->hasOne(Point::class);
+    }
+
+    public function settle()
+    {
+        $user = $this->user;
+
+        $point = new Point;
+
+        $point->point = - $this->total_point;
+        $point->balance = $user->point - $this->total_point;
+        $point->user_id = $user->id;
+        $point->order_id = $this->id;
+        $point->type = PointType::PAY;
+        $point->status = true;
+
+        $point->save();
+
+        return true;
     }
 }
