@@ -45,9 +45,9 @@ class ValidateOrder implements ShouldQueue
      */
     public function handle()
     {
-        $castsCount = $this->order->casts()->count();
+        $casts = $this->order->casts()->get();
 
-        if ($this->order->total_cast == $castsCount) {
+        if ($this->order->total_cast == $casts->count()) {
             try {
                 \DB::beginTransaction();
                 if ($this->order->total_cast > 1) {
@@ -58,14 +58,14 @@ class ValidateOrder implements ShouldQueue
                     $room->save();
 
                     $data = [$this->order->user_id];
-                    foreach ($this->order->casts as $cast) {
+                    foreach ($casts as $cast) {
                         $data = array_merge($data, [$cast->pivot->user_id]);
                     }
 
                     $room->users()->attach($data);
                 } else {
                     $ownerId = $this->order->user_id;
-                    $userId = $this->order->casts()->first()->id;
+                    $userId = $casts->first()->id;
 
                     $room = $this->createDirectRoom($ownerId, $userId);
                 }
@@ -76,7 +76,7 @@ class ValidateOrder implements ShouldQueue
                 $this->order->update();
 
                 $involvedUsers = [$this->order->user];
-                foreach ($this->order->casts as $cast) {
+                foreach ($casts as $cast) {
                     $involvedUsers[] = $cast;
                 }
 
@@ -146,7 +146,7 @@ class ValidateOrder implements ShouldQueue
             $roomMessage = $room->messages()->create([
                 'user_id' => 1,
                 'type' => MessageType::SYSTEM,
-                'system_type' => SystemMessageType::NOTIFY  ,
+                'system_type' => SystemMessageType::NOTIFY,
                 'message' => $firstMessage
             ]);
             $roomMessage->recipients()->attach($userIds, ['room_id' => $room->id]);
