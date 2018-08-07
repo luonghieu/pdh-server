@@ -249,7 +249,7 @@ class OrderController extends ApiController
         }
 
         $order = $order->fresh();
-        $paymentRequest = $paymentRequest->load('order');
+        $paymentRequest = $paymentRequest->load('order', 'cast');
 
         return $this->respondWithData(PaymentRequestResource::make($paymentRequest));
     }
