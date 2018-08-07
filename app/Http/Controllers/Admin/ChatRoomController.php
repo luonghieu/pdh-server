@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Admin\Chat_Room;
+namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
@@ -11,7 +11,6 @@ class ChatRoomController extends Controller
 
     public function index()
     {
-
         $user = Auth::user();
         $user_id = $user->id;
         $token = JWTAuth::fromUser($user);

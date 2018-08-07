@@ -3,10 +3,10 @@
         <div class="messaging">
             <div class="inbox_msg">
                 <h3 class="text-center nickname"></h3>
-                <list-users :users="users" :user_id="user_id"></list-users>
+                <list-users :users="users" :user_id="user_id" :totalUser="totalUser"></list-users>
                 <div class="mesgs">
                     <chat-messages :list_message="list_messages" :user_id="user_id"
-                                   :created_at="created_at"></chat-messages>
+                                   :totalMessage="totalMessage"></chat-messages>
                     <div class="type_msg">
                         <div class="input_msg_write">
                             <div v-if="!image">
@@ -52,12 +52,13 @@
                 user_id: '',
                 image: '',
                 type: 2,
-                picture: '',
                 none: true,
                 file_upload: '',
                 errors: [],
-                created_at: '',
-                timer: ''
+                timer: '',
+                totalMessage: '',
+                totalUser: '',
+                roomId: ''
             }
         },
 
@@ -84,7 +85,6 @@
             },
 
             getToken() {
-
                 const access_token = document.getElementById('token').value;
                 this.user_id = document.getElementById('userId').value;
                 window.axios.defaults.headers.common['Authorization'] = 'Bearer ' + access_token;
@@ -95,9 +95,10 @@
             getRoom() {
                 window.axios.get("../../api/v1/rooms")
                     .then(response => {
+                        this.roomId = this.$route.params.id;
+                        this.totalUser = response.data.data.total;
                         const rooms = response.data.data.data;
                         this.users = rooms
-                        console.log(rooms)
                     });
             },
 
@@ -106,19 +107,16 @@
                     .then(response => {
                         this.list_messages = [];
                         const room = response.data.data.data;
+                        this.totalMessage = response.data.data.total;
                         room.forEach(messages => {
                             messages.forEach(item => {
-                                this.list_messages.push(item);
+                                this.list_messages.unshift(item);
                             })
                         });
                     });
             },
 
-
             sendMessage() {
-
-                this.picture = this.image;
-                this.created_at = new Date().toLocaleTimeString().replace(/([\d]+:[\d]{2})(:[\d]{2})(.*)/, "$1$3");
                 this.userId = this.user_id
                 let data = {
                     message: this.message,
@@ -131,7 +129,7 @@
                     }
                 }
 
-                if (this.file_upload) {
+                if (this.image) {
                     data = new FormData();
                     data.append('image', this.file_upload);
                     data.append('type', 3);
@@ -141,7 +139,9 @@
                     .then((response) => {
                         this.list_messages.push(response.data.data);
                         this.message = '';
-                        this.removeImage().click();
+                        if (this.image) {
+                            this.removeImage().click();
+                        }
                     });
             },
 

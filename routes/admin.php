@@ -41,8 +41,8 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.'], function () {
         Route::get('{order}', ['as' => 'call', 'uses' => 'OrderController@orderCall'])->where('order', '[0-9]+');
     });
 
-    Route::group(['namespace' => 'Chat_Room', 'prefix' => 'chat_rooms', 'as' => 'chat_rooms.', 'middleware' => 'is_admin'], function () {
-        Route::get('/', ['as' => 'index', 'uses' => 'ChatRoomController@index']);
+    Route::group(['middleware' => 'is_admin'], function () {
+        Route::get('chat', ['as' => 'chat.index', 'uses' => 'ChatRoomController@index']);
     });
 
 
