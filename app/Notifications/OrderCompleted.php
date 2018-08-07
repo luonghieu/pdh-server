@@ -62,8 +62,9 @@ class OrderCompleted extends Notification implements ShouldQueue
     {
         $order = $this->order;
         $room = $order->room;
+        $cast = $order->casts()->where('user_id', $this->cast->id)->first();
 
-        $message = Carbon::parse($this->cast->pivot->stopped_at)->format('H:i')
+        $message = Carbon::parse($cast->pivot->stopped_at)->format('H:i')
             . PHP_EOL . $this->cast->nickname . 'が解散しました。';
         $roomMessage = $room->messages()->create([
             'user_id' => 1,
@@ -82,7 +83,10 @@ class OrderCompleted extends Notification implements ShouldQueue
 
     public function pushData($notifiable)
     {
-        $content = Carbon::parse($this->cast->pivot->stopped_at)->format('H:i')
+        $order = $this->order;
+        $cast = $order->casts()->where('user_id', $this->cast->id)->first();
+
+        $content = Carbon::parse($cast->pivot->stopped_at)->format('H:i')
             . PHP_EOL . $this->cast->nickname . 'が解散しました。';
         $pushId = 'g_11';
         $namedUser = 'user_' . $notifiable->id;
