@@ -2,6 +2,7 @@
 
 namespace App\Notifications;
 
+use App\Enums\MessageType;
 use App\Enums\UserType;
 use App\User;
 use Illuminate\Bus\Queueable;
@@ -68,7 +69,12 @@ class MessageCreated extends Notification implements ShouldQueue
             $pushId = 'c_14';
             $send_from = UserType::CAST;
         }
-        $content = $this->message->message;
+
+        if ($this->message->type == MessageType::IMAGE) {
+            $content = $this->message->user->nickname. 'さんが写真を送信しました';
+        } else {
+            $content = $this->message->message;
+        }
         $namedUser = 'user_' . $notifiable->id;
 
         return [
