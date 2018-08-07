@@ -24,8 +24,8 @@ class OrderObserver
 
     public function updated(Order $order)
     {
-        if ($order->getOriginal('status') != $order->status) {
-            if ($order->status == OrderPaymentStatus::PAYMENT_FINISHED) {
+        if ($order->getOriginal('payment_status') != $order->payment_status) {
+            if ($order->payment_status == OrderPaymentStatus::PAYMENT_FINISHED) {
                 $order->user->notify(new CompletedPayment($order));
             }
         }
