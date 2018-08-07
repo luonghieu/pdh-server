@@ -3,6 +3,8 @@
 namespace App\Notifications;
 
 use App\Enums\UserType;
+use App\Order;
+use Carbon\Carbon;
 use Illuminate\Bus\Queueable;
 use Illuminate\Notifications\Notification;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -19,7 +21,7 @@ class CallOrdersTimeOut extends Notification implements ShouldQueue
      *
      * @param $order
      */
-    public function __construct($order)
+    public function __construct(Order $order)
     {
         $this->order = $order;
     }
@@ -58,8 +60,29 @@ class CallOrdersTimeOut extends Notification implements ShouldQueue
 
     public function pushData($notifiable)
     {
+        $orderDuration = $this->order->duration * 60;
+        $orderStartDate = Carbon::parse($this->order->date)->startOfDay();
+        $casts = $this->order->casts;
+
+        $orderNightTime = $this->order->nightTime($orderStartDate->addMinutes($orderDuration));
+        $orderAllowance = $this->order->allowance($orderNightTime);
+        $orderPoint = 0;
+        foreach ($casts as $cast) {
+            $orderFee = $this->order->orderFee($cast, 0);
+            $orderPoint += $this->order->orderPoint($cast) + $orderAllowance + $orderFee;
+        }
+
         $content = 'ご希望の人数のキャストが揃わなかったため、'
-            . PHP_EOL . 'こちらの予約は無効になります。'
+            . PHP_EOL . '下記の予約が無効となりました。'
+            . PHP_EOL . '--------------------------------------------------'
+            . PHP_EOL . '- キャンセル内容 -'
+            . PHP_EOL . '日時：' . Carbon::parse($this->order->date . ' ' . $this->order->start_time)->format('Y/m/d H:i') . '~'
+            . PHP_EOL . '時間：' . $this->order->duration . '時間'
+            . PHP_EOL . 'クラス：' . $this->order->castClass->name
+            . PHP_EOL . '人数：' . $this->order->total_cast . '人'
+            . PHP_EOL . '場所：' .  $this->order->address
+            . PHP_EOL . '予定合計ポイント：' . number_format($orderPoint) . ' Point'
+            . PHP_EOL . '--------------------------------------------------'
             . PHP_EOL . 'お手数ですが、再度コールをし直してください。';
 
         $namedUser = 'user_' . $notifiable->id;
