@@ -115,7 +115,8 @@ class Order extends Model
                 $this->status = OrderStatus::DENIED;
                 $this->save();
 
-                $this->user->notify(new CastDenyNominationOrders($this));
+                $cast = User::find($userId);
+                $this->user->notify(new CastDenyNominationOrders($this, $cast));
             }
 
             ValidateOrder::dispatchNow($this);
