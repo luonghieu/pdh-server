@@ -1005,7 +1005,7 @@ tbody td {
   border: 1px solid #919191 !important;
 }
 
-.select-reports {
+.select-checkbox {
   width: 50px;
   text-align: -webkit-center;
 }
@@ -1027,6 +1027,26 @@ tbody td {
 }
 
 .btn-change-report button:hover {
+  background-color: #39afea;
+}
+
+.btn-delete-order {
+  display: inline-block;
+  position: absolute;
+  right: 32px;
+  top: 100px;
+}
+
+.btn-delete-order button {
+  background: none;
+  border: none;
+  background-color: #6dc9e6;
+  color: #fff;
+  border-radius: 8px;
+  padding: 8px;
+}
+
+.btn-delete-order button:hover {
   background-color: #39afea;
 }
 

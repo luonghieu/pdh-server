@@ -76,7 +76,7 @@
                 <tr>
                   <td>{{ $reports->firstItem() +$key }}</td>
                   @if ($report->status == App\Enums\ReportStatus::OPEN)
-                  <td class="select-reports">
+                  <td class="select-checkbox">
                     <input class="verify-checkboxs"
                       type="checkbox"
                       value="{{ $report->id }}"
