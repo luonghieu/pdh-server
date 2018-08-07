@@ -14,7 +14,10 @@ class Kernel extends ConsoleKernel
      */
     protected $commands = [
         Commands\CastRankingSchedule::class,
-        Commands\WorkingToday::class
+        Commands\WorkingToday::class,
+        Commands\NominatedCallSchedule::class,
+        Commands\DeleteCanceledOrderSchedule::class,
+        Commands\DeleteCastCanceledOrderSchedule::class,
     ];
 
     /**
@@ -25,8 +28,16 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule)
     {
-         $schedule->command('cheers:update_cast_ranking')->dailyAt(5)->onOneServer()->runInBackground();
-         $schedule->command('cheers:reset_working_today')->dailyAt(5)->onOneServer()->runInBackground();
+        $schedule->command('cheers:update_cast_ranking')->dailyAt(5)->onOneServer()->runInBackground();
+        $schedule->command('cheers:reset_working_today')->dailyAt(5)->onOneServer()->runInBackground();
+        $schedule->command('cheers:update_nominated_call')->everyMinute()->onOneServer()->runInBackground();
+        $schedule->command('cheers:set_timeout_for_call_order')->everyMinute()->onOneServer()->runInBackground();
+        $schedule->command('cheers:inactive_chatroom_when_order_done')->hourly()->onOneServer()->runInBackground();
+        $schedule->command('cheers:delete_canceled_order')->hourly()->onOneServer()->runInBackground();
+        $schedule->command('cheers:delete_cast_canceled_order')->hourly()->onOneServer()->runInBackground();
+        $schedule->command('cheers:send_remind_before_ending_time_ten_mins')->everyMinute()->onOneServer()->runInBackground();
+        $schedule->command('cheers:send_remind_for_cast_before_ten_minutes')->everyMinute()->onOneServer()->runInBackground();
+        $schedule->command('cheers:send_payment_request_when_cast_stop_order')->hourly()->onOneServer()->runInBackground();
     }
 
     /**
@@ -36,7 +47,7 @@ class Kernel extends ConsoleKernel
      */
     protected function commands()
     {
-        $this->load(__DIR__.'/Commands');
+        $this->load(__DIR__ . '/Commands');
 
         require base_path('routes/console.php');
     }

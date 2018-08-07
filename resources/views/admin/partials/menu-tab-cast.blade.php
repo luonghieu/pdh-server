@@ -3,7 +3,7 @@
   $routes = [
     ['name' => 'admin.users.show', 'value' => '基本情報', 'url' => route('admin.users.show', ['user' => $user->id])],
     ['name' => '#', 'value' => '稼働・売上履歴', 'url' => '#'],
-    ['name' => '#', 'value' => '評価', 'url' => '#'],
+    ['name' => 'admin.casts.guest_ratings', 'value' => '評価', 'url' => route('admin.casts.guest_ratings', ['user' => $user->id])],
     ['name' => '#', 'value' => 'チャットルーム一覧', 'url' => '#'],
     ['name' => '#', 'value' => '振込口座情報', 'url' => '#'],
   ];

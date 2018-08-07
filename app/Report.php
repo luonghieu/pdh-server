@@ -10,6 +10,8 @@ class Report extends Model
         'reported_id',
         'user_id',
         'content',
+        'room_id',
+        'status',
     ];
 
     public function user()

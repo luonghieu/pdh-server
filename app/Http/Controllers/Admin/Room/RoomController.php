@@ -59,7 +59,7 @@ class RoomController extends Controller
 
         $rooms = Room::where('type', '<>', RoomType::SYSTEM)->with('users');
 
-        if ($request->has('from_date') && !empty($request->from_date)) {
+        if ($request->from_date) {
             $fromDate = Carbon::parse($request->from_date)->startOfDay();
             $toDate = Carbon::parse($request->to_date)->endOfDay();
             $rooms->where(function ($query) use ($fromDate, $toDate) {
@@ -67,7 +67,7 @@ class RoomController extends Controller
             });
         }
 
-        if ($request->has('to_date') && !empty($request->to_date)) {
+        if ($request->to_date) {
             $fromDate = Carbon::parse($request->from_date)->startOfDay();
             $toDate = Carbon::parse($request->to_date)->endOfDay();
             $rooms->where(function ($query) use ($fromDate, $toDate) {
@@ -75,7 +75,7 @@ class RoomController extends Controller
             });
         }
 
-        if ($request->has('search')) {
+        if ($request->search) {
             $rooms->where(function ($query) use ($keyword) {
                 $query->where('id', "$keyword");
                 $query->orWhere('owner_id', "$keyword");
@@ -84,5 +84,13 @@ class RoomController extends Controller
         $rooms = $rooms->orderBy('created_at', 'DESC')->paginate($request->limit ?: 10);
 
         return view('admin.rooms.index', compact('rooms'));
+    }
+
+    public function getMember(Room $room)
+    {
+        $ownerId = $room->owner_id;
+        $members = $room->users;
+
+        return view('admin.rooms.room_group', compact('members', 'ownerId'));
     }
 }

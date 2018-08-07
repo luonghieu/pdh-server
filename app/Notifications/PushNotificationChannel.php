@@ -3,7 +3,6 @@
 namespace App\Notifications;
 
 use App\Services\UrbanAirship;
-use App\User;
 use Illuminate\Notifications\Notification;
 
 class PushNotificationChannel

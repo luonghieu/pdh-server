@@ -8,7 +8,7 @@ $routes = [
             'value' => '全アカウント管理',
             'url' => route('admin.users.index'),
             'submenu' => [
-                'admin.users.show'
+                'admin.users.show', 'admin.users.orders_history','admin.users.cast_ratings', 'admin.users.points_history'
             ],
         ],
     ],
@@ -18,7 +18,7 @@ $routes = [
             'value' => 'キャスト管理',
             'url' => route('admin.casts.index'),
             'submenu' => [
-              'admin.casts.register','admin.casts.confirm','admin.casts.save'
+              'admin.casts.register','admin.casts.confirm','admin.casts.save','admin.casts.guest_ratings'
             ],
         ],
     ],
@@ -54,7 +54,8 @@ $routes = [
             'value' => '運営者専用チャット',
             'url' => route('admin.rooms.index'),
             'submenu' => [
-                'admin.rooms.messages_by_room'
+                'admin.rooms.messages_by_room',
+                'admin.rooms.members'
             ],
         ],
     ],
@@ -62,6 +63,14 @@ $routes = [
         [
             'name' => '',
             'value' => '全体売上管理',
+            'url' => '#',
+            'submenu' => [],
+        ],
+    ],
+    'point' => [
+        [
+            'name' => '',
+            'value' => 'ポイント管理',
             'url' => '#',
             'submenu' => [],
         ],

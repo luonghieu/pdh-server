@@ -8,6 +8,11 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.'], function () {
         Route::get('{user}', ['as' => 'show', 'uses' => 'UserController@show'])->where('user', '[0-9]+');
         Route::put('{user}', ['as' => 'change_active', 'uses' => 'UserController@changeActive'])->where('user', '[0-9]+');
         Route::post('{user}', ['as' => 'change_cast_class', 'uses' => 'UserController@changeCastClass'])->where('user', '[0-9]+');
+        Route::put('{user}/register_guest', ['as' => 'register_guest', 'uses' => 'UserController@registerGuest']);
+        Route::get('{user}/orders', ['as' => 'orders_history', 'uses' => 'OrderController@getOrderHistory'])->where('user', '[0-9]+');
+        Route::get('{user}/points', ['as' => 'points_history', 'uses' => 'PointController@getPointHistory'])->where('user', '[0-9]+');;
+        Route::put('{user}/points', ['as' => 'change_point', 'uses' => 'PointController@changePoint'])->where('user', '[0-9]+');;
+        Route::get('{user}/cast_ratings', ['as' => 'cast_ratings', 'uses' => 'RatingController@ratings'])->where('user', '[0-9]+');
     });
 
     Route::group(['namespace' => 'Cast', 'prefix' => 'casts', 'as' => 'casts.', 'middleware' => 'is_admin'], function () {
@@ -15,6 +20,7 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.'], function () {
         Route::get('{user}/register', ['as' => 'register', 'uses' => 'CastController@registerCast']);
         Route::post('{user}/confirm', ['as' => 'confirm', 'uses' => 'CastController@confirmRegister']);
         Route::post('{user}/save', ['as' => 'save', 'uses' => 'CastController@saveCast']);
+        Route::get('{user}/guest_ratings', ['as' => 'guest_ratings', 'uses' => 'RatingController@ratings'])->where('user', '[0-9]+');
     });
 
     Route::group(['middleware' => 'is_admin'], function () {
@@ -25,6 +31,7 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.'], function () {
         Route::get('{room}/messages', ['as' => 'messages_by_room', 'uses' => 'RoomController@getMessageByRoom'])->where('room', '[0-9]+');
         Route::put('{room}', ['as' => 'change_active', 'uses' => 'RoomController@changeActive'])->where('room', '[0-9]+');
         Route::get('/', ['as' => 'index', 'uses' => 'RoomController@index']);
+        Route::get('/{room}/members', ['as' => 'members', 'uses' => 'RoomController@getMember']);
     });
 
     Route::group(['namespace' => 'Order', 'prefix' => 'orders', 'as' => 'orders.', 'middleware' => 'is_admin'], function () {
@@ -34,4 +41,8 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.'], function () {
         Route::get('{order}', ['as' => 'call', 'uses' => 'OrderController@orderCall'])->where('order', '[0-9]+');
     });
 
+    Route::group(['namespace' => 'Report', 'prefix' => 'reports', 'as' => 'reports.', 'middleware' => 'is_admin'], function () {
+        Route::get('/', ['as' => 'index', 'uses' => 'ReportController@index']);
+        Route::put('/', ['as' => 'make_report_done', 'uses' => 'ReportController@makeReportDone']);
+    });
 });

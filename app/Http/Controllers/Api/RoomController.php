@@ -15,6 +15,7 @@ class RoomController extends ApiController
         $rules = [
             'per_page' => 'numeric|min:1',
             'favorited' => 'boolean',
+            'nickname' => 'max:20',
         ];
 
         $validator = validator($request->all(), $rules);
@@ -28,6 +29,13 @@ class RoomController extends ApiController
         $rooms = Room::active()->whereHas('users', function ($query) use ($user) {
             $query->where('user_id', $user->id);
         });
+
+        $nickName = $request->nickname;
+        if ($nickName) {
+            $rooms->whereHas('users', function ($query) use ($nickName) {
+                $query->where('users.nickname', 'like', "%$nickName%");
+            });
+        }
 
         if ($request->favorited) {
             $isFavoritedIds = $user->favorites()->pluck('favorited_id')->toArray();
