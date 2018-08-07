@@ -4,6 +4,7 @@ namespace App\Observers;
 
 use App\Enums\OrderPaymentStatus;
 use App\Enums\PaymentRequestStatus;
+use App\Notifications\PaymentRequestFromCast;
 use App\PaymentRequest;
 
 class PaymentRequestObserver
@@ -50,11 +51,13 @@ class PaymentRequestObserver
                         $order->payment_status = OrderPaymentStatus::REQUESTING;
                         $order->payment_requested_at = now();
                         $order->save();
+                        $order->user->notify(new PaymentRequestFromCast($order));
                     }
                 } else {
                     $order->payment_status = OrderPaymentStatus::REQUESTING;
                     $order->payment_requested_at = now();
                     $order->save();
+                    $order->user->notify(new PaymentRequestFromCast($order));
                 }
 
                 $order->total_point += $paymentRequest->total_point;
