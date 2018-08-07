@@ -104,7 +104,7 @@ class OrderController extends ApiController
                 return $this->respondErrorMessage(trans('messages.action_not_performed'), 422);
             }
         } else {
-            if (OrderStatus::OPEN != $order->status) {
+            if (OrderStatus::OPEN != $order->status && (1 != $order->total_cast || OrderStatus::ACTIVE != $order->status)) {
                 return $this->respondErrorMessage(trans('messages.action_not_performed'), 422);
             }
         }
