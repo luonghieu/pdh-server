@@ -2,18 +2,19 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\User;
+use App\Message;
 use App\Enums\RoomType;
+use Webpatser\Uuid\Uuid;
+use App\Services\LogService;
+use Illuminate\Http\Request;
 use App\Events\MessageCreated;
-use App\Http\Resources\MessageResource;
+use Illuminate\Support\Facades\DB;
+use App\Http\Resources\RoomResource;
 use App\Http\Resources\OrderResource;
 use App\Jobs\MakeImagesChatThumbnail;
-use App\Message;
-use App\Services\LogService;
-use App\User;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
+use App\Http\Resources\MessageResource;
 use Illuminate\Support\Facades\Storage;
-use Webpatser\Uuid\Uuid;
 
 class MessageController extends ApiController
 {
@@ -83,6 +84,7 @@ class MessageController extends ApiController
         $messages->setCollection(collect($messagesData->values()->all()));
         $messages = $messages->toArray();
         $messages['order'] = $room->room_order ? OrderResource::make($room->room_order->load(['casts', 'user'])) : '';
+        $messages['room'] = RoomResource::make($room->load('users'));
 
         return $this->respondWithData($messages);
     }
