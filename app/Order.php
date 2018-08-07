@@ -234,7 +234,7 @@ class Order extends Model
 
             StopOrder::dispatchNow($this, $cast);
 
-            return true;
+            return $paymentRequest;
         } catch (\Exception $e) {
             \DB::rollBack();
             LogService::writeErrorLog($e);
