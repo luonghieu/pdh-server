@@ -39,6 +39,7 @@ Route::group(['prefix' => 'v1'], function () {
         Route::delete('messages/{id}', ['as' => 'messages', 'uses' => 'MessageController@delete']);
         Route::patch('working_today', ['as' => 'working_today', 'uses' => 'WorkingTodayController@update']);
         Route::post('/ratings', ['as' => 'create_rating', 'uses' => 'RatingController@create']);
+        Route::get('/notifications', ['as' => 'notifications', 'uses' => 'NotificationController@index']);
     });
 
     Route::group(['middleware' => ['auth:api'], 'prefix' => 'users', 'as' => 'users.'], function () {
