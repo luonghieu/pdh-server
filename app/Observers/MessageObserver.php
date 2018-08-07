@@ -10,7 +10,9 @@ class MessageObserver
 {
     public function created(Message $message)
     {
-        $users = ($message->room->users->except([$message->user_id]));
-        \Notification::send($users, new MessageCreated($message));
+        if ($message->type != MessageType::SYSTEM) {
+            $users = ($message->room->users->except([$message->user_id]));
+            \Notification::send($users, new MessageCreated($message));
+        }
     }
 }
