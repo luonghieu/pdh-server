@@ -1,8 +1,8 @@
 <?php
 
-use Illuminate\Support\Facades\Schema;
-use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
+use Illuminate\Database\Schema\Blueprint;
+use Illuminate\Support\Facades\Schema;
 
 class AlterTableReportRoomIdField extends Migration
 {
@@ -16,7 +16,6 @@ class AlterTableReportRoomIdField extends Migration
         Schema::table('reports', function (Blueprint $table) {
             $table->unsignedInteger('room_id')->after('user_id');
             $table->boolean('status')->after('content')->default(false);
-            $table->foreign('room_id')->references('id')->on('rooms');
         });
     }
 
@@ -28,7 +27,6 @@ class AlterTableReportRoomIdField extends Migration
     public function down()
     {
         Schema::table('reports', function (Blueprint $table) {
-            $table->dropForeign(['room_id']);
             $table->dropColumn('room_id');
             $table->dropColumn('status');
         });

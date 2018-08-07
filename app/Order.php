@@ -2,19 +2,21 @@
 
 namespace App;
 
-use App\Jobs\CancelOrder;
-use Auth;
-use Carbon\Carbon;
-use App\Enums\RoomType;
-use App\Jobs\StopOrder;
-use App\Enums\OrderType;
-use App\Enums\OrderStatus;
 use App\Enums\CastOrderStatus;
 use App\Enums\CastOrderType;
+use App\Enums\OrderStatus;
+use App\Enums\OrderType;
+use App\Enums\PointType;
+use App\Enums\RoomType;
+use App\Jobs\CancelOrder;
 use App\Jobs\ProcessOrder;
+use App\Jobs\StopOrder;
 use App\Jobs\ValidateOrder;
+use App\Notifications\CastDenyNominationOrders;
 use App\Services\LogService;
 use App\Traits\DirectRoom;
+use Auth;
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
@@ -52,7 +54,7 @@ class Order extends Model
             ->whereNotNull('cast_order.accepted_at')
             ->whereNull('cast_order.canceled_at')
             ->whereNull('cast_order.deleted_at')
-            ->withPivot('order_time', 'extra_time', 'order_point', 'extra_point', 'allowance_point', 'fee_point', 'total_point', 'type')
+            ->withPivot('order_time', 'extra_time', 'order_point', 'extra_point', 'allowance_point', 'fee_point', 'total_point', 'type', 'stopped_at')
             ->withTimestamps();
     }
 
@@ -109,12 +111,39 @@ class Order extends Model
                 ['status' => CastOrderStatus::DENIED, 'canceled_at' => Carbon::now()],
                 false
             );
+            if (OrderType::NOMINATION == $this->type) {
+                $this->status = OrderStatus::DENIED;
+                $this->save();
+
+                $cast = User::find($userId);
+                $this->user->notify(new CastDenyNominationOrders($this, $cast));
+            }
 
             ValidateOrder::dispatchNow($this);
 
             return true;
         } catch (\Exception $e) {
             LogService::writeErrorLog($e);
+
+            return false;
+        }
+    }
+
+    public function denyAfterActived($userId)
+    {
+        try {
+            $this->casts()->updateExistingPivot(
+                $userId,
+                ['status' => CastOrderStatus::DENIED, 'canceled_at' => Carbon::now()],
+                false
+            );
+            $this->status = OrderStatus::DENIED;
+            $this->save();
+
+            return true;
+        } catch (\Exception $e) {
+            LogService::writeErrorLog($e);
+
             return false;
         }
     }
@@ -132,6 +161,7 @@ class Order extends Model
             return true;
         } catch (\Exception $e) {
             LogService::writeErrorLog($e);
+
             return false;
         }
     }
@@ -153,6 +183,7 @@ class Order extends Model
             return true;
         } catch (\Exception $e) {
             LogService::writeErrorLog($e);
+
             return false;
         }
     }
@@ -171,6 +202,7 @@ class Order extends Model
             return true;
         } catch (\Exception $e) {
             LogService::writeErrorLog($e);
+
             return false;
         }
     }
@@ -224,9 +256,9 @@ class Order extends Model
 
             \DB::commit();
 
-            StopOrder::dispatchNow($this);
+            StopOrder::dispatchNow($this, $cast);
 
-            return true;
+            return $paymentRequest;
         } catch (\Exception $e) {
             \DB::rollBack();
             LogService::writeErrorLog($e);
@@ -243,11 +275,13 @@ class Order extends Model
                 'status' => CastOrderStatus::PROCESSING,
             ], false);
 
-            ProcessOrder::dispatchNow($this);
+            $cast = User::find($userId);
+            ProcessOrder::dispatchNow($this, $cast);
 
             return true;
         } catch (\Exception $e) {
             LogService::writeErrorLog($e);
+
             return false;
         }
     }
@@ -394,7 +428,7 @@ class Order extends Model
                 $costPerFifteenMins = $cast->cost / 2;
             }
 
-            $extraPoint = ($costPerFifteenMins * 1.3) * $multiplier;
+            $extraPoint = ($costPerFifteenMins * 1.4) * $multiplier;
         }
 
         return $extraPoint;
@@ -456,5 +490,31 @@ class Order extends Model
         $room = $this->createDirectRoom($ownerId, $castId);
 
         return $room->id;
+    }
+
+    public function point()
+    {
+        return $this->hasOne(Point::class);
+    }
+
+    public function settle()
+    {
+        $user = $this->user;
+
+        $point = new Point;
+
+        $point->point = -$this->total_point;
+        $point->balance = $user->point - $this->total_point;
+        $point->user_id = $user->id;
+        $point->order_id = $this->id;
+        $point->type = PointType::PAY;
+        $point->status = true;
+
+        $point->save();
+
+        $user->point = $point->balance;
+        $user->save();
+
+        return true;
     }
 }

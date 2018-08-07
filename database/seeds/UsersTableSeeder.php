@@ -1,5 +1,6 @@
 <?php
 use Illuminate\Database\Seeder;
+use Webpatser\Uuid\Uuid;
 
 class UsersTableSeeder extends Seeder
 {
@@ -18,13 +19,22 @@ class UsersTableSeeder extends Seeder
         $admin = [
             'email' => 'admin@cheers.dev',
             'password' => bcrypt('123123123'),
-            'fullname' => $faker->name,
+            'nickname' => 'Cheers 運営局',
             'type' => 3,
         ];
 
         DB::table('users')->insert($admin);
+        $fileContents = \Storage::disk('local')->get("system_images/cheers_c.jpg");
+        $fileName = Uuid::generate()->string . '.jpg';
+        \Storage::put($fileName, $fileContents, 'public');
 
-        factory(App\User::class, 50)->create();
+        \App\Avatar::create([
+            'path' => $fileName,
+            'thumbnail' => $fileName,
+            'is_default' => true,
+            'user_id' => 1
+        ]);
+        /* factory(App\User::class, 50)->create();
 
         // generate avatars for users
         $users = App\User::all();
@@ -41,6 +51,6 @@ class UsersTableSeeder extends Seeder
                     'path' => $faker->randomElement($images),
                 ]);
             }
-        }
+        } */
     }
 }

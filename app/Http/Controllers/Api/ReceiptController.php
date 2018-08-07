@@ -2,15 +2,14 @@
 
 namespace App\Http\Controllers\Api;
 
-use App\Enums\PointType;
 use App\Http\Resources\ReceiptResource;
 use App\Point;
 use App\Receipt;
 use App\Services\LogService;
+use Barryvdh\DomPDF\Facade as PDF;
 use Carbon\Carbon;
 use DB;
 use Illuminate\Http\Request;
-use Barryvdh\DomPDF\Facade as PDF;
 use Webpatser\Uuid\Uuid;
 
 class ReceiptController extends ApiController
@@ -19,8 +18,6 @@ class ReceiptController extends ApiController
     {
         $rules = [
             'point_id' => 'required',
-            'name' => 'required',
-            'content' => 'required',
         ];
 
         $validator = validator($request->all(), $rules);
@@ -29,10 +26,12 @@ class ReceiptController extends ApiController
             return $this->respondWithValidationError($validator->errors()->messages());
         }
 
-        $receipt = Receipt::where('point_id', $request->point_id)->first();
+        if ($request->content && mb_strlen($request->content) > 50) {
+            return $this->respondErrorMessage(trans('messages.content_length_err'), 400);
+        }
 
-        if ($receipt) {
-            return $this->respondErrorMessage(trans('messages.receipt_exists'), 409);
+        if ($request->name && mb_strlen($request->name) > 50) {
+            return $this->respondErrorMessage(trans('messages.name_length_err'), 400);
         }
 
         $point = Point::with('payment')->find($request->point_id);
@@ -41,25 +40,41 @@ class ReceiptController extends ApiController
             return $this->respondErrorMessage(trans('messages.point_not_found'), 404);
         }
 
+        $receipt = Receipt::where('point_id', $request->point_id)->first();
+
+        if ($receipt) {
+            return $this->respondErrorMessage(trans('messages.receipt_exists'), 409);
+        }
+
         try {
+            $name = null;
+            $content = null;
+            if ($request->name) {
+                $name = $request->name;
+            }
+
+            if ($request->get('content')) {
+                $content = $request->get('content');
+            }
+
             DB::beginTransaction();
             $receipt = Receipt::create([
                 'point_id' => $request->point_id,
                 'date' => Carbon::today(),
-                'name' => $request->name,
-                'content' => $request->get('content')
+                'name' => $name,
+                'content' => $content,
             ]);
 
             $data = [
                 'no' => $receipt->id,
-                'name' => $receipt->name,
+                'name' => $name,
+                'content' => $content,
                 'amount' => $point->payment->amount,
                 'created_at' => $receipt->created_at,
-                'content' => $receipt->content
             ];
 
             $pdf = PDF::loadView('pdf.invoice', $data)->setPaper('a4', 'portrait');
-            $fileName= 'receipts/' . Uuid::generate()->string . '.pdf';
+            $fileName = 'receipts/' . Uuid::generate()->string . '.pdf';
             \Storage::put($fileName, $pdf->output(), 'public');
 
             $receipt->file = $fileName;

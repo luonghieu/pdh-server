@@ -39,6 +39,8 @@ Route::group(['prefix' => 'v1'], function () {
         Route::delete('messages/{id}', ['as' => 'messages', 'uses' => 'MessageController@delete']);
         Route::patch('working_today', ['as' => 'working_today', 'uses' => 'WorkingTodayController@update']);
         Route::post('/ratings', ['as' => 'create_rating', 'uses' => 'RatingController@create']);
+        Route::get('/notifications/{id}', ['as' => 'show_notifications', 'uses' => 'NotificationController@show']);
+        Route::get('/notifications', ['as' => 'notifications', 'uses' => 'NotificationController@index']);
     });
 
     Route::group(['middleware' => ['auth:api'], 'prefix' => 'users', 'as' => 'users.'], function () {
@@ -65,6 +67,8 @@ Route::group(['prefix' => 'v1'], function () {
         Route::group(['prefix' => 'orders'], function () {
             Route::get('/', ['as' => 'index', 'uses' => 'Guest\OrderController@index']);
             Route::patch('/{id}/payment_requests', ['as' => 'payment_requests', 'uses' => 'Guest\PaymentRequestController@payment']);
+            Route::get('/{id}/payment_requests', ['as' => 'get_payment_requests',
+                'uses' => 'Guest\PaymentRequestController@getPaymentRequest']);
         });
     });
 
@@ -72,6 +76,10 @@ Route::group(['prefix' => 'v1'], function () {
         Route::get('/orders', ['as' => 'index', 'uses' => 'Cast\OrderController@index']);
         Route::get('/payment_requests', ['as' => 'get_payment_history', 'uses' => 'Cast\PaymentRequestController@getPaymentHistory']);
         Route::delete('/order/{id}', ['as' => 'index', 'uses' => 'Cast\OrderController@delete']);
+
+        Route::group(['prefix' => 'bank_accounts', 'as' => 'bank_accounts.'], function () {
+            Route::post('/', ['as' => 'bank_accounts', 'uses' => 'Cast\BankAccountController@create']);
+        });
     });
 
     Route::group(['middleware' => ['auth:api'], 'prefix' => 'orders', 'as' => 'orders.'], function () {

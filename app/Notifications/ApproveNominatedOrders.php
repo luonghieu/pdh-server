@@ -2,17 +2,14 @@
 
 namespace App\Notifications;
 
-use App\Enums\MessageType;
-use App\Enums\RoomType;
 use App\Enums\UserType;
-use App\User;
 use Illuminate\Bus\Queueable;
 use Illuminate\Notifications\Notification;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Support\Carbon;
 
-class ApproveNominatedOrders extends Notification
+class ApproveNominatedOrders extends Notification implements ShouldQueue
 {
     use Queueable;
 
@@ -36,7 +33,7 @@ class ApproveNominatedOrders extends Notification
      */
     public function via($notifiable)
     {
-        return [CustomDatabaseChannel::class, PushNotificationChannel::class];
+        return [PushNotificationChannel::class];
     }
 
     /**
@@ -57,19 +54,7 @@ class ApproveNominatedOrders extends Notification
      */
     public function toArray($notifiable)
     {
-        $startTime = Carbon::parse($this->order->date . ' ' . $this->order->start_time);
-        $message = '\\\\ おめでとうございます！マッチングが確定しました♪ //'
-            . PHP_EOL . PHP_EOL .'- ご予約内容 - '
-            . PHP_EOL . '場所：' . $this->order->address
-            . PHP_EOL . '合流予定時間：'. $startTime->format('H:i') .'～'
-            . PHP_EOL . PHP_EOL . 'ゲストの方はキャストに来て欲しい場所の詳細をお伝えください。'
-            . PHP_EOL . '尚、ご不明点がある場合は運営までお問い合わせください。'
-            . PHP_EOL . PHP_EOL . 'それでは素敵な時間をお楽しみください♪';
-
-        return [
-            'content' => $message,
-            'send_from' => UserType::ADMIN,
-        ];
+        return [];
     }
 
     public function pushData($notifiable)

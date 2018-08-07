@@ -2,12 +2,14 @@
 
 namespace App\Providers;
 
-use App\Message;
-use App\Observers\MessageObserver;
-use App\Observers\OrderObserver;
 use App\Order;
+use App\Message;
+use App\PaymentRequest;
+use App\Observers\OrderObserver;
+use App\Observers\MessageObserver;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\ServiceProvider;
+use App\Observers\PaymentRequestObserver;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -23,6 +25,7 @@ class AppServiceProvider extends ServiceProvider
 
         Message::observe(MessageObserver::class);
         Order::observe(OrderObserver::class);
+        PaymentRequest::observe(PaymentRequestObserver::class);
     }
 
     /**

@@ -42,7 +42,7 @@ class Payment extends Service
     {
         $params = [
             'currency' => 'jpy',
-            'capture' => false,
+            'capture' => true,
         ];
 
         $params = array_merge($params, $request);

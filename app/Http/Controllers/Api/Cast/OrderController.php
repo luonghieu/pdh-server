@@ -10,6 +10,7 @@ use App\Enums\OrderStatus;
 use App\Enums\OrderType;
 use App\Http\Controllers\Api\ApiController;
 use App\Http\Resources\OrderResource;
+use App\Http\Resources\PaymentRequestResource;
 use App\Message;
 use App\Order;
 use App\Services\LogService;
@@ -69,14 +70,15 @@ class OrderController extends ApiController
 
             $orders->where('status', $request->status)->latest();
         } else {
-            $orders->where(function ($query) use ($user) {
-                $query->whereHas('nominees', function ($query) use ($user) {
-                    $query->where('user_id', $user->id);
-                });
-                $query->orWhereHas('candidates', function ($query) use ($user) {
-                    $query->where('user_id', $user->id);
-                });
-            })
+            $orders->where('status', '!=', OrderStatus::DONE)
+                ->where(function ($query) use ($user) {
+                    $query->whereHas('nominees', function ($query) use ($user) {
+                        $query->where('user_id', $user->id);
+                    });
+                    $query->orWhereHas('candidates', function ($query) use ($user) {
+                        $query->where('user_id', $user->id);
+                    });
+                })
                 ->latest();
         }
 
@@ -93,8 +95,19 @@ class OrderController extends ApiController
             return $this->respondErrorMessage(trans('messages.order_not_found'), 404);
         }
 
-        if (OrderStatus::OPEN != $order->status) {
-            return $this->respondErrorMessage(trans('messages.action_not_performed'), 422);
+        if (OrderType::NOMINATION == $order->type) {
+            $validStatus = [
+                OrderStatus::OPEN,
+                OrderStatus::ACTIVE,
+            ];
+
+            if (!in_array($order->status, $validStatus)) {
+                return $this->respondErrorMessage(trans('messages.action_not_performed'), 422);
+            }
+        } else {
+            if (OrderStatus::OPEN != $order->status && (1 != $order->total_cast || OrderStatus::ACTIVE != $order->status)) {
+                return $this->respondErrorMessage(trans('messages.action_not_performed'), 422);
+            }
         }
 
         $user = $this->guard()->user();
@@ -105,9 +118,17 @@ class OrderController extends ApiController
             return $this->respondErrorMessage(trans('messages.action_not_performed'), 422);
         }
 
-        if (!$order->deny($user->id)) {
-            return $this->respondServerError();
+        if (OrderStatus::OPEN == $order->status) {
+            if (!$order->deny($user->id)) {
+                return $this->respondServerError();
+            }
+        } else {
+            if (!$order->denyAfterActived($user->id)) {
+                return $this->respondServerError();
+            }
         }
+
+        $order = $order->fresh();
 
         return $this->respondWithData(OrderResource::make($order));
     }
@@ -173,6 +194,8 @@ class OrderController extends ApiController
             }
         }
 
+        $order = $order->fresh();
+
         return $this->respondWithData(OrderResource::make($order));
     }
 
@@ -198,6 +221,8 @@ class OrderController extends ApiController
         if (!$order->start($user->id)) {
             return $this->respondServerError();
         }
+
+        $order = $order->fresh();
 
         return $this->respondWithData(OrderResource::make($order));
     }
@@ -225,11 +250,14 @@ class OrderController extends ApiController
             return $this->respondErrorMessage(trans('messages.action_not_performed'), 422);
         }
 
-        if (!$order->stop($user->id)) {
+        if (!$paymentRequest = $order->stop($user->id)) {
             return $this->respondServerError();
         }
 
-        return $this->respondWithData(OrderResource::make($order));
+        $order = $order->fresh();
+        $paymentRequest = $paymentRequest->load('order', 'cast');
+
+        return $this->respondWithData(PaymentRequestResource::make($paymentRequest));
     }
 
     public function thanks(Request $request, $id)
