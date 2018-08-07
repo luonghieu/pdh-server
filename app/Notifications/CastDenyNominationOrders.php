@@ -3,15 +3,15 @@
 namespace App\Notifications;
 
 use App\Enums\MessageType;
-use App\Enums\NotificationStyle;
+use App\Enums\RoomType;
+use App\Enums\SystemMessageType;
 use App\Enums\UserType;
-use App\Guest;
 use Illuminate\Bus\Queueable;
 use Illuminate\Notifications\Notification;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 
-class CastAcceptNominationOrders extends Notification implements ShouldQueue
+class CastDenyNominationOrders extends Notification
 {
     use Queueable;
 
@@ -56,31 +56,31 @@ class CastAcceptNominationOrders extends Notification implements ShouldQueue
      */
     public function toArray($notifiable)
     {
-        if ($notifiable->type == UserType::GUEST) {
-            $message = 'おめでとうございます！'
-                . PHP_EOL . 'キャストとのマッチングが確定しました♪';
-        } else {
-            $message = 'おめでとう！ゲストとのマッチングが確定しました♪';
-        }
+        $room = $this->order->room;
+        $roomMesage = '提案がキャンセルされました。';
+        $roomMessage = $room->messages()->create([
+            'user_id' => 1,
+            'type' => MessageType::SYSTEM,
+            'message' => $roomMesage,
+            'system_type' => SystemMessageType::NOTIFY
+        ]);
+        $roomMessage->recipients()->attach($notifiable->id, ['room_id' => $room->id]);
+
+        $notifyMessage = '残念ながらマッチングが成立しませんでした（；；）';
 
         return [
-            'content' => $message,
+            'content' => $notifyMessage,
             'send_from' => UserType::ADMIN,
         ];
     }
 
     public function pushData($notifiable)
     {
-        if ($notifiable->type == UserType::GUEST) {
-            $content = 'おめでとうございます！'
-                . PHP_EOL . 'キャストとのマッチングが確定しました♪';
-        } else {
-            $content = 'おめでとう！ゲストとのマッチングが確定しました♪';
-        }
+        $content = '残念ながらマッチングが成立しませんでした（；；）';
 
         $namedUser = 'user_' . $notifiable->id;
         $send_from = UserType::ADMIN;
-        $pushId = ($notifiable->type == UserType::GUEST) ? 'g_8' : 'c_8';
+        $pushId = 'g_9';
 
         return [
             'audienceOptions' => ['named_user' => $namedUser],
