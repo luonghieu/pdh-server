@@ -62,7 +62,7 @@ class CallOrdersTimeOut extends Notification implements ShouldQueue
     {
         $orderDuration = $this->order->duration * 60;
         $orderStartDate = Carbon::parse($this->order->date)->startOfDay();
-        $casts = $this->order->castOrder;
+        $casts = $this->order->casts;
 
         $orderNightTime = $this->order->nightTime($orderStartDate->addMinutes($orderDuration));
         $orderAllowance = $this->order->allowance($orderNightTime);
