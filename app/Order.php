@@ -7,6 +7,7 @@ use App\Enums\CastOrderType;
 use App\Enums\OrderStatus;
 use App\Enums\OrderType;
 use App\Enums\PointType;
+use App\Enums\PaymentStatus;
 use App\Enums\RoomType;
 use App\Jobs\CancelOrder;
 use App\Jobs\ProcessOrder;
@@ -500,6 +501,51 @@ class Order extends Model
     public function settle()
     {
         $user = $this->user;
+
+        if ($user->point < $this->total_point) {
+            $subPoint = $this->total_point - $user->point;
+
+            $autoChargePoint = env('AUTOCHARGE_POINT');
+
+            $amount = CEIL($subPoint / $autoChargePoint) * $autoChargePoint;
+
+            try {
+                \DB::beginTransaction();
+
+                $point = new Point;
+                $point->point = $amount;
+                $point->user_id = $user->id;
+                $point->type = PointType::AUTO_CHARGE;
+                $point->status = false;
+                $point->save();
+
+                $payment = new Payment;
+                $payment->user_id = $user->id;
+                $payment->amount = $amount * 1.1;
+                $payment->point_id = $point->id;
+                $payment->card_id = $user->card->id;
+                $payment->status = PaymentStatus::OPEN;
+                $payment->save();
+
+                // charge money
+                $charged = $payment->charge();
+                if ($charged) {
+                    $point->status = true;
+                    $point->balance = $point->point + $user->point;
+                    $point->save();
+
+                    $user->point = $user->point + $amount;
+                    $user->save();
+                }
+
+                \DB::commit();
+            } catch (\Exception $e) {
+                \DB::rollBack();
+                LogService::writeErrorLog($e);
+
+                return false;
+            }
+        }
 
         $point = new Point;
 
