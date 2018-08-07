@@ -48,7 +48,7 @@ class OrderResource extends Resource
             'casts' => UserCollection::make($this->whenLoaded('casts')),
             'payment_requests' => PaymentRequestResource::collection($this->whenLoaded('paymentRequests')),
             'nominees' => UserCollection::make($this->whenLoaded('nominees')),
-            'user' => new UserResource($this->whenLoaded('user')),
+            'user' => new UserResource($this->user),
             'is_nominated' => $this->isNominated(),
             'user_status' => $this->user_status,
             // 'is_payment_requested' => $this->isPaymentRequested(),

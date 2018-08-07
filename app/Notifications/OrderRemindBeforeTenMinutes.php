@@ -4,6 +4,7 @@ namespace App\Notifications;
 
 use App\Enums\MessageType;
 use App\Enums\RoomType;
+use App\Enums\SystemMessageType;
 use App\Enums\UserType;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -14,14 +15,15 @@ class OrderRemindBeforeTenMinutes extends Notification implements ShouldQueue
     use Queueable;
 
     public $order;
+
     /**
      * Create a new notification instance.
      *
-     * @return void
+     * @param $order
      */
-    public function __construct()
+    public function __construct($order)
     {
-        //
+        $this->order = $order;
     }
 
     /**
@@ -32,7 +34,7 @@ class OrderRemindBeforeTenMinutes extends Notification implements ShouldQueue
      */
     public function via($notifiable)
     {
-        return [CustomDatabaseChannel::class, PushNotificationChannel::class];
+        return [PushNotificationChannel::class];
     }
 
     /**
@@ -53,28 +55,7 @@ class OrderRemindBeforeTenMinutes extends Notification implements ShouldQueue
      */
     public function toArray($notifiable)
     {
-        $message = '合流予定時刻の10分前になりました！'
-            . PHP_EOL . 'ゲストとのチャット画面にスタートボタンが出現します。'
-            . PHP_EOL . '合流後、ゲストに確認してからスタートボタンを押してください！'
-            . PHP_EOL . PHP_EOL . 'それでは素敵な時間を楽しんで来てくださいね♪'
-            . PHP_EOL . PHP_EOL . 'また予定時刻に遅れそうな場合は、チャットルームで予め遅れる旨を伝えましょう！';
-
-        $room = $notifiable->rooms()
-            ->where('rooms.type', RoomType::SYSTEM)
-            ->where('rooms.is_active', true)->first();
-
-        $roomMessage = $room->messages()->create([
-            'user_id' => 1,
-            'type' => MessageType::SYSTEM,
-            'message' => $message,
-        ]);
-
-        $roomMessage->recipients()->attach($notifiable->id, ['room_id' => $room->id]);
-
-        return [
-            'content' => $message,
-            'send_from' => UserType::ADMIN,
-        ];
+        return [];
     }
 
     public function pushData($notifiable)
@@ -84,6 +65,18 @@ class OrderRemindBeforeTenMinutes extends Notification implements ShouldQueue
             . PHP_EOL . '合流後、ゲストに確認してからスタートボタンを押してください！'
             . PHP_EOL . PHP_EOL . 'それでは素敵な時間を楽しんで来てくださいね♪'
             . PHP_EOL . PHP_EOL . 'また予定時刻に遅れそうな場合は、チャットルームで予め遅れる旨を伝えましょう！';
+        $room = $notifiable->rooms()
+            ->where('rooms.type', RoomType::SYSTEM)
+            ->where('rooms.is_active', true)->first();
+        $roomMessage = $room->messages()->create([
+            'user_id' => 1,
+            'type' => MessageType::SYSTEM,
+            'message' => $content,
+            'system_type' => SystemMessageType::NOTIFY,
+        ]);
+        $roomMessage->recipients()->attach($notifiable->id, ['room_id' => $room->id]);
+
+
         $namedUser = 'user_' . $notifiable->id;
         $send_from = UserType::ADMIN;
         $pushId = 'c_4';
@@ -100,6 +93,7 @@ class OrderRemindBeforeTenMinutes extends Notification implements ShouldQueue
                     'extra' => [
                         'push_id' => $pushId,
                         'send_from' => $send_from,
+                        'order_id' => $this->order->id,
                     ],
                 ],
             ],

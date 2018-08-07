@@ -10,6 +10,7 @@ use App\Enums\OrderStatus;
 use App\Enums\OrderType;
 use App\Http\Controllers\Api\ApiController;
 use App\Http\Resources\OrderResource;
+use App\Http\Resources\PaymentRequestResource;
 use App\Message;
 use App\Order;
 use App\Services\LogService;
@@ -104,7 +105,7 @@ class OrderController extends ApiController
                 return $this->respondErrorMessage(trans('messages.action_not_performed'), 422);
             }
         } else {
-            if (OrderStatus::OPEN != $order->status) {
+            if (OrderStatus::OPEN != $order->status && (1 != $order->total_cast || OrderStatus::ACTIVE != $order->status)) {
                 return $this->respondErrorMessage(trans('messages.action_not_performed'), 422);
             }
         }
@@ -117,8 +118,14 @@ class OrderController extends ApiController
             return $this->respondErrorMessage(trans('messages.action_not_performed'), 422);
         }
 
-        if (!$order->deny($user->id)) {
-            return $this->respondServerError();
+        if (OrderStatus::OPEN == $order->status) {
+            if (!$order->deny($user->id)) {
+                return $this->respondServerError();
+            }
+        } else {
+            if (!$order->denyAfterActived($user->id)) {
+                return $this->respondServerError();
+            }
         }
 
         $order = $order->fresh();
@@ -243,13 +250,14 @@ class OrderController extends ApiController
             return $this->respondErrorMessage(trans('messages.action_not_performed'), 422);
         }
 
-        if (!$order->stop($user->id)) {
+        if (!$paymentRequest = $order->stop($user->id)) {
             return $this->respondServerError();
         }
 
         $order = $order->fresh();
+        $paymentRequest = $paymentRequest->load('order', 'cast');
 
-        return $this->respondWithData(OrderResource::make($order));
+        return $this->respondWithData(PaymentRequestResource::make($paymentRequest));
     }
 
     public function thanks(Request $request, $id)

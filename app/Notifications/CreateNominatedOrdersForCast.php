@@ -79,11 +79,13 @@ class CreateNominatedOrdersForCast extends Notification implements ShouldQueue
             'type' => MessageType::SYSTEM,
             'message' => $message
         ]);
-
         $roomMessage->recipients()->attach($notifiable->id, ['room_id' => $room->id]);
 
+        $content = '指名予約が入りました。'
+            . PHP_EOL . '5分以内に承諾、キャンセルの処理を行ってください！';
+
         return [
-            'content' => $message,
+            'content' => $content,
             'send_from' => UserType::ADMIN,
         ];
     }

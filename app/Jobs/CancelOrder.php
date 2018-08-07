@@ -5,8 +5,11 @@ namespace App\Jobs;
 use App\Enums\CastOrderStatus;
 use App\Enums\MessageType;
 use App\Enums\OrderStatus;
+use App\Enums\RoomType;
+use App\Enums\SystemMessageType;
 use App\Notifications\CancelOrderFromGuest;
 use App\Order;
+use App\User;
 use Carbon\Carbon;
 use Illuminate\Bus\Queueable;
 use Illuminate\Queue\SerializesModels;
@@ -110,6 +113,38 @@ class CancelOrder implements ShouldQueue
             'message' => $message
         ]);
         $roomMessage->recipients()->attach($castIds, ['room_id' => $room->id]);
+
+        // Send message to owner private room.
+        $owner = $this->order->user;
+        $ownerRoom = $owner->rooms()
+            ->where('rooms.type', RoomType::SYSTEM)
+            ->where('rooms.is_active', true)->first();
+        $ownerMessage = '予約のキャンセルを承りました。'
+            . PHP_EOL . '--------------------------------------------------'
+            . PHP_EOL . '- キャンセル内容 -'
+            . PHP_EOL . '日時：' . Carbon::parse($this->order->date . ' ' . $this->order->start_time)->format('Y/m/d H:i') . '~'
+            . PHP_EOL . '時間：' . $this->order->duration . '時間'
+            . PHP_EOL . 'クラス：' . $this->order->castClass->name
+            . PHP_EOL . '人数：' . $this->order->total_cast . '人'
+            . PHP_EOL . '場所：' . $this->order->address
+            . PHP_EOL . '予定合計ポイント：' . number_format($orderPoint) . ' Point'
+            . PHP_EOL . '--------------------------------------------------'
+            . PHP_EOL . PHP_EOL . 'キャンセル規定は以下の通りとなっています。'
+            . PHP_EOL . '該当期間内のキャンセルについては、キャンセル料が決済されます。'
+            . PHP_EOL . '当日：予約時の金額100%'
+            . PHP_EOL . '1日前：予約時の金額50%'
+            . PHP_EOL . '2日前〜７日前：予約時の金額30%'
+            . PHP_EOL . PHP_EOL . '※キャスト都合によるキャンセルの場合、キャンセル料金はいただきません。'
+            . PHP_EOL . '※ご不明点がある場合は、こちらのチャットにて、ご返信くださいませ。';
+
+        $ownerRoomMessage = $ownerRoom->messages()->create([
+            'user_id' => 1,
+            'type' => MessageType::SYSTEM,
+            'message' => $ownerMessage,
+            'system_type' => SystemMessageType::NOTIFY,
+        ]);
+        $ownerRoomMessage->recipients()->attach($owner->id, ['room_id' => $ownerRoom->id]);
+
         \Notification::send($users, new CancelOrderFromGuest($this->order, $orderPoint));
     }
 }

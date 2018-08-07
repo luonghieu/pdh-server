@@ -56,6 +56,7 @@ td {
 
 .display-room-id {
   display: inline-block;
+  margin-left: 15px;
 }
 
 .inactive-room {
@@ -612,7 +613,17 @@ tbody td {
   text-align: left;
   padding-left: 6%;
 }
+
 .btn-search {
+  background-color: #67c2ef;
+  padding: 10px;
+  border-radius: 10%;
+  cursor: pointer;
+  border: 0;
+  color: #fff;
+}
+
+.btn-detail {
   background-color: #67c2ef;
   padding: 10px;
   border-radius: 10%;
@@ -1004,6 +1015,52 @@ tbody td {
   margin-left: 25px;
   border: 1px solid #919191 !important;
 }
+
+.select-checkbox {
+  width: 50px;
+  text-align: -webkit-center;
+}
+
+.btn-change-report {
+  display: inline-block;
+  position: absolute;
+  right: 32px;
+  top: 79px;
+}
+
+.btn-change-report button {
+  background: none;
+  border: none;
+  background-color: #6dc9e6;
+  color: #fff;
+  border-radius: 8px;
+  padding: 8px;
+}
+
+.btn-change-report button:hover {
+  background-color: #39afea;
+}
+
+.btn-delete-order {
+  display: inline-block;
+  position: absolute;
+  right: 32px;
+  top: 100px;
+}
+
+.btn-delete-order button {
+  background: none;
+  border: none;
+  background-color: #6dc9e6;
+  color: #fff;
+  border-radius: 8px;
+  padding: 8px;
+}
+
+.btn-delete-order button:hover {
+  background-color: #39afea;
+}
+
 @media (max-width: 767px) {
   .navbar {
     background: #20a8d817;

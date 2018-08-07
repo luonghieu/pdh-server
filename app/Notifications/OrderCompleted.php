@@ -11,7 +11,7 @@ use Illuminate\Notifications\Notification;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 
-class OrderCompleted extends Notification
+class OrderCompleted extends Notification implements ShouldQueue
 {
     use Queueable;
 
@@ -39,7 +39,7 @@ class OrderCompleted extends Notification
      */
     public function via($notifiable)
     {
-        return [CustomDatabaseChannel::class, PushNotificationChannel::class];
+        return [PushNotificationChannel::class];
     }
 
     /**
@@ -60,40 +60,24 @@ class OrderCompleted extends Notification
      */
     public function toArray($notifiable)
     {
-        $order = $this->order;
-        $room = $order->room;
-        $cast = $order->casts()
-            ->withPivot('started_at', 'stopped_at', 'type')
-            ->where('user_id', $this->cast->id)
-            ->first();
-
-        $message = Carbon::parse($cast->pivot->stopped_at)->format('H:i')
-            . PHP_EOL . $this->cast->nickname . 'が解散しました。';
-        $roomMessage = $room->messages()->create([
-            'user_id' => 1,
-            'type' => MessageType::SYSTEM,
-            'system_type' => SystemMessageType::NOTIFY,
-            'message' => $message
-        ]);
-
-        $roomMessage->recipients()->attach($notifiable->id, ['room_id' => $room->id]);
-
-        return [
-            'content' => $message,
-            'send_from' => UserType::ADMIN,
-        ];
+        return [];
     }
 
     public function pushData($notifiable)
     {
-        $cast = $this->order->casts()
-            ->withPivot('started_at', 'stopped_at', 'type')
-            ->where('user_id', $this->cast->id)
-            ->first();
+        $order = $this->order;
+        $room = $order->room;
+        $content = $this->cast->nickname . 'が解散しました。';
 
-        $content = Carbon::parse($cast->pivot->stopped_at)->format('H:i')
-            . PHP_EOL . $this->cast->nickname . 'が解散しました。';
-        $pushId = 'c_7';
+        $roomMessage = $room->messages()->create([
+            'user_id' => 1,
+            'type' => MessageType::SYSTEM,
+            'system_type' => SystemMessageType::NOTIFY,
+            'message' => $content
+        ]);
+        $roomMessage->recipients()->attach($notifiable->id, ['room_id' => $room->id]);
+
+        $pushId = 'g_11';
         $namedUser = 'user_' . $notifiable->id;
         $send_from = UserType::ADMIN;
 
@@ -109,6 +93,7 @@ class OrderCompleted extends Notification
                     'extra' => [
                         'push_id' => $pushId,
                         'send_from' => $send_from,
+                        'order_id' => $this->order->id
                     ],
                 ],
             ],

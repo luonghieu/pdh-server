@@ -6,11 +6,14 @@ use App\Enums\CastOrderStatus;
 use App\Enums\CastOrderType;
 use App\Enums\OrderStatus;
 use App\Enums\OrderType;
+use App\Enums\PointType;
+use App\Enums\PaymentStatus;
 use App\Enums\RoomType;
 use App\Jobs\CancelOrder;
 use App\Jobs\ProcessOrder;
 use App\Jobs\StopOrder;
 use App\Jobs\ValidateOrder;
+use App\Notifications\CastDenyNominationOrders;
 use App\Services\LogService;
 use App\Traits\DirectRoom;
 use Auth;
@@ -52,7 +55,7 @@ class Order extends Model
             ->whereNotNull('cast_order.accepted_at')
             ->whereNull('cast_order.canceled_at')
             ->whereNull('cast_order.deleted_at')
-            ->withPivot('order_time', 'extra_time', 'order_point', 'extra_point', 'allowance_point', 'fee_point', 'total_point', 'type')
+            ->withPivot('order_time', 'extra_time', 'order_point', 'extra_point', 'allowance_point', 'fee_point', 'total_point', 'type', 'stopped_at')
             ->withTimestamps();
     }
 
@@ -101,6 +104,11 @@ class Order extends Model
         return $this->belongsTo(Room::class);
     }
 
+    public function transfers()
+    {
+        return $this->hasMany(Transfer::class);
+    }
+
     public function deny($userId)
     {
         try {
@@ -112,6 +120,9 @@ class Order extends Model
             if (OrderType::NOMINATION == $this->type) {
                 $this->status = OrderStatus::DENIED;
                 $this->save();
+
+                $cast = User::find($userId);
+                $this->user->notify(new CastDenyNominationOrders($this, $cast));
             }
 
             ValidateOrder::dispatchNow($this);
@@ -119,6 +130,26 @@ class Order extends Model
             return true;
         } catch (\Exception $e) {
             LogService::writeErrorLog($e);
+
+            return false;
+        }
+    }
+
+    public function denyAfterActived($userId)
+    {
+        try {
+            $this->casts()->updateExistingPivot(
+                $userId,
+                ['status' => CastOrderStatus::DENIED, 'canceled_at' => Carbon::now()],
+                false
+            );
+            $this->status = OrderStatus::DENIED;
+            $this->save();
+
+            return true;
+        } catch (\Exception $e) {
+            LogService::writeErrorLog($e);
+
             return false;
         }
     }
@@ -136,6 +167,7 @@ class Order extends Model
             return true;
         } catch (\Exception $e) {
             LogService::writeErrorLog($e);
+
             return false;
         }
     }
@@ -157,6 +189,7 @@ class Order extends Model
             return true;
         } catch (\Exception $e) {
             LogService::writeErrorLog($e);
+
             return false;
         }
     }
@@ -175,6 +208,7 @@ class Order extends Model
             return true;
         } catch (\Exception $e) {
             LogService::writeErrorLog($e);
+
             return false;
         }
     }
@@ -228,9 +262,9 @@ class Order extends Model
 
             \DB::commit();
 
-            StopOrder::dispatchNow($this);
+            StopOrder::dispatchNow($this, $cast);
 
-            return true;
+            return $paymentRequest;
         } catch (\Exception $e) {
             \DB::rollBack();
             LogService::writeErrorLog($e);
@@ -247,11 +281,13 @@ class Order extends Model
                 'status' => CastOrderStatus::PROCESSING,
             ], false);
 
-            ProcessOrder::dispatchNow($this);
+            $cast = User::find($userId);
+            ProcessOrder::dispatchNow($this, $cast);
 
             return true;
         } catch (\Exception $e) {
             LogService::writeErrorLog($e);
+
             return false;
         }
     }
@@ -398,7 +434,7 @@ class Order extends Model
                 $costPerFifteenMins = $cast->cost / 2;
             }
 
-            $extraPoint = ($costPerFifteenMins * 1.3) * $multiplier;
+            $extraPoint = ($costPerFifteenMins * 1.4) * $multiplier;
         }
 
         return $extraPoint;
@@ -465,5 +501,71 @@ class Order extends Model
     public function point()
     {
         return $this->hasOne(Point::class);
+    }
+
+    public function settle()
+    {
+        $user = $this->user;
+
+        if ($user->point < $this->total_point) {
+            $subPoint = $this->total_point - $user->point;
+
+            $autoChargePoint = env('AUTOCHARGE_POINT');
+
+            $amount = CEIL($subPoint / $autoChargePoint) * $autoChargePoint;
+
+            try {
+                \DB::beginTransaction();
+
+                $point = new Point;
+                $point->point = $amount;
+                $point->user_id = $user->id;
+                $point->type = PointType::AUTO_CHARGE;
+                $point->status = false;
+                $point->save();
+
+                $payment = new Payment;
+                $payment->user_id = $user->id;
+                $payment->amount = $amount * 1.1;
+                $payment->point_id = $point->id;
+                $payment->card_id = $user->card->id;
+                $payment->status = PaymentStatus::OPEN;
+                $payment->save();
+
+                // charge money
+                $charged = $payment->charge();
+                if ($charged) {
+                    $point->status = true;
+                    $point->balance = $point->point + $user->point;
+                    $point->save();
+
+                    $user->point = $user->point + $amount;
+                    $user->save();
+                }
+
+                \DB::commit();
+            } catch (\Exception $e) {
+                \DB::rollBack();
+                LogService::writeErrorLog($e);
+
+                return false;
+            }
+        }
+
+        $point = new Point;
+
+        $point->point = -$this->total_point;
+        $point->balance = $user->point - $this->total_point;
+        $point->user_id = $user->id;
+        $point->order_id = $this->id;
+        $point->type = PointType::PAY;
+        $point->status = true;
+
+        $point->save();
+
+        $user->point = $point->balance;
+        $user->save();
+
+        return true;
     }
 }

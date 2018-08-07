@@ -31,15 +31,31 @@ class OrderController extends Controller
         }
 
         if ($request->has('search')) {
-            $orders->whereHas('user', function ($query) use ($keyword) {
-                $query->where('id', "$keyword")
-                    ->orWhere('nickname', 'like', "%$keyword%");
-            });
+            $orders->where('id', $keyword)
+                ->orWhereHas('user', function ($query) use ($keyword) {
+                    $query->where('id', "$keyword")
+                        ->orWhere('nickname', 'like', "%$keyword%");
+                });
         }
 
         $orders = $orders->orderBy('created_at', 'DESC')->paginate($request->limit ?: 10);
 
         return view('admin.orders.index', compact('orders'));
+    }
+
+    public function deleteOrder(Request $request)
+    {
+        if ($request->has('order_ids')) {
+            $orderIds = $request->order_ids;
+
+            $checkOrderIdExist = Order::whereIn('id', $orderIds)->exists();
+
+            if ($checkOrderIdExist) {
+                Order::whereIn('id', $orderIds)->delete();
+            }
+        }
+
+        return redirect(route('admin.orders.index'));
     }
 
     public function nominees(Order $order)

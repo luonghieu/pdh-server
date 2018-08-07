@@ -4,13 +4,14 @@ namespace App\Notifications;
 
 use App\Enums\UserType;
 use App\Enums\MessageType;
+use Carbon\Carbon;
 use Illuminate\Bus\Queueable;
 use App\Enums\SystemMessageType;
 use Illuminate\Notifications\Notification;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 
-class StartOrder extends Notification
+class StartOrder extends Notification implements ShouldQueue
 {
     use Queueable;
 
@@ -37,7 +38,7 @@ class StartOrder extends Notification
      */
     public function via($notifiable)
     {
-        return [CustomDatabaseChannel::class, PushNotificationChannel::class];
+        return [PushNotificationChannel::class];
     }
 
     /**
@@ -58,26 +59,22 @@ class StartOrder extends Notification
      */
     public function toArray($notifiable)
     {
-        $room = $this->order->room;
-        $message =  $this->cast->nickname . 'さんが合流しました。';
-        $roomMessage = $room->messages()->create([
-            'user_id' => 1,
-            'type' => MessageType::SYSTEM,
-            'system_type' => SystemMessageType::NOTIFY,
-            'message' => $message
-        ]);
-
-        $roomMessage->recipients()->attach($notifiable->id, ['room_id' => $room->id]);
-
-        return [
-            'content' => $message,
-            'send_from' => UserType::ADMIN,
-        ];
+        return [];
     }
 
     public function pushData($notifiable)
     {
-        $content = $this->cast->nickname . 'さんが合流しました。';
+        $room = $this->order->room;
+        $content =  $this->cast->nickname . 'さんが合流しました。';
+
+        $roomMessage = $room->messages()->create([
+            'user_id' => 1,
+            'type' => MessageType::SYSTEM,
+            'system_type' => SystemMessageType::NOTIFY,
+            'message' => $content
+        ]);
+        $roomMessage->recipients()->attach($notifiable->id, ['room_id' => $room->id]);
+
         $pushId = 'g_4';
         $namedUser = 'user_' . $notifiable->id;
         $send_from = UserType::ADMIN;
@@ -94,6 +91,7 @@ class StartOrder extends Notification
                     'extra' => [
                         'push_id' => $pushId,
                         'send_from' => $send_from,
+                        'order_id' => $this->order->id
                     ],
                 ],
             ],

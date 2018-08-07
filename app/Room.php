@@ -102,10 +102,10 @@ class Room extends Model
                 $statuses = [
                     OrderStatus::PROCESSING,
                     OrderStatus::ACTIVE,
-                    OrderStatus::DONE,
                 ];
 
                 $order = Order::where('room_id', $this->id)
+                    ->whereIn('status', $statuses)
                     ->orderByRaw('FIELD(status, ' . implode(',', $statuses) . ' )')
                     ->first();
                 break;
