@@ -56,6 +56,7 @@ td {
 
 .display-room-id {
   display: inline-block;
+  margin-left: 15px;
 }
 
 .inactive-room {
@@ -612,7 +613,17 @@ tbody td {
   text-align: left;
   padding-left: 6%;
 }
+
 .btn-search {
+  background-color: #67c2ef;
+  padding: 10px;
+  border-radius: 10%;
+  cursor: pointer;
+  border: 0;
+  color: #fff;
+}
+
+.btn-detail {
   background-color: #67c2ef;
   padding: 10px;
   border-radius: 10%;

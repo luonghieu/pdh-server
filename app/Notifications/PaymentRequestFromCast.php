@@ -2,33 +2,30 @@
 
 namespace App\Notifications;
 
-use Carbon\Carbon;
-use App\Enums\UserType;
 use App\Enums\MessageType;
-use Illuminate\Bus\Queueable;
+use App\Enums\RoomType;
 use App\Enums\SystemMessageType;
+use App\Enums\UserType;
+use Carbon\Carbon;
+use Illuminate\Bus\Queueable;
 use Illuminate\Notifications\Notification;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 
-class OrderCompleted extends Notification implements ShouldQueue
+class PaymentRequestFromCast extends Notification implements ShouldQueue
 {
     use Queueable;
 
     public $order;
 
-    public $cast;
-
     /**
      * Create a new notification instance.
      *
      * @param $order
-     * @param $cast
      */
-    public function __construct($order, $cast)
+    public function __construct($order)
     {
         $this->order = $order;
-        $this->cast = $cast;
     }
 
     /**
@@ -60,24 +57,36 @@ class OrderCompleted extends Notification implements ShouldQueue
      */
     public function toArray($notifiable)
     {
-        return [];
+        return [
+            //
+        ];
     }
 
     public function pushData($notifiable)
     {
-        $order = $this->order;
-        $room = $order->room;
-        $content = $this->cast->nickname . 'が解散しました。';
+        $orderStartDate = Carbon::parse($this->order->date . ' ' . $this->order->start_time);
+        $orderEndDate = Carbon::parse($this->order->actual_ended_at);
 
+        $content = 'Cheersをご利用いただきありがとうございました♪'
+            . PHP_EOL . $orderStartDate->format('Y/m/d H:i') . '~' . $orderEndDate->format('H:i') . 'の合計ポイントは' .
+            $this->order->total_point . 'Pointです。'
+            . PHP_EOL . '合計ポイントの詳細はコチラから確認することができます。'
+            . PHP_EOL . '※詳細に誤りがある場合は、24時間以内に「決済ポイントの修正依頼をする」を押してください。運営から確認のご連絡を差し上げます。'
+            . PHP_EOL . PHP_EOL . 'ご不明点がございましたらいつでもお問い合わせください。'
+            . PHP_EOL . PHP_EOL . '○○様のまたのご利用をお待ちしております♪';
+
+        $room = $notifiable->rooms()
+            ->where('rooms.type', RoomType::SYSTEM)
+            ->where('rooms.is_active', true)->first();
         $roomMessage = $room->messages()->create([
             'user_id' => 1,
             'type' => MessageType::SYSTEM,
-            'system_type' => SystemMessageType::NOTIFY,
-            'message' => $content
+            'message' => $content,
+            'system_type' => SystemMessageType::NOTIFY
         ]);
         $roomMessage->recipients()->attach($notifiable->id, ['room_id' => $room->id]);
 
-        $pushId = 'g_11';
+        $pushId = 'g_15';
         $namedUser = 'user_' . $notifiable->id;
         $send_from = UserType::ADMIN;
 
