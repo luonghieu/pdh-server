@@ -4,6 +4,7 @@ namespace App\Notifications;
 
 use App\Enums\MessageType;
 use App\Enums\RoomType;
+use App\Enums\SystemMessageType;
 use App\Enums\UserType;
 use Illuminate\Bus\Queueable;
 use Illuminate\Notifications\Notification;
@@ -55,23 +56,20 @@ class CastDenyNominationOrders extends Notification
      */
     public function toArray($notifiable)
     {
-        $order = $this->order;
-        $room = $order->room;
-
-        $castMessage = '提案がキャンセルされました。';
-
+        $room = $this->order->room;
+        $roomMesage = '提案がキャンセルされました。';
         $roomMessage = $room->messages()->create([
             'user_id' => 1,
             'type' => MessageType::SYSTEM,
-            'message' => $castMessage
+            'message' => $roomMesage,
+            'system_type' => SystemMessageType::NOTIFY
         ]);
-
         $roomMessage->recipients()->attach($notifiable->id, ['room_id' => $room->id]);
 
-        $message = '残念ながらマッチングが成立しませんでした（；；）';
+        $notifyMessage = '残念ながらマッチングが成立しませんでした（；；）';
 
         return [
-            'content' => $message,
+            'content' => $notifyMessage,
             'send_from' => UserType::ADMIN,
         ];
     }

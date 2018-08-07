@@ -11,7 +11,7 @@ use App\Jobs\CancelOrder;
 use App\Jobs\ProcessOrder;
 use App\Jobs\StopOrder;
 use App\Jobs\ValidateOrder;
-use App\Notifications\StartOrder;
+use App\Notifications\CastDenyNominationOrders;
 use App\Services\LogService;
 use App\Traits\DirectRoom;
 use Auth;
@@ -113,6 +113,8 @@ class Order extends Model
             if (OrderType::NOMINATION == $this->type) {
                 $this->status = OrderStatus::DENIED;
                 $this->save();
+
+                $this->user->notify(new CastDenyNominationOrders($this));
             }
 
             ValidateOrder::dispatchNow($this);
