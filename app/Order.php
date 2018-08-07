@@ -143,33 +143,11 @@ class Order extends Model
             $this->status = OrderStatus::DENIED;
             $this->save();
 
-            $involvedUsers = [];
-            $owner = $this->user;
             $cast = User::find($userId);
+            $owner = $this->user;
+            $involvedUsers = [];
             $involvedUsers[] = $owner;
             $involvedUsers[] = $cast;
-
-            $castPrivateRoom = $cast->rooms()
-                ->where('rooms.type', RoomType::SYSTEM)
-                ->where('rooms.is_active', true)->first();
-            $message = 'キャンセルが完了しました。';
-            $castPrivateRoomMessage = $castPrivateRoom->messages()->create([
-                'user_id' => 1,
-                'type' => MessageType::SYSTEM,
-                'message' => $message,
-                'system_type' => SystemMessageType::NOTIFY
-            ]);
-            $castPrivateRoomMessage->recipients()->attach($userId, ['room_id' => $castPrivateRoom->id]);
-
-            $room = $this->room;
-            $message = '予約がキャンセルされました。';
-            $roomMessage = $room->messages()->create([
-                'user_id' => 1,
-                'type' => MessageType::SYSTEM,
-                'message' => $message,
-                'system_type' => SystemMessageType::NOTIFY
-            ]);
-            $roomMessage->recipients()->attach($owner->id, ['room_id' => $room->id]);
 
             \Notification::send($involvedUsers, new CancelOrderFromCast($this));
             return true;
