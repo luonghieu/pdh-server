@@ -70,7 +70,7 @@ class CancelOrderFromCast extends Notification implements ShouldQueue
                 'user_id' => 1,
                 'type' => MessageType::SYSTEM,
                 'message' => $message,
-                'system_type' => SystemMessageType::NOTIFY
+                'system_type' => SystemMessageType::NORMAL
             ]);
             $castPrivateRoomMessage->recipients()->attach($notifiable->id, ['room_id' => $castPrivateRoom->id]);
 
