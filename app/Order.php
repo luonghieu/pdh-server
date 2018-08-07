@@ -481,7 +481,9 @@ class Order extends Model
         if ($user->point < $this->total_point) {
             $subPoint = $this->total_point - $user->point;
 
-            $amount = CEIL($subPoint / env('AUTOCHARGE_POINT')) * env('AUTOCHARGE_POINT');
+            $autoChargePoint = env('AUTOCHARGE_POINT');
+
+            $amount = CEIL($subPoint / $autoChargePoint) * $autoChargePoint;
 
             try {
                 \DB::beginTransaction();
@@ -516,6 +518,8 @@ class Order extends Model
             } catch (\Exception $e) {
                 \DB::rollBack();
                 LogService::writeErrorLog($e);
+
+                return false;
             }
         }
 
