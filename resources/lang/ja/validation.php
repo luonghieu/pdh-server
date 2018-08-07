@@ -181,6 +181,7 @@ return [
         'intro' => 'ひとこと',
         'description' => '自己紹介',
         'type' => '口座種別',
-
+        'bank_name' => '銀行名',
+        'holder_name' => '口座名義',
     ],
 ];

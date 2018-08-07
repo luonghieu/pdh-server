@@ -46,6 +46,8 @@ return [
     'delete_order_success' => '削除が完了しました',
     'content_length_err' => '但し書きは、50文字以内で入力してください',
     'name_length_err' => '宛名は、50文字以内で入力してください',
+    'update_success' => '情報の更新に成功しました。',
+    'account_not_exists' => '振込アカウントが存在していません。',
     'notify_not_found' => 'お知らせは存在しません',
     'added_account_success' => '振込口座を追加しました',
 ];
