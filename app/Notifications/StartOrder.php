@@ -65,8 +65,7 @@ class StartOrder extends Notification implements ShouldQueue
     public function pushData($notifiable)
     {
         $room = $this->order->room;
-        $content =  Carbon::now()->format('H:i')
-            . PHP_EOL . $this->cast->nickname . 'さんが合流しました。';
+        $content =  $this->cast->nickname . 'さんが合流しました。';
 
         $roomMessage = $room->messages()->create([
             'user_id' => 1,

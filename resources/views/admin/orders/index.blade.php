@@ -99,9 +99,9 @@
                   @endif
                   <td>{{ App\Enums\OrderStatus::getDescription($order->status) }}</td>
                   @if ($order->type == App\Enums\OrderType::NOMINATION)
-                    <td><a href="#"><button>詳細</button></a></td>
+                    <td><a href="#" class="btn-detail">詳細</a></td>
                   @else
-                    <td><a href="{{ route('admin.orders.call', ['order' => $order->id]) }}"><button>詳細</button></a></td>
+                    <td><a href="{{ route('admin.orders.call', ['order' => $order->id]) }}" class="btn-detail">詳細</a></td>
                   @endif
                 </tr>
                 @endforeach
