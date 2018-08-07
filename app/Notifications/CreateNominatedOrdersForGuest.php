@@ -35,7 +35,7 @@ class CreateNominatedOrdersForGuest extends Notification implements ShouldQueue
      */
     public function via($notifiable)
     {
-        return [CustomDatabaseChannel::class, PushNotificationChannel::class];
+        return [PushNotificationChannel::class];
     }
 
     /**
@@ -56,10 +56,15 @@ class CreateNominatedOrdersForGuest extends Notification implements ShouldQueue
      */
     public function toArray($notifiable)
     {
+        return [];
+    }
+
+    public function pushData($notifiable)
+    {
         $startTime = Carbon::parse($this->order->date . ' ' . $this->order->start_time);
         $endTime = Carbon::parse($this->order->date . ' ' . $this->order->end_time);
 
-        $message = 'Cheersをご利用いただきありがとうございます！'
+        $content = 'Cheersをご利用いただきありがとうございます！'
         . PHP_EOL . 'キャストのご予約を承りました。'
         . PHP_EOL . '------------------------------------------'
         . PHP_EOL . PHP_EOL . '- ご予約内容 -'
@@ -74,37 +79,13 @@ class CreateNominatedOrdersForGuest extends Notification implements ShouldQueue
         $room = $notifiable->rooms()
             ->where('rooms.type', RoomType::SYSTEM)
             ->where('rooms.is_active', true)->first();
-
         $roomMessage = $room->messages()->create([
             'user_id' => 1,
             'type' => MessageType::SYSTEM,
-            'message' => $message,
+            'message' => $content,
             'system_type' => SystemMessageType::NOTIFY,
         ]);
-
         $roomMessage->recipients()->attach($notifiable->id, ['room_id' => $room->id]);
-
-        return [
-            'content' => $message,
-            'send_from' => UserType::ADMIN,
-        ];
-    }
-
-    public function pushData($notifiable)
-    {
-        $startTime = Carbon::parse($this->order->date . ' ' . $this->order->start_time);
-        $endTime = Carbon::parse($this->order->date . ' ' . $this->order->end_time);
-        $content = 'Cheersをご利用いただきありがとうございます！'
-        . PHP_EOL . 'キャストのご予約を承りました。'
-        . PHP_EOL . '------------------------------------------'
-        . PHP_EOL . PHP_EOL . '- ご予約内容 -'
-        . PHP_EOL . '日時：' . $startTime->format('Y/m/d H:i') . '~'
-        . PHP_EOL . '時間：' . $startTime->diffInMinutes($endTime) / 60 . '時間'
-        . PHP_EOL . 'クラス：' . $this->order->castClass->name
-        . PHP_EOL . '人数：' . $this->order->total_cast . '人'
-        . PHP_EOL . '場所：' . $this->order->address
-            . PHP_EOL . PHP_EOL . '現在、キャストの調整を行っております。'
-            . PHP_EOL . 'しばらくお待ちください☆';
 
         $namedUser = 'user_' . $notifiable->id;
         $send_from = UserType::ADMIN;
