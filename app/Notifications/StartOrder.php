@@ -38,7 +38,7 @@ class StartOrder extends Notification implements ShouldQueue
      */
     public function via($notifiable)
     {
-        return [CustomDatabaseChannel::class, PushNotificationChannel::class];
+        return [PushNotificationChannel::class];
     }
 
     /**
@@ -59,28 +59,23 @@ class StartOrder extends Notification implements ShouldQueue
      */
     public function toArray($notifiable)
     {
-        $room = $this->order->room;
-        $message =  Carbon::now()->format('H:i')
-            . PHP_EOL . $this->cast->nickname . 'さんが合流しました。';
-        $roomMessage = $room->messages()->create([
-            'user_id' => 1,
-            'type' => MessageType::SYSTEM,
-            'system_type' => SystemMessageType::NOTIFY,
-            'message' => $message
-        ]);
-
-        $roomMessage->recipients()->attach($notifiable->id, ['room_id' => $room->id]);
-
-        return [
-            'content' => $message,
-            'send_from' => UserType::ADMIN,
-        ];
+        return [];
     }
 
     public function pushData($notifiable)
     {
-        $content = Carbon::now()->format('H:i')
+        $room = $this->order->room;
+        $content =  Carbon::now()->format('H:i')
             . PHP_EOL . $this->cast->nickname . 'さんが合流しました。';
+
+        $roomMessage = $room->messages()->create([
+            'user_id' => 1,
+            'type' => MessageType::SYSTEM,
+            'system_type' => SystemMessageType::NOTIFY,
+            'message' => $content
+        ]);
+        $roomMessage->recipients()->attach($notifiable->id, ['room_id' => $room->id]);
+
         $pushId = 'g_4';
         $namedUser = 'user_' . $notifiable->id;
         $send_from = UserType::ADMIN;

@@ -54,7 +54,12 @@ class CreateCast extends Notification implements ShouldQueue
      */
     public function toArray($notifiable)
     {
-        $message = 'キャスト登録おめでとうございます♪'
+        return [];
+    }
+
+    public function pushData($notifiable)
+    {
+        $content = 'キャスト登録おめでとうございます♪'
             . PHP_EOL .'あなたは立派なCheers familyです☆'
             . PHP_EOL . PHP_EOL . '解散後のメッセージで心をつかんでリピートも狙ってみましょう！'
             . PHP_EOL . PHP_EOL . 'まずはゲストにメッセージを送ってアピールしてみてください！'
@@ -63,29 +68,14 @@ class CreateCast extends Notification implements ShouldQueue
         $room = $notifiable->rooms()
             ->where('rooms.type', RoomType::SYSTEM)
             ->where('rooms.is_active', true)->first();
-
         $roomMessage = $room->messages()->create([
             'user_id' => 1,
             'type' => MessageType::SYSTEM,
-            'message' => $message,
+            'message' => $content,
             'system_type' => SystemMessageType::NOTIFY
         ]);
-
         $roomMessage->recipients()->attach($notifiable->id, ['room_id' => $room->id]);
 
-        return [
-            'content' => $message,
-            'send_from' => UserType::ADMIN,
-        ];
-    }
-
-    public function pushData($notifiable)
-    {
-        $content = 'キャスト登録おめでとうございます♪'
-            . PHP_EOL . 'あなたは立派なCheers familyです☆'
-            . PHP_EOL . PHP_EOL .'解散後のメッセージで心をつかんでリピートも狙ってみましょう！'
-            . PHP_EOL . PHP_EOL .'まずはゲストにメッセージを送ってアピールしてみてください！'
-            . PHP_EOL . PHP_EOL .'不安なこと、分からないことがあればいつでもCheers運営側にお問い合わせくださいね♪';
         $namedUser = 'user_' . $notifiable->id;
         $send_from = UserType::ADMIN;
         $pushId = 'c_1';

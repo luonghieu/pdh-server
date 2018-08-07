@@ -32,7 +32,7 @@ class CallOrdersTimeOut extends Notification implements ShouldQueue
      */
     public function via($notifiable)
     {
-        return [CustomDatabaseChannel::class, PushNotificationChannel::class];
+        return [PushNotificationChannel::class];
     }
 
     /**
@@ -53,14 +53,7 @@ class CallOrdersTimeOut extends Notification implements ShouldQueue
      */
     public function toArray($notifiable)
     {
-        $message = 'ご希望の人数のキャストが揃わなかったため、'
-            . PHP_EOL . 'こちらの予約は無効になります。'
-            . PHP_EOL . 'お手数ですが、再度コールをし直してください。';
-
-        return [
-            'content' => $message,
-            'send_from' => UserType::ADMIN,
-        ];
+        return [];
     }
 
     public function pushData($notifiable)
