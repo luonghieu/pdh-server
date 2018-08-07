@@ -118,8 +118,14 @@ class OrderController extends ApiController
             return $this->respondErrorMessage(trans('messages.action_not_performed'), 422);
         }
 
-        if (!$order->deny($user->id)) {
-            return $this->respondServerError();
+        if (OrderStatus::OPEN == $order->status) {
+            if (!$order->deny($user->id)) {
+                return $this->respondServerError();
+            }
+        } else {
+            if (!$order->denyAfterActived($user->id)) {
+                return $this->respondServerError();
+            }
         }
 
         $order = $order->fresh();
