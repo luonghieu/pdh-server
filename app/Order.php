@@ -402,7 +402,7 @@ class Order extends Model
                 $costPerFifteenMins = $cast->cost / 2;
             }
 
-            $extraPoint = ($costPerFifteenMins * 1.3) * $multiplier;
+            $extraPoint = ($costPerFifteenMins * 1.4) * $multiplier;
         }
 
         return $extraPoint;
