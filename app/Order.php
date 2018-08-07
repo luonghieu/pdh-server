@@ -4,15 +4,18 @@ namespace App;
 
 use App\Enums\CastOrderStatus;
 use App\Enums\CastOrderType;
+use App\Enums\MessageType;
 use App\Enums\OrderStatus;
 use App\Enums\OrderType;
 use App\Enums\PointType;
 use App\Enums\PaymentStatus;
 use App\Enums\RoomType;
+use App\Enums\SystemMessageType;
 use App\Jobs\CancelOrder;
 use App\Jobs\ProcessOrder;
 use App\Jobs\StopOrder;
 use App\Jobs\ValidateOrder;
+use App\Notifications\CancelOrderFromCast;
 use App\Notifications\CastDenyNominationOrders;
 use App\Services\LogService;
 use App\Traits\DirectRoom;
@@ -146,6 +149,13 @@ class Order extends Model
             $this->status = OrderStatus::DENIED;
             $this->save();
 
+            $cast = User::find($userId);
+            $owner = $this->user;
+            $involvedUsers = [];
+            $involvedUsers[] = $owner;
+            $involvedUsers[] = $cast;
+
+            \Notification::send($involvedUsers, new CancelOrderFromCast($this));
             return true;
         } catch (\Exception $e) {
             LogService::writeErrorLog($e);
