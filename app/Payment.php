@@ -3,6 +3,7 @@
 namespace App;
 
 use App\Enums\PaymentStatus;
+use App\Services\LogService;
 use App\Services\Payment as StripePayment;
 use Illuminate\Database\Eloquent\Model;
 use App\Traits\FailedPaymentHandle;

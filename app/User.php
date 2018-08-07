@@ -284,4 +284,9 @@ class User extends Authenticatable implements JWTSubject
     {
         return $this->hasMany(Transfer::class);
     }
+
+    public function bankAccount()
+    {
+        return $this->hasOne(BankAccount::class);
+    }
 }
