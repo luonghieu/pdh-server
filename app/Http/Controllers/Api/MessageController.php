@@ -12,7 +12,6 @@ use App\Message;
 use App\Services\LogService;
 use App\User;
 use Illuminate\Http\Request;
-use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 use Webpatser\Uuid\Uuid;
@@ -84,7 +83,7 @@ class MessageController extends ApiController
 
         $messages->setCollection(collect($messagesData->values()->all()));
         $messages = $messages->toArray();
-        $messages['order'] = $room->room_order ? OrderResource::make($room->room_order->load(['casts', 'user'])) : new Collection();
+        $messages['order'] = $room->room_order ? OrderResource::make($room->room_order->load(['casts', 'user'])) : null;
         $messages['room'] = RoomResource::make($room->load('users'));
 
         return $this->respondWithData($messages);
