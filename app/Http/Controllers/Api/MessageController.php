@@ -2,19 +2,19 @@
 
 namespace App\Http\Controllers\Api;
 
-use App\User;
-use App\Message;
 use App\Enums\RoomType;
-use Webpatser\Uuid\Uuid;
-use App\Services\LogService;
-use Illuminate\Http\Request;
 use App\Events\MessageCreated;
-use Illuminate\Support\Facades\DB;
-use App\Http\Resources\RoomResource;
-use App\Http\Resources\OrderResource;
-use App\Jobs\MakeImagesChatThumbnail;
 use App\Http\Resources\MessageResource;
+use App\Http\Resources\OrderResource;
+use App\Http\Resources\RoomResource;
+use App\Jobs\MakeImagesChatThumbnail;
+use App\Message;
+use App\Services\LogService;
+use App\User;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
+use Webpatser\Uuid\Uuid;
 
 class MessageController extends ApiController
 {

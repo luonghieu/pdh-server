@@ -6,8 +6,8 @@ use App\Enums\CastOrderStatus;
 use App\Enums\CastOrderType;
 use App\Enums\OrderStatus;
 use App\Enums\OrderType;
-use App\Enums\RoomType;
 use App\Enums\PointType;
+use App\Enums\RoomType;
 use App\Jobs\CancelOrder;
 use App\Jobs\ProcessOrder;
 use App\Jobs\StopOrder;
@@ -478,7 +478,7 @@ class Order extends Model
 
         $point = new Point;
 
-        $point->point = - $this->total_point;
+        $point->point = -$this->total_point;
         $point->balance = $user->point - $this->total_point;
         $point->user_id = $user->id;
         $point->order_id = $this->id;
@@ -486,6 +486,9 @@ class Order extends Model
         $point->status = true;
 
         $point->save();
+
+        $user->point = $point->balance;
+        $user->save();
 
         return true;
     }

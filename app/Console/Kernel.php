@@ -16,9 +16,15 @@ class Kernel extends ConsoleKernel
         Commands\CastRankingSchedule::class,
         Commands\WorkingToday::class,
         Commands\NominatedCallSchedule::class,
+        Commands\SetTimeOutForCallOrder::class,
+        Commands\InactiveChatRoomWhenOrderDone::class,
         Commands\DeleteCanceledOrderSchedule::class,
         Commands\DeleteCastCanceledOrderSchedule::class,
+        Commands\SendRemindBeforeEnDingTimeTenMins::class,
+        Commands\SendPaymentRequestWhenCastStopOrder::class,
         Commands\PointSettlementSchedule::class,
+        Commands\SendRemindForCastBeforeTenMins::class,
+        Commands\CancelFeeSettlement::class,
     ];
 
     /**
@@ -40,6 +46,7 @@ class Kernel extends ConsoleKernel
         $schedule->command('cheers:send_remind_for_cast_before_ten_minutes')->everyMinute()->onOneServer()->runInBackground();
         $schedule->command('cheers:point_settlement')->hourly()->onOneServer()->runInBackground();
         $schedule->command('cheers:send_payment_request_when_cast_stop_order')->hourly()->onOneServer()->runInBackground();
+        $schedule->command('cheers:cancel_fee_settlement')->hourly()->onOneServer()->runInBackground();
     }
 
     /**

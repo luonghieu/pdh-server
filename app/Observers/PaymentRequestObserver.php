@@ -56,6 +56,9 @@ class PaymentRequestObserver
                     $order->payment_requested_at = now();
                     $order->save();
                 }
+
+                $order->total_point += $paymentRequest->total_point;
+                $order->save();
             }
         }
     }
