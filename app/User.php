@@ -279,4 +279,9 @@ class User extends Authenticatable implements JWTSubject
     {
         return $this->hasMany(Point::class);
     }
+
+    public function transfers()
+    {
+        return $this->hasMany(Transfer::class);
+    }
 }
