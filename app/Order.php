@@ -4,13 +4,11 @@ namespace App;
 
 use App\Enums\CastOrderStatus;
 use App\Enums\CastOrderType;
-use App\Enums\MessageType;
 use App\Enums\OrderStatus;
 use App\Enums\OrderType;
-use App\Enums\PointType;
 use App\Enums\PaymentStatus;
+use App\Enums\PointType;
 use App\Enums\RoomType;
-use App\Enums\SystemMessageType;
 use App\Jobs\CancelOrder;
 use App\Jobs\ProcessOrder;
 use App\Jobs\StopOrder;
@@ -58,7 +56,7 @@ class Order extends Model
             ->whereNotNull('cast_order.accepted_at')
             ->whereNull('cast_order.canceled_at')
             ->whereNull('cast_order.deleted_at')
-            ->withPivot('order_time', 'extra_time', 'order_point', 'extra_point', 'allowance_point', 'fee_point', 'total_point', 'type', 'stopped_at')
+            ->withPivot('order_time', 'extra_time', 'order_point', 'extra_point', 'allowance_point', 'fee_point', 'total_point', 'type', 'stopped_at', 'started_at')
             ->withTimestamps();
     }
 
@@ -230,7 +228,6 @@ class Order extends Model
         $stoppedAt = Carbon::now();
         $orderStartTime = Carbon::parse($cast->pivot->started_at);
         $orderTotalTime = $orderStartTime->diffInMinutes($stoppedAt);
-
         $nightTime = $this->nightTime($stoppedAt);
         $extraTime = $this->extraTime($orderStartTime, $stoppedAt);
         $extraPoint = $this->extraPoint($cast, $extraTime);
