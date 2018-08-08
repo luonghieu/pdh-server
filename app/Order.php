@@ -231,7 +231,6 @@ class Order extends Model
         $orderStartTime = Carbon::parse($cast->pivot->started_at);
         $orderTotalTime = $orderStartTime->diffInMinutes($stoppedAt);
 
-
         $nightTime = $this->nightTime($stoppedAt);
         $extraTime = $this->extraTime($orderStartTime, $stoppedAt);
         $extraPoint = $this->extraPoint($cast, $extraTime);
@@ -239,48 +238,6 @@ class Order extends Model
         $ordersFee = $this->orderFee($cast, $orderStartTime, $stoppedAt);
         $allowance = $this->allowance($nightTime);
         $totalPoint = $orderPoint + $ordersFee + $allowance + $extraPoint;
-
-        echo 'Order start date: ' . Carbon::parse($this->date . ' ' . $this->start_time)->format('Y/m/d H:i');
-        echo('<br>');
-        echo 'Order end date: ' . Carbon::parse($this->date . ' ' . $this->start_time)->addMinutes($this->duration *
-                60)->format('Y/m/d H:i');
-        echo('<br>');
-        echo 'Order duration: ' . $this->duration * 60;
-        echo '<br>------------------------------------------------';
-        echo('<br>');
-        echo 'Cast start date: ' . $orderStartTime->format('Y/m/d H:i');
-        echo('<br>');
-        echo 'Cast end date: ' . $stoppedAt->format('Y/m/d H:i');
-        echo('<br>');
-        echo 'Cast duration: ' . $orderTotalTime;
-        echo('<br>');
-        echo 'Order type: ' . OrderType::getDescription($this->type) . " ($this->type)";
-        echo('<br>');
-        echo 'Cast type: ' . $cast->pivot->type;
-        echo('<br>');
-        echo 'Cast class: ' . $cast->class_id;
-        echo('<br>');
-        echo 'Cast cost: ' . $this->castClass->cost;
-        echo '<br>------------------------------------------------';
-        echo('<br>');
-        echo('Order point: ' . $orderPoint);
-        echo('<br>');
-        echo('Order fee: ' . $ordersFee);
-        echo('<br>');
-        echo('Night Time: ' . $nightTime);
-        echo('<br>');
-        echo('Allowance: ' . $allowance);
-        echo('<br>');
-        echo('Extra Time: ' . $extraTime);
-        echo('<br>');
-        echo('Extra point: ' . $extraPoint);
-        echo('<br>');
-        echo('Order Total Time: ' . $orderTotalTime);
-        echo('<br>------------------------------------------------');
-        echo('<br>');
-        echo('Recive point: ' . ($orderPoint + $ordersFee + $allowance + $extraPoint));
-
-        dd(1);
 
         try {
             \DB::beginTransaction();
