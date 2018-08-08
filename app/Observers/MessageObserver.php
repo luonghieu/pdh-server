@@ -10,9 +10,17 @@ class MessageObserver
 {
     public function created(Message $message)
     {
-        if ($message->type != MessageType::SYSTEM) {
+        if (MessageType::SYSTEM != $message->type) {
             $users = ($message->room->users->except([$message->user_id]));
             \Notification::send($users, new MessageCreated($message));
+        }
+
+        $messages = $message->room->unread($message->user_id)->get();
+
+        foreach ($messages as $mess) {
+            $mess->recipients()->updateExistingPivot($message->user_id, ['read_at' => now()],
+                false
+            );
         }
     }
 }
