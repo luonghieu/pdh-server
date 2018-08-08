@@ -432,8 +432,8 @@ class Order extends Model
 
         $extraPoint = 0;
         $multiplier = 0;
-        if ($eTime > 15) {
-            while ($eTime / 15 > 1) {
+        if ($eTime >= 15) {
+            while ($eTime / 15 >= 1) {
                 $multiplier++;
                 $eTime = $eTime - 15;
             }
