@@ -46,4 +46,8 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.'], function () {
         Route::get('/', ['as' => 'index', 'uses' => 'ReportController@index']);
         Route::put('/', ['as' => 'make_report_done', 'uses' => 'ReportController@makeReportDone']);
     });
+
+    Route::group(['namespace' => 'Point', 'prefix' => 'points', 'as' => 'points.', 'middleware' => 'is_admin'], function () {
+        Route::get('/', ['as' => 'index', 'uses' => 'PointController@index']);
+    });
 });

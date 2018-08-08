@@ -687,8 +687,9 @@ tbody td {
 .input-search-today {
   margin-right: 1%;
 }
+
 .form-search {
-  width: 80%;
+  width: 100%;
 }
 
 .notify-search {
