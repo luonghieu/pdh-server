@@ -318,6 +318,7 @@ img {
   color: red;
   border: none;
   background: none;
+  outline: none;
 }
 
 .delete_message:hover .dell_mess {
@@ -432,7 +433,7 @@ img {
   position: relative;
   z-index: 1000;
   top: -25px;
-  left: 340px;
+  left: 220px;
 }
 
 .input_search{

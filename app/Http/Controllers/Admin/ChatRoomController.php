@@ -12,9 +12,9 @@ class ChatRoomController extends Controller
     public function index()
     {
         $user = Auth::user();
-        $user_id = $user->id;
+        $userId = $user->id;
         $token = JWTAuth::fromUser($user);
-        return view('admin.chatroom.index', compact('token', 'user_id'));
+        return view('admin.chatroom.index', compact('token', 'userId'));
     }
 
 

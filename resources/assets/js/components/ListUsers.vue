@@ -41,7 +41,7 @@
                 <div v-bind:class="value.unread_count >= 1 ? 'active_chat' : '' ">
                     <router-link :to="{ name: 'ChatRoom', params: { id: value.id }}">
                         <div v-bind:class="value.id == roomId ? 'active_link' : ''">
-                            <div class="chat_list" v-for="userDetail in value.users" v-if="userDetail.id !== user_id">
+                            <div class="chat_list" v-for="userDetail in value.users" v-if="userDetail.id !== user_id && userDetail.type === guest">
                                 <div class="chat_people">
                                     <div class="chat_img" v-if=userDetail.avatars><img
                                             class="img_avatar"
