@@ -92,12 +92,12 @@ class BankAccountController extends ApiController
         ]);
 
         try {
-            $cast->bankAccount()->update($input);
+            $account = $cast->bankAccount()->update($input);
         } catch (\Exception $e) {
             LogService::writeErrorLog($e);
             return $this->respondServerError();
         }
 
-        return $this->respondWithNoData(trans('messages.update_success'));
+        return $this->respondWithData(BankAccountResource::make($account));
     }
 }
