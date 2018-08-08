@@ -183,7 +183,7 @@ class OrderController extends ApiController
             return $this->respondErrorMessage(trans('messages.order_time_error'), 409);
         }
 
-        $nomineeExists = $order->nominees()->where('user_id', $user->id)->whereNull('cast_order.status')->first();
+        $nomineeExists = $order->nominees()->where('user_id', $user->id)->where('cast_order.status', CastOrderStatus::OPEN)->first();
 
         if (!$nomineeExists) {
             return $this->respondErrorMessage(trans('messages.action_not_performed'), 422);
@@ -206,7 +206,7 @@ class OrderController extends ApiController
             return $this->respondErrorMessage(trans('messages.order_not_found'), 404);
         }
 
-        if (OrderStatus::OPEN != $order->status) {
+        if (OrderStatus::OPEN != $order->status || OrderType::CALL != $order->type) {
             return $this->respondErrorMessage(trans('messages.apply_error'), 409);
         }
 
@@ -214,11 +214,8 @@ class OrderController extends ApiController
         if (!$this->validTimeOrder($user, $order)) {
             return $this->respondErrorMessage(trans('messages.order_time_error'), 409);
         }
-        $nomineeExists = $order->nominees()->where('user_id', $user->id)
-            ->whereNotNull('accepted_at')
-            ->orWhereNull('cast_order.status')->first();
 
-        if ($nomineeExists || $order->casts->count() == $order->total_cast
+        if ($order->casts->count() == $order->total_cast
             || $order->casts->contains($user->id)) {
             return $this->respondErrorMessage(trans('messages.action_not_performed'), 422);
         }
