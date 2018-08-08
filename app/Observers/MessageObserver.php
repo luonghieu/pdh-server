@@ -15,12 +15,12 @@ class MessageObserver
             \Notification::send($users, new MessageCreated($message));
         }
 
-        $messages = $message->room->unread($message->user_id)->get();
-
-        foreach ($messages as $mess) {
-            $mess->recipients()->updateExistingPivot($message->user_id, ['read_at' => now()],
-                false
-            );
-        }
+        \DB::table('message_recipient')
+            ->where([
+                'user_id' => $message->user_id,
+                'room_id' => $message->room_id,
+            ])
+            ->whereNull('read_at')
+            ->update(['read_at' => now()]);
     }
 }
