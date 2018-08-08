@@ -228,16 +228,59 @@ class Order extends Model
         $cast = $this->casts()->withPivot('started_at', 'stopped_at', 'type')->where('user_id', $userId)->first();
 
         $stoppedAt = Carbon::now();
-        $orderStartTime = Carbon::parse($this->date . ' ' . $this->start_time);
+        $orderStartTime = Carbon::parse($cast->pivot->started_at);
         $orderTotalTime = $orderStartTime->diffInMinutes($stoppedAt);
 
+
         $nightTime = $this->nightTime($stoppedAt);
-        $extraTime = $this->extraTime($stoppedAt);
+        $extraTime = $this->extraTime($orderStartTime, $stoppedAt);
         $extraPoint = $this->extraPoint($cast, $extraTime);
-        $orderPoint = $this->orderPoint($cast);
-        $ordersFee = $this->orderFee($cast, $extraTime);
+        $orderPoint = $this->orderPoint($cast, $orderStartTime, $stoppedAt);
+        $ordersFee = $this->orderFee($cast, $orderStartTime, $stoppedAt);
         $allowance = $this->allowance($nightTime);
         $totalPoint = $orderPoint + $ordersFee + $allowance + $extraPoint;
+
+        echo 'Order start date: ' . Carbon::parse($this->date . ' ' . $this->start_time)->format('Y/m/d H:i');
+        echo('<br>');
+        echo 'Order end date: ' . Carbon::parse($this->date . ' ' . $this->start_time)->addMinutes($this->duration *
+                60)->format('Y/m/d H:i');
+        echo('<br>');
+        echo 'Order duration: ' . $this->duration * 60;
+        echo '<br>------------------------------------------------';
+        echo('<br>');
+        echo 'Cast start date: ' . $orderStartTime->format('Y/m/d H:i');
+        echo('<br>');
+        echo 'Cast end date: ' . $stoppedAt->format('Y/m/d H:i');
+        echo('<br>');
+        echo 'Cast duration: ' . $orderTotalTime;
+        echo('<br>');
+        echo 'Order type: ' . OrderType::getDescription($this->type) . " ($this->type)";
+        echo('<br>');
+        echo 'Cast type: ' . $cast->pivot->type;
+        echo('<br>');
+        echo 'Cast class: ' . $cast->class_id;
+        echo('<br>');
+        echo 'Cast cost: ' . $this->castClass->cost;
+        echo '<br>------------------------------------------------';
+        echo('<br>');
+        echo('Order point: ' . $orderPoint);
+        echo('<br>');
+        echo('Order fee: ' . $ordersFee);
+        echo('<br>');
+        echo('Night Time: ' . $nightTime);
+        echo('<br>');
+        echo('Allowance: ' . $allowance);
+        echo('<br>');
+        echo('Extra Time: ' . $extraTime);
+        echo('<br>');
+        echo('Extra point: ' . $extraPoint);
+        echo('<br>');
+        echo('Order Total Time: ' . $orderTotalTime);
+        echo('<br>------------------------------------------------');
+        echo('<br>');
+        echo('Recive point: ' . ($orderPoint + $ordersFee + $allowance + $extraPoint));
+
+        dd(1);
 
         try {
             \DB::beginTransaction();
@@ -371,7 +414,7 @@ class Order extends Model
         return 0;
     }
 
-    public function orderPoint($cast)
+    public function orderPoint($cast, $startedAt, $stoppedAt)
     {
         if (OrderType::NOMINATION != $this->type) {
             $cost = $this->castClass->cost;
@@ -379,27 +422,26 @@ class Order extends Model
             $cost = $cast->cost;
         }
 
-        return $cost * ((60 * $this->duration) / 30);
+        $startedAt = Carbon::parse($startedAt);
+        $stoppedAt = Carbon::parse($stoppedAt);
+
+        return ($cost / 2) * floor($startedAt->diffInMinutes($stoppedAt) / 15);
     }
 
-    public function orderFee($cast, $extraTime)
+    public function orderFee($cast, $startedAt, $stoppedAt)
     {
         $order = $this;
-        $eTime = $extraTime;
         $orderFee = 0;
         $multiplier = 0;
-        $orderDuration = $this->duration * 60;
-        if (OrderType::NOMINATION != $order->type && CastOrderType::NOMINEE == $cast->pivot->type) {
-            while ($orderDuration / 15 >= 1) {
-                $multiplier++;
-                $orderDuration -= 15;
-            }
 
-            if ($eTime > 15) {
-                while ($eTime / 15 > 1) {
-                    $multiplier++;
-                    $eTime -= 15;
-                }
+        $startedAt = Carbon::parse($startedAt);
+        $stoppedAt = Carbon::parse($stoppedAt);
+        $castDuration = $startedAt->diffInMinutes($stoppedAt);
+
+        if (OrderType::NOMINATION != $order->type && CastOrderType::NOMINEE == $cast->pivot->type) {
+            while ($castDuration / 15 >= 1) {
+                $multiplier++;
+                $castDuration -= 15;
             }
 
             $orderFee = 500 * $multiplier;
@@ -409,17 +451,17 @@ class Order extends Model
         return $orderFee;
     }
 
-    private function extraTime($stoppedAt)
+    private function extraTime($startedAt, $stoppedAt)
     {
-        $order = $this;
-
         $extralTime = 0;
-        $startDate = Carbon::parse($order->date . ' ' . $order->start_time);
-        $endDate = $startDate->copy()->addMinutes($order->duration * 60);
+        $orderDuration = $this->duration * 60;
 
+        $castStartedAt = Carbon::parse($startedAt);
         $castStoppedAt = Carbon::parse($stoppedAt);
-        if ($castStoppedAt > $endDate) {
-            $extralTime = $castStoppedAt->diffInMinutes($endDate);
+        $castDuration = $castStartedAt->diffInMinutes($castStoppedAt);
+
+        if ($castDuration > $orderDuration) {
+            $extralTime = $castDuration - $orderDuration;
         }
 
         return $extralTime;
