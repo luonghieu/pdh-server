@@ -47,6 +47,8 @@ return [
     'delete_order_success' => 'Delete order successfully',
     'content_length_err' => 'Please enter your content within 50 characters',
     'name_length_err' => 'Please enter your name within 50 characters',
+    'update_success' => 'Update success',
+    'account_not_exists' => 'Bank account not  exists',
     'notify_not_found' => 'Notify is not found',
     'added_account_success' => 'Bank account is addted successfully',
 ];

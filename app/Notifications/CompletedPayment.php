@@ -80,7 +80,8 @@ class CompletedPayment extends Notification
             'user_id' => 1,
             'type' => MessageType::SYSTEM,
             'message' => $content,
-            'system_type' => SystemMessageType::NOTIFY
+            'system_type' => SystemMessageType::NORMAL,
+            'order_id' => $this->order->id
         ]);
         $roomMessage->recipients()->attach($notifiable->id, ['room_id' => $room->id]);
 

@@ -78,6 +78,7 @@ Route::group(['prefix' => 'v1'], function () {
         Route::delete('/order/{id}', ['as' => 'index', 'uses' => 'Cast\OrderController@delete']);
 
         Route::group(['prefix' => 'bank_accounts', 'as' => 'bank_accounts.'], function () {
+            Route::post('/{id}', ['as' => 'update', 'uses' => 'Cast\BankAccountController@update']);
             Route::post('/', ['as' => 'bank_accounts', 'uses' => 'Cast\BankAccountController@create']);
         });
     });

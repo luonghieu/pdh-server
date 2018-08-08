@@ -141,7 +141,7 @@ class CancelOrder implements ShouldQueue
             'user_id' => 1,
             'type' => MessageType::SYSTEM,
             'message' => $ownerMessage,
-            'system_type' => SystemMessageType::NOTIFY,
+            'system_type' => SystemMessageType::NORMAL,
         ]);
         $ownerRoomMessage->recipients()->attach($owner->id, ['room_id' => $ownerRoom->id]);
 
