@@ -278,11 +278,16 @@ class OrderController extends ApiController
             return $this->respondErrorMessage(trans('messages.order_not_found'), 404);
         }
 
-        if (OrderStatus::DONE != $order->status) {
+        $user = $this->guard()->user();
+
+        $castExists = $order->whereHas('castOrder', function ($query) use ($user) {
+            $query->where('user_id', $user->id);
+            $query->where('cast_order.status', CastOrderStatus::DONE);
+        })->exists();
+
+        if (!$castExists) {
             return $this->respondErrorMessage(trans('messages.action_not_performed'), 422);
         }
-
-        $user = $this->guard()->user();
 
         try {
             DB::beginTransaction();
