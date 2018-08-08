@@ -522,7 +522,7 @@ class Order extends Model
 
             $autoChargePoint = env('AUTOCHARGE_POINT');
 
-            $amount = CEIL($subPoint / $autoChargePoint) * $autoChargePoint;
+            $amount = ceil($subPoint / $autoChargePoint) * $autoChargePoint;
 
             try {
                 \DB::beginTransaction();
@@ -530,6 +530,7 @@ class Order extends Model
                 $point = new Point;
                 $point->point = $amount;
                 $point->user_id = $user->id;
+                $point->is_autocharge = true;
                 $point->type = PointType::AUTO_CHARGE;
                 $point->status = false;
                 $point->save();

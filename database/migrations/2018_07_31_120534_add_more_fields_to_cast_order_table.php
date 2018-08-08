@@ -18,8 +18,8 @@ class AddMoreFieldsToCastOrderTable extends Migration
             $table->smallInteger('night_time')->nullable()->after('extra_time');
             $table->smallInteger('total_time')->nullable()->after('night_time');
             $table->smallInteger('order_time')->nullable()->after('total_time');
-            $table->smallInteger('order_point')->nullable()->after('order_time');
-            $table->smallInteger('fee_point')->nullable()->after('order_point');
+            $table->integer('order_point')->nullable()->after('order_time');
+            $table->integer('fee_point')->nullable()->after('order_point');
             $table->integer('extra_point')->nullable()->after('user_id');
             $table->integer('allowance_point')->nullable()->after('extra_point');
             $table->renameColumn('point', 'total_point');

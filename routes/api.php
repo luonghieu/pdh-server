@@ -76,6 +76,7 @@ Route::group(['prefix' => 'v1'], function () {
         Route::get('/orders', ['as' => 'index', 'uses' => 'Cast\OrderController@index']);
         Route::get('/payment_requests', ['as' => 'get_payment_history', 'uses' => 'Cast\PaymentRequestController@getPaymentHistory']);
         Route::delete('/order/{id}', ['as' => 'index', 'uses' => 'Cast\OrderController@delete']);
+        Route::get('/payments', ['as' => 'payments', 'uses' => 'Cast\PaymentController@payments']);
 
         Route::group(['prefix' => 'bank_accounts', 'as' => 'bank_accounts.'], function () {
             Route::post('/{id}', ['as' => 'update', 'uses' => 'Cast\BankAccountController@update']);

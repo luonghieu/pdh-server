@@ -159,7 +159,7 @@ class ValidateOrder implements ShouldQueue
             $roomMessage = $room->messages()->create([
                 'user_id' => 1,
                 'type' => MessageType::SYSTEM,
-                'system_type' => SystemMessageType::NOTIFY  ,
+                'system_type' => SystemMessageType::NORMAL,
                 'message' => $secondMessage
             ]);
             $roomMessage->recipients()->attach($userIds, ['room_id' => $room->id]);
