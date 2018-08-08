@@ -688,7 +688,7 @@ tbody td {
   margin-right: 1%;
 }
 .form-search {
-  width: 60%;
+  width: 80%;
 }
 
 .notify-search {
@@ -988,7 +988,8 @@ tbody td {
   display: inline-block;
   margin-left: 80px;
   position: absolute;
-  top: 12px;
+  top: 70px;
+  right: 170px;
 }
 
 .result {
@@ -1090,6 +1091,11 @@ tbody td {
   .change-active {
     margin-top: 7%;
     margin-left: 36%;
+  }
+
+  .current_point {
+    top: 125px;
+    right: 135px;
   }
 }
 
