@@ -3,10 +3,10 @@
         <div class="messaging">
             <div class="inbox_msg">
                 <h3 class="text-center nickname"></h3>
-                <list-users :users="users" :user_id="user_id" :totalUser="totalUser"></list-users>
+                <list-users :users="users" :user_id="user_id" :totalUser="totalUser" :roomId="roomId"></list-users>
                 <div class="mesgs">
                     <chat-messages :list_message="list_messages" :user_id="user_id"
-                                   :totalMessage="totalMessage"></chat-messages>
+                                   :totalMessage="totalMessage" :roomId="roomId"></chat-messages>
                     <div class="type_msg">
                         <div class="input_msg_write">
                             <div v-if="!image">
@@ -34,179 +34,189 @@
 </template>
 
 <script>
-    import ChatMessages from './ChatMessages'
-    import ListUsers from './ListUsers'
+import ChatMessages from "./ChatMessages";
+import ListUsers from "./ListUsers";
 
-    export default {
-        name: "ChatRoom",
-        components: {
-            ChatMessages,
-            ListUsers
-        },
+export default {
+  name: "ChatRoom",
+  components: {
+    ChatMessages,
+    ListUsers
+  },
 
-        data() {
-            return {
-                message: '',
-                list_messages: [],
-                users: '',
-                user_id: '',
-                image: '',
-                type: 2,
-                none: true,
-                file_upload: '',
-                errors: [],
-                timer: '',
-                totalMessage: '',
-                totalUser: '',
-                roomId: ''
-            }
-        },
+  data() {
+    return {
+      message: "",
+      list_messages: [],
+      users: "",
+      user_id: "",
+      image: "",
+      type: 2,
+      none: true,
+      file_upload: "",
+      errors: [],
+      timer: "",
+      totalMessage: "",
+      totalUser: "",
+      roomId: ""
+    };
+  },
 
-        watch: {
-            '$route'(to, from) {
-                let id = this.$route.params.id;
-                this.init(id);
-                this.getMessagesInRoom(id);
-            }
-        },
-
-        created() {
-            this.getToken();
-            this.getRoom();
-            this.timer = setInterval(this.getRoom, 20000)
-        },
-
-        methods: {
-            init(id) {
-                window.Echo.private('room.' + id)
-                    .listen('MessageCreated', (e) => {
-                        this.list_messages.push(e.message);
-                    });
-            },
-
-            getToken() {
-                const access_token = document.getElementById('token').value;
-                this.user_id = document.getElementById('userId').value;
-                window.axios.defaults.headers.common['Authorization'] = 'Bearer ' + access_token;
-                Echo.connector.options.auth.headers['Authorization'] = 'Bearer ' + access_token;
-
-            },
-
-            getRoom() {
-                window.axios.get("../../api/v1/rooms")
-                    .then(response => {
-                        this.roomId = this.$route.params.id;
-                        this.totalUser = response.data.data.total;
-                        const rooms = response.data.data.data;
-                        this.users = rooms
-                    });
-            },
-
-            getMessagesInRoom(id) {
-                window.axios.get("../../api/v1/rooms/" + id)
-                    .then(response => {
-                        this.list_messages = [];
-                        const room = response.data.data.data;
-                        this.totalMessage = response.data.data.total;
-                        room.forEach(messages => {
-                            messages.forEach(item => {
-                                this.list_messages.unshift(item);
-                            })
-                        });
-                    });
-            },
-
-            sendMessage() {
-                this.userId = this.user_id
-                let data = {
-                    message: this.message,
-                    type: this.type,
-                }
-
-                let config = {
-                    header: {
-                        'Content-Type': 'multipart/form-data'
-                    }
-                }
-
-                if (this.image) {
-                    data = new FormData();
-                    data.append('image', this.file_upload);
-                    data.append('type', 3);
-                }
-
-                window.axios.post('../../api/v1/rooms/' + this.$route.params.id + '/messages', data, config)
-                    .then((response) => {
-                        this.list_messages.push(response.data.data);
-                        this.message = '';
-                        if (this.image) {
-                            this.removeImage().click();
-                        }
-                    });
-            },
-
-            chooseFiles() {
-                document.getElementById("fileUpload").click()
-            },
-
-            onFileChange(e) {
-                const files = e.target.files;
-                const {name, size} = files[0];
-
-                if (name.lastIndexOf(".") <= 0) {
-                    var message = "Please choose a valid image";
-                    this.errors.push(message);
-                    return false;
-                }
-
-                let ext = name.substring(name.lastIndexOf(".") + 1);
-                if (
-                    ext !== "gif" &&
-                    ext !== "GIF" &&
-                    ext !== "jpeg" &&
-                    ext !== "JPEG" &&
-                    ext !== "jpg" &&
-                    ext !== "JPG" &&
-                    ext !== "png" &&
-                    ext !== "PNG"
-                ) {
-                    var message = "Invalid image format.";
-                    this.errors.push(message);
-                    return false;
-                }
-
-                let sizeMB = (size / (1024 * 1024)).toFixed(2);
-                if (sizeMB > 5.12) {
-                    var message = `(${sizeMB}MB). Image size is too large. Please upload an image size less than 5MB`;
-                    this.errors.push(message);
-                    return false;
-                }
-
-                this.file_upload = e.target.files[0];
-                this.createImage(files[0]);
-            },
-
-            createImage(file) {
-                var image = new Image();
-                var reader = new FileReader();
-                var vm = this;
-
-                reader.onload = (e) => {
-                    vm.image = e.target.result;
-                };
-                reader.readAsDataURL(file);
-            },
-
-            removeImage: function (e) {
-                this.image = '';
-            },
-
-            // @keyup.enter="sendMessage"
-
-        }
+  watch: {
+    $route(to, from) {
+      let id = this.$route.params.id;
+      this.init(id);
+      this.getMessagesInRoom(id);
     }
+  },
+
+  created() {
+    this.getToken();
+    this.getRoom();
+    const url = window.location.href
+    const newUrl = new URL(url);
+    this.roomId = newUrl.searchParams.get("room");
+    if(this.roomId){
+        this.init(this.roomId)
+        this.getMessagesInRoom(this.roomId);
+    }
+    this.timer = setInterval(this.getRoom, 20000);
+  },
+
+  methods: {
+    init(id) {
+      window.Echo.leave("room." + id);
+      window.Echo.private("room." + id)
+        .listen("MessageCreated", e => {
+            console.log(e);
+          this.list_messages.push(e.message);
+        });
+    },
+
+    getToken() {
+      const access_token = document.getElementById("token").value;
+      this.user_id = document.getElementById("userId").value;
+      window.axios.defaults.headers.common["Authorization"] =
+        "Bearer " + access_token;
+      Echo.connector.options.auth.headers["Authorization"] =
+        "Bearer " + access_token;
+    },
+
+    getRoom() {
+      window.axios.get("../../api/v1/rooms").then(response => {
+        this.totalUser = response.data.data.total;
+        const rooms = response.data.data.data;
+        this.users = rooms;
+      });
+    },
+
+    getMessagesInRoom(id) {
+      window.axios.get("../../api/v1/rooms/" + id).then(response => {
+        this.list_messages = [];
+        const room = response.data.data.data;
+        this.totalMessage = response.data.data.total;
+        room.forEach(messages => {
+          messages.forEach(item => {
+            this.list_messages.unshift(item);
+          });
+        });
+      });
+    },
+
+    sendMessage() {
+      this.userId = this.user_id;
+      let data = {
+        message: this.message,
+        type: this.type
+      };
+
+      let config = {
+        header: {
+          "Content-Type": "multipart/form-data"
+        }
+      };
+
+      if (this.image) {
+        data = new FormData();
+        data.append("image", this.file_upload);
+        data.append("type", 3);
+      }
+
+      window.axios
+        .post(
+          "../../api/v1/rooms/" + this.$route.params.id + "/messages",
+          data,
+          config
+        )
+        .then(response => {
+          this.list_messages.push(response.data.data);
+          this.message = "";
+          if (this.image) {
+            this.removeImage().click();
+          }
+        });
+    },
+
+    chooseFiles() {
+      document.getElementById("fileUpload").click();
+    },
+
+    onFileChange(e) {
+      const files = e.target.files;
+      const { name, size } = files[0];
+
+      if (name.lastIndexOf(".") <= 0) {
+        var message = "Please choose a valid image";
+        this.errors.push(message);
+        return false;
+      }
+
+      let ext = name.substring(name.lastIndexOf(".") + 1);
+      if (
+        ext !== "gif" &&
+        ext !== "GIF" &&
+        ext !== "jpeg" &&
+        ext !== "JPEG" &&
+        ext !== "jpg" &&
+        ext !== "JPG" &&
+        ext !== "png" &&
+        ext !== "PNG"
+      ) {
+        var message = "Invalid image format.";
+        this.errors.push(message);
+        return false;
+      }
+
+      let sizeMB = (size / (1024 * 1024)).toFixed(2);
+      if (sizeMB > 5.12) {
+        var message = `(${sizeMB}MB). Image size is too large. Please upload an image size less than 5MB`;
+        this.errors.push(message);
+        return false;
+      }
+
+      this.file_upload = e.target.files[0];
+      this.createImage(files[0]);
+    },
+
+    createImage(file) {
+      var image = new Image();
+      var reader = new FileReader();
+      var vm = this;
+
+      reader.onload = e => {
+        vm.image = e.target.result;
+      };
+      reader.readAsDataURL(file);
+    },
+
+    removeImage: function(e) {
+      this.image = "";
+    }
+
+    // @keyup.enter="sendMessage"
+  }
+};
 </script>
 
 <style scoped>
-
 </style>

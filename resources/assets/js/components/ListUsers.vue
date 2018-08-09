@@ -12,9 +12,8 @@
         </div>
         <div class="inbox_chat inbox_cast" id="cast">
             <div v-for="value in filteredData">
-                <div v-bind:class="value.unread_count >= 1 ? 'active_chat' : '' ">
-                    <router-link :to="{ name: 'ChatRoom', params: { id: value.id }}">
-                        <div v-bind:class="value.id == roomId ? 'active_link' : ''">
+                    <router-link :to="{ name: 'ChatRoom', params: { id: value.id }}" v-on:click.native="setRoomId">
+                        <div v-bind:class="value.id == roomId || value.id == room_id  ? 'active_chat' : ''">
                             <div class="chat_list" v-for="userDetail in value.users"
                                  v-if="userDetail.id !== user_id  && userDetail.type === cast">
 
@@ -25,7 +24,7 @@
                                     </div>
                                     <span v-bind:class="userDetail.is_online === 1 ? 'is_online' : 'is_offline' "></span>
                                     <div class="chat_ib">
-                                        <h5>{{userDetail.nickname}}</h5>
+                                        <h5 v-bind:class="value.unread_count >= 1 ? 'chat_ib_nickname' : '' ">{{userDetail.nickname}}</h5>
                                         <p v-if="value.latest_message">{{value.latest_message.message}}</p>
                                     </div>
                                 </div>
@@ -33,14 +32,12 @@
                             </div>
                         </div>
                     </router-link>
-                </div>
             </div>
         </div>
         <div class="inbox_chat inbox_guest" id="guest">
             <div v-for="value in filteredData">
-                <div v-bind:class="value.unread_count >= 1 ? 'active_chat' : '' ">
-                    <router-link :to="{ name: 'ChatRoom', params: { id: value.id }}">
-                        <div v-bind:class="value.id == roomId ? 'active_link' : ''">
+                    <router-link :to="{ name: 'ChatRoom', params: { id: value.id }}" v-on:click.native="setRoomId">
+                        <div v-bind:class="value.id == Id || value.id == room_id ? 'active_chat ' : ''">
                             <div class="chat_list" v-for="userDetail in value.users" v-if="userDetail.id !== user_id && userDetail.type === guest">
                                 <div class="chat_people">
                                     <div class="chat_img" v-if=userDetail.avatars><img
@@ -49,7 +46,7 @@
                                     </div>
                                     <span v-bind:class="userDetail.is_online === 1 ? 'is_online' : 'is_offline' "></span>
                                     <div class="chat_ib">
-                                        <h5>{{userDetail.nickname}}</h5>
+                                        <h5 v-bind:class="value.unread_count >= 1 ? 'chat_ib_nickname' : '' ">{{userDetail.nickname}}</h5>
                                         <p v-if="value.latest_message">{{value.latest_message.message}}</p>
                                     </div>
                                 </div>
@@ -57,7 +54,6 @@
                             </div>
                         </div>
                     </router-link>
-                </div>
             </div>
         </div>
         <div class="loading_content" v-if="totalUser > 15">
@@ -67,65 +63,69 @@
 </template>
 
 <script>
-    export default {
-        name: "ListUsers",
-        props: ['users', 'user_id', 'totalUser'],
-        data() {
-            return {
-                cast: 2,
-                guest: 1,
-                isActive: true,
-                searchName: '',
-                roomId: '',
-                pageCm: 1,
-                totalItem: 1,
-                totalpage: 1,
-            }
-        },
-        methods: {
-            loadUser(pageCm) {
-                window.axios
-                    .get(`../../api/v1/rooms/?paginate=${15}&page=${pageCm + 1}`)
-                    .then(response => {
-                        let listUser = '';
-                        listUser = response.data.data.data;
-                        listUser.forEach(item => {
-                            this.users.push(item);
-                        });
-                        this.pageCm = getComment.data.data.current_page;
-                        this.totalItem = getComment.data.data.total;
-                        this.totalpage = getComment.data.data.last_page;
-                    })
+export default {
+  name: "ListUsers",
+  props: ["users", "user_id", "totalUser", "roomId"],
+  data() {
+    return {
+      cast: 2,
+      guest: 1,
+      isActive: true,
+      searchName: "",
+      Id: "",
+      pageCm: 1,
+      totalItem: 1,
+      totalpage: 1,
+      room_id: this.roomId
+    };
+  },
+  methods: {
+    setRoomId(){
+        this.room_id = null
+    },
 
-            },
-
-        },
-
-        computed: {
-            filteredData: function () {
-                this.roomId = this.$route.params.id;
-                var search_array = this.users;
-                var searchName = this.searchName;
-
-                if (!searchName) {
-                    return search_array;
-                }
-
-                searchName = searchName.trim().toLowerCase();
-
-                search_array = search_array.filter(item => {
-                    for (let value in item.users) {
-                        if (item.users[value].nickname.toLowerCase().indexOf(searchName) !== -1) {
-                            return true;
-                        }
-                    }
-                })
-                return search_array;
-            }
-        }
+    loadUser(pageCm) {
+      window.axios
+        .get(`../../api/v1/rooms/?paginate=${15}&page=${pageCm + 1}`)
+        .then(response => {
+          let listUser = "";
+          listUser = response.data.data.data;
+          listUser.forEach(item => {
+            this.users.push(item);
+          });
+          this.pageCm = getComment.data.data.current_page;
+          this.totalItem = getComment.data.data.total;
+          this.totalpage = getComment.data.data.last_page;
+        });
     }
+  },
+
+  computed: {
+    filteredData: function() {
+      this.Id = this.$route.params.id;
+      var search_array = this.users;
+      var searchName = this.searchName;
+
+      if (!searchName) {
+        return search_array;
+      }
+
+      searchName = searchName.trim().toLowerCase();
+
+      search_array = search_array.filter(item => {
+        for (let value in item.users) {
+          if (
+            item.users[value].nickname.toLowerCase().indexOf(searchName) !== -1
+          ) {
+            return true;
+          }
+        }
+      });
+      return search_array;
+    }
+  }
+};
 </script>
 
 <style scoped>
-
 </style>

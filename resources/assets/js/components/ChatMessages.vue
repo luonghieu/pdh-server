@@ -44,7 +44,7 @@ import ConfirmDelete from "./ConfirmDelete";
 export default {
   name: "ChatMessage",
   components: { ConfirmDelete },
-  props: ["list_message", "user_id", "totalMessage"],
+  props: ["list_message", "user_id", "totalMessage", "roomId"],
   data() {
     return {
       confirmModal: false,
@@ -68,11 +68,13 @@ export default {
       this.listMessage = list_message;
       this.message_id = id;
       this.confirmModal = true;
+      this.index = null
     },
 
     cancelDelete() {
       this.confirmModal = false;
       this.selectedMessage = null;
+      this.index = null
     },
 
     deleteMessage() {
@@ -82,14 +84,20 @@ export default {
         .delete("../../api/v1/messages/" + this.message_id)
         .then(response => {});
       this.selectedMessage = null;
+      this.index = null
     },
 
     loadMessage(pageCm) {
+        let Id;
+        if(this.roomId){
+            Id = this.roomId
+        }
+        else{
+             Id = this.$route.params.id
+        }
       window.axios
         .get(
-          `../../api/v1/rooms/${
-            this.$route.params.id
-          }?paginate=${15}&page=${pageCm + 1}`
+          `../../api/v1/rooms/${Id}?paginate=${15}&page=${pageCm + 1}`
         )
         .then(getMessage => {
           let temp = "";

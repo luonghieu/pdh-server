@@ -8,7 +8,7 @@ export default new VueRouter({
     linkActiveClass: 'active',
     routes: [
         {
-            path: '/admin/chat/:id',
+            path: '/admin/chat?room=:id',
             name: 'ChatRoom',
             component: ChatRoom,
             props: true
