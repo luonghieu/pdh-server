@@ -607,7 +607,7 @@ class Order extends Model
         if ($this->type == OrderType::NOMINATION) {
             $cast = $casts->first();
             $cost = $cast->cost;
-            return ($cost / 2) * floor($orderDuration / 15) + $allowance;
+            return (($cost / 2) * floor($orderDuration / 15) + $allowance) * 0.8;
         } else {
             $totalPoint = 0;
             $cost = $this->castClass->cost;
@@ -619,13 +619,12 @@ class Order extends Model
                 $orderDuration -= 15;
             }
             $orderFee = 500 * $multiplier;
-            $i = 0;
+
             foreach ($casts as $cast) {
                 $totalPoint += ($cost / 2) * floor($tempOrderDuration / 15) + $allowance + $orderFee;
-                $i++;
             }
 
-            return $totalPoint;
+            return $totalPoint * 0.8;
         }
     }
 }
