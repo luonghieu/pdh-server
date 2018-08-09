@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Resources\NotificationResource;
+use App\Services\LogService;
 use Illuminate\Http\Request;
 
 class NotificationController extends ApiController
@@ -44,7 +45,7 @@ class NotificationController extends ApiController
 
         $user = $this->guard()->user();
 
-        $notifications = $user->notifications()->with('sendFrom')->latest()->paginate($request->per_page)
+        $notifications = $user->notifications()->latest()->paginate($request->per_page)
             ->appends($request->query());
 
         return $this->respondWithData(NotificationResource::collection($notifications));

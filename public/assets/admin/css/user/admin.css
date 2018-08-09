@@ -54,7 +54,7 @@ td {
   position: relative;
 }
 
-.display-room-id {
+.display-title {
   display: inline-block;
   margin-left: 15px;
 }
@@ -688,7 +688,7 @@ tbody td {
   margin-right: 1%;
 }
 .form-search {
-  width: 60%;
+  width: 80%;
 }
 
 .notify-search {
@@ -988,7 +988,8 @@ tbody td {
   display: inline-block;
   margin-left: 80px;
   position: absolute;
-  top: 12px;
+  top: 70px;
+  right: 170px;
 }
 
 .result {
@@ -1041,6 +1042,18 @@ tbody td {
   background-color: #39afea;
 }
 
+.btn-change-report p{
+  margin: 0;
+}
+
+.btn-change-report a{
+  color: white;
+}
+
+.report {
+  top : 115px;
+}
+
 .btn-delete-order {
   display: inline-block;
   position: absolute;
@@ -1059,6 +1072,37 @@ tbody td {
 
 .btn-delete-order button:hover {
   background-color: #39afea;
+}
+
+.change-time {
+  position: absolute;
+  right: 25px;
+  border: none;
+  background: none;
+  background-color: #6dc9e6;
+  color: #fff;
+  border-radius: 8px;
+  padding: 7px;
+}
+
+.change-time:hover {
+  background-color: #39afea;
+}
+
+.start-time {
+  top: 46px;
+}
+
+.stopped-time {
+  top: 95px;
+}
+
+.extra-time {
+  top: 145px;
+}
+
+.info-cast-matching {
+  width: 50%;
 }
 
 @media (max-width: 767px) {
@@ -1090,6 +1134,11 @@ tbody td {
   .change-active {
     margin-top: 7%;
     margin-left: 36%;
+  }
+
+  .current_point {
+    top: 125px;
+    right: 135px;
   }
 }
 

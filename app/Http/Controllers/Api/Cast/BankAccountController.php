@@ -2,9 +2,10 @@
 
 namespace App\Http\Controllers\Api\Cast;
 
-use App\Cast;
 use App\BankAccount;
+use App\Cast;
 use App\Http\Controllers\Api\ApiController;
+use App\Http\Resources\BankAccountResource;
 use App\Services\LogService;
 use Illuminate\Http\Request;
 
@@ -46,14 +47,14 @@ class BankAccountController extends ApiController
         ]);
 
         try {
-            $user->bankAccount()->create($input);
+            $account = $user->bankAccount()->create($input);
         } catch (\Exception $e) {
             LogService::writeErrorLog($e);
 
             return $this->respondServerError();
         }
 
-        return $this->respondWithNoData(trans('messages.added_account_success'));
+        return $this->respondWithData(BankAccountResource::make($account));
     }
 
     public function update(Request $request, $id)

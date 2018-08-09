@@ -10,9 +10,17 @@ class MessageObserver
 {
     public function created(Message $message)
     {
-        if ($message->type != MessageType::SYSTEM) {
+        if (MessageType::SYSTEM != $message->type) {
             $users = ($message->room->users->except([$message->user_id]));
             \Notification::send($users, new MessageCreated($message));
         }
+
+        \DB::table('message_recipient')
+            ->where([
+                'user_id' => $message->user_id,
+                'room_id' => $message->room_id,
+            ])
+            ->whereNull('read_at')
+            ->update(['read_at' => now()]);
     }
 }

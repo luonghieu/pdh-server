@@ -8,7 +8,7 @@
           <h2><span class="break"></span>コール/コール内指名_予約詳細</h2>
         </div>
         <div class="panel-body">
-          <div class="display-room-id">
+          <div class="display-title">
             <p><b>予約ID:</b> {{ $order->id }}</p>
           </div>
         </div>
@@ -108,7 +108,7 @@
               <tr>
                 <th>マッチングした1
                 キャスト</th>
-                <td><a href="#">{{ $order->casts->count().'人' }}</a></td>
+                <td><a href="{{ route('admin.orders.casts_matching', ['order' => $order->id]) }}">{{ $order->casts->count().'人' }}</a></td>
               </tr>
               @endif
               @if ($order->point && $order->point->is_pay)
