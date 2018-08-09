@@ -81,7 +81,7 @@ class Order extends Model
     {
         return $this->belongsToMany(Cast::class)
             ->whereNull('cast_order.deleted_at')
-            ->withPivot('status')
+            ->withPivot('status', 'type')
             ->withTimestamps();
     }
 
@@ -577,54 +577,54 @@ class Order extends Model
 
     public function getCallPointAttribute()
     {
-        $totalCast = $this->total_cast;
-        $nomineeCasts = $this->nominees()->count();
-        $candidateCasts = $totalCast - $nomineeCasts;
-
+        $user = Auth::user();
+        $cast = $this->castOrder()->where('user_id', $user->id)->first();
         $totalPoint = 0;
-        $orderStartedAt = Carbon::parse($this->date . ' ' . $this->start_time);
-        $orderStoppedAt = $orderStartedAt->copy()->addMinutes($this->duration * 60);
-        $nightTime = $this->nightTime($orderStoppedAt);
-        $allowance = $this->allowance($nightTime);
 
-        $cost = $this->castClass->cost;
-        for ($i = 0; $i < $candidateCasts; $i++) {
+        if ($cast->pivot->type == CastOrderType::CANDIDATE) {
+            $orderStartedAt = Carbon::parse($this->date . ' ' . $this->start_time);
+            $orderStoppedAt = $orderStartedAt->copy()->addMinutes($this->duration * 60);
+            $nightTime = $this->nightTime($orderStoppedAt);
+            $allowance = $this->allowance($nightTime);
+            $cost = $this->castClass->cost;
             $totalPoint += ($cost / 2) * floor(($this->duration * 60) / 15) + $allowance;
         }
 
-        return $totalPoint;
+        return $totalPoint * 0.8;
     }
 
     public function getNomineePointAttribute()
     {
+        $user = Auth::user();
+        $cast = $this->castOrder()->where('user_id', $user->id)->first();
+
         $orderStartedAt = Carbon::parse($this->date . ' ' . $this->start_time);
         $orderStoppedAt = $orderStartedAt->copy()->addMinutes($this->duration * 60);
         $nightTime = $this->nightTime($orderStoppedAt);
         $allowance = $this->allowance($nightTime);
         $orderDuration = $this->duration * 60;
+        $totalPoint = 0;
 
-        $casts = $this->nominees;
         if ($this->type == OrderType::NOMINATION) {
-            $cast = $casts->first();
             $cost = $cast->cost;
-            return (($cost / 2) * floor($orderDuration / 15) + $allowance);
+            return ((($cost / 2) * floor($orderDuration / 15) + $allowance)) * 0.8;
         } else {
-            $totalPoint = 0;
-            $cost = $this->castClass->cost;
-            $tempOrderDuration = $orderDuration;
+            if ($cast->pivot->type == CastOrderType::NOMINEE) {
+                $cost = $this->castClass->cost;
+                $tempOrderDuration = $orderDuration;
 
-            $multiplier = 0;
-            while ($orderDuration / 15 >= 1) {
-                $multiplier++;
-                $orderDuration -= 15;
+                $multiplier = 0;
+                while ($orderDuration / 15 >= 1) {
+                    $multiplier++;
+                    $orderDuration -= 15;
+                }
+                $orderFee = 500 * $multiplier;
+
+                $totalPoint = ($cost / 2) * floor($tempOrderDuration / 15) + $allowance + $orderFee;
+                return $totalPoint * 0.8;
             }
-            $orderFee = 500 * $multiplier;
-
-            foreach ($casts as $cast) {
-                $totalPoint += ($cost / 2) * floor($tempOrderDuration / 15) + $allowance + $orderFee;
-            }
-
-            return $totalPoint;
         }
+
+        return $totalPoint;
     }
 }
