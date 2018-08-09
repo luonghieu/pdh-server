@@ -607,7 +607,6 @@ class Order extends Model
         } else {
             if ($this->type == OrderType::NOMINATED_CALL) {
                 $cost = $this->castClass->cost;
-                $tempOrderDuration = $orderDuration;
 
                 $multiplier = 0;
                 while ($orderDuration / 15 >= 1) {
@@ -616,7 +615,7 @@ class Order extends Model
                 }
                 $orderFee = 500 * $multiplier;
 
-                $totalPoint = ($cost / 2) * floor($tempOrderDuration / 15) + $allowance + $orderFee;
+                $totalPoint = ($cost / 2) * floor($orderDuration / 15) + $allowance + $orderFee;
                 return $totalPoint;
             }
         }
