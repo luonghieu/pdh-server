@@ -603,7 +603,7 @@ class Order extends Model
         if ($this->type == OrderType::NOMINATION) {
             $cast = $this->nominees->first();
             $cost = $cast->cost;
-            return ((($cost / 2) * floor($orderDuration / 15) + $allowance));
+            return ($cost / 2) * floor($orderDuration / 15) + $allowance;
         } else {
             if ($this->type == OrderType::NOMINATED_CALL) {
                 $cost = $this->castClass->cost;
