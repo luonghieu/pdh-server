@@ -10,6 +10,7 @@ final class PaymentRequestStatus extends Enum
     const REQUESTED = 2;
     const UPDATED = 3;
     const CLOSED = 4;
+    const CONFIRM = 5;
 
     /**
      * Get the description for an enum value
