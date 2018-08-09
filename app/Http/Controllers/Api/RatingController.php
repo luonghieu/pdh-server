@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Enums\CastOrderStatus;
 use App\Enums\OrderStatus;
 use App\Order;
 use App\Rating;
@@ -37,15 +38,16 @@ class RatingController extends ApiController
             return $this->respondErrorMessage(trans('messages.order_not_found'), 404);
         }
 
-        if (OrderStatus::DONE != $order->status) {
-            return $this->respondErrorMessage(trans('messages.action_not_performed'), 422);
-        }
-
         $user = $this->guard()->user();
 
-        $castExists = $order->casts()->pluck('user_id')->toArray();
+        $casts = $order->casts()->pluck('user_id')->toArray();
 
         if ($user->is_cast) {
+            $castExists = $order->whereHas('castOrder', function ($query) use ($user) {
+                $query->where('user_id', $user->id);
+                $query->where('cast_order.status', CastOrderStatus::DONE);
+            })->exists();
+
             $isRated = Rating::where('user_id', $this->guard()->user()->id)->where('order_id', $orderId)->exists();
 
             if ($isRated) {
@@ -59,7 +61,7 @@ class RatingController extends ApiController
             $ratedIds = $user->rates()->where('order_id', $orderId)->pluck('rated_id')->toArray();
 
             if (in_array($request->rated_id, $ratedIds) || $order->user_id != $user->id
-                || !in_array($request->rated_id, $castExists)) {
+                || !in_array($request->rated_id, $casts || OrderStatus::DONE != $order->status)) {
                 return $this->respondErrorMessage(trans('messages.action_not_performed'), 422);
             }
         }

@@ -6,6 +6,7 @@ use App\Enums\RoomType;
 use App\Events\MessageCreated;
 use App\Http\Resources\MessageResource;
 use App\Http\Resources\OrderResource;
+use App\Http\Resources\RoomResource;
 use App\Jobs\MakeImagesChatThumbnail;
 use App\Message;
 use App\Services\LogService;
@@ -82,7 +83,8 @@ class MessageController extends ApiController
 
         $messages->setCollection(collect($messagesData->values()->all()));
         $messages = $messages->toArray();
-        $messages['order'] = $room->room_order ? OrderResource::make($room->room_order->load(['casts', 'user'])) : '';
+        $messages['order'] = $room->room_order ? OrderResource::make($room->room_order->load(['casts', 'user'])) : null;
+        $messages['room'] = RoomResource::make($room->load('users'));
 
         return $this->respondWithData($messages);
     }

@@ -32,7 +32,7 @@ class CreateGuest extends Notification implements ShouldQueue
      */
     public function via($notifiable)
     {
-        return [CustomDatabaseChannel::class, PushNotificationChannel::class];
+        return [PushNotificationChannel::class];
     }
 
     /**
@@ -53,32 +53,7 @@ class CreateGuest extends Notification implements ShouldQueue
      */
     public function toArray($notifiable)
     {
-
-        $message = 'ようこそCheersへ！'
-            . PHP_EOL .'Cheersはプライベートでの飲み会や接待など様々なシーンにキャストを呼べるマッチングアプリです。'
-            . PHP_EOL . PHP_EOL . 'クオリティの高いキャストと今すぐ出会えるのはCheersだけ！'
-            . PHP_EOL . PHP_EOL . '呼びたいときに、呼びたい人数・場所を入力するだけ。'
-            . PHP_EOL . PHP_EOL . '最短20分でキャストがゲストの元に駆けつけます♪'
-            . PHP_EOL . PHP_EOL . '「キャスト一覧」からお気に入りのキャストを見つけてアピールすることも可能です！'
-            . PHP_EOL . PHP_EOL .'まずはHomeの「今すぐキャストを呼ぶ」からキャストを呼んで素敵な時間をお過ごし下さい♪'
-            . PHP_EOL . PHP_EOL . 'ご不明点はお気軽にお問い合わせください。';
-
-        $room = $notifiable->rooms()->create();
-        $room->users()->attach(1);
-
-        $roomMessage = $room->messages()->create([
-            'user_id' => 1,
-            'type' => MessageType::SYSTEM,
-            'message' => $message,
-            'system_type' => SystemMessageType::NOTIFY
-        ]);
-
-        $roomMessage->recipients()->attach($notifiable->id, ['room_id' => $room->id]);
-
-        return [
-            'content' => $message,
-            'send_from' => UserType::ADMIN,
-        ];
+        return [];
     }
 
     public function pushData($notifiable)
@@ -91,6 +66,16 @@ class CreateGuest extends Notification implements ShouldQueue
             . PHP_EOL . PHP_EOL . '「キャスト一覧」からお気に入りのキャストを見つけてアピールすることも可能です！'
             . PHP_EOL . PHP_EOL .'まずはHomeの「今すぐキャストを呼ぶ」からキャストを呼んで素敵な時間をお過ごし下さい♪'
             . PHP_EOL . PHP_EOL . 'ご不明点はお気軽にお問い合わせください。';
+
+        $room = $notifiable->rooms()->create();
+        $room->users()->attach(1);
+        $roomMessage = $room->messages()->create([
+            'user_id' => 1,
+            'type' => MessageType::SYSTEM,
+            'message' => $content,
+            'system_type' => SystemMessageType::NORMAL
+        ]);
+        $roomMessage->recipients()->attach($notifiable->id, ['room_id' => $room->id]);
 
         $namedUser = 'user_' . $notifiable->id;
         $send_from = UserType::ADMIN;

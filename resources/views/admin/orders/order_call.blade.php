@@ -5,7 +5,7 @@
     <div class="col-lg-12">
       <div class="panel panel-default">
         <div class="panel-heading" data-original-title>
-          <h2><i class="fa fa-user"></i><span class="break"></span>コール/コール内指名_予約詳細</h2>
+          <h2><span class="break"></span>コール/コール内指名_予約詳細</h2>
         </div>
         <div class="panel-body">
           <div class="display-room-id">
@@ -41,9 +41,11 @@
               <tr>
                 <th>ルームID</th>
                 <td>
+                  @if ($order->room)
                   <a href="{{ App\Enums\OrderStatus::ACTIVE == $order->status ? route('admin.rooms.messages_by_room', ['room' => $order->room->id]) : '#' }}">
                     {{ $order->room->id }}
                   </a>
+                  @endif
                 </td>
               </tr>
               <tr>
@@ -56,11 +58,11 @@
               </tr>
               <tr>
                 <th>キャストの呼ぶ人数</th>
-                <td>{{ $order->casts->count() }}</td>
+                <td>{{ $order->total_cast }}人</td>
               </tr>
               <tr>
                 <th>キャストを呼ぶ時間</th>
-                <td>{{ $order->duration }}</td>
+                <td>{{ $order->duration }}時間</td>
               </tr>
               <tr>
                 <th>キャストクラス</th>
@@ -76,39 +78,23 @@
               </tr>
               <tr>
                 <th>指名キャスト</th>
-                <td>
-                @if ($order->nominees->count())
-                  @if ($order->nominees->count() > 1)
-                    <a href="{{ route('admin.orders.nominees', ['order' => $order->id]) }}">
-                      {{ $order->nominees->count().'名' }}
-                    </a>
-                  @else
-                    <a href="{{ route('admin.users.show', ['user' => $order->nominees[0]->id]) }}">
-                      {{ $order->nominees->count().'名' }}
-                    </a>
-                  @endif
+                @if ($order->nominees->count() &&$order->nominees->count() > 1)
+                <td><a href="{{ route('admin.orders.nominees', ['order' => $order->id]) }}">{{ $order->nominees->count().'名' }}</a></td>
+                @else
+                <td><a href="{{ route('admin.users.show', ['user' => $order->nominees[0]->id]) }}">{{ $order->nominees[0]->id }}</a></td>
                 @endif
-                </td>
               </tr>
               <tr>
                 <th>応募中キャスト</th>
-                <td>
-                @if ($order->candidates->count())
-                  @if ($order->candidates->count() > 1)
-                    <a href="{{ route('admin.orders.candidates', ['order' => $order->id]) }}">
-                      {{ $order->candidates->count().'名' }}
-                    </a>
-                  @else
-                    <a href="{{ route('admin.users.show', ['user' => $order->candidates[0]->id]) }}">
-                      {{ $order->candidates->count().'名' }}
-                    </a>
-                  @endif
+                @if ($order->candidates->count() &&$order->candidates->count() > 1)
+                <td><a href="{{ route('admin.orders.candidates', ['order' => $order->id]) }}">{{ $order->candidates->count().'名' }}</a></td>
+                @else
+                <td><a href="{{ route('admin.users.show', ['user' => $order->candidates[0]->id]) }}">{{ $order->candidates[0]->id }}</a></td>
                 @endif
-                </td>
               </tr>
               <tr>
-                <th>合計ポイント</th>
-                <td>{{ $order->total_point }}</td>
+                <th>　予定合計ポイント</th>
+                <td>{{ number_format($order->total_point) }}P</td>
               </tr>
               <tr>
                 <th>ステータス</th>
@@ -118,6 +104,23 @@
                 <th>予約発生時刻</th>
                 <td>{{ Carbon\Carbon::parse($order->created_at)->format('Y/m/d H:i') }}</td>
               </tr>
+              @if ($order->status == App\Enums\OrderStatus::PROCESSING)
+              <tr>
+                <th>マッチングした1
+                キャスト</th>
+                <td><a href="#">{{ $order->casts->count().'人' }}</a></td>
+              </tr>
+              @endif
+              @if ($order->point && $order->point->is_pay)
+              <tr>
+                <th>実績合計ポイント</th>
+                <td>{{ number_format($order->casts()->sum('total_point')) }}P</td>
+              </tr>
+              <tr>
+                <th>ポイント決済</th>
+                <td>{{ ($order->point->status == App\Enums\Status::ACTIVE) ? '正常に完了しました':'エラー' }}</td>
+              </tr>
+              @endif
             </table>
           </div>
         </div>

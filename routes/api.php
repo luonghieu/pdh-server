@@ -39,6 +39,8 @@ Route::group(['prefix' => 'v1'], function () {
         Route::delete('messages/{id}', ['as' => 'messages', 'uses' => 'MessageController@delete']);
         Route::patch('working_today', ['as' => 'working_today', 'uses' => 'WorkingTodayController@update']);
         Route::post('/ratings', ['as' => 'create_rating', 'uses' => 'RatingController@create']);
+        Route::get('/notifications/{id}', ['as' => 'show_notifications', 'uses' => 'NotificationController@show']);
+        Route::get('/notifications', ['as' => 'notifications', 'uses' => 'NotificationController@index']);
     });
 
     Route::group(['middleware' => ['auth:api'], 'prefix' => 'users', 'as' => 'users.'], function () {
@@ -74,6 +76,12 @@ Route::group(['prefix' => 'v1'], function () {
         Route::get('/orders', ['as' => 'index', 'uses' => 'Cast\OrderController@index']);
         Route::get('/payment_requests', ['as' => 'get_payment_history', 'uses' => 'Cast\PaymentRequestController@getPaymentHistory']);
         Route::delete('/order/{id}', ['as' => 'index', 'uses' => 'Cast\OrderController@delete']);
+        Route::get('/payments', ['as' => 'payments', 'uses' => 'Cast\PaymentController@payments']);
+
+        Route::group(['prefix' => 'bank_accounts', 'as' => 'bank_accounts.'], function () {
+            Route::post('/{id}', ['as' => 'update', 'uses' => 'Cast\BankAccountController@update']);
+            Route::post('/', ['as' => 'bank_accounts', 'uses' => 'Cast\BankAccountController@create']);
+        });
     });
 
     Route::group(['middleware' => ['auth:api'], 'prefix' => 'orders', 'as' => 'orders.'], function () {
@@ -86,6 +94,8 @@ Route::group(['prefix' => 'v1'], function () {
             Route::post('/{id}/deny', ['as' => 'deny', 'uses' => 'Cast\OrderController@deny'])
                 ->where('id', '[0-9]+');
             Route::post('/{id}/apply', ['as' => 'apply', 'uses' => 'Cast\OrderController@apply'])
+                ->where('id', '[0-9]+');
+            Route::post('/{id}/accept', ['as' => 'accept', 'uses' => 'Cast\OrderController@accept'])
                 ->where('id', '[0-9]+');
             Route::post('/{id}/stop', ['as' => 'stop', 'uses' => 'Cast\OrderController@stop'])
                 ->where('id', '[0-9]+');

@@ -6,12 +6,15 @@ use App\Enums\CastOrderStatus;
 use App\Enums\CastOrderType;
 use App\Enums\OrderStatus;
 use App\Enums\OrderType;
+use App\Enums\PaymentStatus;
+use App\Enums\PointType;
 use App\Enums\RoomType;
 use App\Jobs\CancelOrder;
 use App\Jobs\ProcessOrder;
 use App\Jobs\StopOrder;
 use App\Jobs\ValidateOrder;
-use App\Notifications\StartOrder;
+use App\Notifications\CancelOrderFromCast;
+use App\Notifications\CastDenyNominationOrders;
 use App\Services\LogService;
 use App\Traits\DirectRoom;
 use Auth;
@@ -53,7 +56,7 @@ class Order extends Model
             ->whereNotNull('cast_order.accepted_at')
             ->whereNull('cast_order.canceled_at')
             ->whereNull('cast_order.deleted_at')
-            ->withPivot('order_time', 'extra_time', 'order_point', 'extra_point', 'allowance_point', 'fee_point', 'total_point', 'type')
+            ->withPivot('order_time', 'extra_time', 'order_point', 'extra_point', 'allowance_point', 'fee_point', 'total_point', 'type', 'stopped_at', 'started_at')
             ->withTimestamps();
     }
 
@@ -102,6 +105,11 @@ class Order extends Model
         return $this->belongsTo(Room::class);
     }
 
+    public function transfers()
+    {
+        return $this->hasMany(Transfer::class);
+    }
+
     public function deny($userId)
     {
         try {
@@ -113,6 +121,9 @@ class Order extends Model
             if (OrderType::NOMINATION == $this->type) {
                 $this->status = OrderStatus::DENIED;
                 $this->save();
+
+                $cast = User::find($userId);
+                $this->user->notify(new CastDenyNominationOrders($this, $cast));
             }
 
             ValidateOrder::dispatchNow($this);
@@ -120,6 +131,33 @@ class Order extends Model
             return true;
         } catch (\Exception $e) {
             LogService::writeErrorLog($e);
+
+            return false;
+        }
+    }
+
+    public function denyAfterActived($userId)
+    {
+        try {
+            $this->casts()->updateExistingPivot(
+                $userId,
+                ['status' => CastOrderStatus::DENIED, 'canceled_at' => Carbon::now()],
+                false
+            );
+            $this->status = OrderStatus::DENIED;
+            $this->save();
+
+            $cast = User::find($userId);
+            $owner = $this->user;
+            $involvedUsers = [];
+            $involvedUsers[] = $owner;
+            $involvedUsers[] = $cast;
+
+            \Notification::send($involvedUsers, new CancelOrderFromCast($this));
+            return true;
+        } catch (\Exception $e) {
+            LogService::writeErrorLog($e);
+
             return false;
         }
     }
@@ -137,6 +175,7 @@ class Order extends Model
             return true;
         } catch (\Exception $e) {
             LogService::writeErrorLog($e);
+
             return false;
         }
     }
@@ -158,6 +197,7 @@ class Order extends Model
             return true;
         } catch (\Exception $e) {
             LogService::writeErrorLog($e);
+
             return false;
         }
     }
@@ -176,6 +216,7 @@ class Order extends Model
             return true;
         } catch (\Exception $e) {
             LogService::writeErrorLog($e);
+
             return false;
         }
     }
@@ -185,14 +226,13 @@ class Order extends Model
         $cast = $this->casts()->withPivot('started_at', 'stopped_at', 'type')->where('user_id', $userId)->first();
 
         $stoppedAt = Carbon::now();
-        $orderStartTime = Carbon::parse($this->date . ' ' . $this->start_time);
+        $orderStartTime = Carbon::parse($cast->pivot->started_at);
         $orderTotalTime = $orderStartTime->diffInMinutes($stoppedAt);
-
         $nightTime = $this->nightTime($stoppedAt);
-        $extraTime = $this->extraTime($stoppedAt);
+        $extraTime = $this->extraTime($orderStartTime, $stoppedAt);
         $extraPoint = $this->extraPoint($cast, $extraTime);
-        $orderPoint = $this->orderPoint($cast);
-        $ordersFee = $this->orderFee($cast, $extraTime);
+        $orderPoint = $this->orderPoint($cast, $orderStartTime, $stoppedAt);
+        $ordersFee = $this->orderFee($cast, $orderStartTime, $stoppedAt);
         $allowance = $this->allowance($nightTime);
         $totalPoint = $orderPoint + $ordersFee + $allowance + $extraPoint;
 
@@ -231,7 +271,7 @@ class Order extends Model
 
             StopOrder::dispatchNow($this, $cast);
 
-            return true;
+            return $paymentRequest;
         } catch (\Exception $e) {
             \DB::rollBack();
             LogService::writeErrorLog($e);
@@ -254,6 +294,7 @@ class Order extends Model
             return true;
         } catch (\Exception $e) {
             LogService::writeErrorLog($e);
+
             return false;
         }
     }
@@ -327,7 +368,7 @@ class Order extends Model
         return 0;
     }
 
-    public function orderPoint($cast)
+    public function orderPoint($cast, $startedAt, $stoppedAt)
     {
         if (OrderType::NOMINATION != $this->type) {
             $cost = $this->castClass->cost;
@@ -335,27 +376,26 @@ class Order extends Model
             $cost = $cast->cost;
         }
 
-        return $cost * ((60 * $this->duration) / 30);
+        $startedAt = Carbon::parse($startedAt);
+        $stoppedAt = Carbon::parse($stoppedAt);
+
+        return ($cost / 2) * floor($startedAt->diffInMinutes($stoppedAt) / 15);
     }
 
-    public function orderFee($cast, $extraTime)
+    public function orderFee($cast, $startedAt, $stoppedAt)
     {
         $order = $this;
-        $eTime = $extraTime;
         $orderFee = 0;
         $multiplier = 0;
-        $orderDuration = $this->duration * 60;
-        if (OrderType::NOMINATION != $order->type && CastOrderType::NOMINEE == $cast->pivot->type) {
-            while ($orderDuration / 15 >= 1) {
-                $multiplier++;
-                $orderDuration -= 15;
-            }
 
-            if ($eTime > 15) {
-                while ($eTime / 15 > 1) {
-                    $multiplier++;
-                    $eTime -= 15;
-                }
+        $startedAt = Carbon::parse($startedAt);
+        $stoppedAt = Carbon::parse($stoppedAt);
+        $castDuration = $startedAt->diffInMinutes($stoppedAt);
+
+        if (OrderType::NOMINATION != $order->type && CastOrderType::NOMINEE == $cast->pivot->type) {
+            while ($castDuration / 15 >= 1) {
+                $multiplier++;
+                $castDuration -= 15;
             }
 
             $orderFee = 500 * $multiplier;
@@ -365,17 +405,17 @@ class Order extends Model
         return $orderFee;
     }
 
-    private function extraTime($stoppedAt)
+    private function extraTime($startedAt, $stoppedAt)
     {
-        $order = $this;
-
         $extralTime = 0;
-        $startDate = Carbon::parse($order->date . ' ' . $order->start_time);
-        $endDate = $startDate->copy()->addMinutes($order->duration * 60);
+        $orderDuration = $this->duration * 60;
 
+        $castStartedAt = Carbon::parse($startedAt);
         $castStoppedAt = Carbon::parse($stoppedAt);
-        if ($castStoppedAt > $endDate) {
-            $extralTime = $castStoppedAt->diffInMinutes($endDate);
+        $castDuration = $castStartedAt->diffInMinutes($castStoppedAt);
+
+        if ($castDuration > $orderDuration) {
+            $extralTime = $castDuration - $orderDuration;
         }
 
         return $extralTime;
@@ -388,8 +428,8 @@ class Order extends Model
 
         $extraPoint = 0;
         $multiplier = 0;
-        if ($eTime > 15) {
-            while ($eTime / 15 > 1) {
+        if ($eTime >= 15) {
+            while ($eTime / 15 >= 1) {
                 $multiplier++;
                 $eTime = $eTime - 15;
             }
@@ -400,7 +440,7 @@ class Order extends Model
                 $costPerFifteenMins = $cast->cost / 2;
             }
 
-            $extraPoint = ($costPerFifteenMins * 1.3) * $multiplier;
+            $extraPoint = ($costPerFifteenMins * 1.4) * $multiplier;
         }
 
         return $extraPoint;
@@ -467,5 +507,72 @@ class Order extends Model
     public function point()
     {
         return $this->hasOne(Point::class);
+    }
+
+    public function settle()
+    {
+        $user = $this->user;
+
+        if ($user->point < $this->total_point) {
+            $subPoint = $this->total_point - $user->point;
+
+            $autoChargePoint = env('AUTOCHARGE_POINT');
+
+            $amount = ceil($subPoint / $autoChargePoint) * $autoChargePoint;
+
+            try {
+                \DB::beginTransaction();
+
+                $point = new Point;
+                $point->point = $amount;
+                $point->user_id = $user->id;
+                $point->is_autocharge = true;
+                $point->type = PointType::AUTO_CHARGE;
+                $point->status = false;
+                $point->save();
+
+                $payment = new Payment;
+                $payment->user_id = $user->id;
+                $payment->amount = $amount * 1.1;
+                $payment->point_id = $point->id;
+                $payment->card_id = $user->card->id;
+                $payment->status = PaymentStatus::OPEN;
+                $payment->save();
+
+                // charge money
+                $charged = $payment->charge();
+                if ($charged) {
+                    $point->status = true;
+                    $point->balance = $point->point + $user->point;
+                    $point->save();
+
+                    $user->point = $user->point + $amount;
+                    $user->save();
+                }
+
+                \DB::commit();
+            } catch (\Exception $e) {
+                \DB::rollBack();
+                LogService::writeErrorLog($e);
+
+                return false;
+            }
+        }
+
+        $point = new Point;
+
+        $point->point = -$this->total_point;
+        $point->balance = $user->point - $this->total_point;
+        $point->user_id = $user->id;
+        $point->order_id = $this->id;
+        $point->type = PointType::PAY;
+        $point->status = true;
+
+        $point->save();
+
+        $user->point = $point->balance;
+        $user->save();
+
+        return true;
     }
 }

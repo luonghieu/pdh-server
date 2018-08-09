@@ -76,6 +76,7 @@ class CastResource extends Resource
             'rating_score' => $this->rating_score,
             'room_id' => $this->room_id,
             'latest_order' => $this->when(null != $this->latest_order_flag, $this->latest_order),
+            'bank_account' => BankAccountResource::make($this->whenLoaded('bankAccount')),
         ]);
     }
 }
