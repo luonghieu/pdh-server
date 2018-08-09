@@ -28,6 +28,10 @@ final class OrderStatus extends Enum
             return '予約確定';
         } elseif (self::PROCESSING === $value) {
             return '合流中';
+        } elseif (self::DONE === $value) {
+            return '解散中';
+        } elseif (self::TIMEOUT === $value) {
+            return 'マッチング不成立';
         }
 
         return parent::getDescription($value);

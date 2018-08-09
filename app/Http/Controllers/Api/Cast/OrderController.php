@@ -10,6 +10,7 @@ use App\Enums\OrderStatus;
 use App\Enums\OrderType;
 use App\Http\Controllers\Api\ApiController;
 use App\Http\Resources\OrderResource;
+use App\Http\Resources\PaymentRequestResource;
 use App\Message;
 use App\Order;
 use App\Services\LogService;
@@ -104,21 +105,27 @@ class OrderController extends ApiController
                 return $this->respondErrorMessage(trans('messages.action_not_performed'), 422);
             }
         } else {
-            if (OrderStatus::OPEN != $order->status) {
+            if (OrderStatus::OPEN != $order->status && (1 != $order->total_cast || OrderStatus::ACTIVE != $order->status)) {
                 return $this->respondErrorMessage(trans('messages.action_not_performed'), 422);
             }
         }
 
         $user = $this->guard()->user();
 
-        $nomineeExists = $order->nominees()->where('user_id', $user->id)->whereNull('canceled_at')->first();
+        $castExists = $order->castOrder()->where('user_id', $user->id)->whereNull('canceled_at')->first();
 
-        if (!$nomineeExists) {
+        if (!$castExists) {
             return $this->respondErrorMessage(trans('messages.action_not_performed'), 422);
         }
 
-        if (!$order->deny($user->id)) {
-            return $this->respondServerError();
+        if (OrderStatus::OPEN == $order->status) {
+            if (!$order->deny($user->id)) {
+                return $this->respondServerError();
+            }
+        } else {
+            if (!$order->denyAfterActived($user->id)) {
+                return $this->respondServerError();
+            }
         }
 
         $order = $order->fresh();
@@ -126,19 +133,8 @@ class OrderController extends ApiController
         return $this->respondWithData(OrderResource::make($order));
     }
 
-    public function apply($id)
+    public function validTimeOrder($user, $order)
     {
-        $order = Order::find($id);
-
-        if (!$order) {
-            return $this->respondErrorMessage(trans('messages.order_not_found'), 404);
-        }
-
-        if (OrderStatus::OPEN != $order->status) {
-            return $this->respondErrorMessage(trans('messages.apply_error'), 409);
-        }
-
-        $user = $this->guard()->user();
         $startTime = Carbon::parse($order->date . ' ' . $order->start_time);
 
         $endTime = Carbon::parse($order->date . ' ' . $order->end_time);
@@ -163,28 +159,69 @@ class OrderController extends ApiController
             });
 
         if ($orderCheck->count() > 0) {
+            return false;
+        }
+
+        return true;
+    }
+
+    public function accept($id)
+    {
+        $order = Order::find($id);
+
+        if (!$order) {
+            return $this->respondErrorMessage(trans('messages.order_not_found'), 404);
+        }
+
+        if (OrderStatus::OPEN != $order->status) {
+            return $this->respondErrorMessage(trans('messages.apply_error'), 409);
+        }
+
+        $user = $this->guard()->user();
+
+        if (!$this->validTimeOrder($user, $order)) {
             return $this->respondErrorMessage(trans('messages.order_time_error'), 409);
         }
 
-        if (OrderType::CALL == $order->type) {
-            if ($order->casts->count() == $order->total_cast
-                || $order->candidates->contains($user->id) || $order->nominees->contains($user->id)) {
-                return $this->respondErrorMessage(trans('messages.action_not_performed'), 422);
-            }
+        $nomineeExists = $order->nominees()->where('user_id', $user->id)->where('cast_order.status', CastOrderStatus::OPEN)->first();
 
-            if (!$order->apply($user->id)) {
-                return $this->respondServerError();
-            }
-        } else {
-            $nomineeExists = $order->nominees()->where('user_id', $user->id)->whereNull('accepted_at')->first();
+        if (!$nomineeExists) {
+            return $this->respondErrorMessage(trans('messages.action_not_performed'), 422);
+        }
 
-            if (!$nomineeExists) {
-                return $this->respondErrorMessage(trans('messages.action_not_performed'), 422);
-            }
+        if (!$order->accept($user->id)) {
+            return $this->respondServerError();
+        }
 
-            if (!$order->accept($user->id)) {
-                return $this->respondServerError();
-            }
+        $order = $order->fresh();
+
+        return $this->respondWithData(OrderResource::make($order));
+    }
+
+    public function apply($id)
+    {
+        $order = Order::find($id);
+
+        if (!$order) {
+            return $this->respondErrorMessage(trans('messages.order_not_found'), 404);
+        }
+
+        if (OrderStatus::OPEN != $order->status || OrderType::CALL != $order->type) {
+            return $this->respondErrorMessage(trans('messages.apply_error'), 409);
+        }
+
+        $user = $this->guard()->user();
+        if (!$this->validTimeOrder($user, $order)) {
+            return $this->respondErrorMessage(trans('messages.order_time_error'), 409);
+        }
+
+        if ($order->casts->count() == $order->total_cast
+            || $order->casts->contains($user->id)) {
+            return $this->respondErrorMessage(trans('messages.action_not_performed'), 422);
+        }
+
+        if (!$order->apply($user->id)) {
+            return $this->respondServerError();
         }
 
         $order = $order->fresh();
@@ -243,13 +280,14 @@ class OrderController extends ApiController
             return $this->respondErrorMessage(trans('messages.action_not_performed'), 422);
         }
 
-        if (!$order->stop($user->id)) {
+        if (!$paymentRequest = $order->stop($user->id)) {
             return $this->respondServerError();
         }
 
         $order = $order->fresh();
+        $paymentRequest = $paymentRequest->load('order', 'cast');
 
-        return $this->respondWithData(OrderResource::make($order));
+        return $this->respondWithData(PaymentRequestResource::make($paymentRequest));
     }
 
     public function thanks(Request $request, $id)
@@ -270,11 +308,16 @@ class OrderController extends ApiController
             return $this->respondErrorMessage(trans('messages.order_not_found'), 404);
         }
 
-        if (OrderStatus::DONE != $order->status) {
+        $user = $this->guard()->user();
+
+        $castExists = $order->whereHas('castOrder', function ($query) use ($user) {
+            $query->where('user_id', $user->id);
+            $query->where('cast_order.status', CastOrderStatus::DONE);
+        })->exists();
+
+        if (!$castExists) {
             return $this->respondErrorMessage(trans('messages.action_not_performed'), 422);
         }
-
-        $user = $this->guard()->user();
 
         try {
             DB::beginTransaction();

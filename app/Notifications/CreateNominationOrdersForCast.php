@@ -2,33 +2,29 @@
 
 namespace App\Notifications;
 
-use Carbon\Carbon;
-use App\Enums\UserType;
 use App\Enums\MessageType;
-use Illuminate\Bus\Queueable;
 use App\Enums\SystemMessageType;
+use App\Enums\UserType;
+use App\Traits\DirectRoom;
+use Illuminate\Bus\Queueable;
 use Illuminate\Notifications\Notification;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 
-class OrderCompleted extends Notification implements ShouldQueue
+class CreateNominationOrdersForCast extends Notification implements ShouldQueue
 {
-    use Queueable;
+    use Queueable, DirectRoom;
 
     public $order;
-
-    public $cast;
 
     /**
      * Create a new notification instance.
      *
      * @param $order
-     * @param $cast
      */
-    public function __construct($order, $cast)
+    public function __construct($order)
     {
         $this->order = $order;
-        $this->cast = $cast;
     }
 
     /**
@@ -60,26 +56,29 @@ class OrderCompleted extends Notification implements ShouldQueue
      */
     public function toArray($notifiable)
     {
-        return [];
+        return [
+            //
+        ];
     }
 
     public function pushData($notifiable)
     {
-        $order = $this->order;
-        $room = $order->room;
-        $content = $this->cast->nickname . 'が解散しました。';
+        $owner = $this->order->user;
+        $room = $this->createDirectRoom($owner->id, $notifiable->id);
+        $content = $owner->nickname . '(提案したゲスト名)さんから指名予約が入りました。'
+            . PHP_EOL .'予約一覧から、承諾、キャンセルの処理を行ってください。';
 
         $roomMessage = $room->messages()->create([
             'user_id' => 1,
             'type' => MessageType::SYSTEM,
-            'system_type' => SystemMessageType::NOTIFY,
-            'message' => $content
+            'message' => $content,
+            'system_type' => SystemMessageType::NORMAL
         ]);
         $roomMessage->recipients()->attach($notifiable->id, ['room_id' => $room->id]);
 
-        $pushId = 'g_11';
         $namedUser = 'user_' . $notifiable->id;
         $send_from = UserType::ADMIN;
+        $pushId = 'g_1';
 
         return [
             'audienceOptions' => ['named_user' => $namedUser],
@@ -93,7 +92,6 @@ class OrderCompleted extends Notification implements ShouldQueue
                     'extra' => [
                         'push_id' => $pushId,
                         'send_from' => $send_from,
-                        'order_id' => $this->order->id
                     ],
                 ],
             ],

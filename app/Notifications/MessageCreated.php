@@ -2,33 +2,28 @@
 
 namespace App\Notifications;
 
-use Carbon\Carbon;
-use App\Enums\UserType;
 use App\Enums\MessageType;
+use App\Enums\UserType;
+use App\User;
 use Illuminate\Bus\Queueable;
-use App\Enums\SystemMessageType;
 use Illuminate\Notifications\Notification;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 
-class OrderCompleted extends Notification implements ShouldQueue
+class MessageCreated extends Notification implements ShouldQueue
 {
     use Queueable;
 
-    public $order;
-
-    public $cast;
+    public $message;
 
     /**
      * Create a new notification instance.
      *
-     * @param $order
-     * @param $cast
+     * @param $message
      */
-    public function __construct($order, $cast)
+    public function __construct($message)
     {
-        $this->order = $order;
-        $this->cast = $cast;
+        $this->message = $message;
     }
 
     /**
@@ -60,26 +55,27 @@ class OrderCompleted extends Notification implements ShouldQueue
      */
     public function toArray($notifiable)
     {
-        return [];
+        return [
+            //
+        ];
     }
 
     public function pushData($notifiable)
     {
-        $order = $this->order;
-        $room = $order->room;
-        $content = $this->cast->nickname . 'が解散しました。';
+        if ($notifiable->type == UserType::GUEST) {
+            $pushId = 'g_14';
+            $send_from = UserType::GUEST;
+        } else {
+            $pushId = 'c_14';
+            $send_from = UserType::CAST;
+        }
 
-        $roomMessage = $room->messages()->create([
-            'user_id' => 1,
-            'type' => MessageType::SYSTEM,
-            'system_type' => SystemMessageType::NOTIFY,
-            'message' => $content
-        ]);
-        $roomMessage->recipients()->attach($notifiable->id, ['room_id' => $room->id]);
-
-        $pushId = 'g_11';
+        if ($this->message->type == MessageType::IMAGE) {
+            $content = $this->message->user->nickname. 'さんが写真を送信しました';
+        } else {
+            $content = $this->message->message;
+        }
         $namedUser = 'user_' . $notifiable->id;
-        $send_from = UserType::ADMIN;
 
         return [
             'audienceOptions' => ['named_user' => $namedUser],
@@ -93,7 +89,7 @@ class OrderCompleted extends Notification implements ShouldQueue
                     'extra' => [
                         'push_id' => $pushId,
                         'send_from' => $send_from,
-                        'order_id' => $this->order->id
+                        'room_id' => $this->message->room_id
                     ],
                 ],
             ],

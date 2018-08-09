@@ -2,33 +2,29 @@
 
 namespace App\Notifications;
 
-use Carbon\Carbon;
-use App\Enums\UserType;
 use App\Enums\MessageType;
-use Illuminate\Bus\Queueable;
+use App\Enums\RoomType;
 use App\Enums\SystemMessageType;
+use App\Enums\UserType;
+use Illuminate\Bus\Queueable;
 use Illuminate\Notifications\Notification;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 
-class OrderCompleted extends Notification implements ShouldQueue
+class CancelOrderFromCast extends Notification implements ShouldQueue
 {
     use Queueable;
 
     public $order;
 
-    public $cast;
-
     /**
      * Create a new notification instance.
      *
      * @param $order
-     * @param $cast
      */
-    public function __construct($order, $cast)
+    public function __construct($order)
     {
         $this->order = $order;
-        $this->cast = $cast;
     }
 
     /**
@@ -65,19 +61,36 @@ class OrderCompleted extends Notification implements ShouldQueue
 
     public function pushData($notifiable)
     {
-        $order = $this->order;
-        $room = $order->room;
-        $content = $this->cast->nickname . 'が解散しました。';
+        if ($notifiable->type == UserType::CAST) {
+            $castPrivateRoom = $notifiable->rooms()
+                ->where('rooms.type', RoomType::SYSTEM)
+                ->where('rooms.is_active', true)->first();
+            $message = 'キャンセルが完了しました。';
+            $castPrivateRoomMessage = $castPrivateRoom->messages()->create([
+                'user_id' => 1,
+                'type' => MessageType::SYSTEM,
+                'message' => $message,
+                'system_type' => SystemMessageType::NORMAL
+            ]);
+            $castPrivateRoomMessage->recipients()->attach($notifiable->id, ['room_id' => $castPrivateRoom->id]);
 
-        $roomMessage = $room->messages()->create([
-            'user_id' => 1,
-            'type' => MessageType::SYSTEM,
-            'system_type' => SystemMessageType::NOTIFY,
-            'message' => $content
-        ]);
-        $roomMessage->recipients()->attach($notifiable->id, ['room_id' => $room->id]);
+            $content = 'キャンセルが完了しました。';
+            $pushId = 'c_10';
+        } else {
+            $room = $this->order->room;
+            $message = '予約がキャンセルされました。';
+            $roomMessage = $room->messages()->create([
+                'user_id' => 1,
+                'type' => MessageType::SYSTEM,
+                'message' => $message,
+                'system_type' => SystemMessageType::NOTIFY
+            ]);
+            $roomMessage->recipients()->attach($notifiable->id, ['room_id' => $room->id]);
 
-        $pushId = 'g_11';
+            $pushId = 'g_10';
+            $content = '予約がキャンセルされました。';
+        }
+
         $namedUser = 'user_' . $notifiable->id;
         $send_from = UserType::ADMIN;
 

@@ -4,14 +4,15 @@ namespace App\Notifications;
 
 use App\Enums\MessageType;
 use App\Enums\RoomType;
+use App\Enums\SystemMessageType;
 use App\Enums\UserType;
+use Carbon\Carbon;
 use Illuminate\Bus\Queueable;
 use Illuminate\Notifications\Notification;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
-use Illuminate\Support\Carbon;
 
-class CreateNominatedOrdersForCast extends Notification implements ShouldQueue
+class PaymentRequestFromCast extends Notification implements ShouldQueue
 {
     use Queueable;
 
@@ -30,18 +31,18 @@ class CreateNominatedOrdersForCast extends Notification implements ShouldQueue
     /**
      * Get the notification's delivery channels.
      *
-     * @param  mixed $notifiable
+     * @param  mixed  $notifiable
      * @return array
      */
     public function via($notifiable)
     {
-        return [CustomDatabaseChannel::class, PushNotificationChannel::class];
+        return [PushNotificationChannel::class];
     }
 
     /**
      * Get the mail representation of the notification.
      *
-     * @param  mixed $notifiable
+     * @param  mixed  $notifiable
      */
     public function toMail($notifiable)
     {
@@ -51,52 +52,44 @@ class CreateNominatedOrdersForCast extends Notification implements ShouldQueue
     /**
      * Get the array representation of the notification.
      *
-     * @param  mixed $notifiable
+     * @param  mixed  $notifiable
      * @return array
      */
     public function toArray($notifiable)
     {
-        $startTime = Carbon::parse($this->order->date . ' ' . $this->order->start_time);
-        $endTime = Carbon::parse($this->order->date . ' ' . $this->order->end_time);
-
-        $message = 'おめでとう！指名予約が入りました♪'
-            . PHP_EOL . '------------------------------------------'
-            . PHP_EOL . PHP_EOL . '- ご予約内容 -'
-            . PHP_EOL . PHP_EOL . '日時：' . $startTime->format('Y/m/d H:i') . '~'
-            . PHP_EOL . PHP_EOL . '時間：' . $this->order->duration . '時間'
-            . PHP_EOL . 'クラス：' . $this->order->castClass->name
-            . PHP_EOL . '人数：' . $this->order->total_cast . '人'
-            . PHP_EOL . '場所：' . $this->order->address
-            . PHP_EOL . '獲得ポイント：' . number_format($notifiable->cost * ($startTime->diffInMinutes($endTime) / 30))
-            . PHP_EOL . '--------------------------------------------------';
-
-        $room = $notifiable->rooms()
-            ->where('rooms.type', RoomType::SYSTEM)
-            ->where('rooms.is_active', true)->first();
-
-        $roomMessage = $room->messages()->create([
-            'user_id' => 1,
-            'type' => MessageType::SYSTEM,
-            'message' => $message
-        ]);
-        $roomMessage->recipients()->attach($notifiable->id, ['room_id' => $room->id]);
-
-        $content = '指名予約が入りました。'
-            . PHP_EOL . '5分以内に承諾、キャンセルの処理を行ってください！';
-
         return [
-            'content' => $content,
-            'send_from' => UserType::ADMIN,
+            //
         ];
     }
 
     public function pushData($notifiable)
     {
-        $content = '指名予約が入りました。'
-            . PHP_EOL . '5分以内に承諾、キャンセルの処理を行ってください！';
+        $orderStartDate = Carbon::parse($this->order->date . ' ' . $this->order->start_time);
+        $orderEndDate = Carbon::parse($this->order->actual_ended_at);
+
+        $content = 'Cheersをご利用いただきありがとうございました♪'
+            . PHP_EOL . $orderStartDate->format('Y/m/d H:i') . '~' . $orderEndDate->format('H:i') . 'の合計ポイントは' .
+            $this->order->total_point . 'Pointです。'
+            . PHP_EOL . '合計ポイントの詳細はコチラから確認することができます。'
+            . PHP_EOL . '※詳細に誤りがある場合は、24時間以内に「決済ポイントの修正依頼をする」を押してください。運営から確認のご連絡を差し上げます。'
+            . PHP_EOL . PHP_EOL . 'ご不明点がございましたらいつでもお問い合わせください。'
+            . PHP_EOL . PHP_EOL . '○○様のまたのご利用をお待ちしております♪';
+
+        $room = $notifiable->rooms()
+            ->where('rooms.type', RoomType::SYSTEM)
+            ->where('rooms.is_active', true)->first();
+        $roomMessage = $room->messages()->create([
+            'user_id' => 1,
+            'type' => MessageType::SYSTEM,
+            'message' => $content,
+            'system_type' => SystemMessageType::NORMAL,
+            'order_id' => $this->order->id
+        ]);
+        $roomMessage->recipients()->attach($notifiable->id, ['room_id' => $room->id]);
+
+        $pushId = 'g_15';
         $namedUser = 'user_' . $notifiable->id;
         $send_from = UserType::ADMIN;
-        $pushId = 'c_2';
 
         return [
             'audienceOptions' => ['named_user' => $namedUser],
@@ -110,6 +103,7 @@ class CreateNominatedOrdersForCast extends Notification implements ShouldQueue
                     'extra' => [
                         'push_id' => $pushId,
                         'send_from' => $send_from,
+                        'order_id' => $this->order->id
                     ],
                 ],
             ],

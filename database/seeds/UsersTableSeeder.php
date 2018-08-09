@@ -19,7 +19,7 @@ class UsersTableSeeder extends Seeder
         $admin = [
             'email' => 'admin@cheers.dev',
             'password' => bcrypt('123123123'),
-            'fullname' => $faker->name,
+            'nickname' => 'Cheers 運営局',
             'type' => 3,
         ];
 

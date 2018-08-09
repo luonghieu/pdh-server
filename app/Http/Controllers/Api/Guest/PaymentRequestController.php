@@ -6,6 +6,7 @@ use App\Enums\OrderPaymentStatus;
 use App\Enums\OrderStatus;
 use App\Http\Controllers\Api\ApiController;
 use App\Http\Resources\OrderResource;
+use App\Services\LogService;
 use Illuminate\Http\Request;
 
 class PaymentRequestController extends ApiController
@@ -44,11 +45,11 @@ class PaymentRequestController extends ApiController
             return $this->respondErrorMessage(trans('messages.order_not_found'), 404);
         }
 
-        if (OrderStatus::DONE != $order->status || !$order->payment_status || OrderPaymentStatus::WAITING == $order->payment_status) {
+        if (OrderStatus::DONE != $order->status || !$order->payment_status) {
             return $this->respondErrorMessage(trans('messages.action_not_performed'), 422);
         }
 
-        $order->load('paymentRequests');
+        $order->load('paymentRequests.cast');
 
         return $this->respondWithData(OrderResource::make($order));
     }

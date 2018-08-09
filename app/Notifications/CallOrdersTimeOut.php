@@ -2,33 +2,28 @@
 
 namespace App\Notifications;
 
-use Carbon\Carbon;
 use App\Enums\UserType;
-use App\Enums\MessageType;
+use App\Order;
+use Carbon\Carbon;
 use Illuminate\Bus\Queueable;
-use App\Enums\SystemMessageType;
 use Illuminate\Notifications\Notification;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 
-class OrderCompleted extends Notification implements ShouldQueue
+class CallOrdersTimeOut extends Notification implements ShouldQueue
 {
     use Queueable;
 
     public $order;
 
-    public $cast;
-
     /**
      * Create a new notification instance.
      *
      * @param $order
-     * @param $cast
      */
-    public function __construct($order, $cast)
+    public function __construct(Order $order)
     {
         $this->order = $order;
-        $this->cast = $cast;
     }
 
     /**
@@ -65,21 +60,34 @@ class OrderCompleted extends Notification implements ShouldQueue
 
     public function pushData($notifiable)
     {
-        $order = $this->order;
-        $room = $order->room;
-        $content = $this->cast->nickname . 'が解散しました。';
+        $orderDuration = $this->order->duration * 60;
+        $orderStartDate = Carbon::parse($this->order->date)->startOfDay();
+        $casts = $this->order->casts;
 
-        $roomMessage = $room->messages()->create([
-            'user_id' => 1,
-            'type' => MessageType::SYSTEM,
-            'system_type' => SystemMessageType::NOTIFY,
-            'message' => $content
-        ]);
-        $roomMessage->recipients()->attach($notifiable->id, ['room_id' => $room->id]);
+        $orderNightTime = $this->order->nightTime($orderStartDate->addMinutes($orderDuration));
+        $orderAllowance = $this->order->allowance($orderNightTime);
+        $orderPoint = 0;
+        foreach ($casts as $cast) {
+            $orderFee = $this->order->orderFee($cast, 0);
+            $orderPoint += $this->order->orderPoint($cast) + $orderAllowance + $orderFee;
+        }
 
-        $pushId = 'g_11';
+        $content = 'ご希望の人数のキャストが揃わなかったため、'
+            . PHP_EOL . '下記の予約が無効となりました。'
+            . PHP_EOL . '--------------------------------------------------'
+            . PHP_EOL . '- キャンセル内容 -'
+            . PHP_EOL . '日時：' . Carbon::parse($this->order->date . ' ' . $this->order->start_time)->format('Y/m/d H:i') . '~'
+            . PHP_EOL . '時間：' . $this->order->duration . '時間'
+            . PHP_EOL . 'クラス：' . $this->order->castClass->name
+            . PHP_EOL . '人数：' . $this->order->total_cast . '人'
+            . PHP_EOL . '場所：' .  $this->order->address
+            . PHP_EOL . '予定合計ポイント：' . number_format($orderPoint) . ' Point'
+            . PHP_EOL . '--------------------------------------------------'
+            . PHP_EOL . 'お手数ですが、再度コールをし直してください。';
+
         $namedUser = 'user_' . $notifiable->id;
         $send_from = UserType::ADMIN;
+        $pushId = 'g_12';
 
         return [
             'audienceOptions' => ['named_user' => $namedUser],
