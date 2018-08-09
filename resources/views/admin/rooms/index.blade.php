@@ -34,6 +34,13 @@
             </div>
           </form>
         </div>
+        <div class="btn-change-report report">
+          <button data-toggle="modal" data-target="#done_report" >
+            <p>
+              <a href="{{ route('admin.reports.index') }}">通報一覧へ</a>
+            </p>
+          </button>
+        </div>
         <div class="panel-body">
           @include('admin.partials.notification')
           <table class="table table-striped table-bordered bootstrap-datatable">

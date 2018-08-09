@@ -1042,6 +1042,18 @@ tbody td {
   background-color: #39afea;
 }
 
+.btn-change-report p{
+  margin: 0;
+}
+
+.btn-change-report a{
+  color: white;
+}
+
+.report {
+  top : 115px;
+}
+
 .btn-delete-order {
   display: inline-block;
   position: absolute;
