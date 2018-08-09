@@ -20,6 +20,7 @@ class MessageResource extends Resource
             'id' => $this->id,
             'room_id' => $this->room_id,
             'user_id' => $this->user_id,
+            'order_id' => $this->order_id,
             'user' => UserResource::make($this->user),
             'message' => $this->message,
             'image' => $this->image,
