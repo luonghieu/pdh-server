@@ -577,11 +577,9 @@ class Order extends Model
 
     public function getCallPointAttribute()
     {
-        $user = Auth::user();
-        $cast = $this->castOrder()->where('user_id', $user->id)->first();
         $totalPoint = 0;
 
-        if ($cast && $cast->pivot->type == CastOrderType::CANDIDATE) {
+        if ($this->type == OrderType::CALL) {
             $orderStartedAt = Carbon::parse($this->date . ' ' . $this->start_time);
             $orderStoppedAt = $orderStartedAt->copy()->addMinutes($this->duration * 60);
             $nightTime = $this->nightTime($orderStoppedAt);
@@ -590,14 +588,11 @@ class Order extends Model
             $totalPoint += ($cost / 2) * floor(($this->duration * 60) / 15) + $allowance;
         }
 
-        return $totalPoint * 0.8;
+        return $totalPoint;
     }
 
     public function getNomineePointAttribute()
     {
-        $user = Auth::user();
-        $cast = $this->castOrder()->where('user_id', $user->id)->first();
-
         $orderStartedAt = Carbon::parse($this->date . ' ' . $this->start_time);
         $orderStoppedAt = $orderStartedAt->copy()->addMinutes($this->duration * 60);
         $nightTime = $this->nightTime($orderStoppedAt);
@@ -605,11 +600,12 @@ class Order extends Model
         $orderDuration = $this->duration * 60;
         $totalPoint = 0;
 
-        if ($cast && $this->type == OrderType::NOMINATION) {
+        if ($this->type == OrderType::NOMINATION) {
+            $cast = $this->nominees->first();
             $cost = $cast->cost;
-            return ((($cost / 2) * floor($orderDuration / 15) + $allowance)) * 0.8;
+            return ((($cost / 2) * floor($orderDuration / 15) + $allowance));
         } else {
-            if ($cast && $cast->pivot->type == CastOrderType::NOMINEE) {
+            if ($this->type == OrderType::NOMINATED_CALL) {
                 $cost = $this->castClass->cost;
                 $tempOrderDuration = $orderDuration;
 
@@ -621,7 +617,7 @@ class Order extends Model
                 $orderFee = 500 * $multiplier;
 
                 $totalPoint = ($cost / 2) * floor($tempOrderDuration / 15) + $allowance + $orderFee;
-                return $totalPoint * 0.8;
+                return $totalPoint;
             }
         }
 
