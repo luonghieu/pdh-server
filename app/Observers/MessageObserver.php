@@ -3,6 +3,7 @@
 namespace App\Observers;
 
 use App\Enums\MessageType;
+use App\Events\MessageCreated as BroadcastMessage;
 use App\Message;
 use App\Notifications\MessageCreated;
 
@@ -10,6 +11,8 @@ class MessageObserver
 {
     public function created(Message $message)
     {
+        broadcast(new BroadcastMessage($message))->toOthers();
+
         if (MessageType::SYSTEM != $message->type) {
             $users = ($message->room->users->except([$message->user_id]));
             \Notification::send($users, new MessageCreated($message));

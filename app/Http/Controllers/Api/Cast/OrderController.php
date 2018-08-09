@@ -2,22 +2,23 @@
 
 namespace App\Http\Controllers\Api\Cast;
 
-use App\Cast;
-use App\Enums\CastOrderStatus;
-use App\Enums\MessageType;
-use App\Enums\OrderScope;
-use App\Enums\OrderStatus;
-use App\Enums\OrderType;
-use App\Http\Controllers\Api\ApiController;
-use App\Http\Resources\OrderResource;
-use App\Http\Resources\PaymentRequestResource;
-use App\Message;
-use App\Order;
-use App\Services\LogService;
-use App\Traits\DirectRoom;
-use Carbon\Carbon;
 use DB;
+use App\Cast;
+use App\Order;
+use App\Message;
+use Carbon\Carbon;
+use App\Enums\OrderType;
+use App\Enums\OrderScope;
+use App\Enums\MessageType;
+use App\Enums\OrderStatus;
+use App\Traits\DirectRoom;
+use App\Services\LogService;
 use Illuminate\Http\Request;
+use App\Enums\CastOrderStatus;
+use App\Http\Resources\OrderResource;
+use App\Http\Resources\MessageResource;
+use App\Http\Controllers\Api\ApiController;
+use App\Http\Resources\PaymentRequestResource;
 
 class OrderController extends ApiController
 {
@@ -354,7 +355,7 @@ class OrderController extends ApiController
             return $this->respondServerError();
         }
 
-        return $this->respondWithNoData(trans('messages.send_message_thanks'));
+        return $this->respondWithData(MessageResource::make($message));
     }
 
     public function delete(Request $request, $id)

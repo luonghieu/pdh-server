@@ -172,6 +172,7 @@ class OrderController extends Controller
         $allowance = $order->allowance($nightTime);
         $totalPoint = $orderPoint + $ordersFee + $allowance + $extraPoint;
         $orderTime = (60 * $order->duration);
+
         $input = [
             'started_at' => $newStartedTime,
             'stopped_at' => $stoppedAt,
