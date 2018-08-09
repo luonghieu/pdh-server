@@ -26,7 +26,7 @@ class NotificationResource extends Resource
             'data' => $this->data,
             'read_at' => $this->read_at,
             'content' => $this->content,
-            'send_from' => new UserResource($this->sendFrom),
+            'send_from' => $this->send_from,
             'created_at' => Carbon::parse($this->created_at)->format('Y-m-d H:i'),
             'updated_at' => Carbon::parse($this->updated_at)->format('Y-m-d H:i'),
         ]);
