@@ -518,13 +518,13 @@ class Order extends Model
 
             $autoChargePoint = env('AUTOCHARGE_POINT');
 
-            $amount = ceil($subPoint / $autoChargePoint) * $autoChargePoint;
+            $buyPoint = ceil($subPoint / $autoChargePoint) * $autoChargePoint;
 
             try {
                 \DB::beginTransaction();
 
                 $point = new Point;
-                $point->point = $amount;
+                $point->point = $buyPoint;
                 $point->user_id = $user->id;
                 $point->is_autocharge = true;
                 $point->type = PointType::AUTO_CHARGE;
@@ -533,7 +533,7 @@ class Order extends Model
 
                 $payment = new Payment;
                 $payment->user_id = $user->id;
-                $payment->amount = $amount * 1.1;
+                $payment->amount = $buyPoint * 1.1;
                 $payment->point_id = $point->id;
                 $payment->card_id = $user->card->id;
                 $payment->status = PaymentStatus::OPEN;
@@ -546,7 +546,7 @@ class Order extends Model
                     $point->balance = $point->point + $user->point;
                     $point->save();
 
-                    $user->point = $user->point + $amount;
+                    $user->point = $user->point + $buyPoint;
                     $user->save();
                 }
 
