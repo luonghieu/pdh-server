@@ -44,12 +44,11 @@ class NominatedCallSchedule extends Command
     {
         $orders = Order::where('status', OrderStatus::OPEN)
             ->where('type', OrderType::NOMINATED_CALL)
-            ->where('created_at', '<=', Carbon::now()->subMinutes(5))
-            ->get();
+            ->where('created_at', '<=', Carbon::now()->subMinutes(5));
 
-        foreach ($orders as $order) {
+        foreach ($orders->cursor() as $order) {
             $nomineeIds = $order->nominees()
-                ->whereNull('cast_order.status')
+                ->where('cast_order.status', CastOrderStatus::OPEN)
                 ->pluck('cast_order.user_id')->toArray();
 
             foreach ($nomineeIds as $id) {
@@ -57,7 +56,8 @@ class NominatedCallSchedule extends Command
                     $id,
                     [
                         'status' => CastOrderStatus::TIMEOUT,
-                        'canceled_at' => now()
+                        'canceled_at' => now(),
+                        'deleted_at' => now(),
                     ],
                     false
                 );

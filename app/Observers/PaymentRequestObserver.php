@@ -60,7 +60,7 @@ class PaymentRequestObserver
                     $order->user->notify(new PaymentRequestFromCast($order));
                 }
 
-                $order->total_point += $paymentRequest->total_point;
+                $order->total_point += $order->paymentRequests()->where('status', PaymentRequestStatus::REQUESTED)->sum('total_point');
                 $order->save();
             }
         }

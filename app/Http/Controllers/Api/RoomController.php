@@ -6,6 +6,7 @@ use App\Enums\RoomType;
 use App\Http\Resources\RoomResource;
 use App\Room;
 use App\Services\LogService;
+use App\User;
 use Illuminate\Http\Request;
 
 class RoomController extends ApiController
@@ -63,6 +64,10 @@ class RoomController extends ApiController
         $user = $this->guard()->user();
         $userId = $request->user_id;
         $type = $request->type;
+
+        if (User::find($userId)->type == $user->type) {
+            return $this->respondErrorMessage(trans('messages.action_not_performed'), 422);
+        }
 
         if (!$type) {
             $type = RoomType::DIRECT;
