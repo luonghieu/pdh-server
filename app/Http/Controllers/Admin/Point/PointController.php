@@ -47,7 +47,7 @@ class PointController extends Controller
 
         $points = $points->orderBy('created_at', 'DESC');
         $pointsExport = $points->get();
-        $points = $points->paginate();
+        $points = $points->paginate($request->limit ?: 10);
 
         $pointIds = $points->where('type', '<>', PointType::ADJUSTED)->pluck('id');
         $sumAmount = Payment::whereIn('point_id', $pointIds)->sum('amount');
@@ -103,12 +103,13 @@ class PointController extends Controller
                 '購入金額',
                 '購入ポイント',
             ];
+
             try {
                 $file = CSVExport::toCSV($data, $header);
             } catch (\Exception $e) {
                 LogService::writeErrorLog($e);
-                return $this->respondServerError();
             }
+
             $file->output('history_point_' . Carbon::now()->format('Ymd_Hi') . '.csv');
 
             return;
