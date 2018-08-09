@@ -3,10 +3,12 @@
 namespace App\Http\Resources;
 
 use App\CastClass;
+use App\Enums\OrderType;
 use App\Http\Resources\CastClassResource;
 use App\Repositories\PrefectureRepository;
 use App\Traits\ResourceResponse;
 use Illuminate\Http\Resources\Json\Resource;
+use Illuminate\Support\Carbon;
 
 class OrderResource extends Resource
 {
@@ -20,6 +22,18 @@ class OrderResource extends Resource
      */
     public function toArray($request)
     {
+        echo 'Order start date: ' . Carbon::parse($this->date . ' ' . $this->start_time)->format('Y/m/d H:i');
+        echo('<br>');
+        echo 'Order duration: ' . $this->duration;
+        echo('<br>');
+        echo 'Order type: ' . OrderType::getDescription($this->type) . " ($this->type)";
+        echo('<br>');
+        echo 'Order class: ' . $this->class_id;
+        echo('<br>');
+        echo 'Order cost: ' . $this->castClass->cost;
+        echo('<br>');
+        echo 'Total Cast: ' . $this->total_cast;
+
         return $this->filterNull([
             'id' => $this->id,
             'user_id' => $this->user_id,
@@ -57,6 +71,8 @@ class OrderResource extends Resource
             'cancel_fee_percent' => $this->cancel_fee_percent,
             'payment_requested_at' => $this->payment_requested_at,
             'paid_at' => $this->paid_at,
+            'call_point' => $this->call_point,
+            'nominee_point' => $this->nominee_point,
         ]);
     }
 }

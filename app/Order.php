@@ -368,7 +368,7 @@ class Order extends Model
         return 0;
     }
 
-    public function orderPoint($cast, $startedAt, $stoppedAt)
+    public function orderPoint($cast, $startedAt = null, $stoppedAt = null)
     {
         if (OrderType::NOMINATION != $this->type) {
             $cost = $this->castClass->cost;
@@ -376,10 +376,9 @@ class Order extends Model
             $cost = $cast->cost;
         }
 
-        $startedAt = Carbon::parse($startedAt);
-        $stoppedAt = Carbon::parse($stoppedAt);
+        $orderDuration = $this->duration * 60;
 
-        return ($cost / 2) * floor($startedAt->diffInMinutes($stoppedAt) / 15);
+        return ($cost / 2) * floor($orderDuration / 15);
     }
 
     public function orderFee($cast, $startedAt, $stoppedAt)
@@ -574,5 +573,59 @@ class Order extends Model
         $user->save();
 
         return true;
+    }
+
+    public function getCallPointAttribute()
+    {
+        $totalCast = $this->total_cast;
+        $nomineeCasts = $this->nominees()->count();
+        $candidateCasts = $totalCast - $nomineeCasts;
+
+        $totalPoint = 0;
+        $orderStartedAt = Carbon::parse($this->date . ' ' . $this->start_time);
+        $orderStoppedAt = $orderStartedAt->copy()->addMinutes($this->duration * 60);
+        $nightTime = $this->nightTime($orderStoppedAt);
+        $allowance = $this->allowance($nightTime);
+
+        $cost = $this->castClass->cost;
+        for ($i = 0; $i < $candidateCasts; $i++) {
+            $totalPoint += ($cost / 2) * floor(($this->duration * 60) / 15) + $allowance;
+        }
+
+        return $totalPoint * 0.8;
+    }
+
+    public function getNomineePointAttribute()
+    {
+        $orderStartedAt = Carbon::parse($this->date . ' ' . $this->start_time);
+        $orderStoppedAt = $orderStartedAt->copy()->addMinutes($this->duration * 60);
+        $nightTime = $this->nightTime($orderStoppedAt);
+        $allowance = $this->allowance($nightTime);
+        $orderDuration = $this->duration * 60;
+
+        $casts = $this->nominees;
+        if ($this->type == OrderType::NOMINATION) {
+            $cast = $casts->first();
+            $cost = $cast->cost;
+            return ($cost / 2) * floor($orderDuration / 15) + $allowance;
+        } else {
+            $totalPoint = 0;
+            $cost = $this->castClass->cost;
+            $tempOrderDuration = $orderDuration;
+
+            $multiplier = 0;
+            while ($orderDuration / 15 >= 1) {
+                $multiplier++;
+                $orderDuration -= 15;
+            }
+            $orderFee = 500 * $multiplier;
+            $i = 0;
+            foreach ($casts as $cast) {
+                $totalPoint += ($cost / 2) * floor($tempOrderDuration / 15) + $allowance + $orderFee;
+                $i++;
+            }
+
+            return $totalPoint;
+        }
     }
 }
