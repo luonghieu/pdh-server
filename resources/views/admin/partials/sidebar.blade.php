@@ -79,10 +79,12 @@ $routes = [
     ],
     'point' => [
         [
-            'name' => '',
+            'name' => 'admin.points.index',
             'value' => 'ポイント管理',
-            'url' => '#',
-            'submenu' => [],
+            'url' => route('admin.points.index'),
+            'submenu' => [
+                'admin.points.index',
+            ],
         ],
     ],
 ];

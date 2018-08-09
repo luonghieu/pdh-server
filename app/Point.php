@@ -49,6 +49,11 @@ class Point extends Model
         return PointType::PAY == $this->type;
     }
 
+    public function getIsAutoChargeAttribute()
+    {
+        return PointType::AUTO_CHARGE == $this->type;
+    }
+
     public function getIsAdjustedAttribute()
     {
         return PointType::ADJUSTED == $this->type;
