@@ -354,7 +354,7 @@ class OrderController extends ApiController
             return $this->respondServerError();
         }
 
-        return $this->respondWithNoData(trans('messages.send_message_thanks'));
+        return $this->respondWithData(MessageResource::make($message));
     }
 
     public function delete(Request $request, $id)
