@@ -592,7 +592,7 @@ class Order extends Model
             $totalPoint += ($cost / 2) * floor(($this->duration * 60) / 15) + $allowance;
         }
 
-        return $totalPoint * 0.8;
+        return $totalPoint;
     }
 
     public function getNomineePointAttribute()
@@ -607,7 +607,7 @@ class Order extends Model
         if ($this->type == OrderType::NOMINATION) {
             $cast = $casts->first();
             $cost = $cast->cost;
-            return (($cost / 2) * floor($orderDuration / 15) + $allowance) * 0.8;
+            return (($cost / 2) * floor($orderDuration / 15) + $allowance);
         } else {
             $totalPoint = 0;
             $cost = $this->castClass->cost;
@@ -624,7 +624,7 @@ class Order extends Model
                 $totalPoint += ($cost / 2) * floor($tempOrderDuration / 15) + $allowance + $orderFee;
             }
 
-            return $totalPoint * 0.8;
+            return $totalPoint;
         }
     }
 }
