@@ -35,7 +35,7 @@
           </form>
         </div>
         <div class="panel-body change-active-room">
-          <div class="display-room-id">
+          <div class="display-title">
             <p><b>ルームID:</b> {{ $room->id }}</p>
           </div>
           <div class="inactive-room">

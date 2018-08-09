@@ -28,7 +28,7 @@
           </form>
         </div>
         <div class="panel-body change-active-room">
-          <div class="display-room-id">
+          <div class="display-title">
             <p><b>平均:</b>   {{ $score }}</p>
           </div>
         </div>

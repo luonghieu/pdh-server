@@ -55,7 +55,7 @@ $routes = [
             'url' => route('admin.rooms.index'),
             'submenu' => [
                 'admin.rooms.messages_by_room',
-                'admin.rooms.members',
+                'admin.rooms.members'
             ],
         ],
     ],
@@ -67,6 +67,16 @@ $routes = [
             'submenu' => [],
         ],
     ],
+
+    'chat' => [
+        [
+            'name' => '',
+            'value' => '運営者専用チャット',
+            'url' => '#',
+            'submenu' => [],
+        ],
+    ],
+
     'sale' => [
         [
             'name' => '',
@@ -77,10 +87,12 @@ $routes = [
     ],
     'point' => [
         [
-            'name' => '',
+            'name' => 'admin.points.index',
             'value' => 'ポイント管理',
-            'url' => '#',
-            'submenu' => [],
+            'url' => route('admin.points.index'),
+            'submenu' => [
+                'admin.points.index',
+            ],
         ],
     ],
 ];

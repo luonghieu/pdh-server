@@ -5,7 +5,7 @@
     <div class="col-lg-12">
       <div class="panel panel-default">
         <div class="panel-body">
-          <div class="display-room-id">
+          <div class="display-title">
             <p><b>予約ID:</b> {{ $order->id }} の応募中キャスト一覧</p>
           </div>
         </div>
