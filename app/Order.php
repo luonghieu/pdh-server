@@ -581,7 +581,7 @@ class Order extends Model
         $cast = $this->castOrder()->where('user_id', $user->id)->first();
         $totalPoint = 0;
 
-        if ($cast->pivot->type == CastOrderType::CANDIDATE) {
+        if ($cast && $cast->pivot->type == CastOrderType::CANDIDATE) {
             $orderStartedAt = Carbon::parse($this->date . ' ' . $this->start_time);
             $orderStoppedAt = $orderStartedAt->copy()->addMinutes($this->duration * 60);
             $nightTime = $this->nightTime($orderStoppedAt);
@@ -605,11 +605,11 @@ class Order extends Model
         $orderDuration = $this->duration * 60;
         $totalPoint = 0;
 
-        if ($this->type == OrderType::NOMINATION) {
+        if ($cast && $this->type == OrderType::NOMINATION) {
             $cost = $cast->cost;
             return ((($cost / 2) * floor($orderDuration / 15) + $allowance)) * 0.8;
         } else {
-            if ($cast->pivot->type == CastOrderType::NOMINEE) {
+            if ($cast && $cast->pivot->type == CastOrderType::NOMINEE) {
                 $cost = $this->castClass->cost;
                 $tempOrderDuration = $orderDuration;
 
