@@ -22,18 +22,6 @@ class OrderResource extends Resource
      */
     public function toArray($request)
     {
-        echo 'Order start date: ' . Carbon::parse($this->date . ' ' . $this->start_time)->format('Y/m/d H:i');
-        echo('<br>');
-        echo 'Order duration: ' . $this->duration;
-        echo('<br>');
-        echo 'Order type: ' . OrderType::getDescription($this->type) . " ($this->type)";
-        echo('<br>');
-        echo 'Order class: ' . $this->class_id;
-        echo('<br>');
-        echo 'Order cost: ' . $this->castClass->cost;
-        echo('<br>');
-        echo 'Total Cast: ' . $this->total_cast;
-
         return $this->filterNull([
             'id' => $this->id,
             'user_id' => $this->user_id,
