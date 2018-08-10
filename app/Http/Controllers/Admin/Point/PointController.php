@@ -123,7 +123,7 @@ class PointController extends Controller
 
     public function getPointUser(Request $request)
     {
-        $keyword = $request->search_point_type;
+        $keyword = $request->user_type;
         $userTypes = [
             UserType::GUEST => UserType::getDescription(UserType::GUEST),
             UserType::CAST => UserType::getDescription(UserType::CAST),

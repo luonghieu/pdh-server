@@ -13,9 +13,9 @@
               <input type="text" class="form-control date-picker input-search" name="from_date" id="date01" data-date-format="yyyy/mm/dd" value="{{ request()->from_date }}" placeholder="yyyy/mm/dd" />
               <label for="">To date: </label>
               <input type="text" class="form-control date-picker" name="to_date" id="date01" data-date-format="yyyy/mm/dd" value="{{ request()->to_date }}" placeholder="yyyy/mm/dd"/>
-              <select class="form-control search-point-type" name="search_point_type">
+              <select class="form-control search-point-type" name="user_type">
                 @foreach ($userTypes as $key => $userType)
-                  <option value="{{ $key }}" {{ request()->search_point_type == $key ? 'selected' : '' }}>{{ $userType }}</option>
+                  <option value="{{ $key }}" {{ request()->user_type == $key ? 'selected' : '' }}>{{ $userType }}</option>
                 @endforeach
               </select>
               <button type="submit" class="fa fa-search btn btn-search"></button>
@@ -39,7 +39,7 @@
                 </select>
                 <input type="hidden" name="from_date" value="{{ request()->from_date }}" />
                 <input type="hidden" name="to_date" value="{{ request()->to_date }}" />
-                <input type="hidden" name="search_point_type" value="{{ request()->search_point_type }}" />
+                <input type="hidden" name="user_type" value="{{ request()->user_type }}" />
               </div>
             </div>
           </form>
