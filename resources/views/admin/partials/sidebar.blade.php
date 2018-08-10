@@ -36,7 +36,7 @@ $routes = [
             'value' => '予約管理',
             'url' => route('admin.orders.index'),
             'submenu' => [
-              'admin.orders.nominees', 'admin.orders.candidates','admin.orders.call'
+              'admin.orders.nominees', 'admin.orders.candidates','admin.orders.call', 'admin.orders.casts_matching'
             ],
         ],
     ],
@@ -51,7 +51,7 @@ $routes = [
     'chatroom' => [
         [
             'name' => '',
-            'value' => '運営者専用チャット',
+            'value' => 'チャットルーム管理',
             'url' => route('admin.rooms.index'),
             'submenu' => [
                 'admin.rooms.messages_by_room',
@@ -59,6 +59,16 @@ $routes = [
             ],
         ],
     ],
+
+    'chat' => [
+        [
+            'name' => '',
+            'value' => '運営者専用チャット',
+            'url' => '#',
+            'submenu' => [],
+        ],
+    ],
+
     'sale' => [
         [
             'name' => '',
@@ -69,10 +79,12 @@ $routes = [
     ],
     'point' => [
         [
-            'name' => '',
+            'name' => 'admin.points.index',
             'value' => 'ポイント管理',
-            'url' => '#',
-            'submenu' => [],
+            'url' => route('admin.points.index'),
+            'submenu' => [
+                'admin.points.index', 'admin.points.point_users'
+            ],
         ],
     ],
 ];

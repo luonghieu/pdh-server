@@ -47,9 +47,21 @@ class NominatedCallSchedule extends Command
             ->where('created_at', '<=', Carbon::now()->subMinutes(5));
 
         foreach ($orders->cursor() as $order) {
-            $order->nominees()
+            $nomineeIds = $order->nominees()
                 ->where('cast_order.status', CastOrderStatus::OPEN)
-                ->forceDelete();
+                ->pluck('cast_order.user_id')->toArray();
+
+            foreach ($nomineeIds as $id) {
+                $order->nominees()->updateExistingPivot(
+                    $id,
+                    [
+                        'status' => CastOrderStatus::TIMEOUT,
+                        'canceled_at' => now(),
+                        'deleted_at' => now(),
+                    ],
+                    false
+                );
+            }
 
             $order->update(['type' => OrderType::CALL]);
         }

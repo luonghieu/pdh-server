@@ -56,7 +56,7 @@ class Order extends Model
             ->whereNotNull('cast_order.accepted_at')
             ->whereNull('cast_order.canceled_at')
             ->whereNull('cast_order.deleted_at')
-            ->withPivot('order_time', 'extra_time', 'order_point', 'extra_point', 'allowance_point', 'fee_point', 'total_point', 'type', 'stopped_at', 'started_at')
+            ->withPivot('order_time', 'extra_time', 'order_point', 'extra_point', 'allowance_point', 'fee_point', 'total_point', 'type', 'started_at', 'stopped_at')
             ->withTimestamps();
     }
 
@@ -405,7 +405,7 @@ class Order extends Model
         return $orderFee;
     }
 
-    private function extraTime($startedAt, $stoppedAt)
+    public function extraTime($startedAt, $stoppedAt)
     {
         $extralTime = 0;
         $orderDuration = $this->duration * 60;
