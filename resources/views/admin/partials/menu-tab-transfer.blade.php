@@ -1,7 +1,7 @@
 @php
   $currentRouteName = Route::currentRouteName();
   $routes = [
-    ['name' => '#', 'value' => '未振込', 'url' => '#'],
+    ['name' => 'admin.transfers.non_transfers', 'value' => '未振込', 'url' => route('admin.transfers.non_transfers')],
     ['name' => '#', 'value' => '振込済み', 'url' => '#'],
   ];
 @endphp

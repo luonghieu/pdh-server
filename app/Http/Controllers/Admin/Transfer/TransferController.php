@@ -1,100 +1,68 @@
 <?php
 
-namespace App\Http\Controllers\Admin\Point;
+namespace App\Http\Controllers\Admin\Transfer;
 
-use App\Enums\PointType;
 use App\Http\Controllers\Controller;
-use App\Payment;
-use App\Point;
 use App\Services\CSVExport;
+use App\Transfer;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 
-class PointController extends Controller
+class TransferController extends Controller
 {
-    public function index(Request $request)
+    public function getNotTransferedList(Request $request)
     {
-        $points = Point::whereIn('type', [PointType::BUY, PointType::AUTO_CHARGE, PointType::ADJUSTED]);
+        $transfers = Transfer::with('user', 'order')->whereNull('transfered_at');
 
-        if ($request->has('from_date') && !empty($request->from_date)) {
+        if ($request->from_date) {
             $fromDate = Carbon::parse($request->from_date)->startOfDay();
             $toDate = Carbon::parse($request->to_date)->endOfDay();
-            $points->where(function ($query) use ($fromDate, $toDate) {
+            $transfers->where(function ($query) use ($fromDate, $toDate) {
                 $query->where('created_at', '>=', $fromDate);
             });
         }
 
-        if ($request->has('to_date') && !empty($request->to_date)) {
+        if ($request->to_date) {
             $fromDate = Carbon::parse($request->from_date)->startOfDay();
             $toDate = Carbon::parse($request->to_date)->endOfDay();
-            $points->where(function ($query) use ($fromDate, $toDate) {
+            $transfers->where(function ($query) use ($fromDate, $toDate) {
                 $query->where('created_at', '<=', $toDate);
             });
         }
 
-        if ($request->has('search_point_type')) {
-            $points->where(function ($query) use ($keyword) {
-                $query->where('type', "$keyword");
-            });
-        }
-
-        $points = $points->orderBy('created_at', 'DESC');
-        $pointsExport = $points->get();
-        $points = $points->paginate($request->limit ?: 10);
-
-        $pointIds = $points->where('type', '<>', PointType::ADJUSTED)->pluck('id');
-        $sumAmount = Payment::whereIn('point_id', $pointIds)->sum('amount');
-
-        $sumPointBuy = $points->sum(function ($product) {
-            $sum = 0;
-            if ($product->is_buy) {
-                $sum += $product->point;
-            }
-
-            if ($product->is_auto_charge) {
-                $sum += $product->point;
-            }
-
-            if ($product->is_adjusted) {
-                $sum += $product->point;
-            }
-
-            return $sum;
-        });
-
         if ('export' == $request->submit) {
-            $data = collect($pointsExport)->map(function ($item) {
+            $transfers = $transfers->get();
+
+            if (!$transfers->count()) {
+                return redirect(route('admin.transfers.non_transfers'));
+            }
+
+            $data = collect($transfers)->map(function ($item) {
                 return [
-                    $item->id,
+                    $item->order_id,
                     Carbon::parse($item->created_at)->format('Y年m月d日'),
                     $item->user_id,
                     $item->user->fullname,
-                    PointType::getDescription($item->type),
-                    (PointType::ADJUSTED == $item->type) ? '¥ ' . number_format($item->payment->amount) : '-',
-                    $item->point,
+                    '¥ ' . $item->amount,
                 ];
             })->toArray();
 
             $sum = [
                 '合計',
-                '-',
-                '-',
-                '-',
-                '-',
-                '¥ ' . number_format($sumAmount),
-                $sumPointBuy,
+                '',
+                '',
+                '',
+                '¥ ' . $transfers->sum('amount'),
             ];
 
             array_push($data, $sum);
 
             $header = [
-                '購入ID',
+                '予約ID',
                 '日付',
-                'ユーサーID',
-                'ユーサー名',
-                '取引種別',
-                '購入金額',
-                '購入ポイント',
+                'ユーザーID',
+                'ユーザー名',
+                '振込金額',
             ];
 
             try {
@@ -107,7 +75,25 @@ class PointController extends Controller
 
             return;
         }
+        $transfers = $transfers->orderBy('created_at', 'DESC')->paginate($request->limit ?: 10);
 
-        return view('admin.points.index', compact('points', 'pointTypes', 'sumAmount', 'sumPointBuy'));
+        return view('admin.transfers.non_transfer', compact('transfers'));
+    }
+
+    public function changeTransfers(Request $request)
+    {
+        if ($request->has('transfer_ids')) {
+            $transferIds = $request->transfer_ids;
+
+            $checkTransferExist = Transfer::whereIn('id', $transferIds)->whereNull('transfered_at')->exists();
+
+            if ($checkTransferExist) {
+                Transfer::whereIn('id', $transferIds)->update(['transfered_at' => now()]);
+            } else {
+                Transfer::whereIn('id', $transferIds)->update(['transfered_at' => null]);
+            }
+        }
+
+        return redirect(route('admin.transfers.non_transfers'));
     }
 }
