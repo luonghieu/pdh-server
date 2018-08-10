@@ -84,6 +84,7 @@ $routes = [
             'url' => route('admin.points.index'),
             'submenu' => [
                 'admin.points.index',
+                'admin.points.transaction_history',
             ],
         ],
     ],

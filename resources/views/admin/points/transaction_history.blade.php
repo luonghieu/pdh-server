@@ -7,14 +7,19 @@
         @include('admin.partials.menu-tab-point')
         <div class="panel-body handling">
           <div class="search">
-            <form class="navbar-form navbar-left form-search" action="{{ route('admin.points.index') }}" method="GET">
+            <form class="navbar-form navbar-left form-search" action="{{ route('admin.points.transaction_history') }}" method="GET">
               <label for="">From date: </label>
               <input type="text" class="form-control date-picker input-search" name="from_date" id="date01" data-date-format="yyyy/mm/dd" value="{{ request()->from_date }}" placeholder="yyyy/mm/dd" />
               <label for="">To date: </label>
-              <input type="text" class="form-control date-picker" name="to_date" id="date01" data-date-format="yyyy/mm/dd" value="{{ request()->to_date }}" placeholder="yyyy/mm/dd"/>
+              <input type="text" class="form-control date-picker" name="to_date" id="date01" data-date-format="yyyy/mm/dd" value="{{ request()->to_date }}" placeholder="yyyy/mm/dd" />
               <select class="form-control search-point-type" name="search_point_type">
                 @foreach ($pointTypes as $key => $pointType)
                   <option value="{{ $key }}" {{ request()->search_point_type == $key ? 'selected' : '' }}>{{ $pointType }}</option>
+                @endforeach
+              </select>
+              <select class="form-control search-user-type" name="search_user_type">
+                @foreach ($userTypes as $key => $userType)
+                  <option value="{{ $key }}" {{ request()->search_user_type == $key ? 'selected' : '' }}>{{ $userType }}</option>
                 @endforeach
               </select>
               <button type="submit" class="fa fa-search btn btn-search"></button>
@@ -27,7 +32,7 @@
         </div>
         <div class="clearfix"></div>
         <div class="panel-body">
-          <form class="navbar-form navbar-left form-search" action="{{ route('admin.points.index') }}" id="limit-page" method="GET">
+          <form class="navbar-form navbar-left form-search" action="{{ route('admin.points.transaction_history') }}" id="limit-page" method="GET">
             <div class="form-group">
               <label class="col-md-1 limit-page">表示件数：</label>
               <div class="col-md-1">
@@ -39,6 +44,7 @@
                 <input type="hidden" name="from_date" value="{{ request()->from_date }}" />
                 <input type="hidden" name="to_date" value="{{ request()->to_date }}" />
                 <input type="hidden" name="search_point_type" value="{{ request()->search_point_type }}" />
+                <input type="hidden" name="search_user_type" value="{{ request()->search_user_type }}" />
               </div>
             </div>
           </form>
@@ -48,19 +54,20 @@
           <table class="table table-striped table-bordered bootstrap-datatable">
             <thead>
               <tr>
-                <th>購入ID</th>
+                <th>取引ID</th>
                 <th>日付</th>
-                <th>ユーサーID</th>
-                <th>ユーサー名</th>
+                <th>ユーザーID</th>
+                <th>ユーザー名</th>
+                <th>ユーザー種別</th>
                 <th>取引種別</th>
-                <th>購入金額</th>
-                <th>購入ポイント</th>
+                <th>ポイントの増加額</th>
+                <th>ポイントの減少額</th>
               </tr>
             </thead>
             <tbody>
               @if (empty($points->count()))
                 <tr>
-                  <td colspan="10">{{ trans('messages.point_buy_not_found') }}</td>
+                  <td colspan="10">{{ trans('messages.transfer_not_found') }}</td>
                 </tr>
               @else
                 @foreach ($points as $key => $point)
@@ -69,13 +76,18 @@
                     <td>{{ Carbon\Carbon::parse($point->created_at)->format('Y年m月d日') }}</td>
                     <td>{{ $point->user_id }}</td>
                     <td>{{ $point->user->fullname }}</td>
+                    <td>{{ \App\Enums\UserType::getDescription($point->user->type) }}</td>
                     <td>{{ \App\Enums\PointType::getDescription($point->type) }}</td>
-                    @if ($point->type == \App\Enums\PointType::ADJUSTED)
-                      <td>-</td>
+                    @if ($point->point > 0)
+                      <td>{{ number_format($point->point) }}</td>
                     @else
-                      <td>¥ {{ number_format($point->payment->amount) }}</td>
+                      <td>0</td>
                     @endif
-                    <td>{{ number_format($point->point) }}</td>
+                    @if ($point->point < 0)
+                      <td>{{ number_format(-$point->point) }}</td>
+                    @else
+                      <td>0</td>
+                    @endif
                   </tr>
                 @endforeach
                 <tr>
@@ -84,8 +96,9 @@
                   <td></td>
                   <td></td>
                   <td></td>
-                  <td>¥ {{ number_format($sumAmount) }}</td>
-                  <td>{{ number_format($sumPointBuy) }}</td>
+                  <td></td>
+                  <td>{{ number_format($sumPointIncrease) }}</td>
+                  <td>{{ number_format(-$sumPointReduction) }}</td>
                 </tr>
               @endif
             </tbody>
