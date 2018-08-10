@@ -15,7 +15,6 @@ class CastRankingController extends Controller
 
         $keyword = $request->search;
         $casts = Cast::query();
-        $castRankings = CastRanking::get()->pluck('user_id');
 
         if ($request->has('search')) {
             $casts->where(function ($query) use ($keyword) {
@@ -24,8 +23,9 @@ class CastRankingController extends Controller
             });
         }
 
-        $casts = $casts->whereIn('id', $castRankings)
-            ->select('id', 'nickname', 'point')
+        $casts = $casts
+            ->with('castRanking')
+            ->whereHas('castRanking')
             ->orderBy('point', 'desc')
             ->orderBy('created_at', 'asc')
             ->paginate();
