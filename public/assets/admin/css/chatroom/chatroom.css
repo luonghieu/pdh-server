@@ -86,7 +86,10 @@ img {
 .chat_ib p {
   font-size: 14px;
   color: #989898;
-  margin: auto
+  margin: auto;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .chat_img {
@@ -456,6 +459,10 @@ img {
 .loading_content{
   text-align: center;
   padding: 15px;
+}
+
+.notification{
+  display: none
 }
 
 .loading_button:hover{

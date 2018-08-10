@@ -166,7 +166,7 @@ export default {
       const { name, size } = files[0];
 
       if (name.lastIndexOf(".") <= 0) {
-        var message = "Please choose a valid image";
+        var message = "有効な画像を選択してください";
         this.errors.push(message);
         return false;
       }
@@ -182,14 +182,14 @@ export default {
         ext !== "png" &&
         ext !== "PNG"
       ) {
-        var message = "Invalid image format.";
+        var message = "イメージフォーマットが無効です.";
         this.errors.push(message);
         return false;
       }
 
       let sizeMB = (size / (1024 * 1024)).toFixed(2);
       if (sizeMB > 5.12) {
-        var message = `(${sizeMB}MB). Image size is too large. Please upload an image size less than 5MB`;
+        var message = `(${sizeMB}MB). 画像サイズが大きすぎます。 5MB未満の画像サイズをアップロードしてください`;
         this.errors.push(message);
         return false;
       }

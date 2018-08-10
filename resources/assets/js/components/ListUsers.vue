@@ -15,7 +15,7 @@
                     <router-link :to="{ name: 'ChatRoom', params: { id: value.id }}" v-on:click.native="setRoomId">
                         <div v-bind:class="value.id == roomId || value.id == room_id  ? 'active_chat' : ''">
                             <div class="chat_list" v-for="userDetail in value.users"
-                                 v-if="userDetail.id !== user_id  && userDetail.type === cast">
+                                 v-if="userDetail.id !== user_id  && userDetail.type == cast">
 
                                 <div class="chat_people">
                                     <div class="chat_img" v-if=userDetail.avatars><img
@@ -24,11 +24,11 @@
                                     </div>
                                     <span v-bind:class="userDetail.is_online === 1 ? 'is_online' : 'is_offline' "></span>
                                     <div class="chat_ib">
-                                        <h5 v-bind:class="value.unread_count >= 1 ? 'chat_ib_nickname' : '' ">{{userDetail.nickname}}</h5>
+                                        <h5 v-bind:class="value.unread_count == 0 ? '' : 'chat_ib_nickname' ">{{userDetail.nickname}}</h5>
                                         <p v-if="value.latest_message">{{value.latest_message.message}}</p>
                                     </div>
                                 </div>
-                                <span v-if="value.unread_count >= 1" class="notify-chat">{{value.unread_count}}</span>
+                                <span v-bind:class="value.unread_count == 0 ? 'notification' : 'notify-chat'">{{value.unread_count}}</span>
                             </div>
                         </div>
                     </router-link>
@@ -38,7 +38,7 @@
             <div v-for="value in filteredData">
                     <router-link :to="{ name: 'ChatRoom', params: { id: value.id }}" v-on:click.native="setRoomId">
                         <div v-bind:class="value.id == Id || value.id == room_id ? 'active_chat ' : ''">
-                            <div class="chat_list" v-for="userDetail in value.users" v-if="userDetail.id !== user_id && userDetail.type === guest">
+                            <div class="chat_list" v-for="userDetail in value.users" v-if="userDetail.id !== user_id && userDetail.type == guest">
                                 <div class="chat_people">
                                     <div class="chat_img" v-if=userDetail.avatars><img
                                             class="img_avatar"
@@ -46,18 +46,18 @@
                                     </div>
                                     <span v-bind:class="userDetail.is_online === 1 ? 'is_online' : 'is_offline' "></span>
                                     <div class="chat_ib">
-                                        <h5 v-bind:class="value.unread_count >= 1 ? 'chat_ib_nickname' : '' ">{{userDetail.nickname}}</h5>
+                                        <h5 v-bind:class="value.unread_count == 0 ? '' : 'chat_ib_nickname' ">{{userDetail.nickname}}</h5>
                                         <p v-if="value.latest_message">{{value.latest_message.message}}</p>
                                     </div>
                                 </div>
-                                <span v-if="value.unread_count >= 1" class="notify-chat">{{value.unread_count}}</span>
+                                <span v-bind:class="value.unread_count == 0 ? 'notification' : 'notify-chat'">{{value.unread_count}}</span>
                             </div>
                         </div>
                     </router-link>
             </div>
         </div>
         <div class="loading_content" v-if="totalUser > 15">
-            <button class="loading_button" @click="loadUser(pageCm)">Load More</button>
+            <button class="loading_button" @click="loadUser(pageCm)">もっと読み込む</button>
         </div>
     </div>
 </template>
