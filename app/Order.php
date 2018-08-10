@@ -310,17 +310,6 @@ class Order extends Model
         return ($this->nominees()->where('user_id', $user->id)->first()) ? 1 : 0;
     }
 
-    public function isPaymentRequested()
-    {
-        if (Auth::check()) {
-            $user = Auth::user();
-        } else {
-            return null;
-        }
-
-        return ($this->paymentRequests()->where('cast_id', $user->id)->first()) ? 1 : 0;
-    }
-
     public function nightTime($stoppedAt)
     {
         $order = $this;
@@ -578,8 +567,12 @@ class Order extends Model
     public function getCallPointAttribute()
     {
         $totalPoint = 0;
+        $types = [
+            OrderType::CALL,
+            OrderType::NOMINATED_CALL
+        ];
 
-        if ($this->type == OrderType::CALL) {
+        if (in_array($this->type, $types)) {
             $orderStartedAt = Carbon::parse($this->date . ' ' . $this->start_time);
             $orderStoppedAt = $orderStartedAt->copy()->addMinutes($this->duration * 60);
             $nightTime = $this->nightTime($orderStoppedAt);
@@ -601,8 +594,8 @@ class Order extends Model
         $totalPoint = 0;
 
         if ($this->type == OrderType::NOMINATION) {
-            $cast = $this->nominees->first();
-            $cost = $cast->cost;
+            $cost = $this->temp_point;
+
             return ($cost / 2) * floor($orderDuration / 15) + $allowance;
         } else {
             if ($this->type == OrderType::NOMINATED_CALL) {
