@@ -56,7 +56,7 @@ class Order extends Model
             ->whereNotNull('cast_order.accepted_at')
             ->whereNull('cast_order.canceled_at')
             ->whereNull('cast_order.deleted_at')
-            ->withPivot('order_time', 'extra_time', 'order_point', 'extra_point', 'allowance_point', 'fee_point', 'total_point', 'type', 'started_at', 'stopped_at')
+            ->withPivot('order_time', 'extra_time', 'order_point', 'extra_point', 'allowance_point', 'fee_point', 'total_point', 'type', 'started_at', 'stopped_at', 'status', 'accepted_at', 'canceled_at')
             ->withTimestamps();
     }
 
@@ -81,7 +81,7 @@ class Order extends Model
     {
         return $this->belongsToMany(Cast::class)
             ->whereNull('cast_order.deleted_at')
-            ->withPivot('status')
+            ->withPivot('status', 'type')
             ->withTimestamps();
     }
 
@@ -368,7 +368,7 @@ class Order extends Model
         return 0;
     }
 
-    public function orderPoint($cast, $startedAt, $stoppedAt)
+    public function orderPoint($cast, $startedAt = null, $stoppedAt = null)
     {
         if (OrderType::NOMINATION != $this->type) {
             $cost = $this->castClass->cost;
@@ -376,10 +376,9 @@ class Order extends Model
             $cost = $cast->cost;
         }
 
-        $startedAt = Carbon::parse($startedAt);
-        $stoppedAt = Carbon::parse($stoppedAt);
+        $orderDuration = $this->duration * 60;
 
-        return ($cost / 2) * floor($startedAt->diffInMinutes($stoppedAt) / 15);
+        return ($cost / 2) * floor($orderDuration / 15);
     }
 
     public function orderFee($cast, $startedAt, $stoppedAt)
@@ -518,13 +517,13 @@ class Order extends Model
 
             $autoChargePoint = env('AUTOCHARGE_POINT');
 
-            $amount = ceil($subPoint / $autoChargePoint) * $autoChargePoint;
+            $buyPoint = ceil($subPoint / $autoChargePoint) * $autoChargePoint;
 
             try {
                 \DB::beginTransaction();
 
                 $point = new Point;
-                $point->point = $amount;
+                $point->point = $buyPoint;
                 $point->user_id = $user->id;
                 $point->is_autocharge = true;
                 $point->type = PointType::AUTO_CHARGE;
@@ -533,7 +532,7 @@ class Order extends Model
 
                 $payment = new Payment;
                 $payment->user_id = $user->id;
-                $payment->amount = $amount * 1.1;
+                $payment->amount = $buyPoint * 1.1;
                 $payment->point_id = $point->id;
                 $payment->card_id = $user->card->id;
                 $payment->status = PaymentStatus::OPEN;
@@ -546,7 +545,7 @@ class Order extends Model
                     $point->balance = $point->point + $user->point;
                     $point->save();
 
-                    $user->point = $user->point + $amount;
+                    $user->point = $user->point + $buyPoint;
                     $user->save();
                 }
 
@@ -574,5 +573,53 @@ class Order extends Model
         $user->save();
 
         return true;
+    }
+
+    public function getCallPointAttribute()
+    {
+        $totalPoint = 0;
+
+        if ($this->type == OrderType::CALL) {
+            $orderStartedAt = Carbon::parse($this->date . ' ' . $this->start_time);
+            $orderStoppedAt = $orderStartedAt->copy()->addMinutes($this->duration * 60);
+            $nightTime = $this->nightTime($orderStoppedAt);
+            $allowance = $this->allowance($nightTime);
+            $cost = $this->castClass->cost;
+            $totalPoint += ($cost / 2) * floor(($this->duration * 60) / 15) + $allowance;
+        }
+
+        return $totalPoint;
+    }
+
+    public function getNomineePointAttribute()
+    {
+        $orderStartedAt = Carbon::parse($this->date . ' ' . $this->start_time);
+        $orderStoppedAt = $orderStartedAt->copy()->addMinutes($this->duration * 60);
+        $nightTime = $this->nightTime($orderStoppedAt);
+        $allowance = $this->allowance($nightTime);
+        $orderDuration = $this->duration * 60;
+        $totalPoint = 0;
+
+        if ($this->type == OrderType::NOMINATION) {
+            $cast = $this->nominees->first();
+            $cost = $cast->cost;
+            return ($cost / 2) * floor($orderDuration / 15) + $allowance;
+        } else {
+            if ($this->type == OrderType::NOMINATED_CALL) {
+                $cost = $this->castClass->cost;
+
+                $multiplier = 0;
+                while ($orderDuration / 15 >= 1) {
+                    $multiplier++;
+                    $orderDuration -= 15;
+                }
+                $orderFee = 500 * $multiplier;
+
+                $totalPoint = ($cost / 2) * floor($orderDuration / 15) + $allowance + $orderFee;
+                return $totalPoint;
+            }
+        }
+
+        return $totalPoint;
     }
 }

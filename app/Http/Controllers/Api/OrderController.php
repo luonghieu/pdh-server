@@ -2,19 +2,19 @@
 
 namespace App\Http\Controllers\Api;
 
-use DB;
-use App\Tag;
 use App\Cast;
-use App\Order;
-use Carbon\Carbon;
-use App\Enums\OrderType;
-use App\Enums\OrderStatus;
-use App\Traits\DirectRoom;
-use App\Enums\CastOrderType;
-use App\Services\LogService;
-use Illuminate\Http\Request;
 use App\Enums\CastOrderStatus;
+use App\Enums\CastOrderType;
+use App\Enums\OrderStatus;
+use App\Enums\OrderType;
 use App\Http\Resources\OrderResource;
+use App\Order;
+use App\Services\LogService;
+use App\Tag;
+use App\Traits\DirectRoom;
+use Carbon\Carbon;
+use DB;
+use Illuminate\Http\Request;
 
 class OrderController extends ApiController
 {
@@ -74,8 +74,22 @@ class OrderController extends ApiController
                 $query->orWhereRaw("concat_ws(' ',`date`,`start_time`) <= '$start_time' and DATE_ADD(concat_ws(' ',`date`,`start_time`), INTERVAL `duration` HOUR) >= '$end_time'"
                 );
             });
+        $listCastMatching = 0;
 
-        if ($orders->count() > 0) {
+        if (!$request->nominee_ids) {
+            $input['type'] = OrderType::CALL;
+        } else {
+            $listNomineeIds = explode(",", trim($request->nominee_ids, ","));
+            $counter = Cast::whereIn('id', $listNomineeIds)->count();
+
+            $listCastMatching = $user->orders()->whereHas('casts', function ($q) use ($listNomineeIds) {
+                $q->whereIn('users.id', $listNomineeIds);
+            })
+                ->whereIn('status', [OrderStatus::ACTIVE, OrderStatus::PROCESSING])
+                ->count();
+        }
+
+        if ($orders->count() > 0 || $listCastMatching > 0) {
             return $this->respondErrorMessage(trans('messages.order_same_time'), 409);
         }
 
@@ -87,13 +101,6 @@ class OrderController extends ApiController
 
         if (!$request->prefecture_id) {
             $input['prefecture_id'] = 13;
-        }
-
-        if (!$request->nominee_ids) {
-            $input['type'] = OrderType::CALL;
-        } else {
-            $listNomineeIds = explode(",", trim($request->nominee_ids, ","));
-            $counter = Cast::whereIn('id', $listNomineeIds)->count();
         }
 
         $input['status'] = OrderStatus::OPEN;
@@ -115,7 +122,7 @@ class OrderController extends ApiController
 
                 $order->nominees()->attach($listNomineeIds, [
                     'type' => CastOrderType::NOMINEE,
-                    'status' => CastOrderStatus::OPEN
+                    'status' => CastOrderStatus::OPEN,
                 ]);
 
                 if (OrderType::NOMINATION == $order->type) {

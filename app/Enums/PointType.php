@@ -10,6 +10,8 @@ final class PointType extends Enum
     const PAY = 2;
     const AUTO_CHARGE = 3;
     const ADJUSTED = 4;
+    const RECEIVE = 5;
+    const TRANSFER = 6;
 
     /**
      * Get the description for an enum value
@@ -27,6 +29,10 @@ final class PointType extends Enum
             return 'オートチャージ';
         } elseif (self::ADJUSTED === $value) {
             return '調整';
+        } elseif (self::RECEIVE === $value) {
+            return 'ポイント受取';
+        } elseif (self::TRANSFER === $value) {
+            return '振込';
         }
 
         return parent::getDescription($value);
