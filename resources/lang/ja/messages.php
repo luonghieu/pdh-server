@@ -50,4 +50,5 @@ return [
     'account_not_exists' => '振込アカウントが存在していません。',
     'notify_not_found' => 'お知らせは存在しません',
     'added_account_success' => '振込口座を追加しました',
+    'server_error' => 'サーバーエラーが発生しました',
 ];
