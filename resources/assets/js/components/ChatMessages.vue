@@ -1,7 +1,7 @@
 <template>
     <div class="msg_history">
         <div v-if="totalMessage > 15" style="text-align: center">
-            <button class="loading_button" @click="loadMessage(pageCm)">もっと読み込む</button>
+            <button class="loading_button" @click="loadMessage(pageCm)">もっと見る</button>
         </div>
         <transition-group>
             <div v-for="(message, index) in list_message" :key="`keyIndex-${index}`">

@@ -57,7 +57,7 @@
             </div>
         </div>
         <div class="loading_content" v-if="totalUser > 15">
-            <button class="loading_button" @click="loadUser(pageCm)">もっと読み込む</button>
+            <button class="loading_button" @click="loadUser(pageCm)">もっと見る</button>
         </div>
     </div>
 </template>

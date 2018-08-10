@@ -182,14 +182,14 @@ export default {
         ext !== "png" &&
         ext !== "PNG"
       ) {
-        var message = "イメージフォーマットが無効です.";
+        var message = "画像形式は無効です";
         this.errors.push(message);
         return false;
       }
 
       let sizeMB = (size / (1024 * 1024)).toFixed(2);
       if (sizeMB > 5.12) {
-        var message = `(${sizeMB}MB). 画像サイズが大きすぎます。 5MB未満の画像サイズをアップロードしてください`;
+        var message = `(${sizeMB}MB). 画像サイズが大きすぎます 5MB以下の画像をアップロードしてください`;
         this.errors.push(message);
         return false;
       }
