@@ -78,18 +78,26 @@
               </tr>
               <tr>
                 <th>指名キャスト</th>
-                @if ($order->nominees->count() &&$order->nominees->count() > 1)
-                <td><a href="{{ route('admin.orders.nominees', ['order' => $order->id]) }}">{{ $order->nominees->count().'名' }}</a></td>
+                @if ($order->nominees->count() >= 1)
+                  @if ($order->nominees->count() > 1)
+                  <td><a href="{{ route('admin.orders.nominees', ['order' => $order->id]) }}">{{ $order->nominees->count().'名' }}</a></td>
+                  @else
+                  <td><a href="{{ route('admin.users.show', ['user' => $order->nominees[0]->id]) }}">{{ $order->nominees[0]->id }}</a></td>
+                  @endif
                 @else
-                <td><a href="{{ route('admin.users.show', ['user' => $order->nominees[0]->id]) }}">{{ $order->nominees[0]->id }}</a></td>
+                <td></td>
                 @endif
               </tr>
               <tr>
                 <th>応募中キャスト</th>
-                @if ($order->candidates->count() &&$order->candidates->count() > 1)
-                <td><a href="{{ route('admin.orders.candidates', ['order' => $order->id]) }}">{{ $order->candidates->count().'名' }}</a></td>
+                @if ($order->candidates->count() >= 1)
+                  @if ($order->candidates->count() > 1)
+                  <td><a href="{{ route('admin.orders.candidates', ['order' => $order->id]) }}">{{ $order->candidates->count().'名' }}</a></td>
+                  @else
+                  <td><a href="{{ route('admin.users.show', ['user' => $order->candidates[0]->id]) }}">{{ $order->candidates[0]->id }}</a></td>
+                  @endif
                 @else
-                <td><a href="{{ route('admin.users.show', ['user' => $order->candidates[0]->id]) }}">{{ $order->candidates[0]->id }}</a></td>
+                <td></td>
                 @endif
               </tr>
               <tr>
