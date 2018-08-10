@@ -504,58 +504,24 @@ class Order extends Model
         if ($user->point < $this->total_point) {
             $subPoint = $this->total_point - $user->point;
 
-            $autoChargePoint = env('AUTOCHARGE_POINT');
+            $autoChargePoint = config('common.autocharge_point');
 
-            $buyPoint = ceil($subPoint / $autoChargePoint) * $autoChargePoint;
+            $pointAmount = ceil($subPoint / $autoChargePoint) * $autoChargePoint;
 
-            try {
-                \DB::beginTransaction();
+            $point = $user->autoCharge($pointAmount);
 
-                $point = new Point;
-                $point->point = $buyPoint;
-                $point->user_id = $user->id;
-                $point->is_autocharge = true;
-                $point->type = PointType::AUTO_CHARGE;
-                $point->status = false;
-                $point->save();
-
-                $payment = new Payment;
-                $payment->user_id = $user->id;
-                $payment->amount = $buyPoint * 1.1;
-                $payment->point_id = $point->id;
-                $payment->card_id = $user->card->id;
-                $payment->status = PaymentStatus::OPEN;
-                $payment->save();
-
-                // charge money
-                $charged = $payment->charge();
-                if ($charged) {
-                    $point->status = true;
-                    $point->balance = $point->point + $user->point;
-                    $point->save();
-
-                    $user->point = $user->point + $buyPoint;
-                    $user->save();
-                }
-
-                \DB::commit();
-            } catch (\Exception $e) {
-                \DB::rollBack();
-                LogService::writeErrorLog($e);
-
+            if (!$point) {
                 return false;
             }
         }
 
         $point = new Point;
-
         $point->point = -$this->total_point;
         $point->balance = $user->point - $this->total_point;
         $point->user_id = $user->id;
         $point->order_id = $this->id;
         $point->type = PointType::PAY;
         $point->status = true;
-
         $point->save();
 
         $user->point = $point->balance;

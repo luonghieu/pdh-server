@@ -2,13 +2,16 @@
 
 namespace App;
 
-use App\Enums\UserType;
 use Carbon\Carbon;
-use Illuminate\Foundation\Auth\User as Authenticatable;
-use Illuminate\Notifications\Notifiable;
+use App\Enums\UserType;
+use App\Enums\PointType;
+use App\Enums\PaymentStatus;
+use App\Services\LogService;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cache;
 use Tymon\JWTAuth\Contracts\JWTSubject;
+use Illuminate\Notifications\Notifiable;
+use Illuminate\Foundation\Auth\User as Authenticatable;
 
 class User extends Authenticatable implements JWTSubject
 {
@@ -169,6 +172,67 @@ class User extends Authenticatable implements JWTSubject
     public function isBlockedUser($userId)
     {
         return $this->blocks()->pluck('users.id')->contains($userId);
+    }
+
+    public function buyPoint($amount, $auto = false)
+    {
+        try {
+            \DB::beginTransaction();
+
+            $point = new Point;
+            $point->point = $amount;
+            $point->user_id = $this->id;
+            $point->status = false;
+
+            if ($auto) {
+                $point->is_autocharge = true;
+                $point->type = PointType::AUTO_CHARGE;
+            }
+
+            $point->save();
+
+            $payment = $this->createPayment($point);
+
+            // charge money
+            $charged = $payment->charge();
+
+            if ($charged) {
+                $point->status = true;
+                $point->balance = $point->point + $this->point;
+                $point->save();
+
+                $this->point = $this->point + $amount;
+                $this->save();
+            }
+
+            \DB::commit();
+
+            return $point;
+        } catch (\Exception $e) {
+            \DB::rollBack();
+            LogService::writeErrorLog($e);
+
+            return false;
+        }
+    }
+
+    public function autoCharge($amount)
+    {
+        return $this->buyPoint($amount, $auto = true);
+    }
+
+    protected function createPayment(Point $point)
+    {
+        $pointRate = config('common.point_rate');
+        $payment = new Payment;
+        $payment->user_id = $this->id;
+        $payment->amount = $point->point * $pointRate;
+        $payment->point_id = $point->id;
+        $payment->card_id = $this->card->id;
+        $payment->status = PaymentStatus::OPEN;
+        $payment->save();
+
+        return $payment;
     }
 
     public function notifications()
