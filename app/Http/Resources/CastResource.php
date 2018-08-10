@@ -2,16 +2,20 @@
 
 namespace App\Http\Resources;
 
+use App\Job;
+use App\Salary;
 use App\BodyType;
 use App\CastClass;
+use App\Enums\SmokingType;
+use App\Enums\SiblingsType;
 use App\Enums\CohabitantType;
 use App\Enums\DrinkVolumeType;
-use App\Enums\SiblingsType;
-use App\Enums\SmokingType;
-use App\Job;
-use App\Repositories\PrefectureRepository;
-use App\Salary;
 use App\Traits\ResourceResponse;
+use App\Repositories\JobRepository;
+use App\Repositories\SalaryRepository;
+use App\Repositories\BodyTypeRepository;
+use App\Repositories\CastClassRepository;
+use App\Repositories\PrefectureRepository;
 use Illuminate\Http\Resources\Json\Resource;
 
 class CastResource extends Resource
@@ -39,15 +43,15 @@ class CastResource extends Resource
             'age' => $this->age,
             'height' => $this->height,
             'salary_id' => $this->salary_id,
-            'salary' => $this->salary_id ? Salary::find($this->salary_id)->name : '',
+            'salary' => $this->salary_id ? app(SalaryRepository::class)->find($this->salary_id)->name : '',
             'body_type_id' => $this->body_type_id,
-            'body_type' => $this->body_type_id ? BodyType::find($this->body_type_id)->name : '',
+            'body_type' => $this->body_type_id ? app(BodyTypeRepository::class)->find($this->body_type_id)->name : '',
             'prefecture_id' => $this->prefecture_id,
             'prefecture' => $this->prefecture_id ? app(PrefectureRepository::class)->find($this->prefecture_id)->name : '',
             'hometown_id' => $this->hometown_id,
             'hometown' => $this->hometown_id ? app(PrefectureRepository::class)->find($this->hometown_id)->name : '',
             'job_id' => $this->job_id,
-            'job' => $this->job_id ? Job::find($this->job_id)->name : '',
+            'job' => $this->job_id ? app(JobRepository::class)->find($this->job_id)->name : '',
             'drink_volume_type' => $this->drink_volume_type,
             'drink_volume' => $this->drink_volume_type ? DrinkVolumeType::getDescription($this->drink_volume_type) : '',
             'smoking_type' => $this->smoking_type,
@@ -65,7 +69,7 @@ class CastResource extends Resource
             'avatars' => AvatarResource::collection($this->avatars),
             'working_today' => $this->working_today,
             'class_id' => $this->class_id,
-            'class' => $this->class_id ? CastClass::find($this->class_id)->name : '',
+            'class' => $this->class_id ? app(CastClassRepository::class)->find($this->class_id)->name : '',
             'is_favorited' => $this->is_favorited,
             'is_blocked' => $this->is_blocked,
             'created_at' => $this->created_at,
@@ -77,6 +81,9 @@ class CastResource extends Resource
             'room_id' => $this->room_id,
             'latest_order' => $this->when(null != $this->latest_order_flag, $this->latest_order),
             'bank_account' => BankAccountResource::make($this->whenLoaded('bankAccount')),
+            'cast_order' => $this->whenPivotLoaded('cast_order', function () {
+                return CastOrderResource::make($this->pivot);
+            }),
         ]);
     }
 }
