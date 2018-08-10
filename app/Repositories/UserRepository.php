@@ -14,8 +14,6 @@ use Prettus\Repository\Traits\CacheableRepository;
  */
 class UserRepository extends BaseRepository implements CacheableInterface
 {
-    use CacheableRepository;
-
     /**
      * Specify Model class name
      *
@@ -25,5 +23,5 @@ class UserRepository extends BaseRepository implements CacheableInterface
     {
         return User::class;
     }
-    
+
 }
