@@ -10,9 +10,9 @@ use Illuminate\Http\Request;
 
 class TransferController extends Controller
 {
-    public function getNotTransferedList(Request $request)
+    public function getTransferedList(Request $request)
     {
-        $transfers = Transfer::with('user', 'order')->whereNull('transfered_at');
+        $transfers = Transfer::with('user', 'order')->whereNotNull('transfered_at');
 
         if ($request->from_date) {
             $fromDate = Carbon::parse($request->from_date)->startOfDay();
@@ -71,13 +71,13 @@ class TransferController extends Controller
                 LogService::writeErrorLog($e);
             }
 
-            $file->output('history_point_' . Carbon::now()->format('Ymd_Hi') . '.csv');
+            $file->output('transfered_list_' . Carbon::now()->format('Ymd_Hi') . '.csv');
 
             return;
         }
         $transfers = $transfers->orderBy('created_at', 'DESC')->paginate($request->limit ?: 10);
 
-        return view('admin.transfers.non_transfer', compact('transfers'));
+        return view('admin.transfers.transfered', compact('transfers'));
     }
 
     public function changeTransfers(Request $request)
@@ -89,11 +89,13 @@ class TransferController extends Controller
 
             if ($checkTransferExist) {
                 Transfer::whereIn('id', $transferIds)->update(['transfered_at' => now()]);
+
+                return redirect(route('admin.transfers.non_transfers'));
             } else {
                 Transfer::whereIn('id', $transferIds)->update(['transfered_at' => null]);
+
+                return redirect(route('admin.transfers.transfered'));
             }
         }
-
-        return redirect(route('admin.transfers.non_transfers'));
     }
 }

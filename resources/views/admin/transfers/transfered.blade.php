@@ -7,7 +7,7 @@
         @include('admin.partials.menu-tab-transfer')
         <div class="panel-body handling">
           <div class="search">
-            <form class="navbar-form navbar-left form-search" action="{{ route('admin.transfers.non_transfers') }}" method="GET">
+            <form class="navbar-form navbar-left form-search" action="{{ route('admin.transfers.transfered') }}" method="GET">
               <label for="">From date: </label>
               <input type="text" class="form-control date-picker input-search" name="from_date" id="date01" data-date-format="yyyy/mm/dd" value="{{ request()->from_date }}" placeholder="yyyy/mm/dd" />
               <label for="">To date: </label>
@@ -22,7 +22,7 @@
         </div>
         <div class="clearfix"></div>
         <div class="panel-body">
-          <form class="navbar-form navbar-left form-search" action="{{ route('admin.transfers.non_transfers') }}" id="limit-page" method="GET">
+          <form class="navbar-form navbar-left form-search" action="{{ route('admin.transfers.transfered') }}" id="limit-page" method="GET">
             <div class="form-group">
               <label class="col-md-1 limit-page">表示件数：</label>
               <div class="col-md-1">

@@ -55,7 +55,7 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.'], function () {
     });
 
     Route::group(['namespace' => 'Transfer', 'prefix' => 'transfers', 'as' => 'transfers.', 'middleware' => 'is_admin'], function () {
-        Route::get('/non_transfers', ['as' => 'non_transfers', 'uses' => 'TransferController@getNotTransferedList']);
+        Route::get('/transfered', ['as' => 'transfered', 'uses' => 'TransferController@getTransferedList']);
         Route::post('/change_transfers', ['as' => 'change_transfers', 'uses' => 'TransferController@changeTransfers']);
     });
 });
