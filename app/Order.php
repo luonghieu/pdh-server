@@ -81,7 +81,7 @@ class Order extends Model
     {
         return $this->belongsToMany(Cast::class)
             ->whereNull('cast_order.deleted_at')
-            ->withPivot('status', 'type')
+            ->withPivot('status', 'type', 'started_at')
             ->withTimestamps();
     }
 
