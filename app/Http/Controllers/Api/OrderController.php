@@ -129,11 +129,14 @@ class OrderController extends ApiController
                     'status' => CastOrderStatus::OPEN,
                 ]);
 
-                if (OrderType::NOMINATION == $order->type) {
+                if (1 == $request->total_cast &&  1 == $counter) {
                     $ownerId = $order->user_id;
                     $nomineeId = $order->nominees()->first()->id;
 
-                    $this->createDirectRoom($ownerId, $nomineeId);
+                    $room = $this->createDirectRoom($ownerId, $nomineeId);
+
+                    $order->room_id = $room->id;
+                    $order->save();
                 }
             }
 
