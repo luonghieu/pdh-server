@@ -57,7 +57,13 @@ class OrderController extends ApiController
                     $query->where('user_id', $user->id);
                 });
             })
-                ->where('type', OrderType::CALL)
+                ->where(function ($query) {
+                    $query->where('type', OrderType::CALL)
+                        ->orWhere(function ($query) {
+                            $query->where('type', OrderType::HYBRID)
+                                ->where('is_changed', true);
+                        });
+                })
                 ->where('status', OrderStatus::OPEN)
                 ->where('class_id', $user->class_id)
                 ->orderBy('date')
@@ -207,7 +213,12 @@ class OrderController extends ApiController
             return $this->respondErrorMessage(trans('messages.order_not_found'), 404);
         }
 
-        if (OrderStatus::OPEN != $order->status || OrderType::CALL != $order->type) {
+        $validOrderTypes = [
+            OrderType::CALL,
+            OrderType::HYBRID,
+        ];
+
+        if (OrderStatus::OPEN != $order->status || !in_array($order->type, $validOrderTypes)) {
             return $this->respondErrorMessage(trans('messages.apply_error'), 409);
         }
 
