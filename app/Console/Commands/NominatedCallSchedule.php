@@ -74,7 +74,7 @@ class NominatedCallSchedule extends Command
                     );
                 }
 
-                $numCastApply = $order->casts->count();
+                $castsCount = $order->casts->count();
 
                 if (($castsCount > 0) && ($order->total_cast != $castsCount)) {
                     $order->update([
@@ -92,8 +92,6 @@ class NominatedCallSchedule extends Command
             } catch (\Exception $e) {
                 DB::rollBack();
                 LogService::writeErrorLog($e);
-
-                return $this->respondServerError();
             }
         }
     }
