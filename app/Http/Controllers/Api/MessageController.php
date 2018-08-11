@@ -166,6 +166,8 @@ class MessageController extends ApiController
             return $this->respondServerError();
         }
 
+        broadcast(new MessageCreated($message))->toOthers();
+
         return $this->respondWithData(MessageResource::make($message));
     }
 }
