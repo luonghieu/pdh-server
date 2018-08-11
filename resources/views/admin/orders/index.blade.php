@@ -59,6 +59,7 @@
                   <th>指名キャスト</th>
                   <th>応募キャスト</th>
                   <th>ステータス</th>
+                  <th>アラート</th>
                   <th></th>
                 </tr>
               </thead>
@@ -98,6 +99,15 @@
                   <td>-</td>
                   @endif
                   <td>{{ App\Enums\OrderStatus::getDescription($order->status) }}</td>
+                  <td>
+                    @php
+                      $endDay = Carbon\Carbon::createFromFormat('Y-m-d H:i:s', $order->date . ' ' . $order->start_time)->addHours($order->duration);
+                      $now = Carbon\Carbon::now();
+                    @endphp
+                    @if (($order->status == App\Enums\OrderStatus::PROCESSING) && ( $endDay < $now))
+                      <span class="warning-order">予定時刻が過ぎています</span>
+                    @endif
+                  </td>
                   @if ($order->type == App\Enums\OrderType::NOMINATION)
                     <td><a href="{{ route('admin.orders.order_nominee', ['order' => $order->id]) }}" class="btn-detail">詳細</a></td>
                   @else
