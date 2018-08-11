@@ -1018,6 +1018,13 @@ tbody td {
   border: 1px solid #919191 !important;
 }
 
+.search-user-type {
+  width: 9% !important;
+  height: 34px !important;
+  margin-left: 1%;
+  border: 1px solid #919191 !important;
+}
+
 .select-checkbox {
   width: 50px;
   text-align: -webkit-center;
@@ -1090,6 +1097,22 @@ tbody td {
   background-color: #39afea;
 }
 
+.change-width-th tr th {
+  width: 300px;
+}
+
+.payment-request {
+  top: 465px;
+}
+
+.order-nominee-started-time {
+  bottom: 315px;
+}
+
+.order-nominee-stopped-time {
+  top: 615px;
+}
+
 .start-time {
   top: 46px;
 }
@@ -1104,6 +1127,10 @@ tbody td {
 
 .info-cast-matching {
   width: 50%;
+}
+
+.warning-order {
+  color: red;
 }
 
 @media (max-width: 767px) {

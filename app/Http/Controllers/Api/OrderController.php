@@ -33,7 +33,7 @@ class OrderController extends ApiController
             'total_cast' => 'required|numeric|min:1',
             'temp_point' => 'required',
             'class_id' => 'required|exists:cast_classes,id',
-            'type' => 'required|in:1,2,3',
+            'type' => 'required|in:1,2,3,4',
             'tags' => '',
             'nominee_ids' => '',
         ];
@@ -87,6 +87,10 @@ class OrderController extends ApiController
             })
                 ->whereIn('status', [OrderStatus::ACTIVE, OrderStatus::PROCESSING])
                 ->count();
+
+            if ($request->total_cast != $counter) {
+                $input['type'] = OrderType::HYBRID;
+            }
         }
 
         if ($orders->count() > 0 || $listCastMatching > 0) {
@@ -125,11 +129,14 @@ class OrderController extends ApiController
                     'status' => CastOrderStatus::OPEN,
                 ]);
 
-                if (OrderType::NOMINATION == $order->type) {
+                if (1 == $request->total_cast &&  1 == $counter) {
                     $ownerId = $order->user_id;
                     $nomineeId = $order->nominees()->first()->id;
 
-                    $this->createDirectRoom($ownerId, $nomineeId);
+                    $room = $this->createDirectRoom($ownerId, $nomineeId);
+
+                    $order->room_id = $room->id;
+                    $order->save();
                 }
             }
 
