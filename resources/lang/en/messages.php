@@ -52,7 +52,7 @@ return [
     'notify_not_found' => 'Notify is not found',
     'added_account_success' => 'Bank account is addted successfully',
     'server_error' => 'Server error!',
-    'apply_error' => 'Accept order error',
+    'accept_error' => 'Accept order error',
     'transfer_not_found' => 'Transfer not found',
     'point_buy_not_found' => 'Point buy not found',
 ];

@@ -2,7 +2,7 @@
   $currentRouteName = Route::currentRouteName();
   $routes = [
     ['name' => 'admin.transfers.non_transfers', 'value' => '未振込', 'url' => route('admin.transfers.non_transfers')],
-    ['name' => '#', 'value' => '振込済み', 'url' => '#'],
+    ['name' => 'admin.transfers.transfered', 'value' => '振込済み', 'url' => route('admin.transfers.transfered')],
   ];
 @endphp
 
