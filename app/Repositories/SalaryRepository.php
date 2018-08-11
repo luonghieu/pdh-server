@@ -14,7 +14,6 @@ use Prettus\Repository\Traits\CacheableRepository;
  */
 class SalaryRepository extends BaseRepository implements CacheableInterface
 {
-
     use CacheableRepository;
 
     /**

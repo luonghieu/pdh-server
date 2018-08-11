@@ -2,17 +2,20 @@
 
 namespace App\Http\Resources;
 
-use App\BodyType;
-use App\Enums\CohabitantType;
-use App\Enums\DrinkVolumeType;
-use App\Enums\RoomType;
-use App\Enums\SiblingsType;
-use App\Enums\SmokingType;
 use App\Job;
-use App\Repositories\PrefectureRepository;
 use App\Room;
 use App\Salary;
+use App\BodyType;
+use App\Enums\RoomType;
+use App\Enums\SmokingType;
+use App\Enums\SiblingsType;
+use App\Enums\CohabitantType;
+use App\Enums\DrinkVolumeType;
 use App\Traits\ResourceResponse;
+use App\Repositories\JobRepository;
+use App\Repositories\SalaryRepository;
+use App\Repositories\BodyTypeRepository;
+use App\Repositories\PrefectureRepository;
 use Illuminate\Http\Resources\Json\Resource;
 
 class GuestResource extends Resource
@@ -40,15 +43,15 @@ class GuestResource extends Resource
             'age' => $this->age,
             'height' => $this->height,
             'salary_id' => $this->salary_id,
-            'salary' => $this->salary_id ? Salary::find($this->salary_id)->name : '',
+            'salary' => $this->salary_id ? app(SalaryRepository::class)->find($this->salary_id)->name : '',
             'body_type_id' => $this->body_type_id,
-            'body_type' => $this->body_type_id ? BodyType::find($this->body_type_id)->name : '',
+            'body_type' => $this->body_type_id ? app(BodyTypeRepository::class)->find($this->body_type_id)->name : '',
             'prefecture_id' => $this->prefecture_id,
             'prefecture' => $this->prefecture_id ? app(PrefectureRepository::class)->find($this->prefecture_id)->name : '',
             'hometown_id' => $this->hometown_id,
             'hometown' => $this->hometown_id ? app(PrefectureRepository::class)->find($this->hometown_id)->name : '',
             'job_id' => $this->job_id,
-            'job' => $this->job_id ? Job::find($this->job_id)->name : '',
+            'job' => $this->job_id ? app(JobRepository::class)->find($this->job_id)->name : '',
             'drink_volume_type' => $this->drink_volume_type,
             'drink_volume' => $this->drink_volume_type ? DrinkVolumeType::getDescription($this->drink_volume_type) : '',
             'smoking_type' => $this->smoking_type,
@@ -72,7 +75,7 @@ class GuestResource extends Resource
             'is_online' => $this->is_online,
             'rating_score' => $this->rating_score,
             'room_id' => $this->room_id,
-            'card' => CardResource::make($this->card)
+            'card' => CardResource::make($this->whenLoaded('card')),
         ]);
     }
 }

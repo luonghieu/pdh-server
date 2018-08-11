@@ -15,6 +15,7 @@ use App\Traits\DirectRoom;
 use App\Services\LogService;
 use Illuminate\Http\Request;
 use App\Enums\CastOrderStatus;
+use App\Events\MessageCreated;
 use App\Http\Resources\OrderResource;
 use App\Http\Resources\MessageResource;
 use App\Http\Controllers\Api\ApiController;
@@ -57,7 +58,13 @@ class OrderController extends ApiController
                     $query->where('user_id', $user->id);
                 });
             })
-                ->where('type', OrderType::CALL)
+                ->where(function ($query) {
+                    $query->where('type', OrderType::CALL)
+                        ->orWhere(function ($query) {
+                            $query->where('type', OrderType::HYBRID)
+                                ->where('is_changed', true);
+                        });
+                })
                 ->where('status', OrderStatus::OPEN)
                 ->where('class_id', $user->class_id)
                 ->orderBy('date')
@@ -174,8 +181,8 @@ class OrderController extends ApiController
             return $this->respondErrorMessage(trans('messages.order_not_found'), 404);
         }
 
-        if (OrderStatus::OPEN != $order->status) {
-            return $this->respondErrorMessage(trans('messages.apply_error'), 409);
+        if (OrderStatus::OPEN != $order->status || OrderType::CALL == $order->type) {
+            return $this->respondErrorMessage(trans('messages.accept_error'), 409);
         }
 
         $user = $this->guard()->user();
@@ -207,7 +214,12 @@ class OrderController extends ApiController
             return $this->respondErrorMessage(trans('messages.order_not_found'), 404);
         }
 
-        if (OrderStatus::OPEN != $order->status || OrderType::CALL != $order->type) {
+        $validOrderTypes = [
+            OrderType::CALL,
+            OrderType::HYBRID,
+        ];
+
+        if (OrderStatus::OPEN != $order->status || !in_array($order->type, $validOrderTypes)) {
             return $this->respondErrorMessage(trans('messages.apply_error'), 409);
         }
 
@@ -347,6 +359,12 @@ class OrderController extends ApiController
                 'message_id' => $message->id,
             ]);
 
+            $order->casts()->updateExistingPivot(
+                $user->id,
+                ['is_thanked' => true],
+                false
+            );
+
             DB::commit();
         } catch (\Exception $e) {
             DB::rollBack();
@@ -354,6 +372,8 @@ class OrderController extends ApiController
 
             return $this->respondServerError();
         }
+
+        broadcast(new MessageCreated($message))->toOthers();
 
         return $this->respondWithData(MessageResource::make($message));
     }

@@ -36,7 +36,7 @@ $routes = [
             'value' => '予約管理',
             'url' => route('admin.orders.index'),
             'submenu' => [
-              'admin.orders.nominees', 'admin.orders.candidates','admin.orders.call', 'admin.orders.casts_matching'
+              'admin.orders.nominees', 'admin.orders.candidates','admin.orders.call', 'admin.orders.casts_matching', 'admin.orders.order_nominee'
             ],
         ],
     ],
@@ -83,7 +83,9 @@ $routes = [
             'value' => 'ポイント管理',
             'url' => route('admin.points.index'),
             'submenu' => [
-                'admin.points.index', 'admin.points.point_users'
+                'admin.points.index',
+                'admin.points.transaction_history',
+                'admin.points.point_users',
             ],
         ],
     ],

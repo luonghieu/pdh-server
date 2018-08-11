@@ -40,6 +40,7 @@ return [
     'create_payment_request_success' => "申請が完了しました",
     'time_invalid' => "開始時間は現在以降の時間を指定してください",
     'receipt_not_found' => '領収書が存在しません',
+    'point_not_found' => '取引はありません',
     'receipt_exists' => '領収書が存在しません',
     'apply_error' => 'この募集は終了しました( >  < )' . PHP_EOL . '別のコールに応募しよう！',
     'order_time_error' => '予約時間がかぶっています' . PHP_EOL . '予約時間を確認してね',
@@ -51,4 +52,7 @@ return [
     'notify_not_found' => 'お知らせは存在しません',
     'added_account_success' => '振込口座を追加しました',
     'server_error' => 'サーバーエラーが発生しました',
+    'accept_error' => '回答期限切れです！' . PHP_EOL . 'この予約は回答期限が切れたため、' . PHP_EOL . '無効になりました。',
+    'transfer_not_found' => '振込履歴はありません',
+    'point_buy_not_found' => '購入履歴はありません',
 ];

@@ -40,9 +40,13 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.'], function () {
         Route::get('{order}/candidates', ['as' => 'candidates', 'uses' => 'OrderController@candidates'])->where('order', '[0-9]+');
         Route::get('/{order}/nominees', ['as' => 'nominees', 'uses' => 'OrderController@nominees'])->where('order', '[0-9]+');
         Route::get('{order}', ['as' => 'call', 'uses' => 'OrderController@orderCall'])->where('order', '[0-9]+');
+        Route::get('{order}/order_nominee', ['as' => 'order_nominee', 'uses' => 'OrderController@orderNominee'])->where('order', '[0-9]+');
         Route::get('{order}/casts_matching', ['as' => 'casts_matching', 'uses' => 'OrderController@castsMatching'])->where('order', '[0-9]+');
         Route::put('change_start_time_order_call', ['as' => 'change_start_time_order_call', 'uses' => 'OrderController@changeStartTimeOrderCall']);
         Route::put('change_stopped_time_order_call', ['as' => 'change_stopped_time_order_call', 'uses' => 'OrderController@changeStopTimeOrderCall']);
+        Route::put('{order}/change_payment_request_status', ['as' => 'change_payment_request_status', 'uses' => 'OrderController@changePaymentRequestStatus'])->where('order', '[0-9]+');
+        Route::put('change_start_time_order_nominee', ['as' => 'change_start_time_order_nominee', 'uses' => 'OrderController@changeStartTimeOrderNominee']);
+        Route::put('change_stop_time_order_nominee', ['as' => 'change_stop_time_order_nominee', 'uses' => 'OrderController@changeStopTimeOrderNominee']);
     });
 
     Route::group(['namespace' => 'Report', 'prefix' => 'reports', 'as' => 'reports.', 'middleware' => 'is_admin'], function () {
@@ -53,5 +57,11 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.'], function () {
     Route::group(['namespace' => 'Point', 'prefix' => 'points', 'as' => 'points.', 'middleware' => 'is_admin'], function () {
         Route::get('/point_users', ['as' => 'point_users', 'uses' => 'PointController@getPointUser']);
         Route::get('/', ['as' => 'index', 'uses' => 'PointController@index']);
+        Route::get('/transaction_history', ['as' => 'transaction_history', 'uses' => 'PointController@getTransactionHistory']);
+    });
+
+    Route::group(['namespace' => 'Transfer', 'prefix' => 'transfers', 'as' => 'transfers.', 'middleware' => 'is_admin'], function () {
+        Route::get('/non_transfers', ['as' => 'non_transfers', 'uses' => 'TransferController@getNotTransferedList']);
+        Route::post('/change_transfers', ['as' => 'change_transfers', 'uses' => 'TransferController@changeTransfers']);
     });
 });

@@ -1,9 +1,8 @@
 @php
   $currentRouteName = Route::currentRouteName();
   $routes = [
-    ['name' => 'admin.points.index', 'value' => '購入履歴', 'url' => route('admin.points.index')],
-    ['name' => 'admin.points.point_users', 'value' => 'ユーザー', 'url' => route('admin.points.point_users')],
-    ['name' => 'admin.points.transaction_history', 'value' => '取引', 'url' => route('admin.points.transaction_history')],
+    ['name' => 'admin.transfers.non_transfers', 'value' => '未振込', 'url' => route('admin.transfers.non_transfers')],
+    ['name' => '#', 'value' => '振込済み', 'url' => '#'],
   ];
 @endphp
 

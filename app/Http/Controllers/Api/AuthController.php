@@ -64,6 +64,8 @@ class AuthController extends ApiController
             return $this->respondWithData(CastResource::make($user));
         }
 
+        $user = $user->load('card');
+
         return $this->respondWithData(GuestResource::make($user));
     }
 

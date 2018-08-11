@@ -33,7 +33,7 @@
               <label class="col-md-1 limit-page">表示件数：</label>
               <div class="col-md-1">
                 <select id="select-limit" name="limit" class="form-control">
-                  @foreach ([10, 20, 50, 100] as $limit)
+                  @foreach ([1, 2, 50, 100] as $limit)
                     <option value="{{ $limit }}" {{ request()->limit == $limit ? 'selected' : '' }}>{{ $limit }}</option>
                   @endforeach
                 </select>
@@ -68,6 +68,7 @@
                   $totalPositivePoints =0;
                   $totalNegativePoints =0;
                   $totalBalance =0;
+                  $admin = null;
                 @endphp
                 @foreach ($users as $key => $user)
                   @if (!$user->is_admin)
@@ -87,26 +88,28 @@
                     $totalNegativePoints +=$user->negativePoints($user->points);
                     $totalBalance +=$user->totalBalance($user->points);
                   @endphp
+                  @else
+                    @php
+                    $admin = $user;
+                    @endphp
                   @endif
                 @endforeach
-                @foreach ($users as $key => $user)
-                  @if ($user->is_admin)
+                  @if ($admin)
                   <tr>
                     <td>管理者</td>
                     <td></td>
                     <td></td>
-                    <td>{{ $user->positivePoints($user->points) }}</td>
-                    <td>{{ $user->negativePoints($user->points) }}</td>
-                    <td>{{ $user->totalBalance($user->points) }}</td>
+                    <td>{{ $admin->positivePoints($admin->points) }}</td>
+                    <td>{{ $admin->negativePoints($admin->points) }}</td>
+                    <td>{{ $admin->totalBalance($admin->points) }}</td>
                     <td></td>
                   </tr>
                   @php
-                    $totalPositivePoints +=$user->positivePoints($user->points);
-                    $totalNegativePoints +=$user->negativePoints($user->points);
-                    $totalBalance +=$user->totalBalance($user->points);
+                    $totalPositivePoints +=$admin->positivePoints($admin->points);
+                    $totalNegativePoints +=$admin->negativePoints($admin->points);
+                    $totalBalance +=$admin->totalBalance($admin->points);
                   @endphp
                   @endif
-                @endforeach
                 <tr>
                   <td>合計</td>
                   <td></td>
