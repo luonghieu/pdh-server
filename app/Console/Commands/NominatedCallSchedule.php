@@ -45,7 +45,13 @@ class NominatedCallSchedule extends Command
     public function handle()
     {
         $orders = Order::where('status', OrderStatus::OPEN)
-            ->where('type', OrderType::NOMINATED_CALL)
+            ->where(function ($query) {
+                $query->where('type', OrderType::NOMINATED_CALL)
+                    ->orWhere(function ($query) {
+                        $query->where('type', OrderType::HYBRID)
+                            ->where('is_changed', false);
+                    });
+            })
             ->where('created_at', '<=', Carbon::now()->subMinutes(5));
 
         foreach ($orders->cursor() as $order) {
@@ -70,10 +76,16 @@ class NominatedCallSchedule extends Command
 
                 $numCastApply = $order->casts->count();
 
-                if (($numCastApply > 0) && ($order->total_cast != $numCastApply)) {
-                    $order->update(['type' => OrderType::HYBRID]);
+                if (($castsCount > 0) && ($order->total_cast != $castsCount)) {
+                    $order->update([
+                        'type' => OrderType::HYBRID,
+                        'is_changed' => true,
+                    ]);
                 } else {
-                    $order->update(['type' => OrderType::CALL]);
+                    $order->update([
+                        'type' => OrderType::CALL,
+                        'is_changed' => true,
+                    ]);
                 }
 
                 DB::commit();
