@@ -51,6 +51,7 @@ return [
     'account_not_exists' => '振込アカウントが存在していません。',
     'notify_not_found' => 'お知らせは存在しません',
     'added_account_success' => '振込口座を追加しました',
+    'server_error' => 'サーバーエラーが発生しました',
     'accept_error' => '回答期限切れです！' . PHP_EOL . 'この予約は回答期限が切れたため、' . PHP_EOL . '無効になりました。',
     'transfer_not_found' => '振込履歴はありません',
     'point_buy_not_found' => '購入履歴はありません',

@@ -85,6 +85,7 @@ $routes = [
             'submenu' => [
                 'admin.points.index',
                 'admin.points.transaction_history',
+                'admin.points.point_users',
             ],
         ],
     ],

@@ -2,7 +2,7 @@
   $currentRouteName = Route::currentRouteName();
   $routes = [
     ['name' => 'admin.points.index', 'value' => '購入履歴', 'url' => route('admin.points.index')],
-    ['name' => '#', 'value' => 'ユーザー', 'url' => '#'],
+    ['name' => 'admin.points.point_users', 'value' => 'ユーザー', 'url' => route('admin.points.point_users')],
     ['name' => 'admin.points.transaction_history', 'value' => '取引', 'url' => route('admin.points.transaction_history')],
   ];
 @endphp
