@@ -353,4 +353,39 @@ class User extends Authenticatable implements JWTSubject
     {
         return $this->hasOne(BankAccount::class);
     }
+
+    public function positivePoints($points)
+    {
+        $totalPoints = $points->sum(function ($point) {
+            $sum = 0;
+            if ($point->point > 0) {
+                $sum += $point['point'];
+            }
+
+            return $sum;
+        });
+
+        return $totalPoints;
+    }
+
+    public function negativePoints($points)
+    {
+        $totalPoints = $points->sum(function ($point) {
+            $sum = 0;
+            if ($point->point < 0) {
+                $sum += $point['point'];
+            }
+
+            return $sum;
+        });
+
+        return $totalPoints;
+    }
+
+    public function totalBalance($points)
+    {
+        $totalBalance = $points->sum('balance');
+
+        return $totalBalance;
+    }
 }

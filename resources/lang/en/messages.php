@@ -51,6 +51,7 @@ return [
     'account_not_exists' => 'Bank account not  exists',
     'notify_not_found' => 'Notify is not found',
     'added_account_success' => 'Bank account is addted successfully',
+    'server_error' => 'Server error!',
     'accept_error' => 'Accept order error',
     'transfer_not_found' => 'Transfer not found',
     'point_buy_not_found' => 'Point buy not found',
