@@ -3,9 +3,9 @@
 namespace App\Observers;
 
 use App\Enums\MessageType;
+use App\Events\MessageCreated as BroadcastMessage;
 use App\Message;
 use App\Notifications\MessageCreated;
-use App\Events\MessageCreated as BroadcastMessage;
 
 class MessageObserver
 {
