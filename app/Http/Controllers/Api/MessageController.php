@@ -157,6 +157,8 @@ class MessageController extends ApiController
                 $message->recipients()->attach($userIds, ['room_id' => $id, 'is_show' => false]);
             } else {
                 $message->recipients()->attach($userIds, ['room_id' => $id]);
+
+                broadcast(new MessageCreated($message))->toOthers();
             }
 
             $message = $message->load('user');
@@ -165,8 +167,6 @@ class MessageController extends ApiController
 
             return $this->respondServerError();
         }
-
-        broadcast(new MessageCreated($message))->toOthers();
 
         return $this->respondWithData(MessageResource::make($message));
     }
