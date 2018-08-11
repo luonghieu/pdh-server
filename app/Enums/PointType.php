@@ -12,6 +12,7 @@ final class PointType extends Enum
     const ADJUSTED = 4;
     const RECEIVE = 5;
     const TRANSFER = 6;
+    const EVICT = 7;
 
     /**
      * Get the description for an enum value
@@ -21,18 +22,30 @@ final class PointType extends Enum
      */
     public static function getDescription($value): string
     {
-        if (self::BUY === $value) {
-            return 'ポイント購入';
-        } elseif (self::PAY === $value) {
-            return 'ポイント決済';
-        } elseif (self::AUTO_CHARGE === $value) {
-            return 'オートチャージ';
-        } elseif (self::ADJUSTED === $value) {
-            return '調整';
-        } elseif (self::RECEIVE === $value) {
-            return 'ポイント受取';
-        } elseif (self::TRANSFER === $value) {
-            return '振込';
+        switch ($value) {
+            case self::BUY:
+                return 'ポイント購入';
+                break;
+            case self::PAY:
+                return 'ポイント決済';
+                break;
+            case self::AUTO_CHARGE:
+                return 'オートチャージ';
+                break;
+            case self::ADJUSTED:
+                return '調整';
+                break;
+            case self::RECEIVE:
+                return 'ポイント受取';
+                break;
+            case self::TRANSFER:
+                return '振込';
+                break;
+            case self::EVICT:
+                return 'ポイント失効';
+                break;
+
+            default:break;
         }
 
         return parent::getDescription($value);
