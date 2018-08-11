@@ -6,7 +6,9 @@ use App\Enums\CastOrderStatus;
 use App\Enums\OrderStatus;
 use App\Enums\OrderType;
 use App\Order;
+use App\Services\LogService;
 use Carbon\Carbon;
+use DB;
 use Illuminate\Console\Command;
 
 class NominatedCallSchedule extends Command
@@ -51,19 +53,36 @@ class NominatedCallSchedule extends Command
                 ->where('cast_order.status', CastOrderStatus::OPEN)
                 ->pluck('cast_order.user_id')->toArray();
 
-            foreach ($nomineeIds as $id) {
-                $order->nominees()->updateExistingPivot(
-                    $id,
-                    [
-                        'status' => CastOrderStatus::TIMEOUT,
-                        'canceled_at' => now(),
-                        'deleted_at' => now(),
-                    ],
-                    false
-                );
-            }
+            try {
+                DB::beginTransaction();
 
-            $order->update(['type' => OrderType::CALL]);
+                foreach ($nomineeIds as $id) {
+                    $order->nominees()->updateExistingPivot(
+                        $id,
+                        [
+                            'status' => CastOrderStatus::TIMEOUT,
+                            'canceled_at' => now(),
+                            'deleted_at' => now(),
+                        ],
+                        false
+                    );
+                }
+
+                $numCastApply = $order->casts->count();
+
+                if (($numCastApply > 0) && ($order->total_cast != $numCastApply)) {
+                    $order->update(['type' => OrderType::HYBRID]);
+                } else {
+                    $order->update(['type' => OrderType::CALL]);
+                }
+
+                DB::commit();
+            } catch (\Exception $e) {
+                DB::rollBack();
+                LogService::writeErrorLog($e);
+
+                return $this->respondServerError();
+            }
         }
     }
 }
