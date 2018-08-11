@@ -1090,6 +1090,22 @@ tbody td {
   background-color: #39afea;
 }
 
+.change-width-th tr th {
+  width: 300px;
+}
+
+.payment-request {
+  top: 465px;
+}
+
+.order-nominee-started-time {
+  bottom: 315px;
+}
+
+.order-nominee-stopped-time {
+  top: 615px;
+}
+
 .start-time {
   top: 46px;
 }
