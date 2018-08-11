@@ -67,7 +67,7 @@ class TenMinBeforeOrderEnded extends Notification implements ShouldQueue
             'message' => $message,
         ]);
 
-        $roomMessage->recipients()->attach($notifiable->id, ['room_id' => $room->id, 'is_show' => false]);
+        $roomMessage->recipients()->attach($notifiable->id, ['room_id' => $room->id]);
 
         return [
             'content' => $message,
