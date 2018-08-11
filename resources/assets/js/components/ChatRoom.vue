@@ -58,39 +58,42 @@ export default {
       timer: "",
       totalMessage: "",
       totalUser: "",
-      roomId: ""
+      roomId: "",
+      id: ""
     };
   },
 
   watch: {
     $route(to, from) {
-      let id = this.$route.params.id;
-      this.init(id);
-      this.getMessagesInRoom(id);
+      this.id = this.$route.params.id;
+      if(this.id){
+          this.roomId = null
+      }
+      this.init(this.id);
+      this.getMessagesInRoom(this.id);
     }
   },
 
   created() {
     this.getToken();
     this.getRoom();
-    const url = window.location.href
+    const url = window.location.href;
     const newUrl = new URL(url);
     this.roomId = newUrl.searchParams.get("room");
-    if(this.roomId){
-        this.init(this.roomId)
-        this.getMessagesInRoom(this.roomId);
+    if (this.roomId) {
+      this.init(this.roomId);
+      this.getMessagesInRoom(this.roomId);
     }
-    this.timer = setInterval(this.getRoom, 20000);
+    this.timer = setInterval(this.getRoom, 2000);
   },
 
   methods: {
     init(id) {
       window.Echo.leave("room." + id);
-      window.Echo.private("room." + id)
-        .listen("MessageCreated", e => {
-            console.log(e);
-          this.list_messages.push(e.message);
-        });
+      window.Echo.private("room." + id).listen("MessageCreated", e => {
+        console.log(e);
+        this.list_messages.push(e.message);
+      });
     },
 
     getToken() {
@@ -142,12 +145,15 @@ export default {
         data.append("type", 3);
       }
 
+      let Id;
+      if (this.roomId) {
+        Id = this.roomId;
+      } else {
+        Id = this.$route.params.id;
+      }
+
       window.axios
-        .post(
-          "../../api/v1/rooms/" + this.$route.params.id + "/messages",
-          data,
-          config
-        )
+        .post("../../api/v1/rooms/" + Id + "/messages", data, config)
         .then(response => {
           this.list_messages.push(response.data.data);
           this.message = "";

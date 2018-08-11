@@ -22,13 +22,12 @@
                                             class="img_avatar"
                                             :src="userDetail.avatars[0].path">
                                     </div>
-                                    <span v-bind:class="userDetail.is_online === 1 ? 'is_online' : 'is_offline' "></span>
                                     <div class="chat_ib">
-                                        <h5 v-bind:class="value.unread_count == 0 ? '' : 'chat_ib_nickname' ">{{userDetail.nickname}}</h5>
+                                         <h5 v-bind:class="value.unread_count == 0 || value.id == Id || value.id == room_id ? '' : 'chat_ib_nickname' ">{{userDetail.nickname}}</h5>
                                         <p v-if="value.latest_message">{{value.latest_message.message}}</p>
                                     </div>
                                 </div>
-                                <span v-bind:class="value.unread_count == 0 ? 'notification' : 'notify-chat'">{{value.unread_count}}</span>
+                                <span v-bind:class="value.unread_count == 0 || value.id == Id || value.id == room_id ? 'notification' : 'notify-chat'">{{value.unread_count}}</span>
                             </div>
                         </div>
                     </router-link>
@@ -44,13 +43,12 @@
                                             class="img_avatar"
                                             :src="userDetail.avatars[0].path">
                                     </div>
-                                    <span v-bind:class="userDetail.is_online === 1 ? 'is_online' : 'is_offline' "></span>
                                     <div class="chat_ib">
-                                        <h5 v-bind:class="value.unread_count == 0 ? '' : 'chat_ib_nickname' ">{{userDetail.nickname}}</h5>
+                                        <h5 v-bind:class="value.unread_count == 0 || value.id == Id || value.id == room_id ? '' : 'chat_ib_nickname' ">{{userDetail.nickname}}</h5>
                                         <p v-if="value.latest_message">{{value.latest_message.message}}</p>
                                     </div>
                                 </div>
-                                <span v-bind:class="value.unread_count == 0 ? 'notification' : 'notify-chat'">{{value.unread_count}}</span>
+                                <span v-bind:class="value.unread_count == 0 || value.id == Id || value.id == room_id ? 'notification' : 'notify-chat'">{{value.unread_count}}</span>
                             </div>
                         </div>
                     </router-link>

@@ -1,5 +1,9 @@
 <template>
     <div class="msg_history">
+         <!-- <div aria-hidden="false" class="_4wzq _4wzr"><a class="_5f0v _4wzs" tabindex="0" href="#">
+                        <i class="_4wzt img sp_UbXt4jt-HZi_2x sx_4d6394 fa fa-arrow-down" alt=""></i>
+                        <div class="_1bqr">25 unread messages</div></a>
+        </div> -->
         <div v-if="totalMessage > 15" style="text-align: center">
             <button class="loading_button" @click="loadMessage(pageCm)">もっと見る</button>
         </div>
@@ -8,19 +12,30 @@
                 <div class="outgoing_msg" v-if="message.user_id == user_id">
                     <div class="sent_msg">
                         <div class="delete_message">
+                            <button class="dell_mess" @click="confirmDelete(index, list_message, message.id)"><i
+                                    class="fa fa-trash"></i></button>
                             <div class="on_mess" v-if="message.image">
                                 <img width="100" :src="message.image"/>
                             </div>
                             <p class="on_mess" v-if="message.message" :key='message.id'>{{message.message}}</p>
-                            <button class="dell_mess" @click="confirmDelete(index, list_message, message.id)"><i
-                                    class="fa fa-remove"></i></button>
                         </div>
-                        <confirm-delete :delete="selectedMessage" v-if='confirmModal' @confirm='deleteMessage'
-                                        @cancel="cancelDelete"></confirm-delete>
+                        <confirm-delete :delete="selectedMessage" v-if='confirmModal' @confirm="deleteMessage"
+                                        @cancel="cancelDelete" @close="closePopup"></confirm-delete>
                         <span class="time_date" v-if="message.created_at">{{message.created_at}}</span>
                     </div>
                 </div>
-                <div class="incoming_msg" v-else>
+                <div v-else>
+                    <div class="incoming_msg" v-if="message.room_id == room_id || message.room_id == Id">
+                    <div>
+                    <!-- <div class="timeLine__unreadLine">
+                      <div class="timeLine__unreadLineBorder">
+                        <div class="timeLine__unreadLineContainer">
+                          <div class="timeLine__unreadLineBody">
+                            <span class="timeLine__unreadLineText">Unread Messages</span>
+                          </div>
+                        </div>
+                      </div>
+                    </div> -->
                     <div class="received_msg">
                         <div v-if="message.user.avatars" class="incoming_msg_img"><img class="img_avatar"
                                 :src="message.user.avatars[0].path"></div>
@@ -31,6 +46,8 @@
                             <p v-if="message.message">{{message.message}}</p>
                             <span class="time_date" v-if="message.created_at">{{message.created_at}}</span>
                         </div>
+                    </div>
+                    </div>
                     </div>
                 </div>
             </div>
@@ -54,11 +71,27 @@ export default {
       pageCm: 1,
       totalItem: 1,
       totalpage: 1,
-      index: 0
+      index: 0,
+      room_id: "",
+      Id: this.roomId
     };
   },
 
   updated() {
+    this.room_id = this.$route.params.id;
+
+    if (this.room_id) {
+      this.Id = null;
+    }
+
+    this.list_message.forEach(item => {
+      if (
+        item.room_id == this.room_id ||item.room_id == this.Id) {
+        this.index = 0;
+      } else {
+        this.index = null;
+      }
+    });
     this.scrollToEnd(this.index);
   },
 
@@ -68,13 +101,19 @@ export default {
       this.listMessage = list_message;
       this.message_id = id;
       this.confirmModal = true;
-      this.index = null
+      this.index = null;
     },
 
     cancelDelete() {
       this.confirmModal = false;
       this.selectedMessage = null;
-      this.index = null
+      this.index = null;
+    },
+
+    closePopup() {
+      this.confirmModal = false;
+      this.selectedMessage = null;
+      this.index = null;
     },
 
     deleteMessage() {
@@ -84,21 +123,18 @@ export default {
         .delete("../../api/v1/messages/" + this.message_id)
         .then(response => {});
       this.selectedMessage = null;
-      this.index = null
+      this.index = null;
     },
 
     loadMessage(pageCm) {
-        let Id;
-        if(this.roomId){
-            Id = this.roomId
-        }
-        else{
-             Id = this.$route.params.id
-        }
+      let Id;
+      if (this.roomId) {
+        Id = this.roomId;
+      } else {
+        Id = this.$route.params.id;
+      }
       window.axios
-        .get(
-          `../../api/v1/rooms/${Id}?paginate=${15}&page=${pageCm + 1}`
-        )
+        .get(`../../api/v1/rooms/${Id}?paginate=${15}&page=${pageCm + 1}`)
         .then(getMessage => {
           let temp = "";
           temp = getMessage.data.data.data;
@@ -113,7 +149,7 @@ export default {
           this.$nextTick(() => {
             this.$refs.toolbarChat.scrollTop = 0;
           });
-          this.index = null
+          this.index = null;
         });
     },
 
