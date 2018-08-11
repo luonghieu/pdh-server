@@ -2,23 +2,24 @@
 
 namespace App\Http\Controllers\Api\Cast;
 
-use App\Cast;
-use App\Enums\CastOrderStatus;
-use App\Enums\MessageType;
-use App\Enums\OrderScope;
-use App\Enums\OrderStatus;
-use App\Enums\OrderType;
-use App\Http\Controllers\Api\ApiController;
-use App\Http\Resources\MessageResource;
-use App\Http\Resources\OrderResource;
-use App\Http\Resources\PaymentRequestResource;
-use App\Message;
-use App\Order;
-use App\Services\LogService;
-use App\Traits\DirectRoom;
-use Carbon\Carbon;
 use DB;
+use App\Cast;
+use App\Order;
+use App\Message;
+use Carbon\Carbon;
+use App\Enums\OrderType;
+use App\Enums\OrderScope;
+use App\Enums\MessageType;
+use App\Enums\OrderStatus;
+use App\Traits\DirectRoom;
+use App\Services\LogService;
 use Illuminate\Http\Request;
+use App\Enums\CastOrderStatus;
+use App\Events\MessageCreated;
+use App\Http\Resources\OrderResource;
+use App\Http\Resources\MessageResource;
+use App\Http\Controllers\Api\ApiController;
+use App\Http\Resources\PaymentRequestResource;
 
 class OrderController extends ApiController
 {
@@ -360,7 +361,9 @@ class OrderController extends ApiController
 
             $order->casts()->updateExistingPivot(
                 $user->id,
-                ['is_thanked' => true], false);
+                ['is_thanked' => true],
+                false
+            );
 
             DB::commit();
         } catch (\Exception $e) {
@@ -369,6 +372,8 @@ class OrderController extends ApiController
 
             return $this->respondServerError();
         }
+
+        broadcast(new MessageCreated($message))->toOthers();
 
         return $this->respondWithData(MessageResource::make($message));
     }
