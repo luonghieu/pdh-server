@@ -71,7 +71,7 @@ class TransferController extends Controller
                 LogService::writeErrorLog($e);
             }
 
-            $file->output('history_point_' . Carbon::now()->format('Ymd_Hi') . '.csv');
+            $file->output('non_transfered_list' . Carbon::now()->format('Ymd_Hi') . '.csv');
 
             return;
         }
