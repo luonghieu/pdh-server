@@ -175,7 +175,7 @@ class CastController extends Controller
         }
 
         $message = 'キャスト登録おめでとうございます♪'
-            . PHP_EOL .'あなたは立派なCheers familyです☆'
+            . PHP_EOL . 'あなたは立派なCheers familyです☆'
             . PHP_EOL . PHP_EOL . '解散後のメッセージで心をつかんでリピートも狙ってみましょう！'
             . PHP_EOL . PHP_EOL . 'まずはゲストにメッセージを送ってアピールしてみてください！'
             . PHP_EOL . PHP_EOL . '不安なこと、分からないことがあればいつでもCheers運営側にお問い合わせくださいね♪';
@@ -188,7 +188,7 @@ class CastController extends Controller
             'user_id' => 1,
             'type' => MessageType::SYSTEM,
             'message' => $message,
-            'system_type' => SystemMessageType::NOTIFY
+            'system_type' => SystemMessageType::NOTIFY,
         ]);
 
         $roomMessage->recipients()->attach($user->id, ['room_id' => $room->id]);
