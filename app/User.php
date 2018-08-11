@@ -292,32 +292,36 @@ class User extends Authenticatable implements JWTSubject
 
     public function positivePoints($points)
     {
-        $totalPoints = 0;
-        foreach ($points as $point) {
+        $totalPoints = $points->sum(function ($point) {
+            $sum = 0;
             if ($point->point > 0) {
-                $totalPoints += $point->point;
+                $sum += $point['point'];
             }
-        }
+
+            return $sum;
+        });
+
         return $totalPoints;
     }
 
     public function negativePoints($points)
     {
-        $totalPoints = 0;
-        foreach ($points as $point) {
+        $totalPoints = $points->sum(function ($point) {
+            $sum = 0;
             if ($point->point < 0) {
-                $totalPoints += $point->point;
+                $sum += $point['point'];
             }
-        }
+
+            return $sum;
+        });
+
         return $totalPoints;
     }
 
     public function totalBalance($points)
     {
-        $totalBalance = 0;
-        foreach ($points as $point) {
-            $totalBalance += $point->balance;
-        }
+        $totalBalance = $points->sum('balance');
+
         return $totalBalance;
     }
 }

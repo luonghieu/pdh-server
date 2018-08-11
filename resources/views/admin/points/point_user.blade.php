@@ -70,6 +70,7 @@
                   $totalBalance =0;
                 @endphp
                 @foreach ($users as $key => $user)
+                  @if (!$user->is_admin)
                   <tr>
                     <td>{{ $user->id }}</td>
                     <td>{{ $user->fullname }}</td>
@@ -86,6 +87,25 @@
                     $totalNegativePoints +=$user->negativePoints($user->points);
                     $totalBalance +=$user->totalBalance($user->points);
                   @endphp
+                  @endif
+                @endforeach
+                @foreach ($users as $key => $user)
+                  @if ($user->is_admin)
+                  <tr>
+                    <td>管理者</td>
+                    <td></td>
+                    <td></td>
+                    <td>{{ $user->positivePoints($user->points) }}</td>
+                    <td>{{ $user->negativePoints($user->points) }}</td>
+                    <td>{{ $user->totalBalance($user->points) }}</td>
+                    <td></td>
+                  </tr>
+                  @php
+                    $totalPositivePoints +=$user->positivePoints($user->points);
+                    $totalNegativePoints +=$user->negativePoints($user->points);
+                    $totalBalance +=$user->totalBalance($user->points);
+                  @endphp
+                  @endif
                 @endforeach
                 <tr>
                   <td>合計</td>
