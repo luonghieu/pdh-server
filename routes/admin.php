@@ -58,4 +58,8 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.'], function () {
         Route::get('/', ['as' => 'index', 'uses' => 'PointController@index']);
         Route::get('/transaction_history', ['as' => 'transaction_history', 'uses' => 'PointController@getTransactionHistory']);
     });
+
+    Route::group(['namespace' => 'Sales', 'prefix' => 'sales', 'as' => 'sales.', 'middleware' => 'is_admin'], function () {
+        Route::get('/', ['as' => 'index', 'uses' => 'SaleController@index']);
+    });
 });
