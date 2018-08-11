@@ -58,4 +58,9 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.'], function () {
         Route::get('/', ['as' => 'index', 'uses' => 'PointController@index']);
         Route::get('/transaction_history', ['as' => 'transaction_history', 'uses' => 'PointController@getTransactionHistory']);
     });
+
+    Route::group(['namespace' => 'Transfer', 'prefix' => 'transfers', 'as' => 'transfers.', 'middleware' => 'is_admin'], function () {
+        Route::get('/non_transfers', ['as' => 'non_transfers', 'uses' => 'TransferController@getNotTransferedList']);
+        Route::post('/change_transfers', ['as' => 'change_transfers', 'uses' => 'TransferController@changeTransfers']);
+    });
 });
