@@ -9,6 +9,7 @@ final class OrderType extends Enum
     const NOMINATED_CALL = 1;
     const CALL = 2;
     const NOMINATION = 3;
+    const HYBRID = 4;
 
     /**
      * Get the description for an enum value
@@ -24,6 +25,8 @@ final class OrderType extends Enum
             return 'コール';
         } elseif (self::NOMINATION === $value) {
             return '指名予約';
+        } elseif (self::HYBRID === $value) {
+            return 'コール・コール内指名';
         }
 
         return parent::getDescription($value);
