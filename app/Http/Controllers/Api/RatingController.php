@@ -61,7 +61,7 @@ class RatingController extends ApiController
             $ratedIds = $user->rates()->where('order_id', $orderId)->pluck('rated_id')->toArray();
 
             if (in_array($request->rated_id, $ratedIds) || $order->user_id != $user->id
-                || !in_array($request->rated_id, $casts || OrderStatus::DONE != $order->status)) {
+                || !in_array($request->rated_id, $casts) || OrderStatus::DONE != $order->status) {
                 return $this->respondErrorMessage(trans('messages.action_not_performed'), 422);
             }
         }
@@ -74,6 +74,10 @@ class RatingController extends ApiController
             if ($user->is_cast) {
                 $rating->score = $request->score;
                 $rating->save();
+
+                $order->casts()->updateExistingPivot(
+                    $user->id,
+                    ['cast_rated' => true], false);
             } else {
                 $rating->satisfaction = $request->satisfaction;
                 $rating->appearance = $request->appearance;
@@ -81,6 +85,10 @@ class RatingController extends ApiController
                 $rating->comment = $request->comment;
                 $rating->score = round(($request->friendliness + $rating->appearance + $rating->satisfaction) / 3, 1);
                 $rating->save();
+
+                $order->casts()->updateExistingPivot(
+                    $request->rated_id,
+                    ['guest_rated' => true], false);
             }
 
             $ratedUser = User::find($request->rated_id);
