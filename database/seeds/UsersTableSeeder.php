@@ -24,8 +24,8 @@ class UsersTableSeeder extends Seeder
         ];
 
         DB::table('users')->insert($admin);
-        $fileContents = \Storage::disk('local')->get("system_images/cheers_c.jpg");
-        $fileName = Uuid::generate()->string . '.jpg';
+        $fileContents = \Storage::disk('local')->get("system_images/icon.png");
+        $fileName = Uuid::generate()->string . '.png';
         \Storage::put($fileName, $fileContents, 'public');
 
         \App\Avatar::create([
