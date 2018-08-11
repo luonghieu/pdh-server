@@ -56,7 +56,7 @@ class Order extends Model
             ->whereNotNull('cast_order.accepted_at')
             ->whereNull('cast_order.canceled_at')
             ->whereNull('cast_order.deleted_at')
-            ->withPivot('order_time', 'extra_time', 'order_point', 'extra_point', 'allowance_point', 'fee_point', 'total_point', 'type', 'started_at', 'stopped_at')
+            ->withPivot('order_time', 'extra_time', 'order_point', 'extra_point', 'allowance_point', 'fee_point', 'total_point', 'type', 'started_at', 'stopped_at', 'status', 'accepted_at', 'canceled_at')
             ->withTimestamps();
     }
 
@@ -81,7 +81,7 @@ class Order extends Model
     {
         return $this->belongsToMany(Cast::class)
             ->whereNull('cast_order.deleted_at')
-            ->withPivot('status')
+            ->withPivot('status', 'type')
             ->withTimestamps();
     }
 
@@ -310,17 +310,6 @@ class Order extends Model
         return ($this->nominees()->where('user_id', $user->id)->first()) ? 1 : 0;
     }
 
-    public function isPaymentRequested()
-    {
-        if (Auth::check()) {
-            $user = Auth::user();
-        } else {
-            return null;
-        }
-
-        return ($this->paymentRequests()->where('cast_id', $user->id)->first()) ? 1 : 0;
-    }
-
     public function nightTime($stoppedAt)
     {
         $order = $this;
@@ -368,7 +357,7 @@ class Order extends Model
         return 0;
     }
 
-    public function orderPoint($cast, $startedAt, $stoppedAt)
+    public function orderPoint($cast, $startedAt = null, $stoppedAt = null)
     {
         if (OrderType::NOMINATION != $this->type) {
             $cost = $this->castClass->cost;
@@ -376,10 +365,9 @@ class Order extends Model
             $cost = $cast->cost;
         }
 
-        $startedAt = Carbon::parse($startedAt);
-        $stoppedAt = Carbon::parse($stoppedAt);
+        $orderDuration = $this->duration * 60;
 
-        return ($cost / 2) * floor($startedAt->diffInMinutes($stoppedAt) / 15);
+        return ($cost / 2) * floor($orderDuration / 15);
     }
 
     public function orderFee($cast, $startedAt, $stoppedAt)
@@ -516,63 +504,81 @@ class Order extends Model
         if ($user->point < $this->total_point) {
             $subPoint = $this->total_point - $user->point;
 
-            $autoChargePoint = env('AUTOCHARGE_POINT');
+            $autoChargePoint = config('common.autocharge_point');
 
-            $buyPoint = ceil($subPoint / $autoChargePoint) * $autoChargePoint;
+            $pointAmount = ceil($subPoint / $autoChargePoint) * $autoChargePoint;
 
-            try {
-                \DB::beginTransaction();
+            $point = $user->autoCharge($pointAmount);
 
-                $point = new Point;
-                $point->point = $buyPoint;
-                $point->user_id = $user->id;
-                $point->is_autocharge = true;
-                $point->type = PointType::AUTO_CHARGE;
-                $point->status = false;
-                $point->save();
-
-                $payment = new Payment;
-                $payment->user_id = $user->id;
-                $payment->amount = $buyPoint * 1.1;
-                $payment->point_id = $point->id;
-                $payment->card_id = $user->card->id;
-                $payment->status = PaymentStatus::OPEN;
-                $payment->save();
-
-                // charge money
-                $charged = $payment->charge();
-                if ($charged) {
-                    $point->status = true;
-                    $point->balance = $point->point + $user->point;
-                    $point->save();
-
-                    $user->point = $user->point + $buyPoint;
-                    $user->save();
-                }
-
-                \DB::commit();
-            } catch (\Exception $e) {
-                \DB::rollBack();
-                LogService::writeErrorLog($e);
-
+            if (!$point) {
                 return false;
             }
         }
 
         $point = new Point;
-
         $point->point = -$this->total_point;
         $point->balance = $user->point - $this->total_point;
         $point->user_id = $user->id;
         $point->order_id = $this->id;
         $point->type = PointType::PAY;
         $point->status = true;
-
         $point->save();
 
         $user->point = $point->balance;
         $user->save();
 
         return true;
+    }
+
+    public function getCallPointAttribute()
+    {
+        $totalPoint = 0;
+        $types = [
+            OrderType::CALL,
+            OrderType::NOMINATED_CALL
+        ];
+
+        if (in_array($this->type, $types)) {
+            $orderStartedAt = Carbon::parse($this->date . ' ' . $this->start_time);
+            $orderStoppedAt = $orderStartedAt->copy()->addMinutes($this->duration * 60);
+            $nightTime = $this->nightTime($orderStoppedAt);
+            $allowance = $this->allowance($nightTime);
+            $cost = $this->castClass->cost;
+            $totalPoint += ($cost / 2) * floor(($this->duration * 60) / 15) + $allowance;
+        }
+
+        return $totalPoint;
+    }
+
+    public function getNomineePointAttribute()
+    {
+        $orderStartedAt = Carbon::parse($this->date . ' ' . $this->start_time);
+        $orderStoppedAt = $orderStartedAt->copy()->addMinutes($this->duration * 60);
+        $nightTime = $this->nightTime($orderStoppedAt);
+        $allowance = $this->allowance($nightTime);
+        $orderDuration = $this->duration * 60;
+        $totalPoint = 0;
+
+        if ($this->type == OrderType::NOMINATION) {
+            $cost = $this->temp_point;
+
+            return ($cost / 2) * floor($orderDuration / 15) + $allowance;
+        } else {
+            if ($this->type == OrderType::NOMINATED_CALL) {
+                $cost = $this->castClass->cost;
+
+                $multiplier = 0;
+                while ($orderDuration / 15 >= 1) {
+                    $multiplier++;
+                    $orderDuration -= 15;
+                }
+                $orderFee = 500 * $multiplier;
+
+                $totalPoint = ($cost / 2) * floor($orderDuration / 15) + $allowance + $orderFee;
+                return $totalPoint;
+            }
+        }
+
+        return $totalPoint;
     }
 }

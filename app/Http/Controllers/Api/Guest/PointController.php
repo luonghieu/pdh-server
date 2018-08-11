@@ -24,47 +24,17 @@ class PointController extends ApiController
         }
 
         $user = $this->guard()->user();
+
         if (!$user->card) {
             return $this->respondErrorMessage(trans('messages.card_not_exist'), 404);
         }
 
-        try {
-            \DB::beginTransaction();
+        $point = $user->buyPoint($request->amount);
 
-            $point = new Point;
-            $point->point = $request->amount;
-            $point->user_id = $user->id;
-            $point->status = false;
-            $point->save();
-
-            $payment = new Payment;
-            $payment->user_id = $user->id;
-            $payment->amount = ($request->amount) * 1.1;
-            $payment->point_id = $point->id;
-            $payment->card_id = $user->card->id;
-            $payment->status = PaymentStatus::OPEN;
-            $payment->save();
-
-            // charge money
-            $charged = $payment->charge();
-
-            if ($charged) {
-                $point->status = true;
-                $point->balance = $point->point + $user->point;
-                $point->save();
-
-                $user->point = $user->point + $request->amount;
-                $user->save();
-            }
-
-            \DB::commit();
-
-            return $this->respondWithNoData(trans('messages.buy_point_success'));
-        } catch (\Exception $e) {
-            \DB::rollBack();
-            LogService::writeErrorLog($e);
-
+        if (!$point) {
             return $this->respondServerError();
         }
+
+        return $this->respondWithNoData(trans('messages.buy_point_success'));
     }
 }
