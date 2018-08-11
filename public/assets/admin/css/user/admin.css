@@ -1129,6 +1129,10 @@ tbody td {
   width: 50%;
 }
 
+.warning-order {
+  color: red;
+}
+
 @media (max-width: 767px) {
   .navbar {
     background: #20a8d817;

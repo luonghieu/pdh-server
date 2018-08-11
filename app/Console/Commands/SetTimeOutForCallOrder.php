@@ -46,8 +46,14 @@ class SetTimeOutForCallOrder extends Command
     {
         $now = Carbon::now();
 
+        $validOrderTypes = [
+            OrderType::CALL,
+            OrderType::NOMINATION,
+            OrderType::HYBRID,
+        ];
+
         $orders = Order::where('status', OrderStatus::OPEN)
-            ->whereIn('type', [OrderType::CALL, OrderType::NOMINATION])->get();
+            ->whereIn('type', $validOrderTypes)->get();
 
         foreach ($orders as $order) {
             $startTime = Carbon::createFromFormat('Y-m-d H:i:s', $order->date . ' ' . $order->start_time);
