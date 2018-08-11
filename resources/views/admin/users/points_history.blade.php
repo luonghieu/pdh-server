@@ -63,7 +63,7 @@
                 @else
                   <td>-</td>
                 @endif
-                @if ($point->is_pay)
+                @if ($point->is_pay && $point->order)
                   @php
                     if(($point->order->type == App\Enums\OrderType::NOMINATED_CALL)|| ($point->order->type == App\Enums\OrderType::CALL)) {
                       $link = route('admin.orders.call', ['order' => $point->order->id]);
@@ -78,7 +78,7 @@
                 @if ($point->is_adjusted)
                 <td>-</td>
                 @else
-                <td>￥{{ $point->payment->amount }}</td>
+                <td>￥{{ $point->payment ? $point->payment->amount : 0 }}</td>
                 @endif
                 @if ($point->is_buy)
                 <td>{{ $point->point }}</td>

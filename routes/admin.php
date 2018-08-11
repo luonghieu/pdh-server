@@ -60,6 +60,10 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.'], function () {
         Route::get('/transaction_history', ['as' => 'transaction_history', 'uses' => 'PointController@getTransactionHistory']);
     });
 
+    Route::group(['namespace' => 'Sales', 'prefix' => 'sales', 'as' => 'sales.', 'middleware' => 'is_admin'], function () {
+        Route::get('/', ['as' => 'index', 'uses' => 'SaleController@index']);
+    });
+
     Route::group(['namespace' => 'Transfer', 'prefix' => 'transfers', 'as' => 'transfers.', 'middleware' => 'is_admin'], function () {
         Route::get('/non_transfers', ['as' => 'non_transfers', 'uses' => 'TransferController@getNotTransferedList']);
         Route::get('/transfered', ['as' => 'transfered', 'uses' => 'TransferController@getTransferedList']);

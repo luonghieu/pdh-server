@@ -71,9 +71,9 @@ $routes = [
 
     'sale' => [
         [
-            'name' => '',
-            'value' => '全体売上管理',
-            'url' => '#',
+            'name' => 'admin.sales.index',
+            'value' => '売上管理',
+            'url' =>  route('admin.sales.index'),
             'submenu' => [],
         ],
     ],
