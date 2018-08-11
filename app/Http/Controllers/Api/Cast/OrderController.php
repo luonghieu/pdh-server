@@ -358,6 +358,10 @@ class OrderController extends ApiController
                 'message_id' => $message->id,
             ]);
 
+            $order->casts()->updateExistingPivot(
+                $user->id,
+                ['is_thanked' => true], false);
+
             DB::commit();
         } catch (\Exception $e) {
             DB::rollBack();
