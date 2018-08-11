@@ -3,7 +3,6 @@
 namespace App\Http\Controllers\Api\Cast;
 
 use App\Enums\CastOrderStatus;
-use App\Enums\OrderStatus;
 use App\Enums\PaymentRequestStatus;
 use App\Http\Controllers\Api\ApiController;
 use App\Http\Resources\PaymentRequestResource;
@@ -78,7 +77,7 @@ class PaymentRequestController extends ApiController
             ['payment_requests.status', PaymentRequestStatus::OPEN],
         ])->first();
 
-        if (OrderStatus::DONE != $order->status || !$cast || !$paymentRequest) {
+        if (!$cast || !$paymentRequest) {
             return $this->respondErrorMessage(trans('messages.action_not_performed'), 422);
         }
 

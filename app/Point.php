@@ -3,6 +3,9 @@
 namespace App;
 
 use App\Enums\PointType;
+use App\Enums\PaymentStatus;
+use App\Services\LogService;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Database\Eloquent\Model;
 
 class Point extends Model
