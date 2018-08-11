@@ -97,7 +97,7 @@
                 </tr>
               @else
                 <tr>
-                  <td colspan="7">{{ trans('messages.transfers_not_found') }}</td>
+                  <td colspan="7">{{ trans('messages.transfer_not_found') }}</td>
                 </tr>
               @endif
               </tbody>
