@@ -535,7 +535,8 @@ class Order extends Model
         $totalPoint = 0;
         $types = [
             OrderType::CALL,
-            OrderType::NOMINATED_CALL
+            OrderType::NOMINATED_CALL,
+            OrderType::HYBRID,
         ];
 
         if (in_array($this->type, $types)) {
@@ -564,7 +565,7 @@ class Order extends Model
 
             return ($cost / 2) * floor($orderDuration / 15) + $allowance;
         } else {
-            if ($this->type == OrderType::NOMINATED_CALL) {
+            if ($this->type == OrderType::NOMINATED_CALL || $this->type == OrderType::HYBRID) {
                 $cost = $this->castClass->cost;
 
                 $multiplier = 0;
