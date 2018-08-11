@@ -2,23 +2,23 @@
 
 namespace App\Http\Controllers\Api\Cast;
 
-use DB;
 use App\Cast;
-use App\Order;
-use App\Message;
-use Carbon\Carbon;
-use App\Enums\OrderType;
-use App\Enums\OrderScope;
-use App\Enums\MessageType;
-use App\Enums\OrderStatus;
-use App\Traits\DirectRoom;
-use App\Services\LogService;
-use Illuminate\Http\Request;
 use App\Enums\CastOrderStatus;
-use App\Http\Resources\OrderResource;
-use App\Http\Resources\MessageResource;
+use App\Enums\MessageType;
+use App\Enums\OrderScope;
+use App\Enums\OrderStatus;
+use App\Enums\OrderType;
 use App\Http\Controllers\Api\ApiController;
+use App\Http\Resources\MessageResource;
+use App\Http\Resources\OrderResource;
 use App\Http\Resources\PaymentRequestResource;
+use App\Message;
+use App\Order;
+use App\Services\LogService;
+use App\Traits\DirectRoom;
+use Carbon\Carbon;
+use DB;
+use Illuminate\Http\Request;
 
 class OrderController extends ApiController
 {
@@ -174,8 +174,8 @@ class OrderController extends ApiController
             return $this->respondErrorMessage(trans('messages.order_not_found'), 404);
         }
 
-        if (OrderStatus::OPEN != $order->status) {
-            return $this->respondErrorMessage(trans('messages.apply_error'), 409);
+        if (OrderStatus::OPEN != $order->status || OrderType::CALL == $order->type) {
+            return $this->respondErrorMessage(trans('messages.accept_error'), 409);
         }
 
         $user = $this->guard()->user();
