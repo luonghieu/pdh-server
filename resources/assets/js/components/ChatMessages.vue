@@ -1,10 +1,14 @@
 <template>
     <div class="msg_history">
-         <!-- <div aria-hidden="false" class="_4wzq _4wzr"><a class="_5f0v _4wzs" tabindex="0" href="#">
-                        <i class="_4wzt img sp_UbXt4jt-HZi_2x sx_4d6394 fa fa-arrow-down" alt=""></i>
-                        <div class="_1bqr">25 unread messages</div></a>
-        </div> -->
-        <div v-if="totalMessage > 15" style="text-align: center">
+        <div v-if="(realtime_roomId == room_id || realtime_roomId == Id) && pageCm > 1" @click="hiddenNewMessage" v-bind:class="isHidden == true ? 'unread_count' : ''">
+        <div aria-hidden="true" class="_4wzq _4wzr">
+        <a class="_5f0v _4wzs" tabindex="0">
+            <i class="_4wzt img sp_UbXt4jt-HZi_2x sx_4d6394 fa fa-arrow-down" alt=""></i>
+            <div class="_1bqr">新しいメッセージ</div>
+        </a>
+        </div>
+        </div>
+        <div v-if="totalMessage > 15" class="loading_message">
             <button class="loading_button" @click="loadMessage(pageCm)">もっと見る</button>
         </div>
         <transition-group>
@@ -27,15 +31,6 @@
                 <div v-else>
                     <div class="incoming_msg" v-if="message.room_id == room_id || message.room_id == Id">
                     <div>
-                    <!-- <div class="timeLine__unreadLine">
-                      <div class="timeLine__unreadLineBorder">
-                        <div class="timeLine__unreadLineContainer">
-                          <div class="timeLine__unreadLineBody">
-                            <span class="timeLine__unreadLineText">Unread Messages</span>
-                          </div>
-                        </div>
-                      </div>
-                    </div> -->
                     <div class="received_msg">
                         <div v-if="message.user.avatars" class="incoming_msg_img"><img class="img_avatar"
                                 :src="message.user.avatars[0].path"></div>
@@ -61,19 +56,20 @@ import ConfirmDelete from "./ConfirmDelete";
 export default {
   name: "ChatMessage",
   components: { ConfirmDelete },
-  props: ["list_message", "user_id", "totalMessage", "roomId"],
+  props: ["list_message", "user_id", "totalMessage", "roomId", "realtime_roomId"],
   data() {
     return {
       confirmModal: false,
       selectedMessage: null,
+      isScroll: true,
       listMessage: "",
       message_id: "",
       pageCm: 1,
       totalItem: 1,
       totalpage: 1,
-      index: 0,
       room_id: "",
-      Id: this.roomId
+      Id: this.roomId,
+      isHidden: false
     };
   },
 
@@ -84,15 +80,9 @@ export default {
       this.Id = null;
     }
 
-    this.list_message.forEach(item => {
-      if (
-        item.room_id == this.room_id ||item.room_id == this.Id) {
-        this.index = 0;
-      } else {
-        this.index = null;
-      }
-    });
-    this.scrollToEnd(this.index);
+    if (this.isScroll) {
+      this.scrollToEnd();
+    }
   },
 
   methods: {
@@ -101,19 +91,19 @@ export default {
       this.listMessage = list_message;
       this.message_id = id;
       this.confirmModal = true;
-      this.index = null;
+      this.isScroll = false;
     },
 
     cancelDelete() {
       this.confirmModal = false;
       this.selectedMessage = null;
-      this.index = null;
+      this.isScroll = false;
     },
 
     closePopup() {
       this.confirmModal = false;
       this.selectedMessage = null;
-      this.index = null;
+      this.isScroll = false;
     },
 
     deleteMessage() {
@@ -123,7 +113,7 @@ export default {
         .delete("../../api/v1/messages/" + this.message_id)
         .then(response => {});
       this.selectedMessage = null;
-      this.index = null;
+      this.isScroll = false;
     },
 
     loadMessage(pageCm) {
@@ -133,6 +123,7 @@ export default {
       } else {
         Id = this.$route.params.id;
       }
+      this.isScroll = false;
       window.axios
         .get(`../../api/v1/rooms/${Id}?paginate=${15}&page=${pageCm + 1}`)
         .then(getMessage => {
@@ -149,14 +140,17 @@ export default {
           this.$nextTick(() => {
             this.$refs.toolbarChat.scrollTop = 0;
           });
-          this.index = null;
         });
     },
 
-    scrollToEnd: function(index) {
-      this.index = 0;
+    hiddenNewMessage(){
+        this.scrollToEnd();
+        this.isHidden = true
+    },
+
+    scrollToEnd: function() {
       this.$nextTick(() => {
-        const scroll = $(".msg_history")[index].scrollHeight;
+        const scroll = $(".msg_history")[0].scrollHeight;
         $(".msg_history").animate({ scrollTop: scroll });
       });
     }

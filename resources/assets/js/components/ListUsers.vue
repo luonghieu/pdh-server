@@ -23,11 +23,14 @@
                                             :src="userDetail.avatars[0].path">
                                     </div>
                                     <div class="chat_ib">
-                                         <h5 v-bind:class="value.unread_count == 0 || value.id == Id || value.id == room_id ? '' : 'chat_ib_nickname' ">{{userDetail.nickname}}</h5>
-                                        <p v-if="value.latest_message">{{value.latest_message.message}}</p>
+                                        <h5 v-if="realtime_roomId == value.id && realtime_count > 0" v-bind:class="realtime_roomId == Id || realtime_roomId == room_id  ? '' : 'chat_ib_nickname' ">{{userDetail.nickname}}</h5>
+                                         <h5 v-else v-bind:class="value.unread_count == 0 || value.id == Id || value.id == room_id  || setUnread == 0 ? '' : 'chat_ib_nickname' ">{{userDetail.nickname}}</h5>
+                                        <p v-if="realtime_roomId == value.id ">{{realtime_message}}</p>
+                                        <p v-else>{{value.latest_message.message}}</p>
                                     </div>
                                 </div>
-                                <span v-bind:class="value.unread_count == 0 || value.id == Id || value.id == room_id ? 'notification' : 'notify-chat'">{{value.unread_count}}</span>
+                                <span v-if="realtime_roomId == value.id && realtime_count > 0" v-bind:class="realtime_roomId == Id || realtime_roomId == room_id ? 'notification' : 'notify-chat'">{{realtime_count}}</span>
+                                <span v-else v-bind:class="value.unread_count == 0 || value.id == Id || value.id == room_id || setUnread == 0 ? 'notification' : 'notify-chat'">{{value.unread_count}}</span>
                             </div>
                         </div>
                     </router-link>
@@ -44,11 +47,14 @@
                                             :src="userDetail.avatars[0].path">
                                     </div>
                                     <div class="chat_ib">
-                                        <h5 v-bind:class="value.unread_count == 0 || value.id == Id || value.id == room_id ? '' : 'chat_ib_nickname' ">{{userDetail.nickname}}</h5>
-                                        <p v-if="value.latest_message">{{value.latest_message.message}}</p>
+                                        <h5 v-if="realtime_roomId == value.id && realtime_count > 0" v-bind:class="realtime_roomId == Id || realtime_roomId == room_id ? '' : 'chat_ib_nickname' ">{{userDetail.nickname}}</h5>
+                                        <h5 v-else v-bind:class="value.unread_count == 0 || value.id == Id || value.id == room_id || setUnread == 0 ? '' : 'chat_ib_nickname' ">{{userDetail.nickname}}</h5>
+                                        <p v-if="realtime_roomId == value.id ">{{realtime_message}}</p>
+                                        <p v-else>{{value.latest_message.message}}</p>
                                     </div>
                                 </div>
-                                <span v-bind:class="value.unread_count == 0 || value.id == Id || value.id == room_id ? 'notification' : 'notify-chat'">{{value.unread_count}}</span>
+                                <span v-if="realtime_roomId == value.id && realtime_count > 0 " v-bind:class="realtime_roomId == Id || realtime_roomId == room_id ? 'notification' : 'notify-chat'">{{realtime_count}}</span>
+                                <span v-else v-bind:class="value.unread_count == 0 || value.id == Id || value.id == room_id || setUnread == 0 ? 'notification' : 'notify-chat'">{{value.unread_count}}</span>
                             </div>
                         </div>
                     </router-link>
@@ -63,7 +69,7 @@
 <script>
 export default {
   name: "ListUsers",
-  props: ["users", "user_id", "totalUser", "roomId"],
+  props: ["users", "user_id", "totalUser", "roomId", "realtime_message", "realtime_roomId", "realtime_count"],
   data() {
     return {
       cast: 2,
@@ -74,12 +80,17 @@ export default {
       pageCm: 1,
       totalItem: 1,
       totalpage: 1,
-      room_id: this.roomId
+      room_id: this.roomId,
+      setUnread: 1,
+      count: 0
     };
   },
+
   methods: {
     setRoomId(){
         this.room_id = null
+        this.setUnread = 0
+        this.$emit('interface', this.count)
     },
 
     loadUser(pageCm) {

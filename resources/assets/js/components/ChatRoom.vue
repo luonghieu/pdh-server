@@ -3,12 +3,15 @@
         <div class="messaging">
             <div class="inbox_msg">
                 <h3 class="text-center nickname"></h3>
-                <list-users :users="users" :user_id="user_id" :totalUser="totalUser" :roomId="roomId"></list-users>
+                <list-users :users="users" :user_id="user_id" :totalUser="totalUser" :roomId="roomId" :realtime_message="realtime_message" :realtime_roomId="realtime_roomId" :realtime_count="realtime_count"
+                @interface="handleCountMessage"
+                ></list-users>
                 <div class="mesgs">
                     <chat-messages :list_message="list_messages" :user_id="user_id"
-                                   :totalMessage="totalMessage" :roomId="roomId"></chat-messages>
+                                   :totalMessage="totalMessage" :roomId="roomId" :realtime_roomId="realtime_roomId"></chat-messages>
                     <div class="type_msg">
                         <div class="input_msg_write">
+                            <a name="bottom"></a>
                             <div v-if="!image">
                                 <textarea name="mess" v-model="message" class="write_msg"
                                           placeholder="Type a message*"></textarea>
@@ -59,7 +62,10 @@ export default {
       totalMessage: "",
       totalUser: "",
       roomId: "",
-      id: ""
+      id: "",
+      realtime_message: "",
+      realtime_roomId: "",
+      realtime_count: 0
     };
   },
 
@@ -74,6 +80,11 @@ export default {
     }
   },
 
+  updated() {
+    //    this.timer = setInterval(this.getRoom, 2000);
+    // this.getRoom();
+  },
+
   created() {
     this.getToken();
     this.getRoom();
@@ -84,14 +95,15 @@ export default {
       this.init(this.roomId);
       this.getMessagesInRoom(this.roomId);
     }
-    this.timer = setInterval(this.getRoom, 2000);
   },
 
   methods: {
     init(id) {
       window.Echo.leave("room." + id);
       window.Echo.private("room." + id).listen("MessageCreated", e => {
-        console.log(e);
+        this.realtime_message = e.message.message
+        this.realtime_roomId = e.message.room_id
+        this.realtime_count +=1
         this.list_messages.push(e.message);
       });
     },
@@ -161,6 +173,9 @@ export default {
             this.removeImage().click();
           }
         });
+
+         const scroll = $(".msg_history")[0].scrollHeight;
+        $(".msg_history").animate({ scrollTop: scroll });
     },
 
     chooseFiles() {
@@ -217,7 +232,11 @@ export default {
 
     removeImage: function(e) {
       this.image = "";
-    }
+    },
+
+    handleCountMessage(event){
+    this.realtime_count = event
+    },
 
     // @keyup.enter="sendMessage"
   }

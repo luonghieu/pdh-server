@@ -183,8 +183,9 @@ img {
 
 .mesgs {
   float: left;
-  padding: 30px 15px 0 25px;
+  /* padding: 30px 15px 0 25px; */
   width: 70%;
+  margin-top: -10px
 }
 
 .sent_msg p {
@@ -435,6 +436,12 @@ img {
   padding: 15px;
 }
 
+.loading_message{
+  margin-top: 25px;
+  text-align: center;
+  padding: 15px;
+}
+
 .notification{
   display: none
 }
@@ -443,54 +450,19 @@ img {
   background-color: #20a8d8;
 }
 
-.timeLine__unreadLine {
-  padding: 8px 0;
-}
-
-.timeLine__unreadLineBorder {
-  position: relative;
-  margin: 9px 0;
-  height: 1px;
-  background-color: #eb0800;
-}
-
-.timeLine__unreadLineContainer {
-  position: absolute;
-  top: -9px;
-  width: 100%;
-  text-align: center;
-}
-
-.timeLine__unreadLineBody {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  height: 19px;
-  line-height: 19px;
-  padding: 0 8px;
-  background-color: #fff;
-}
-
-.timeLine__unreadLineText {
-  font-size: 11px;
-  font-weight: bold;
-  color: #eb0800;
-}
-/* unread */
-
 .sp_UbXt4jt-HZi_2x.sx_4d6394 {
   background-position: -68px -817px;
+  display: inline-block;
 }
 
 ._4wzs {
   background-color: rgba(98, 100, 102, .98);
   border-radius: 0 0 4px 4px;
   color: #fff;
-  display: flex;
   font-size: 13px;
   font-weight: 500;
   padding: 6px 8px;
-  position: absolute;
+  cursor: pointer;
 }
 
 .sp_UbXt4jt-HZi_2x {
@@ -524,15 +496,21 @@ img {
   transform: translate3d(0, 0, 0);
 }
 
-._4wzq {
-  display: flex;
-  justify-content: center;
-  position: absolute;
-  text-align: center;
-  transform: translate3d(0, -31px, 0);
-  transition: transform .2s;
-  width: 100%;
-  z-index: 30;
+._4wzq._4wzr a:hover{
+  color: white
 }
 
+._4wzq {
+     justify-content: center;
+     text-align: center;
+     transform: translate3d(0, -31px, 0);
+     transition: transform .2s;
+     width: 100%;
+     z-index: 30;
+     position: sticky;
+     top: 0px;
+}
 
+.unread_count{
+  display: none
+}
