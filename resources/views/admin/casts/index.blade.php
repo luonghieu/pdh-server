@@ -68,7 +68,7 @@
                   <td>{{ latestOnlineStatus($cast->last_active_at) }}</td>
                   <td>{{ App\Enums\WorkingType::getDescription($cast->working_today) }}</td>
                   <td>{{ Carbon\Carbon::parse($cast->created_at)->format('Y/m/d H:i') }}</td>
-                  <td><a href="{{ route('admin.users.show', ['user' => $cast->id]) }}"><button class="btn btn-default">詳細</button></a></td>
+                  <td><a href="{{ route('admin.users.show', ['user' => $cast->id]) }}" class="btn-detail">詳細</a></td>
                 </tr>
                 @endforeach
               @endif
