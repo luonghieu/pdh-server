@@ -48,9 +48,11 @@ class CastRankingSchedule extends Command
                 ->orderBy('created_at', 'asc')
                 ->take(10)
                 ->get();
+            $ranking = 1;
             foreach ($users as $user) {
                 $data[] = [
                     'user_id' => $user->id,
+                    'ranking' => $ranking++,
                     'point' => $user->point,
                     'created_at' => Carbon::now(),
                     'updated_at' => Carbon::now()

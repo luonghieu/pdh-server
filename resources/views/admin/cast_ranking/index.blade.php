@@ -38,10 +38,10 @@
                                 @foreach ($casts as $key => $cast)
                                     <tr>
                                         <td>{{ $casts->firstItem() + $key }}</td>
-                                        <td>{{ $casts->firstItem() + $key }}位</td>
+                                        <td>{{ $cast->castRanking->ranking }}位</td>
                                         <td>
                                             <img width="100"
-                                                 src="@foreach ($cast->avatars as $avatar){{$avatar->path}}@endforeach"
+                                                 src="{{$cast->avatars[0]->path}}"
                                                  alt="avatar">
                                         </td>
                                         <td>{{ $cast->id}}</td>

@@ -49,4 +49,9 @@ class Cast extends User
             ->latest()
             ->first();
     }
+
+    public function castRanking()
+    {
+        return $this->hasOne(CastRanking::class);
+    }
 }
