@@ -44,6 +44,7 @@ class CancelOrder implements ShouldQueue
             $castIds = $this->order->castOrder()
                 ->pluck('cast_order.user_id')
                 ->toArray();
+            $casts = $this->order->casts;
 
             foreach ($castIds as $id) {
                 $this->order->castOrder()->updateExistingPivot(
@@ -58,15 +59,14 @@ class CancelOrder implements ShouldQueue
 
             $orderStartDate = Carbon::parse($this->order->date)->startOfDay();
             $orderCancelDate = Carbon::parse($this->order->canceled_at)->startOfDay();
-            $casts = $this->order->casts;
             $involvedUsers = [];
 
             $orderPoint = 0;
             $orderDuration = $this->order->duration * 60;
-            $orderNightTime = $this->order->nightTime($orderStartDate->addMinutes($orderDuration));
-            $orderAllowance = $this->order->allowance($orderNightTime);
             $orderStartedAt = Carbon::parse($this->order->date . ' ' . $this->order->start_time);
-            $orderStoppeddAt = $orderStartedAt->copy()->addMinutes($this->order->duration * 60);
+            $orderStoppeddAt = $orderStartedAt->copy()->addMinutes($orderDuration);
+            $orderNightTime = $this->order->nightTime($orderStoppeddAt);
+            $orderAllowance = $this->order->allowance($orderNightTime);
 
             foreach ($casts as $cast) {
                 $involvedUsers[] = $cast;
