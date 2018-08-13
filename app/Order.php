@@ -379,11 +379,16 @@ class Order extends Model
         $startedAt = Carbon::parse($startedAt);
         $stoppedAt = Carbon::parse($stoppedAt);
         $castDuration = $startedAt->diffInMinutes($stoppedAt);
+        $orderDuration = $this->duration * 60;
 
         if (OrderType::NOMINATION != $order->type && CastOrderType::NOMINEE == $cast->pivot->type) {
-            while ($castDuration / 15 >= 1) {
-                $multiplier++;
-                $castDuration -= 15;
+            if ($castDuration > $orderDuration) {
+                while ($castDuration / 15 >= 1) {
+                    $multiplier++;
+                    $castDuration -= 15;
+                }
+            } else {
+                $multiplier =  floor($orderDuration / 15);
             }
 
             $orderFee = 500 * $multiplier;
@@ -561,21 +566,18 @@ class Order extends Model
         $totalPoint = 0;
 
         if ($this->type == OrderType::NOMINATION) {
-            $cost = $this->temp_point;
-
+            $cost = $this->nominees->first()->cost;
             return ($cost / 2) * floor($orderDuration / 15) + $allowance;
         } else {
             if ($this->type == OrderType::NOMINATED_CALL || $this->type == OrderType::HYBRID) {
                 $cost = $this->castClass->cost;
-
                 $multiplier = 0;
                 while ($orderDuration / 15 >= 1) {
                     $multiplier++;
                     $orderDuration -= 15;
                 }
                 $orderFee = 500 * $multiplier;
-
-                $totalPoint = ($cost / 2) * floor($orderDuration / 15) + $allowance + $orderFee;
+                $totalPoint = ($cost / 2) * floor($this->duration * 60 / 15) + $allowance + $orderFee;
                 return $totalPoint;
             }
         }
