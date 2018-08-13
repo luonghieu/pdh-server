@@ -563,7 +563,7 @@ class Order extends Model
             $cost = $this->nominees->first()->cost;
             return ($cost / 2) * floor($orderDuration / 15) + $allowance;
         } else {
-            if ($this->type == OrderType::NOMINATED_CALL) {
+            if ($this->type == OrderType::NOMINATED_CALL || $this->type == OrderType::HYBRID) {
                 $cost = $this->castClass->cost;
                 $multiplier = 0;
                 while ($orderDuration / 15 >= 1) {
