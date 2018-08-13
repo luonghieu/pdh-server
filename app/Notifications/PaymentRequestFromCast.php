@@ -73,7 +73,7 @@ class PaymentRequestFromCast extends Notification implements ShouldQueue
             . PHP_EOL . '合計ポイントの詳細はコチラから確認することができます。'
             . PHP_EOL . '※詳細に誤りがある場合は、24時間以内に「決済ポイントの修正依頼をする」を押してください。運営から確認のご連絡を差し上げます。'
             . PHP_EOL . PHP_EOL . 'ご不明点がございましたらいつでもお問い合わせください。'
-            . PHP_EOL . PHP_EOL . $guestNickname . 'またのご利用をお待ちしております♪';
+            . PHP_EOL . PHP_EOL . $guestNickname . 'のまたのご利用をお待ちしております♪';
 
         $room = $notifiable->rooms()
             ->where('rooms.type', RoomType::SYSTEM)
