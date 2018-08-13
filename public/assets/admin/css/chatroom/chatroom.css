@@ -150,6 +150,7 @@ img {
 
 .incoming_msg_img {
   width: 30px;
+  height: 30px;
 }
 
 .received_msg {
@@ -170,6 +171,14 @@ img {
 }
 
 .time_date {
+  color: #747474;
+  display: block;
+  font-size: 12px;
+  margin: 8px 0 0;
+  float: right;
+}
+
+.time_incom {
   color: #747474;
   display: block;
   font-size: 12px;
@@ -195,7 +204,10 @@ img {
   margin: 0;
   color: #fff;
   padding: 5px 10px 5px 12px;
-  width: 100%;
+  text-align: right;
+  display: block;
+  min-width: 30%;
+  float: right;
 }
 
 .outgoing_msg {
@@ -205,7 +217,14 @@ img {
 
 .sent_msg {
   float: right;
+  min-width: 267px;
+  margin-right: 5%;
   width: 46%;
+}
+
+.in_sendmess{
+  float: right;
+  width: 100%;
 }
 
 .input_msg_write input {
@@ -234,7 +253,8 @@ img {
   right: 0;
   top: 11px;
   width: 33px;
-  outline: none
+  outline: none;
+  margin-right: 10px
 }
 
 .messaging {
@@ -289,7 +309,8 @@ img {
   right: 40px;
   top: 11px;
   width: 33px;
-  outline: none
+  outline: none;
+  margin-right: 10px
 }
 
 .write_msg{
@@ -298,7 +319,7 @@ img {
   color: #4c4c4c;
   font-size: 15px;
   min-height: 165px;
-  width: 90%;
+  width: 85%;
   outline: none
 }
 
@@ -308,7 +329,7 @@ img {
 
 .delete_message{
   position: relative;
-  display: inline-block;
+  display: block;
 }
 
 .dell_mess {
@@ -319,7 +340,7 @@ img {
     border: none;
     background: none;
     outline: none;
-    margin-left: -22px;
+    margin-left: 435px;
 }
 
 .outgoing_msg:hover .dell_mess {

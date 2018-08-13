@@ -80,11 +80,6 @@ export default {
     }
   },
 
-  updated() {
-    //    this.timer = setInterval(this.getRoom, 2000);
-    // this.getRoom();
-  },
-
   created() {
     this.getToken();
     this.getRoom();
@@ -174,7 +169,7 @@ export default {
           }
         });
 
-         const scroll = $(".msg_history")[0].scrollHeight;
+        const scroll = $(".msg_history")[0].scrollHeight;
         $(".msg_history").animate({ scrollTop: scroll });
     },
 

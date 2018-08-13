@@ -38,7 +38,7 @@
         </div>
         <div class="inbox_chat inbox_guest" id="guest">
             <div v-for="value in filteredData">
-                    <router-link :to="{ name: 'ChatRoom', params: { id: value.id }}" v-on:click.native="setRoomId">
+                    <router-link :to="{ name: 'ChatRoom', params: { id: value.id }}" v-on:click.native="setRoomId(value.id, value.unread_count)">
                         <div v-bind:class="value.id == Id || value.id == room_id ? 'active_chat ' : ''">
                             <div class="chat_list" v-for="userDetail in value.users" v-if="userDetail.id !== user_id && userDetail.type == guest">
                                 <div class="chat_people">
@@ -87,10 +87,14 @@ export default {
   },
 
   methods: {
-    setRoomId(){
+    setRoomId(roomID, unReadCount){
         this.room_id = null
+        if(unReadCount > 0){
         this.setUnread = 0
-        this.$emit('interface', this.count)
+        }
+        if(this.realtime_roomId == roomID){
+            this.$emit('interface', this.count)
+        }
     },
 
     loadUser(pageCm) {

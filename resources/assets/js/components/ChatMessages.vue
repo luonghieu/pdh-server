@@ -15,6 +15,7 @@
             <div v-for="(message, index) in list_message" :key="`keyIndex-${index}`">
                 <div class="outgoing_msg" v-if="message.user_id == user_id">
                     <div class="sent_msg">
+                        <div class="in_sendmess">
                         <div class="delete_message">
                             <button class="dell_mess" @click="confirmDelete(index, list_message, message.id)"><i
                                     class="fa fa-trash"></i></button>
@@ -23,9 +24,11 @@
                             </div>
                             <p class="on_mess" v-if="message.message" :key='message.id'>{{message.message}}</p>
                         </div>
+                        <div style="clear:both"></div>
                         <confirm-delete :delete="selectedMessage" v-if='confirmModal' @confirm="deleteMessage"
                                         @cancel="cancelDelete" @close="closePopup"></confirm-delete>
                         <span class="time_date" v-if="message.created_at">{{message.created_at}}</span>
+                        </div>
                     </div>
                 </div>
                 <div v-else>
@@ -39,7 +42,7 @@
                                 <img width="100" :src="message.image"/>
                             </div>
                             <p v-if="message.message">{{message.message}}</p>
-                            <span class="time_date" v-if="message.created_at">{{message.created_at}}</span>
+                            <span class="time_incom" v-if="message.created_at">{{message.created_at}}</span>
                         </div>
                     </div>
                     </div>
