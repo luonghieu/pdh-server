@@ -535,7 +535,6 @@ class Order extends Model
         $totalPoint = 0;
         $types = [
             OrderType::CALL,
-            OrderType::NOMINATED_CALL,
             OrderType::HYBRID,
         ];
 
@@ -561,21 +560,18 @@ class Order extends Model
         $totalPoint = 0;
 
         if ($this->type == OrderType::NOMINATION) {
-            $cost = $this->temp_point;
-
+            $cost = $this->nominees->first()->cost;
             return ($cost / 2) * floor($orderDuration / 15) + $allowance;
         } else {
-            if ($this->type == OrderType::NOMINATED_CALL || $this->type == OrderType::HYBRID) {
+            if ($this->type == OrderType::NOMINATED_CALL) {
                 $cost = $this->castClass->cost;
-
                 $multiplier = 0;
                 while ($orderDuration / 15 >= 1) {
                     $multiplier++;
                     $orderDuration -= 15;
                 }
                 $orderFee = 500 * $multiplier;
-
-                $totalPoint = ($cost / 2) * floor($orderDuration / 15) + $allowance + $orderFee;
+                $totalPoint = ($cost / 2) * floor($this->duration * 60 / 15) + $allowance + $orderFee;
                 return $totalPoint;
             }
         }
