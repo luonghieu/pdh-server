@@ -18,16 +18,16 @@ class CastRankingController extends Controller
 
         if ($request->has('search')) {
             $casts->where(function ($query) use ($keyword) {
-                $query->where('id', "$keyword")
-                    ->orWhere('nickname', 'like', "%$keyword%");
+                $query->where('users.id', "$keyword")
+                    ->orWhere('users.nickname', 'like', "%$keyword%");
             });
         }
 
         $casts = $casts
-            ->with('castRanking')
-            ->whereHas('castRanking')
-            ->orderBy('point', 'desc')
-            ->orderBy('created_at', 'asc')
+            ->select('users.id', 'users.nickname', 'users.point')
+            ->selectRaw('cast_rankings.ranking as rank')
+            ->join('cast_rankings', 'users.id', '=', 'cast_rankings.user_id')
+            ->orderBy('rank', 'asc')
             ->paginate();
 
         return view('admin.cast_ranking.index', compact('casts'));
