@@ -174,24 +174,6 @@ class CastController extends Controller
             ]);
         }
 
-        $message = 'キャスト登録おめでとうございます♪'
-            . PHP_EOL . 'あなたは立派なCheers familyです☆'
-            . PHP_EOL . PHP_EOL . '解散後のメッセージで心をつかんでリピートも狙ってみましょう！'
-            . PHP_EOL . PHP_EOL . 'まずはゲストにメッセージを送ってアピールしてみてください！'
-            . PHP_EOL . PHP_EOL . '不安なこと、分からないことがあればいつでもCheers運営側にお問い合わせくださいね♪';
-
-        $room = $user->rooms()
-            ->where('rooms.type', RoomType::SYSTEM)
-            ->where('rooms.is_active', true)->first();
-
-        $roomMessage = $room->messages()->create([
-            'user_id' => 1,
-            'type' => MessageType::SYSTEM,
-            'message' => $message,
-            'system_type' => SystemMessageType::NOTIFY,
-        ]);
-
-        $roomMessage->recipients()->attach($user->id, ['room_id' => $room->id]);
         $user->notify(new CreateCast());
 
         return redirect()->route('admin.casts.index');
