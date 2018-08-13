@@ -148,7 +148,6 @@ class OrderController extends ApiController
             DB::commit();
         } catch (\Exception $e) {
             DB::rollback();
-            dd($e->getMessage());
             LogService::writeErrorLog($e);
 
             return $this->respondServerError();
