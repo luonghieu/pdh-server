@@ -2,6 +2,9 @@
 
 namespace App\Notifications;
 
+use App\Enums\MessageType;
+use App\Enums\RoomType;
+use App\Enums\SystemMessageType;
 use App\Enums\UserType;
 use App\Order;
 use Carbon\Carbon;
@@ -86,6 +89,17 @@ class CallOrdersTimeOut extends Notification implements ShouldQueue
             . PHP_EOL . '予定合計ポイント：' . number_format($orderPoint) . ' Point'
             . PHP_EOL . '--------------------------------------------------'
             . PHP_EOL . 'お手数ですが、再度コールをし直してください。';
+
+        $room = $notifiable->rooms()
+            ->where('rooms.type', RoomType::SYSTEM)
+            ->where('rooms.is_active', true)->first();
+        $roomMessage = $room->messages()->create([
+            'user_id' => 1,
+            'type' => MessageType::SYSTEM,
+            'message' => $content,
+            'system_type' => SystemMessageType::NORMAL
+        ]);
+        $roomMessage->recipients()->attach($notifiable->id, ['room_id' => $room->id]);
 
         $namedUser = 'user_' . $notifiable->id;
         $send_from = UserType::ADMIN;

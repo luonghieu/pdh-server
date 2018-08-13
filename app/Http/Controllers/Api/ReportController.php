@@ -48,12 +48,17 @@ class ReportController extends ApiController
             });
         })->first();
 
+        if (!$room) {
+            return $this->respondErrorMessage(trans('messages.room_not_found'), 404);
+        }
+
         $input['room_id'] = $room->id;
         try {
             $report = Report::create($input);
             $user->notify(new CreatedReport());
         } catch (\Exception $e) {
             LogService::writeErrorLog($e->getMessage());
+
             return $this->respondServerError();
         }
 
