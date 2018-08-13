@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Admin\Order;
 
+use App\Enums\OrderPaymentStatus;
 use App\Enums\PaymentRequestStatus;
 use App\Http\Controllers\Controller;
 use App\Order;
@@ -115,6 +116,47 @@ class OrderController extends Controller
         return redirect(route('admin.orders.casts_matching', compact('casts', 'order')));
     }
 
+    public function orderNominee(Order $order)
+    {
+        return view('admin.orders.order_nominee', compact('order'));
+    }
+
+    public function changePaymentRequestStatus(Order $order)
+    {
+        $order->payment_status = OrderPaymentStatus::WAITING;
+        try {
+            $order->save();
+        } catch (\Exception $e) {
+            LogService::writeErrorLog($e);
+
+            return $this->respondServerError();
+        }
+        return view('admin.orders.order_nominee', compact('order'));
+    }
+
+    public function changeStartTimeOrderNominee(Request $request)
+    {
+        $order = Order::find($request->orderId);
+        $castId = $request->cast_id;
+        $newHour = $request->start_time_hour;
+        $newMinute = $request->start_time_minute;
+        $this->changeStartTime($newHour, $newMinute, $order, $castId);
+
+        return redirect(route('admin.orders.order_nominee', compact('order')));
+    }
+
+    public function changeStopTimeOrderNominee(Request $request)
+    {
+        $order = Order::find($request->orderId);
+        $castId = $request->cast_id;
+
+        $newHour = $request->stop_time_hour;
+        $newMinute = $request->stop_time_minute;
+        $this->changeStopTime($newHour, $newMinute, $order, $castId);
+
+        return redirect(route('admin.orders.order_nominee', compact('order')));
+    }
+
     private function changeStartTime($newHour, $newMinute, $order, $castId)
     {
         $cast = $order->casts()->withPivot('started_at', 'stopped_at', 'type')->where('user_id', $castId)->first();
@@ -191,19 +233,21 @@ class OrderController extends Controller
 
             $paymentRequest = $order->paymentRequests->first();
 
-            $paymentRequest->cast_id = $castId;
-            $paymentRequest->guest_id = $order->user_id;
-            $paymentRequest->order_id = $order->id;
-            $paymentRequest->order_time = $input['order_time'];
-            $paymentRequest->order_point = $input['order_point'];
-            $paymentRequest->allowance_point = $input['allowance_point'];
-            $paymentRequest->fee_point = $input['fee_point'];
-            $paymentRequest->extra_time = $input['extra_time'];
-            $paymentRequest->old_extra_time = $paymentRequest->extra_time;
-            $paymentRequest->extra_point = $input['extra_point'];
-            $paymentRequest->total_point = $input['total_point'];
-            $paymentRequest->status = PaymentRequestStatus::CONFIRM;
-            $paymentRequest->save();
+            if ($paymentRequest) {
+                $paymentRequest->cast_id = $castId;
+                $paymentRequest->guest_id = $order->user_id;
+                $paymentRequest->order_id = $order->id;
+                $paymentRequest->order_time = $input['order_time'];
+                $paymentRequest->order_point = $input['order_point'];
+                $paymentRequest->allowance_point = $input['allowance_point'];
+                $paymentRequest->fee_point = $input['fee_point'];
+                $paymentRequest->extra_time = $input['extra_time'];
+                $paymentRequest->old_extra_time = $paymentRequest->extra_time;
+                $paymentRequest->extra_point = $input['extra_point'];
+                $paymentRequest->total_point = $input['total_point'];
+                $paymentRequest->status = PaymentRequestStatus::CONFIRM;
+                $paymentRequest->save();
+            }
 
             \DB::commit();
         } catch (\Exception $e) {

@@ -2,13 +2,12 @@
 
 namespace App\Notifications;
 
-use App\Enums\UserType;
 use App\Enums\MessageType;
-use Illuminate\Bus\Queueable;
 use App\Enums\SystemMessageType;
-use Illuminate\Notifications\Notification;
+use App\Enums\UserType;
+use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
-use Illuminate\Notifications\Messages\MailMessage;
+use Illuminate\Notifications\Notification;
 
 class TenMinBeforeOrderEnded extends Notification implements ShouldQueue
 {
@@ -65,10 +64,10 @@ class TenMinBeforeOrderEnded extends Notification implements ShouldQueue
             'user_id' => 1,
             'type' => MessageType::SYSTEM,
             'system_type' => SystemMessageType::NOTIFY,
-            'message' => $message
+            'message' => $message,
         ]);
 
-        $roomMessage->recipients()->attach($notifiable->id, ['room_id' => $room->id, 'is_show' => false]);
+        $roomMessage->recipients()->attach($notifiable->id, ['room_id' => $room->id]);
 
         return [
             'content' => $message,
@@ -84,7 +83,6 @@ class TenMinBeforeOrderEnded extends Notification implements ShouldQueue
         $namedUser = 'user_' . $notifiable->id;
         $send_from = UserType::ADMIN;
 
-
         return [
             'audienceOptions' => ['named_user' => $namedUser],
             'notificationOptions' => [
@@ -97,7 +95,7 @@ class TenMinBeforeOrderEnded extends Notification implements ShouldQueue
                     'extra' => [
                         'push_id' => $pushId,
                         'send_from' => $send_from,
-                        'order_id' => $this->order->id
+                        'order_id' => $this->order->id,
                     ],
                 ],
             ],

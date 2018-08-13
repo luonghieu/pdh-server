@@ -20,6 +20,7 @@ class PointController extends Controller
     {
         $keyword = $request->search_point_type;
         $pointTypes = [
+            0 => 'All',
             PointType::BUY => 'ポイント購入',
             PointType::PAY => 'ポイント決済',
             PointType::AUTO_CHARGE => 'オートチャージ',
@@ -43,7 +44,7 @@ class PointController extends Controller
             });
         }
 
-        if ($request->has('search_point_type')) {
+        if ($request->has('search_point_type') && (0 != $request->search_point_type)) {
             $points->where(function ($query) use ($keyword) {
                 $query->where('type', "$keyword");
             });

@@ -8,8 +8,8 @@ use App\Enums\PointType;
 use App\Enums\UserType;
 use App\Order;
 use App\Point;
-use App\Transfer;
 use App\Services\LogService;
+use App\Transfer;
 use App\User;
 use Carbon\Carbon;
 use Illuminate\Console\Command;
@@ -72,9 +72,11 @@ class PointSettlementSchedule extends Command
                 $paymentRequests = $order->paymentRequests;
 
                 $receiveAdmin = 0;
+                $castPercent = config('common.cast_percent');
+
                 foreach ($paymentRequests as $paymentRequest) {
-                    $receiveCast = $paymentRequest->total_point * 0.8;
-                    $receiveAdmin += $paymentRequest->total_point * 0.2;
+                    $receiveCast = $paymentRequest->total_point * $castPercent;
+                    $receiveAdmin += $paymentRequest->total_point * (1 - $castPercent);
 
                     $this->createTransfer($order, $paymentRequest, $receiveCast);
 

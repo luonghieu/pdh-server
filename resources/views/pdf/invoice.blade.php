@@ -67,10 +67,10 @@
     <div class="footer" style="display: table; width: 100%; margin-top: 30px; margin-left: 17px;">
         <div style="display: table-cell; vertical-align: middle;">
             <div class="text" style="width: 320px; margin-right: auto; margin-left: auto; white-space: nowrap;">
-                <span style="display: block; font-size: 24px;">〒160−0023</span>
-                <span style="display: block; font-size: 24px;">東京都新宿区西新宿1−22−2 サンエービル3階</span>
-                <span style="display: block; font-size: 24px;">株式会社ネオラボ</span>
-                <span style="display: block; font-size: 24px">TEL：03-5908-8422</span>
+                <span style="display: block; font-size: 24px;">〒164-0014</span>
+                <span style="display: block; font-size: 24px;">東京都中野区南台 2丁目3番6号 004号室</span>
+                <span style="display: block; font-size: 24px;">株式会社RESTILL</span>
+                <span style="display: block; font-size: 24px">TEL 03-5789-5356</span>
             </div>
         </div>
     </div>
