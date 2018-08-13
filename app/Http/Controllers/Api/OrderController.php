@@ -8,6 +8,7 @@ use App\Enums\CastOrderType;
 use App\Enums\OrderStatus;
 use App\Enums\OrderType;
 use App\Http\Resources\OrderResource;
+use App\Notifications\CreateNominationOrdersForCast;
 use App\Order;
 use App\Services\LogService;
 use App\Tag;
@@ -129,20 +130,25 @@ class OrderController extends ApiController
                     'status' => CastOrderStatus::OPEN,
                 ]);
 
+
                 if (1 == $request->total_cast &&  1 == $counter) {
                     $ownerId = $order->user_id;
-                    $nomineeId = $order->nominees()->first()->id;
-
-                    $room = $this->createDirectRoom($ownerId, $nomineeId);
+                    $nominee = $order->nominees()->first();
+                    $room = $this->createDirectRoom($ownerId, $nominee->id);
 
                     $order->room_id = $room->id;
                     $order->save();
+
+                    if ($order->type == OrderType::NOMINATION) {
+                        $nominee->notify(new CreateNominationOrdersForCast($order));
+                    }
                 }
             }
 
             DB::commit();
         } catch (\Exception $e) {
             DB::rollback();
+            dd($e->getMessage());
             LogService::writeErrorLog($e);
 
             return $this->respondServerError();
