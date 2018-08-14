@@ -66,14 +66,19 @@ class PaymentRequestFromCast extends Notification implements ShouldQueue
         $orderStartDate = Carbon::parse($this->order->date . ' ' . $this->order->start_time);
         $orderEndDate = Carbon::parse($this->order->actual_ended_at);
         $guestNickname = $this->order->user->nickname ? $this->order->user->nickname . '様' : 'お客様';
+        $casts = $this->order->casts;
+        $orderPoint = 0;
+        foreach ($casts as $cast) {
+            $orderPoint += $cast->pivot->total_point;
+        }
 
         $content = 'Cheersをご利用いただきありがとうございました♪'
         . PHP_EOL . $orderStartDate->format('Y/m/d H:i') . '~' . $orderEndDate->format('H:i') . 'の合計ポイントは' .
-        $this->order->total_point . 'Pointです。'
+            $orderPoint . 'Pointです。'
             . PHP_EOL . '合計ポイントの詳細はコチラから確認することができます。'
             . PHP_EOL . '※詳細に誤りがある場合は、24時間以内に「決済ポイントの修正依頼をする」を押してください。運営から確認のご連絡を差し上げます。'
             . PHP_EOL . PHP_EOL . 'ご不明点がございましたらいつでもお問い合わせください。'
-            . PHP_EOL . PHP_EOL . $guestNickname . 'またのご利用をお待ちしております♪';
+            . PHP_EOL . PHP_EOL . $guestNickname . 'のまたのご利用をお待ちしております♪';
 
         $room = $notifiable->rooms()
             ->where('rooms.type', RoomType::SYSTEM)

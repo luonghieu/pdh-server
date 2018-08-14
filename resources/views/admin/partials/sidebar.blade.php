@@ -12,6 +12,7 @@ $routes = [
             ],
         ],
     ],
+
     'cast' => [
         [
             'name' => 'admin.casts.index',
@@ -22,6 +23,7 @@ $routes = [
             ],
         ],
     ],
+
     'ranking' => [
         [
             'name' => '',
@@ -30,7 +32,8 @@ $routes = [
             'submenu' => [],
         ],
     ],
-    'call' => [
+
+    'order' => [
         [
             'name' => 'admin.orders.index',
             'value' => '予約管理',
@@ -40,14 +43,7 @@ $routes = [
             ],
         ],
     ],
-    'order' => [
-        [
-            'name' => '',
-            'value' => '個人予約管理',
-            'url' => '#',
-            'submenu' => [],
-        ],
-    ],
+
     'chatroom' => [
         [
             'name' => '',
@@ -77,6 +73,18 @@ $routes = [
             'submenu' => [],
         ],
     ],
+
+    'transfer' => [
+        [
+            'name' => 'admin.transfers.non_transfers',
+            'value' => '振込管理',
+            'url' =>  route('admin.transfers.non_transfers'),
+            'submenu' => [
+              'admin.transfers.transfered'
+            ],
+        ],
+    ],
+
     'point' => [
         [
             'name' => 'admin.points.index',
