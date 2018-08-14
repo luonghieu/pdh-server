@@ -30,7 +30,7 @@ final class OrderStatus extends Enum
             return '合流中';
         } elseif (self::DONE === $value) {
             return '解散中';
-        } elseif (self::TIMEOUT === $value) {
+        } elseif (self::TIMEOUT === $value || self::CANCELED === $value || self::DENIED === $value) {
             return 'マッチング不成立';
         }
 
