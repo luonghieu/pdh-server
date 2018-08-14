@@ -43,7 +43,7 @@
           <div class="btn-change-report report">
             <button type="button" class="submit-transfer">
               <p>
-                振込済みに変更する
+                未振込に変更する
               </p>
             </button>
           </div>
@@ -75,7 +75,7 @@
                   <td>{{ Carbon\Carbon::parse($transfer->created_at)->format('Y年m月d日') }}</td>
                   <td>{{ $transfer->user_id }}</td>
                   <td>{{ $transfer->user->fullname }}</td>
-                  <td>￥{{ $transfer->amount }}</td>
+                  <td>￥{{ number_format($transfer->amount) }}</td>
                   @if($transfer->order)
                     @if (App\Enums\OrderType::NOMINATION == $transfer->order->type)
                     <td>
@@ -98,7 +98,7 @@
                   <td></td>
                   <td></td>
                   <td></td>
-                  <td>¥ {{ $transfers->sum('amount') }}</td>
+                  <td>¥ {{ number_format($transfers->sum('amount')) }}</td>
                   <td></td>
                 </tr>
               @else
