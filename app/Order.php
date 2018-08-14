@@ -65,7 +65,7 @@ class Order extends Model
         return $this->belongsToMany(Cast::class)
             ->where('cast_order.type', CastOrderType::NOMINEE)
             ->whereNull('cast_order.deleted_at')
-            ->withPivot('status')
+            ->withPivot('status', 'type')
             ->withTimestamps();
     }
 
@@ -182,6 +182,12 @@ class Order extends Model
 
     public function apply($userId)
     {
+        $orderStartTime = Carbon::parse($this->date . ' ' . $this->start_time);
+        $orderEndTime = $orderStartTime->copy()->addMinutes($this->duration * 60);
+        $nightTime = $this->nightTime($orderEndTime);
+        $allowance = $this->allowance($nightTime);
+        $orderPoint = $this->orderPoint();
+
         try {
             $this->casts()->attach(
                 $userId,
@@ -189,6 +195,7 @@ class Order extends Model
                     'status' => CastOrderStatus::ACCEPTED,
                     'accepted_at' => Carbon::now(),
                     'type' => CastOrderType::CANDIDATE,
+                    'temp_point' => $orderPoint + $allowance
                 ]
             );
 
@@ -204,10 +211,22 @@ class Order extends Model
 
     public function accept($userId)
     {
+        $cast = $this->nominees()->where('user_id', $userId)->first();
+        $orderStartTime = Carbon::parse($this->date . ' ' . $this->start_time);
+        $orderEndTime = $orderStartTime->copy()->addMinutes($this->duration * 60);
+        $nightTime = $this->nightTime($orderEndTime);
+        $allowance = $this->allowance($nightTime);
+        $orderPoint = $this->orderPoint($cast);
+        $orderFee = $this->orderFee($cast, $orderStartTime, $orderEndTime);
+
         try {
             $this->nominees()->updateExistingPivot(
                 $userId,
-                ['status' => CastOrderStatus::ACCEPTED, 'accepted_at' => Carbon::now()],
+                [
+                    'status' => CastOrderStatus::ACCEPTED,
+                    'accepted_at' => Carbon::now(),
+                    'temp_point' => $orderPoint + $allowance + $orderFee
+                ],
                 false
             );
 
@@ -357,12 +376,16 @@ class Order extends Model
         return 0;
     }
 
-    public function orderPoint($cast, $startedAt = null, $stoppedAt = null)
+    public function orderPoint($cast = null, $startedAt = null, $stoppedAt = null)
     {
         if (OrderType::NOMINATION != $this->type) {
             $cost = $this->castClass->cost;
         } else {
-            $cost = $cast->cost;
+            if ($cast) {
+                $cost = $cast->cost;
+            } else {
+                $cost = $this->castClass->cost;
+            }
         }
 
         $orderDuration = $this->duration * 60;
@@ -380,7 +403,6 @@ class Order extends Model
         $stoppedAt = Carbon::parse($stoppedAt);
         $castDuration = $startedAt->diffInMinutes($stoppedAt);
         $orderDuration = $this->duration * 60;
-
         if (OrderType::NOMINATION != $order->type && CastOrderType::NOMINEE == $cast->pivot->type) {
             if ($castDuration > $orderDuration) {
                 while ($castDuration / 15 >= 1) {
