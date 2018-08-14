@@ -3,6 +3,7 @@
 namespace App\Http\Resources;
 
 use App\Traits\ResourceResponse;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Resources\Json\JsonResource;
 
 class CastOrderResource extends JsonResource
@@ -17,8 +18,12 @@ class CastOrderResource extends JsonResource
      */
     public function toArray($request)
     {
+        $isCast = Auth::user()->is_cast;
+        $castPercent = config('common.cast_percent');
+
         return $this->filterNull([
             'order_time' => $this->order_time,
+            'temp_point' => $this->when($isCast, $castPercent * $this->temp_point, $this->temp_point),
             'extra_time' => $this->extra_time,
             'order_point' => $this->order_point,
             'extra_point' => $this->extra_point,

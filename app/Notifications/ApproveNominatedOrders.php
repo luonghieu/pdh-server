@@ -59,6 +59,8 @@ class ApproveNominatedOrders extends Notification implements ShouldQueue
 
     public function pushData($notifiable)
     {
+        $room = $this->order->room;
+
         $startTime = Carbon::parse($this->order->date . ' ' . $this->order->start_time);
 
         $content = '\\\\ おめでとうございます！マッチングが確定しました♪ //'
@@ -90,6 +92,8 @@ class ApproveNominatedOrders extends Notification implements ShouldQueue
                     'extra' => [
                         'push_id' => $pushId,
                         'send_from' => $send_from,
+                        'order_id' => $this->order->id,
+                        'room_id' => $room->id
                     ],
                 ],
             ],

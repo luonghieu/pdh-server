@@ -41,21 +41,7 @@ class CancelOrder implements ShouldQueue
     public function handle()
     {
         if ($this->order->status == OrderStatus::CANCELED) {
-            $castIds = $this->order->castOrder()
-                ->pluck('cast_order.user_id')
-                ->toArray();
             $casts = $this->order->casts;
-
-            foreach ($castIds as $id) {
-                $this->order->castOrder()->updateExistingPivot(
-                    $id,
-                    [
-                        'status' => CastOrderStatus::CANCELED,
-                        'canceled_at' => $this->order->canceled_at
-                    ],
-                    false
-                );
-            }
 
             $orderStartDate = Carbon::parse($this->order->date)->startOfDay();
             $orderCancelDate = Carbon::parse($this->order->canceled_at)->startOfDay();
@@ -72,6 +58,21 @@ class CancelOrder implements ShouldQueue
                 $involvedUsers[] = $cast;
                 $orderFee = $this->order->orderFee($cast, $orderStartedAt, $orderStoppeddAt);
                 $orderPoint += $this->order->orderPoint($cast) + $orderAllowance + $orderFee;
+            }
+
+            $castIds = $this->order->castOrder()
+                ->pluck('cast_order.user_id')
+                ->toArray();
+
+            foreach ($castIds as $id) {
+                $this->order->castOrder()->updateExistingPivot(
+                    $id,
+                    [
+                        'status' => CastOrderStatus::CANCELED,
+                        'canceled_at' => $this->order->canceled_at
+                    ],
+                    false
+                );
             }
 
             $percent = 0;

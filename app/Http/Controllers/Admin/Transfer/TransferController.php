@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Admin\Transfer;
 
+use App\Enums\TransferStatus;
 use App\Http\Controllers\Controller;
 use App\Services\CSVExport;
 use App\Transfer;
@@ -158,13 +159,13 @@ class TransferController extends Controller
             $checkTransferExist = Transfer::whereIn('id', $transferIds)->whereNull('transfered_at')->exists();
 
             if ($checkTransferExist) {
-                Transfer::whereIn('id', $transferIds)->update(['transfered_at' => now()]);
-
-                return redirect(route('admin.transfers.non_transfers'));
-            } else {
-                Transfer::whereIn('id', $transferIds)->update(['transfered_at' => null]);
+                Transfer::whereIn('id', $transferIds)->update(['transfered_at' => now(), 'status' => TransferStatus::CLOSED]);
 
                 return redirect(route('admin.transfers.transfered'));
+            } else {
+                Transfer::whereIn('id', $transferIds)->update(['transfered_at' => null, 'status' => TransferStatus::OPEN]);
+
+                return redirect(route('admin.transfers.non_transfers'));
             }
         }
     }

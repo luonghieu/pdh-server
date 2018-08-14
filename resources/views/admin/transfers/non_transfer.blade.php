@@ -38,10 +38,10 @@
             </div>
           </form>
         </div>
-        <form action="{{ route('admin.transfers.change_transfers') }}" method="POST">
+        <form action="{{ route('admin.transfers.change_transfers') }}" method="POST" id="form-transfer">
           {{ csrf_field() }}
           <div class="btn-change-report report">
-            <button type="submit" >
+            <button type="button" class="submit-transfer">
               <p>
                 振込済みに変更する
               </p>
@@ -75,15 +75,21 @@
                   <td>{{ Carbon\Carbon::parse($transfer->created_at)->format('Y年m月d日') }}</td>
                   <td>{{ $transfer->user_id }}</td>
                   <td>{{ $transfer->user->fullname }}</td>
-                  <td>￥{{ $transfer->amount }}</td>
-                  @if (App\Enums\OrderType::NOMINATION == $transfer->order->type)
-                  <td>
-                    <a href="" class="btn-detail">詳細</a>
-                  </td>
+                  <td>￥{{ number_format($transfer->amount) }}</td>
+                  @if($transfer->order)
+                    @if (App\Enums\OrderType::NOMINATION == $transfer->order->type)
+                    <td>
+                      <a href="{{ route('admin.orders.order_nominee', ['order' => $transfer->order_id]) }}" class="btn-detail">詳細</a>
+                    </td>
+                    @else
+                    <td>
+                      <a href="{{ route('admin.orders.call', ['order' => $transfer->order_id]) }}" class="btn-detail">詳細</a>
+                    </td>
+                    @endif
                   @else
-                  <td>
-                    <a href="{{ route('admin.orders.call', ['order' => $transfer->order_id]) }}" class="btn-detail">詳細</a>
-                  </td>
+                    <td>
+                      予約が存在しません
+                    </td>
                   @endif
                 @endforeach
                  <tr>
@@ -92,7 +98,7 @@
                   <td></td>
                   <td></td>
                   <td></td>
-                  <td>¥ {{ $transfers->sum('amount') }}</td>
+                  <td>¥ {{ number_format($transfers->sum('amount')) }}</td>
                   <td></td>
                 </tr>
               @else

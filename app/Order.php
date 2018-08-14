@@ -56,7 +56,9 @@ class Order extends Model
             ->whereNotNull('cast_order.accepted_at')
             ->whereNull('cast_order.canceled_at')
             ->whereNull('cast_order.deleted_at')
-            ->withPivot('order_time', 'extra_time', 'order_point', 'extra_point', 'allowance_point', 'fee_point', 'total_point', 'type', 'started_at', 'stopped_at', 'status', 'accepted_at', 'canceled_at', 'guest_rated', 'cast_rated', 'is_thanked')
+            ->withPivot('order_time', 'extra_time', 'order_point', 'extra_point', 'allowance_point', 'fee_point',
+                'total_point', 'type', 'started_at', 'stopped_at', 'status', 'accepted_at', 'canceled_at', 'guest_rated',
+                'cast_rated', 'is_thanked', 'temp_point')
             ->withTimestamps();
     }
 
@@ -65,7 +67,15 @@ class Order extends Model
         return $this->belongsToMany(Cast::class)
             ->where('cast_order.type', CastOrderType::NOMINEE)
             ->whereNull('cast_order.deleted_at')
-            ->withPivot('status')
+            ->withPivot('status', 'type')
+            ->withTimestamps();
+    }
+
+    public function nomineesWithTrashed()
+    {
+        return $this->belongsToMany(Cast::class)
+            ->where('cast_order.type', CastOrderType::NOMINEE)
+            ->withPivot('status', 'type')
             ->withTimestamps();
     }
 
@@ -183,12 +193,18 @@ class Order extends Model
     public function apply($userId)
     {
         try {
+            $orderStartTime = Carbon::parse($this->date . ' ' . $this->start_time);
+            $orderEndTime = $orderStartTime->copy()->addMinutes($this->duration * 60);
+            $nightTime = $this->nightTime($orderEndTime);
+            $allowance = $this->allowance($nightTime);
+            $orderPoint = $this->orderPoint();
             $this->casts()->attach(
                 $userId,
                 [
                     'status' => CastOrderStatus::ACCEPTED,
                     'accepted_at' => Carbon::now(),
                     'type' => CastOrderType::CANDIDATE,
+                    'temp_point' => $orderPoint + $allowance
                 ]
             );
 
@@ -205,9 +221,20 @@ class Order extends Model
     public function accept($userId)
     {
         try {
+            $cast = $this->nominees()->where('user_id', $userId)->first();
+            $orderStartTime = Carbon::parse($this->date . ' ' . $this->start_time);
+            $orderEndTime = $orderStartTime->copy()->addMinutes($this->duration * 60);
+            $nightTime = $this->nightTime($orderEndTime);
+            $allowance = $this->allowance($nightTime);
+            $orderPoint = $this->orderPoint($cast);
+            $orderFee = $this->orderFee($cast, $orderStartTime, $orderEndTime);
             $this->nominees()->updateExistingPivot(
                 $userId,
-                ['status' => CastOrderStatus::ACCEPTED, 'accepted_at' => Carbon::now()],
+                [
+                    'status' => CastOrderStatus::ACCEPTED,
+                    'accepted_at' => Carbon::now(),
+                    'temp_point' => $orderPoint + $allowance + $orderFee
+                ],
                 false
             );
 
@@ -357,12 +384,16 @@ class Order extends Model
         return 0;
     }
 
-    public function orderPoint($cast, $startedAt = null, $stoppedAt = null)
+    public function orderPoint($cast = null, $startedAt = null, $stoppedAt = null)
     {
         if (OrderType::NOMINATION != $this->type) {
             $cost = $this->castClass->cost;
         } else {
-            $cost = $cast->cost;
+            if ($cast) {
+                $cost = $cast->cost;
+            } else {
+                $cost = $this->castClass->cost;
+            }
         }
 
         $orderDuration = $this->duration * 60;
@@ -380,7 +411,6 @@ class Order extends Model
         $stoppedAt = Carbon::parse($stoppedAt);
         $castDuration = $startedAt->diffInMinutes($stoppedAt);
         $orderDuration = $this->duration * 60;
-
         if (OrderType::NOMINATION != $order->type && CastOrderType::NOMINEE == $cast->pivot->type) {
             if ($castDuration > $orderDuration) {
                 while ($castDuration / 15 >= 1) {
@@ -532,6 +562,29 @@ class Order extends Model
         $user->point = $point->balance;
         $user->save();
 
+        $subPoint = $this->total_point;
+        $points = Point::where('user_id', $user->id)
+            ->where('balance', '>', 0)
+            ->whereIn('type', [PointType::BUY, PointType::AUTO_CHARGE])
+            ->orderBy('created_at')
+            ->get();
+
+        foreach ($points as $value) {
+            if ($subPoint == 0) {
+                return true;
+            } elseif ($value->point > $subPoint && $subPoint > 0) {
+                $value->balance = $value->point - $subPoint;
+                $value->update();
+
+                $subPoint = 0;
+            } elseif ($value->point <= $subPoint) {
+                $subPoint -= $value->point;
+
+                $value->balance = 0;
+                $value->update();
+            }
+        }
+
         return true;
     }
 
@@ -566,7 +619,12 @@ class Order extends Model
         $totalPoint = 0;
 
         if ($this->type == OrderType::NOMINATION) {
-            $cost = $this->nominees->first()->cost;
+            $nommine = $this->nominees->first();
+            if (!$nommine) {
+                $nommine = $this->nomineesWithTrashed->first();
+            }
+            $cost = $nommine->cost;
+
             return ($cost / 2) * floor($orderDuration / 15) + $allowance;
         } else {
             if ($this->type == OrderType::NOMINATED_CALL || $this->type == OrderType::HYBRID) {

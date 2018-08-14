@@ -1133,6 +1133,10 @@ tbody td {
   color: red;
 }
 
+.column-long-text {
+  width: 10%;
+}
+
 @media (max-width: 767px) {
   .navbar {
     background: #20a8d817;

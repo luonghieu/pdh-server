@@ -22,18 +22,22 @@
               <tr>
                 <th>予約者ID</th>
                 <td>
+                  @if ($order->user)
                   <a href="{{ route('admin.users.show', ['user' => $order->user->id]) }}">
                     {{ $order->user->id }}
                   </a>
+                  @else
+                  <span>-</span>
+                  @endif
                 </td>
               </tr>
               <tr>
                 <th>予約者名</th>
-                <td>{{ $order->user->nickname }}</td>
+                <td>{{ $order->user ? $order->user->nickname : '' }}</td>
               </tr>
               <tr>
                 <th>指名キャスト名</th>
-                <td>{{ $order->casts[0]->nickname }}</td>
+                <td>{{ (count($order->casts) > 0) ? $order->casts[0]->nickname : '' }}</td>
               </tr>
               <tr>
                 <th>予約区分</th>
@@ -42,7 +46,7 @@
               <tr>
                 <th>ルームID</th>
                 <td>
-                  @if (App\Enums\OrderStatus::ACTIVE <= $order->status)
+                  @if (App\Enums\OrderStatus::ACTIVE <= $order->status && $order->room)
                   <a href="{{ $order->room ? route('admin.rooms.messages_by_room', ['room' => $order->room->id]) : '#' }}">
                     {{ $order->room->id }}
                   </a>
@@ -58,7 +62,7 @@
               </tr>
               <tr>
                 <th>キャストとの合流時間</th>
-                <td>{{ Carbon\Carbon::parse($order->casts[0]->pivot->started_at)->format('Y/m/d H:i') }}</td>
+                <td>{{ (count($order->casts) > 0) ? Carbon\Carbon::parse($order->casts[0]->pivot->started_at)->format('Y/m/d H:i') : '' }}</td>
               </tr>
               <tr>
                 <th>キャストを呼ぶ時間</th>
@@ -66,12 +70,24 @@
               </tr>
               <tr>
                 <th>予定合計ポイント</th>
-                <td>{{ $order->casts[0]->pivot->total_point }}</td>
+                <td>{{ $order->total_point }}</td>
               </tr>
               <tr>
                 <th>ステータス</th>
                 <td>
-                  {{ App\Enums\OrderStatus::getDescription($order->status) }}
+                  @if (App\Enums\OrderStatus::CANCELED == $order->status)
+                    @if ($order->cancel_fee_percent == 0)
+                    <span>確定後キャンセル (キャンセル料なし)</span>
+                    @else
+                    <span>確定後キャンセル (キャンセル料あり)</span>
+                    @endif
+                  @else
+                    @if ($order->payment_status != null)
+                    {{ App\Enums\OrderPaymentStatus::getDescription($order->payment_status) }}
+                    @else
+                    {{ App\Enums\OrderStatus::getDescription($order->status) }}
+                    @endif
+                  @endif
                   @if (App\Enums\OrderPaymentStatus::EDIT_REQUESTING == $order->payment_status)
                   <button class="change-time payment-request" data-toggle="modal" data-target="#payment-request">ステータスを売上申請待ちに切り替える</button>
                   @endif
@@ -85,36 +101,36 @@
               <tr>
                 <th>合流時刻</th>
                 <td>
-                  {{ Carbon\Carbon::parse($order->casts[0]->pivot->started_at)->format('Y/m/d H:i') }}
+                  {{ (count($order->casts) > 0) ? Carbon\Carbon::parse($order->casts[0]->pivot->started_at)->format('Y/m/d H:i') : '' }}
                   <button class="change-time order-nominee-started-time" data-toggle="modal" data-target="#order-nominee-started-time">合流時刻を修正する</button>
                 </td>
               </tr>
               <tr>
                 <th>解散時刻</th>
                 <td>
-                  {{ Carbon\Carbon::parse($order->casts[0]->pivot->stopped_at)->format('Y/m/d H:i') }}
+                  {{ (count($order->casts) > 0) ? Carbon\Carbon::parse($order->casts[0]->pivot->stopped_at)->format('Y/m/d H:i') : '' }}
                   <button class="change-time order-nominee-stopped-time" data-toggle="modal" data-target="#order-nominee-stopped-time">解散時刻を修正する</button>
                 </td>
               </tr>
               <tr>
                 <th>延長時間</th>
-                <td>{{ $order->casts[0]->pivot->extra_time }}分</td>
+                <td>{{ (count($order->casts) > 0) ? $order->casts[0]->pivot->extra_time.'分' : '' }}</td>
               </tr>
               <tr>
                 <th>延長料</th>
-                <td>{{ number_format($order->casts[0]->pivot->extra_point) }}P</td>
+                <td>{{ (count($order->casts) > 0) ? number_format($order->casts[0]->pivot->extra_point).'P' : '' }}</td>
               </tr>
               <tr>
                 <th>指名料</th>
-                <td>{{ number_format($order->casts[0]->pivot->fee_point) }}P</td>
+                <td>{{ (count($order->casts) > 0) ? number_format($order->casts[0]->pivot->fee_point).'P' : '' }}</td>
               </tr>
               <tr>
                 <th>深夜手当</th>
-                <td>{{ number_format($order->casts[0]->pivot->night_time) }}P</td>
+                <td>{{ (count($order->casts) > 0) ? number_format($order->casts[0]->pivot->night_time).'P' : '' }}</td>
               </tr>
               <tr>
                 <th>実績合計ポイント</th>
-                <td>{{ number_format($order->casts[0]->pivot->total_point) }}P</td>
+                <td>{{ $order->total_point }}P</td>
               </tr>
               @endif
             </table>
@@ -146,17 +162,17 @@
                       {{ method_field('PUT') }}
                         <select name="start_time_hour">
                           @for ($i = 0; $i < 24; $i++)
-                          <option value="{{ $i }}" {{ Carbon\Carbon::parse($order->casts[0]->pivot->started_at)->format('H') == $i ? 'selected' : '' }}>{{ $i }}</option>
+                          <option value="{{ $i }}" {{ Carbon\Carbon::parse((count($order->casts) > 0) ? $order->casts[0]->pivot->started_at : '')->format('H') == $i ? 'selected' : '' }}>{{ $i }}</option>
                           @endfor
                         </select>
                         <span>:</span>
                         <select name="start_time_minute">
                           @for ($i = 0; $i < 60; $i++)
-                          <option value="{{ $i }}" {{ Carbon\Carbon::parse($order->casts[0]->pivot->started_at)->format('i') == $i ? 'selected' : '' }}>{{ $i }}</option>
+                          <option value="{{ $i }}" {{ Carbon\Carbon::parse((count($order->casts) > 0) ? $order->casts[0]->pivot->started_at : '')->format('i') == $i ? 'selected' : '' }}>{{ $i }}</option>
                           @endfor
                         </select>
                         <input type="hidden" name="orderId" value="{{ $order->id }}">
-                        <input type="hidden" name="cast_id" value="{{ $order->casts[0]->id }}">
+                        <input type="hidden" name="cast_id" value="{{ (count($order->casts) > 0) ? $order->casts[0]->id : '' }}">
                     </div>
                   </div>
                   <div class="modal-footer">
@@ -178,17 +194,17 @@
                       {{ method_field('PUT') }}
                         <select name="stop_time_hour">
                           @for ($i = 0; $i < 24; $i++)
-                          <option value="{{ $i }}" {{ Carbon\Carbon::parse($order->casts[0]->pivot->stopped_at)->format('H') == $i ? 'selected' : '' }}>{{ $i }}</option>
+                          <option value="{{ $i }}" {{ Carbon\Carbon::parse((count($order->casts) > 0) ? $order->casts[0]->pivot->stopped_at : '')->format('H') == $i ? 'selected' : '' }}>{{ $i }}</option>
                           @endfor
                         </select>
                         <span>:</span>
                         <select name="stop_time_minute">
                           @for ($i = 0; $i < 60; $i++)
-                          <option value="{{ $i }}" {{ Carbon\Carbon::parse($order->casts[0]->pivot->stopped_at)->format('i') == $i ? 'selected' : '' }}>{{ $i }}</option>
+                          <option value="{{ $i }}" {{ Carbon\Carbon::parse((count($order->casts) > 0) ? $order->casts[0]->pivot->stopped_at : '')->format('i') == $i ? 'selected' : '' }}>{{ $i }}</option>
                           @endfor
                         </select>
                         <input type="hidden" name="orderId" value="{{ $order->id }}">
-                        <input type="hidden" name="cast_id" value="{{ $order->casts[0]->id }}">
+                        <input type="hidden" name="cast_id" value="{{ (count($order->casts) > 0) ? $order->casts[0]->id : '' }}">
                     </div>
                   </div>
                   <div class="modal-footer">

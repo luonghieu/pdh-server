@@ -50,8 +50,8 @@
               <tr>
                 <th>購入ID</th>
                 <th>日付</th>
-                <th>ユーサーID</th>
-                <th>ユーサー名</th>
+                <th>ユーザーID</th>
+                <th>ユーザー名</th>
                 <th>取引種別</th>
                 <th>購入金額</th>
                 <th>購入ポイント</th>

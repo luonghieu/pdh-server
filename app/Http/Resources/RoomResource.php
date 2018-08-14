@@ -2,7 +2,6 @@
 
 namespace App\Http\Resources;
 
-use App\Enums\UserType;
 use App\Traits\ResourceResponse;
 use Carbon\Carbon;
 use Illuminate\Http\Resources\Json\Resource;

@@ -106,7 +106,21 @@
               </tr>
               <tr>
                 <th>ステータス</th>
-                <td>{{ App\Enums\OrderStatus::getDescription($order->status) }}</td>
+                <td>
+                  @if (App\Enums\OrderStatus::CANCELED == $order->status)
+                    @if ($order->cancel_fee_percent == 0)
+                    <span>確定後キャンセル (キャンセル料なし)</span>
+                    @else
+                    <span>確定後キャンセル (キャンセル料あり)</span>
+                    @endif
+                  @else
+                    @if ($order->payment_status != null)
+                    {{ App\Enums\OrderPaymentStatus::getDescription($order->payment_status) }}
+                    @else
+                    {{ App\Enums\OrderStatus::getDescription($order->status) }}
+                    @endif
+                  @endif
+                </td>
               </tr>
               <tr>
                 <th>予約発生時刻</th>
@@ -122,7 +136,7 @@
               @if ($order->point && $order->point->is_pay)
               <tr>
                 <th>実績合計ポイント</th>
-                <td>{{ number_format($order->casts()->sum('total_point')) }}P</td>
+                <td>{{ number_format($order->total_point) }}P</td>
               </tr>
               <tr>
                 <th>ポイント決済</th>
