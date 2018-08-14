@@ -33,7 +33,7 @@
               <label class="col-md-1 limit-page">表示件数：</label>
               <div class="col-md-1">
                 <select id="select-limit" name="limit" class="form-control">
-                  @foreach ([1, 2, 50, 100] as $limit)
+                  @foreach ([10, 20, 50, 100] as $limit)
                     <option value="{{ $limit }}" {{ request()->limit == $limit ? 'selected' : '' }}>{{ $limit }}</option>
                   @endforeach
                 </select>
@@ -76,9 +76,9 @@
                     <td>{{ $user->id }}</td>
                     <td>{{ $user->fullname }}</td>
                     <td>{{ $userTypes[$user->type] }}</td>
-                    <td>{{ $user->positivePoints($user->points) }}</td>
-                    <td>{{ $user->negativePoints($user->points) }}</td>
-                    <td>{{ $user->totalBalance($user->points) }}</td>
+                    <td>{{ number_format($user->positivePoints($user->points)) }}</td>
+                    <td>{{ number_format($user->negativePoints($user->points)) }}</td>
+                    <td>{{ number_format($user->totalBalance($user->points)) }}</td>
                     <td>
                       <a href="{{ route('admin.users.show', ['user' => $user->id]) }}"><button>詳細</button></a>
                     </td>
@@ -99,9 +99,9 @@
                     <td>管理者</td>
                     <td></td>
                     <td></td>
-                    <td>{{ $admin->positivePoints($admin->points) }}</td>
-                    <td>{{ $admin->negativePoints($admin->points) }}</td>
-                    <td>{{ $admin->totalBalance($admin->points) }}</td>
+                    <td>{{ number_format($admin->positivePoints($admin->points)) }}</td>
+                    <td>{{ number_format($admin->negativePoints($admin->points)) }}</td>
+                    <td>{{ number_format($admin->totalBalance($admin->points)) }}</td>
                     <td></td>
                   </tr>
                   @php
@@ -114,9 +114,9 @@
                   <td>合計</td>
                   <td></td>
                   <td></td>
-                  <td>{{ $totalPositivePoints }}</td>
-                  <td>{{ $totalNegativePoints }}</td>
-                  <td>{{ $totalBalance }}</td>
+                  <td>{{ number_format($totalPositivePoints) }}</td>
+                  <td>{{ number_format($totalNegativePoints) }}</td>
+                  <td>{{ number_format($totalBalance) }}</td>
                   <td></td>
                 </tr>
               @endif
