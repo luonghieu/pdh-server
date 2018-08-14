@@ -473,12 +473,12 @@ img {
   background-color: #20a8d8;
 }
 
-.sp_UbXt4jt-HZi_2x.sx_4d6394 {
+.in_message.arrow_down {
   background-position: -68px -817px;
   display: inline-block;
 }
 
-._4wzs {
+.button_new {
   background-color: rgba(98, 100, 102, .98);
   border-radius: 0 0 4px 4px;
   color: #fff;
@@ -486,9 +486,10 @@ img {
   font-weight: 500;
   padding: 6px 8px;
   cursor: pointer;
+  outline: none;
 }
 
-.sp_UbXt4jt-HZi_2x {
+.in_message {
   background-size: 141px 849px;
   background-repeat: no-repeat;
   display: inline-block;
@@ -496,34 +497,30 @@ img {
   width: 16px;
 }
 
-._5f0v {
-  outline: none;
-}
-
-._1bqr {
+.text_newmess {
   display: inline-block;
   margin-left: 6px;
   overflow: hidden;
   white-space: nowrap;
 }
 
-._4wzt {
+.in_mess {
   vertical-align: text-bottom;
 }
 
-.sp_UbXt4jt-HZi_2x.sx_4d6394 {
+.in_message.arrow_down {
   background-position: -68px -817px;
 }
 
-._4wzq._4wzr {
+.new_mesage.in_new {
   transform: translate3d(0, 0, 0);
 }
 
-._4wzq._4wzr a:hover{
+.new_mesage.in_new a:hover{
   color: white
 }
 
-._4wzq {
+.new_mesage {
      justify-content: center;
      text-align: center;
      transform: translate3d(0, -31px, 0);
@@ -532,6 +529,10 @@ img {
      z-index: 30;
      position: sticky;
      top: 0px;
+}
+
+.new_mesage .button_new:hover{
+  background-color: #20a8d8;
 }
 
 .unread_count{

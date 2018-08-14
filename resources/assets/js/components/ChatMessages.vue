@@ -1,10 +1,10 @@
 <template>
     <div class="msg_history">
         <div v-if="(realtime_roomId == room_id || realtime_roomId == Id) && pageCm > 1" @click="hiddenNewMessage" v-bind:class="isHidden == true ? 'unread_count' : ''">
-        <div aria-hidden="true" class="_4wzq _4wzr">
-        <a class="_5f0v _4wzs" tabindex="0">
-            <i class="_4wzt img sp_UbXt4jt-HZi_2x sx_4d6394 fa fa-arrow-down" alt=""></i>
-            <div class="_1bqr">新しいメッセージ</div>
+        <div aria-hidden="true" class="new_mesage in_new">
+        <a class="button_new" tabindex="0">
+            <i class="in_mess img in_message arrow_down fa fa-arrow-down" alt=""></i>
+            <div class="text_newmess">新しいメッセージ</div>
         </a>
         </div>
         </div>
