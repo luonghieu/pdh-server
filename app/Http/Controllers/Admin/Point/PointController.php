@@ -19,6 +19,7 @@ class PointController extends Controller
     {
         $keyword = $request->search_point_type;
         $pointTypes = [
+            0 => '全て', // all
             PointType::BUY => 'ポイント購入',
             PointType::AUTO_CHARGE => 'オートチャージ',
             PointType::ADJUSTED => '調整',
@@ -26,26 +27,27 @@ class PointController extends Controller
 
         $points = Point::whereIn('type', [PointType::BUY, PointType::AUTO_CHARGE, PointType::ADJUSTED]);
 
-        if ($request->has('from_date') && !empty($request->from_date)) {
-            $fromDate = Carbon::parse($request->from_date)->startOfDay();
-            $toDate = Carbon::parse($request->to_date)->endOfDay();
-            $points->where(function ($query) use ($fromDate, $toDate) {
+        $fromDate = $request->from_date ? Carbon::parse($request->from_date)->startOfDay() : null;
+        $toDate = $request->to_date ? Carbon::parse($request->to_date)->endOfDay() : null;
+
+        if ($fromDate) {
+            $points->where(function ($query) use ($fromDate) {
                 $query->where('created_at', '>=', $fromDate);
             });
         }
 
-        if ($request->has('to_date') && !empty($request->to_date)) {
-            $fromDate = Carbon::parse($request->from_date)->startOfDay();
-            $toDate = Carbon::parse($request->to_date)->endOfDay();
-            $points->where(function ($query) use ($fromDate, $toDate) {
+        if ($toDate) {
+            $points->where(function ($query) use ($toDate) {
                 $query->where('created_at', '<=', $toDate);
             });
         }
 
-        if ($request->has('search_point_type')) {
-            $points->where(function ($query) use ($keyword) {
-                $query->where('type', "$keyword");
-            });
+        if ($keyword) {
+            if ('0' != $keyword) {
+                $points->where(function ($query) use ($keyword) {
+                    $query->where('type', $keyword);
+                });
+            }
         }
 
         $points = $points->orderBy('created_at', 'DESC');
@@ -127,6 +129,7 @@ class PointController extends Controller
         $keywordUser = $request->search_user_type;
 
         $pointTypes = [
+            0 => '全て', // all
             PointType::BUY => 'ポイント購入',
             PointType::AUTO_CHARGE => 'オートチャージ',
             PointType::PAY => 'ポイント決済',
@@ -137,9 +140,9 @@ class PointController extends Controller
         ];
 
         $userTypes = [
+            0 => '全て', // all
             UserType::GUEST => 'ゲスト',
             UserType::CAST => 'キャスト',
-            3 => '全て', // all
         ];
 
         $points = Point::with('user');
@@ -159,14 +162,16 @@ class PointController extends Controller
             });
         }
 
-        if ($request->search_point_type) {
-            $points->where(function ($query) use ($keywordPoint) {
-                $query->where('type', $keywordPoint);
-            });
+        if ($keywordPoint) {
+            if ('0' != $keywordPoint) {
+                $points->where(function ($query) use ($keywordPoint) {
+                    $query->where('type', $keywordPoint);
+                });
+            }
         }
 
-        if ($request->search_user_type) {
-            if ('3' != $keywordUser) {
+        if ($keywordUser) {
+            if ('0' != $keywordUser) {
                 $points = $points
                     ->whereHas('user', function ($query) use ($keywordUser) {
                         $query->where('type', $keywordUser);
