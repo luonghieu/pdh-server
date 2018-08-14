@@ -1,4 +1,5 @@
 <?php
+Route::redirect('/admin', '/admin/login', 301);
 Route::group(['prefix' => 'admin', 'as' => 'admin.'], function () {
     Route::get('login', ['as' => 'login', 'uses' => 'AuthController@index']);
     Route::post('login', ['as' => 'login', 'uses' => 'AuthController@login']);
@@ -52,7 +53,6 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.'], function () {
     Route::group(['middleware' => 'is_admin'], function () {
         Route::get('chat', ['as' => 'chat.index', 'uses' => 'ChatRoomController@index']);
     });
-
 
     Route::group(['namespace' => 'Report', 'prefix' => 'reports', 'as' => 'reports.', 'middleware' => 'is_admin'], function () {
         Route::get('/', ['as' => 'index', 'uses' => 'ReportController@index']);
