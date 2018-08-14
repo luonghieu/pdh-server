@@ -76,7 +76,7 @@ class CancelOrderFromCast extends Notification implements ShouldQueue
 
             $content = 'キャンセルが完了しました。';
             $pushId = 'c_10';
-            $room = $castPrivateRoomMessage;
+            $room = $castPrivateRoom;
         } else {
             $room = $this->order->room;
             $message = '予約がキャンセルされました。';
