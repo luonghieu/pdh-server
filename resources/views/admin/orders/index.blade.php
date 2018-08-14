@@ -58,8 +58,8 @@
                   <th>希望人数</th>
                   <th>指名キャスト</th>
                   <th>応募キャスト</th>
-                  <th>ステータス</th>
-                  <th>アラート</th>
+                  <th class="column-long-text">ステータス</th>
+                  <th class="column-long-text">アラート</th>
                   <th></th>
                 </tr>
               </thead>
@@ -98,7 +98,21 @@
                   @else
                   <td>-</td>
                   @endif
-                  <td>{{ App\Enums\OrderStatus::getDescription($order->status) }}</td>
+                  <td>
+                    @if (App\Enums\OrderStatus::CANCELED == $order->status)
+                      @if ($order->cancel_fee_percent == 0)
+                      <span>確定後キャンセル (キャンセル料なし)</span>
+                      @else
+                      <span>確定後キャンセル (キャンセル料あり)</span>
+                      @endif
+                    @else
+                      @if ($order->payment_status != null)
+                      {{ App\Enums\OrderPaymentStatus::getDescription($order->payment_status) }}
+                      @else
+                      {{ App\Enums\OrderStatus::getDescription($order->status) }}
+                      @endif
+                    @endif
+                  </td>
                   <td>
                     @php
                       $endDay = Carbon\Carbon::createFromFormat('Y-m-d H:i:s', $order->date . ' ' . $order->start_time)->addHours($order->duration);
