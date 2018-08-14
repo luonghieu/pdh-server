@@ -12,10 +12,10 @@
         </div>
         <div class="inbox_chat inbox_cast" id="cast">
             <div v-for="value in filteredData">
-                    <router-link :to="{ name: 'ChatRoom', params: { id: value.id }}" v-on:click.native="setRoomId">
-                        <div v-bind:class="value.id == roomId || value.id == room_id  ? 'active_chat' : ''">
+                    <router-link :to="{ name: 'ChatRoom', params: { id: value.id }}" v-on:click.native="setRoomId(value.id, value.unread_count)">
+                        <div v-bind:class="value.id == Id || value.id == room_id  ? 'active_chat' : ''">
                             <div class="chat_list" v-for="userDetail in value.users"
-                                 v-if="userDetail.id !== user_id  && userDetail.type == cast">
+                                 v-if="userDetail.type == cast">
 
                                 <div class="chat_people">
                                     <div class="chat_img" v-if=userDetail.avatars><img
@@ -40,7 +40,7 @@
             <div v-for="value in filteredData">
                     <router-link :to="{ name: 'ChatRoom', params: { id: value.id }}" v-on:click.native="setRoomId(value.id, value.unread_count)">
                         <div v-bind:class="value.id == Id || value.id == room_id ? 'active_chat ' : ''">
-                            <div class="chat_list" v-for="userDetail in value.users" v-if="userDetail.id !== user_id && userDetail.type == guest">
+                            <div class="chat_list" v-for="userDetail in value.users" v-if="userDetail.type == guest">
                                 <div class="chat_people">
                                     <div class="chat_img" v-if=userDetail.avatars><img
                                             class="img_avatar"
@@ -60,16 +60,19 @@
                     </router-link>
             </div>
         </div>
-        <div class="loading_content" v-if="totalUser > 15">
-            <button class="loading_button" @click="loadUser(pageCm)">もっと見る</button>
-        </div>
     </div>
 </template>
 
 <script>
 export default {
   name: "ListUsers",
-  props: ["users", "user_id", "totalUser", "roomId", "realtime_message", "realtime_roomId", "realtime_count"],
+  props: [
+    "user_id",
+    "roomId",
+    "realtime_message",
+    "realtime_roomId",
+    "realtime_count",
+  ],
   data() {
     return {
       cast: 2,
@@ -77,47 +80,44 @@ export default {
       isActive: true,
       searchName: "",
       Id: "",
-      pageCm: 1,
-      totalItem: 1,
-      totalpage: 1,
       room_id: this.roomId,
       setUnread: 1,
-      count: 0
+      count: 0,
+      users: "",
+      nickname: null
     };
   },
 
+  created() {
+    this.getRoom();
+  },
+
   methods: {
-    setRoomId(roomID, unReadCount){
-        this.room_id = null
-        if(unReadCount > 0){
-        this.setUnread = 0
-        }
-        if(this.realtime_roomId == roomID){
-            this.$emit('interface', this.count)
-        }
+    setRoomId(roomID, unReadCount) {
+      this.room_id = null;
+      this.Id = roomID;
+      if (unReadCount > 0) {
+        this.setUnread = 0;
+      }
+      if (this.realtime_roomId == roomID) {
+        this.$emit("interface", this.count);
+      }
     },
 
-    loadUser(pageCm) {
+    getRoom() {
       window.axios
-        .get(`../../api/v1/rooms/?paginate=${15}&page=${pageCm + 1}`)
+        .get("../../api/v1/rooms/admin/casts_guests")
         .then(response => {
-          let listUser = "";
-          listUser = response.data.data.data;
-          listUser.forEach(item => {
-            this.users.push(item);
-          });
-          this.pageCm = getComment.data.data.current_page;
-          this.totalItem = getComment.data.data.total;
-          this.totalpage = getComment.data.data.last_page;
+          const rooms = response.data.data;
+          this.users = rooms;
         });
     }
   },
 
   computed: {
     filteredData: function() {
-      this.Id = this.$route.params.id;
-      var search_array = this.users;
-      var searchName = this.searchName;
+      let search_array = this.users;
+      let searchName = this.searchName;
 
       if (!searchName) {
         return search_array;

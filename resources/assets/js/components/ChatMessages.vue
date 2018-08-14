@@ -8,7 +8,7 @@
         </a>
         </div>
         </div>
-        <div v-if="totalMessage > 15" class="loading_message">
+        <div v-if="totalMessage > 15" class="loading_message" v-bind:class="totalpage == pageCm ? 'hidden_loadmess' : ''">
             <button class="loading_button" @click="loadMessage(pageCm)">もっと見る</button>
         </div>
         <transition-group>
@@ -22,7 +22,7 @@
                             <div class="on_mess" v-if="message.image">
                                 <img width="100" :src="message.image"/>
                             </div>
-                            <p class="on_mess" v-if="message.message" :key='message.id'>{{message.message}}</p>
+                            <p :id="message.room_id" class="on_mess" ref="linkOut" v-if="message.message" :key='message.id'>{{message.message}}</p>
                         </div>
                         <div style="clear:both"></div>
                         <confirm-delete :delete="selectedMessage" v-if='confirmModal' @confirm="deleteMessage"
@@ -41,7 +41,7 @@
                             <div v-if="message.image">
                                 <img width="100" :src="message.image"/>
                             </div>
-                            <p v-if="message.message">{{message.message}}</p>
+                            <p :id="message.room_id" ref="linkIncom" v-if="message.message">{{message.message}}</p>
                             <span class="time_incom" v-if="message.created_at">{{message.created_at}}</span>
                         </div>
                     </div>
@@ -59,7 +59,13 @@ import ConfirmDelete from "./ConfirmDelete";
 export default {
   name: "ChatMessage",
   components: { ConfirmDelete },
-  props: ["list_message", "user_id", "totalMessage", "roomId", "realtime_roomId"],
+  props: [
+    "list_message",
+    "user_id",
+    "totalMessage",
+    "roomId",
+    "realtime_roomId"
+  ],
   data() {
     return {
       confirmModal: false,
@@ -69,10 +75,13 @@ export default {
       message_id: "",
       pageCm: 1,
       totalItem: 1,
-      totalpage: 1,
+      totalpage: 0,
       room_id: "",
       Id: this.roomId,
-      isHidden: false
+      isHidden: false,
+      linkOut: "",
+      linkInMessage: "",
+      realtime_id: 0
     };
   },
 
@@ -126,6 +135,9 @@ export default {
       } else {
         Id = this.$route.params.id;
       }
+
+      this.$emit("interface", this.realtime_id);
+
       this.isScroll = false;
       window.axios
         .get(`../../api/v1/rooms/${Id}?paginate=${15}&page=${pageCm + 1}`)
@@ -140,15 +152,12 @@ export default {
           this.pageCm = getMessage.data.data.current_page;
           this.totalItem = getMessage.data.data.total;
           this.totalpage = getMessage.data.data.last_page;
-          this.$nextTick(() => {
-            this.$refs.toolbarChat.scrollTop = 0;
-          });
         });
     },
 
-    hiddenNewMessage(){
-        this.scrollToEnd();
-        this.isHidden = true
+    hiddenNewMessage() {
+      this.scrollToEnd();
+      this.isHidden = true;
     },
 
     scrollToEnd: function() {

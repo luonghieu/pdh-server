@@ -8,7 +8,6 @@ use Tymon\JWTAuth\Facades\JWTAuth;
 
 class ChatRoomController extends Controller
 {
-
     public function index()
     {
         $user = Auth::user();
@@ -16,6 +15,4 @@ class ChatRoomController extends Controller
         $token = JWTAuth::fromUser($user);
         return view('admin.chatroom.index', compact('token', 'userId'));
     }
-
-
 }

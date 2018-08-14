@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Enums\RoomType;
+use App\Enums\UserType;
 use App\Http\Resources\RoomResource;
 use App\Room;
 use App\Services\LogService;
@@ -94,5 +95,23 @@ class RoomController extends ApiController
 
             return $this->respondServerError();
         }
+    }
+
+    public function getCastAndGuestInAdminRoom()
+    {
+
+        $user = $this->guard()->user();
+
+        $rooms = Room::active()->whereHas('users', function ($query) use ($user) {
+            $query->where('user_id', $user->id);
+        });
+
+        $rooms = $rooms->with('latestMessage')->with(['users' => function ($query) {
+            $query->whereNotIn('type', [UserType::ADMIN]);
+
+        }])->orderBy('updated_at', 'DESC')->get();
+
+        return $this->respondWithData(RoomResource::collection($rooms));
+
     }
 }

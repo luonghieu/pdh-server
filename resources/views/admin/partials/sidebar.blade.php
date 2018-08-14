@@ -62,6 +62,7 @@ $routes = [
             'value' => '運営者専用チャット',
             'url' => route('admin.chat.index'),
             'submenu' => [],
+
         ],
     ],
 

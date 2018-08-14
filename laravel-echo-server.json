@@ -1,4 +1,5 @@
 {
+    
 	"authHost": "http://cheers.local",
 	"authEndpoint": "/broadcasting/auth",
 	"clients": [
