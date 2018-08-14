@@ -69,6 +69,14 @@ class Order extends Model
             ->withTimestamps();
     }
 
+    public function nomineesWithTrashed()
+    {
+        return $this->belongsToMany(Cast::class)
+            ->where('cast_order.type', CastOrderType::NOMINEE)
+            ->withPivot('status', 'type')
+            ->withTimestamps();
+    }
+
     public function candidates()
     {
         return $this->belongsToMany(Cast::class)
@@ -609,7 +617,12 @@ class Order extends Model
         $totalPoint = 0;
 
         if ($this->type == OrderType::NOMINATION) {
-            $cost = $this->nominees->first()->cost;
+            $nommine = $this->nominees->first();
+            if (!$nommine) {
+                $nommine = $this->nomineesWithTrashed->first();
+            }
+            $cost = $nommine->cost;
+
             return ($cost / 2) * floor($orderDuration / 15) + $allowance;
         } else {
             if ($this->type == OrderType::NOMINATED_CALL || $this->type == OrderType::HYBRID) {
