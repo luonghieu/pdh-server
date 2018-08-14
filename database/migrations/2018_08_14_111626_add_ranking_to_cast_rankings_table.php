@@ -26,7 +26,7 @@ class AddRankingToCastRankingsTable extends Migration
     public function down()
     {
         Schema::table('cast_rankings', function (Blueprint $table) {
-            $table->dropColumn('paid')->after('user_id');
+            $table->dropColumn('ranking');
         });
     }
 }
