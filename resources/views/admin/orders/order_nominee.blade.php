@@ -70,7 +70,7 @@
               </tr>
               <tr>
                 <th>予定合計ポイント</th>
-                <td>{{ (count($order->casts) > 0) ? $order->casts[0]->pivot->total_point : '' }}</td>
+                <td>{{ $order->total_point }}</td>
               </tr>
               <tr>
                 <th>ステータス</th>
@@ -130,7 +130,7 @@
               </tr>
               <tr>
                 <th>実績合計ポイント</th>
-                <td>{{ (count($order->casts) > 0) ? number_format($order->casts[0]->pivot->total_point) : '' }}P</td>
+                <td>{{ $order->total_point }}P</td>
               </tr>
               @endif
             </table>
