@@ -92,6 +92,9 @@ class CreateNominatedOrdersForCast extends Notification implements ShouldQueue
 
     public function pushData($notifiable)
     {
+        $room = $notifiable->rooms()
+            ->where('rooms.type', RoomType::SYSTEM)
+            ->where('rooms.is_active', true)->first();
         $content = '指名予約が入りました。'
             . PHP_EOL . '5分以内に承諾、キャンセルの処理を行ってください！';
         $namedUser = 'user_' . $notifiable->id;
@@ -110,6 +113,7 @@ class CreateNominatedOrdersForCast extends Notification implements ShouldQueue
                     'extra' => [
                         'push_id' => $pushId,
                         'send_from' => $send_from,
+                        'room_id' => $room->id
                     ],
                 ],
             ],

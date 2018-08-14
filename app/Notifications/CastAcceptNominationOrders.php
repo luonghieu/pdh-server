@@ -2,10 +2,7 @@
 
 namespace App\Notifications;
 
-use App\Enums\MessageType;
-use App\Enums\NotificationStyle;
 use App\Enums\UserType;
-use App\Guest;
 use Illuminate\Bus\Queueable;
 use Illuminate\Notifications\Notification;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -94,7 +91,8 @@ class CastAcceptNominationOrders extends Notification implements ShouldQueue
                     'extra' => [
                         'push_id' => $pushId,
                         'send_from' => $send_from,
-                        'order_id' => $this->order->id
+                        'order_id' => $this->order->id,
+                        'room_id' => $this->order->room->id
                     ],
                 ],
             ],

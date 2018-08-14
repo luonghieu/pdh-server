@@ -80,6 +80,7 @@ class CastDenyNominationOrders extends Notification
 
     public function pushData($notifiable)
     {
+        $room = $this->createDirectRoom($this->order->user_id, $this->cast->id);
         $content = '残念ながらマッチングが成立しませんでした（；；）';
 
         $namedUser = 'user_' . $notifiable->id;
@@ -98,7 +99,8 @@ class CastDenyNominationOrders extends Notification
                     'extra' => [
                         'push_id' => $pushId,
                         'send_from' => $send_from,
-                        'order_id' => $this->order->id
+                        'order_id' => $this->order->id,
+                        'room_id' => $room->id
                     ],
                 ],
             ],
