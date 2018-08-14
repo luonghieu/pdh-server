@@ -19,6 +19,7 @@ class CastOrderResource extends JsonResource
     {
         return $this->filterNull([
             'order_time' => $this->order_time,
+            'temp_point' => $this->temp_point,
             'extra_time' => $this->extra_time,
             'order_point' => $this->order_point,
             'extra_point' => $this->extra_point,
