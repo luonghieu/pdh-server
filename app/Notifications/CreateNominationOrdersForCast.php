@@ -95,6 +95,7 @@ class CreateNominationOrdersForCast extends Notification implements ShouldQueue
                     'extra' => [
                         'push_id' => $pushId,
                         'send_from' => $send_from,
+                        'room_id' => $room->id
                     ],
                 ],
             ],

@@ -77,6 +77,7 @@ class TenMinBeforeOrderEnded extends Notification implements ShouldQueue
 
     public function pushData($notifiable)
     {
+        $room = $this->order->room;
         $content = $this->cast->nickname . 'さんの解散予定時刻まで残り10分です。';
         $pushId = 'g_5';
 
@@ -96,6 +97,7 @@ class TenMinBeforeOrderEnded extends Notification implements ShouldQueue
                         'push_id' => $pushId,
                         'send_from' => $send_from,
                         'order_id' => $this->order->id,
+                        'room_id' => $room->id
                     ],
                 ],
             ],
