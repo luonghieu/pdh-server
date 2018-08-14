@@ -329,17 +329,10 @@ $(document).ready(function(){
     $( "#formEditCoupon" ).submit();
   });
 
-  $('.submit-non-transfer').on('click', function (e) {
+  $('.submit-transfer').on('click', function (e) {
     const checkboxes = $('input[name="transfer_ids[]"]:checked');
     if (checkboxes.length) {
-      $('#form-non-transfer').submit();
-    }
-  });
-
-  $('.submit-transfered').on('click', function (e) {
-    const checkboxes = $('input[name="transfer_ids[]"]:checked');
-    if (checkboxes.length) {
-      $('#form-transfered').submit();
+      $('#form-transfer').submit();
     }
   });
 
