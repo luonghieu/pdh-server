@@ -57,7 +57,7 @@ class PointController extends Controller
         $pointIds = $points->where('type', '<>', PointType::ADJUSTED)->pluck('id');
         $sumAmount = Payment::whereIn('point_id', $pointIds)->sum('amount');
 
-        $sumPointBuy = $points->sum(function ($product) {
+        $sumPointBuy = $pointsExport->sum(function ($product) {
             $sum = 0;
             if ($product->is_buy) {
                 $sum += $product->point;
@@ -102,8 +102,8 @@ class PointController extends Controller
             $header = [
                 '購入ID',
                 '日付',
-                'ユーサーID',
-                'ユーサー名',
+                'ユーザーID',
+                'ユーザー名',
                 '取引種別',
                 '購入金額',
                 '購入ポイント',
@@ -183,7 +183,7 @@ class PointController extends Controller
         $pointsExport = $points->get();
         $points = $points->paginate($request->limit ?: 10);
 
-        $sumPointIncrease = $points->sum(function ($product) {
+        $sumPointIncrease = $pointsExport->sum(function ($product) {
             $sum = 0;
             if ($product->point > 0) {
                 $sum += $product->point;
@@ -192,7 +192,7 @@ class PointController extends Controller
             return $sum;
         });
 
-        $sumPointReduction = $points->sum(function ($product) {
+        $sumPointReduction = $pointsExport->sum(function ($product) {
             $sum = 0;
             if ($product->point < 0) {
                 $sum += $product->point;
@@ -231,11 +231,12 @@ class PointController extends Controller
             $header = [
                 '購入ID',
                 '日付',
-                'ユーサーID',
-                'ユーサー名',
+                'ユーザーID',
+                'ユーザー名',
+                'ユーザー種別',
                 '取引種別',
-                '購入金額',
-                '購入ポイント',
+                'ポイントの増加額',
+                'ポイントの減少額',
             ];
 
             try {
