@@ -532,6 +532,29 @@ class Order extends Model
         $user->point = $point->balance;
         $user->save();
 
+        $subPoint = $this->total_point;
+        $points = Point::where('user_id', $user->id)
+            ->where('balance', '>', 0)
+            ->whereIn('type', [PointType::BUY, PointType::AUTO_CHARGE])
+            ->orderBy('created_at')
+            ->get();
+
+        foreach ($points as $value) {
+            if ($subPoint == 0) {
+                return true;
+            } elseif ($value->point > $subPoint && $subPoint > 0) {
+                $value->balance = $value->point - $subPoint;
+                $value->update();
+
+                $subPoint = 0;
+            } elseif ($value->point <= $subPoint) {
+                $subPoint -= $value->point;
+
+                $value->balance = 0;
+                $value->update();
+            }
+        }
+
         return true;
     }
 
