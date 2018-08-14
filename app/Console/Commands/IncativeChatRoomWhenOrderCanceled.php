@@ -45,9 +45,9 @@ class IncativeChatRoomWhenOrderCanceled extends Command
         $today = Carbon::now();
 
         Room::whereHas('order', function ($query) use ($today) {
-            $query->where('actual_ended_at', '<', $today->subDays(1))
+            $query->where('canceled_at', '<=', $today->subDays(1))
                 ->where(function ($query) {
-                    $query->orWhere('status', OrderStatus::CANCELED)
+                    $query->where('status', OrderStatus::CANCELED)
                         ->orWhere('status', OrderStatus::DENIED);
                 });
         })
