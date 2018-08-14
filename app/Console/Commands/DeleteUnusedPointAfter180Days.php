@@ -78,6 +78,12 @@ class DeleteUnusedPointAfter180Days extends Command
                 $user->point -= $pointUnused->point;
                 $user->save();
 
+                $admin = User::find(1);
+                if ($admin->is_admin) {
+                    $admin->point += $pointUnused->point;
+                    $admin->save();
+                }
+
                 DB::commit();
             }
         } catch (\Exception $e) {
