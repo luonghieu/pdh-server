@@ -56,7 +56,9 @@ class Order extends Model
             ->whereNotNull('cast_order.accepted_at')
             ->whereNull('cast_order.canceled_at')
             ->whereNull('cast_order.deleted_at')
-            ->withPivot('order_time', 'extra_time', 'order_point', 'extra_point', 'allowance_point', 'fee_point', 'total_point', 'type', 'started_at', 'stopped_at', 'status', 'accepted_at', 'canceled_at', 'guest_rated', 'cast_rated', 'is_thanked')
+            ->withPivot('order_time', 'extra_time', 'order_point', 'extra_point', 'allowance_point', 'fee_point',
+                'total_point', 'type', 'started_at', 'stopped_at', 'status', 'accepted_at', 'canceled_at', 'guest_rated',
+                'cast_rated', 'is_thanked', 'temp_point')
             ->withTimestamps();
     }
 
