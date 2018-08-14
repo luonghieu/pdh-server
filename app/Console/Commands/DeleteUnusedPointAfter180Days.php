@@ -6,7 +6,6 @@ use App\Enums\PointType;
 use App\Point;
 use App\Services\LogService;
 use Carbon\Carbon;
-use DB;
 use Illuminate\Console\Command;
 
 class DeleteUnusedPointAfter180Days extends Command
@@ -44,35 +43,34 @@ class DeleteUnusedPointAfter180Days extends Command
     {
         $dateTime = Carbon::now()->subDays(180)->format('Y-m-d H');
 
-        $points = Point::whereIn('type', [PointType::BUY, PointType::AUTO_CHARGE])
-            ->whereRaw('DATE_FORMAT(created_at, "%Y-%m-%d %H") = "' . $dateTime . '"')
-            ->where('balance', '>', 0)
-            ->get();
-
-        if ($points->count()) {
-            try {
-                foreach ($points as $point) {
-                    $pointUnused = new Point;
-                    $pointUnused->point = $point->balance;
-                    $pointUnused->balance = $point->balance;
-                    $pointUnused->user_id = $point->user_id;
-                    $pointUnused->type = PointType::EVICT;
-                    $pointUnused->save();
-
-                    $pointAdmin = new Point;
-                    $pointAdmin->point = $point->balance;
-                    $pointAdmin->balance = $point->balance;
-                    $pointAdmin->user_id = 1;
-                    $pointAdmin->type = PointType::RECEIVE;
-                    $pointAdmin->save();
-
-                    $point->balance = 0;
-                    $point->save();
+        try {
+            foreach (Point::whereIn('type', [PointType::BUY, PointType::AUTO_CHARGE])
+                ->whereDate(\DB::raw('DATE_FORMAT(created_at, "%Y-%m-%d %H") '), '<=', $dateTime)
+                ->where('balance', '>', 0)
+                ->cursor() as $point) {
+                $data = [
+                    'point' => $point->balance,
+                    'balance' => $point->balance,
+                    'user_id' => $point->user_id,
+                    'type' => PointType::EVICT,
+                ];
+                if ($point->order_id) {
+                    $data['order_id'] = $point->order_id;
                 }
-            } catch (\Exception $e) {
-                DB::rollBack();
-                LogService::writeErrorLog($e);
+                $pointUnused = new Point;
+                $pointUnused->createPoint($data);
+
+                $data['user_id'] = 1;
+                $data['type'] = PointType::RECEIVE;
+
+                $pointAdmin = new Point;
+                $pointAdmin->createPoint($data);
+
+                $point->balance = 0;
+                $point->save();
             }
+        } catch (\Exception $e) {
+            LogService::writeErrorLog($e);
         }
     }
 }
