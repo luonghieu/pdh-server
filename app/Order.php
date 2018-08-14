@@ -182,13 +182,12 @@ class Order extends Model
 
     public function apply($userId)
     {
-        $orderStartTime = Carbon::parse($this->date . ' ' . $this->start_time);
-        $orderEndTime = $orderStartTime->copy()->addMinutes($this->duration * 60);
-        $nightTime = $this->nightTime($orderEndTime);
-        $allowance = $this->allowance($nightTime);
-        $orderPoint = $this->orderPoint();
-
         try {
+            $orderStartTime = Carbon::parse($this->date . ' ' . $this->start_time);
+            $orderEndTime = $orderStartTime->copy()->addMinutes($this->duration * 60);
+            $nightTime = $this->nightTime($orderEndTime);
+            $allowance = $this->allowance($nightTime);
+            $orderPoint = $this->orderPoint();
             $this->casts()->attach(
                 $userId,
                 [
@@ -211,15 +210,14 @@ class Order extends Model
 
     public function accept($userId)
     {
-        $cast = $this->nominees()->where('user_id', $userId)->first();
-        $orderStartTime = Carbon::parse($this->date . ' ' . $this->start_time);
-        $orderEndTime = $orderStartTime->copy()->addMinutes($this->duration * 60);
-        $nightTime = $this->nightTime($orderEndTime);
-        $allowance = $this->allowance($nightTime);
-        $orderPoint = $this->orderPoint($cast);
-        $orderFee = $this->orderFee($cast, $orderStartTime, $orderEndTime);
-
         try {
+            $cast = $this->nominees()->where('user_id', $userId)->first();
+            $orderStartTime = Carbon::parse($this->date . ' ' . $this->start_time);
+            $orderEndTime = $orderStartTime->copy()->addMinutes($this->duration * 60);
+            $nightTime = $this->nightTime($orderEndTime);
+            $allowance = $this->allowance($nightTime);
+            $orderPoint = $this->orderPoint($cast);
+            $orderFee = $this->orderFee($cast, $orderStartTime, $orderEndTime);
             $this->nominees()->updateExistingPivot(
                 $userId,
                 [
