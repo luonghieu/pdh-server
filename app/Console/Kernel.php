@@ -25,6 +25,7 @@ class Kernel extends ConsoleKernel
         Commands\PointSettlementSchedule::class,
         Commands\SendRemindForCastBeforeTenMins::class,
         Commands\CancelFeeSettlement::class,
+        Commands\IncativeChatRoomWhenOrderCanceled::class,
     ];
 
     /**
@@ -47,6 +48,7 @@ class Kernel extends ConsoleKernel
         $schedule->command('cheers:point_settlement')->hourly()->onOneServer()->runInBackground();
         $schedule->command('cheers:send_payment_request_when_cast_stop_order')->hourly()->onOneServer()->runInBackground();
         $schedule->command('cheers:cancel_fee_settlement')->hourly()->onOneServer()->runInBackground();
+        $schedule->command('cheers:inactive_chatroom_when_order_canceled')->hourly()->onOneServer()->runInBackground();
     }
 
     /**
