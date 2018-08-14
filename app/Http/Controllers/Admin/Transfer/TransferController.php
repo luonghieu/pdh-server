@@ -83,6 +83,8 @@ class TransferController extends Controller
 
     public function getNotTransferedList(Request $request)
     {
+        $keyword = $request->search;
+
         $transfers = Transfer::with('user', 'order')->whereNull('transfered_at');
 
         if ($request->from_date) {
@@ -98,6 +100,13 @@ class TransferController extends Controller
             $toDate = Carbon::parse($request->to_date)->endOfDay();
             $transfers->where(function ($query) use ($fromDate, $toDate) {
                 $query->where('created_at', '<=', $toDate);
+            });
+        }
+
+        if ($keyword) {
+            $transfers->whereHas('user', function ($query) use ($keyword) {
+                $query->where('id', "$keyword")
+                    ->orWhere('fullname', 'like', "%$keyword%");
             });
         }
 
