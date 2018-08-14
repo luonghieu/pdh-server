@@ -136,7 +136,7 @@
               @if ($order->point && $order->point->is_pay)
               <tr>
                 <th>実績合計ポイント</th>
-                <td>{{ number_format($order->casts()->sum('total_point')) }}P</td>
+                <td>{{ number_format($order->total_point) }}P</td>
               </tr>
               <tr>
                 <th>ポイント決済</th>
