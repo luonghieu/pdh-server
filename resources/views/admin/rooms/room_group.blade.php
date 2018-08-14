@@ -6,7 +6,7 @@
       <div class="panel panel-default">
         <div class="panel-body">
           <div class="display-title">
-            <p><b>予約ID:</b> {{ request()->room->id }} の応募中キャスト一覧</p>
+            <p><b>ルームID:</b> {{ request()->room->id }} のキャスト一覧</p>
           </div>
         </div>
         <div class="panel-body">
