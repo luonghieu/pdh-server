@@ -18,6 +18,7 @@
     <link href="/assets/admin/css/jquery-ui.min.css" rel="stylesheet">
     <!-- Custom styles for this template -->
     <link href="/assets/admin/css/style.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.css" type="text/css" rel="stylesheet">
     <!-- user-info css  -->
     <link href="{{ mix('/bundle/css/all.css') }}" rel="stylesheet">
     <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
@@ -36,6 +37,8 @@
     </div>
     <div class="clearfix"></div>
     @include ('admin.partials.footer')
+    {{--Chat-room--}}
+    <script src="{{ mix('js/app.js') }}" type="text/javascript"></script>
     <!--[if !IE]>-->
     <script src="/assets/admin/js/jquery-2.1.0.min.js"></script>
     <!--<![endif]-->
@@ -57,6 +60,7 @@
     <script src="/assets/admin/js/core.min.js"></script>
     <!-- inline scripts related to this page -->
     <script src="/assets/admin/js/pages/login.js"></script>
+    <script src="/assets/admin/js/chatroom/chatroom.js"></script>
     <!-- end: JavaScript-->
     <script src="/assets/admin/js/jquery.dataTables.min.js"></script>
     <script src="/assets/admin/js/dataTables.bootstrap.min.js"></script>

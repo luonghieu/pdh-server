@@ -49,6 +49,11 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.'], function () {
         Route::put('change_stop_time_order_nominee', ['as' => 'change_stop_time_order_nominee', 'uses' => 'OrderController@changeStopTimeOrderNominee']);
     });
 
+    Route::group(['middleware' => 'is_admin'], function () {
+        Route::get('chat', ['as' => 'chat.index', 'uses' => 'ChatRoomController@index']);
+    });
+
+
     Route::group(['namespace' => 'Report', 'prefix' => 'reports', 'as' => 'reports.', 'middleware' => 'is_admin'], function () {
         Route::get('/', ['as' => 'index', 'uses' => 'ReportController@index']);
         Route::put('/', ['as' => 'make_report_done', 'uses' => 'ReportController@makeReportDone']);
