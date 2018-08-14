@@ -67,7 +67,7 @@ class OrderCompleted extends Notification implements ShouldQueue
     {
         $order = $this->order;
         $room = $order->room;
-        $content = $this->cast->nickname . 'が解散しました。';
+        $content = $this->cast->nickname . 'さんが解散しました。';
 
         $roomMessage = $room->messages()->create([
             'user_id' => 1,
