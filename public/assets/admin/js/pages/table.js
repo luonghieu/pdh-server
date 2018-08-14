@@ -329,6 +329,20 @@ $(document).ready(function(){
     $( "#formEditCoupon" ).submit();
   });
 
+  $('.submit-non-transfer').on('click', function (e) {
+    const checkboxes = $('input[name="transfer_ids[]"]:checked');
+    if (checkboxes.length) {
+      $('#form-non-transfer').submit();
+    }
+  });
+
+  $('.submit-transfered').on('click', function (e) {
+    const checkboxes = $('input[name="transfer_ids[]"]:checked');
+    if (checkboxes.length) {
+      $('#form-transfered').submit();
+    }
+  });
+
   $('input[type=radio][name=type]').change(function() {
     if (this.value == '1') {
       $(".for_user").attr("selected","selected;");

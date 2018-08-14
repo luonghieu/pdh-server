@@ -160,11 +160,11 @@ class TransferController extends Controller
             if ($checkTransferExist) {
                 Transfer::whereIn('id', $transferIds)->update(['transfered_at' => now()]);
 
-                return redirect(route('admin.transfers.non_transfers'));
+                return redirect(route('admin.transfers.transfered'));
             } else {
                 Transfer::whereIn('id', $transferIds)->update(['transfered_at' => null]);
 
-                return redirect(route('admin.transfers.transfered'));
+                return redirect(route('admin.transfers.non_transfers'));
             }
         }
     }
