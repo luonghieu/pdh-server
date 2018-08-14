@@ -2,12 +2,12 @@
 
 namespace App;
 
-use App\Order;
-use App\Enums\RoomType;
-use App\Enums\OrderType;
 use App\Enums\OrderStatus;
-use Illuminate\Support\Facades\Auth;
+use App\Enums\OrderType;
+use App\Enums\RoomType;
+use App\Order;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Auth;
 
 class Room extends Model
 {
@@ -73,7 +73,9 @@ class Room extends Model
 
     public function latestMessage()
     {
-        return $this->hasOne(Message::class)->latest();
+        return $this->hasOne(Message::class)->whereHas('recipients', function ($query) {
+            $query->where('is_show', true);
+        })->latest();
     }
 
     public function order()
@@ -104,7 +106,7 @@ class Room extends Model
                     OrderStatus::PROCESSING,
                     OrderStatus::ACTIVE,
                     OrderStatus::OPEN,
-                    OrderStatus::DONE
+                    OrderStatus::DONE,
                 ];
 
                 $order = Order::where('room_id', $this->id)
