@@ -16,7 +16,6 @@ class CreateCastRankingsTable extends Migration
         Schema::create('cast_rankings', function (Blueprint $table) {
             $table->increments('id');
             $table->unsignedInteger('user_id');
-            $table->integer('ranking');
             $table->integer('point');
             $table->timestamps();
 

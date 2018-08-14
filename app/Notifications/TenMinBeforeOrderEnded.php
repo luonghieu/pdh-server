@@ -57,7 +57,7 @@ class TenMinBeforeOrderEnded extends Notification implements ShouldQueue
      */
     public function toArray($notifiable)
     {
-        $message = $this->cast->nickname . 'の解散予定時刻まで残り10分です。';
+        $message = $this->cast->nickname . 'さんの解散予定時刻まで残り10分です。';
         $room = $this->order->room;
 
         $roomMessage = $room->messages()->create([
@@ -77,7 +77,7 @@ class TenMinBeforeOrderEnded extends Notification implements ShouldQueue
 
     public function pushData($notifiable)
     {
-        $content = $this->cast->nickname . 'の解散予定時刻まで残り10分です。';
+        $content = $this->cast->nickname . 'さんの解散予定時刻まで残り10分です。';
         $pushId = 'g_5';
 
         $namedUser = 'user_' . $notifiable->id;

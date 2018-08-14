@@ -71,7 +71,7 @@
                 <td>{{ App\Enums\UserType::getDescription($user->type) }}</td>
                 <td>{{ App\Enums\Status::getDescription($user->status) }}</td>
                 <td>{{ Carbon\Carbon::parse($user->created_at)->format('Y/m/d H:i') }}</td>
-                <td><a href="{{ route('admin.users.show', ['user' => $user->id]) }}"><button>詳細</button></a></td>
+                <td><a href="{{ route('admin.users.show', ['user' => $user->id]) }}" class="btn-detail">詳細</a></td>
               </tr>
               @endforeach
             </tbody>

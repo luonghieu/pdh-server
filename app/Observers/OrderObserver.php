@@ -14,10 +14,6 @@ class OrderObserver
     {
         if (OrderType::NOMINATED_CALL == $order->type || OrderType::CALL == $order->type) {
             $order->user->notify(new CreateNominatedOrdersForGuest($order));
-//            $nominees = $order->nominees;
-//            if (count($nominees)) {
-//                \Notification::send($nominees, new CreateNominatedOrdersForCast($order));
-//            }
         }
     }
 

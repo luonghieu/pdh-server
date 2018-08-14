@@ -5,7 +5,9 @@ namespace App\Console\Commands;
 use App\Enums\PointType;
 use App\Point;
 use App\Services\LogService;
+use App\User;
 use Carbon\Carbon;
+use DB;
 use Illuminate\Console\Command;
 
 class DeleteUnusedPointAfter180Days extends Command
@@ -42,21 +44,24 @@ class DeleteUnusedPointAfter180Days extends Command
     public function handle()
     {
         $dateTime = Carbon::now()->subDays(180)->format('Y-m-d H');
+        $points = Point::whereIn('type', [PointType::BUY, PointType::AUTO_CHARGE])
+            ->whereDate(\DB::raw('DATE_FORMAT(created_at, "%Y-%m-%d %H") '), '<=', $dateTime)
+            ->where('balance', '>', 0);
 
         try {
-            foreach (Point::whereIn('type', [PointType::BUY, PointType::AUTO_CHARGE])
-                ->whereDate(\DB::raw('DATE_FORMAT(created_at, "%Y-%m-%d %H") '), '<=', $dateTime)
-                ->where('balance', '>', 0)
-                ->cursor() as $point) {
+            foreach ($points->cursor() as $point) {
+                DB::beginTransaction();
+
                 $data = [
                     'point' => $point->balance,
-                    'balance' => $point->balance,
+                    'balance' => $point->user->point - $point->balance,
                     'user_id' => $point->user_id,
                     'type' => PointType::EVICT,
                 ];
                 if ($point->order_id) {
                     $data['order_id'] = $point->order_id;
                 }
+
                 $pointUnused = new Point;
                 $pointUnused->createPoint($data);
 
@@ -68,8 +73,15 @@ class DeleteUnusedPointAfter180Days extends Command
 
                 $point->balance = 0;
                 $point->save();
+
+                $user = User::find($point->user->id);
+                $user->point -= $pointUnused->point;
+                $user->save();
+
+                DB::commit();
             }
         } catch (\Exception $e) {
+            DB::rollBack();
             LogService::writeErrorLog($e);
         }
     }

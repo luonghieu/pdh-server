@@ -26,6 +26,7 @@ class Kernel extends ConsoleKernel
         Commands\SendRemindForCastBeforeTenMins::class,
         Commands\CancelFeeSettlement::class,
         Commands\DeleteUnusedPointAfter180Days::class,
+        Commands\IncativeChatRoomWhenOrderCanceled::class,
     ];
 
     /**
@@ -49,6 +50,7 @@ class Kernel extends ConsoleKernel
         $schedule->command('cheers:send_payment_request_when_cast_stop_order')->hourly()->onOneServer()->runInBackground();
         $schedule->command('cheers:cancel_fee_settlement')->hourly()->onOneServer()->runInBackground();
         $schedule->command('cheers:delete_unused_point_after_180_days')->hourly()->onOneServer()->runInBackground();
+        $schedule->command('cheers:inactive_chatroom_when_order_canceled')->hourly()->onOneServer()->runInBackground();
     }
 
     /**

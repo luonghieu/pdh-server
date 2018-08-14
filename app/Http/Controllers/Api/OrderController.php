@@ -8,6 +8,7 @@ use App\Enums\CastOrderType;
 use App\Enums\OrderStatus;
 use App\Enums\OrderType;
 use App\Http\Resources\OrderResource;
+use App\Notifications\CreateNominatedOrdersForCast;
 use App\Notifications\CreateNominationOrdersForCast;
 use App\Order;
 use App\Services\LogService;
@@ -142,6 +143,11 @@ class OrderController extends ApiController
                     if ($order->type == OrderType::NOMINATION) {
                         $nominee->notify(new CreateNominationOrdersForCast($order));
                     }
+                }
+
+                if ($order->type == OrderType::NOMINATED_CALL || $order->type == OrderType::HYBRID) {
+                    $nominees = $order->nominees;
+                    \Notification::send($nominees, new CreateNominatedOrdersForCast($order));
                 }
             }
 

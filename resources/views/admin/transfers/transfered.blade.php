@@ -76,14 +76,20 @@
                   <td>{{ $transfer->user_id }}</td>
                   <td>{{ $transfer->user->fullname }}</td>
                   <td>￥{{ $transfer->amount }}</td>
-                  @if (App\Enums\OrderType::NOMINATION == $transfer->order->type)
-                  <td>
-                    <a href="" class="btn-detail">詳細</a>
-                  </td>
+                  @if($transfer->order)
+                    @if (App\Enums\OrderType::NOMINATION == $transfer->order->type)
+                    <td>
+                      <a href="{{ route('admin.orders.order_nominee', ['order' => $transfer->order_id]) }}" class="btn-detail">詳細</a>
+                    </td>
+                    @else
+                    <td>
+                      <a href="{{ route('admin.orders.call', ['order' => $transfer->order_id]) }}" class="btn-detail">詳細</a>
+                    </td>
+                    @endif
                   @else
-                  <td>
-                    <a href="{{ route('admin.orders.call', ['order' => $transfer->order_id]) }}" class="btn-detail">詳細</a>
-                  </td>
+                    <td>
+                      予約が存在しません
+                    </td>
                   @endif
                 @endforeach
                  <tr>
