@@ -2,11 +2,12 @@
 
 namespace App;
 
-use App\Enums\OrderStatus;
-use App\Enums\RoomType;
 use App\Order;
-use Illuminate\Database\Eloquent\Model;
+use App\Enums\RoomType;
+use App\Enums\OrderType;
+use App\Enums\OrderStatus;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Database\Eloquent\Model;
 
 class Room extends Model
 {
@@ -106,6 +107,7 @@ class Room extends Model
                 ];
 
                 $order = Order::where('room_id', $this->id)
+                    ->where('type', '!=', OrderType::CALL)
                     ->whereIn('status', $statuses)
                     ->orderByRaw('FIELD(status, ' . implode(',', $statuses) . ' )')
                     ->first();

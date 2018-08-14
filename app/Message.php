@@ -17,6 +17,7 @@ class Message extends Model
     protected $fillable = [
         'room_id',
         'user_id',
+        'order_id',
         'thumbnail',
         'message',
         'image',
