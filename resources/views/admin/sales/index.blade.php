@@ -18,6 +18,7 @@
               </select>
               <button type="submit" class="fa fa-search btn-search" name="submit" value="search"></button>
               <div class="export-csv">
+                  <input type="hidden" name="limit" value="{{ request()->limit }}" />
                   <input type="hidden" name="is_export" value="1">
                   <button type="submit" class="export-btn" name="submit" value="export">CSV出力</button>
               </div>
@@ -25,6 +26,11 @@
             <form class="navbar-form navbar-left form-search" action="{{route('admin.sales.index')}}" id="limit-page" method="GET">
               <div class="form-group">
                 <div class="col-md-1">
+                  <select id="select-limit" name="limit" class="form-control">
+                  @foreach ([10, 20, 50, 100] as $limit)
+                    <option value="{{ $limit }}" {{ request()->limit == $limit ? 'selected' : '' }}>{{ $limit }}</option>
+                  @endforeach
+                  </select>
                   <input type="hidden" name="from_date" value="{{ request()->from_date }}" />
                   <input type="hidden" name="to_date" value="{{ request()->to_date }}" />
                   <input type="hidden" name="search" value="{{ request()->search }}" />
@@ -57,7 +63,15 @@
                 <td>{{ $sale->user ? $sale->user->fullname : "" }}</td>
                 <td>{{ App\Enums\PointType::getDescription($sale->type) }}</td>
                 <td>{{ $sale->point }}</td>
-                <td><a href="#"><button class="btn-detail">詳細</button></a></td>
+                @if ($sale->order)
+                  @if ( $sale->order->type == App\Enums\OrderType::NOMINATION)
+                  <td><a href="{{ route('admin.orders.order_nominee', ['order' => $sale->order->id]) }}" class="btn-detail">詳細</a></td>
+                  @else
+                  <td><a href="{{ route('admin.orders.call', ['order' => $sale->order->id]) }}" class="btn-detail">詳細</a></td>
+                  @endif
+                @else
+                <td><a href="#" class="btn-detail">詳細</a></td>
+                @endif
               </tr>
               @endforeach
               <tr>

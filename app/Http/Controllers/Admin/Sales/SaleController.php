@@ -48,11 +48,13 @@ class SaleController extends Controller
         }
 
         $sales = $sales->orderBy('created_at', 'DESC');
-        $salesExport = $sales->get();
-        $sales = $sales->paginate();
+        $salesExport = $sales;
+        $sales = $sales->paginate($request->limit ?: 10);
         $totalPoint = $sales->sum('point');
 
         if ('export' == $request->submit) {
+            $salesExport = $salesExport->limit($request->limit)->get();
+
             $data = collect($salesExport)->map(function ($item) {
                 return [
                     $item->order_id,
