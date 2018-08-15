@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Enums\RoomType;
+use App\Enums\UserType;
 use App\Http\Resources\RoomResource;
 use App\Room;
 use App\Services\LogService;
@@ -94,5 +95,16 @@ class RoomController extends ApiController
 
             return $this->respondServerError();
         }
+    }
+
+    public function getUsers()
+    {
+
+        $rooms = Room::active()->where('type', RoomType::SYSTEM);
+
+        $rooms = $rooms->with('latestMessage', 'users')->orderBy('updated_at', 'DESC')->get();
+
+        return $this->respondWithData(RoomResource::collection($rooms));
+
     }
 }
