@@ -14,7 +14,7 @@ use App\Jobs\ProcessOrder;
 use App\Jobs\StopOrder;
 use App\Jobs\ValidateOrder;
 use App\Notifications\CancelOrderFromCast;
-use App\Notifications\CastDenyNominationOrders;
+use App\Notifications\CastDenyOrders;
 use App\Services\LogService;
 use App\Traits\DirectRoom;
 use Auth;
@@ -133,7 +133,7 @@ class Order extends Model
                 $this->save();
 
                 $cast = User::find($userId);
-                $this->user->notify(new CastDenyNominationOrders($this, $cast));
+                $this->user->notify(new CastDenyOrders($this, $cast));
             }
 
             ValidateOrder::dispatchNow($this);
