@@ -37,7 +37,7 @@
     </div>
     <div class="clearfix"></div>
     @include ('admin.partials.footer')
-    {{--Chat-rooms--}}
+    {{--Chat-room--}}
     <script src="{{ mix('js/app.js') }}" type="text/javascript"></script>
     <!--[if !IE]>-->
     <script src="/assets/admin/js/jquery-2.1.0.min.js"></script>

@@ -10,6 +10,7 @@ let mix = require('laravel-mix');
  | file for the application as well as bundling up all the JS files.
  |
  */
+
 mix.styles([
     'public/assets/admin/css/login/login.css',
     'public/assets/admin/css/user/admin.css',

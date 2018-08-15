@@ -1,5 +1,6 @@
 
 require('./bootstrap');
+
 window.Vue = require('vue');
 
 import ChatRoom from "./components/ChatRoom";

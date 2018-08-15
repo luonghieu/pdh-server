@@ -1,9 +1,9 @@
 /node_modules
 /public/hot
+/public/js/app.js
 /public/storage
 /public/mix-manifest.json
 /public/bundle
-/public/js/app.js
 /storage/*.key
 /vendor
 /.idea

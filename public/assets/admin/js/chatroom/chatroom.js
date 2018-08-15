@@ -9,5 +9,4 @@ $(document).ready(function () {
         $('div.main div.messaging #guest').css("display", "none");
         $('div.main div.messaging #cast').css("display", "block")
     })
-
 });

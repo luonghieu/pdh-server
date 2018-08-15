@@ -14,5 +14,4 @@ export default new VueRouter({
             props: true
         },
     ]
-
 })
