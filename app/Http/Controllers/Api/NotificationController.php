@@ -13,6 +13,9 @@ class NotificationController extends ApiController
     public function show($id)
     {
         $user = $this->guard()->user();
+        if (UserType::CAST == $user->type) {
+            $user = Cast::find($user->id);
+        }
 
         $notify = $user->notifications()->find($id);
 
@@ -46,7 +49,7 @@ class NotificationController extends ApiController
         }
 
         $user = $this->guard()->user();
-        if ($user->type == UserType::CAST) {
+        if (UserType::CAST == $user->type) {
             $user = Cast::find($user->id);
         }
 
