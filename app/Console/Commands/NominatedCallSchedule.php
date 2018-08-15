@@ -5,9 +5,12 @@ namespace App\Console\Commands;
 use App\Enums\CastOrderStatus;
 use App\Enums\OrderStatus;
 use App\Enums\OrderType;
+use App\Enums\UserType;
+use App\Notifications\CallOrdersCreated;
 use App\Notifications\CastDenyOrders;
 use App\Order;
 use App\Services\LogService;
+use App\User;
 use Carbon\Carbon;
 use DB;
 use Illuminate\Console\Command;
@@ -60,6 +63,7 @@ class NominatedCallSchedule extends Command
                 ->where('cast_order.status', CastOrderStatus::OPEN)
                 ->get();
             $owner = $order->user;
+            $nomineeIds = [];
             try {
                 DB::beginTransaction();
 
@@ -73,6 +77,7 @@ class NominatedCallSchedule extends Command
                         ],
                         false
                     );
+                    $nomineeIds[] = $nominee->id;
                     $owner->notify(new CastDenyOrders($order, $nominee));
                 }
 
@@ -89,6 +94,11 @@ class NominatedCallSchedule extends Command
                         'is_changed' => true,
                     ]);
                 }
+
+                $casts = User::where('type', UserType::CAST)->where('class_id', $order->class_id)->whereNotIn('id',
+                    $nomineeIds)->get();
+
+                \Notification::send($casts, new CallOrdersCreated($order));
 
                 DB::commit();
             } catch (\Exception $e) {
