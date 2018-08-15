@@ -22,21 +22,27 @@
                   </tr>
                 </thead>
                 <tbody>
-                  @php
-                    $i=1;
-                  @endphp
-                  @foreach ($members as $key => $member)
-                  @if ($member->id != $ownerId)
-                  <tr>
-                    <td>{{ $i }}</td>
-                    <td><a href="{{ route('admin.users.show', ['user' => $member->id]) }}">{{ $member->id }}</a></td>
-                    <td>{{ $member->nickname }}</td>
-                  </tr>
-                  @php
-                  $i++;
-                  @endphp
+                  @if (empty($members->count()))
+                    <tr>
+                      <td colspan="3">{{ trans('messages.cast_not_found') }}</td>
+                    </tr>
+                  @else
+                    @php
+                      $i=1;
+                    @endphp
+                    @foreach ($members as $key => $member)
+                    @if ($member->id != $ownerId)
+                    <tr>
+                      <td>{{ $i }}</td>
+                      <td><a href="{{ route('admin.users.show', ['user' => $member->id]) }}">{{ $member->id }}</a></td>
+                      <td>{{ $member->nickname }}</td>
+                    </tr>
+                    @php
+                    $i++;
+                    @endphp
+                    @endif
+                    @endforeach
                   @endif
-                  @endforeach
                 </tbody>
               </table>
             </div>

@@ -76,9 +76,9 @@ class RoomController extends Controller
         }
 
         if ($request->search) {
-            $rooms->where(function ($query) use ($keyword) {
-                $query->where('id', "$keyword");
-                $query->orWhere('owner_id', "$keyword");
+            $rooms->whereHas('users', function ($query) use ($keyword) {
+                $query->where('users.id', "$keyword")
+                    ->orWhere('fullname', 'like', "%$keyword%");
             });
         }
         $rooms = $rooms->orderBy('created_at', 'DESC')->paginate($request->limit ?: 10);
