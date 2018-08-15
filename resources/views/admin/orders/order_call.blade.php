@@ -140,7 +140,7 @@
                 <tr>
                   <th>ポイント決済</th>
                   <td>
-                  @if ($order->payment_status == App\Enums\Status::PAYMENT_FINISHED)
+                  @if ($order->payment_status == App\Enums\OrderPaymentStatus::PAYMENT_FINISHED)
                   正常に完了しました
                   @else
                   エラー

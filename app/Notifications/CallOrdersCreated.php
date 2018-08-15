@@ -2,32 +2,26 @@
 
 namespace App\Notifications;
 
-use App\Enums\MessageType;
-use App\Enums\SystemMessageType;
 use App\Enums\UserType;
-use App\Traits\DirectRoom;
 use Illuminate\Bus\Queueable;
 use Illuminate\Notifications\Notification;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 
-class CastDenyOrders extends Notification implements ShouldQueue
+class CallOrdersCreated extends Notification implements ShouldQueue
 {
-    use Queueable, DirectRoom;
+    use Queueable;
 
     public $order;
-    public $cast;
 
     /**
      * Create a new notification instance.
      *
      * @param $order
-     * @param $cast
      */
-    public function __construct($order, $cast)
+    public function __construct($order)
     {
         $this->order = $order;
-        $this->cast = $cast;
     }
 
     /**
@@ -38,7 +32,7 @@ class CastDenyOrders extends Notification implements ShouldQueue
      */
     public function via($notifiable)
     {
-        return [CustomDatabaseChannel::class, PushNotificationChannel::class];
+        return [PushNotificationChannel::class];
     }
 
     /**
@@ -59,32 +53,18 @@ class CastDenyOrders extends Notification implements ShouldQueue
      */
     public function toArray($notifiable)
     {
-        $room = $this->createDirectRoom($this->order->user_id, $this->cast->id);
-        $roomMesage = '提案がキャンセルされました。';
-        $roomMessage = $room->messages()->create([
-            'user_id' => 1,
-            'type' => MessageType::SYSTEM,
-            'message' => $roomMesage,
-            'system_type' => SystemMessageType::NOTIFY
-        ]);
-        $roomMessage->recipients()->attach($notifiable->id, ['room_id' => $room->id]);
-
-        $notifyMessage = '残念ながらマッチングが成立しませんでした（；；）';
-
         return [
-            'content' => $notifyMessage,
-            'send_from' => UserType::ADMIN,
+            //
         ];
     }
 
     public function pushData($notifiable)
     {
-        $room = $this->createDirectRoom($this->order->user_id, $this->cast->id);
-        $content = '残念ながらマッチングが成立しませんでした（；；）';
+        $content = '新着のキャスト募集が追加されました♪';
 
         $namedUser = 'user_' . $notifiable->id;
         $send_from = UserType::ADMIN;
-        $pushId = 'g_9';
+        $pushId = 'c_16';
 
         return [
             'audienceOptions' => ['named_user' => $namedUser],
@@ -99,7 +79,6 @@ class CastDenyOrders extends Notification implements ShouldQueue
                         'push_id' => $pushId,
                         'send_from' => $send_from,
                         'order_id' => $this->order->id,
-                        'room_id' => $room->id
                     ],
                 ],
             ],

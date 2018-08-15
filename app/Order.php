@@ -12,6 +12,7 @@ use App\Jobs\CancelOrder;
 use App\Jobs\ProcessOrder;
 use App\Jobs\ValidateOrder;
 use App\Notifications\CancelOrderFromCast;
+use App\Notifications\CastApplyOrders;
 use App\Notifications\CastDenyOrders;
 use App\Services\LogService;
 use App\Traits\DirectRoom;
@@ -196,16 +197,20 @@ class Order extends Model
             $nightTime = $this->nightTime($orderEndTime);
             $allowance = $this->allowance($nightTime);
             $orderPoint = $this->orderPoint();
+            $tempPoint = $orderPoint + $allowance;
+
             $this->casts()->attach(
                 $userId,
                 [
                     'status' => CastOrderStatus::ACCEPTED,
                     'accepted_at' => Carbon::now(),
                     'type' => CastOrderType::CANDIDATE,
-                    'temp_point' => $orderPoint + $allowance,
+                    'temp_point' => $tempPoint,
                 ]
             );
 
+            $cast = User::find($userId);
+            $cast->notify(new CastApplyOrders($this, $tempPoint));
             ValidateOrder::dispatchNow($this);
 
             return true;
@@ -294,7 +299,7 @@ class Order extends Model
 
             \DB::commit();
 
-            //StopOrder::dispatchNow($this, $cast);
+            StopOrder::dispatchNow($this, $cast);
 
             return $paymentRequest;
         } catch (\Exception $e) {
@@ -614,30 +619,22 @@ class Order extends Model
         $nightTime = $this->nightTime($orderStoppedAt);
         $allowance = $this->allowance($nightTime);
         $orderDuration = $this->duration * 60;
-        $totalPoint = 0;
 
         if (OrderType::NOMINATION == $this->type) {
-            $nommine = $this->nominees->first();
-            if (!$nommine) {
-                $nommine = $this->nomineesWithTrashed->first();
-            }
+            $nommine = $this->nomineesWithTrashed->first();
             $cost = $nommine->cost;
 
             return ($cost / 2) * floor($orderDuration / 15) + $allowance;
         } else {
-            if (OrderType::NOMINATED_CALL == $this->type || OrderType::HYBRID == $this->type) {
-                $cost = $this->castClass->cost;
-                $multiplier = 0;
-                while ($orderDuration / 15 >= 1) {
-                    $multiplier++;
-                    $orderDuration -= 15;
-                }
-                $orderFee = 500 * $multiplier;
-                $totalPoint = ($cost / 2) * floor($this->duration * 60 / 15) + $allowance + $orderFee;
-                return $totalPoint;
+            $cost = $this->castClass->cost;
+            $multiplier = 0;
+            while ($orderDuration / 15 >= 1) {
+                $multiplier++;
+                $orderDuration -= 15;
             }
+            $orderFee = 500 * $multiplier;
+            $totalPoint = ($cost / 2) * floor($this->duration * 60 / 15) + $allowance + $orderFee;
+            return $totalPoint;
         }
-
-        return $totalPoint;
     }
 }
