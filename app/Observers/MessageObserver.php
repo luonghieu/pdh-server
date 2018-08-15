@@ -20,7 +20,7 @@ class MessageObserver
             $users = ($message->room->users->except([$message->user_id]));
 
             if (RoomType::DIRECT == $message->room->type) {
-                if (!$message->room->checkBlocked($message->user_id)) {
+                if (!$message->room->checkBlocked($users->first()->id)) {
                     \Notification::send($users, new MessageCreated($message));
                 }
             } else {
