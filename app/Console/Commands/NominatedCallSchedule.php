@@ -5,6 +5,7 @@ namespace App\Console\Commands;
 use App\Enums\CastOrderStatus;
 use App\Enums\OrderStatus;
 use App\Enums\OrderType;
+use App\Notifications\CastDenyOrders;
 use App\Order;
 use App\Services\LogService;
 use Carbon\Carbon;
@@ -55,16 +56,16 @@ class NominatedCallSchedule extends Command
             ->where('created_at', '<=', Carbon::now()->subMinutes(5));
 
         foreach ($orders->cursor() as $order) {
-            $nomineeIds = $order->nominees()
+            $nominees = $order->nominees()
                 ->where('cast_order.status', CastOrderStatus::OPEN)
-                ->pluck('cast_order.user_id')->toArray();
-
+                ->get();
+            $owner = $order->user;
             try {
                 DB::beginTransaction();
 
-                foreach ($nomineeIds as $id) {
+                foreach ($nominees as $nominee) {
                     $order->nominees()->updateExistingPivot(
-                        $id,
+                        $nominee->id,
                         [
                             'status' => CastOrderStatus::TIMEOUT,
                             'canceled_at' => now(),
@@ -72,6 +73,7 @@ class NominatedCallSchedule extends Command
                         ],
                         false
                     );
+                    $owner->notify(new CastDenyOrders($order, $nominee));
                 }
 
                 $castsCount = $order->casts->count();

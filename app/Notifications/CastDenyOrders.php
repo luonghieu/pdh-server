@@ -12,7 +12,7 @@ use Illuminate\Notifications\Notification;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 
-class CastDenyNominationOrders extends Notification
+class CastDenyOrders extends Notification
 {
     use Queueable, DirectRoom;
 
