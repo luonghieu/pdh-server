@@ -28,7 +28,16 @@
                 <td>{{ $casts->firstItem() +$key }}</td>
                 <td><a href="{{ route('admin.users.show', ['user' => $cast->id]) }}">{{ $cast->id }}</a></td>
                 <td>{{ $cast->nickname }}</td>
-                <td>{{ App\Enums\CastOrderStatus::getDescription($cast->pivot->status) }}</td>
+                <td>
+                  @if (App\Enums\CastOrderStatus::OPEN == $cast->pivot->status)
+                  提案中
+                  @endif
+                  @if (in_array($cast->pivot->status, [App\Enums\CastOrderStatus::ACCEPTED, App\Enums\CastOrderStatus::PROCESSING, App\Enums\CastOrderStatus::DONE]))
+                  承諾済み
+                  @endif
+                  @if (in_array($cast->pivot->status, [App\Enums\CastOrderStatus::DENIED, App\Enums\CastOrderStatus::CANCELED, App\Enums\CastOrderStatus::TIMEOUT]))
+                  キャンセル
+                  @endif
               </tr>
               @endforeach
             </tbody>
