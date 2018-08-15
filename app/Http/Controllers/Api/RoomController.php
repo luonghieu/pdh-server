@@ -97,15 +97,12 @@ class RoomController extends ApiController
         }
     }
 
-    public function getCastAndGuestInAdminRoom()
+    public function getUsers()
     {
 
         $rooms = Room::active()->where('type', RoomType::SYSTEM);
 
-        $rooms = $rooms->with('latestMessage')->with(['users' => function ($query) {
-            $query->whereNotIn('type', [UserType::ADMIN]);
-
-        }])->orderBy('updated_at', 'DESC')->get();
+        $rooms = $rooms->with('latestMessage', 'users')->orderBy('updated_at', 'DESC')->get();
 
         return $this->respondWithData(RoomResource::collection($rooms));
 
