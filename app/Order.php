@@ -2,25 +2,24 @@
 
 namespace App;
 
-use App\Enums\CastOrderStatus;
-use App\Enums\CastOrderType;
-use App\Enums\OrderStatus;
-use App\Enums\OrderType;
-use App\Enums\PaymentStatus;
-use App\Enums\PointType;
-use App\Enums\RoomType;
-use App\Jobs\CancelOrder;
-use App\Jobs\ProcessOrder;
-use App\Jobs\StopOrder;
-use App\Jobs\ValidateOrder;
-use App\Notifications\CancelOrderFromCast;
-use App\Notifications\CastApplyOrders;
-use App\Notifications\CastDenyOrders;
-use App\Services\LogService;
-use App\Traits\DirectRoom;
 use Auth;
 use Carbon\Carbon;
+use App\Enums\RoomType;
+use App\Jobs\StopOrder;
+use App\Enums\OrderType;
+use App\Enums\PointType;
+use App\Jobs\CancelOrder;
+use App\Enums\OrderStatus;
+use App\Jobs\ProcessOrder;
+use App\Traits\DirectRoom;
+use App\Jobs\ValidateOrder;
+use App\Enums\CastOrderType;
+use App\Services\LogService;
+use App\Enums\CastOrderStatus;
+use App\Notifications\CastDenyOrders;
+use App\Notifications\CastApplyOrders;
 use Illuminate\Database\Eloquent\Model;
+use App\Notifications\CancelOrderFromCast;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Order extends Model
@@ -207,7 +206,7 @@ class Order extends Model
                     'status' => CastOrderStatus::ACCEPTED,
                     'accepted_at' => Carbon::now(),
                     'type' => CastOrderType::CANDIDATE,
-                    'temp_point' => $tempPoint
+                    'temp_point' => $tempPoint,
                 ]
             );
 
@@ -238,7 +237,7 @@ class Order extends Model
                 [
                     'status' => CastOrderStatus::ACCEPTED,
                     'accepted_at' => Carbon::now(),
-                    'temp_point' => $orderPoint + $allowance + $orderFee
+                    'temp_point' => $orderPoint + $allowance + $orderFee,
                 ],
                 false
             );
@@ -423,7 +422,7 @@ class Order extends Model
                     $castDuration -= 15;
                 }
             } else {
-                $multiplier =  floor($orderDuration / 15);
+                $multiplier = floor($orderDuration / 15);
             }
 
             $orderFee = 500 * $multiplier;
@@ -575,7 +574,7 @@ class Order extends Model
             ->get();
 
         foreach ($points as $value) {
-            if ($subPoint == 0) {
+            if (0 == $subPoint) {
                 return true;
             } elseif ($value->point > $subPoint && $subPoint > 0) {
                 $value->balance = $value->point - $subPoint;
@@ -622,7 +621,7 @@ class Order extends Model
         $allowance = $this->allowance($nightTime);
         $orderDuration = $this->duration * 60;
 
-        if ($this->type == OrderType::NOMINATION) {
+        if (OrderType::NOMINATION == $this->type) {
             $nommine = $this->nomineesWithTrashed->first();
             $cost = $nommine->cost;
 
