@@ -44,41 +44,47 @@
               </tr>
             </thead>
             <tbody>
-              @foreach ($ratings as $key => $rating)
-              <tr>
-                <td>{{ $ratings->firstItem() +$key }}</td>
-                <td><a href="{{ route('admin.users.show', ['user' => $rating->user->id]) }}">{{ $rating->user->id }}</a></td>
-                <td>{{ $rating->user->nickname }}</td>
-                @if($rating->order)
-                  @if ($rating->order->type == App\Enums\OrderType::NOMINATION)
-                    <td>
-                      <a href="{{ route('admin.orders.order_nominee', ['order' => $rating->order->id]) }}">
+              @if (empty($ratings->count()))
+                <tr>
+                  <td colspan="9">評価はありません</td>
+                </tr>
+              @else
+                @foreach ($ratings as $key => $rating)
+                <tr>
+                  <td>{{ $ratings->firstItem() +$key }}</td>
+                  <td><a href="{{ route('admin.users.show', ['user' => $rating->user->id]) }}">{{ $rating->user->id }}</a></td>
+                  <td>{{ $rating->user->nickname }}</td>
+                  @if($rating->order)
+                    @if ($rating->order->type == App\Enums\OrderType::NOMINATION)
+                      <td>
+                        <a href="{{ route('admin.orders.order_nominee', ['order' => $rating->order->id]) }}">
+                          {{ $rating->order->id }}
+                        </a>
+                      </td>
+                    @else
+                      <td>
+                        <a href="{{ route('admin.orders.call', ['order' => $rating->order->id]) }}" >
                         {{ $rating->order->id }}
-                      </a>
-                    </td>
+                        </a>
+                      </td>
+                    @endif
                   @else
-                    <td>
-                      <a href="{{ route('admin.orders.call', ['order' => $rating->order->id]) }}" >
-                      {{ $rating->order->id }}
-                      </a>
-                    </td>
+                    <td>{{ trans('messages.order_not_found') }}</td>
                   @endif
-                @else
-                  <td>{{ trans('messages.order_not_found') }}</td>
-                @endif
-                <td>{{ Carbon\Carbon::parse($rating->created_at)->format('Y/m/d H:i') }}</td>
-                <td>
-                  {{ str_repeat('★', $rating->satisfaction) }}
-                </td>
-                <td>
-                  {{ str_repeat('★', $rating->appearance) }}
-                </td>
-                <td>
-                  {{ str_repeat('★', $rating->friendliness) }}
-                </td>
-                <td>{{ $rating->comment }}</td>
-              </tr>
-              @endforeach
+                  <td>{{ Carbon\Carbon::parse($rating->created_at)->format('Y/m/d H:i') }}</td>
+                  <td>
+                    {{ str_repeat('★', $rating->satisfaction) }}
+                  </td>
+                  <td>
+                    {{ str_repeat('★', $rating->appearance) }}
+                  </td>
+                  <td>
+                    {{ str_repeat('★', $rating->friendliness) }}
+                  </td>
+                  <td>{{ $rating->comment }}</td>
+                </tr>
+                @endforeach
+              @endif
             </tbody>
           </table>
         </div>

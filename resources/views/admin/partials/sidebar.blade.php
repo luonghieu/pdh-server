@@ -56,6 +56,17 @@ $routes = [
         ],
     ],
 
+    'report' => [
+        [
+            'name' => 'admin.reports.index',
+            'value' => '通報一覧',
+            'url' => route('admin.reports.index'),
+            'submenu' => [
+                'admin.reports.make_report_done',
+            ],
+        ],
+    ],
+
     'chat' => [
         [
             'name' => '',

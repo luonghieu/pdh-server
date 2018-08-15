@@ -7,7 +7,7 @@
         <div class="panel-body handling">
           <div class="search">
             <form class="navbar-form navbar-left form-search" action="{{ route('admin.rooms.index') }}" method="GET">
-              <input type="text" class="form-control input-search" placeholder="ルームID, オーナーID" name="search" value="{{request()->search}}">
+              <input type="text" class="form-control input-search" placeholder="ユーザーID, 名前" name="search" value="{{request()->search}}">
               <label for="">From date: </label>
               <input type="text" class="form-control date-picker input-search" name="from_date" id="date01" data-date-format="yyyy/mm/dd" value="{{request()->from_date}}" placeholder="yyyy/mm/dd" />
               <label for="">To date: </label>
