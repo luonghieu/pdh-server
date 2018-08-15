@@ -621,30 +621,22 @@ class Order extends Model
         $nightTime = $this->nightTime($orderStoppedAt);
         $allowance = $this->allowance($nightTime);
         $orderDuration = $this->duration * 60;
-        $totalPoint = 0;
 
         if ($this->type == OrderType::NOMINATION) {
-            $nommine = $this->nominees->first();
-            if (!$nommine) {
-                $nommine = $this->nomineesWithTrashed->first();
-            }
+            $nommine = $this->nomineesWithTrashed->first();
             $cost = $nommine->cost;
 
             return ($cost / 2) * floor($orderDuration / 15) + $allowance;
         } else {
-            if ($this->type == OrderType::NOMINATED_CALL || $this->type == OrderType::HYBRID) {
-                $cost = $this->castClass->cost;
-                $multiplier = 0;
-                while ($orderDuration / 15 >= 1) {
-                    $multiplier++;
-                    $orderDuration -= 15;
-                }
-                $orderFee = 500 * $multiplier;
-                $totalPoint = ($cost / 2) * floor($this->duration * 60 / 15) + $allowance + $orderFee;
-                return $totalPoint;
+            $cost = $this->castClass->cost;
+            $multiplier = 0;
+            while ($orderDuration / 15 >= 1) {
+                $multiplier++;
+                $orderDuration -= 15;
             }
+            $orderFee = 500 * $multiplier;
+            $totalPoint = ($cost / 2) * floor($this->duration * 60 / 15) + $allowance + $orderFee;
+            return $totalPoint;
         }
-
-        return $totalPoint;
     }
 }
