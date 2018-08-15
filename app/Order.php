@@ -2,23 +2,24 @@
 
 namespace App;
 
-use App\Enums\CastOrderStatus;
-use App\Enums\CastOrderType;
-use App\Enums\OrderStatus;
-use App\Enums\OrderType;
-use App\Enums\PointType;
-use App\Enums\RoomType;
-use App\Jobs\CancelOrder;
-use App\Jobs\ProcessOrder;
-use App\Jobs\ValidateOrder;
-use App\Notifications\CancelOrderFromCast;
-use App\Notifications\CastApplyOrders;
-use App\Notifications\CastDenyOrders;
-use App\Services\LogService;
-use App\Traits\DirectRoom;
 use Auth;
 use Carbon\Carbon;
+use App\Enums\RoomType;
+use App\Jobs\StopOrder;
+use App\Enums\OrderType;
+use App\Enums\PointType;
+use App\Jobs\CancelOrder;
+use App\Enums\OrderStatus;
+use App\Jobs\ProcessOrder;
+use App\Traits\DirectRoom;
+use App\Jobs\ValidateOrder;
+use App\Enums\CastOrderType;
+use App\Services\LogService;
+use App\Enums\CastOrderStatus;
+use App\Notifications\CastDenyOrders;
+use App\Notifications\CastApplyOrders;
 use Illuminate\Database\Eloquent\Model;
+use App\Notifications\CancelOrderFromCast;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Order extends Model
