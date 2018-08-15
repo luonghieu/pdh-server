@@ -54,6 +54,7 @@ class CancelOrder implements ShouldQueue
             $orderNightTime = $this->order->nightTime($orderStoppeddAt);
             $orderAllowance = $this->order->allowance($orderNightTime);
 
+            $involvedUsers[] = $this->order->user;
             foreach ($casts as $cast) {
                 $involvedUsers[] = $cast;
                 $orderFee = $this->order->orderFee($cast, $orderStartedAt, $orderStoppeddAt);

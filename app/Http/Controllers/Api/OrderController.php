@@ -153,7 +153,7 @@ class OrderController extends ApiController
                     \Notification::send($nominees, new CreateNominatedOrdersForCast($order));
                 }
             } else {
-                $casts = User::where('type', UserType::CAST)->where('class_id', $request->class_id)->get();
+                $casts = Cast::where('class_id', $request->class_id)->get();
                 \Notification::send($casts, new CallOrdersCreated($order));
             }
 
