@@ -14,6 +14,7 @@ use App\Jobs\ProcessOrder;
 use App\Jobs\StopOrder;
 use App\Jobs\ValidateOrder;
 use App\Notifications\CancelOrderFromCast;
+use App\Notifications\CastApplyOrders;
 use App\Notifications\CastDenyNominationOrders;
 use App\Services\LogService;
 use App\Traits\DirectRoom;
@@ -198,16 +199,20 @@ class Order extends Model
             $nightTime = $this->nightTime($orderEndTime);
             $allowance = $this->allowance($nightTime);
             $orderPoint = $this->orderPoint();
+            $tempPoint = $orderPoint + $allowance;
+
             $this->casts()->attach(
                 $userId,
                 [
                     'status' => CastOrderStatus::ACCEPTED,
                     'accepted_at' => Carbon::now(),
                     'type' => CastOrderType::CANDIDATE,
-                    'temp_point' => $orderPoint + $allowance
+                    'temp_point' => $tempPoint
                 ]
             );
 
+            $cast = User::find($userId);
+            $cast->notify(new CastApplyOrders($this, $tempPoint));
             ValidateOrder::dispatchNow($this);
 
             return true;
