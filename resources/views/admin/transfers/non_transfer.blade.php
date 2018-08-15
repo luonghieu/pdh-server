@@ -35,7 +35,7 @@
                 </select>
                 <input type="hidden" name="from_date" value="{{ request()->from_date }}" />
                 <input type="hidden" name="to_date" value="{{ request()->to_date }}" />
-                <input type="hidden" name="search_point_type" value="{{ request()->search_point_type }}" />
+                <input type="hidden" name="search" value="{{ request()->search }}" />
               </div>
             </div>
           </form>
