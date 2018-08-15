@@ -59,6 +59,7 @@ Route::group(['prefix' => 'v1'], function () {
         Route::post('/', ['as' => 'create', 'uses' => 'RoomController@store']);
         Route::get('/{id}', ['as' => 'index', 'uses' => 'MessageController@index']);
         Route::post('{id}/messages', ['as' => 'store', 'uses' => 'MessageController@store']);
+        Route::get('admin/get_users', ['as' => 'getUsers', 'uses' => 'RoomController@getUsers']);
     });
 
     Route::group(['middleware' => ['auth:api', 'guest'], 'prefix' => 'guest', 'as' => 'guest.'], function () {
