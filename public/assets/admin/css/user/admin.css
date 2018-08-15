@@ -1137,6 +1137,9 @@ tbody td {
   width: 10%;
 }
 
+.transfer-search {
+  margin-left: 20px;
+}
 @media (max-width: 767px) {
   .navbar {
     background: #20a8d817;

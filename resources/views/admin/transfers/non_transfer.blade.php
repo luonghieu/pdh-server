@@ -12,6 +12,8 @@
               <input type="text" class="form-control date-picker input-search" name="from_date" id="date01" data-date-format="yyyy/mm/dd" value="{{ request()->from_date }}" placeholder="yyyy/mm/dd" />
               <label for="">To date: </label>
               <input type="text" class="form-control date-picker" name="to_date" id="date01" data-date-format="yyyy/mm/dd" value="{{ request()->to_date }}" placeholder="yyyy/mm/dd"/>
+              <input type="text"  name="search" class="form-control transfer-search" value="{{ request()->search }}" placeholder="ユーザーID,名前
+"/>
               <button type="submit" class="fa fa-search btn btn-search"></button>
               <div class="export-csv">
                 <input type="hidden" name="is_export" value="1">
