@@ -100,11 +100,7 @@ class RoomController extends ApiController
     public function getCastAndGuestInAdminRoom()
     {
 
-        $user = $this->guard()->user();
-
-        $rooms = Room::active()->whereHas('users', function ($query) use ($user) {
-            $query->where('user_id', $user->id);
-        });
+        $rooms = Room::active()->where('type', RoomType::SYSTEM);
 
         $rooms = $rooms->with('latestMessage')->with(['users' => function ($query) {
             $query->whereNotIn('type', [UserType::ADMIN]);

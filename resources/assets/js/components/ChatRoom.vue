@@ -123,6 +123,14 @@ export default {
     },
 
     sendMessage() {
+      if(this.id){
+          this.realtime_roomId = this.id
+      }
+      else{
+          this.realtime_roomId = this.roomId
+      }
+
+      this.realtime_message = this.message;
       this.userId = this.user_id;
       let data = {
         message: this.message,

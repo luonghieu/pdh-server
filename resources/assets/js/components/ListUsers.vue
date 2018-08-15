@@ -23,14 +23,14 @@
                                             :src="userDetail.avatars[0].path">
                                     </div>
                                     <div class="chat_ib">
-                                        <h5 v-if="realtime_roomId == value.id && realtime_count > 0" v-bind:class="realtime_roomId == Id || realtime_roomId == room_id  ? '' : 'chat_ib_nickname' ">{{userDetail.nickname}}</h5>
-                                         <h5 v-else v-bind:class="value.unread_count == 0 || value.id == Id || value.id == room_id  || setUnread == 0 ? '' : 'chat_ib_nickname' ">{{userDetail.nickname}}</h5>
+                                        <h5 v-if="realtime_roomId == value.id && unread_realtime > 0" v-bind:class="realtime_roomId == Id || realtime_roomId == room_id  ? '' : 'chat_ib_nickname' ">{{userDetail.nickname}}</h5>
+                                         <h5 v-else v-bind:class="value.unread_count == 0 || value.id == Id || value.id == room_id  || setUnread == 0 || unread_realtime > 0 ? '' : 'chat_ib_nickname' ">{{userDetail.nickname}}</h5>
                                         <p v-if="realtime_roomId == value.id ">{{realtime_message}}</p>
                                         <p v-else>{{value.latest_message.message}}</p>
                                     </div>
                                 </div>
-                                <span v-if="realtime_roomId == value.id && realtime_count > 0" v-bind:class="realtime_roomId == Id || realtime_roomId == room_id ? 'notification' : 'notify-chat'">{{realtime_count}}</span>
-                                <span v-else v-bind:class="value.unread_count == 0 || value.id == Id || value.id == room_id || setUnread == 0 ? 'notification' : 'notify-chat'">{{value.unread_count}}</span>
+                                <span v-if="realtime_roomId == value.id && unread_realtime > 0" v-bind:class="realtime_roomId == Id || realtime_roomId == room_id ? 'notification' : 'notify-chat'">{{unread_realtime}}</span>
+                                <span v-else v-bind:class="value.unread_count == 0 || value.id == Id || value.id == room_id || setUnread == 0 || unread_realtime > 0? 'notification' : 'notify-chat'">{{value.unread_count}}</span>
                             </div>
                         </div>
                     </router-link>
@@ -47,14 +47,14 @@
                                             :src="userDetail.avatars[0].path">
                                     </div>
                                     <div class="chat_ib">
-                                        <h5 v-if="realtime_roomId == value.id && realtime_count > 0" v-bind:class="realtime_roomId == Id || realtime_roomId == room_id ? '' : 'chat_ib_nickname' ">{{userDetail.nickname}}</h5>
-                                        <h5 v-else v-bind:class="value.unread_count == 0 || value.id == Id || value.id == room_id || setUnread == 0 ? '' : 'chat_ib_nickname' ">{{userDetail.nickname}}</h5>
+                                        <h5 v-if="realtime_roomId == value.id && unread_realtime > 0" v-bind:class="realtime_roomId == Id || realtime_roomId == room_id ? '' : 'chat_ib_nickname' ">{{userDetail.nickname}}</h5>
+                                        <h5 v-else v-bind:class="value.unread_count == 0 || value.id == Id || value.id == room_id || setUnread == 0 || unread_realtime > 0 ? '' : 'chat_ib_nickname' ">{{userDetail.nickname}}</h5>
                                         <p v-if="realtime_roomId == value.id ">{{realtime_message}}</p>
                                         <p v-else>{{value.latest_message.message}}</p>
                                     </div>
                                 </div>
-                                <span v-if="realtime_roomId == value.id && realtime_count > 0 " v-bind:class="realtime_roomId == Id || realtime_roomId == room_id ? 'notification' : 'notify-chat'">{{realtime_count}}</span>
-                                <span v-else v-bind:class="value.unread_count == 0 || value.id == Id || value.id == room_id || setUnread == 0 ? 'notification' : 'notify-chat'">{{value.unread_count}}</span>
+                                <span v-if="realtime_roomId == value.id && unread_realtime > 0 " v-bind:class="realtime_roomId == Id || realtime_roomId == room_id ? 'notification' : 'notify-chat'">{{unread_realtime}}</span>
+                                <span v-else v-bind:class="value.unread_count == 0 || value.id == Id || value.id == room_id || setUnread == 0 || unread_realtime > 0 ? 'notification' : 'notify-chat'">{{value.unread_count}}</span>
                             </div>
                         </div>
                     </router-link>
@@ -71,7 +71,7 @@ export default {
     "roomId",
     "realtime_message",
     "realtime_roomId",
-    "realtime_count",
+    "realtime_count"
   ],
   data() {
     return {
@@ -84,7 +84,8 @@ export default {
       setUnread: 1,
       count: 0,
       users: "",
-      nickname: null
+      nickname: null,
+      unread_realtime: 0
     };
   },
 
@@ -116,6 +117,13 @@ export default {
 
   computed: {
     filteredData: function() {
+      if (
+        this.realtime_roomId == this.Id ||this.realtime_roomId == this.room_id) {
+         this.$emit("interface", this.count);
+      } else {
+         this.unread_realtime = this.realtime_count;
+      }
+
       let search_array = this.users;
       let searchName = this.searchName;
 

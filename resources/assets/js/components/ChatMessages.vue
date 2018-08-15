@@ -17,16 +17,16 @@
                     <div class="sent_msg">
                         <div class="in_sendmess">
                         <div class="delete_message">
-                            <button class="dell_mess" @click="confirmDelete(index, list_message, message.id)"><i
-                                    class="fa fa-trash"></i></button>
+                            <!-- <button class="dell_mess" @click="confirmDelete(index, list_message, message.id)"><i
+                                    class="fa fa-trash"></i></button> -->
                             <div class="on_mess" v-if="message.image">
                                 <img width="100" :src="message.image"/>
                             </div>
                             <p :id="message.room_id" class="on_mess" ref="linkOut" v-if="message.message" :key='message.id'>{{message.message}}</p>
                         </div>
                         <div style="clear:both"></div>
-                        <confirm-delete :delete="selectedMessage" v-if='confirmModal' @confirm="deleteMessage"
-                                        @cancel="cancelDelete" @close="closePopup"></confirm-delete>
+                        <!-- <confirm-delete :delete="selectedMessage" v-if='confirmModal' @confirm="deleteMessage"
+                                        @cancel="cancelDelete" @close="closePopup"></confirm-delete> -->
                         <span class="time_date" v-if="message.created_at">{{message.created_at}}</span>
                         </div>
                     </div>
@@ -94,6 +94,7 @@ export default {
 
     if (this.isScroll) {
       this.scrollToEnd();
+
     }
   },
 
