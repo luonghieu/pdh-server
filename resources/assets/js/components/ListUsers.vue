@@ -117,8 +117,7 @@ export default {
 
   computed: {
     filteredData: function() {
-      if (
-        this.realtime_roomId == this.Id ||this.realtime_roomId == this.room_id) {
+      if (this.realtime_roomId == this.Id ||this.realtime_roomId == this.room_id) {
          this.$emit("interface", this.count);
       } else {
          this.unread_realtime = this.realtime_count;

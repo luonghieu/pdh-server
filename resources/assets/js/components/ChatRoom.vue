@@ -73,26 +73,28 @@ export default {
       if (this.id) {
         this.roomId = null;
       }
-      this.init(this.id);
       this.getMessagesInRoom(this.id);
+
+         console.log(this.realtime_count);
     }
   },
 
   created() {
     this.getToken();
+    this.init();
     const url = window.location.href;
     const newUrl = new URL(url);
     this.roomId = newUrl.searchParams.get("room");
     if (this.roomId) {
-      this.init(this.roomId);
       this.getMessagesInRoom(this.roomId);
     }
   },
 
   methods: {
-    init(id) {
-      window.Echo.leave("room." + id);
-      window.Echo.private("room." + id).listen("MessageCreated", e => {
+    init() {
+      window.Echo.leave("user." + 1);
+      window.Echo.private("user." + 1).listen("MessageCreated", e => {
+          console.log(e);
         this.realtime_message = e.message.message;
         this.realtime_roomId = e.message.room_id;
         this.realtime_count += 1;
@@ -177,9 +179,9 @@ export default {
     onFileChange(e) {
       const files = e.target.files;
       const { name, size } = files[0];
-
+      let message;
       if (name.lastIndexOf(".") <= 0) {
-        var message = "有効な画像を選択してください";
+         message = "有効な画像を選択してください";
         this.errors.push(message);
         return false;
       }
@@ -195,14 +197,14 @@ export default {
         ext !== "png" &&
         ext !== "PNG"
       ) {
-        var message = "画像形式は無効です";
+        message  = "画像形式は無効です";
         this.errors.push(message);
         return false;
       }
 
       let sizeMB = (size / (1024 * 1024)).toFixed(2);
       if (sizeMB > 5.12) {
-        var message = `(${sizeMB}MB). 画像サイズが大きすぎます 5MB以下の画像をアップロードしてください`;
+        message  = `(${sizeMB}MB). 画像サイズが大きすぎます 5MB以下の画像をアップロードしてください`;
         this.errors.push(message);
         return false;
       }
@@ -212,9 +214,9 @@ export default {
     },
 
     createImage(file) {
-      var image = new Image();
-      var reader = new FileReader();
-      var vm = this;
+      let image = new Image();
+      let reader = new FileReader();
+      let vm = this;
 
       reader.onload = e => {
         vm.image = e.target.result;

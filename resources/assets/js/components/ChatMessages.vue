@@ -91,10 +91,16 @@ export default {
     if (this.room_id) {
       this.Id = null;
     }
-
+    if (this.realtime_roomId) {
+      if (
+        this.realtime_roomId == this.room_id ||this.realtime_roomId == this.Id && this.pageCm < 2 ) {
+         this.isScroll = true;
+      } else {
+        this.isScroll = false;
+      }
+    }
     if (this.isScroll) {
       this.scrollToEnd();
-
     }
   },
 
