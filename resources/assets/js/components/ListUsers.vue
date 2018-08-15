@@ -107,7 +107,7 @@ export default {
 
     getRoom() {
       window.axios
-        .get("../../api/v1/rooms/admin/casts_guests")
+        .get("../../api/v1/rooms/admin/get_users")
         .then(response => {
           const rooms = response.data.data;
           this.users = rooms;
