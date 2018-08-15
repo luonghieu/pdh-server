@@ -15,6 +15,64 @@ use Illuminate\Http\Request;
 
 class PointController extends Controller
 {
+    public function sumAmount($points)
+    {
+        $pointIds = $points->where('type', '<>', PointType::ADJUSTED)->pluck('id');
+        $sumAmount = Payment::whereIn('point_id', $pointIds)->sum('amount');
+
+        return $sumAmount;
+    }
+
+    public function sumPointBuy($points)
+    {
+        $sumPointBuy = $points->sum(function ($product) {
+            $sum = 0;
+            if ($product->is_buy) {
+                $sum += $product->point;
+            }
+
+            if ($product->is_auto_charge) {
+                $sum += $product->point;
+            }
+
+            if ($product->is_adjusted) {
+                $sum += $product->point;
+            }
+
+            return $sum;
+        });
+
+        return $sumPointBuy;
+    }
+
+    public function sumPointIncrease($points)
+    {
+        $sumPointIncrease = $points->sum(function ($product) {
+            $sum = 0;
+            if ($product->point > 0) {
+                $sum += $product->point;
+            }
+
+            return $sum;
+        });
+
+        return $sumPointIncrease;
+    }
+
+    public function sumPointReduction($points)
+    {
+        $sumPointReduction = $points->sum(function ($product) {
+            $sum = 0;
+            if ($product->point < 0) {
+                $sum += $product->point;
+            }
+
+            return $sum;
+        });
+
+        return $sumPointReduction;
+    }
+
     public function index(Request $request)
     {
         $keyword = $request->search_point_type;
@@ -54,25 +112,8 @@ class PointController extends Controller
         $pointsExport = $points->get();
         $points = $points->paginate($request->limit ?: 10);
 
-        $pointIds = $points->where('type', '<>', PointType::ADJUSTED)->pluck('id');
-        $sumAmount = Payment::whereIn('point_id', $pointIds)->sum('amount');
-
-        $sumPointBuy = $pointsExport->sum(function ($product) {
-            $sum = 0;
-            if ($product->is_buy) {
-                $sum += $product->point;
-            }
-
-            if ($product->is_auto_charge) {
-                $sum += $product->point;
-            }
-
-            if ($product->is_adjusted) {
-                $sum += $product->point;
-            }
-
-            return $sum;
-        });
+        $sumAmount = $this->sumAmount($points);
+        $sumPointBuy = $this->sumPointBuy($points);
 
         if ('export' == $request->submit) {
             $data = collect($pointsExport)->map(function ($item) {
@@ -82,8 +123,8 @@ class PointController extends Controller
                     $item->user_id,
                     $item->user->fullname,
                     PointType::getDescription($item->type),
-                    (PointType::ADJUSTED == $item->type) ? '¥ ' . number_format($item->payment->amount) : '-',
-                    $item->point,
+                    (PointType::ADJUSTED == $item->type) ? '-' : '¥ ' . number_format($item->payment->amount),
+                    number_format($item->point),
                 ];
             })->toArray();
 
@@ -93,8 +134,8 @@ class PointController extends Controller
                 '-',
                 '-',
                 '-',
-                '¥ ' . number_format($sumAmount),
-                $sumPointBuy,
+                '¥ ' . number_format($this->sumAmount($pointsExport)),
+                number_format($this->sumPointBuy($pointsExport)),
             ];
 
             array_push($data, $sum);
@@ -183,23 +224,8 @@ class PointController extends Controller
         $pointsExport = $points->get();
         $points = $points->paginate($request->limit ?: 10);
 
-        $sumPointIncrease = $pointsExport->sum(function ($product) {
-            $sum = 0;
-            if ($product->point > 0) {
-                $sum += $product->point;
-            }
-
-            return $sum;
-        });
-
-        $sumPointReduction = $pointsExport->sum(function ($product) {
-            $sum = 0;
-            if ($product->point < 0) {
-                $sum += $product->point;
-            }
-
-            return $sum;
-        });
+        $sumPointIncrease = $this->sumPointIncrease($points);
+        $sumPointReduction = $this->sumPointReduction($points);
 
         if ('export' == $request->submit) {
             $data = collect($pointsExport)->map(function ($item) {
@@ -222,8 +248,8 @@ class PointController extends Controller
                 '-',
                 '-',
                 '-',
-                number_format($sumPointIncrease),
-                number_format(-$sumPointReduction),
+                number_format($this->sumPointIncrease($pointsExport)),
+                number_format(-$this->sumPointReduction($pointsExport)),
             ];
 
             array_push($data, $sum);
