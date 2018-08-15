@@ -22,13 +22,19 @@
                   </tr>
                 </thead>
                 <tbody>
+                  @php
+                    $i=1;
+                  @endphp
                   @foreach ($members as $key => $member)
                   @if ($member->id != $ownerId)
                   <tr>
-                    <td>{{ $key +1 }}</td>
+                    <td>{{ $i }}</td>
                     <td><a href="{{ route('admin.users.show', ['user' => $member->id]) }}">{{ $member->id }}</a></td>
                     <td>{{ $member->nickname }}</td>
                   </tr>
+                  @php
+                  $i++;
+                  @endphp
                   @endif
                   @endforeach
                 </tbody>

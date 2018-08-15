@@ -1,4 +1,5 @@
 <?php
+Route::redirect('/admin', '/admin/login', 301);
 Route::group(['prefix' => 'admin', 'as' => 'admin.'], function () {
     Route::get('login', ['as' => 'login', 'uses' => 'AuthController@index']);
     Route::post('login', ['as' => 'login', 'uses' => 'AuthController@login']);

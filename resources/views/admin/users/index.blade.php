@@ -62,18 +62,24 @@
               </tr>
             </thead>
             <tbody>
-              @foreach ($users as $key => $user)
-              <tr>
-                <td>{{ $users->firstItem() +$key }}</td>
-                <td>{{ $user->id }}</td>
-                <td>{{ $user->nickname }}</td>
-                <td>{{ $user->age }}</td>
-                <td>{{ App\Enums\UserType::getDescription($user->type) }}</td>
-                <td>{{ App\Enums\Status::getDescription($user->status) }}</td>
-                <td>{{ Carbon\Carbon::parse($user->created_at)->format('Y/m/d H:i') }}</td>
-                <td><a href="{{ route('admin.users.show', ['user' => $user->id]) }}" class="btn-detail">詳細</a></td>
-              </tr>
-              @endforeach
+              @if (empty($users->count()))
+                <tr>
+                  <td colspan="8">{{ trans('messages.user_not_found') }}</td>
+                </tr>
+              @else
+                @foreach ($users as $key => $user)
+                <tr>
+                  <td>{{ $users->firstItem() +$key }}</td>
+                  <td>{{ $user->id }}</td>
+                  <td>{{ $user->nickname }}</td>
+                  <td>{{ $user->age }}</td>
+                  <td>{{ App\Enums\UserType::getDescription($user->type) }}</td>
+                  <td>{{ App\Enums\Status::getDescription($user->status) }}</td>
+                  <td>{{ Carbon\Carbon::parse($user->created_at)->format('Y/m/d H:i') }}</td>
+                  <td><a href="{{ route('admin.users.show', ['user' => $user->id]) }}" class="btn-detail">詳細</a></td>
+                </tr>
+                @endforeach
+              @endif
             </tbody>
           </table>
         </div>
