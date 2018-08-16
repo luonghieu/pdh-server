@@ -14,8 +14,8 @@
                 <th>No.</th>
                 <th>ユーザーID</th>
                 <th>ニックネーム</th>
-                <th>マッチングID</th>
-                <th>マッチングID</th>
+                <th>予約ID</th>
+                <th>合流日時</th>
                 <th>利用ポイント</th>
                 <th>区分</th>
                 <th></th>
@@ -24,14 +24,18 @@
             <tbody>
               @foreach ($orders as $key => $order)
               <tr>
-                <td>{{ $orders->firstItem() +$key }}</td>
+                <td>{{ $orders->firstItem() + $key }}</td>
                 <td><a href="{{ route('admin.users.show', ['user' => $user->id]) }}">{{ $order->user_id }}</a></td>
                 <td>{{ $order->user->nickname }}</td>
                 <td><a href="{{ route('admin.orders.call', ['order' => $order->id]) }}">{{ $order->id }}</a></td>
                 <td>{{ Carbon\Carbon::parse($order->date)->format('Y/m/d') }} {{ Carbon\Carbon::parse($order->start_time)->format('H:i') }}</td>
                 <td>{{ number_format($order->total_point) }}P</td>
                 <td>{{ App\Enums\OrderType::getDescription($order->type) }}</td>
-                <td><a href="#"><button>詳細</button></a></td>
+                @if ($order->type == App\Enums\OrderType::NOMINATION)
+                  <td><a href="{{ route('admin.orders.order_nominee', ['order' => $order->id]) }}" class="btn-detail">詳細</a></td>
+                @else
+                  <td><a href="{{ route('admin.orders.call', ['order' => $order->id]) }}" class="btn-detail">詳細</a></td>
+                @endif
               </tr>
               @endforeach
             </tbody>

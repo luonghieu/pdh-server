@@ -19,8 +19,8 @@
           <div class="col-lg-12">
           </div>
           <div class="clearfix"></div>
-          <div class="info-table col-lg-6">
-            <table class="table table-bordered">
+          <div class="info-table col-lg-10">
+            <table class="table table-bordered change-width-th">
               <!--  table-striped -->
               <tr>
                 <th>予約者ID</th>
@@ -41,10 +41,12 @@
               <tr>
                 <th>ルームID</th>
                 <td>
-                  @if ($order->room)
-                  <a href="{{ App\Enums\OrderStatus::ACTIVE == $order->status ? route('admin.rooms.messages_by_room', ['room' => $order->room->id]) : '#' }}">
+                  @if ($order->status >= App\Enums\OrderStatus::ACTIVE && $order->room)
+                  <a href="{{ route('admin.rooms.messages_by_room', ['room' => $order->room->id]) }}">
                     {{ $order->room->id }}
                   </a>
+                  @else
+                  <span>-</span>
                   @endif
                 </td>
               </tr>
@@ -54,7 +56,7 @@
               </tr>
               <tr>
                 <th>キャストとの合流時間</th>
-                <td>{{ Carbon\Carbon::parse($order->start_time)->format('Y/m/d H:i') }}</td>
+                <td>{{ Carbon\Carbon::parse($order->date.' '.$order->start_time)->format('Y/m/d H:i') }}</td>
               </tr>
               <tr>
                 <th>キャストの呼ぶ人数</th>
@@ -120,19 +122,22 @@
                     {{ App\Enums\OrderStatus::getDescription($order->status) }}
                     @endif
                   @endif
+                  @if (App\Enums\OrderPaymentStatus::EDIT_REQUESTING == $order->payment_status)
+                  <button class="change-time payment-request" data-toggle="modal" data-target="#payment-request">ステータスを売上申請待ちに切り替える</button>
+                  @endif
                 </td>
               </tr>
               <tr>
                 <th>予約発生時刻</th>
                 <td>{{ Carbon\Carbon::parse($order->created_at)->format('Y/m/d H:i') }}</td>
               </tr>
-              @if ($order->status == App\Enums\OrderStatus::PROCESSING)
+              @if ($order->status >= App\Enums\OrderStatus::PROCESSING)
               <tr>
                 <th>マッチングしたキャスト</th>
                 <td><a href="{{ route('admin.orders.casts_matching', ['order' => $order->id]) }}">{{ $order->casts->count().'人' }}</a></td>
               </tr>
               @endif
-              @if ($order->status == App\Enums\OrderStatus::DONE)
+              @if ($order->status >= App\Enums\OrderStatus::DONE)
                 <tr>
                   <th>実績合計ポイント</th>
                   <td>{{ number_format($order->total_point) }}P</td>
@@ -149,6 +154,24 @@
                 </tr>
               @endif
             </table>
+            <div class="modal fade" id="payment-request" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+              <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                  <div class="modal-body">
+                    <p>ステータスを「売上申請待ち」に変更しますか？</p>
+                  </div>
+                  <div class="modal-footer">
+                    <form action="{{ route('admin.orders.change_payment_request_status',['order' => $order->id]) }}" method="POST">
+                    {{ csrf_field() }}
+                    {{ method_field('PUT') }}
+                      <input type="hidden" name="page" value="order_call">
+                      <button type="button" class="btn btn-canceled" data-dismiss="modal">キャンセル</button>
+                      <button type="submit" class="btn btn-accept">はい</button>
+                    </form>
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </div>
