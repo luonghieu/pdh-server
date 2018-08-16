@@ -15,7 +15,7 @@ class Room extends Model
         'owner_id',
         'type',
         'is_active',
-        'order_id'
+        'order_id',
     ];
 
     protected $guarded = [];
@@ -69,6 +69,7 @@ class Room extends Model
         return $this->messages()
             ->whereHas('recipients', function ($q) use ($userId) {
                 $q->where('user_id', $userId)
+                    ->where('is_show', true)
                     ->whereNull('read_at');
             });
     }
