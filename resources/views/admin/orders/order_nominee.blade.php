@@ -144,6 +144,7 @@
                     <form action="{{ route('admin.orders.change_payment_request_status',['order' => $order->id]) }}" method="POST">
                     {{ csrf_field() }}
                     {{ method_field('PUT') }}
+                      <input type="hidden" name="page" value="order_nominee">
                       <button type="button" class="btn btn-canceled" data-dismiss="modal">キャンセル</button>
                       <button type="submit" class="btn btn-accept">はい</button>
                     </form>
