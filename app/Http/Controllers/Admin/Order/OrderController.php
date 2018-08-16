@@ -50,7 +50,7 @@ class OrderController extends Controller
     public function deleteOrder(Request $request)
     {
         if ($request->has('order_ids')) {
-            $orderIds = $request->order_ids;
+            $orderIds = array_map('intval', explode(',', $request->order_ids));
 
             $checkOrderIdExist = Order::whereIn('id', $orderIds)->exists();
 
@@ -131,7 +131,7 @@ class OrderController extends Controller
 
             return $this->respondServerError();
         }
-        return redirect(route('admin.orders.order_nominee', compact('order')));
+        return view('admin.orders.order_nominee', compact('order'));
     }
 
     public function changeStartTimeOrderNominee(Request $request)
