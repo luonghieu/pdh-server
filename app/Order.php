@@ -58,7 +58,7 @@ class Order extends Model
             ->whereNull('cast_order.deleted_at')
             ->withPivot('order_time', 'extra_time', 'order_point', 'extra_point', 'allowance_point', 'fee_point',
                 'total_point', 'type', 'started_at', 'stopped_at', 'status', 'accepted_at', 'canceled_at', 'guest_rated',
-                'cast_rated', 'is_thanked', 'temp_point')
+                'cast_rated', 'is_thanked', 'temp_point', 'cost')
             ->withTimestamps();
     }
 
@@ -67,7 +67,7 @@ class Order extends Model
         return $this->belongsToMany(Cast::class)
             ->where('cast_order.type', CastOrderType::NOMINEE)
             ->whereNull('cast_order.deleted_at')
-            ->withPivot('status', 'type')
+            ->withPivot('status', 'type', 'cost')
             ->withTimestamps();
     }
 
@@ -75,7 +75,7 @@ class Order extends Model
     {
         return $this->belongsToMany(Cast::class)
             ->where('cast_order.type', CastOrderType::NOMINEE)
-            ->withPivot('status', 'type')
+            ->withPivot('status', 'type', 'cost')
             ->withTimestamps();
     }
 
@@ -91,7 +91,7 @@ class Order extends Model
     {
         return $this->belongsToMany(Cast::class)
             ->whereNull('cast_order.deleted_at')
-            ->withPivot('status', 'type', 'started_at')
+            ->withPivot('status', 'type', 'started_at', 'cost')
             ->withTimestamps();
     }
 
@@ -394,7 +394,7 @@ class Order extends Model
             $cost = $this->castClass->cost;
         } else {
             if ($cast) {
-                $cost = $cast->cost;
+                $cost = $cast->pivot->cost;
             } else {
                 $cost = $this->castClass->cost;
             }
@@ -464,7 +464,7 @@ class Order extends Model
             if (OrderType::NOMINATION != $order->type) {
                 $costPerFifteenMins = $cast->castClass->cost / 2;
             } else {
-                $costPerFifteenMins = $cast->cost / 2;
+                $costPerFifteenMins = $cast->pivot->cost / 2;
             }
 
             $extraPoint = ($costPerFifteenMins * 1.4) * $multiplier;
@@ -623,7 +623,7 @@ class Order extends Model
 
         if (OrderType::NOMINATION == $this->type) {
             $nommine = $this->nomineesWithTrashed->first();
-            $cost = $nommine->cost;
+            $cost = $nommine->pivot->cost;
 
             return ($cost / 2) * floor($orderDuration / 15) + $allowance;
         } else {

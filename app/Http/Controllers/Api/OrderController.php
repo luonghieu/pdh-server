@@ -144,6 +144,14 @@ class OrderController extends ApiController
                     $order->save();
 
                     if ($order->type == OrderType::NOMINATION) {
+                        $order->nominees()->updateExistingPivot(
+                            $nominee->id,
+                            [
+                                'cost' => $nominee->cost,
+                            ],
+                            false
+                        );
+
                         $nominee->notify(new CreateNominationOrdersForCast($order));
                     }
                 }
