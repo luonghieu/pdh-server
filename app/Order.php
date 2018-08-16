@@ -210,8 +210,6 @@ class Order extends Model
                 ]
             );
 
-            $cast = User::find($userId);
-            $cast->notify(new CastApplyOrders($this, $tempPoint));
             ValidateOrder::dispatchNow($this);
 
             return true;
