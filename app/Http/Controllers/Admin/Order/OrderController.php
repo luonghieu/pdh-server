@@ -129,7 +129,10 @@ class OrderController extends Controller
         try {
             \DB::beginTransaction();
             $order->save();
-            PaymentRequest::where('order_id', $order->id)->update(['status' => PaymentRequestStatus::CONFIRM]);
+            PaymentRequest::where([
+                ['order_id', '=', $order->id],
+                ['status', '=', PaymentRequestStatus::CONFIRM],
+            ])->update(['status' => PaymentRequestStatus::OPEN]);
             \DB::commit();
         } catch (\Exception $e) {
             \DB::rollBack();
