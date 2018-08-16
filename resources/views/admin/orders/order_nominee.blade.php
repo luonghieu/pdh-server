@@ -37,7 +37,7 @@
               </tr>
               <tr>
                 <th>指名キャスト名</th>
-                <td>{{ (count($order->casts) > 0) ? $order->casts[0]->nickname : '' }}</td>
+                <td>{{ (count($order->castOrder) > 0) ? $order->castOrder[0]->nickname : '' }}</td>
               </tr>
               <tr>
                 <th>予約区分</th>
@@ -62,7 +62,7 @@
               </tr>
               <tr>
                 <th>キャストとの合流時間</th>
-                <td>{{ (count($order->casts) > 0) ? Carbon\Carbon::parse($order->casts[0]->pivot->started_at)->format('Y/m/d H:i') : '' }}</td>
+                <td>{{ Carbon\Carbon::parse($order->date .' '. $order->start_time)->format('Y/m/d H:i') }}</td>
               </tr>
               <tr>
                 <th>キャストを呼ぶ時間</th>
@@ -70,7 +70,7 @@
               </tr>
               <tr>
                 <th>予定合計ポイント</th>
-                <td>{{ $order->total_point }}</td>
+                <td>{{ $order->casts ? number_format($order->casts[0]->pivot->temp_point).'P' : '0P' }}</td>
               </tr>
               <tr>
                 <th>ステータス</th>
@@ -97,7 +97,7 @@
                 <th>予約発生時刻</th>
                 <td>{{ Carbon\Carbon::parse($order->created_at)->format('Y/m/d H:i') }}</td>
               </tr>
-              @if (App\Enums\OrderStatus::PROCESSING == $order->status)
+              @if (App\Enums\OrderStatus::PROCESSING <= $order->status)
               <tr>
                 <th>合流時刻</th>
                 <td>
@@ -108,13 +108,13 @@
               <tr>
                 <th>解散時刻</th>
                 <td>
-                  {{ (count($order->casts) > 0) ? Carbon\Carbon::parse($order->casts[0]->pivot->stopped_at)->format('Y/m/d H:i') : '' }}
+                  {{ (count($order->casts) > 0) ? ($order->casts[0]->pivot->stopped_at != null ? Carbon\Carbon::parse($order->casts[0]->pivot->stopped_at)->format('Y/m/d H:i') : '') : '' }}
                   <button class="change-time order-nominee-stopped-time" data-toggle="modal" data-target="#order-nominee-stopped-time">解散時刻を修正する</button>
                 </td>
               </tr>
               <tr>
                 <th>延長時間</th>
-                <td>{{ (count($order->casts) > 0) ? $order->casts[0]->pivot->extra_time.'分' : '' }}</td>
+                <td>{{ (count($order->casts) > 0) ? ($order->casts[0]->pivot->extra_time != null ? $order->casts[0]->pivot->extra_time.'分' : '0分') : '' }}</td>
               </tr>
               <tr>
                 <th>延長料</th>
@@ -130,7 +130,7 @@
               </tr>
               <tr>
                 <th>実績合計ポイント</th>
-                <td>{{ $order->total_point }}P</td>
+                <td>{{ $order->total_point != null ? number_format($order->total_point).'P' : '0P' }} </td>
               </tr>
               @endif
             </table>
@@ -177,7 +177,7 @@
                   </div>
                   <div class="modal-footer">
                       <button type="button" class="btn btn-canceled" data-dismiss="modal">キャンセル</button>
-                      <button type="submit" class="btn btn-accept">はい</button>
+                      <button type="submit" class="btn btn-accept">合流時刻を修正する</button>
                     </form>
                   </div>
                 </div>
@@ -209,7 +209,7 @@
                   </div>
                   <div class="modal-footer">
                       <button type="button" class="btn btn-canceled" data-dismiss="modal">キャンセル</button>
-                      <button type="submit" class="btn btn-accept">はい</button>
+                      <button type="submit" class="btn btn-accept">解散時刻を修正する</button>
                     </form>
                   </div>
                 </div>

@@ -131,7 +131,7 @@ class OrderController extends Controller
 
             return $this->respondServerError();
         }
-        return view('admin.orders.order_nominee', compact('order'));
+        return redirect(route('admin.orders.order_nominee', compact('order')));
     }
 
     public function changeStartTimeOrderNominee(Request $request)

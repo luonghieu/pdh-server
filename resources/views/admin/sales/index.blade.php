@@ -87,7 +87,7 @@
                   <td class="result">-</td>
                   <td class="result">-</td>
                   <td class="result">-</td>
-                  <td class="result">{{  $totalPoint }}</td>
+                  <td class="result">{{ number_format($totalPoint) }}</td>
                   <td class="result">-</td>
                 </tr>
               @endif

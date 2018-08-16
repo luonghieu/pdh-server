@@ -77,7 +77,7 @@ class SaleController extends Controller
                 '-',
                 '-',
                 '-',
-                $totalPoint,
+                number_format($totalPoint),
             ];
 
             array_push($data, $sum);
