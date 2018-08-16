@@ -100,7 +100,7 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-canceled" data-dismiss="modal">キャンセル</button>
-                    <button type="submit" class="btn btn-accept">はい</button>
+                    <button type="submit" class="btn btn-accept">合流時刻を修正する</button>
                   </form>
                 </div>
               </div>
@@ -132,7 +132,7 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-canceled" data-dismiss="modal">キャンセル</button>
-                    <button type="submit" class="btn btn-accept">はい</button>
+                    <button type="submit" class="btn btn-accept">延長時間を修正する</button>
                   </form>
                 </div>
               </div>
