@@ -4,17 +4,17 @@
             <div class="inbox_msg">
                 <h3 class="text-center nickname"></h3>
                 <list-users :user_id="user_id" :roomId="roomId" :realtime_message="realtime_message" :realtime_roomId="realtime_roomId" :realtime_count="realtime_count"
-                @interface="handleCountMessage"
+                @interface="handleCountMessage" :users="users"
                 ></list-users>
                 <div class="mesgs">
                     <chat-messages :list_message="list_messages" :user_id="user_id"
-                                   :totalMessage="totalMessage" :roomId="roomId" :realtime_roomId="realtime_roomId" @interface="handleNewMessage"></chat-messages>
+                                   :totalMessage="totalMessage" :roomId="roomId" :realtime_roomId="realtime_roomId" @interface="handleNewMessage" :countUnread_realtime="countUnread_realtime"></chat-messages>
                     <div class="type_msg">
                         <div class="input_msg_write">
                             <a name="bottom"></a>
                             <div v-if="!image">
                                 <textarea name="mess" v-model="message" class="write_msg"
-                                          placeholder="Type a message*"></textarea>
+                                          placeholder="メッセージを入力してください*"></textarea>
                                 <input id="fileUpload" name="image" type="file" accept="image/*" style="display: none"
                                        @change="onFileChange">
                                 <p style="color: red" v-for="error in errors">{{error}}</p>
@@ -59,11 +59,14 @@ export default {
       errors: [],
       timer: "",
       totalMessage: "",
-      roomId: "",
+      roomId: 0,
       id: "",
       realtime_message: "",
       realtime_roomId: "",
-      realtime_count: 0
+      realtime_count: 0,
+      users: "",
+      messageUnread_index: "",
+      countUnread_realtime: "",
     };
   },
 
@@ -74,13 +77,12 @@ export default {
         this.roomId = null;
       }
       this.getMessagesInRoom(this.id);
-
-         console.log(this.realtime_count);
     }
   },
 
   created() {
     this.getToken();
+    this.getRoom();
     this.init();
     const url = window.location.href;
     const newUrl = new URL(url);
@@ -94,10 +96,13 @@ export default {
     init() {
       window.Echo.leave("user." + 1);
       window.Echo.private("user." + 1).listen("MessageCreated", e => {
-          console.log(e);
         this.realtime_message = e.message.message;
         this.realtime_roomId = e.message.room_id;
-        this.realtime_count += 1;
+        if(this.realtime_roomId == Number(this.roomId) || this.realtime_roomId == Number(this.Id)){
+            this.realtime_count = 0;
+        } else {
+            this.realtime_count += 1;
+        }
         this.list_messages.push(e.message);
       });
     },
@@ -116,12 +121,31 @@ export default {
         this.list_messages = [];
         const room = response.data.data.data;
         this.totalMessage = response.data.data.total;
+        let setUnRead = {setRead: true, user: {avatars: null}}
         room.forEach(messages => {
-          messages.forEach(item => {
+        if(this.messageUnread_index || this.countUnread_realtime) {
+            messages.splice(this.messageUnread_index || this.countUnread_realtime, 0, setUnRead);
+          }
+            messages.forEach(item => {
             this.list_messages.unshift(item);
+            this.countUnread_realtime = null;
           });
         });
       });
+    },
+
+    getRoom() {
+      window.axios
+        .get("../../api/v1/rooms/admin/get_users")
+        .then(response => {
+          const rooms = response.data.data;
+          this.users = rooms;
+          this.users.forEach(items => {
+          if(items.unread_count > 0){
+            this.messageUnread_index = items.unread_count;
+        }
+     })
+    });
     },
 
     sendMessage() {
@@ -229,7 +253,7 @@ export default {
     },
 
     handleCountMessage(event) {
-      this.realtime_count = event;
+        this.countUnread_realtime = event;
     },
 
     handleNewMessage(event) {
