@@ -94,8 +94,8 @@ export default {
       if (unReadCount > 0) {
         this.setUnread = 0;
       }
+      this.unread_realtime = 0;
       if (this.realtime_roomId == roomID) {
-        this.unread_realtime = 0;
         this.$emit("interface", this.realtime_count);
       }
     }

@@ -32,8 +32,7 @@
                     </div>
                 </div>
         <div v-else>
-            <div class="incoming_msg" v-if="message.room_id == room_id || message.room_id == Id">
-                <div class="timeLine__unreadLine" v-if="message.setRead == true" v-bind:class="isUnread == true ? '' : 'unread_count'">
+            <div class="timeLine__unreadLine" v-if="message.setRead == true && (message.room_id == room_id || message.room_id == Id)" v-bind:class="isUnread == true ? '' : 'unread_count'">
                     <div class="timeLine__unreadLineBorder">
                         <div class="timeLine__unreadLineContainer">
                             <div class="timeLine__unreadLineBody">
@@ -41,7 +40,8 @@
                             </div>
                         </div>
                     </div>
-                </div>
+            </div>
+            <div class="incoming_msg" v-if="message.message && (message.room_id == room_id || message.room_id == Id)">
                 <div class="received_msg">
                         <div v-if="message.user.avatars" class="incoming_msg_img"><img class="img_avatar"
                                 :src="message.user.avatars[0].path"></div>
@@ -116,6 +116,12 @@ export default {
     if (this.isScroll) {
       this.scrollToEnd();
     }
+
+   if(this.realtime_roomId == this.room_id || this.realtime_roomId == this.Id ){
+       setTimeout(this.setTimeOut, 5000);
+   } else {
+       this.isUnread = true
+   }
 
   },
 

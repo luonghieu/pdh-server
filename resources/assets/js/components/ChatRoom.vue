@@ -66,7 +66,7 @@ export default {
       realtime_count: 0,
       users: "",
       messageUnread_index: "",
-      countUnread_realtime: "",
+      countUnread_realtime: 0,
     };
   },
 
@@ -98,7 +98,7 @@ export default {
       window.Echo.private("user." + 1).listen("MessageCreated", e => {
         this.realtime_message = e.message.message;
         this.realtime_roomId = e.message.room_id;
-        if(this.realtime_roomId == Number(this.roomId) || this.realtime_roomId == Number(this.Id)){
+        if(this.realtime_roomId == Number(this.roomId) || this.realtime_roomId == Number(this.id)) {
             this.realtime_count = 0;
         } else {
             this.realtime_count += 1;
@@ -128,7 +128,8 @@ export default {
           }
             messages.forEach(item => {
             this.list_messages.unshift(item);
-            this.countUnread_realtime = null;
+            let messUnread_realtime = this.countUnread_realtime = null;
+            let mees_index = this.messageUnread_index = null;
           });
         });
       });
