@@ -11,6 +11,13 @@ use Illuminate\Support\Facades\Auth;
 
 class Room extends Model
 {
+    protected $fillable = [
+        'owner_id',
+        'type',
+        'is_active',
+        'order_id'
+    ];
+
     protected $guarded = [];
 
     public function getUnreadCountAttribute()
