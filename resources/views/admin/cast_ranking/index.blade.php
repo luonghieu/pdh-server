@@ -48,7 +48,7 @@
                                         <td>
                                             <a href="{{ route('admin.users.show', ['user' => $cast->id]) }}">{{ $cast->nickname }}</a>
                                         </td>
-                                        <td>￥{{ $cast->point }}</td>
+                                        <td>￥{{ number_format($cast->point) }}</td>
                                     </tr>
                                 @endforeach
                             @endif
