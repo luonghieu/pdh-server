@@ -19,6 +19,7 @@
               <button type="submit" class="fa fa-search btn-search" name="submit" value="search"></button>
               <div class="export-csv">
                   <input type="hidden" name="limit" value="{{ request()->limit }}" />
+                  <input type="hidden" name="page" value="{{ request()->page }}" />
                   <input type="hidden" name="is_export" value="1">
                   <button type="submit" class="export-btn" name="submit" value="export">CSV出力</button>
               </div>
@@ -26,6 +27,7 @@
             <form class="navbar-form navbar-left form-search" action="{{route('admin.sales.index')}}" id="limit-page" method="GET">
               <div class="form-group">
                 <div class="col-md-1">
+                  <label class="col-md-1 limit-page">表示件数：</label>
                   <select id="select-limit" name="limit" class="form-control">
                   @foreach ([10, 20, 50, 100] as $limit)
                     <option value="{{ $limit }}" {{ request()->limit == $limit ? 'selected' : '' }}>{{ $limit }}</option>
@@ -55,34 +57,40 @@
               </tr>
             </thead>
             <tbody>
-              @foreach ($sales as $sale)
-              <tr>
-                <td>{{ $sale->order_id }}</td>
-                <td>{{ Carbon\Carbon::parse($sale->created_at)->format('Y年m月d日') }}</td>
-                <td>{{ $sale->user_id }}</td>
-                <td>{{ $sale->user ? $sale->user->fullname : "" }}</td>
-                <td>{{ App\Enums\PointType::getDescription($sale->type) }}</td>
-                <td>{{ $sale->point }}</td>
-                @if ($sale->order)
-                  @if ( $sale->order->type == App\Enums\OrderType::NOMINATION)
-                  <td><a href="{{ route('admin.orders.order_nominee', ['order' => $sale->order->id]) }}" class="btn-detail">詳細</a></td>
+              @if (empty($sales->count()))
+                <tr>
+                  <td colspan="10">{{ trans('messages.results_not_found') }}</td>
+                </tr>
+              @else
+                @foreach ($sales as $sale)
+                <tr>
+                  <td>{{ $sale->order_id }}</td>
+                  <td>{{ Carbon\Carbon::parse($sale->created_at)->format('Y年m月d日') }}</td>
+                  <td>{{ $sale->user_id }}</td>
+                  <td>{{ $sale->user ? $sale->user->fullname : "" }}</td>
+                  <td>{{ App\Enums\PointType::getDescription($sale->type) }}</td>
+                  <td>{{ number_format($sale->point) }}</td>
+                  @if ($sale->order)
+                    @if ( $sale->order->type == App\Enums\OrderType::NOMINATION)
+                    <td><a href="{{ route('admin.orders.order_nominee', ['order' => $sale->order->id]) }}" class="btn-detail">詳細</a></td>
+                    @else
+                    <td><a href="{{ route('admin.orders.call', ['order' => $sale->order->id]) }}" class="btn-detail">詳細</a></td>
+                    @endif
                   @else
-                  <td><a href="{{ route('admin.orders.call', ['order' => $sale->order->id]) }}" class="btn-detail">詳細</a></td>
+                  <td>-</td>
                   @endif
-                @else
-                <td><a href="#" class="btn-detail">詳細</a></td>
-                @endif
-              </tr>
-              @endforeach
-              <tr>
-                <td class="result">合計</td>
-                <td class="result">-</td>
-                <td class="result">-</td>
-                <td class="result">-</td>
-                <td class="result">-</td>
-                <td class="result">{{  $totalPoint }}</td>
-                <td class="result">-</td>
-              </tr>
+                </tr>
+                @endforeach
+                <tr>
+                  <td class="result">合計</td>
+                  <td class="result">-</td>
+                  <td class="result">-</td>
+                  <td class="result">-</td>
+                  <td class="result">-</td>
+                  <td class="result">{{  $totalPoint }}</td>
+                  <td class="result">-</td>
+                </tr>
+              @endif
             </tbody>
           </table>
         </div>
