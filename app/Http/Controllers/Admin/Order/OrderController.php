@@ -6,6 +6,7 @@ use App\Enums\OrderPaymentStatus;
 use App\Enums\PaymentRequestStatus;
 use App\Http\Controllers\Controller;
 use App\Order;
+use App\PaymentRequest;
 use App\Services\LogService;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -121,17 +122,30 @@ class OrderController extends Controller
         return view('admin.orders.order_nominee', compact('order'));
     }
 
-    public function changePaymentRequestStatus(Order $order)
+    public function changePaymentRequestStatus(Request $request, Order $order)
     {
         $order->payment_status = OrderPaymentStatus::WAITING;
+
         try {
+            \DB::beginTransaction();
             $order->save();
+            PaymentRequest::where([
+                ['order_id', '=', $order->id],
+                ['status', '=', PaymentRequestStatus::CONFIRM],
+            ])->update(['status' => PaymentRequestStatus::OPEN]);
+            \DB::commit();
         } catch (\Exception $e) {
+            \DB::rollBack();
             LogService::writeErrorLog($e);
 
             return $this->respondServerError();
         }
-        return redirect(route('admin.orders.order_nominee', compact('order')));
+
+        if ('order_nominee' == $request->page) {
+            return redirect(route('admin.orders.order_nominee', compact('order')));
+        } else {
+            return redirect(route('admin.orders.call', compact('order')));
+        }
     }
 
     public function changeStartTimeOrderNominee(Request $request)
