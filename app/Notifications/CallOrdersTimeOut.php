@@ -63,20 +63,6 @@ class CallOrdersTimeOut extends Notification implements ShouldQueue
 
     public function pushData($notifiable)
     {
-        $orderDuration = $this->order->duration * 60;
-        $orderStartDate = Carbon::parse($this->order->date)->startOfDay();
-        $casts = $this->order->casts;
-
-        $orderNightTime = $this->order->nightTime($orderStartDate->addMinutes($orderDuration));
-        $orderAllowance = $this->order->allowance($orderNightTime);
-        $orderPoint = 0;
-        $orderStartedAt = Carbon::parse($this->order->date . ' ' . $this->order->start_time);
-        $orderStoppeddAt = $orderStartedAt->copy()->addMinutes($this->order->duration * 60);
-        foreach ($casts as $cast) {
-            $orderFee = $this->order->orderFee($cast, $orderStartedAt, $orderStoppeddAt);
-            $orderPoint += $this->order->orderPoint($cast) + $orderAllowance + $orderFee;
-        }
-
         $content = 'ご希望の人数のキャストが揃わなかったため、'
             . PHP_EOL . '下記の予約が無効となりました。'
             . PHP_EOL . '--------------------------------------------------'
@@ -86,7 +72,7 @@ class CallOrdersTimeOut extends Notification implements ShouldQueue
             . PHP_EOL . 'クラス：' . $this->order->castClass->name
             . PHP_EOL . '人数：' . $this->order->total_cast . '人'
             . PHP_EOL . '場所：' .  $this->order->address
-            . PHP_EOL . '予定合計ポイント：' . number_format($orderPoint) . ' Point'
+            . PHP_EOL . '予定合計ポイント：' . number_format($this->order->temp_point) . ' Point'
             . PHP_EOL . '--------------------------------------------------'
             . PHP_EOL . 'お手数ですが、再度コールをし直してください。';
 
