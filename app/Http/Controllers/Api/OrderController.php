@@ -7,11 +7,16 @@ use App\Enums\CastOrderStatus;
 use App\Enums\CastOrderType;
 use App\Enums\OrderStatus;
 use App\Enums\OrderType;
+use App\Enums\UserType;
 use App\Http\Resources\OrderResource;
+use App\Notifications\CallOrdersCreated;
+use App\Notifications\CreateNominatedOrdersForCast;
+use App\Notifications\CreateNominationOrdersForCast;
 use App\Order;
 use App\Services\LogService;
 use App\Tag;
 use App\Traits\DirectRoom;
+use App\User;
 use Carbon\Carbon;
 use DB;
 use Illuminate\Http\Request;
@@ -129,12 +134,35 @@ class OrderController extends ApiController
                     'status' => CastOrderStatus::OPEN,
                 ]);
 
-                if (OrderType::NOMINATION == $order->type) {
-                    $ownerId = $order->user_id;
-                    $nomineeId = $order->nominees()->first()->id;
 
-                    $this->createDirectRoom($ownerId, $nomineeId);
+                if (1 == $request->total_cast &&  1 == $counter) {
+                    $ownerId = $order->user_id;
+                    $nominee = $order->nominees()->first();
+                    $room = $this->createDirectRoom($ownerId, $nominee->id);
+
+                    $order->room_id = $room->id;
+                    $order->save();
+
+                    if ($order->type == OrderType::NOMINATION) {
+                        $order->nominees()->updateExistingPivot(
+                            $nominee->id,
+                            [
+                                'cost' => $nominee->cost,
+                            ],
+                            false
+                        );
+
+                        $nominee->notify(new CreateNominationOrdersForCast($order));
+                    }
                 }
+
+                if ($order->type == OrderType::NOMINATED_CALL || $order->type == OrderType::HYBRID) {
+                    $nominees = $order->nominees;
+                    \Notification::send($nominees, new CreateNominatedOrdersForCast($order));
+                }
+            } else {
+                $casts = Cast::where('class_id', $request->class_id)->get();
+                \Notification::send($casts, new CallOrdersCreated($order));
             }
 
             DB::commit();

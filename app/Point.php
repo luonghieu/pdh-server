@@ -3,9 +3,6 @@
 namespace App;
 
 use App\Enums\PointType;
-use App\Enums\PaymentStatus;
-use App\Services\LogService;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Database\Eloquent\Model;
 
 class Point extends Model
@@ -60,5 +57,19 @@ class Point extends Model
     public function getIsAdjustedAttribute()
     {
         return PointType::ADJUSTED == $this->type;
+    }
+
+    public function createPoint($data = [], $status = false)
+    {
+        $this->point = $data['point'];
+        $this->balance = $data['balance'];
+        $this->user_id = $data['user_id'];
+        $this->type = $data['type'];
+        $this->status = $status;
+
+        if (isset($data['order_id'])) {
+            $this->order_id = $data['order_id'];
+        }
+        $this->save();
     }
 }

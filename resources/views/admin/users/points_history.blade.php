@@ -54,55 +54,63 @@
               </tr>
             </thead>
             <tbody>
-              @foreach ($points as $point)
-              <tr>
-                <td>{{ Carbon\Carbon::parse($point->created_at)->format('Y年m月d日') }}</td>
-                <td>{{ App\Enums\PointType::getDescription($point->type) }}</td>
-                @if ($point->is_buy)
-                  <td>{{ $point->id }}</td>
-                @else
-                  <td>-</td>
-                @endif
-                @if ($point->is_pay && $point->order)
-                  @php
-                    if(($point->order->type == App\Enums\OrderType::NOMINATED_CALL)|| ($point->order->type == App\Enums\OrderType::CALL)) {
-                      $link = route('admin.orders.call', ['order' => $point->order->id]);
-                    } else {
-                      $link = "#";
-                    }
-                  @endphp
-                  <td><a href="{{ $link }}">{{ $point->order->id }}</a></td>
-                @else
-                  <td>-</td>
-                @endif
-                @if ($point->is_adjusted)
-                <td>-</td>
-                @else
-                <td>￥{{ $point->payment ? $point->payment->amount : 0 }}</td>
-                @endif
-                @if ($point->is_buy)
-                <td>{{ $point->point }}</td>
-                @else
-                <td></td>
-                @endif
-                @if ($point->is_pay)
-                <td>{{ $point->point }}</td>
-                @else
-                <td></td>
-                @endif
-                <td>{{ $point->balance }}</td>
-              </tr>
-              @endforeach
-              <tr>
-                <td class="result">合計</td>
-                <td class="result">-</td>
-                <td class="result">-</td>
-                <td class="result">-</td>
-                <td class="result">{{ $sumAmount }}</td>
-                <td class="result">{{  $sumPointBuy }}</td>
-                <td class="result">{{ $sumPointPay }}</td>
-                <td class="result">{{ $sumBalance }}</td>
-              </tr>
+              @if (empty($points->count()))
+                <tr>
+                  <td colspan="10">{{ trans('messages.point_not_found') }}</td>
+                </tr>
+              @else
+                @foreach ($points as $point)
+                  <tr>
+                    <td>{{ Carbon\Carbon::parse($point->created_at)->format('Y年m月d日') }}</td>
+                    <td>{{ App\Enums\PointType::getDescription($point->type) }}</td>
+                    @if ($point->is_buy || $point->is_autocharge)
+                      <td>{{ $point->id }}</td>
+                    @else
+                      <td>-</td>
+                    @endif
+                    @if ($point->is_pay && $point->order)
+                      @php
+                        if (($point->order->type == App\Enums\OrderType::NOMINATED_CALL)
+                          || ($point->order->type == App\Enums\OrderType::CALL))
+                        {
+                          $link = route('admin.orders.call', ['order' => $point->order->id]);
+                        } else {
+                          $link = "#";
+                        }
+                      @endphp
+                      <td><a href="{{ $link }}">{{ $point->order->id }}</a></td>
+                    @else
+                      <td>-</td>
+                    @endif
+                    @if ($point->is_adjusted || !$point->payment)
+                      <td>-</td>
+                    @else
+                      <td>￥ {{ $point->payment ? number_format($point->payment->amount) : 0 }}</td>
+                    @endif
+                    @if ($point->is_buy || $point->is_autocharge)
+                      <td>{{ number_format($point->point) }}</td>
+                    @else
+                      <td>-</td>
+                    @endif
+                    @if ($point->is_pay)
+                      <td>{{ number_format(-$point->point) }}</td>
+                    @else
+                      <td>-</td>
+                    @endif
+                    <td>{{ number_format($point->balance) }}</td>
+                  </tr>
+                @endforeach
+                <tr>
+                  <td class="result">合計</td>
+                  <td class="result">-</td>
+                  <td class="result">-</td>
+                  <td class="result">-</td>
+                  <td class="result">￥ {{ number_format($sumAmount) }}</td>
+                  <td class="result">{{ number_format($sumPointBuy) }}</td>
+                  <td class="result">{{ number_format($sumPointPay) }}</td>
+                  <td class="result">{{ number_format($sumBalance) }}</td>
+                </tr>
+              @endif
             </tbody>
           </table>
         </div>
@@ -116,11 +124,11 @@
                 {{ csrf_field() }}
                 {{ method_field('PUT') }}
                 <div class="change-point-input">
-                 <input type="text" name="point"> P
+                  <input type="text" name="point" value=""> P
                 </div>
                 <div class="modal-footer">
                   <button type="button" class="btn btn-canceled" data-dismiss="modal">キャンセル</button>
-                  <button type="submit" class="btn btn-accept">はい</button>
+                  <button type="submit" class="btn btn-accept">登録する</button>
                 </div>
               </form>
             </div>

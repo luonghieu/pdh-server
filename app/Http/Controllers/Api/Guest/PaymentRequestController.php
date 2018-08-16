@@ -39,13 +39,13 @@ class PaymentRequestController extends ApiController
     public function getPaymentRequest(Request $request, $id)
     {
         $user = $this->guard()->user();
-        $order = $user->orders()->where('orders.id', $id)->first();
+        $order = $user->orders()->with('casts')->where('orders.id', $id)->first();
 
         if (!$order) {
             return $this->respondErrorMessage(trans('messages.order_not_found'), 404);
         }
 
-        if (OrderStatus::DONE != $order->status || !$order->payment_status) {
+        if (OrderStatus::DONE != $order->status || !$order->payment_status || !$order->paymentRequests->count()) {
             return $this->respondErrorMessage(trans('messages.action_not_performed'), 422);
         }
 

@@ -1,4 +1,5 @@
 <?php
+Route::redirect('/admin', '/admin/login', 301);
 Route::group(['prefix' => 'admin', 'as' => 'admin.'], function () {
     Route::get('login', ['as' => 'login', 'uses' => 'AuthController@index']);
     Route::post('login', ['as' => 'login', 'uses' => 'AuthController@login']);
@@ -49,17 +50,28 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.'], function () {
         Route::put('change_stop_time_order_nominee', ['as' => 'change_stop_time_order_nominee', 'uses' => 'OrderController@changeStopTimeOrderNominee']);
     });
 
+    Route::group(['middleware' => 'is_admin'], function () {
+        Route::get('chat', ['as' => 'chat.index', 'uses' => 'ChatRoomController@index']);
+    });
+
     Route::group(['namespace' => 'Report', 'prefix' => 'reports', 'as' => 'reports.', 'middleware' => 'is_admin'], function () {
         Route::get('/', ['as' => 'index', 'uses' => 'ReportController@index']);
         Route::put('/', ['as' => 'make_report_done', 'uses' => 'ReportController@makeReportDone']);
     });
 
     Route::group(['namespace' => 'Point', 'prefix' => 'points', 'as' => 'points.', 'middleware' => 'is_admin'], function () {
+        Route::get('/point_users', ['as' => 'point_users', 'uses' => 'PointController@getPointUser']);
         Route::get('/', ['as' => 'index', 'uses' => 'PointController@index']);
         Route::get('/transaction_history', ['as' => 'transaction_history', 'uses' => 'PointController@getTransactionHistory']);
     });
 
     Route::group(['namespace' => 'Sales', 'prefix' => 'sales', 'as' => 'sales.', 'middleware' => 'is_admin'], function () {
         Route::get('/', ['as' => 'index', 'uses' => 'SaleController@index']);
+    });
+
+    Route::group(['namespace' => 'Transfer', 'prefix' => 'transfers', 'as' => 'transfers.', 'middleware' => 'is_admin'], function () {
+        Route::get('/non_transfers', ['as' => 'non_transfers', 'uses' => 'TransferController@getNotTransferedList']);
+        Route::get('/transfered', ['as' => 'transfered', 'uses' => 'TransferController@getTransferedList']);
+        Route::post('/change_transfers', ['as' => 'change_transfers', 'uses' => 'TransferController@changeTransfers']);
     });
 });

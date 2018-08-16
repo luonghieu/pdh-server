@@ -3,6 +3,7 @@
 namespace App;
 
 use App\Enums\OrderStatus;
+use App\Enums\OrderType;
 use App\Enums\RoomType;
 use App\Order;
 use Illuminate\Database\Eloquent\Model;
@@ -10,6 +11,13 @@ use Illuminate\Support\Facades\Auth;
 
 class Room extends Model
 {
+    protected $fillable = [
+        'owner_id',
+        'type',
+        'is_active',
+        'order_id',
+    ];
+
     protected $guarded = [];
 
     public function getUnreadCountAttribute()
@@ -61,6 +69,7 @@ class Room extends Model
         return $this->messages()
             ->whereHas('recipients', function ($q) use ($userId) {
                 $q->where('user_id', $userId)
+                    ->where('is_show', true)
                     ->whereNull('read_at');
             });
     }
@@ -72,7 +81,9 @@ class Room extends Model
 
     public function latestMessage()
     {
-        return $this->hasOne(Message::class)->latest();
+        return $this->hasOne(Message::class)->whereHas('recipients', function ($query) {
+            $query->where('is_show', true);
+        })->latest();
     }
 
     public function order()
@@ -102,9 +113,18 @@ class Room extends Model
                 $statuses = [
                     OrderStatus::PROCESSING,
                     OrderStatus::ACTIVE,
+                    OrderStatus::OPEN,
+                    OrderStatus::DONE,
                 ];
 
                 $order = Order::where('room_id', $this->id)
+                    ->where(function ($query) {
+                        $query->where('type', '!=', OrderType::CALL)
+                            ->orWhere(function ($query) {
+                                $query->orWhere('type', OrderType::CALL)
+                                    ->where('status', '!=', OrderStatus::OPEN);
+                            });
+                    })
                     ->whereIn('status', $statuses)
                     ->orderByRaw('FIELD(status, ' . implode(',', $statuses) . ' )')
                     ->first();

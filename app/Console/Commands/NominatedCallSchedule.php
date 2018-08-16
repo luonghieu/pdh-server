@@ -5,8 +5,12 @@ namespace App\Console\Commands;
 use App\Enums\CastOrderStatus;
 use App\Enums\OrderStatus;
 use App\Enums\OrderType;
+use App\Enums\UserType;
+use App\Notifications\CallOrdersCreated;
+use App\Notifications\CastDenyOrders;
 use App\Order;
 use App\Services\LogService;
+use App\User;
 use Carbon\Carbon;
 use DB;
 use Illuminate\Console\Command;
@@ -45,20 +49,27 @@ class NominatedCallSchedule extends Command
     public function handle()
     {
         $orders = Order::where('status', OrderStatus::OPEN)
-            ->where('type', OrderType::NOMINATED_CALL)
+            ->where(function ($query) {
+                $query->where('type', OrderType::NOMINATED_CALL)
+                    ->orWhere(function ($query) {
+                        $query->where('type', OrderType::HYBRID)
+                            ->where('is_changed', false);
+                    });
+            })
             ->where('created_at', '<=', Carbon::now()->subMinutes(5));
 
         foreach ($orders->cursor() as $order) {
-            $nomineeIds = $order->nominees()
+            $nominees = $order->nominees()
                 ->where('cast_order.status', CastOrderStatus::OPEN)
-                ->pluck('cast_order.user_id')->toArray();
-
+                ->get();
+            $owner = $order->user;
+            $nomineeIds = [];
             try {
                 DB::beginTransaction();
 
-                foreach ($nomineeIds as $id) {
+                foreach ($nominees as $nominee) {
                     $order->nominees()->updateExistingPivot(
-                        $id,
+                        $nominee->id,
                         [
                             'status' => CastOrderStatus::TIMEOUT,
                             'canceled_at' => now(),
@@ -66,22 +77,33 @@ class NominatedCallSchedule extends Command
                         ],
                         false
                     );
+                    $nomineeIds[] = $nominee->id;
+                    $owner->notify(new CastDenyOrders($order, $nominee));
                 }
 
-                $numCastApply = $order->casts->count();
+                $castsCount = $order->casts->count();
 
-                if (($numCastApply > 0) && ($order->total_cast != $numCastApply)) {
-                    $order->update(['type' => OrderType::HYBRID]);
+                if (($castsCount > 0) && ($order->total_cast != $castsCount)) {
+                    $order->update([
+                        'type' => OrderType::HYBRID,
+                        'is_changed' => true,
+                    ]);
                 } else {
-                    $order->update(['type' => OrderType::CALL]);
+                    $order->update([
+                        'type' => OrderType::CALL,
+                        'is_changed' => true,
+                    ]);
                 }
+
+                $casts = User::where('type', UserType::CAST)->where('class_id', $order->class_id)->whereNotIn('id',
+                    $nomineeIds)->get();
+
+                \Notification::send($casts, new CallOrdersCreated($order));
 
                 DB::commit();
             } catch (\Exception $e) {
                 DB::rollBack();
                 LogService::writeErrorLog($e);
-
-                return $this->respondServerError();
             }
         }
     }

@@ -45,19 +45,37 @@
               </tr>
             </thead>
             <tbody>
+            @if (empty($ratings->count()))
+              <tr>
+                <td colspan="9">評価はありません</td>
+              </tr>
+            @else
               @foreach ($ratings as $key => $rating)
               <tr>
                 <td>{{ $ratings->firstItem() +$key }}</td>
                 <td><a href="{{ route('admin.users.show', ['user' => $rating->user->id]) }}">{{ $rating->user->fullname }}</a></td>
-                <td>
-                  <a href="">
-                    {{ $rating->order->id }}
-                  </a>
-                </td>
+                @if($rating->order)
+                  @if ($rating->order->type == App\Enums\OrderType::NOMINATION)
+                    <td>
+                      <a href="{{ route('admin.orders.order_nominee', ['order' => $rating->order->id]) }}">
+                        {{ $rating->order->id }}
+                      </a>
+                    </td>
+                  @else
+                    <td>
+                      <a href="{{ route('admin.orders.call', ['order' => $rating->order->id]) }}" >
+                      {{ $rating->order->id }}
+                      </a>
+                    </td>
+                  @endif
+                @else
+                  <td>{{ trans('messages.order_not_found') }}</td>
+                @endif
                 <td>{{ $rating->score }}</td>
                 <td>{{ Carbon\Carbon::parse($rating->created_at)->format('Y/m/d H:i') }}</td>
               </tr>
               @endforeach
+            @endif
             </tbody>
           </table>
         </div>

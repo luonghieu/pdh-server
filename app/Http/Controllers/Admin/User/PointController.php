@@ -16,63 +16,89 @@ use Illuminate\Http\Request;
 
 class PointController extends Controller
 {
-    public function getPointHistory(User $user, Request $request)
+    public function sumAmount($points)
     {
-        $keyword = $request->search_point_type;
-        $pointTypes = [
-            0 => 'All',
-            PointType::BUY => 'ポイント購入',
-            PointType::PAY => 'ポイント決済',
-            PointType::AUTO_CHARGE => 'オートチャージ',
-            PointType::ADJUSTED => '調整',
-        ];
-        $points = $user->points()->with('payment', 'order')->where('status', Status::ACTIVE);
-
-        if ($request->has('from_date') && !empty($request->from_date)) {
-            $fromDate = Carbon::parse($request->from_date)->startOfDay();
-            $toDate = Carbon::parse($request->to_date)->endOfDay();
-            $points->where(function ($query) use ($fromDate, $toDate) {
-                $query->where('created_at', '>=', $fromDate);
-            });
-        }
-
-        if ($request->has('to_date') && !empty($request->to_date)) {
-            $fromDate = Carbon::parse($request->from_date)->startOfDay();
-            $toDate = Carbon::parse($request->to_date)->endOfDay();
-            $points->where(function ($query) use ($fromDate, $toDate) {
-                $query->where('created_at', '<=', $toDate);
-            });
-        }
-
-        if ($request->has('search_point_type') && (0 != $request->search_point_type)) {
-            $points->where(function ($query) use ($keyword) {
-                $query->where('type', "$keyword");
-            });
-        }
-
-        $points = $points->orderBy('created_at', 'DESC');
-        $pointsExport = $points->get();
-        $points = $points->paginate();
-
         $pointIds = $points->where('type', '<>', PointType::ADJUSTED)->pluck('id');
-        $sumAmount = Payment::whereIn('id', $pointIds)->sum('amount');
+        $sumAmount = Payment::whereIn('point_id', $pointIds)->sum('amount');
 
+        return $sumAmount;
+    }
+
+    public function sumPointPay($points)
+    {
         $sumPointPay = $points->sum(function ($product) {
             $sum = 0;
             if ($product->is_pay) {
                 $sum += $product->point;
             }
+
             return $sum;
         });
 
+        return $sumPointPay;
+    }
+
+    public function sumPointBuy($points)
+    {
         $sumPointBuy = $points->sum(function ($product) {
             $sum = 0;
             if ($product->is_buy) {
                 $sum += $product->point;
             }
+
+            if ($product->is_auto_charge) {
+                $sum += $product->point;
+            }
+
             return $sum;
         });
 
+        return $sumPointBuy;
+    }
+
+    public function getPointHistory(User $user, Request $request)
+    {
+        $keyword = $request->search_point_type;
+        $pointTypes = [
+            0 => '全て', // all
+            PointType::BUY => 'ポイント購入',
+            PointType::PAY => 'ポイント決済',
+            PointType::AUTO_CHARGE => 'オートチャージ',
+            PointType::ADJUSTED => '調整',
+        ];
+
+        $points = $user->points()->with('payment', 'order')->where('status', Status::ACTIVE);
+
+        $fromDate = $request->from_date ? Carbon::parse($request->from_date)->startOfDay() : null;
+        $toDate = $request->to_date ? Carbon::parse($request->to_date)->endOfDay() : null;
+
+        if ($fromDate) {
+            $points->where(function ($query) use ($fromDate) {
+                $query->where('created_at', '>=', $fromDate);
+            });
+        }
+
+        if ($toDate) {
+            $points->where(function ($query) use ($toDate) {
+                $query->where('created_at', '<=', $toDate);
+            });
+        }
+
+        if ($keyword) {
+            if ('0' != $keyword) {
+                $points->where(function ($query) use ($keyword) {
+                    $query->where('type', $keyword);
+                });
+            }
+        }
+
+        $points = $points->orderBy('created_at', 'DESC');
+        $pointsExport = $points->get();
+        $points = $points->paginate($request->limit ?: 10);
+
+        $sumAmount = $this->sumAmount($points);
+        $sumPointBuy = $this->sumPointBuy($points);
+        $sumPointPay = -$this->sumPointPay($points);
         $sumBalance = $points->sum('balance');
 
         if ('export' == $request->submit) {
@@ -80,11 +106,11 @@ class PointController extends Controller
                 return [
                     Carbon::parse($item->created_at)->format('Y年m月d日'),
                     PointType::getDescription($item->type),
-                    $item->id,
-                    (PointType::ADJUSTED == $item->type) ? '-' : $item->order->id,
-                    (PointType::ADJUSTED == $item->type) ? '-' : $item->payment->amount,
-                    (PointType::BUY == $item->type) ? $item->point : '',
-                    (PointType::PAY == $item->type) ? $item->point : '',
+                    ($item->is_buy || $item->is_auto_charge) ? $item->id : '-',
+                    ($item->is_pay) ? $item->order->id : '-',
+                    ($item->is_adjusted || !$item->payment) ? '-' : '¥ ' . number_format($item->payment->amount),
+                    ($item->is_buy || $item->is_auto_charge) ? $item->point : '',
+                    ($item->is_pay) ? (-$item->point) : '-',
                     $item->balance,
                 ];
             })->toArray();
@@ -94,10 +120,10 @@ class PointController extends Controller
                 '-',
                 '-',
                 '-',
-                $sumAmount,
-                $sumPointBuy,
-                $sumPointPay,
-                $sumBalance,
+                '¥ ' . number_format($this->sumAmount($pointsExport)),
+                $this->sumPointBuy($pointsExport),
+                -$this->sumPointPay($pointsExport),
+                $pointsExport->sum('balance'),
             ];
 
             array_push($data, $sum);

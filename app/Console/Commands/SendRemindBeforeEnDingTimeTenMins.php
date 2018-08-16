@@ -2,9 +2,7 @@
 
 namespace App\Console\Commands;
 
-use App\Enums\MessageType;
 use App\Enums\OrderStatus;
-use App\Enums\SystemMessageType;
 use App\Notifications\RenewalReminderTenMinute;
 use App\Notifications\TenMinBeforeOrderEnded;
 use App\Order;
@@ -49,40 +47,17 @@ class SendRemindBeforeEnDingTimeTenMins extends Command
         $orders = Order::whereDate('date', $currentDate)->whereIn('status', [OrderStatus::PROCESSING])->with('casts')->get();
 
         foreach ($orders as $order) {
-            $endTime = Carbon::createFromFormat('Y-m-d H:i:s', $order->date . ' ' . $order->end_time)->second(0);
+            foreach ($order->casts as $cast) {
+                $timeCast = Carbon::parse($cast->pivot->started_at)
+                    ->addHours($order->duration)
+                    ->subMinute(10)
+                    ->second(0);
 
-            $time = $endTime->copy()->subMinute(10);
-
-            if ($time == $now) {
-                $room = $order->room;
-                $messageForCast = '解散予定時刻まで残り10分です！'
-                    . PHP_EOL . '解散予定時刻後は自動で延長されます。';
-
-                $roomMessage = $room->messages()->create([
-                    'user_id' => 1,
-                    'type' => MessageType::SYSTEM,
-                    'message' => $messageForCast,
-                    'system_type' => SystemMessageType::NOTIFY,
-                ]);
-
-                $casts = [];
-                foreach ($order->casts as $cast) {
-                    $involedUsers[] = $cast;
-                    $casts[] = $cast->id;
-
-                    $messageForGuest = $cast->nickname . 'の解散予定時刻まで残り10分です。';
-                    $roomMessage = $room->messages()->create([
-                        'user_id' => 1,
-                        'type' => MessageType::SYSTEM,
-                        'message' => $messageForGuest,
-                        'system_type' => SystemMessageType::NOTIFY
-                    ]);
-                    $roomMessage->recipients()->attach($order->user_id, ['room_id' => $room->id]);
+                if ($timeCast == $now) {
                     $order->user->notify(new TenMinBeforeOrderEnded($order, $cast));
-                }
 
-                $roomMessage->recipients()->attach($casts, ['room_id' => $room->id]);
-                \Notification::send($order->casts, new RenewalReminderTenMinute($order));
+                    \Notification::send($cast, new RenewalReminderTenMinute($order));
+                }
             }
         }
     }

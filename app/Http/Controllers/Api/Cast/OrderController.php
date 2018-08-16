@@ -8,6 +8,7 @@ use App\Enums\MessageType;
 use App\Enums\OrderScope;
 use App\Enums\OrderStatus;
 use App\Enums\OrderType;
+use App\Events\MessageCreated;
 use App\Http\Controllers\Api\ApiController;
 use App\Http\Resources\MessageResource;
 use App\Http\Resources\OrderResource;
@@ -57,7 +58,13 @@ class OrderController extends ApiController
                     $query->where('user_id', $user->id);
                 });
             })
-                ->where('type', OrderType::CALL)
+                ->where(function ($query) {
+                    $query->where('type', OrderType::CALL)
+                        ->orWhere(function ($query) {
+                            $query->where('type', OrderType::HYBRID)
+                                ->where('is_changed', true);
+                        });
+                })
                 ->where('status', OrderStatus::OPEN)
                 ->where('class_id', $user->class_id)
                 ->orderBy('date')
@@ -207,7 +214,12 @@ class OrderController extends ApiController
             return $this->respondErrorMessage(trans('messages.order_not_found'), 404);
         }
 
-        if (OrderStatus::OPEN != $order->status || OrderType::CALL != $order->type) {
+        $validOrderTypes = [
+            OrderType::CALL,
+            OrderType::HYBRID,
+        ];
+
+        if (OrderStatus::OPEN != $order->status || !in_array($order->type, $validOrderTypes)) {
             return $this->respondErrorMessage(trans('messages.apply_error'), 409);
         }
 
@@ -286,7 +298,7 @@ class OrderController extends ApiController
         }
 
         $order = $order->fresh();
-        $paymentRequest = $paymentRequest->load('order', 'cast');
+        $paymentRequest = $paymentRequest->load('order.casts');
 
         return $this->respondWithData(PaymentRequestResource::make($paymentRequest));
     }
@@ -347,6 +359,12 @@ class OrderController extends ApiController
                 'message_id' => $message->id,
             ]);
 
+            $order->casts()->updateExistingPivot(
+                $user->id,
+                ['is_thanked' => true],
+                false
+            );
+
             DB::commit();
         } catch (\Exception $e) {
             DB::rollBack();
@@ -354,6 +372,8 @@ class OrderController extends ApiController
 
             return $this->respondServerError();
         }
+
+        broadcast(new MessageCreated($message))->toOthers();
 
         return $this->respondWithData(MessageResource::make($message));
     }

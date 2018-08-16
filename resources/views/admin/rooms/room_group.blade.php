@@ -6,7 +6,7 @@
       <div class="panel panel-default">
         <div class="panel-body">
           <div class="display-title">
-            <p><b>予約ID:</b> {{ request()->room->id }} の応募中キャスト一覧</p>
+            <p><b>ルームID:</b> {{ request()->room->id }} のキャスト一覧</p>
           </div>
         </div>
         <div class="panel-body">
@@ -22,15 +22,27 @@
                   </tr>
                 </thead>
                 <tbody>
-                  @foreach ($members as $key => $member)
-                  @if ($member->id != $ownerId)
-                  <tr>
-                    <td>{{ $key +1 }}</td>
-                    <td><a href="{{ route('admin.users.show', ['user' => $member->id]) }}">{{ $member->id }}</a></td>
-                    <td>{{ $member->nickname }}</td>
-                  </tr>
+                  @if (empty($members->count()))
+                    <tr>
+                      <td colspan="3">{{ trans('messages.cast_not_found') }}</td>
+                    </tr>
+                  @else
+                    @php
+                      $i=1;
+                    @endphp
+                    @foreach ($members as $key => $member)
+                    @if ($member->id != $ownerId)
+                    <tr>
+                      <td>{{ $i }}</td>
+                      <td><a href="{{ route('admin.users.show', ['user' => $member->id]) }}">{{ $member->id }}</a></td>
+                      <td>{{ $member->nickname }}</td>
+                    </tr>
+                    @php
+                    $i++;
+                    @endphp
+                    @endif
+                    @endforeach
                   @endif
-                  @endforeach
                 </tbody>
               </table>
             </div>

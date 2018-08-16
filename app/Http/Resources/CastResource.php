@@ -2,20 +2,16 @@
 
 namespace App\Http\Resources;
 
-use App\Job;
-use App\Salary;
-use App\BodyType;
-use App\CastClass;
-use App\Enums\SmokingType;
-use App\Enums\SiblingsType;
 use App\Enums\CohabitantType;
 use App\Enums\DrinkVolumeType;
-use App\Traits\ResourceResponse;
-use App\Repositories\JobRepository;
-use App\Repositories\SalaryRepository;
+use App\Enums\SiblingsType;
+use App\Enums\SmokingType;
 use App\Repositories\BodyTypeRepository;
 use App\Repositories\CastClassRepository;
+use App\Repositories\JobRepository;
 use App\Repositories\PrefectureRepository;
+use App\Repositories\SalaryRepository;
+use App\Traits\ResourceResponse;
 use Illuminate\Http\Resources\Json\Resource;
 
 class CastResource extends Resource

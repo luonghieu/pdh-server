@@ -2,13 +2,12 @@
 
 namespace App\Notifications;
 
-use App\Enums\UserType;
 use App\Enums\MessageType;
-use Illuminate\Bus\Queueable;
 use App\Enums\SystemMessageType;
-use Illuminate\Notifications\Notification;
+use App\Enums\UserType;
+use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
-use Illuminate\Notifications\Messages\MailMessage;
+use Illuminate\Notifications\Notification;
 
 class TenMinBeforeOrderEnded extends Notification implements ShouldQueue
 {
@@ -58,17 +57,17 @@ class TenMinBeforeOrderEnded extends Notification implements ShouldQueue
      */
     public function toArray($notifiable)
     {
-        $message = $this->cast->nickname . 'の解散予定時刻まで残り10分です。';
+        $message = $this->cast->nickname . 'さんの解散予定時刻まで残り10分です。';
         $room = $this->order->room;
 
         $roomMessage = $room->messages()->create([
             'user_id' => 1,
             'type' => MessageType::SYSTEM,
             'system_type' => SystemMessageType::NOTIFY,
-            'message' => $message
+            'message' => $message,
         ]);
 
-        $roomMessage->recipients()->attach($notifiable->id, ['room_id' => $room->id, 'is_show' => false]);
+        $roomMessage->recipients()->attach($notifiable->id, ['room_id' => $room->id]);
 
         return [
             'content' => $message,
@@ -78,12 +77,12 @@ class TenMinBeforeOrderEnded extends Notification implements ShouldQueue
 
     public function pushData($notifiable)
     {
-        $content = $this->cast->nickname . 'の解散予定時刻まで残り10分です。';
+        $room = $this->order->room;
+        $content = $this->cast->nickname . 'さんの解散予定時刻まで残り10分です。';
         $pushId = 'g_5';
 
         $namedUser = 'user_' . $notifiable->id;
         $send_from = UserType::ADMIN;
-
 
         return [
             'audienceOptions' => ['named_user' => $namedUser],
@@ -97,7 +96,8 @@ class TenMinBeforeOrderEnded extends Notification implements ShouldQueue
                     'extra' => [
                         'push_id' => $pushId,
                         'send_from' => $send_from,
-                        'order_id' => $this->order->id
+                        'order_id' => $this->order->id,
+                        'room_id' => $room->id
                     ],
                 ],
             ],

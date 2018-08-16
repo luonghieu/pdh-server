@@ -139,7 +139,7 @@ td {
 }
 
 .limit-page {
-  width: 65%;
+  width: 110px;
   padding-top: 5px;
   margin-right: -2%;
   margin-left: -14%;
@@ -1129,6 +1129,17 @@ tbody td {
   width: 50%;
 }
 
+.warning-order {
+  color: red;
+}
+
+.column-long-text {
+  width: 10%;
+}
+
+.transfer-search {
+  margin-left: 20px;
+}
 @media (max-width: 767px) {
   .navbar {
     background: #20a8d817;

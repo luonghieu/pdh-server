@@ -152,6 +152,12 @@ return [
         'comment' => [
             'required_without' => 'コメントを記入してください',
         ],
+        'number' => [
+            'numeric' => '口座番号には、数字を指定してください。',
+        ],
+        'number' => [
+            'digits' => '口座番号は7桁で入力してください',
+        ],
     ],
 
     /*

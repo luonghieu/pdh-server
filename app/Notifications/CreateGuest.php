@@ -5,6 +5,7 @@ namespace App\Notifications;
 use App\Enums\MessageType;
 use App\Enums\SystemMessageType;
 use App\Enums\UserType;
+use App\Room;
 use Illuminate\Bus\Queueable;
 use Illuminate\Notifications\Notification;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -67,8 +68,11 @@ class CreateGuest extends Notification implements ShouldQueue
             . PHP_EOL . PHP_EOL .'まずはHomeの「今すぐキャストを呼ぶ」からキャストを呼んで素敵な時間をお過ごし下さい♪'
             . PHP_EOL . PHP_EOL . 'ご不明点はお気軽にお問い合わせください。';
 
-        $room = $notifiable->rooms()->create();
-        $room->users()->attach(1);
+        $room = Room::create([
+            'owner_id' => $notifiable->id
+        ]);
+
+        $room->users()->attach([1, $notifiable->id]);
         $roomMessage = $room->messages()->create([
             'user_id' => 1,
             'type' => MessageType::SYSTEM,
@@ -93,6 +97,7 @@ class CreateGuest extends Notification implements ShouldQueue
                     'extra' => [
                         'push_id' => $pushId,
                         'send_from' => $send_from,
+                        'room_id' => $room->id
                     ],
                 ],
             ],

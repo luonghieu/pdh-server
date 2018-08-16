@@ -35,7 +35,7 @@ class CreateNominationOrdersForCast extends Notification implements ShouldQueue
      */
     public function via($notifiable)
     {
-        return [PushNotificationChannel::class];
+        return [PushNotificationChannel::class, CustomDatabaseChannel::class];
     }
 
     /**
@@ -56,8 +56,13 @@ class CreateNominationOrdersForCast extends Notification implements ShouldQueue
      */
     public function toArray($notifiable)
     {
+        $owner = $this->order->user;
+        $message = $owner->nickname . 'さんから指名予約が入りました。'
+            . PHP_EOL .'承諾、キャンセルの処理を行ってください！';
+
         return [
-            //
+            'content' => $message,
+            'send_from' => UserType::ADMIN,
         ];
     }
 
@@ -65,20 +70,23 @@ class CreateNominationOrdersForCast extends Notification implements ShouldQueue
     {
         $owner = $this->order->user;
         $room = $this->createDirectRoom($owner->id, $notifiable->id);
-        $content = $owner->nickname . '(提案したゲスト名)さんから指名予約が入りました。'
+        $message = $owner->nickname . '(提案したゲスト名)さんから指名予約が入りました。'
             . PHP_EOL .'予約一覧から、承諾、キャンセルの処理を行ってください。';
 
         $roomMessage = $room->messages()->create([
             'user_id' => 1,
             'type' => MessageType::SYSTEM,
-            'message' => $content,
+            'message' => $message,
             'system_type' => SystemMessageType::NORMAL
         ]);
         $roomMessage->recipients()->attach($notifiable->id, ['room_id' => $room->id]);
 
         $namedUser = 'user_' . $notifiable->id;
         $send_from = UserType::ADMIN;
-        $pushId = 'g_1';
+        $pushId = 'g_14';
+
+        $content = $owner->nickname . 'さんから指名予約が入りました。'
+            . PHP_EOL .'承諾、キャンセルの処理を行ってください！';
 
         return [
             'audienceOptions' => ['named_user' => $namedUser],
@@ -92,6 +100,8 @@ class CreateNominationOrdersForCast extends Notification implements ShouldQueue
                     'extra' => [
                         'push_id' => $pushId,
                         'send_from' => $send_from,
+                        'order_id' => $this->order->id,
+                        'room_id' => $room->id
                     ],
                 ],
             ],

@@ -48,11 +48,19 @@ class SaleController extends Controller
         }
 
         $sales = $sales->orderBy('created_at', 'DESC');
-        $salesExport = $sales->get();
-        $sales = $sales->paginate();
+
+        $salesExport = $sales;
+        $sales = $sales->paginate($request->limit ?: 10);
+
         $totalPoint = $sales->sum('point');
 
         if ('export' == $request->submit) {
+            $page = $request->page ?: '1';
+            $limit = $request->limit ?: 10;
+            $offset = (1 == $request->page) ? 0 : (($request->page - 1) * $request->limit + 1);
+
+            $salesExport = $salesExport->orderBy('created_at', 'DESC')->offset($offset)->limit($limit)->get();
+
             $data = collect($salesExport)->map(function ($item) {
                 return [
                     $item->order_id,
@@ -60,7 +68,7 @@ class SaleController extends Controller
                     $item->user_id,
                     ($item->user) ? $item->user->fullname : "",
                     PointType::getDescription($item->type),
-                    $item->point,
+                    number_format($item->point),
                 ];
             })->toArray();
 
@@ -70,7 +78,7 @@ class SaleController extends Controller
                 '-',
                 '-',
                 '-',
-                $totalPoint,
+                number_format($totalPoint),
             ];
 
             array_push($data, $sum);

@@ -50,8 +50,8 @@
               <tr>
                 <th>購入ID</th>
                 <th>日付</th>
-                <th>ユーサーID</th>
-                <th>ユーサー名</th>
+                <th>ユーザーID</th>
+                <th>ユーザー名</th>
                 <th>取引種別</th>
                 <th>購入金額</th>
                 <th>購入ポイント</th>
@@ -68,9 +68,9 @@
                     <td>{{ $point->id }}</td>
                     <td>{{ Carbon\Carbon::parse($point->created_at)->format('Y年m月d日') }}</td>
                     <td>{{ $point->user_id }}</td>
-                    <td>{{ $point->user->fullname }}</td>
+                    <td>{{ $point->user ? $point->user->fullname : '' }}</td>
                     <td>{{ \App\Enums\PointType::getDescription($point->type) }}</td>
-                    @if ($point->type == \App\Enums\PointType::ADJUSTED)
+                    @if ($point->type == \App\Enums\PointType::ADJUSTED || !$point->payment)
                       <td>-</td>
                     @else
                       <td>¥ {{ number_format($point->payment->amount) }}</td>

@@ -5,9 +5,7 @@ namespace App\Observers;
 use App\Enums\OrderPaymentStatus;
 use App\Enums\OrderType;
 use App\Notifications\CompletedPayment;
-use App\Notifications\CreateNominatedOrdersForCast;
 use App\Notifications\CreateNominatedOrdersForGuest;
-use App\Notifications\CreateNominationOrdersForCast;
 use App\Order;
 
 class OrderObserver
@@ -16,15 +14,6 @@ class OrderObserver
     {
         if (OrderType::NOMINATED_CALL == $order->type || OrderType::CALL == $order->type) {
             $order->user->notify(new CreateNominatedOrdersForGuest($order));
-//            $nominees = $order->nominees;
-//            if (count($nominees)) {
-//                \Notification::send($nominees, new CreateNominatedOrdersForCast($order));
-//            }
-        } else {
-            $casts = $order->castOrder;
-            foreach ($casts as $cast) {
-                $cast->notify(new CreateNominationOrdersForCast($order));
-            }
         }
     }
 

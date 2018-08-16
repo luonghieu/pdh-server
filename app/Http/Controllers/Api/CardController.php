@@ -35,7 +35,7 @@ class CardController extends ApiController
         try {
             if (!$user->stripe_id) {
                 $attributes = [
-                    'description' => $user->fullname,
+                    'description' => $user->id,
                 ];
 
                 $customer = $this->payment->createCustomer($attributes);

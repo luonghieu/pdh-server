@@ -14,5 +14,8 @@ let mix = require('laravel-mix');
 mix.styles([
     'public/assets/admin/css/login/login.css',
     'public/assets/admin/css/user/admin.css',
+    'public/assets/admin/css/chatroom/chatroom.css',
 ], 'public/bundle/css/all.css').version();
+
+mix.js("resources/assets/js/app.js", "public/js");
 

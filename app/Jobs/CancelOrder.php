@@ -41,6 +41,26 @@ class CancelOrder implements ShouldQueue
     public function handle()
     {
         if ($this->order->status == OrderStatus::CANCELED) {
+            $casts = $this->order->casts;
+
+            $orderStartDate = Carbon::parse($this->order->date)->startOfDay();
+            $orderCancelDate = Carbon::parse($this->order->canceled_at)->startOfDay();
+            $involvedUsers = [];
+
+            $orderPoint = 0;
+            $orderDuration = $this->order->duration * 60;
+            $orderStartedAt = Carbon::parse($this->order->date . ' ' . $this->order->start_time);
+            $orderStoppeddAt = $orderStartedAt->copy()->addMinutes($orderDuration);
+            $orderNightTime = $this->order->nightTime($orderStoppeddAt);
+            $orderAllowance = $this->order->allowance($orderNightTime);
+
+            $involvedUsers[] = $this->order->user;
+            foreach ($casts as $cast) {
+                $involvedUsers[] = $cast;
+                $orderFee = $this->order->orderFee($cast, $orderStartedAt, $orderStoppeddAt);
+                $orderPoint += $this->order->orderPoint($cast) + $orderAllowance + $orderFee;
+            }
+
             $castIds = $this->order->castOrder()
                 ->pluck('cast_order.user_id')
                 ->toArray();
@@ -54,24 +74,6 @@ class CancelOrder implements ShouldQueue
                     ],
                     false
                 );
-            }
-
-            $orderStartDate = Carbon::parse($this->order->date)->startOfDay();
-            $orderCancelDate = Carbon::parse($this->order->canceled_at)->startOfDay();
-            $casts = $this->order->casts;
-            $involvedUsers = [];
-
-            $orderPoint = 0;
-            $orderDuration = $this->order->duration * 60;
-            $orderNightTime = $this->order->nightTime($orderStartDate->addMinutes($orderDuration));
-            $orderAllowance = $this->order->allowance($orderNightTime);
-            $orderStartedAt = Carbon::parse($this->order->date . ' ' . $this->order->start_time);
-            $orderStoppeddAt = $orderStartedAt->copy()->addMinutes($this->order->duration * 60);
-
-            foreach ($casts as $cast) {
-                $involvedUsers[] = $cast;
-                $orderFee = $this->order->orderFee($cast, $orderStartedAt, $orderStoppeddAt);
-                $orderPoint += $this->order->orderPoint($cast) + $orderAllowance + $orderFee;
             }
 
             $percent = 0;
