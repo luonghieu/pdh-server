@@ -51,7 +51,7 @@ class OrderController extends Controller
     public function deleteOrder(Request $request)
     {
         if ($request->has('order_ids')) {
-            $orderIds = $request->order_ids;
+            $orderIds = array_map('intval', explode(',', $request->order_ids));
 
             $checkOrderIdExist = Order::whereIn('id', $orderIds)->exists();
 
