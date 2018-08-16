@@ -102,7 +102,7 @@
               </tr>
               <tr>
                 <th>　予定合計ポイント</th>
-                <td>{{ number_format($order->total_point) }}P</td>
+                <td>{{ number_format($order->temp_point) }}P</td>
               </tr>
               <tr>
                 <th>ステータス</th>
@@ -128,20 +128,25 @@
               </tr>
               @if ($order->status == App\Enums\OrderStatus::PROCESSING)
               <tr>
-                <th>マッチングした1
-                キャスト</th>
+                <th>マッチングしたキャスト</th>
                 <td><a href="{{ route('admin.orders.casts_matching', ['order' => $order->id]) }}">{{ $order->casts->count().'人' }}</a></td>
               </tr>
               @endif
-              @if ($order->point && $order->point->is_pay)
-              <tr>
-                <th>実績合計ポイント</th>
-                <td>{{ number_format($order->total_point) }}P</td>
-              </tr>
-              <tr>
-                <th>ポイント決済</th>
-                <td>{{ ($order->point->status == App\Enums\Status::ACTIVE) ? '正常に完了しました':'エラー' }}</td>
-              </tr>
+              @if ($order->status == App\Enums\OrderStatus::DONE)
+                <tr>
+                  <th>実績合計ポイント</th>
+                  <td>{{ number_format($order->total_point) }}P</td>
+                </tr>
+                <tr>
+                  <th>ポイント決済</th>
+                  <td>
+                  @if ($order->payment_status == App\Enums\OrderPaymentStatus::PAYMENT_FINISHED)
+                  正常に完了しました
+                  @else
+                  エラー
+                  @endif
+                  </td>
+                </tr>
               @endif
             </table>
           </div>

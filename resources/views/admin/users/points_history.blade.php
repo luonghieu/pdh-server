@@ -58,7 +58,7 @@
               <tr>
                 <td>{{ Carbon\Carbon::parse($point->created_at)->format('Y年m月d日') }}</td>
                 <td>{{ App\Enums\PointType::getDescription($point->type) }}</td>
-                @if ($point->is_buy)
+                @if ($point->is_buy || $point->is_autocharge)
                   <td>{{ $point->id }}</td>
                 @else
                   <td>-</td>

@@ -55,5 +55,6 @@ return [
     'accept_error' => 'Accept order error',
     'transfer_not_found' => 'Transfer not found',
     'point_buy_not_found' => 'Point buy not found',
+    'message_not_found' => 'Message not found',
     'results_not_found' => 'The results were not found',
 ];

@@ -11,20 +11,23 @@ use Illuminate\Notifications\Notification;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 
-class CreateNominationOrdersForCast extends Notification implements ShouldQueue
+class CastDenyOrders extends Notification implements ShouldQueue
 {
     use Queueable, DirectRoom;
 
     public $order;
+    public $cast;
 
     /**
      * Create a new notification instance.
      *
      * @param $order
+     * @param $cast
      */
-    public function __construct($order)
+    public function __construct($order, $cast)
     {
         $this->order = $order;
+        $this->cast = $cast;
     }
 
     /**
@@ -35,7 +38,7 @@ class CreateNominationOrdersForCast extends Notification implements ShouldQueue
      */
     public function via($notifiable)
     {
-        return [PushNotificationChannel::class, CustomDatabaseChannel::class];
+        return [CustomDatabaseChannel::class, PushNotificationChannel::class];
     }
 
     /**
@@ -56,37 +59,32 @@ class CreateNominationOrdersForCast extends Notification implements ShouldQueue
      */
     public function toArray($notifiable)
     {
-        $owner = $this->order->user;
-        $message = $owner->nickname . 'さんから指名予約が入りました。'
-            . PHP_EOL .'承諾、キャンセルの処理を行ってください！';
+        $room = $this->createDirectRoom($this->order->user_id, $this->cast->id);
+        $roomMesage = '提案がキャンセルされました。';
+        $roomMessage = $room->messages()->create([
+            'user_id' => 1,
+            'type' => MessageType::SYSTEM,
+            'message' => $roomMesage,
+            'system_type' => SystemMessageType::NOTIFY
+        ]);
+        $roomMessage->recipients()->attach($notifiable->id, ['room_id' => $room->id]);
+
+        $notifyMessage = '残念ながらマッチングが成立しませんでした（；；）';
 
         return [
-            'content' => $message,
+            'content' => $notifyMessage,
             'send_from' => UserType::ADMIN,
         ];
     }
 
     public function pushData($notifiable)
     {
-        $owner = $this->order->user;
-        $room = $this->createDirectRoom($owner->id, $notifiable->id);
-        $message = $owner->nickname . '(提案したゲスト名)さんから指名予約が入りました。'
-            . PHP_EOL .'予約一覧から、承諾、キャンセルの処理を行ってください。';
-
-        $roomMessage = $room->messages()->create([
-            'user_id' => 1,
-            'type' => MessageType::SYSTEM,
-            'message' => $message,
-            'system_type' => SystemMessageType::NORMAL
-        ]);
-        $roomMessage->recipients()->attach($notifiable->id, ['room_id' => $room->id]);
+        $room = $this->createDirectRoom($this->order->user_id, $this->cast->id);
+        $content = '残念ながらマッチングが成立しませんでした（；；）';
 
         $namedUser = 'user_' . $notifiable->id;
         $send_from = UserType::ADMIN;
-        $pushId = 'g_14';
-
-        $content = $owner->nickname . 'さんから指名予約が入りました。'
-            . PHP_EOL .'承諾、キャンセルの処理を行ってください！';
+        $pushId = 'g_9';
 
         return [
             'audienceOptions' => ['named_user' => $namedUser],

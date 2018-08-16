@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Cast;
+use App\Enums\UserType;
 use App\Http\Resources\NotificationResource;
 use App\Services\LogService;
 use Illuminate\Http\Request;
@@ -11,6 +13,9 @@ class NotificationController extends ApiController
     public function show($id)
     {
         $user = $this->guard()->user();
+        if (UserType::CAST == $user->type) {
+            $user = Cast::find($user->id);
+        }
 
         $notify = $user->notifications()->find($id);
 
@@ -44,6 +49,9 @@ class NotificationController extends ApiController
         }
 
         $user = $this->guard()->user();
+        if (UserType::CAST == $user->type) {
+            $user = Cast::find($user->id);
+        }
 
         $notifications = $user->notifications()->latest()->paginate($request->per_page)
             ->appends($request->query());

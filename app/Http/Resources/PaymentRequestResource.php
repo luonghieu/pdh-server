@@ -34,9 +34,7 @@ class PaymentRequestResource extends Resource
             'fee_point' => $this->when($isCast, $castPercent * $this->fee_point, $this->fee_point),
             'total_point' => $this->when($isCast, $castPercent * $this->total_point, $this->total_point),
             'status' => $this->status,
-            'cast' => CastResource::make($this->whenLoaded('cast')),
             'order' => OrderResource::make($this->whenLoaded('order')),
-            'guest' => GuestResource::make($this->whenLoaded('guest')),
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
         ]);

@@ -38,7 +38,7 @@ class PaymentRequestController extends ApiController
         $paymentRequest = PaymentRequest::where([
             ['order_id', $id],
             ['cast_id', $user->id],
-        ])->with('cast', 'guest', 'order.casts')->first();
+        ])->with('order.casts')->first();
 
         return $this->respondWithData(PaymentRequestResource::make($paymentRequest));
     }
@@ -104,7 +104,7 @@ class PaymentRequestController extends ApiController
             }
 
             $paymentRequest->save();
-            $paymentRequest->load('cast', 'guest', 'order.casts');
+            $paymentRequest->load('order.casts');
             return $this->respondWithData(PaymentRequestResource::make($paymentRequest));
         } catch (\Exception $e) {
             LogService::writeErrorLog($e);
@@ -117,7 +117,7 @@ class PaymentRequestController extends ApiController
     {
         $user = $this->guard()->user();
 
-        $paymentRequests = PaymentRequest::where('cast_id', $user->id)->with('cast', 'guest', 'order.casts');
+        $paymentRequests = PaymentRequest::where('cast_id', $user->id)->with('order.casts');
 
         $nickName = $request->nickname;
         if ($nickName) {

@@ -3,12 +3,12 @@
         <div class="messaging">
             <div class="inbox_msg">
                 <h3 class="text-center nickname"></h3>
-                <list-users :users="users" :user_id="user_id" :totalUser="totalUser" :roomId="roomId" :realtime_message="realtime_message" :realtime_roomId="realtime_roomId" :realtime_count="realtime_count"
+                <list-users :user_id="user_id" :roomId="roomId" :realtime_message="realtime_message" :realtime_roomId="realtime_roomId" :realtime_count="realtime_count"
                 @interface="handleCountMessage"
                 ></list-users>
                 <div class="mesgs">
                     <chat-messages :list_message="list_messages" :user_id="user_id"
-                                   :totalMessage="totalMessage" :roomId="roomId" :realtime_roomId="realtime_roomId"></chat-messages>
+                                   :totalMessage="totalMessage" :roomId="roomId" :realtime_roomId="realtime_roomId" @interface="handleNewMessage"></chat-messages>
                     <div class="type_msg">
                         <div class="input_msg_write">
                             <a name="bottom"></a>
@@ -51,7 +51,6 @@ export default {
     return {
       message: "",
       list_messages: [],
-      users: "",
       user_id: "",
       image: "",
       type: 2,
@@ -60,7 +59,6 @@ export default {
       errors: [],
       timer: "",
       totalMessage: "",
-      totalUser: "",
       roomId: "",
       id: "",
       realtime_message: "",
@@ -72,33 +70,34 @@ export default {
   watch: {
     $route(to, from) {
       this.id = this.$route.params.id;
-      if(this.id){
-          this.roomId = null
+      if (this.id) {
+        this.roomId = null;
       }
-      this.init(this.id);
       this.getMessagesInRoom(this.id);
+
+         console.log(this.realtime_count);
     }
   },
 
   created() {
     this.getToken();
-    this.getRoom();
+    this.init();
     const url = window.location.href;
     const newUrl = new URL(url);
     this.roomId = newUrl.searchParams.get("room");
     if (this.roomId) {
-      this.init(this.roomId);
       this.getMessagesInRoom(this.roomId);
     }
   },
 
   methods: {
-    init(id) {
-      window.Echo.leave("room." + id);
-      window.Echo.private("room." + id).listen("MessageCreated", e => {
-        this.realtime_message = e.message.message
-        this.realtime_roomId = e.message.room_id
-        this.realtime_count +=1
+    init() {
+      window.Echo.leave("user." + 1);
+      window.Echo.private("user." + 1).listen("MessageCreated", e => {
+          console.log(e);
+        this.realtime_message = e.message.message;
+        this.realtime_roomId = e.message.room_id;
+        this.realtime_count += 1;
         this.list_messages.push(e.message);
       });
     },
@@ -110,14 +109,6 @@ export default {
         "Bearer " + access_token;
       Echo.connector.options.auth.headers["Authorization"] =
         "Bearer " + access_token;
-    },
-
-    getRoom() {
-      window.axios.get("../../api/v1/rooms").then(response => {
-        this.totalUser = response.data.data.total;
-        const rooms = response.data.data.data;
-        this.users = rooms;
-      });
     },
 
     getMessagesInRoom(id) {
@@ -134,6 +125,14 @@ export default {
     },
 
     sendMessage() {
+      if(this.id){
+          this.realtime_roomId = this.id
+      }
+      else{
+          this.realtime_roomId = this.roomId
+      }
+
+      this.realtime_message = this.message;
       this.userId = this.user_id;
       let data = {
         message: this.message,
@@ -169,8 +168,8 @@ export default {
           }
         });
 
-        const scroll = $(".msg_history")[0].scrollHeight;
-        $(".msg_history").animate({ scrollTop: scroll });
+      const scroll = $(".msg_history")[0].scrollHeight;
+      $(".msg_history").animate({ scrollTop: scroll });
     },
 
     chooseFiles() {
@@ -180,9 +179,9 @@ export default {
     onFileChange(e) {
       const files = e.target.files;
       const { name, size } = files[0];
-
+      let message;
       if (name.lastIndexOf(".") <= 0) {
-        var message = "有効な画像を選択してください";
+         message = "有効な画像を選択してください";
         this.errors.push(message);
         return false;
       }
@@ -198,14 +197,14 @@ export default {
         ext !== "png" &&
         ext !== "PNG"
       ) {
-        var message = "画像形式は無効です";
+        message  = "画像形式は無効です";
         this.errors.push(message);
         return false;
       }
 
       let sizeMB = (size / (1024 * 1024)).toFixed(2);
       if (sizeMB > 5.12) {
-        var message = `(${sizeMB}MB). 画像サイズが大きすぎます 5MB以下の画像をアップロードしてください`;
+        message  = `(${sizeMB}MB). 画像サイズが大きすぎます 5MB以下の画像をアップロードしてください`;
         this.errors.push(message);
         return false;
       }
@@ -215,9 +214,9 @@ export default {
     },
 
     createImage(file) {
-      var image = new Image();
-      var reader = new FileReader();
-      var vm = this;
+      let image = new Image();
+      let reader = new FileReader();
+      let vm = this;
 
       reader.onload = e => {
         vm.image = e.target.result;
@@ -229,11 +228,13 @@ export default {
       this.image = "";
     },
 
-    handleCountMessage(event){
-    this.realtime_count = event
+    handleCountMessage(event) {
+      this.realtime_count = event;
     },
 
-    // @keyup.enter="sendMessage"
+    handleNewMessage(event) {
+      this.realtime_roomId = event;
+    }
   }
 };
 </script>

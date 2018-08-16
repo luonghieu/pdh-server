@@ -3,6 +3,7 @@
 namespace App\Observers;
 
 use App\Enums\MessageType;
+use App\Enums\RoomType;
 use App\Events\MessageCreated as BroadcastMessage;
 use App\Message;
 use App\Notifications\MessageCreated;
@@ -16,8 +17,15 @@ class MessageObserver
         }
 
         if (MessageType::SYSTEM != $message->type) {
-            $users = ($message->room->users->except([$message->user_id]));
-            \Notification::send($users, new MessageCreated($message));
+            $users = $message->room->users->except([$message->user_id]);
+
+            if (RoomType::DIRECT == $message->room->type) {
+                if (!$message->room->checkBlocked($users->first()->id)) {
+                    \Notification::send($users, new MessageCreated($message));
+                }
+            } else {
+                \Notification::send($users, new MessageCreated($message));
+            }
         }
 
         \DB::table('message_recipient')

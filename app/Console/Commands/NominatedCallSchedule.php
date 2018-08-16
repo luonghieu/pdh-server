@@ -5,8 +5,12 @@ namespace App\Console\Commands;
 use App\Enums\CastOrderStatus;
 use App\Enums\OrderStatus;
 use App\Enums\OrderType;
+use App\Enums\UserType;
+use App\Notifications\CallOrdersCreated;
+use App\Notifications\CastDenyOrders;
 use App\Order;
 use App\Services\LogService;
+use App\User;
 use Carbon\Carbon;
 use DB;
 use Illuminate\Console\Command;
@@ -55,16 +59,17 @@ class NominatedCallSchedule extends Command
             ->where('created_at', '<=', Carbon::now()->subMinutes(5));
 
         foreach ($orders->cursor() as $order) {
-            $nomineeIds = $order->nominees()
+            $nominees = $order->nominees()
                 ->where('cast_order.status', CastOrderStatus::OPEN)
-                ->pluck('cast_order.user_id')->toArray();
-
+                ->get();
+            $owner = $order->user;
+            $nomineeIds = [];
             try {
                 DB::beginTransaction();
 
-                foreach ($nomineeIds as $id) {
+                foreach ($nominees as $nominee) {
                     $order->nominees()->updateExistingPivot(
-                        $id,
+                        $nominee->id,
                         [
                             'status' => CastOrderStatus::TIMEOUT,
                             'canceled_at' => now(),
@@ -72,6 +77,8 @@ class NominatedCallSchedule extends Command
                         ],
                         false
                     );
+                    $nomineeIds[] = $nominee->id;
+                    $owner->notify(new CastDenyOrders($order, $nominee));
                 }
 
                 $castsCount = $order->casts->count();
@@ -87,6 +94,11 @@ class NominatedCallSchedule extends Command
                         'is_changed' => true,
                     ]);
                 }
+
+                $casts = User::where('type', UserType::CAST)->where('class_id', $order->class_id)->whereNotIn('id',
+                    $nomineeIds)->get();
+
+                \Notification::send($casts, new CallOrdersCreated($order));
 
                 DB::commit();
             } catch (\Exception $e) {

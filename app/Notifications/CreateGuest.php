@@ -72,7 +72,7 @@ class CreateGuest extends Notification implements ShouldQueue
             'owner_id' => $notifiable->id
         ]);
 
-        $room->users()->attach(1);
+        $room->users()->attach([1, $notifiable->id]);
         $roomMessage = $room->messages()->create([
             'user_id' => 1,
             'type' => MessageType::SYSTEM,

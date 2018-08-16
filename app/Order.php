@@ -2,24 +2,24 @@
 
 namespace App;
 
-use App\Enums\CastOrderStatus;
-use App\Enums\CastOrderType;
-use App\Enums\OrderStatus;
-use App\Enums\OrderType;
-use App\Enums\PaymentStatus;
-use App\Enums\PointType;
-use App\Enums\RoomType;
-use App\Jobs\CancelOrder;
-use App\Jobs\ProcessOrder;
-use App\Jobs\StopOrder;
-use App\Jobs\ValidateOrder;
-use App\Notifications\CancelOrderFromCast;
-use App\Notifications\CastDenyNominationOrders;
-use App\Services\LogService;
-use App\Traits\DirectRoom;
 use Auth;
 use Carbon\Carbon;
+use App\Enums\RoomType;
+use App\Jobs\StopOrder;
+use App\Enums\OrderType;
+use App\Enums\PointType;
+use App\Jobs\CancelOrder;
+use App\Enums\OrderStatus;
+use App\Jobs\ProcessOrder;
+use App\Traits\DirectRoom;
+use App\Jobs\ValidateOrder;
+use App\Enums\CastOrderType;
+use App\Services\LogService;
+use App\Enums\CastOrderStatus;
+use App\Notifications\CastDenyOrders;
+use App\Notifications\CastApplyOrders;
 use Illuminate\Database\Eloquent\Model;
+use App\Notifications\CancelOrderFromCast;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Order extends Model
@@ -133,7 +133,7 @@ class Order extends Model
                 $this->save();
 
                 $cast = User::find($userId);
-                $this->user->notify(new CastDenyNominationOrders($this, $cast));
+                $this->user->notify(new CastDenyOrders($this, $cast));
             }
 
             ValidateOrder::dispatchNow($this);
@@ -198,16 +198,20 @@ class Order extends Model
             $nightTime = $this->nightTime($orderEndTime);
             $allowance = $this->allowance($nightTime);
             $orderPoint = $this->orderPoint();
+            $tempPoint = $orderPoint + $allowance;
+
             $this->casts()->attach(
                 $userId,
                 [
                     'status' => CastOrderStatus::ACCEPTED,
                     'accepted_at' => Carbon::now(),
                     'type' => CastOrderType::CANDIDATE,
-                    'temp_point' => $orderPoint + $allowance
+                    'temp_point' => $tempPoint,
                 ]
             );
 
+            $cast = User::find($userId);
+            $cast->notify(new CastApplyOrders($this, $tempPoint));
             ValidateOrder::dispatchNow($this);
 
             return true;
@@ -233,7 +237,7 @@ class Order extends Model
                 [
                     'status' => CastOrderStatus::ACCEPTED,
                     'accepted_at' => Carbon::now(),
-                    'temp_point' => $orderPoint + $allowance + $orderFee
+                    'temp_point' => $orderPoint + $allowance + $orderFee,
                 ],
                 false
             );
@@ -418,7 +422,7 @@ class Order extends Model
                     $castDuration -= 15;
                 }
             } else {
-                $multiplier =  floor($orderDuration / 15);
+                $multiplier = floor($orderDuration / 15);
             }
 
             $orderFee = 500 * $multiplier;
@@ -570,7 +574,7 @@ class Order extends Model
             ->get();
 
         foreach ($points as $value) {
-            if ($subPoint == 0) {
+            if (0 == $subPoint) {
                 return true;
             } elseif ($value->point > $subPoint && $subPoint > 0) {
                 $value->balance = $value->point - $subPoint;
@@ -616,30 +620,22 @@ class Order extends Model
         $nightTime = $this->nightTime($orderStoppedAt);
         $allowance = $this->allowance($nightTime);
         $orderDuration = $this->duration * 60;
-        $totalPoint = 0;
 
-        if ($this->type == OrderType::NOMINATION) {
-            $nommine = $this->nominees->first();
-            if (!$nommine) {
-                $nommine = $this->nomineesWithTrashed->first();
-            }
+        if (OrderType::NOMINATION == $this->type) {
+            $nommine = $this->nomineesWithTrashed->first();
             $cost = $nommine->cost;
 
             return ($cost / 2) * floor($orderDuration / 15) + $allowance;
         } else {
-            if ($this->type == OrderType::NOMINATED_CALL || $this->type == OrderType::HYBRID) {
-                $cost = $this->castClass->cost;
-                $multiplier = 0;
-                while ($orderDuration / 15 >= 1) {
-                    $multiplier++;
-                    $orderDuration -= 15;
-                }
-                $orderFee = 500 * $multiplier;
-                $totalPoint = ($cost / 2) * floor($this->duration * 60 / 15) + $allowance + $orderFee;
-                return $totalPoint;
+            $cost = $this->castClass->cost;
+            $multiplier = 0;
+            while ($orderDuration / 15 >= 1) {
+                $multiplier++;
+                $orderDuration -= 15;
             }
+            $orderFee = 500 * $multiplier;
+            $totalPoint = ($cost / 2) * floor($this->duration * 60 / 15) + $allowance + $orderFee;
+            return $totalPoint;
         }
-
-        return $totalPoint;
     }
 }

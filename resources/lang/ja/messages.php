@@ -55,5 +55,6 @@ return [
     'accept_error' => '回答期限切れです！' . PHP_EOL . 'この予約は回答期限が切れたため、' . PHP_EOL . '無効になりました。',
     'transfer_not_found' => '振込履歴はありません',
     'point_buy_not_found' => '購入履歴はありません',
+    'message_not_found' => 'メッセージが存在しません',
     'results_not_found' => '結果が見つかりません',
 ];
