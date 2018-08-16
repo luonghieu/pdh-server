@@ -255,6 +255,9 @@ export default {
 
     handleCountMessage(event) {
         this.countUnread_realtime = event;
+        if(this.event){
+            this.realtime_count = 0;
+        }
     },
 
     handleNewMessage(event) {
