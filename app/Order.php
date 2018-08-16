@@ -621,21 +621,26 @@ class Order extends Model
         $allowance = $this->allowance($nightTime);
         $orderDuration = $this->duration * 60;
 
-        if (OrderType::NOMINATION == $this->type) {
-            $nommine = $this->nomineesWithTrashed->first();
-            $cost = $nommine->pivot->cost;
+        try {
+            if (OrderType::NOMINATION == $this->type) {
+                $nommine = $this->nomineesWithTrashed->first();
+                $cost = $nommine->pivot->cost;
 
-            return ($cost / 2) * floor($orderDuration / 15) + $allowance;
-        } else {
-            $cost = $this->castClass->cost;
-            $multiplier = 0;
-            while ($orderDuration / 15 >= 1) {
-                $multiplier++;
-                $orderDuration -= 15;
+                return ($cost / 2) * floor($orderDuration / 15) + $allowance;
+            } else {
+                $cost = $this->castClass->cost;
+                $multiplier = 0;
+                while ($orderDuration / 15 >= 1) {
+                    $multiplier++;
+                    $orderDuration -= 15;
+                }
+                $orderFee = 500 * $multiplier;
+                $totalPoint = ($cost / 2) * floor($this->duration * 60 / 15) + $allowance + $orderFee;
+                return $totalPoint;
             }
-            $orderFee = 500 * $multiplier;
-            $totalPoint = ($cost / 2) * floor($this->duration * 60 / 15) + $allowance + $orderFee;
-            return $totalPoint;
+        } catch (\Exception $e) {
+            LogService::writeErrorLog('Nominee Point Error. Order Id: ' . $this->id);
+            LogService::writeErrorLog($this->nomineesWithTrashed->first());
         }
     }
 }
