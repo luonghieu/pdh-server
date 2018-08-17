@@ -95,8 +95,7 @@ export default {
         this.setUnread = 0;
       }
       if (this.realtime_roomId == roomID) {
-          this.unread_realtime = 0;
-          this.$emit("interface", this.realtime_count);
+        this.$emit("interface", this.realtime_count);
       }
     }
   },
@@ -115,12 +114,12 @@ export default {
 
       search_array = search_array.filter(item => {
         for (let value in item.users) {
-            let userId =  item.users[value].id.toString()
+          let userId = item.users[value].id.toString();
           if (
-            item.users[value].nickname.toLowerCase().indexOf(searchName) !== -1 ||
+            item.users[value].nickname.toLowerCase().indexOf(searchName) !==
+              -1 ||
             userId.toLowerCase().indexOf(searchName) !== -1
-          )
-          {
+          ) {
             return true;
           }
         }
