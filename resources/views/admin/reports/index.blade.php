@@ -94,7 +94,7 @@
                     <td><a href="{{ route('admin.users.show', ['user' => $report->user->id]) }}">{{ $report->user->fullname}}</a></td>
                     <td class="long-text">{{ $report->content }}</td>
                     <td>{{ Carbon\Carbon::parse($report->created_at)->format('Y/m/d H:i') }}</td>
-                    <td>{{ 1 }}</td>
+                    <td><a href="{{ route('admin.rooms.messages_by_room', ['room' => $report->room_id]) }}">{{ $report->room_id }}</a></td>
                     <td>{{ App\Enums\ReportStatus::getDescription($report->status) }}</td>
                   </tr>
                   @endforeach
