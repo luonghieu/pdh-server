@@ -104,7 +104,19 @@
               </tr>
               <tr>
                 <th>　予定合計ポイント</th>
-                <td>{{ number_format($order->temp_point) }}P</td>
+                <td>
+                  @if ($order->status == App\Enums\OrderStatus::OPEN)
+                    {{ number_format($order->temp_point).'P' }}
+                  @endif
+                  @if ($order->status >= App\Enums\OrderStatus::ACTIVE)
+                  @php
+                    $tempPoint = 0;
+                    foreach ($order->casts as $cast) {
+                      $tempPoint+=$cast->pivot->temp_point;
+                    }
+                  @endphp
+                  {{ number_format($tempPoint).'P' }}
+                  @endif
               </tr>
               <tr>
                 <th>ステータス</th>
@@ -140,7 +152,23 @@
               @if ($order->status >= App\Enums\OrderStatus::DONE)
                 <tr>
                   <th>実績合計ポイント</th>
-                  <td>{{ number_format($order->total_point) }}P</td>
+                  <td>
+                    @if ($order->payment_status == App\Enums\OrderPaymentStatus::REQUESTING)
+                    {{ number_format($order->total_point).'P' }}
+                    @else
+                      @php
+                        if (count($order->casts) > 0) {
+                          $tempPoint = 0;
+                          foreach ($order->casts as $cast) {
+                            $tempPoint+=$cast->pivot->total_point;
+                          }
+                        } else {
+                          $tempPoint = '-';
+                        }
+                      @endphp
+                    {{ $tempPoint.'P' }}
+                    @endif
+                  </td>
                 </tr>
                 <tr>
                   <th>ポイント決済</th>

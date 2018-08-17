@@ -44,7 +44,7 @@ class ReportController extends Controller
             $reports->where('created_at', '<=', $toDate);
         }
 
-        if ($request->has('search')) {
+        if ($request->has('search') && $request->search) {
             $reports->where('content', 'like', "%$keyword%");
             $reports->orwhereHas('user', function ($q) use ($keyword) {
                 $q->where('fullname', 'like', "%$keyword%");

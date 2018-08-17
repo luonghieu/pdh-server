@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin\Transfer;
 use App\Enums\TransferStatus;
 use App\Http\Controllers\Controller;
 use App\Services\CSVExport;
+use App\Services\LogService;
 use App\Transfer;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -167,14 +168,41 @@ class TransferController extends Controller
 
             $checkTransferExist = Transfer::whereIn('id', $transferIds)->whereNull('transfered_at')->exists();
 
-            if ($checkTransferExist) {
-                Transfer::whereIn('id', $transferIds)->update(['transfered_at' => now(), 'status' => TransferStatus::CLOSED]);
+            try {
 
-                return redirect(route('admin.transfers.transfered'));
-            } else {
-                Transfer::whereIn('id', $transferIds)->update(['transfered_at' => null, 'status' => TransferStatus::OPEN]);
+                if ($checkTransferExist) {
+                    $transfers = Transfer::whereIn('id', $transferIds);
+                    \DB::beginTransaction();
+                    foreach ($transfers->cursor() as $transfer) {
+                        $user = $transfer->user;
+                        $user->total_point += $transfer->amount;
+                        $user->point -= $transfer->amount;
 
-                return redirect(route('admin.transfers.non_transfers'));
+                        $user->save();
+                    }
+                    $transfers->update(['transfered_at' => now(), 'status' => TransferStatus::CLOSED]);
+                    \DB::commit();
+
+                    return redirect(route('admin.transfers.transfered'));
+                } else {
+                    $transfers = Transfer::whereIn('id', $transferIds);
+
+                    \DB::beginTransaction();
+                    foreach ($transfers->cursor() as $transfer) {
+                        $user = $transfer->user;
+                        $user->total_point -= $transfer->amount;
+                        $user->point += $transfer->amount;
+
+                        $user->save();
+                    }
+                    $transfers->update(['transfered_at' => null, 'status' => TransferStatus::OPEN]);
+                    \DB::commit();
+
+                    return redirect(route('admin.transfers.non_transfers'));
+                }
+            } catch (\Exception $e) {
+                \DB::rollBack();
+                LogService::writeErrorLog($e);
             }
         }
     }
