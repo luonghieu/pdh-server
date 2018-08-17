@@ -11,6 +11,7 @@ final class OrderPaymentStatus extends Enum
     const EDIT_REQUESTING = 3;
     const PAYMENT_FINISHED = 4;
     const CANCEL_FEE_PAYMENT_FINISHED = 5;
+    const PAYMENT_FAILED = 6;
 
     /**
      * Get the description for an enum value
