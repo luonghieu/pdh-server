@@ -108,7 +108,7 @@
               </tr>
               <tr>
                 <th>ステータス</th>
-                <td>
+                <td class="wrap-td">
                   @if (App\Enums\OrderStatus::CANCELED == $order->status)
                     @if ($order->cancel_fee_percent == 0)
                     <span>確定後キャンセル (キャンセル料なし)</span>

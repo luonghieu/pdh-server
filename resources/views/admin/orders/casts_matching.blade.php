@@ -46,14 +46,16 @@
                 <th>合流時刻</th>
                 <td>
                   {{ $cast->pivot->started_at ? Carbon\Carbon::parse($cast->pivot->started_at)->format('Y/m/d H:i'): '' }}
-                  <button class="change-time start-time" data-toggle="modal" data-target="#start-time-{{ $cast->pivot->id }}">合流時刻を修正する</button>
+                  <button class="change-time start-time" data-toggle="modal" data-target="#start-time-{{ $cast->id }}">合流時刻を修正する</button>
                 </td>
               </tr>
               <tr>
                 <th>解散時刻</th>
                 <td>
                   {{ $cast->pivot->stopped_at ? Carbon\Carbon::parse($cast->pivot->stopped_at)->format('Y/m/d H:i'): '' }}
-                  <button class="change-time stopped-time" data-toggle="modal" data-target="#stopped-time-{{ $cast->pivot->id }}">解散時刻を修正する</button>
+                  @if ($order->status >= App\Enums\OrderStatus::DONE)
+                  <button class="change-time stopped-time" data-toggle="modal" data-target="#stopped-time-{{ $cast->id }}">解散時刻を修正する</button>
+                  @endif
                 </td>
               </tr>
               <tr>
@@ -74,7 +76,7 @@
               </tr>
             </table>
           </div>
-          <div class="modal fade" id="start-time-{{ $cast->pivot->id }}" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+          <div class="modal fade" id="start-time-{{ $cast->id }}" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
             <div class="modal-dialog" role="document">
               <div class="modal-content">
                 <div class="modal-body">
@@ -106,7 +108,7 @@
               </div>
             </div>
           </div>
-          <div class="modal fade" id="stopped-time-{{ $cast->pivot->id }}" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+          <div class="modal fade" id="stopped-time-{{ $cast->id }}" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
             <div class="modal-dialog" role="document">
               <div class="modal-content">
                 <div class="modal-body">

@@ -74,7 +74,7 @@
               </tr>
               <tr>
                 <th>ステータス</th>
-                <td>
+                <td class="wrap-td">
                   @if (App\Enums\OrderStatus::CANCELED == $order->status)
                     @if ($order->cancel_fee_percent == 0)
                     <span>確定後キャンセル (キャンセル料なし)</span>
@@ -109,7 +109,9 @@
                 <th>解散時刻</th>
                 <td>
                   {{ (count($order->casts) > 0) ? ($order->casts[0]->pivot->stopped_at != null ? Carbon\Carbon::parse($order->casts[0]->pivot->stopped_at)->format('Y/m/d H:i') : '') : '' }}
+                  @if ($order->status >= App\Enums\OrderStatus::DONE)
                   <button class="change-time order-nominee-stopped-time" data-toggle="modal" data-target="#order-nominee-stopped-time">解散時刻を修正する</button>
+                  @endif
                 </td>
               </tr>
               <tr>
