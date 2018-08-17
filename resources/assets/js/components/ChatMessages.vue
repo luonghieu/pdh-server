@@ -119,9 +119,8 @@ export default {
         (this.realtime_roomId == this.Id && this.pageCm < 2)
       ) {
         this.isScroll = true;
-      }
-      else{
-          this.isScroll = false;
+      } else {
+        this.isScroll = false;
       }
     }
 
@@ -183,32 +182,33 @@ export default {
       window.axios
         .get(`../../api/v1/rooms/${Id}?paginate=${15}&page=${pageCm + 1}`)
         .then(getMessage => {
-        const room = getMessage.data.data.data;
-        let setUnRead = { setRead: true, user: { avatars: null } };
-        room.forEach(messages => {
-            console.log(messages);
-          let currentDate = new Date(messages[14].created_at);
-          let date_data = messages[14].created_at;
+          const room = getMessage.data.data.data;
+          let currentDate = new Date(this.list_message[15].created_at);
+          let date_data = this.list_message[15].created_at;
           let isHeader = { isHeader: true, date_data, user: { avatars: null } };
           this.list_messageData.unshift(isHeader);
-          let i = 0;
-          for (i; i < messages.length; i++) {
-            let newDate = new Date(messages[i].created_at);
-            if (this.isFormatDate(currentDate, newDate)) {
-              this.list_messageData.unshift(messages[i]);
-            } else {
-              currentDate = new Date(messages[i].created_at);
-              date_data = messages[i].created_at;
-              isHeader = { isHeader: true, date_data, user: { avatars: null } };
-              this.list_messageData.unshift(isHeader);
-              this.list_messageData.unshift(messages[i]);
+          room.forEach(messages => {
+            let i = 0;
+            for (i; i < messages.length; i++) {
+              let newDate = new Date(messages[i].created_at);
+              if (this.isFormatDate(currentDate, newDate)) {
+                this.list_messageData.unshift(messages[i]);
+              } else {
+                currentDate = new Date(messages[i].created_at);
+                date_data = messages[i].created_at;
+                isHeader = {
+                  isHeader: true,
+                  date_data,
+                  user: { avatars: null }
+                };
+                this.list_messageData.unshift(isHeader);
+                this.list_messageData.unshift(messages[i]);
+              }
             }
-          }
-          this.list_messageData.forEach(item => {
-            this.list_message.unshift(item);
-            console.log(this.list_message);
+            this.list_messageData.forEach(item => {
+              this.list_message.unshift(item);
+            });
           });
-        });
           this.pageCm = getMessage.data.data.current_page;
           this.totalItem = getMessage.data.data.total;
           this.totalpage = getMessage.data.data.last_page;
