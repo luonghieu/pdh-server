@@ -59,68 +59,74 @@
               </tr>
             </thead>
             <tbody>
-              @foreach ($orders as $key => $order)
-              <tr>
-                <td class="select-checkbox">
-                  <input type="checkbox" class="verify-checkboxs" value="{{ $order->id }}">
-                </td>
-                <td>{{ $orders->firstItem() + $key }}</td>
-                <td><a href="{{ route('admin.users.show', ['user' => $order->user->id]) }}">{{ $order->user ? $order->user->id : '' }}</a></td>
-                <td>{{ $order->user ? $order->user->nickname : '' }}</td>
-                <td>{{ $order->id }}</td>
-                <td>{{ App\Enums\OrderType::getDescription($order->type) }}</td>
-                <td>{{ $order->address }}</td>
-                <td>{{ Carbon\Carbon::parse($order->date)->format('Y/m/d') }} {{ Carbon\Carbon::parse($order->start_time)->format('H:i') }}</td>
-                <td>{{ $order->total_cast }} 名</td>
-                @if (App\Enums\OrderType::CALL == $order->type)
-                <td>-</td>
-                @else
-                  @if ($order->nominees->count() > 1)
-                    <td><a href="{{ route('admin.orders.nominees', ['order' => $order->id]) }}">{{ $order->nominees->count() }} 名</a></td>
+              @if (empty($orders->count()))
+                <tr>
+                  <td colspan="10">{{ trans('messages.results_not_found') }}</td>
+                </tr>
+              @else
+                @foreach ($orders as $key => $order)
+                <tr>
+                  <td class="select-checkbox">
+                    <input type="checkbox" class="verify-checkboxs" value="{{ $order->id }}">
+                  </td>
+                  <td>{{ $orders->firstItem() + $key }}</td>
+                  <td><a href="{{ route('admin.users.show', ['user' => $order->user->id]) }}">{{ $order->user ? $order->user->id : '' }}</a></td>
+                  <td>{{ $order->user ? $order->user->nickname : '' }}</td>
+                  <td>{{ $order->id }}</td>
+                  <td>{{ App\Enums\OrderType::getDescription($order->type) }}</td>
+                  <td>{{ $order->address }}</td>
+                  <td>{{ Carbon\Carbon::parse($order->date)->format('Y/m/d') }} {{ Carbon\Carbon::parse($order->start_time)->format('H:i') }}</td>
+                  <td>{{ $order->total_cast }} 名</td>
+                  @if (App\Enums\OrderType::CALL == $order->type)
+                  <td>-</td>
                   @else
-                  <td><a href="{{ $order->nominees->first() ? route('admin.users.show', ['user' => $order->nominees->first()->id]) : '#' }}">{{ $order->nominees->first() ? $order->nominees->first()->id : "" }}</a></td>
-                  @endif
-                @endif
-                @if (App\Enums\OrderType::CALL == $order->type)
-                  @if ($order->candidates->count() > 1)
-                    <td><a href="{{ route('admin.orders.candidates', ['order' => $order->id]) }}">{{ $order->candidates->count() }} 名</a></td>
-                  @else
-                  <td><a href="{{ $order->candidates->first() ? route('admin.users.show', ['user' => $order->candidates->first()->id]) : '#' }}">{{ $order->candidates->first() ? $order->candidates->first()->id : "" }}</a></td>
-                  @endif
-                @else
-                <td>-</td>
-                @endif
-                <td>
-                  @if (App\Enums\OrderStatus::CANCELED == $order->status)
-                    @if ($order->cancel_fee_percent == 0)
-                    <span>確定後キャンセル (キャンセル料なし)</span>
+                    @if ($order->nominees->count() > 1)
+                      <td><a href="{{ route('admin.orders.nominees', ['order' => $order->id]) }}">{{ $order->nominees->count() }} 名</a></td>
                     @else
-                    <span>確定後キャンセル (キャンセル料あり)</span>
-                    @endif
-                  @else
-                    @if ($order->payment_status != null)
-                    {{ App\Enums\OrderPaymentStatus::getDescription($order->payment_status) }}
-                    @else
-                    {{ App\Enums\OrderStatus::getDescription($order->status) }}
+                    <td><a href="{{ $order->nominees->first() ? route('admin.users.show', ['user' => $order->nominees->first()->id]) : '#' }}">{{ $order->nominees->first() ? $order->nominees->first()->id : "" }}</a></td>
                     @endif
                   @endif
-                </td>
-                <td>
-                  @php
-                    $endDay = Carbon\Carbon::createFromFormat('Y-m-d H:i:s', $order->date . ' ' . $order->start_time)->addHours($order->duration);
-                    $now = Carbon\Carbon::now();
-                  @endphp
-                  @if (($order->status == App\Enums\OrderStatus::PROCESSING) && ( $endDay < $now))
-                    <span class="warning-order">予定時刻が過ぎています</span>
+                  @if (App\Enums\OrderType::CALL == $order->type)
+                    @if ($order->candidates->count() > 1)
+                      <td><a href="{{ route('admin.orders.candidates', ['order' => $order->id]) }}">{{ $order->candidates->count() }} 名</a></td>
+                    @else
+                    <td><a href="{{ $order->candidates->first() ? route('admin.users.show', ['user' => $order->candidates->first()->id]) : '#' }}">{{ $order->candidates->first() ? $order->candidates->first()->id : "" }}</a></td>
+                    @endif
+                  @else
+                  <td>-</td>
                   @endif
-                </td>
-                @if ($order->type == App\Enums\OrderType::NOMINATION)
-                  <td><a href="{{ route('admin.orders.order_nominee', ['order' => $order->id]) }}" class="btn-detail">詳細</a></td>
-                @else
-                  <td><a href="{{ route('admin.orders.call', ['order' => $order->id]) }}" class="btn-detail">詳細</a></td>
-                @endif
-              </tr>
-              @endforeach
+                  <td>
+                    @if (App\Enums\OrderStatus::CANCELED == $order->status)
+                      @if ($order->cancel_fee_percent == 0)
+                      <span>確定後キャンセル (キャンセル料なし)</span>
+                      @else
+                      <span>確定後キャンセル (キャンセル料あり)</span>
+                      @endif
+                    @else
+                      @if ($order->payment_status != null)
+                      {{ App\Enums\OrderPaymentStatus::getDescription($order->payment_status) }}
+                      @else
+                      {{ App\Enums\OrderStatus::getDescription($order->status) }}
+                      @endif
+                    @endif
+                  </td>
+                  <td>
+                    @php
+                      $endDay = Carbon\Carbon::createFromFormat('Y-m-d H:i:s', $order->date . ' ' . $order->start_time)->addHours($order->duration);
+                      $now = Carbon\Carbon::now();
+                    @endphp
+                    @if (($order->status == App\Enums\OrderStatus::PROCESSING) && ( $endDay < $now))
+                      <span class="warning-order">予定時刻が過ぎています</span>
+                    @endif
+                  </td>
+                  @if ($order->type == App\Enums\OrderType::NOMINATION)
+                    <td><a href="{{ route('admin.orders.order_nominee', ['order' => $order->id]) }}" class="btn-detail">詳細</a></td>
+                  @else
+                    <td><a href="{{ route('admin.orders.call', ['order' => $order->id]) }}" class="btn-detail">詳細</a></td>
+                  @endif
+                </tr>
+                @endforeach
+              @endif
             </tbody>
           </table>
         </div>

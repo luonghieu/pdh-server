@@ -47,18 +47,14 @@ class SaleController extends Controller
             });
         }
 
-        $sales = $sales->orderBy('created_at', 'DESC');
+        $sales = $sales->orderBy('created_at', 'DESC')->with('order');
         $salesExport = $sales;
         $sales = $sales->paginate($request->limit ?: 10);
 
         $totalPoint = $sales->sum('point');
 
         if ('export' == $request->submit) {
-            $page = $request->page ?: '1';
-            $limit = $request->limit ?: 10;
-            $offset = (1 == $request->page) ? 0 : (($request->page - 1) * $request->limit + 1);
-
-            $salesExport = $salesExport->orderBy('created_at', 'DESC')->offset($offset)->limit($limit)->get();
+            $salesExport = $salesExport->get();
 
             $data = collect($salesExport)->map(function ($item) {
                 return [
@@ -101,6 +97,7 @@ class SaleController extends Controller
 
             return;
         }
+
         return view('admin.sales.index', compact('sales', 'totalPoint', 'pointTypes'));
     }
 }
