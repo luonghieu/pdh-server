@@ -80,12 +80,6 @@ class ValidateOrder implements ShouldQueue
                 $isHybrid = false;
                 if ($this->order->type == OrderType::CALL || $this->order->type == OrderType::HYBRID) {
                     $isHybrid = true;
-                    $orderStartTime = Carbon::parse($this->order->date . ' ' . $this->order->start_time);
-                    $orderEndTime = $orderStartTime->copy()->addMinutes($this->order->duration * 60);
-                    $nightTime = $this->order->nightTime($orderEndTime);
-                    $allowance = $this->order->allowance($nightTime);
-                    $orderPoint = $this->order->orderPoint();
-                    $orderFee = 0;
                 }
 
                 $involvedUsers = [$this->order->user];
@@ -93,12 +87,7 @@ class ValidateOrder implements ShouldQueue
                     $involvedUsers[] = $cast;
 
                     if ($isHybrid) {
-                        if ($cast->pivot->type == CastOrderType::NOMINEE) {
-                            $orderFee = $this->order->orderFee($cast, $orderStartTime, $orderEndTime);
-                        }
-                        $orderPoint = $orderPoint + $allowance + $orderFee;
-
-                        $cast->notify(new CastApplyOrders($this->order, $orderPoint));
+                        $cast->notify(new CastApplyOrders($this->order, $cast->pivot->temp_point));
                     }
                 }
 
