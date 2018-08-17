@@ -108,7 +108,7 @@
               </tr>
               <tr>
                 <th>ステータス</th>
-                <td>
+                <td class="wrap-status">
                   @if (App\Enums\OrderStatus::CANCELED == $order->status)
                     @if ($order->cancel_fee_percent == 0)
                     <span>確定後キャンセル (キャンセル料なし)</span>
@@ -123,7 +123,7 @@
                     @endif
                   @endif
                   @if (App\Enums\OrderPaymentStatus::EDIT_REQUESTING == $order->payment_status)
-                  <button class="change-time payment-request" data-toggle="modal" data-target="#payment-request">ステータスを売上申請待ちに切り替える</button>
+                  <button class="change-time payment-request btn-order-call" data-toggle="modal" data-target="#payment-request">ステータスを売上申請待ちに切り替える</button>
                   @endif
                 </td>
               </tr>

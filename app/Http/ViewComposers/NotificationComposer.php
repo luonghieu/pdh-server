@@ -12,7 +12,7 @@ class NotificationComposer
      *
      * @var  UserRepository
      */
-    protected $notify;
+    protected $notifications;
 
     /**
      * Create a new profile composer.
@@ -23,7 +23,7 @@ class NotificationComposer
     public function __construct()
     {
         // Dependencies automatically resolved by service container...
-        $this->notify = Notification::where('type', 'App\Notifications\CreatedReport')
+        $this->notifications = Notification::whereIn('type', ['App\Notifications\CreatedReport', 'App\Notifications\PaymentRequestUpdate'])
             ->whereNull('read_at')->get();
     }
 
@@ -35,6 +35,6 @@ class NotificationComposer
      */
     public function compose(View $view)
     {
-        $view->with('notifications', $this->notify);
+        $view->with('notifications', $this->notifications);
     }
 }

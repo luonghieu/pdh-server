@@ -880,7 +880,10 @@ tbody td {
 }
 
 .notifications span.value {
-  padding : 0 !important;
+  padding: 10px !important;
+  line-height: 15px;
+  border-bottom: 1px solid #56cedf;
+  background-color: #e8f7fb;
 }
 
 .notifications a {
@@ -1101,10 +1104,6 @@ tbody td {
   width: 300px;
 }
 
-.payment-request {
-  top: 465px;
-}
-
 .order-nominee-started-time {
   bottom: 315px;
 }
@@ -1114,11 +1113,11 @@ tbody td {
 }
 
 .start-time {
-  top: 46px;
+  top: 8px;
 }
 
 .stopped-time {
-  top: 95px;
+  top: 8px;
 }
 
 .extra-time {
@@ -1137,9 +1136,26 @@ tbody td {
   width: 10%;
 }
 
+.column-th-btn {
+  width: 70px;
+}
+
 .transfer-search {
   margin-left: 20px;
 }
+
+.wrap-status {
+  position: relative;
+}
+
+.wrap-status .btn-nominee {
+  top: 7px;
+}
+
+.wrap-status .btn-order-call {
+  top: 7px;
+}
+
 @media (max-width: 767px) {
   .navbar {
     background: #20a8d817;
@@ -1174,6 +1190,38 @@ tbody td {
   .current_point {
     top: 125px;
     right: 135px;
+  }
+
+  .wrap-status {
+    height: 90px;
+  }
+
+  .wrap-status .btn-nominee {
+    top: 54px;
+    left: 130px;
+  }
+
+  .wrap-status .btn-order-call {
+    top: 54px;
+    left: 130px;
+  }
+
+  .order-nominee-started-time {
+    bottom: 315px;
+  }
+
+  .order-nominee-stopped-time {
+    top: 653px;
+  }
+
+  .start-time {
+    top: 52px;
+    right: 123px;
+  }
+
+  .stopped-time {
+    top: 52px;
+    right: 123px;
   }
 }
 
