@@ -23,9 +23,9 @@
                                             :src="userDetail.avatars[0].path">
                                     </div>
                                     <div class="chat_ib">
+                                        <h5 class="chat_id fa fa-id-badge"> {{userDetail.id}}</h5>
                                         <h5 class="chat_nickname" v-if="realtime_roomId == value.id && unread_realtime > 0" v-bind:class="realtime_roomId == Id || realtime_roomId == room_id  ? '' : 'chat_ib_nickname' "><i v-bind:class="userDetail.gender == 2 ? 'fa fa-female' : 'fa fa-male' "></i> {{userDetail.nickname}}</h5>
                                         <h5 class="chat_nickname" v-else v-bind:class="value.unread_count == 0 || value.id == Id || value.id == room_id  || setUnread == 0 || unread_realtime > 0 ? '' : 'chat_ib_nickname' "><i v-bind:class="userDetail.gender == 2 ? 'fa fa-female' : 'fa fa-male' "></i> {{userDetail.nickname}}</h5>
-                                        <h5 class="chat_id fa fa-id-badge"> {{userDetail.id}}</h5>
                                     </div>
                                 </div>
                                 <span v-if="realtime_roomId == value.id && unread_realtime > 0" v-bind:class="realtime_roomId == Id || realtime_roomId == room_id ? 'notification' : 'notify-chat'">{{unread_realtime}}</span>
@@ -46,9 +46,9 @@
                                             :src="userDetail.avatars[0].path">
                                     </div>
                                     <div class="chat_ib">
+                                        <h5 class="chat_id fa fa-id-badge"> {{userDetail.id}}</h5>
                                         <h5 class="chat_nickname" v-if="realtime_roomId == value.id && unread_realtime > 0" v-bind:class="realtime_roomId == Id || realtime_roomId == room_id ? '' : 'chat_ib_nickname' "><i v-bind:class="userDetail.gender == 2 ? 'fa fa-female' : 'fa fa-male' "></i> {{userDetail.nickname}}</h5>
                                         <h5 class="chat_nickname" v-else v-bind:class="value.unread_count == 0 || value.id == Id || value.id == room_id || setUnread == 0 || unread_realtime > 0 ? '' : 'chat_ib_nickname' "><i v-bind:class="userDetail.gender == 2 ? 'fa fa-female' : 'fa fa-male' "></i> {{userDetail.nickname}}</h5>
-                                        <h5 class="chat_id fa fa-id-badge"> {{userDetail.id}}</h5>
                                     </div>
                                 </div>
                                 <span v-if="realtime_roomId == value.id && unread_realtime > 0 " v-bind:class="realtime_roomId == Id || realtime_roomId == room_id ? 'notification' : 'notify-chat'">{{unread_realtime}}</span>
@@ -95,8 +95,7 @@ export default {
         this.setUnread = 0;
       }
       if (this.realtime_roomId == roomID) {
-          this.unread_realtime = 0;
-          this.$emit("interface", this.realtime_count);
+        this.$emit("interface", this.realtime_count);
       }
     }
   },
@@ -115,12 +114,12 @@ export default {
 
       search_array = search_array.filter(item => {
         for (let value in item.users) {
-            let userId =  item.users[value].id.toString()
+          let userId = item.users[value].id.toString();
           if (
-            item.users[value].nickname.toLowerCase().indexOf(searchName) !== -1 ||
+            item.users[value].nickname.toLowerCase().indexOf(searchName) !==
+              -1 ||
             userId.toLowerCase().indexOf(searchName) !== -1
-          )
-          {
+          ) {
             return true;
           }
         }

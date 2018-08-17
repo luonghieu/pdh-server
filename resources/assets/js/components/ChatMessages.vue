@@ -13,6 +13,14 @@
         </div>
         <transition-group>
             <div v-for="(message, index) in list_message" :key="`keyIndex-${index}`">
+                <div v-if="message.isHeader == true" class="timeLine__dateHead">
+                  <div class="timeLine__dateHeadContainer">
+                    <div class="timeLine__dateHeadBody">
+                      <span class="icoFontClock"></span>
+                      <span class="timeLine__dateHeadText fa fa-clock-o"> {{message.date_data.substr(0,10)}}</span>
+                    </div>
+                  </div>
+                </div>
                 <div class="outgoing_msg" v-if="message.user_id == user_id">
                     <div class="sent_msg">
                         <div class="in_sendmess">
@@ -32,7 +40,7 @@
                     </div>
                 </div>
         <div v-else>
-            <div class="timeLine__unreadLine" v-if="message.setRead == true && (message.room_id == room_id || message.room_id == Id)" v-bind:class="isUnread == true ? '' : 'unread_count'">
+            <div class="timeLine__unreadLine" v-if="message.setRead == true && (realtime_roomId == room_id || realtime_roomId == Id)" v-bind:class="isUnread == true ? '' : 'unread_count'">
                     <div class="timeLine__unreadLineBorder">
                         <div class="timeLine__unreadLineContainer">
                             <div class="timeLine__unreadLineBody">
@@ -43,7 +51,7 @@
             </div>
             <div class="incoming_msg" v-if="(message.message || message.user.avatars) && (message.room_id == room_id || message.room_id == Id)">
                 <div class="received_msg">
-                        <div v-if="message.user.avatars" class="incoming_msg_img"><img class="img_avatar"
+                        <div v-if="message.user.avatars" class="incoming_msg_img"><img class="img_received"
                                 :src="message.user.avatars[0].path"></div>
                         <div class="received_withd_msg">
                             <div v-if="message.image">
@@ -72,7 +80,7 @@ export default {
     "totalMessage",
     "roomId",
     "realtime_roomId",
-    "countUnread_realtime",
+    "countUnread_realtime"
   ],
   data() {
     return {
@@ -85,7 +93,7 @@ export default {
       totalItem: 1,
       totalpage: 0,
       room_id: "",
-      Id: this.roomId,
+      Id: Number(this.roomId),
       isHidden: false,
       linkOut: "",
       linkInMessage: "",
@@ -94,6 +102,7 @@ export default {
       messageUnread_id: "",
       isUnread: true,
       isCount: [],
+      list_messageData: []
     };
   },
 
@@ -103,26 +112,31 @@ export default {
     if (this.room_id) {
       this.Id = null;
     }
+
     if (this.realtime_roomId) {
       if (
         this.realtime_roomId == this.room_id ||
         (this.realtime_roomId == this.Id && this.pageCm < 2)
       ) {
         this.isScroll = true;
-      } else {
-        this.isScroll = false;
+      }
+      else{
+          this.isScroll = false;
       }
     }
+
     if (this.isScroll) {
       this.scrollToEnd();
     }
 
-   if(this.realtime_roomId == this.room_id || this.realtime_roomId == this.Id ){
-       setTimeout(this.setTimeOut, 5000);
-   } else {
-       this.isUnread = true
-   }
-
+    if (
+      this.realtime_roomId == this.room_id ||
+      this.realtime_roomId == this.Id
+    ) {
+      setTimeout(this.setTimeOut, 5000);
+    } else {
+      this.isUnread = true;
+    }
   },
 
   methods: {
@@ -163,24 +177,61 @@ export default {
       } else {
         Id = this.$route.params.id;
       }
-
+      this.isScroll = false;
       this.$emit("interface", this.realtime_id);
 
-      this.isScroll = false;
       window.axios
         .get(`../../api/v1/rooms/${Id}?paginate=${15}&page=${pageCm + 1}`)
         .then(getMessage => {
-          let temp = "";
-          temp = getMessage.data.data.data;
-          temp.forEach(messages => {
-            messages.forEach(item => {
-              this.list_message.unshift(item);
-            });
+        const room = getMessage.data.data.data;
+        let setUnRead = { setRead: true, user: { avatars: null } };
+        room.forEach(messages => {
+            console.log(messages);
+          let currentDate = new Date(messages[14].created_at);
+          let date_data = messages[14].created_at;
+          let isHeader = { isHeader: true, date_data, user: { avatars: null } };
+          this.list_messageData.unshift(isHeader);
+          let i = 0;
+          for (i; i < messages.length; i++) {
+            let newDate = new Date(messages[i].created_at);
+            if (this.isFormatDate(currentDate, newDate)) {
+              this.list_messageData.unshift(messages[i]);
+            } else {
+              currentDate = new Date(messages[i].created_at);
+              date_data = messages[i].created_at;
+              isHeader = { isHeader: true, date_data, user: { avatars: null } };
+              this.list_messageData.unshift(isHeader);
+              this.list_messageData.unshift(messages[i]);
+            }
+          }
+          this.list_messageData.forEach(item => {
+            this.list_message.unshift(item);
+            console.log(this.list_message);
           });
+        });
           this.pageCm = getMessage.data.data.current_page;
           this.totalItem = getMessage.data.data.total;
           this.totalpage = getMessage.data.data.last_page;
         });
+    },
+
+    isFormatDate(date1, date2) {
+      let formatDate1 =
+        date1.getMonth() +
+        1 +
+        "/" +
+        date1.getDate() +
+        "/" +
+        date1.getFullYear();
+      let formatDate2 =
+        date2.getMonth() +
+        1 +
+        "/" +
+        date2.getDate() +
+        "/" +
+        date2.getFullYear();
+
+      return formatDate1 == formatDate2;
     },
 
     hiddenNewMessage() {
@@ -188,8 +239,8 @@ export default {
       this.isHidden = true;
     },
 
-    setTimeOut(){
-        this.isUnread = false;
+    setTimeOut() {
+      this.isUnread = false;
     },
 
     scrollToEnd: function() {

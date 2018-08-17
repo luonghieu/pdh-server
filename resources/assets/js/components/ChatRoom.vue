@@ -67,6 +67,7 @@ export default {
       users: "",
       messageUnread_index: "",
       countUnread_realtime: 0,
+      list_messageData: []
     };
   },
 
@@ -90,6 +91,7 @@ export default {
     if (this.roomId) {
       this.getMessagesInRoom(this.roomId);
     }
+    setInterval(this.getRoom, 2000);
   },
 
   methods: {
@@ -98,10 +100,13 @@ export default {
       window.Echo.private("user." + 1).listen("MessageCreated", e => {
         this.realtime_message = e.message.message;
         this.realtime_roomId = e.message.room_id;
-        if(this.realtime_roomId == Number(this.roomId) || this.realtime_roomId == Number(this.id)) {
-            this.realtime_count = 0;
+        if (
+          this.realtime_roomId == Number(this.roomId) ||
+          this.realtime_roomId == this.id
+        ) {
+          this.realtime_count = 0;
         } else {
-            this.realtime_count += 1;
+          this.realtime_count += 1;
         }
         this.list_messages.push(e.message);
       });
@@ -121,40 +126,77 @@ export default {
         this.list_messages = [];
         const room = response.data.data.data;
         this.totalMessage = response.data.data.total;
-        let setUnRead = {setRead: true, user: {avatars: null}}
+        let setUnRead = { setRead: true, user: { avatars: null } };
         room.forEach(messages => {
-        if(this.messageUnread_index || this.countUnread_realtime) {
-            messages.splice(this.messageUnread_index || this.countUnread_realtime, 0, setUnRead);
+          let currentDate = new Date(messages[0].created_at);
+          let date_data = messages[0].created_at;
+          let isHeader = { isHeader: true, date_data, user: { avatars: null } };
+          this.list_messageData.unshift(isHeader);
+          let i = 0;
+          for (i; i < messages.length; i++) {
+            let newDate = new Date(messages[i].created_at);
+            if (this.isSameDay(currentDate, newDate)) {
+              this.list_messageData.unshift(messages[i]);
+            } else {
+              currentDate = new Date(messages[i].created_at);
+              date_data = messages[i].created_at;
+              isHeader = { isHeader: true, date_data, user: { avatars: null } };
+              this.list_messageData.unshift(isHeader);
+              this.list_messageData.unshift(messages[i]);
+            }
           }
-            messages.forEach(item => {
+          if (this.messageUnread_index || this.countUnread_realtime) {
+            this.list_messageData.splice(
+              this.messageUnread_index || this.countUnread_realtime,
+              0,
+              setUnRead
+            );
+          }
+          this.list_messageData.forEach(item => {
             this.list_messages.unshift(item);
-            let messUnread_realtime = this.countUnread_realtime = null;
-            let mees_index = this.messageUnread_index = null;
+            let messUnread_realtime = (this.countUnread_realtime = null);
+            let mees_index = (this.messageUnread_index = null);
           });
         });
       });
     },
 
+    isSameDay(date1, date2) {
+      let formatDate1 =
+        date1.getMonth() +
+        1 +
+        "/" +
+        date1.getDate() +
+        "/" +
+        date1.getFullYear();
+      let formatDate2 =
+        date2.getMonth() +
+        1 +
+        "/" +
+        date2.getDate() +
+        "/" +
+        date2.getFullYear();
+
+      return formatDate1 == formatDate2;
+    },
+
     getRoom() {
-      window.axios
-        .get("../../api/v1/rooms/admin/get_users")
-        .then(response => {
-          const rooms = response.data.data;
-          this.users = rooms;
-          this.users.forEach(items => {
-          if(items.unread_count > 0){
+      window.axios.get("../../api/v1/rooms/admin/get_users").then(response => {
+        const rooms = response.data.data;
+        this.users = rooms;
+        this.users.forEach(items => {
+          if (items.unread_count > 0) {
             this.messageUnread_index = items.unread_count;
-        }
-     })
-    });
+          }
+        });
+      });
     },
 
     sendMessage() {
-      if(this.id){
-          this.realtime_roomId = this.id
-      }
-      else{
-          this.realtime_roomId = this.roomId
+      if (this.id) {
+        this.realtime_roomId = this.id;
+      } else {
+        this.realtime_roomId = this.roomId;
       }
 
       this.realtime_message = this.message;
@@ -206,7 +248,7 @@ export default {
       const { name, size } = files[0];
       let message;
       if (name.lastIndexOf(".") <= 0) {
-         message = "有効な画像を選択してください";
+        message = "有効な画像を選択してください";
         this.errors.push(message);
         return false;
       }
@@ -222,14 +264,14 @@ export default {
         ext !== "png" &&
         ext !== "PNG"
       ) {
-        message  = "画像形式は無効です";
+        message = "画像形式は無効です";
         this.errors.push(message);
         return false;
       }
 
       let sizeMB = (size / (1024 * 1024)).toFixed(2);
       if (sizeMB > 5.12) {
-        message  = `(${sizeMB}MB). 画像サイズが大きすぎます 5MB以下の画像をアップロードしてください`;
+        message = `(${sizeMB}MB). 画像サイズが大きすぎます 5MB以下の画像をアップロードしてください`;
         this.errors.push(message);
         return false;
       }
@@ -254,10 +296,12 @@ export default {
     },
 
     handleCountMessage(event) {
+      if (event > 0) {
         this.countUnread_realtime = event;
-        if(this.event){
-            this.realtime_count = 0;
-        }
+      }
+      if (event) {
+        this.realtime_count = event - event;
+      }
     },
 
     handleNewMessage(event) {
