@@ -3,11 +3,12 @@
 namespace App\Http\Controllers\Api;
 
 use App\Card;
-use App\Http\Controllers\Api\ApiController;
-use App\Http\Resources\CardResource;
-use App\Services\LogService;
+use App\User;
 use App\Services\Payment;
+use App\Services\LogService;
 use Illuminate\Http\Request;
+use App\Http\Resources\CardResource;
+use App\Http\Controllers\Api\ApiController;
 
 class CardController extends ApiController
 {
@@ -34,21 +35,18 @@ class CardController extends ApiController
 
         try {
             if (!$user->stripe_id) {
-                $attributes = [
-                    'description' => $user->id,
-                ];
-
-                $customer = $this->payment->createCustomer($attributes);
-                $customerId = $customer->id;
-
-                $user->stripe_id = $customerId;
-                $user->save();
+                $customer = $this->createCustomer($user);
             } else {
                 $customerId = $user->stripe_id;
+
+                $customer = $this->payment->getCustomer($customerId);
+
+                if (!$customer) {
+                    $customer = $this->createCustomer($user);
+                }
             }
 
-            $customer = $this->payment->getCustomer($customerId);
-            $isDefault = $customer->default_source ? false : true;
+            $user->cards()->delete();
 
             $card = $customer->sources->create(['source' => $request->token]);
 
@@ -57,6 +55,9 @@ class CardController extends ApiController
 
                 return $this->respondErrorMessage(trans('messages.payment_method_not_supported'));
             }
+
+            $customer->default_source = $card->id;
+            $customer->save();
 
             $cardAttributes = [
                 'card_id' => $card->id,
@@ -80,7 +81,7 @@ class CardController extends ApiController
                 'last4' => $card->last4,
                 'name' => $card->name,
                 'tokenization_method' => $card->tokenization_method,
-                'is_default' => $isDefault,
+                'is_default' => true,
             ];
 
             $card = $user->cards()->create($cardAttributes);
@@ -128,5 +129,23 @@ class CardController extends ApiController
             ->get();
 
         return $this->respondWithData(CardResource::collection($cards));
+    }
+
+    protected function createCustomer(User $user)
+    {
+        $attributes = [
+            'description' => $user->id,
+        ];
+
+        $customer = $this->payment->createCustomer($attributes);
+
+        if (!$customer) {
+            return false;
+        }
+
+        $user->stripe_id = $customer->id;
+        $user->save();
+
+        return $customer;
     }
 }

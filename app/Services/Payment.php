@@ -2,15 +2,16 @@
 
 namespace App\Services;
 
-use Stripe\Account;
-use Stripe\Balance;
+use Stripe\Token;
 use Stripe\Charge;
-use Stripe\CountrySpec;
-use Stripe\Customer;
 use Stripe\Refund;
 use Stripe\Stripe;
-use Stripe\Token;
+use Stripe\Account;
+use Stripe\Balance;
+use Stripe\Customer;
 use Stripe\Transfer;
+use Stripe\CountrySpec;
+use App\Services\LogService;
 
 class Payment extends Service
 {
@@ -100,9 +101,15 @@ class Payment extends Service
 
     public function getCustomer($customerId)
     {
-        $customer = Customer::retrieve($customerId);
+        try {
+            $customer = Customer::retrieve($customerId);
 
-        return $customer;
+            return $customer;
+        } catch (\Exception $e) {
+            LogService::writeErrorLog($e);
+
+            return false;
+        }
     }
 
     public function getTransfers($accountId = null)
