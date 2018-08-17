@@ -44,14 +44,14 @@
               <!--  table-striped -->
               <tr>
                 <th>合流時刻</th>
-                <td>
+                <td class="wrap-status">
                   {{ $cast->pivot->started_at ? Carbon\Carbon::parse($cast->pivot->started_at)->format('Y/m/d H:i'): '' }}
                   <button class="change-time start-time" data-toggle="modal" data-target="#start-time-{{ $cast->id }}">合流時刻を修正する</button>
                 </td>
               </tr>
               <tr>
                 <th>解散時刻</th>
-                <td>
+                <td class="wrap-status">
                   {{ $cast->pivot->stopped_at ? Carbon\Carbon::parse($cast->pivot->stopped_at)->format('Y/m/d H:i'): '' }}
                   @if ($order->status >= App\Enums\OrderStatus::DONE)
                   <button class="change-time stopped-time" data-toggle="modal" data-target="#stopped-time-{{ $cast->id }}">解散時刻を修正する</button>

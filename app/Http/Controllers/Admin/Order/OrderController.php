@@ -246,6 +246,7 @@ class OrderController extends Controller
         try {
             \DB::beginTransaction();
             $order->casts()->updateExistingPivot($castId, $input, false);
+
             $paymentRequest = $order->paymentRequests->first();
 
             if ($paymentRequest) {

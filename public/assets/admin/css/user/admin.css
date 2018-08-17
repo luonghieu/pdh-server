@@ -1113,11 +1113,11 @@ tbody td {
 }
 
 .start-time {
-  top: 46px;
+  top: 8px;
 }
 
 .stopped-time {
-  top: 95px;
+  top: 8px;
 }
 
 .extra-time {
@@ -1144,11 +1144,15 @@ tbody td {
   margin-left: 20px;
 }
 
-.wrap-td {
+.wrap-status {
   position: relative;
 }
 
-.payment-request {
+.wrap-status .btn-nominee {
+  top: 7px;
+}
+
+.wrap-status .btn-order-call {
   top: 7px;
 }
 
@@ -1188,13 +1192,36 @@ tbody td {
     right: 135px;
   }
 
-  .wrap-td {
-    height: 100px
+  .wrap-status {
+    height: 90px;
   }
 
-  .payment-request {
-    top: 58px;
-    right: 112px;
+  .wrap-status .btn-nominee {
+    top: 54px;
+    left: 130px;
+  }
+
+  .wrap-status .btn-order-call {
+    top: 54px;
+    left: 130px;
+  }
+
+  .order-nominee-started-time {
+    bottom: 315px;
+  }
+
+  .order-nominee-stopped-time {
+    top: 653px;
+  }
+
+  .start-time {
+    top: 52px;
+    right: 123px;
+  }
+
+  .stopped-time {
+    top: 52px;
+    right: 123px;
   }
 }
 

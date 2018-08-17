@@ -70,11 +70,18 @@
               </tr>
               <tr>
                 <th>予定合計ポイント</th>
-                <td>{{ count($order->casts) > 0 ? number_format($order->casts[0]->pivot->temp_point).'P' : '0P' }}</td>
+                <td>
+                  @if ($order->status == App\Enums\OrderStatus::OPEN)
+                    {{ number_format($order->temp_point).'P' }}
+                  @endif
+                  @if ($order->status >= App\Enums\OrderStatus::ACTIVE)
+                  {{ count($order->casts) > 0 ? number_format($order->casts[0]->pivot->temp_point).'P' : '0P' }}
+                  @endif
+                </td>
               </tr>
               <tr>
                 <th>ステータス</th>
-                <td class="wrap-td">
+                <td class="wrap-status">
                   @if (App\Enums\OrderStatus::CANCELED == $order->status)
                     @if ($order->cancel_fee_percent == 0)
                     <span>確定後キャンセル (キャンセル料なし)</span>
@@ -89,7 +96,7 @@
                     @endif
                   @endif
                   @if (App\Enums\OrderPaymentStatus::EDIT_REQUESTING == $order->payment_status)
-                  <button class="change-time payment-request" data-toggle="modal" data-target="#payment-request">ステータスを売上申請待ちに切り替える</button>
+                  <button class="change-time payment-request btn-nominee" data-toggle="modal" data-target="#payment-request">ステータスを売上申請待ちに切り替える</button>
                   @endif
                 </td>
               </tr>
@@ -132,7 +139,19 @@
               </tr>
               <tr>
                 <th>実績合計ポイント</th>
-                <td>{{ $order->total_point != null ? number_format($order->total_point).'P' : '0P' }} </td>
+                <td>
+                  @if ($order->status == App\Enums\OrderStatus::PROCESSING)
+                  {{ count($order->casts) > 0 ? number_format($order->casts[0]->pivot->temp_point).'P' : '0P' }}
+                  @endif
+                  @if ($order->status >= App\Enums\OrderStatus::DONE)
+                    @if ($order->payment_status == App\Enums\OrderPaymentStatus::REQUESTING)
+                    {{ number_format($order->total_point) }}
+                    @else
+                    {{ count($order->casts) > 0 ? number_format($order->casts[0]->pivot->total_point).'P' : '0P' }}
+                    @endif
+                  @endif
+
+                </td>
               </tr>
               @endif
             </table>
