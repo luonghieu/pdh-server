@@ -70,7 +70,7 @@
               </tr>
               <tr>
                 <th>予定合計ポイント</th>
-                <td>{{ $order->casts ? number_format($order->casts[0]->pivot->temp_point).'P' : '0P' }}</td>
+                <td>{{ count($order->casts) > 0 ? number_format($order->casts[0]->pivot->temp_point).'P' : '0P' }}</td>
               </tr>
               <tr>
                 <th>ステータス</th>
