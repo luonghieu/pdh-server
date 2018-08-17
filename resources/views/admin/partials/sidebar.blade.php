@@ -8,7 +8,7 @@ $routes = [
             'value' => '全アカウント管理',
             'url' => route('admin.users.index'),
             'submenu' => [
-                'admin.users.show', 'admin.users.orders_history','admin.users.cast_ratings', 'admin.users.points_history'
+                'admin.users.show', 'admin.users.orders_history', 'admin.users.cast_ratings', 'admin.users.points_history'
             ],
         ],
     ],
@@ -19,7 +19,7 @@ $routes = [
             'value' => 'キャスト管理',
             'url' => route('admin.casts.index'),
             'submenu' => [
-              'admin.casts.register','admin.casts.confirm','admin.casts.save','admin.casts.guest_ratings'
+              'admin.casts.register', 'admin.casts.confirm', 'admin.casts.save', 'admin.casts.guest_ratings', 'admin.casts.operation_history'
             ],
         ],
     ],
