@@ -186,8 +186,9 @@ export default {
         const room = getMessage.data.data.data;
         let setUnRead = { setRead: true, user: { avatars: null } };
         room.forEach(messages => {
-          let currentDate = new Date(messages[0].created_at);
-          let date_data = messages[0].created_at;
+            console.log(messages);
+          let currentDate = new Date(messages[14].created_at);
+          let date_data = messages[14].created_at;
           let isHeader = { isHeader: true, date_data, user: { avatars: null } };
           this.list_messageData.unshift(isHeader);
           let i = 0;
@@ -205,6 +206,7 @@ export default {
           }
           this.list_messageData.forEach(item => {
             this.list_message.unshift(item);
+            console.log(this.list_message);
           });
         });
           this.pageCm = getMessage.data.data.current_page;
