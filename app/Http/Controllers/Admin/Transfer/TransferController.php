@@ -68,6 +68,9 @@ class TransferController extends Controller
             ];
 
             try {
+                $data = encoderShiftJIS($data);
+                $header = !($header = encoderShiftJIS([$header])) ? false : collect($header)->first();
+
                 $file = CSVExport::toCSV($data, $header);
             } catch (\Exception $e) {
                 LogService::writeErrorLog($e);

@@ -151,6 +151,9 @@ class PointController extends Controller
             ];
 
             try {
+                $data = encoderShiftJIS($data);
+                $header = !($header = encoderShiftJIS([$header])) ? false : collect($header)->first();
+
                 $file = CSVExport::toCSV($data, $header);
             } catch (\Exception $e) {
                 LogService::writeErrorLog($e);
@@ -266,6 +269,9 @@ class PointController extends Controller
             ];
 
             try {
+                $data = encoderShiftJIS($data);
+                $header = !($header = encoderShiftJIS([$header])) ? false : collect($header)->first();
+
                 $file = CSVExport::toCSV($data, $header);
             } catch (\Exception $e) {
                 LogService::writeErrorLog($e);
@@ -358,6 +364,9 @@ class PointController extends Controller
                 'ポイントの残高',
             ];
             try {
+                $data = encoderShiftJIS($data);
+                $header = !($header = encoderShiftJIS([$header])) ? false : collect($header)->first();
+
                 $file = CSVExport::toCSV($data, $header);
             } catch (\Exception $e) {
                 LogService::writeErrorLog($e);

@@ -139,6 +139,9 @@ class PointController extends Controller
                 '残高',
             ];
             try {
+                $data = encoderShiftJIS($data);
+                $header = !($header = encoderShiftJIS([$header])) ? false : collect($header)->first();
+
                 $file = CSVExport::toCSV($data, $header);
             } catch (\Exception $e) {
                 LogService::writeErrorLog($e);
