@@ -880,7 +880,10 @@ tbody td {
 }
 
 .notifications span.value {
-  padding : 0 !important;
+  padding: 10px !important;
+  line-height: 15px;
+  border-bottom: 1px solid #56cedf;
+  background-color: #e8f7fb;
 }
 
 .notifications a {
@@ -1101,10 +1104,6 @@ tbody td {
   width: 300px;
 }
 
-.payment-request {
-  top: 465px;
-}
-
 .order-nominee-started-time {
   bottom: 315px;
 }
@@ -1137,9 +1136,22 @@ tbody td {
   width: 10%;
 }
 
+.column-th-btn {
+  width: 70px;
+}
+
 .transfer-search {
   margin-left: 20px;
 }
+
+.wrap-td {
+  position: relative;
+}
+
+.payment-request {
+  top: 7px;
+}
+
 @media (max-width: 767px) {
   .navbar {
     background: #20a8d817;
@@ -1174,6 +1186,15 @@ tbody td {
   .current_point {
     top: 125px;
     right: 135px;
+  }
+
+  .wrap-td {
+    height: 100px
+  }
+
+  .payment-request {
+    top: 58px;
+    right: 112px;
   }
 }
 

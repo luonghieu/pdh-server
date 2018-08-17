@@ -53,15 +53,15 @@
                 <th>希望人数</th>
                 <th>指名キャスト</th>
                 <th>応募キャスト</th>
-                <th class="column-long-text">ステータス</th>
-                <th class="column-long-text">アラート</th>
-                <th></th>
+                <th>ステータス</th>
+                <th>アラート</th>
+                <th class="column-th-btn"></th>
               </tr>
             </thead>
             <tbody>
               @if (empty($orders->count()))
                 <tr>
-                  <td colspan="10">{{ trans('messages.results_not_found') }}</td>
+                  <td colspan="14">{{ trans('messages.results_not_found') }}</td>
                 </tr>
               @else
                 @foreach ($orders as $key => $order)
