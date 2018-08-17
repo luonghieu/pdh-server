@@ -1,12 +1,12 @@
 <template>
     <div class="msg_history">
         <div v-if="(realtime_roomId == room_id || realtime_roomId == Id) && pageCm > 1" @click="hiddenNewMessage" v-bind:class="isHidden == true ? 'unread_count' : ''">
-        <div aria-hidden="true" class="new_mesage in_new">
-        <a class="button_new" tabindex="0">
-            <i class="in_mess img in_message arrow_down fa fa-arrow-down" alt=""></i>
-            <div class="text_newmess">新しいメッセージ</div>
-        </a>
-        </div>
+            <div aria-hidden="true" class="new_mesage in_new">
+                <a class="button_new" tabindex="0">
+                    <i class="in_mess img in_message arrow_down fa fa-arrow-down" alt=""></i>
+                    <div class="text_newmess">新しいメッセージ</div>
+                </a>
+            </div>
         </div>
         <div v-if="totalMessage > 15" class="loading_message" v-bind:class="totalpage == pageCm ? 'hidden_loadmess' : ''">
             <button class="loading_button" @click="loadMessage(pageCm)">もっと見る</button>
@@ -27,14 +27,22 @@
                         <div style="clear:both"></div>
                         <!-- <confirm-delete :delete="selectedMessage" v-if='confirmModal' @confirm="deleteMessage"
                                         @cancel="cancelDelete" @close="closePopup"></confirm-delete> -->
-                        <span class="time_date" v-if="message.created_at">{{message.created_at}}</span>
+                        <span class="time_date" v-if="message.created_at">{{message.created_at.substr(6,10)}}</span>
                         </div>
                     </div>
                 </div>
-                <div v-else>
-                    <div class="incoming_msg" v-if="message.room_id == room_id || message.room_id == Id">
-                    <div>
-                    <div class="received_msg">
+        <div v-else>
+            <div class="timeLine__unreadLine" v-if="message.setRead == true && (message.room_id == room_id || message.room_id == Id)" v-bind:class="isUnread == true ? '' : 'unread_count'">
+                    <div class="timeLine__unreadLineBorder">
+                        <div class="timeLine__unreadLineContainer">
+                            <div class="timeLine__unreadLineBody">
+                                <span class="timeLine__unreadLineText">未読メッセージ</span>
+                            </div>
+                        </div>
+                    </div>
+            </div>
+            <div class="incoming_msg" v-if="(message.message || message.user.avatars) && (message.room_id == room_id || message.room_id == Id)">
+                <div class="received_msg">
                         <div v-if="message.user.avatars" class="incoming_msg_img"><img class="img_avatar"
                                 :src="message.user.avatars[0].path"></div>
                         <div class="received_withd_msg">
@@ -42,12 +50,11 @@
                                 <img width="100" :src="message.image"/>
                             </div>
                             <p :id="message.room_id" ref="linkIncom" v-if="message.message">{{message.message}}</p>
-                            <span class="time_incom" v-if="message.created_at">{{message.created_at}}</span>
+                            <span class="time_incom" v-if="message.created_at">{{message.created_at.substr(6,10)}}</span>
                         </div>
-                    </div>
-                    </div>
-                    </div>
                 </div>
+            </div>
+        </div>
             </div>
         </transition-group>
     </div>
@@ -64,7 +71,8 @@ export default {
     "user_id",
     "totalMessage",
     "roomId",
-    "realtime_roomId"
+    "realtime_roomId",
+    "countUnread_realtime",
   ],
   data() {
     return {
@@ -81,7 +89,11 @@ export default {
       isHidden: false,
       linkOut: "",
       linkInMessage: "",
-      realtime_id: 0
+      realtime_id: 0,
+      index: 0,
+      messageUnread_id: "",
+      isUnread: true,
+      isCount: [],
     };
   },
 
@@ -93,8 +105,10 @@ export default {
     }
     if (this.realtime_roomId) {
       if (
-        this.realtime_roomId == this.room_id ||this.realtime_roomId == this.Id && this.pageCm < 2 ) {
-         this.isScroll = true;
+        this.realtime_roomId == this.room_id ||
+        (this.realtime_roomId == this.Id && this.pageCm < 2)
+      ) {
+        this.isScroll = true;
       } else {
         this.isScroll = false;
       }
@@ -102,6 +116,13 @@ export default {
     if (this.isScroll) {
       this.scrollToEnd();
     }
+
+   if(this.realtime_roomId == this.room_id || this.realtime_roomId == this.Id ){
+       setTimeout(this.setTimeOut, 5000);
+   } else {
+       this.isUnread = true
+   }
+
   },
 
   methods: {
@@ -165,6 +186,10 @@ export default {
     hiddenNewMessage() {
       this.scrollToEnd();
       this.isHidden = true;
+    },
+
+    setTimeOut(){
+        this.isUnread = false;
     },
 
     scrollToEnd: function() {

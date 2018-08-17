@@ -71,8 +71,7 @@ img {
 
 .chat_ib h5 {
   font-size: 15px;
-  color: #464646;
-  margin: 0 0 8px 0;
+  color: #20a8d8;
 }
 
 .chat_ib_nickname{
@@ -95,7 +94,8 @@ img {
 
 .chat_img {
   float: left;
-  width: 10%;
+  width: 20%;
+  margin-top: 20px
 }
 
 .img_avatar {
@@ -104,8 +104,8 @@ img {
 
 .chat_ib {
   float: left;
-  padding: 0 0 0 15px;
-  width: 88%;
+  padding: 0 0 0 8px;
+  width: 75%;
 }
 
 .chat_people {
@@ -128,7 +128,7 @@ img {
   background-color: #F50014;
   color: #fff;
   border-radius: 50px;
-  top: 24px;
+  top: 68px;
   right: 7px;
   font-size: 14px;
   line-height: 25px;
@@ -320,8 +320,9 @@ img {
   color: #4c4c4c;
   font-size: 15px;
   min-height: 84px;
-  width: 85%;
-  outline: none
+  width: 80%;
+  outline: none;
+  margin-left: 15px;
 }
 
 .display_img{
@@ -542,4 +543,50 @@ img {
 
 .hidden_loadmess  {
   display: none
+}
+
+.chat_id {
+  width: 60%;
+  padding: 5px;
+}
+
+.chat_nickname {
+  width: 80%;
+  padding: 5px;
+}
+
+/* Display unread */
+
+.timeLine__unreadLine {
+  padding: 8px 0;
+}
+
+.timeLine__unreadLineBorder {
+  position: relative;
+  margin: 9px 0;
+  height: 1px;
+  background-color: #eb0800;
+}
+
+.timeLine__unreadLineContainer {
+  position: absolute;
+  top: -9px;
+  width: 100%;
+  text-align: center;
+}
+
+.timeLine__unreadLineBody {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: 19px;
+  line-height: 19px;
+  padding: 0 8px;
+  background-color: #fff;
+}
+
+.timeLine__unreadLineText {
+  font-size: 11px;
+  font-weight: bold;
+  color: #eb0800;
 }

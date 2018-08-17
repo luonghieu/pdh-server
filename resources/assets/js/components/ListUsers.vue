@@ -1,7 +1,7 @@
 <template>
     <div class="inbox_people">
         <div class="panel-body handling">
-            <input type="text" class="form-control input_search" placeholder="名前" v-model="searchName">
+            <input type="text" class="form-control input_search" placeholder="ユーザーID,名前" v-model="searchName">
             <i class="fa fa-search search_name" aria-hidden="true"></i>
         </div>
         <div class="chat_tab">
@@ -23,10 +23,9 @@
                                             :src="userDetail.avatars[0].path">
                                     </div>
                                     <div class="chat_ib">
-                                        <h5 v-if="realtime_roomId == value.id && unread_realtime > 0" v-bind:class="realtime_roomId == Id || realtime_roomId == room_id  ? '' : 'chat_ib_nickname' ">{{userDetail.nickname}}</h5>
-                                         <h5 v-else v-bind:class="value.unread_count == 0 || value.id == Id || value.id == room_id  || setUnread == 0 || unread_realtime > 0 ? '' : 'chat_ib_nickname' ">{{userDetail.nickname}}</h5>
-                                        <p v-if="realtime_roomId == value.id ">{{realtime_message}}</p>
-                                        <p v-else>{{value.latest_message.message}}</p>
+                                        <h5 class="chat_nickname" v-if="realtime_roomId == value.id && unread_realtime > 0" v-bind:class="realtime_roomId == Id || realtime_roomId == room_id  ? '' : 'chat_ib_nickname' "><i v-bind:class="userDetail.gender == 2 ? 'fa fa-female' : 'fa fa-male' "></i> {{userDetail.nickname}}</h5>
+                                        <h5 class="chat_nickname" v-else v-bind:class="value.unread_count == 0 || value.id == Id || value.id == room_id  || setUnread == 0 || unread_realtime > 0 ? '' : 'chat_ib_nickname' "><i v-bind:class="userDetail.gender == 2 ? 'fa fa-female' : 'fa fa-male' "></i> {{userDetail.nickname}}</h5>
+                                        <h5 class="chat_id fa fa-id-badge"> {{userDetail.id}}</h5>
                                     </div>
                                 </div>
                                 <span v-if="realtime_roomId == value.id && unread_realtime > 0" v-bind:class="realtime_roomId == Id || realtime_roomId == room_id ? 'notification' : 'notify-chat'">{{unread_realtime}}</span>
@@ -47,10 +46,9 @@
                                             :src="userDetail.avatars[0].path">
                                     </div>
                                     <div class="chat_ib">
-                                        <h5 v-if="realtime_roomId == value.id && unread_realtime > 0" v-bind:class="realtime_roomId == Id || realtime_roomId == room_id ? '' : 'chat_ib_nickname' ">{{userDetail.nickname}}</h5>
-                                        <h5 v-else v-bind:class="value.unread_count == 0 || value.id == Id || value.id == room_id || setUnread == 0 || unread_realtime > 0 ? '' : 'chat_ib_nickname' ">{{userDetail.nickname}}</h5>
-                                        <p v-if="realtime_roomId == value.id ">{{realtime_message}}</p>
-                                        <p v-else>{{value.latest_message.message}}</p>
+                                        <h5 class="chat_nickname" v-if="realtime_roomId == value.id && unread_realtime > 0" v-bind:class="realtime_roomId == Id || realtime_roomId == room_id ? '' : 'chat_ib_nickname' "><i v-bind:class="userDetail.gender == 2 ? 'fa fa-female' : 'fa fa-male' "></i> {{userDetail.nickname}}</h5>
+                                        <h5 class="chat_nickname" v-else v-bind:class="value.unread_count == 0 || value.id == Id || value.id == room_id || setUnread == 0 || unread_realtime > 0 ? '' : 'chat_ib_nickname' "><i v-bind:class="userDetail.gender == 2 ? 'fa fa-female' : 'fa fa-male' "></i> {{userDetail.nickname}}</h5>
+                                        <h5 class="chat_id fa fa-id-badge"> {{userDetail.id}}</h5>
                                     </div>
                                 </div>
                                 <span v-if="realtime_roomId == value.id && unread_realtime > 0 " v-bind:class="realtime_roomId == Id || realtime_roomId == room_id ? 'notification' : 'notify-chat'">{{unread_realtime}}</span>
@@ -71,7 +69,8 @@ export default {
     "roomId",
     "realtime_message",
     "realtime_roomId",
-    "realtime_count"
+    "realtime_count",
+    "users"
   ],
   data() {
     return {
@@ -82,15 +81,10 @@ export default {
       Id: "",
       room_id: this.roomId,
       setUnread: 1,
-      count: 0,
-      users: "",
+      count: this.realtime_count,
       nickname: null,
       unread_realtime: 0
     };
-  },
-
-  created() {
-    this.getRoom();
   },
 
   methods: {
@@ -101,28 +95,15 @@ export default {
         this.setUnread = 0;
       }
       if (this.realtime_roomId == roomID) {
-        this.$emit("interface", this.count);
+          this.unread_realtime = 0;
+          this.$emit("interface", this.realtime_count);
       }
-    },
-
-    getRoom() {
-      window.axios
-        .get("../../api/v1/rooms/admin/get_users")
-        .then(response => {
-          const rooms = response.data.data;
-          this.users = rooms;
-        });
     }
   },
 
   computed: {
     filteredData: function() {
-      if (this.realtime_roomId == this.Id ||this.realtime_roomId == this.room_id) {
-         this.$emit("interface", this.count);
-      } else {
-         this.unread_realtime = this.realtime_count;
-      }
-
+      this.unread_realtime = this.realtime_count;
       let search_array = this.users;
       let searchName = this.searchName;
 
@@ -134,9 +115,12 @@ export default {
 
       search_array = search_array.filter(item => {
         for (let value in item.users) {
+            let userId =  item.users[value].id.toString()
           if (
-            item.users[value].nickname.toLowerCase().indexOf(searchName) !== -1
-          ) {
+            item.users[value].nickname.toLowerCase().indexOf(searchName) !== -1 ||
+            userId.toLowerCase().indexOf(searchName) !== -1
+          )
+          {
             return true;
           }
         }
