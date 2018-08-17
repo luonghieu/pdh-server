@@ -47,7 +47,7 @@ class SaleController extends Controller
             });
         }
 
-        $sales = $sales->orderBy('created_at', 'DESC')->with('order');
+        $sales = $sales->orderBy('created_at', 'DESC');
         $salesExport = $sales;
         $sales = $sales->paginate($request->limit ?: 10);
 
