@@ -41,7 +41,7 @@
                         </div>
                     </div>
             </div>
-            <div class="incoming_msg" v-if="message.message && (message.room_id == room_id || message.room_id == Id)">
+            <div class="incoming_msg" v-if="(message.message || message.user.avatars) && (message.room_id == room_id || message.room_id == Id)">
                 <div class="received_msg">
                         <div v-if="message.user.avatars" class="incoming_msg_img"><img class="img_avatar"
                                 :src="message.user.avatars[0].path"></div>
