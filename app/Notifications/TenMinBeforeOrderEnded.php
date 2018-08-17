@@ -57,20 +57,11 @@ class TenMinBeforeOrderEnded extends Notification implements ShouldQueue
      */
     public function toArray($notifiable)
     {
-        $message = $this->cast->nickname . 'さんの解散予定時刻まで残り10分です。';
-        $room = $this->order->room;
-
-        $roomMessage = $room->messages()->create([
-            'user_id' => 1,
-            'type' => MessageType::SYSTEM,
-            'system_type' => SystemMessageType::NOTIFY,
-            'message' => $message,
-        ]);
-
-        $roomMessage->recipients()->attach($notifiable->id, ['room_id' => $room->id]);
+        $content = '解散予定時刻まで残り10分です！'
+            . PHP_EOL . '解散予定時刻後は自動で延長されます。';
 
         return [
-            'content' => $message,
+            'content' => $content,
             'send_from' => UserType::ADMIN,
         ];
     }
@@ -78,7 +69,8 @@ class TenMinBeforeOrderEnded extends Notification implements ShouldQueue
     public function pushData($notifiable)
     {
         $room = $this->order->room;
-        $content = $this->cast->nickname . 'さんの解散予定時刻まで残り10分です。';
+        $content = '解散予定時刻まで残り10分です！'
+            . PHP_EOL . '解散予定時刻後は自動で延長されます。';
         $pushId = 'g_5';
 
         $namedUser = 'user_' . $notifiable->id;
