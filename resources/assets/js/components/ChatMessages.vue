@@ -17,7 +17,7 @@
                   <div class="timeLine__dateHeadContainer">
                     <div class="timeLine__dateHeadBody">
                       <span class="icoFontClock"></span>
-                      <span class="timeLine__dateHeadText fa fa-clock-o"> {{message.date_data.substr(0,16)}}</span>
+                      <span class="timeLine__dateHeadText fa fa-clock-o"> {{message.date_data.substr(0,10)}}</span>
                     </div>
                   </div>
                 </div>
