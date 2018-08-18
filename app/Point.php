@@ -59,6 +59,16 @@ class Point extends Model
         return PointType::ADJUSTED == $this->type;
     }
 
+    public function getIsReceiveAttribute()
+    {
+        return PointType::RECEIVE == $this->type;
+    }
+
+    public function getIsTransferAttribute()
+    {
+        return PointType::TRANSFER == $this->type;
+    }
+
     public function createPoint($data = [], $status = false)
     {
         $this->point = $data['point'];

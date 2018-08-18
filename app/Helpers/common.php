@@ -46,3 +46,12 @@ if (!function_exists('getImages')) {
         return Storage::url($path);
     }
 }
+
+if (!function_exists('encoderShiftJIS')) {
+    function encoderShiftJIS($data)
+    {
+        $encoder = (new \League\Csv\CharsetConverter())->inputEncoding('UTF-8')->outputEncoding('SJIS');
+
+        return $encoder->convert($data);
+    }
+}
