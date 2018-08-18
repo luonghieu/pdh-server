@@ -7,6 +7,7 @@ use App\Enums\PaymentRequestStatus;
 use App\Enums\RoomType;
 use App\Enums\SystemMessageType;
 use App\Enums\UserType;
+use App\Order;
 use Carbon\Carbon;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -75,7 +76,7 @@ class PaymentRequestFromCast extends Notification implements ShouldQueue
             PaymentRequestStatus::REQUESTED,
             PaymentRequestStatus::UPDATED,
         ];
-        $totalPoint = $this->order->paymentRequests()->whereIn('status', $requestedStatuses)->sum('total_point');
+        $totalPoint = Order::find($this->order->id)->paymentRequests()->whereIn('status', $requestedStatuses)->sum('total_point');
         $content = 'Cheersをご利用いただきありがとうございました♪'
         . PHP_EOL . $orderStartDate->format('Y/m/d H:i') . '~' . $orderEndDate->format('H:i') . 'の合計ポイントは' .
             number_format($totalPoint) . 'Pointです。'
