@@ -39,6 +39,9 @@ class PaymentRequestObserver
             ];
 
             if (in_array($status, $requestedStatuses)) {
+                $order->total_point += $order->paymentRequests()->where('status', PaymentRequestStatus::REQUESTED)->sum('total_point');
+                $order->save();
+
                 $requestedCount = $order->paymentRequests()->whereIn('status', $requestedStatuses)->count();
 
                 if ($order->total_cast > 1) {
@@ -51,17 +54,14 @@ class PaymentRequestObserver
                         $order->payment_status = OrderPaymentStatus::REQUESTING;
                         $order->payment_requested_at = now();
                         $order->save();
-                        $order->user->notify(new PaymentRequestFromCast($order));
+                        $order->user->notify(new PaymentRequestFromCast($order, $order->total_point));
                     }
                 } else {
                     $order->payment_status = OrderPaymentStatus::REQUESTING;
                     $order->payment_requested_at = now();
                     $order->save();
-                    $order->user->notify(new PaymentRequestFromCast($order));
+                    $order->user->notify(new PaymentRequestFromCast($order, $order->total_point));
                 }
-
-                $order->total_point += $order->paymentRequests()->where('status', PaymentRequestStatus::REQUESTED)->sum('total_point');
-                $order->save();
             }
         }
     }
