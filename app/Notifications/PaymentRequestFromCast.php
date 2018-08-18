@@ -75,7 +75,7 @@ class PaymentRequestFromCast extends Notification implements ShouldQueue
             PaymentRequestStatus::REQUESTED,
             PaymentRequestStatus::UPDATED,
         ];
-        $totalPoint = $this->order->paymentRequests()->whereIn(['status' => $requestedStatuses])->sum('total_point');
+        $totalPoint = $this->order->paymentRequests()->whereIn('status', $requestedStatuses)->sum('total_point');
         $content = 'Cheersをご利用いただきありがとうございました♪'
         . PHP_EOL . $orderStartDate->format('Y/m/d H:i') . '~' . $orderEndDate->format('H:i') . 'の合計ポイントは' .
             number_format($totalPoint) . 'Pointです。'
