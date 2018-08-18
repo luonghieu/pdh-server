@@ -98,9 +98,9 @@ class OrderController extends ApiController
             }
         }
 
-        if ($orders->count() > 0 || $listCastMatching > 0) {
-            return $this->respondErrorMessage(trans('messages.order_same_time'), 409);
-        }
+//        if ($orders->count() > 0 || $listCastMatching > 0) {
+//            return $this->respondErrorMessage(trans('messages.order_same_time'), 409);
+//        }
 
         if (!$user->cards->first()) {
             return $this->respondErrorMessage(trans('messages.card_not_exist'), 404);
