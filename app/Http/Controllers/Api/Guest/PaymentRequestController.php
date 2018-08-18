@@ -45,7 +45,7 @@ class PaymentRequestController extends ApiController
             return $this->respondErrorMessage(trans('messages.order_not_found'), 404);
         }
 
-        if (OrderStatus::DONE != $order->status || !$order->payment_status || !$order->paymentRequests->count()) {
+        if (OrderStatus::DONE != $order->status || OrderStatus::CANCELED != $order->status || !$order->payment_status || !$order->paymentRequests->count()) {
             return $this->respondErrorMessage(trans('messages.action_not_performed'), 422);
         }
 
