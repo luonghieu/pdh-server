@@ -82,15 +82,19 @@
               <tr>
                 <th>ステータス</th>
                 <td class="wrap-status">
-                  @if (App\Enums\OrderStatus::CANCELED == $order->status)
-                    @if ($order->cancel_fee_percent == 0)
-                    <span>確定後キャンセル (キャンセル料なし)</span>
-                    @else
-                    <span>確定後キャンセル (キャンセル料あり)</span>
-                    @endif
+                  @if ($order->payment_status != null)
+                  {{ App\Enums\OrderPaymentStatus::getDescription($order->payment_status) }}
                   @else
-                    @if ($order->payment_status != null)
-                    {{ App\Enums\OrderPaymentStatus::getDescription($order->payment_status) }}
+                    @if (App\Enums\OrderStatus::DENIED == $order->status || App\Enums\OrderStatus::CANCELED == $order->status)
+                      @if ($order->type == App\Enums\OrderType::NOMINATION && (count($order->nominees) > 0 ? empty($order->nominees[0]->pivot->accepted_at) : false))
+                      <span>提案キャンセル</span>
+                      @else
+                        @if ($order->cancel_fee_percent == 0)
+                        <span>確定後キャンセル (キャンセル料なし)</span>
+                        @else
+                        <span>確定後キャンセル (キャンセル料あり)</span>
+                        @endif
+                      @endif
                     @else
                     {{ App\Enums\OrderStatus::getDescription($order->status) }}
                     @endif
@@ -107,16 +111,18 @@
               @if (App\Enums\OrderStatus::PROCESSING <= $order->status)
               <tr>
                 <th>合流時刻</th>
-                <td>
+                <td class="wrap-status">
                   {{ (count($order->casts) > 0) ? Carbon\Carbon::parse($order->casts[0]->pivot->started_at)->format('Y/m/d H:i') : '' }}
+                  @if (App\Enums\OrderStatus::DONE > $order->status)
                   <button class="change-time order-nominee-started-time" data-toggle="modal" data-target="#order-nominee-started-time">合流時刻を修正する</button>
+                  @endif
                 </td>
               </tr>
               <tr>
                 <th>解散時刻</th>
-                <td>
+                <td class="wrap-status">
                   {{ (count($order->casts) > 0) ? ($order->casts[0]->pivot->stopped_at != null ? Carbon\Carbon::parse($order->casts[0]->pivot->stopped_at)->format('Y/m/d H:i') : '') : '' }}
-                  @if ($order->status >= App\Enums\OrderStatus::DONE)
+                  @if (App\Enums\OrderStatus::DONE > $order->status)
                   <button class="change-time order-nominee-stopped-time" data-toggle="modal" data-target="#order-nominee-stopped-time">解散時刻を修正する</button>
                   @endif
                 </td>
@@ -150,7 +156,6 @@
                     {{ count($order->casts) > 0 ? number_format($order->casts[0]->pivot->total_point).'P' : '0P' }}
                     @endif
                   @endif
-
                 </td>
               </tr>
               @endif
