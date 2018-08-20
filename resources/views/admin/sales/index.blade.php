@@ -18,7 +18,6 @@
               </select>
               <button type="submit" class="fa fa-search btn-search" name="submit" value="search"></button>
               <div class="export-csv">
-                  <input type="hidden" name="page" value="{{ request()->page }}" />
                   <input type="hidden" name="is_export" value="1">
                   <button type="submit" class="export-btn" name="submit" value="export">CSV出力</button>
               </div>
@@ -34,7 +33,7 @@
                   </select>
                   <input type="hidden" name="from_date" value="{{ request()->from_date }}" />
                   <input type="hidden" name="to_date" value="{{ request()->to_date }}" />
-                  <input type="hidden" name="search" value="{{ request()->search }}" />
+                  <input type="hidden" name="search_point_type" value="{{ request()->search_point_type }}" />
                 </div>
               </div>
             </form>
