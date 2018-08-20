@@ -40,7 +40,7 @@ class User extends Authenticatable implements JWTSubject
 
     public function scopeActive($query)
     {
-        return $query->where('status', true);
+        return $query->where('users.status', true);
     }
 
     public function getAgeAttribute($value)
