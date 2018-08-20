@@ -385,3 +385,20 @@ $(function () {
     $form.submit();
   });
 });
+
+function makeRead (notificationId) {
+  var notificationId = notificationId;
+
+  $.ajax({
+  headers: {
+    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+  },
+  type: "POST",
+  dataType: "html",
+  url: '/admin/notifications/make_read',
+  data: {notificationId: notificationId},
+    success: function(msg) {
+      window.location.reload();
+    },
+  });
+}

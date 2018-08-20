@@ -6,6 +6,7 @@ use App\Enums\OrderPaymentStatus;
 use App\Enums\OrderStatus;
 use App\Http\Controllers\Api\ApiController;
 use App\Http\Resources\OrderResource;
+use App\Notifications\PaymentRequestUpdate;
 use App\Services\LogService;
 use Illuminate\Http\Request;
 
@@ -27,6 +28,7 @@ class PaymentRequestController extends ApiController
         try {
             $order->payment_status = OrderPaymentStatus::EDIT_REQUESTING;
             $order->save();
+            $user->notify(new PaymentRequestUpdate($order));
 
             return $this->respondWithData(OrderResource::make($order));
         } catch (\Exception $e) {
