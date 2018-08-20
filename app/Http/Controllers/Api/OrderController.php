@@ -7,7 +7,6 @@ use App\Enums\CastOrderStatus;
 use App\Enums\CastOrderType;
 use App\Enums\OrderStatus;
 use App\Enums\OrderType;
-use App\Enums\UserType;
 use App\Http\Resources\OrderResource;
 use App\Notifications\CallOrdersCreated;
 use App\Notifications\CreateNominatedOrdersForCast;
@@ -134,8 +133,7 @@ class OrderController extends ApiController
                     'status' => CastOrderStatus::OPEN,
                 ]);
 
-
-                if (1 == $request->total_cast &&  1 == $counter) {
+                if (1 == $request->total_cast && 1 == $counter) {
                     $ownerId = $order->user_id;
                     $nominee = $order->nominees()->first();
                     $room = $this->createDirectRoom($ownerId, $nominee->id);
@@ -143,7 +141,7 @@ class OrderController extends ApiController
                     $order->room_id = $room->id;
                     $order->save();
 
-                    if ($order->type == OrderType::NOMINATION) {
+                    if (OrderType::NOMINATION == $order->type) {
                         $order->nominees()->updateExistingPivot(
                             $nominee->id,
                             [
@@ -156,7 +154,7 @@ class OrderController extends ApiController
                     }
                 }
 
-                if ($order->type == OrderType::NOMINATED_CALL || $order->type == OrderType::HYBRID) {
+                if (OrderType::NOMINATED_CALL == $order->type || OrderType::HYBRID == $order->type) {
                     $nominees = $order->nominees;
                     \Notification::send($nominees, new CreateNominatedOrdersForCast($order));
                 }
@@ -167,7 +165,7 @@ class OrderController extends ApiController
 
             DB::commit();
         } catch (\Exception $e) {
-            DB::rollback();
+            DB::rollBack();
             LogService::writeErrorLog($e);
 
             return $this->respondServerError();

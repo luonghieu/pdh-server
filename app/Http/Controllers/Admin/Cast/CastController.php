@@ -5,11 +5,8 @@ namespace App\Http\Controllers\Admin\Cast;
 use App\BankAccount;
 use App\Cast;
 use App\CastClass;
-use App\Enums\MessageType;
 use App\Enums\PointType;
-use App\Enums\RoomType;
 use App\Enums\Status;
-use App\Enums\SystemMessageType;
 use App\Enums\UserType;
 use App\Http\Controllers\Controller;
 use App\Notifications\CreateCast;
@@ -331,7 +328,7 @@ class CastController extends Controller
             $user->save();
             DB::commit();
         } catch (\Exception $e) {
-            DB::rollback();
+            DB::rollBack();
             LogService::writeErrorLog($e);
 
             return $this->respondServerError();
