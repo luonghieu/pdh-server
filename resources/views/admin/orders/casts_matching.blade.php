@@ -46,14 +46,16 @@
                 <th>合流時刻</th>
                 <td class="wrap-status">
                   {{ $cast->pivot->started_at ? Carbon\Carbon::parse($cast->pivot->started_at)->format('Y/m/d H:i'): '' }}
+                  @if (!in_array($order->payment_status, [App\Enums\OrderPaymentStatus::PAYMENT_FINISHED, App\Enums\OrderPaymentStatus::CANCEL_FEE_PAYMENT_FINISHED]))
                   <button class="change-time start-time" data-toggle="modal" data-target="#start-time-{{ $cast->id }}">合流時刻を修正する</button>
+                  @endif
                 </td>
               </tr>
               <tr>
                 <th>解散時刻</th>
                 <td class="wrap-status">
                   {{ $cast->pivot->stopped_at ? Carbon\Carbon::parse($cast->pivot->stopped_at)->format('Y/m/d H:i'): '' }}
-                  @if ($order->status >= App\Enums\OrderStatus::DONE)
+                  @if (!in_array($order->payment_status, [App\Enums\OrderPaymentStatus::PAYMENT_FINISHED, App\Enums\OrderPaymentStatus::CANCEL_FEE_PAYMENT_FINISHED]))
                   <button class="change-time stopped-time" data-toggle="modal" data-target="#stopped-time-{{ $cast->id }}">解散時刻を修正する</button>
                   @endif
                 </td>

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin\Order;
 
 use App\Enums\OrderPaymentStatus;
+use App\Enums\OrderType;
 use App\Enums\PaymentRequestStatus;
 use App\Http\Controllers\Controller;
 use App\Notifications\PaymentRequestUpdate;
@@ -78,8 +79,14 @@ class OrderController extends Controller
         return view('admin.orders.candidates', compact('casts', 'order'));
     }
 
-    public function orderCall(Order $order)
+    public function orderCall(Request $request, Order $order)
     {
+        if (OrderType::NOMINATION == $order->type) {
+            $request->session()->flash('msg', trans('messages.order_not_found'));
+
+            return redirect(route('admin.orders.index'));
+        }
+
         $order = $order->load('candidates', 'nominees', 'user', 'castClass', 'room', 'casts', 'tags');
 
         return view('admin.orders.order_call', compact('order'));
@@ -118,8 +125,14 @@ class OrderController extends Controller
         return redirect(route('admin.orders.casts_matching', compact('casts', 'order')));
     }
 
-    public function orderNominee(Order $order)
+    public function orderNominee(Request $request, Order $order)
     {
+        if (OrderType::NOMINATION != $order->type) {
+            $request->session()->flash('msg', trans('messages.order_not_found'));
+
+            return redirect(route('admin.orders.index'));
+        }
+
         return view('admin.orders.order_nominee', compact('order'));
     }
 
