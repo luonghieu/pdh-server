@@ -51,7 +51,7 @@ class ReportController extends Controller
             });
         }
 
-        $reports = $reports->orderBy('status')->paginate($request->limit ?: 10);
+        $reports = $reports->orderBy('status')->orderBy('created_at', 'DESC')->paginate($request->limit ?: 10);
 
         return view('admin.reports.index', compact('reports'));
     }
