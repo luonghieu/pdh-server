@@ -70,12 +70,11 @@
                     @endif
                     @if ($point->is_pay && $point->order)
                       @php
-                        if (($point->order->type == App\Enums\OrderType::NOMINATED_CALL)
-                          || ($point->order->type == App\Enums\OrderType::CALL))
+                        if (($point->order->type == App\Enums\OrderType::NOMINATED_CALL) || ($point->order->type == App\Enums\OrderType::CALL))
                         {
                           $link = route('admin.orders.call', ['order' => $point->order->id]);
                         } else {
-                          $link = "#";
+                          $link = route('admin.orders.order_nominee', ['order' => $point->order->id]);
                         }
                       @endphp
                       <td><a href="{{ $link }}">{{ $point->order->id }}</a></td>
@@ -93,7 +92,7 @@
                       <td>-</td>
                     @endif
                     @if ($point->is_pay)
-                      <td>{{ number_format(-$point->point) }}</td>
+                      <td>{{ number_format($point->point) }}</td>
                     @else
                       <td>-</td>
                     @endif
