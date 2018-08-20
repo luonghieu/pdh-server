@@ -176,7 +176,7 @@ class PointController extends Controller
             $user->save();
             DB::commit();
         } catch (\Exception $e) {
-            DB::rollback();
+            DB::rollBack();
             LogService::writeErrorLog($e);
 
             return $this->respondServerError();
