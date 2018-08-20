@@ -5,7 +5,6 @@ namespace App\Http\Controllers\Admin\Order;
 use App\Enums\OrderPaymentStatus;
 use App\Enums\PaymentRequestStatus;
 use App\Http\Controllers\Controller;
-use App\Notifications\PaymentRequestUpdate;
 use App\Order;
 use App\PaymentRequest;
 use App\Services\LogService;
@@ -134,7 +133,7 @@ class OrderController extends Controller
                 ['order_id', '=', $order->id],
                 ['status', '=', PaymentRequestStatus::CONFIRM],
             ])->update(['status' => PaymentRequestStatus::OPEN]);
-            $order->user->notify(new PaymentRequestUpdate($order));
+
             \DB::commit();
         } catch (\Exception $e) {
             \DB::rollBack();

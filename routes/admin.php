@@ -76,4 +76,8 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.'], function () {
         Route::get('/transfered', ['as' => 'transfered', 'uses' => 'TransferController@getTransferedList']);
         Route::post('/change_transfers', ['as' => 'change_transfers', 'uses' => 'TransferController@changeTransfers']);
     });
+
+    Route::group(['prefix' => 'notifications', 'as' => 'notifications.', 'middleware' => 'is_admin'], function () {
+        Route::post('/make_read', ['as' => 'make_read', 'uses' => 'NotificationController@makeAsRead']);
+    });
 });
