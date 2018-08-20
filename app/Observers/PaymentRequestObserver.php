@@ -39,7 +39,9 @@ class PaymentRequestObserver
             ];
 
             if (in_array($status, $requestedStatuses)) {
-                $order->total_point += $order->paymentRequests()->where('status', PaymentRequestStatus::REQUESTED)->sum('total_point');
+                $order->total_point = $order->paymentRequests()
+                    ->whereIn('status', $requestedStatuses)
+                    ->sum('total_point');
                 $order->save();
 
                 $requestedCount = $order->paymentRequests()->whereIn('status', $requestedStatuses)->count();
