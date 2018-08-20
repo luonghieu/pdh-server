@@ -107,14 +107,14 @@
               @if (App\Enums\OrderStatus::PROCESSING <= $order->status)
               <tr>
                 <th>合流時刻</th>
-                <td>
+                <td class="wrap-status">
                   {{ (count($order->casts) > 0) ? Carbon\Carbon::parse($order->casts[0]->pivot->started_at)->format('Y/m/d H:i') : '' }}
                   <button class="change-time order-nominee-started-time" data-toggle="modal" data-target="#order-nominee-started-time">合流時刻を修正する</button>
                 </td>
               </tr>
               <tr>
                 <th>解散時刻</th>
-                <td>
+                <td class="wrap-status">
                   {{ (count($order->casts) > 0) ? ($order->casts[0]->pivot->stopped_at != null ? Carbon\Carbon::parse($order->casts[0]->pivot->stopped_at)->format('Y/m/d H:i') : '') : '' }}
                   @if ($order->status >= App\Enums\OrderStatus::DONE)
                   <button class="change-time order-nominee-stopped-time" data-toggle="modal" data-target="#order-nominee-stopped-time">解散時刻を修正する</button>
