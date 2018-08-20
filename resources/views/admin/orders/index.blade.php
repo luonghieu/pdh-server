@@ -96,15 +96,19 @@
                   <td>-</td>
                   @endif
                   <td>
-                    @if (App\Enums\OrderStatus::CANCELED == $order->status)
-                      @if ($order->cancel_fee_percent == 0)
-                      <span>確定後キャンセル (キャンセル料なし)</span>
-                      @else
-                      <span>確定後キャンセル (キャンセル料あり)</span>
-                      @endif
+                    @if ($order->payment_status != null)
+                    {{ App\Enums\OrderPaymentStatus::getDescription($order->payment_status) }}
                     @else
-                      @if ($order->payment_status != null)
-                      {{ App\Enums\OrderPaymentStatus::getDescription($order->payment_status) }}
+                      @if (App\Enums\OrderStatus::DENIED == $order->status || App\Enums\OrderStatus::CANCELED == $order->status)
+                        @if ($order->type == App\Enums\OrderType::NOMINATION && (count($order->nominees) > 0 ? empty($order->nominees[0]->pivot->accepted_at) : false))
+                        <span>提案キャンセル</span>
+                        @else
+                          @if ($order->cancel_fee_percent == 0)
+                          <span>確定後キャンセル (キャンセル料なし)</span>
+                          @else
+                          <span>確定後キャンセル (キャンセル料あり)</span>
+                          @endif
+                        @endif
                       @else
                       {{ App\Enums\OrderStatus::getDescription($order->status) }}
                       @endif
