@@ -71,8 +71,7 @@ img {
 
 .chat_ib h5 {
   font-size: 15px;
-  color: #464646;
-  margin: 0 0 8px 0;
+  color: #20a8d8;
 }
 
 .chat_ib_nickname{
@@ -95,17 +94,26 @@ img {
 
 .chat_img {
   float: left;
-  width: 10%;
+  width: 15%;
+  margin-top: 12px;
 }
 
 .img_avatar {
   border-radius: 50%;
+  width: 45px;
+  height: 45px;
+}
+
+.img_received {
+  border-radius: 50%;
+  width: 30px;
+  height: 30px;
 }
 
 .chat_ib {
   float: left;
-  padding: 0 0 0 15px;
-  width: 88%;
+  padding: 0 0 0 7px;
+  width: 75%;
 }
 
 .chat_people {
@@ -116,9 +124,10 @@ img {
 .chat_list {
   border-bottom: 1px solid #c4c4c4;
   margin: 0;
-  padding: 18px 16px 10px;
+  padding: 5px 5px 5px;
   cursor: pointer;
   position: relative;
+  margin-left: 5px
 }
 
 .notify-chat {
@@ -128,7 +137,7 @@ img {
   background-color: #F50014;
   color: #fff;
   border-radius: 50px;
-  top: 24px;
+  top: 30px;
   right: 7px;
   font-size: 14px;
   line-height: 25px;
@@ -137,8 +146,8 @@ img {
 }
 
 .inbox_chat {
-  height: 550px;
-  overflow-y: scroll;
+  height: 472px;
+  overflow: scroll;
 }
 
 .active_chat {
@@ -320,8 +329,9 @@ img {
   color: #4c4c4c;
   font-size: 15px;
   min-height: 84px;
-  width: 85%;
-  outline: none
+  width: 80%;
+  outline: none;
+  margin-left: 15px;
 }
 
 .display_img{
@@ -352,7 +362,7 @@ img {
 }
 
 .on_mess{
-  cursor: pointer;
+  /* cursor: pointer; */
 }
 
 /*Popup confirm delete*/
@@ -434,12 +444,13 @@ img {
 .search_name{
   position: relative;
   z-index: 1000;
-  top: -25px;
-  left: 360px;
+  top: -28px;
+  left: 10px;
 }
 
 .input_search{
   position: relative;
+  text-indent: 7%;
 }
 
 .incoming_msg{
@@ -543,3 +554,82 @@ img {
 .hidden_loadmess  {
   display: none
 }
+
+.chat_id {
+  width: 60%;
+}
+
+.chat_nickname {
+  width: 80%;
+}
+
+/* Display unread */
+
+.timeLine__unreadLine {
+  padding: 8px 0;
+}
+
+.timeLine__unreadLineBorder {
+  position: relative;
+  margin: 9px 0;
+  height: 1px;
+  background-color: #eb0800;
+}
+
+.timeLine__unreadLineContainer {
+  position: absolute;
+  top: -9px;
+  width: 100%;
+  text-align: center;
+}
+
+.timeLine__unreadLineBody {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: 19px;
+  line-height: 19px;
+  padding: 0 8px;
+  background-color: #fff;
+}
+
+.timeLine__unreadLineText {
+  font-size: 11px;
+  font-weight: bold;
+  color: #eb0800;
+}
+
+/* Date time line */
+
+.timeLine__dateHead {
+  position: relative;
+  margin: 10px 0;
+  border-top: 1px solid #e6e6e6;
+}
+
+.timeLine__dateHeadContainer {
+  position: absolute;
+  top: -10px;
+  width: 100%;
+  text-align: center;
+}
+
+.timeLine__dateHeadBody {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 3px;
+  background-color: #fff;
+}
+
+/* .icoFontClock:before {
+  content: "\E619";
+} */
+
+.timeLine__dateHeadText {
+  color: #666666;
+  font-size: 11px;
+}
+
+
+

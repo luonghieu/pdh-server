@@ -2,24 +2,23 @@
 
 namespace App;
 
-use Auth;
-use Carbon\Carbon;
-use App\Enums\RoomType;
-use App\Jobs\StopOrder;
+use App\Enums\CastOrderStatus;
+use App\Enums\CastOrderType;
+use App\Enums\OrderStatus;
 use App\Enums\OrderType;
 use App\Enums\PointType;
+use App\Enums\RoomType;
 use App\Jobs\CancelOrder;
-use App\Enums\OrderStatus;
 use App\Jobs\ProcessOrder;
-use App\Traits\DirectRoom;
+use App\Jobs\StopOrder;
 use App\Jobs\ValidateOrder;
-use App\Enums\CastOrderType;
-use App\Services\LogService;
-use App\Enums\CastOrderStatus;
-use App\Notifications\CastDenyOrders;
-use App\Notifications\CastApplyOrders;
-use Illuminate\Database\Eloquent\Model;
 use App\Notifications\CancelOrderFromCast;
+use App\Notifications\CastDenyOrders;
+use App\Services\LogService;
+use App\Traits\DirectRoom;
+use Auth;
+use Carbon\Carbon;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Order extends Model
@@ -67,7 +66,7 @@ class Order extends Model
         return $this->belongsToMany(Cast::class)
             ->where('cast_order.type', CastOrderType::NOMINEE)
             ->whereNull('cast_order.deleted_at')
-            ->withPivot('status', 'type', 'cost')
+            ->withPivot('accepted_at', 'status', 'type', 'cost')
             ->withTimestamps();
     }
 
@@ -210,8 +209,6 @@ class Order extends Model
                 ]
             );
 
-            $cast = User::find($userId);
-            $cast->notify(new CastApplyOrders($this, $tempPoint));
             ValidateOrder::dispatchNow($this);
 
             return true;

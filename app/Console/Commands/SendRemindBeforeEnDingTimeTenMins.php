@@ -47,6 +47,15 @@ class SendRemindBeforeEnDingTimeTenMins extends Command
         $orders = Order::whereDate('date', $currentDate)->whereIn('status', [OrderStatus::PROCESSING])->with('casts')->get();
 
         foreach ($orders as $order) {
+            $tenMinBeforeEndTime = Carbon::parse($order->actual_started_at)
+                ->addHours($order->duration)
+                ->subMinute(10)
+                ->second(0);
+
+            if ($tenMinBeforeEndTime == $now) {
+                $order->user->notify(new TenMinBeforeOrderEnded($order));
+            }
+
             foreach ($order->casts as $cast) {
                 $timeCast = Carbon::parse($cast->pivot->started_at)
                     ->addHours($order->duration)
@@ -54,8 +63,6 @@ class SendRemindBeforeEnDingTimeTenMins extends Command
                     ->second(0);
 
                 if ($timeCast == $now) {
-                    $order->user->notify(new TenMinBeforeOrderEnded($order, $cast));
-
                     \Notification::send($cast, new RenewalReminderTenMinute($order));
                 }
             }

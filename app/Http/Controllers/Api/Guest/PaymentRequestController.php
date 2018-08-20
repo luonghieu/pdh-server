@@ -6,6 +6,7 @@ use App\Enums\OrderPaymentStatus;
 use App\Enums\OrderStatus;
 use App\Http\Controllers\Api\ApiController;
 use App\Http\Resources\OrderResource;
+use App\Notifications\PaymentRequestUpdate;
 use App\Services\LogService;
 use Illuminate\Http\Request;
 
@@ -27,6 +28,7 @@ class PaymentRequestController extends ApiController
         try {
             $order->payment_status = OrderPaymentStatus::EDIT_REQUESTING;
             $order->save();
+            $user->notify(new PaymentRequestUpdate($order));
 
             return $this->respondWithData(OrderResource::make($order));
         } catch (\Exception $e) {
@@ -45,7 +47,7 @@ class PaymentRequestController extends ApiController
             return $this->respondErrorMessage(trans('messages.order_not_found'), 404);
         }
 
-        if (OrderStatus::DONE != $order->status || !$order->payment_status || !$order->paymentRequests->count()) {
+        if (!in_array($order->status, [OrderStatus::DONE, OrderStatus::CANCELED]) || !$order->payment_status || !$order->paymentRequests->count()) {
             return $this->respondErrorMessage(trans('messages.action_not_performed'), 422);
         }
 

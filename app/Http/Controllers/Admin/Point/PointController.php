@@ -154,6 +154,9 @@ class PointController extends Controller
                 $file = CSVExport::toCSV($data, $header);
             } catch (\Exception $e) {
                 LogService::writeErrorLog($e);
+                $request->session()->flash('msg', trans('messages.server_error'));
+
+                return redirect()->route('admin.points.index');
             }
 
             $file->output('point_buy_history_' . Carbon::now()->format('Ymd_Hi') . '.csv');
@@ -269,6 +272,9 @@ class PointController extends Controller
                 $file = CSVExport::toCSV($data, $header);
             } catch (\Exception $e) {
                 LogService::writeErrorLog($e);
+                $request->session()->flash('msg', trans('messages.server_error'));
+
+                return redirect()->route('admin.points.transaction_history');
             }
 
             $file->output('point_transaction_history_' . Carbon::now()->format('Ymd_Hi') . '.csv');

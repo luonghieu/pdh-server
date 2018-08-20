@@ -104,26 +104,42 @@
               </tr>
               <tr>
                 <th>　予定合計ポイント</th>
-                <td>{{ number_format($order->temp_point) }}P</td>
+                <td>
+                  @if ($order->status == App\Enums\OrderStatus::OPEN)
+                    {{ number_format($order->temp_point).'P' }}
+                  @endif
+                  @if ($order->status >= App\Enums\OrderStatus::ACTIVE)
+                  @php
+                    $tempPoint = 0;
+                    foreach ($order->casts as $cast) {
+                      $tempPoint+=$cast->pivot->temp_point;
+                    }
+                  @endphp
+                  {{ number_format($tempPoint).'P' }}
+                  @endif
               </tr>
               <tr>
                 <th>ステータス</th>
-                <td>
-                  @if (App\Enums\OrderStatus::CANCELED == $order->status)
-                    @if ($order->cancel_fee_percent == 0)
-                    <span>確定後キャンセル (キャンセル料なし)</span>
-                    @else
-                    <span>確定後キャンセル (キャンセル料あり)</span>
-                    @endif
+                <td class="wrap-status">
+                  @if ($order->payment_status != null)
+                  {{ App\Enums\OrderPaymentStatus::getDescription($order->payment_status) }}
                   @else
-                    @if ($order->payment_status != null)
-                    {{ App\Enums\OrderPaymentStatus::getDescription($order->payment_status) }}
+                    @if (App\Enums\OrderStatus::DENIED == $order->status || App\Enums\OrderStatus::CANCELED == $order->status)
+                      @if ($order->type == App\Enums\OrderType::NOMINATION && (count($order->nominees) > 0 ? empty($order->nominees[0]->pivot->accepted_at) : false))
+                      <span>提案キャンセル</span>
+                      @else
+                        @if ($order->cancel_fee_percent == 0)
+                        <span>確定後キャンセル (キャンセル料なし)</span>
+                        @else
+                        <span>確定後キャンセル (キャンセル料あり)</span>
+                        @endif
+                      @endif
                     @else
                     {{ App\Enums\OrderStatus::getDescription($order->status) }}
                     @endif
                   @endif
                   @if (App\Enums\OrderPaymentStatus::EDIT_REQUESTING == $order->payment_status)
-                  <button class="change-time payment-request" data-toggle="modal" data-target="#payment-request">ステータスを売上申請待ちに切り替える</button>
+                  <button class="change-time payment-request btn-order-call" data-toggle="modal" data-target="#payment-request">ステータスを売上申請待ちに切り替える</button>
                   @endif
                 </td>
               </tr>
@@ -140,7 +156,23 @@
               @if ($order->status >= App\Enums\OrderStatus::DONE)
                 <tr>
                   <th>実績合計ポイント</th>
-                  <td>{{ number_format($order->total_point) }}P</td>
+                  <td>
+                    @if ($order->payment_status == App\Enums\OrderPaymentStatus::REQUESTING)
+                    {{ number_format($order->total_point).'P' }}
+                    @else
+                      @php
+                        if (count($order->casts) > 0) {
+                          $tempPoint = 0;
+                          foreach ($order->casts as $cast) {
+                            $tempPoint+=$cast->pivot->total_point;
+                          }
+                        } else {
+                          $tempPoint = '-';
+                        }
+                      @endphp
+                    {{ $tempPoint.'P' }}
+                    @endif
+                  </td>
                 </tr>
                 <tr>
                   <th>ポイント決済</th>

@@ -37,7 +37,7 @@
         <div class="btn-change-report">
           <button data-toggle="modal" data-target="#done_report" >
             <p>チェックを付けた通報の</p>
-            <p>対応ステータスを完了にす</p>
+            <p>対応ステータスを完了にする</p>
           </button>
         </div>
         <form action="{{ route('admin.reports.make_report_done') }}" method="post">
@@ -72,27 +72,33 @@
                 </tr>
               </thead>
               <tbody>
-                @foreach ($reports as $key => $report)
+                @if (empty($reports->count()))
                 <tr>
-                  <td>{{ $reports->firstItem() +$key }}</td>
-                  @if ($report->status == App\Enums\ReportStatus::OPEN)
-                  <td class="select-checkbox">
-                    <input class="verify-checkboxs"
-                      type="checkbox"
-                      value="{{ $report->id }}"
-                      name="report_ids[]">
-                  </td>
-                  @else
-                  <td></td>
-                  @endif
-                  <td><a href="{{ route('admin.rooms.messages_by_room', ['room' => $report->room_id]) }}">{{ $report->room_id }}</a></td>
-                  <td><a href="{{ route('admin.users.show', ['user' => $report->user->id]) }}">{{ $report->user->fullname}}</a></td>
-                  <td>{{ $report->content }}</td>
-                  <td>{{ Carbon\Carbon::parse($report->created_at)->format('Y/m/d H:i') }}</td>
-                  <td>{{ 1 }}</td>
-                  <td>{{ App\Enums\ReportStatus::getDescription($report->status) }}</td>
+                  <td colspan="8">{{ trans('messages.results_not_found') }}</td>
                 </tr>
-                @endforeach
+                @else
+                  @foreach ($reports as $key => $report)
+                  <tr>
+                    <td>{{ $reports->firstItem() +$key }}</td>
+                    @if ($report->status == App\Enums\ReportStatus::OPEN)
+                    <td class="select-checkbox">
+                      <input class="verify-checkboxs"
+                        type="checkbox"
+                        value="{{ $report->id }}"
+                        name="report_ids[]">
+                    </td>
+                    @else
+                    <td></td>
+                    @endif
+                    <td><a href="{{ route('admin.rooms.messages_by_room', ['room' => $report->room_id]) }}">{{ $report->room_id }}</a></td>
+                    <td><a href="{{ route('admin.users.show', ['user' => $report->user->id]) }}">{{ $report->user->fullname}}</a></td>
+                    <td class="long-text">{{ $report->content }}</td>
+                    <td>{{ Carbon\Carbon::parse($report->created_at)->format('Y/m/d H:i') }}</td>
+                    <td><a href="{{ route('admin.rooms.messages_by_room', ['room' => $report->room_id]) }}">{{ $report->room_id }}</a></td>
+                    <td>{{ App\Enums\ReportStatus::getDescription($report->status) }}</td>
+                  </tr>
+                  @endforeach
+                @endif
               </tbody>
             </table>
           </div>

@@ -267,7 +267,7 @@ td {
 
 .long-text {
   text-align: left;
-  width: 25%;
+  width: 430px;
 }
 
 tbody td {
@@ -880,7 +880,10 @@ tbody td {
 }
 
 .notifications span.value {
-  padding : 0 !important;
+  padding: 10px !important;
+  line-height: 15px;
+  border-bottom: 1px solid #56cedf;
+  background-color: #e8f7fb;
 }
 
 .notifications a {
@@ -1101,24 +1104,20 @@ tbody td {
   width: 300px;
 }
 
-.payment-request {
-  top: 465px;
-}
-
 .order-nominee-started-time {
-  bottom: 315px;
+  bottom: 7px;
 }
 
 .order-nominee-stopped-time {
-  top: 615px;
+  top: 7px;
 }
 
 .start-time {
-  top: 46px;
+  top: 8px;
 }
 
 .stopped-time {
-  top: 95px;
+  top: 8px;
 }
 
 .extra-time {
@@ -1137,9 +1136,26 @@ tbody td {
   width: 10%;
 }
 
+.column-th-btn {
+  width: 70px;
+}
+
 .transfer-search {
   margin-left: 20px;
 }
+
+.wrap-status {
+  position: relative;
+}
+
+.wrap-status .btn-nominee {
+  top: 7px;
+}
+
+.wrap-status .btn-order-call {
+  top: 7px;
+}
+
 @media (max-width: 767px) {
   .navbar {
     background: #20a8d817;
@@ -1175,6 +1191,77 @@ tbody td {
     top: 125px;
     right: 135px;
   }
+
+  .wrap-status {
+    height: 90px;
+  }
+
+  .wrap-status .btn-nominee {
+    top: 54px;
+    left: 130px;
+  }
+
+  .wrap-status .btn-order-call {
+    top: 54px;
+    left: 130px;
+  }
+
+  .order-nominee-started-time {
+    bottom: 28px;
+  }
+
+  .order-nominee-stopped-time {
+    top: 25px;
+  }
+
+  .start-time {
+    top: 52px;
+    right: 123px;
+  }
+
+  .stopped-time {
+    top: 52px;
+    right: 123px;
+  }
+}
+
+@media (max-width: 1199px) and (min-width: 800px) {
+  .wrap-status {
+    height: 107px;
+  }
+
+  .wrap-status .btn-nominee {
+    top: 65px;
+    left: 66px;
+    width: 275px;
+  }
+
+  .wrap-status .btn-order-call {
+    top: 54px;
+    left: 130px;
+  }
+
+  .order-nominee-started-time {
+    top: 65px;
+    left: 115px;
+    width: 190px;
+  }
+
+  .order-nominee-stopped-time {
+    top: 65px;
+    left: 115px;
+    width: 190px;
+  }
+
+  .start-time {
+    top: 66px;
+    right: 125px;
+  }
+
+  .stopped-time {
+    top: 66px;
+    right: 125px;
+  }
 }
 
 @media (max-width: 799px) {
@@ -1186,5 +1273,43 @@ tbody td {
   .change-active {
     margin-top: 7%;
     margin-left: 40%;
+  }
+
+  .wrap-status {
+    height: 153px;
+  }
+
+  .wrap-status .btn-nominee {
+    top: 90px;
+    left: 40px;
+    width: 170px;
+  }
+
+  .wrap-status .btn-order-call {
+    top: 54px;
+    left: 130px;
+  }
+
+  .order-nominee-started-time {
+    bottom: 20px;
+    left: 86px;
+    width: 160px;
+  }
+
+  .order-nominee-stopped-time {
+    left: 84px;
+    width: 159px !important;
+    height: 36px;
+    top: 100px;
+  }
+
+  .start-time {
+    top: 95px;
+    right: 90px;
+  }
+
+  .stopped-time {
+    top: 95px;
+    right: 90px;
   }
 }

@@ -85,7 +85,6 @@ class PaymentRequestController extends ApiController
             if ($request->extra_time) {
                 $castStartTime = Carbon::parse($cast->pivot->started_at);
                 $stoppedAt = $castStartTime->copy()->addMinutes($order->duration * 60)->addMinutes($request->extra_time);
-                $castTotalTime = $castStartTime->diffInMinutes($stoppedAt);
 
                 $extraPoint = $order->extraPoint($cast, $request->extra_time);
                 $feePoint = $order->orderFee($cast, $castStartTime, $stoppedAt);

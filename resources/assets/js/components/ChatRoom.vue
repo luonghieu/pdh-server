@@ -4,17 +4,17 @@
             <div class="inbox_msg">
                 <h3 class="text-center nickname"></h3>
                 <list-users :user_id="user_id" :roomId="roomId" :realtime_message="realtime_message" :realtime_roomId="realtime_roomId" :realtime_count="realtime_count"
-                @interface="handleCountMessage"
+                @interface="handleCountMessage" :users="users"
                 ></list-users>
                 <div class="mesgs">
                     <chat-messages :list_message="list_messages" :user_id="user_id"
-                                   :totalMessage="totalMessage" :roomId="roomId" :realtime_roomId="realtime_roomId" @interface="handleNewMessage"></chat-messages>
+                                   :totalMessage="totalMessage" :roomId="roomId" :realtime_roomId="realtime_roomId" @interface="handleNewMessage" :countUnread_realtime="countUnread_realtime"></chat-messages>
                     <div class="type_msg">
                         <div class="input_msg_write">
                             <a name="bottom"></a>
                             <div v-if="!image">
                                 <textarea name="mess" v-model="message" class="write_msg"
-                                          placeholder="Type a message*"></textarea>
+                                          placeholder="メッセージを入力してください*"></textarea>
                                 <input id="fileUpload" name="image" type="file" accept="image/*" style="display: none"
                                        @change="onFileChange">
                                 <p style="color: red" v-for="error in errors">{{error}}</p>
@@ -59,11 +59,15 @@ export default {
       errors: [],
       timer: "",
       totalMessage: "",
-      roomId: "",
+      roomId: 0,
       id: "",
       realtime_message: "",
       realtime_roomId: "",
-      realtime_count: 0
+      realtime_count: 0,
+      users: "",
+      messageUnread_index: "",
+      countUnread_realtime: 0,
+      list_messageData: []
     };
   },
 
@@ -74,13 +78,12 @@ export default {
         this.roomId = null;
       }
       this.getMessagesInRoom(this.id);
-
-         console.log(this.realtime_count);
     }
   },
 
   created() {
     this.getToken();
+    this.getRoom();
     this.init();
     const url = window.location.href;
     const newUrl = new URL(url);
@@ -88,16 +91,23 @@ export default {
     if (this.roomId) {
       this.getMessagesInRoom(this.roomId);
     }
+    setInterval(this.getRoom, 2000);
   },
 
   methods: {
     init() {
       window.Echo.leave("user." + 1);
       window.Echo.private("user." + 1).listen("MessageCreated", e => {
-          console.log(e);
         this.realtime_message = e.message.message;
         this.realtime_roomId = e.message.room_id;
-        this.realtime_count += 1;
+        if (
+          this.realtime_roomId == Number(this.roomId) ||
+          this.realtime_roomId == this.id
+        ) {
+          this.realtime_count = 0;
+        } else {
+          this.realtime_count += 1;
+        }
         this.list_messages.push(e.message);
       });
     },
@@ -116,20 +126,77 @@ export default {
         this.list_messages = [];
         const room = response.data.data.data;
         this.totalMessage = response.data.data.total;
+        let setUnRead = { setRead: true, user: { avatars: null } };
         room.forEach(messages => {
-          messages.forEach(item => {
+          let currentDate = new Date(messages[0].created_at);
+          let date_data = messages[0].created_at;
+          let isHeader = { isHeader: true, date_data, user: { avatars: null } };
+          this.list_messageData.unshift(isHeader);
+          let i = 0;
+          for (i; i < messages.length; i++) {
+            let newDate = new Date(messages[i].created_at);
+            if (this.isSameDay(currentDate, newDate)) {
+              this.list_messageData.unshift(messages[i]);
+            } else {
+              currentDate = new Date(messages[i].created_at);
+              date_data = messages[i].created_at;
+              isHeader = { isHeader: true, date_data, user: { avatars: null } };
+              this.list_messageData.unshift(isHeader);
+              this.list_messageData.unshift(messages[i]);
+            }
+          }
+          if (this.messageUnread_index || this.countUnread_realtime) {
+            this.list_messageData.splice(
+              this.messageUnread_index || this.countUnread_realtime,
+              0,
+              setUnRead
+            );
+          }
+          this.list_messageData.forEach(item => {
             this.list_messages.unshift(item);
+            let messUnread_realtime = (this.countUnread_realtime = null);
+            let mees_index = (this.messageUnread_index = null);
           });
         });
       });
     },
 
+    isSameDay(date1, date2) {
+      let formatDate1 =
+        date1.getMonth() +
+        1 +
+        "/" +
+        date1.getDate() +
+        "/" +
+        date1.getFullYear();
+      let formatDate2 =
+        date2.getMonth() +
+        1 +
+        "/" +
+        date2.getDate() +
+        "/" +
+        date2.getFullYear();
+
+      return formatDate1 == formatDate2;
+    },
+
+    getRoom() {
+      window.axios.get("../../api/v1/rooms/admin/get_users").then(response => {
+        const rooms = response.data.data;
+        this.users = rooms;
+        this.users.forEach(items => {
+          if (items.unread_count > 0) {
+            this.messageUnread_index = items.unread_count;
+          }
+        });
+      });
+    },
+
     sendMessage() {
-      if(this.id){
-          this.realtime_roomId = this.id
-      }
-      else{
-          this.realtime_roomId = this.roomId
+      if (this.id) {
+        this.realtime_roomId = this.id;
+      } else {
+        this.realtime_roomId = this.roomId;
       }
 
       this.realtime_message = this.message;
@@ -181,7 +248,7 @@ export default {
       const { name, size } = files[0];
       let message;
       if (name.lastIndexOf(".") <= 0) {
-         message = "有効な画像を選択してください";
+        message = "有効な画像を選択してください";
         this.errors.push(message);
         return false;
       }
@@ -197,14 +264,14 @@ export default {
         ext !== "png" &&
         ext !== "PNG"
       ) {
-        message  = "画像形式は無効です";
+        message = "画像形式は無効です";
         this.errors.push(message);
         return false;
       }
 
       let sizeMB = (size / (1024 * 1024)).toFixed(2);
       if (sizeMB > 5.12) {
-        message  = `(${sizeMB}MB). 画像サイズが大きすぎます 5MB以下の画像をアップロードしてください`;
+        message = `(${sizeMB}MB). 画像サイズが大きすぎます 5MB以下の画像をアップロードしてください`;
         this.errors.push(message);
         return false;
       }
@@ -229,7 +296,12 @@ export default {
     },
 
     handleCountMessage(event) {
-      this.realtime_count = event;
+      if (event > 0) {
+        this.countUnread_realtime = event;
+      }
+      if (event) {
+        this.realtime_count = event - event;
+      }
     },
 
     handleNewMessage(event) {

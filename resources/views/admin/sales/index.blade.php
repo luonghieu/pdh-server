@@ -18,11 +18,6 @@
               </select>
               <button type="submit" class="fa fa-search btn-search" name="submit" value="search"></button>
               <div class="export-csv">
-<<<<<<< HEAD
-=======
-                  <input type="hidden" name="limit" value="{{ request()->limit }}" />
-                  <input type="hidden" name="page" value="{{ request()->page }}" />
->>>>>>> develop
                   <input type="hidden" name="is_export" value="1">
                   <button type="submit" class="export-btn" name="submit" value="export">CSV出力</button>
               </div>
@@ -30,18 +25,15 @@
             <form class="navbar-form navbar-left form-search" action="{{route('admin.sales.index')}}" id="limit-page" method="GET">
               <div class="form-group">
                 <div class="col-md-1">
-<<<<<<< HEAD
-=======
                   <label class="col-md-1 limit-page">表示件数：</label>
                   <select id="select-limit" name="limit" class="form-control">
                   @foreach ([10, 20, 50, 100] as $limit)
                     <option value="{{ $limit }}" {{ request()->limit == $limit ? 'selected' : '' }}>{{ $limit }}</option>
                   @endforeach
                   </select>
->>>>>>> develop
                   <input type="hidden" name="from_date" value="{{ request()->from_date }}" />
                   <input type="hidden" name="to_date" value="{{ request()->to_date }}" />
-                  <input type="hidden" name="search" value="{{ request()->search }}" />
+                  <input type="hidden" name="search_point_type" value="{{ request()->search_point_type }}" />
                 </div>
               </div>
             </form>

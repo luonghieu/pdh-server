@@ -17,7 +17,7 @@ class SaleController extends Controller
         $pointType = $request->search_point_type;
 
         $pointTypes = [
-            0 => 'All',
+            0 => '全て', // all
             PointType::PAY => 'ポイント決済',
             PointType::ADJUSTED => '調整',
             PointType::EVICT => 'ポイント失効',
@@ -25,42 +25,36 @@ class SaleController extends Controller
 
         $sales = Point::whereIn('type', [PointType::PAY, PointType::ADJUSTED, PointType::EVICT]);
 
-        if ($request->has('from_date') && !empty($request->from_date)) {
-            $fromDate = Carbon::parse($request->from_date)->startOfDay();
-            $toDate = Carbon::parse($request->to_date)->endOfDay();
-            $sales->where(function ($query) use ($fromDate, $toDate) {
+        $fromDate = $request->from_date ? Carbon::parse($request->from_date)->startOfDay() : null;
+        $toDate = $request->to_date ? Carbon::parse($request->to_date)->endOfDay() : null;
+
+        if ($fromDate) {
+            $sales->where(function ($query) use ($fromDate) {
                 $query->where('created_at', '>=', $fromDate);
             });
         }
 
-        if ($request->has('to_date') && !empty($request->to_date)) {
-            $fromDate = Carbon::parse($request->from_date)->startOfDay();
-            $toDate = Carbon::parse($request->to_date)->endOfDay();
-            $sales->where(function ($query) use ($fromDate, $toDate) {
+        if ($toDate) {
+            $sales->where(function ($query) use ($toDate) {
                 $query->where('created_at', '<=', $toDate);
             });
         }
 
-        if ($request->has('search_point_type') && (0 != $request->search_point_type)) {
-            $sales->where(function ($query) use ($pointType) {
-                $query->where('type', "$pointType");
-            });
+        if ($pointType) {
+            if ('0' != $pointType) {
+                $sales->where(function ($query) use ($pointType) {
+                    $query->where('type', $pointType);
+                });
+            }
         }
 
         $sales = $sales->orderBy('created_at', 'DESC');
-
-        $salesExport = $sales;
+        $salesExport = $sales->get();
         $sales = $sales->paginate($request->limit ?: 10);
 
         $totalPoint = $sales->sum('point');
 
         if ('export' == $request->submit) {
-            $page = $request->page ?: '1';
-            $limit = $request->limit ?: 10;
-            $offset = (1 == $request->page) ? 0 : (($request->page - 1) * $request->limit + 1);
-
-            $salesExport = $salesExport->orderBy('created_at', 'DESC')->offset($offset)->limit($limit)->get();
-
             $data = collect($salesExport)->map(function ($item) {
                 return [
                     $item->order_id,
@@ -78,7 +72,7 @@ class SaleController extends Controller
                 '-',
                 '-',
                 '-',
-                number_format($totalPoint),
+                number_format($salesExport->sum('point')),
             ];
 
             array_push($data, $sum);
@@ -96,12 +90,15 @@ class SaleController extends Controller
                 $file = CSVExport::toCSV($data, $header);
             } catch (\Exception $e) {
                 LogService::writeErrorLog($e);
-                return $this->respondServerError();
+                $request->session()->flash('msg', trans('messages.server_error'));
+
+                return redirect()->route('admin.sales.index');
             }
             $file->output('Revenue_list_' . Carbon::now()->format('Ymd_Hi') . '.csv');
 
             return;
         }
+
         return view('admin.sales.index', compact('sales', 'totalPoint', 'pointTypes'));
     }
 }

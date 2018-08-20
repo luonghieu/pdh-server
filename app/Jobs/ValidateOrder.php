@@ -2,7 +2,9 @@
 
 namespace App\Jobs;
 
+use App\Enums\UserType;
 use App\Notifications\CastAcceptNominationOrders;
+use App\Notifications\CastApplyOrders;
 use App\Room;
 use App\Order;
 use App\Enums\RoomType;
@@ -75,9 +77,18 @@ class ValidateOrder implements ShouldQueue
                 $this->order->room_id = $room->id;
                 $this->order->update();
 
+                $isHybrid = false;
+                if ($this->order->type == OrderType::CALL || $this->order->type == OrderType::HYBRID) {
+                    $isHybrid = true;
+                }
+
                 $involvedUsers = [$this->order->user];
                 foreach ($casts as $cast) {
                     $involvedUsers[] = $cast;
+
+                    if ($isHybrid) {
+                        $cast->notify(new CastApplyOrders($this->order, $cast->pivot->temp_point));
+                    }
                 }
 
                 $this->sendNotification($involvedUsers);

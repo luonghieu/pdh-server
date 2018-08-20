@@ -35,7 +35,7 @@ class OrderController extends Controller
             });
         }
 
-        if ($request->has('search')) {
+        if ($request->has('search') && $request->search) {
             $orders->where('id', $keyword)
                 ->orWhereHas('user', function ($query) use ($keyword) {
                     $query->where('id', "$keyword")
@@ -133,6 +133,7 @@ class OrderController extends Controller
                 ['order_id', '=', $order->id],
                 ['status', '=', PaymentRequestStatus::CONFIRM],
             ])->update(['status' => PaymentRequestStatus::OPEN]);
+
             \DB::commit();
         } catch (\Exception $e) {
             \DB::rollBack();

@@ -196,14 +196,16 @@ class User extends Authenticatable implements JWTSubject
             // charge money
             $charged = $payment->charge();
 
-            if ($charged) {
-                $point->status = true;
-                $point->balance = $point->point + $this->point;
-                $point->save();
-
-                $this->point = $this->point + $amount;
-                $this->save();
+            if (!$charged) {
+                return false;
             }
+
+            $point->status = true;
+            $point->balance = $amount;
+            $point->save();
+
+            $this->point = $this->point + $amount;
+            $this->save();
 
             \DB::commit();
 

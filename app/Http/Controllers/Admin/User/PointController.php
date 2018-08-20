@@ -142,7 +142,9 @@ class PointController extends Controller
                 $file = CSVExport::toCSV($data, $header);
             } catch (\Exception $e) {
                 LogService::writeErrorLog($e);
-                return $this->respondServerError();
+                $request->session()->flash('msg', trans('messages.server_error'));
+
+                return redirect()->route('admin.users.points_history', compact('user'));
             }
             $file->output('history_point_of_user_' . $user->fullname . '_' . Carbon::now()->format('Ymd_Hi') . '.csv');
 

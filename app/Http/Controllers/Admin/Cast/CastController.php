@@ -6,13 +6,18 @@ use App\BankAccount;
 use App\Cast;
 use App\CastClass;
 use App\Enums\MessageType;
+use App\Enums\PointType;
 use App\Enums\RoomType;
+use App\Enums\Status;
 use App\Enums\SystemMessageType;
 use App\Enums\UserType;
 use App\Http\Controllers\Controller;
 use App\Notifications\CreateCast;
+use App\Services\CSVExport;
+use App\Services\LogService;
 use App\User;
 use Carbon\Carbon;
+use DB;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Webpatser\Uuid\Uuid;
@@ -178,5 +183,160 @@ class CastController extends Controller
         $user->notify(new CreateCast());
 
         return redirect()->route('admin.casts.index');
+    }
+
+    public function sumPointReceive($points)
+    {
+        $sumPointReceive = $points->sum(function ($product) {
+            $sum = 0;
+            if ($product->is_receive) {
+                $sum += $product->point;
+            }
+
+            return $sum;
+        });
+
+        return $sumPointReceive;
+    }
+
+    public function sumPointTransfer($points)
+    {
+        $sumPointTransfer = $points->sum(function ($product) {
+            $sum = 0;
+            if ($product->is_transfer) {
+                $sum += $product->point;
+            }
+
+            return $sum;
+        });
+
+        return $sumPointTransfer;
+    }
+
+    public function getOperationHistory(Cast $user, Request $request)
+    {
+        $keyword = $request->search_point_type;
+        $pointTypes = [
+            0 => '全て', // all
+            PointType::ADJUSTED => '調整',
+            PointType::RECEIVE => 'ポイント受取',
+            PointType::TRANSFER => '振込',
+        ];
+
+        $points = $user->points()->with('payment', 'order')
+            ->whereIn('type', [PointType::RECEIVE, PointType::TRANSFER, PointType::ADJUSTED])
+            ->where('status', Status::ACTIVE);
+
+        $fromDate = $request->from_date ? Carbon::parse($request->from_date)->startOfDay() : null;
+        $toDate = $request->to_date ? Carbon::parse($request->to_date)->endOfDay() : null;
+
+        if ($fromDate) {
+            $points->where(function ($query) use ($fromDate) {
+                $query->where('created_at', '>=', $fromDate);
+            });
+        }
+
+        if ($toDate) {
+            $points->where(function ($query) use ($toDate) {
+                $query->where('created_at', '<=', $toDate);
+            });
+        }
+
+        if ($keyword) {
+            if ('0' != $keyword) {
+                $points->where(function ($query) use ($keyword) {
+                    $query->where('type', $keyword);
+                });
+            }
+        }
+
+        $points = $points->orderBy('created_at', 'DESC');
+        $pointsExport = $points->get();
+        $points = $points->paginate($request->limit ?: 10);
+
+        $sumPointReceive = $this->sumPointReceive($points);
+        $sumPointTransfer = $this->sumPointTransfer($points);
+        $sumBalance = $points->sum('balance');
+
+        if ('export' == $request->submit) {
+            $data = collect($pointsExport)->map(function ($item) {
+                return [
+                    Carbon::parse($item->created_at)->format('Y年m月d日'),
+                    PointType::getDescription($item->type),
+                    $item->is_receive ? $item->order->id : '--',
+                    $item->is_receive ? number_format($item->point) : '',
+                    $item->is_transfer ? number_format($item->point) : '',
+                    number_format($item->balance),
+                    '￥' . number_format($item->balance),
+                ];
+            })->toArray();
+
+            $sum = [
+                '合計',
+                '-',
+                '-',
+                $this->sumPointReceive($pointsExport),
+                $this->sumPointTransfer($pointsExport),
+                $pointsExport->sum('balance'),
+                '¥ ' . number_format($pointsExport->sum('balance')),
+            ];
+
+            array_push($data, $sum);
+
+            $header = [
+                '日付',
+                '取引種別',
+                '予約ID',
+                '取得ポイント',
+                '消費ポイント',
+                '残高',
+                '引き落とし額',
+            ];
+
+            try {
+                $file = CSVExport::toCSV($data, $header);
+            } catch (\Exception $e) {
+                LogService::writeErrorLog($e);
+                $request->session()->flash('msg', trans('messages.server_error'));
+
+                return redirect()->route('admin.casts.operation_history', compact('user'));
+            }
+            $file->output('operation_history_point_of_cast_' . $user->fullname . '_' . Carbon::now()->format('Ymd_Hi') . '.csv');
+
+            return;
+        }
+
+        return view('admin.casts.operation_history', compact('user', 'points', 'pointTypes', 'sumPointReceive', 'sumPointTransfer', 'sumBalance'));
+    }
+
+    public function changePoint(Cast $user, Request $request)
+    {
+        $newPoint = $request->point;
+        $oldPoint = $user->point;
+        $differencePoint = $newPoint - $oldPoint;
+
+        $input = [
+            'point' => $differencePoint,
+            'balance' => $newPoint,
+            'type' => PointType::ADJUSTED,
+            'status' => Status::ACTIVE,
+        ];
+
+        try {
+            DB::beginTransaction();
+
+            $user->points()->create($input);
+
+            $user->point = $newPoint;
+            $user->save();
+            DB::commit();
+        } catch (\Exception $e) {
+            DB::rollback();
+            LogService::writeErrorLog($e);
+
+            return $this->respondServerError();
+        }
+
+        return redirect(route('admin.casts.operation_history', ['user' => $user->id]));
     }
 }
