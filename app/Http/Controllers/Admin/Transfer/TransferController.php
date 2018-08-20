@@ -73,6 +73,9 @@ class TransferController extends Controller
                 $file = CSVExport::toCSV($data, $header);
             } catch (\Exception $e) {
                 LogService::writeErrorLog($e);
+                $request->session()->flash('msg', trans('messages.server_error'));
+
+                return redirect()->route('admin.points.transfered');
             }
 
             $file->output('transfered_list_' . Carbon::now()->format('Ymd_Hi') . '.csv');
@@ -152,6 +155,9 @@ class TransferController extends Controller
                 $file = CSVExport::toCSV($data, $header);
             } catch (\Exception $e) {
                 LogService::writeErrorLog($e);
+                $request->session()->flash('msg', trans('messages.server_error'));
+
+                return redirect()->route('admin.points.non_transfers');
             }
 
             $file->output('non_transfered_list' . Carbon::now()->format('Ymd_Hi') . '.csv');

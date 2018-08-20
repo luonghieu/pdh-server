@@ -294,13 +294,12 @@ class CastController extends Controller
             ];
 
             try {
-                $data = encoderShiftJIS($data);
-                $header = !($header = encoderShiftJIS([$header])) ? false : collect($header)->first();
-
                 $file = CSVExport::toCSV($data, $header);
             } catch (\Exception $e) {
                 LogService::writeErrorLog($e);
-                return false;
+                $request->session()->flash('msg', trans('messages.server_error'));
+
+                return redirect()->route('admin.casts.operation_history', compact('user'));
             }
             $file->output('operation_history_point_of_cast_' . $user->fullname . '_' . Carbon::now()->format('Ymd_Hi') . '.csv');
 

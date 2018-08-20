@@ -91,7 +91,9 @@ class SaleController extends Controller
                 $file = CSVExport::toCSV($data, $header);
             } catch (\Exception $e) {
                 LogService::writeErrorLog($e);
-                return $this->respondServerError();
+                $request->session()->flash('msg', trans('messages.server_error'));
+
+                return redirect()->route('admin.sales.index');
             }
             $file->output('Revenue_list_' . Carbon::now()->format('Ymd_Hi') . '.csv');
 
