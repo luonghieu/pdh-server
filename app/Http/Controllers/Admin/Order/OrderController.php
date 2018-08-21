@@ -18,6 +18,8 @@ class OrderController extends Controller
     public function index(Request $request)
     {
         $keyword = $request->search;
+        $orderBy = $request->only('user_id', 'id', 'type', 'address',
+            'created_at', 'date', 'start_time', 'status');
 
         $orders = Order::with('user');
 
@@ -41,6 +43,14 @@ class OrderController extends Controller
                     $query->where('id', "$keyword")
                         ->orWhere('nickname', 'like', "%$keyword%");
                 });
+        }
+
+        if (!empty($orderBy)) {
+            foreach ($orderBy as $key => $value) {
+                $orders->orderBy($key, $value);
+            }
+        } else {
+            $orders->orderBy('created_at', 'DESC');
         }
 
         $orders = $orders->orderBy('created_at', 'DESC')->paginate($request->limit ?: 10);
