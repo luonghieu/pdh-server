@@ -4,9 +4,10 @@ namespace App\Http\Controllers\Api\Guest;
 
 use App\Cast;
 use App\Enums\OrderStatus;
-use App\Http\Controllers\Api\ApiController;
-use App\Http\Resources\CastResource;
 use Illuminate\Http\Request;
+use App\Enums\CastOrderStatus;
+use App\Http\Resources\CastResource;
+use App\Http\Controllers\Api\ApiController;
 
 class GuestController extends ApiController
 {
@@ -24,11 +25,13 @@ class GuestController extends ApiController
 
         $user = $this->guard()->user();
 
-        $casts = Cast::join('cast_order as co', 'co.user_id', '=', 'users.id')
-            ->whereHas('orders', function ($query) use ($user) {
-                $query->where('orders.user_id', $user->id)
-                    ->where('orders.status', OrderStatus::DONE);
-            });
+        $casts = Cast::join('cast_order as co', function ($query) {
+            $query->on('co.user_id', '=', 'users.id')
+                ->where('co.status', '=', CastOrderStatus::DONE);
+        })->whereHas('orders', function ($query) use ($user) {
+            $query->where('orders.user_id', $user->id)
+                ->where('orders.status', OrderStatus::DONE);
+        });
 
         if ($request->nickname) {
             $nickname = $request->nickname;
