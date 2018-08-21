@@ -2,9 +2,7 @@
     <div class="col-md-9 col-sm-10 main ">
         <div class="messaging">
             <div class="inbox_msg">
-                <div v-for="(name, index) in nickName" :key="index">
-                    <h3 v-if="name.index == id || name.index == roomId" class="text-center nickname">{{name.nickname}}</h3>
-                </div>
+                <h3 class="text-center nickname">{{nickName}}</h3>
                 <list-users :user_id="user_id" :roomId="roomId" :realtime_message="realtime_message" :realtime_roomId="realtime_roomId" :realtime_count="realtime_count"
                 @interface="handleCountMessage" :users="users"
                 ></list-users>
@@ -70,7 +68,7 @@ export default {
       messageUnread_index: "",
       countUnread_realtime: 0,
       list_messageData: [],
-      nickName: []
+      nickName: ""
     };
   },
 
@@ -95,7 +93,7 @@ export default {
     if (this.roomId) {
       this.getMessagesInRoom(this.roomId);
     }
-    setInterval(this.getRoom, 2000);
+    // setInterval(this.getRoom, 2000);
   },
 
   methods: {
@@ -104,6 +102,7 @@ export default {
       window.Echo.private("user." + 1).listen("MessageCreated", e => {
         this.realtime_message = e.message.message;
         this.realtime_roomId = e.message.room_id;
+        console.log(e.message);
         if (
           this.realtime_roomId == Number(this.roomId) ||
           this.realtime_roomId == this.id
@@ -281,19 +280,6 @@ export default {
       this.createImage(files[0]);
     },
 
-     getNickName() {
-      window.axios.get("../../api/v1/rooms/admin/get_users").then(response => {
-        const rooms = response.data.data;
-        this.users = rooms;
-        this.users.forEach(items => {
-          items.users.forEach(item => {
-            let getName = { index: items.id, nickname: item.nickname };
-            this.nickName.push(getName);
-          });
-        });
-      });
-    },
-
     createImage(file) {
       let image = new Image();
       let reader = new FileReader();
@@ -310,7 +296,7 @@ export default {
     },
 
     handleCountMessage(event) {
-    //   this.nickName = event;
+      this.nickName = event;
     },
 
     handleNewMessage(event) {
