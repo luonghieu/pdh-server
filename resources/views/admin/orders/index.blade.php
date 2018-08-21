@@ -118,11 +118,15 @@
                   </td>
                   <td>
                     @php
-                      $endDay = Carbon\Carbon::createFromFormat('Y-m-d H:i:s', $order->date . ' ' . $order->start_time)->addHours($order->duration);
+                      $startTime = Carbon\Carbon::createFromFormat('Y-m-d H:i:s', $order->date . ' ' . $order->start_time);
+                      $endDay = $startTime->copy()->addHours($order->duration);
                       $now = Carbon\Carbon::now();
                     @endphp
-                    @if (($order->status == App\Enums\OrderStatus::PROCESSING) && ( $endDay < $now))
+                    @if (($order->status == App\Enums\OrderStatus::PROCESSING) && ($endDay < $now))
                       <span class="warning-order">予定時刻が過ぎています</span>
+                    @endif
+                    @if(($order->status == App\Enums\OrderStatus::ACTIVE) && ($startTime < $now))
+                      <span class="warning-order">スタートボタンが押されていません。</span>
                     @endif
                   </td>
                   @if ($order->type == App\Enums\OrderType::NOMINATION)
