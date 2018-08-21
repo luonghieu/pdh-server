@@ -63,7 +63,7 @@ class CancelFeeSettlement extends Command
 
                 $order->settle();
 
-                foreach ($order->casts as $cast) {
+                foreach ($order->canceledCasts as $cast) {
                     $paymentRequest = new PaymentRequest;
                     $paymentRequest->cast_id = $cast->id;
                     $paymentRequest->guest_id = $order->user_id;
