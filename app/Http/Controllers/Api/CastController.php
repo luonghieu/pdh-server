@@ -47,7 +47,7 @@ class CastController extends ApiController
         if (isset($request->min_point) && isset($request->max_point)) {
             $min = $request->min_point;
             $max = $request->max_point;
-            $casts->whereBetween('cost', [$min, $max]);
+            $casts->whereBetween('users.cost', [$min, $max]);
         }
 
         $casts = $casts->leftJoin('cast_order as co', 'co.user_id', '=', 'users.id')
