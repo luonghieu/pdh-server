@@ -150,14 +150,20 @@
               @if ($order->status >= App\Enums\OrderStatus::PROCESSING)
               <tr>
                 <th>マッチングしたキャスト</th>
-                <td><a href="{{ route('admin.orders.casts_matching', ['order' => $order->id]) }}">{{ $order->casts->count().'人' }}</a></td>
+                <td>
+                  @if ($order->casts && $order->casts->count() > 0)
+                  <a href="{{ route('admin.orders.casts_matching', ['order' => $order->id]) }}">{{ $order->casts->count().'人' }}</a>
+                  @else
+                  <span>0</span>
+                  @endif
+                </td>
               </tr>
               @endif
               @if ($order->status >= App\Enums\OrderStatus::DONE)
                 <tr>
                   <th>実績合計ポイント</th>
                   <td>
-                    @if ($order->payment_status == App\Enums\OrderPaymentStatus::REQUESTING)
+                    @if ($order->payment_status == App\Enums\OrderPaymentStatus::REQUESTING || $order->status == App\Enums\OrderStatus::CANCELED)
                     {{ number_format($order->total_point).'P' }}
                     @else
                       @php
@@ -166,11 +172,12 @@
                           foreach ($order->casts as $cast) {
                             $tempPoint+=$cast->pivot->total_point;
                           }
+                          $tempPoint = number_format($tempPoint).'P';
                         } else {
                           $tempPoint = '-';
                         }
                       @endphp
-                    {{ number_format($tempPoint).'P' }}
+                    {{ $tempPoint }}
                     @endif
                   </td>
                 </tr>
