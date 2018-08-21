@@ -2,18 +2,19 @@
 
 namespace App\Console\Commands;
 
-use App\User;
-use App\Order;
-use App\Point;
-use App\Transfer;
-use Carbon\Carbon;
-use App\Enums\UserType;
-use App\PaymentRequest;
-use App\Enums\PointType;
-use App\Enums\OrderStatus;
-use Illuminate\Console\Command;
 use App\Enums\OrderPaymentStatus;
+use App\Enums\OrderStatus;
 use App\Enums\PaymentRequestStatus;
+use App\Enums\PointType;
+use App\Enums\UserType;
+use App\Order;
+use App\PaymentRequest;
+use App\Point;
+use App\Services\LogService;
+use App\Transfer;
+use App\User;
+use Carbon\Carbon;
+use Illuminate\Console\Command;
 
 class CancelFeeSettlement extends Command
 {
