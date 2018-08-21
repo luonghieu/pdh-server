@@ -210,7 +210,7 @@ class TransferController extends Controller
                             ->pluck('id')
                             ->first();
 
-                        $pointIds = array_push($pointIds, $pointId);
+                        array_push($pointIds, $pointId);
                     }
 
                     Point::whereIn('id', $pointIds)->update(['type' => PointType::TRANSFER]);
@@ -236,7 +236,7 @@ class TransferController extends Controller
                             ->pluck('id')
                             ->first();
 
-                        $pointIds = array_push($pointIds, $pointId);
+                        array_push($pointIds, $pointId);
                     }
 
                     Point::whereIn('id', $pointIds)->update(['type' => PointType::RECEIVE]);
