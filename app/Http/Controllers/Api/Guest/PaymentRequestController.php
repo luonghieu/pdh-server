@@ -51,6 +51,11 @@ class PaymentRequestController extends ApiController
             return $this->respondErrorMessage(trans('messages.action_not_performed'), 422);
         }
 
+        if ($order->status == OrderStatus::CANCELED) {
+            $order->load('canceledCasts');
+            $order->is_canceled = true;
+        }
+
         $order->load('paymentRequests.cast');
 
         return $this->respondWithData(OrderResource::make($order));
