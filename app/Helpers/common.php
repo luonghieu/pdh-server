@@ -47,8 +47,8 @@ if (!function_exists('getImages')) {
     }
 }
 
-if (!function_exists('getPrefetureName')) {
-    function getPrefetureName($id)
+if (!function_exists('getPrefectureName')) {
+    function getPrefectureName($id)
     {
         return App\Prefecture::find($id)->name;
     }

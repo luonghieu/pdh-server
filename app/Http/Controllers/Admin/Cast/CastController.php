@@ -59,9 +59,7 @@ class CastController extends Controller
     public function registerCast(User $user)
     {
         $castClass = CastClass::all();
-        $prefectures = Prefecture::supported()
-            ->orderByRaw("FIELD(id, " . implode(',', Prefecture::SUPPORTED_IDS) . " )")
-            ->get();
+        $prefectures = Prefecture::supported()->get();
 
         return view('admin.casts.register', compact('user', 'castClass', 'prefectures'));
     }

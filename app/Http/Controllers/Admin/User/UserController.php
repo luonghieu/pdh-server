@@ -65,9 +65,7 @@ class UserController extends Controller
 
     public function show(User $user)
     {
-        $prefectures = Prefecture::supported()
-            ->orderByRaw("FIELD(id, " . implode(',', Prefecture::SUPPORTED_IDS) . " )")
-            ->get();
+        $prefectures = Prefecture::supported()->get();
 
         $castClasses = $this->castClass->all();
 

@@ -31,6 +31,7 @@ class Prefecture extends Model
 
     public function scopeSupported($query)
     {
-        return $query->whereIn('id', $this::SUPPORTED_IDS);
+        return $query->whereIn('id', self::SUPPORTED_IDS)
+            ->orderByRaw("FIELD(id, " . implode(',', Prefecture::SUPPORTED_IDS) . " )");
     }
 }
