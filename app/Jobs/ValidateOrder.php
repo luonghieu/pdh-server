@@ -2,27 +2,25 @@
 
 namespace App\Jobs;
 
-use App\Enums\UserType;
-use App\Notifications\CastAcceptNominationOrders;
-use App\Notifications\CastApplyOrders;
-use App\Room;
-use App\Order;
-use App\Enums\RoomType;
-use App\Enums\OrderType;
+use App\Enums\CastOrderStatus;
 use App\Enums\MessageType;
 use App\Enums\OrderStatus;
-use App\Traits\DirectRoom;
-use App\Enums\CastOrderType;
-use App\Services\LogService;
-use Illuminate\Bus\Queueable;
-use App\Enums\CastOrderStatus;
-use Illuminate\Support\Carbon;
+use App\Enums\OrderType;
+use App\Enums\RoomType;
 use App\Enums\SystemMessageType;
-use Illuminate\Queue\SerializesModels;
-use Illuminate\Queue\InteractsWithQueue;
+use App\Notifications\ApproveNominatedOrders;
+use App\Notifications\CastAcceptNominationOrders;
+use App\Notifications\CastApplyOrders;
+use App\Order;
+use App\Room;
+use App\Services\LogService;
+use App\Traits\DirectRoom;
+use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
-use App\Notifications\ApproveNominatedOrders;
+use Illuminate\Queue\InteractsWithQueue;
+use Illuminate\Queue\SerializesModels;
+use Illuminate\Support\Carbon;
 
 class ValidateOrder implements ShouldQueue
 {
@@ -49,7 +47,7 @@ class ValidateOrder implements ShouldQueue
     {
         $casts = $this->order->casts()->get();
 
-        if ($this->order->total_cast == $casts->count()) {
+        if ($casts->count() == $this->order->total_cast) {
             try {
                 \DB::beginTransaction();
                 if ($this->order->total_cast > 1) {
@@ -78,7 +76,7 @@ class ValidateOrder implements ShouldQueue
                 $this->order->update();
 
                 $isHybrid = false;
-                if ($this->order->type == OrderType::CALL || $this->order->type == OrderType::HYBRID) {
+                if (OrderType::CALL == $this->order->type || OrderType::HYBRID == $this->order->type) {
                     $isHybrid = true;
                 }
 
@@ -107,10 +105,13 @@ class ValidateOrder implements ShouldQueue
             $nomineesCount = $this->order->nominees()->count();
 
             if ($repliesCount == $nomineesCount && $nomineesCount > 0) {
-                if ($this->order->type == OrderType::NOMINATION) {
+                if (OrderType::NOMINATION == $this->order->type) {
                     $this->order->status = OrderStatus::DENIED;
                 } else {
-                    $this->order->type = OrderType::CALL;
+                    if (OrderType::HYBRID != $this->order->type) {
+                        $this->order->type = OrderType::CALL;
+                        $this->order->is_changed = true;
+                    }
                 }
 
                 $this->order->update();
@@ -120,13 +121,13 @@ class ValidateOrder implements ShouldQueue
 
     private function sendNotification($users)
     {
-        if ($this->order->type != OrderType::NOMINATION) {
+        if (OrderType::NOMINATION != $this->order->type) {
             $room = $this->order->room;
             $startTime = Carbon::parse($this->order->date . ' ' . $this->order->start_time);
             $message = '\\\\ おめでとうございます！マッチングが確定しました♪ //'
-                . PHP_EOL . PHP_EOL . '- ご予約内容 - '
-                . PHP_EOL . '場所：' . $this->order->address
-                . PHP_EOL . '合流予定時間：'. $startTime->format('H:i') .'～'
+            . PHP_EOL . PHP_EOL . '- ご予約内容 - '
+            . PHP_EOL . '場所：' . $this->order->address
+            . PHP_EOL . '合流予定時間：' . $startTime->format('H:i') . '～'
                 . PHP_EOL . PHP_EOL . 'ゲストの方はキャストに来て欲しい場所の詳細をお伝えください。'
                 . PHP_EOL . '尚、ご不明点がある場合は運営までお問い合わせください。'
                 . PHP_EOL . PHP_EOL . 'それでは素敵な時間をお楽しみください♪';
@@ -135,7 +136,7 @@ class ValidateOrder implements ShouldQueue
                 'user_id' => 1,
                 'type' => MessageType::SYSTEM,
                 'system_type' => SystemMessageType::NORMAL,
-                'message' => $message
+                'message' => $message,
             ]);
 
             $userIds = [];
@@ -158,7 +159,7 @@ class ValidateOrder implements ShouldQueue
                 'user_id' => 1,
                 'type' => MessageType::SYSTEM,
                 'system_type' => SystemMessageType::NOTIFY,
-                'message' => $firstMessage
+                'message' => $firstMessage,
             ]);
             $roomMessage->recipients()->attach($userIds, ['room_id' => $room->id]);
 
@@ -171,7 +172,7 @@ class ValidateOrder implements ShouldQueue
                 'user_id' => 1,
                 'type' => MessageType::SYSTEM,
                 'system_type' => SystemMessageType::NORMAL,
-                'message' => $secondMessage
+                'message' => $secondMessage,
             ]);
             $roomMessage->recipients()->attach($userIds, ['room_id' => $room->id]);
 
