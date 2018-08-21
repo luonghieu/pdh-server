@@ -7,7 +7,7 @@
         <div class="panel-body handling">
           <div class="search">
             <form class="navbar-form navbar-left form-search" action="{{route('admin.orders.index')}}" method="GET">
-              <input type="text" class="form-control input-search" placeholder="ユーザーID,名前" name="search" value="{{request()->search}}">
+              <input type="text" class="form-control input-search" placeholder="ユーザーID,名前,予約ID" name="search" value="{{request()->search}}">
               <label for="">From date: </label>
               <input type="text" class="form-control date-picker input-search" name="from_date" id="date01" data-date-format="yyyy/mm/dd" value="{{request()->from_date}}" placeholder="yyyy/mm/dd" />
               <label for="">To date: </label>
@@ -49,6 +49,7 @@
                 <th>予約ID</th>
                 <th>予約区分</th>
                 <th>希望エリア</th>
+                <th>予約発生時刻</th>
                 <th>予定開始日時</th>
                 <th>希望人数</th>
                 <th>指名キャスト</th>
@@ -75,6 +76,7 @@
                   <td>{{ $order->id }}</td>
                   <td>{{ App\Enums\OrderType::getDescription($order->type) }}</td>
                   <td>{{ $order->address }}</td>
+                  <td>{{ Carbon\Carbon::parse($order->created_at)->format('Y/m/d H:i') }}</td>
                   <td>{{ Carbon\Carbon::parse($order->date)->format('Y/m/d') }} {{ Carbon\Carbon::parse($order->start_time)->format('H:i') }}</td>
                   <td>{{ $order->total_cast }} 名</td>
                   @if (App\Enums\OrderType::CALL == $order->type)

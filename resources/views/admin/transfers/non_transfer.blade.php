@@ -17,7 +17,7 @@
               <button type="submit" class="fa fa-search btn btn-search"></button>
               <div class="export-csv">
                 <input type="hidden" name="is_transfers" value="1">
-                <button type="submit" class="export-btn" name="submit" value="transfers">CSV出力全銀式</button>
+                <button type="submit" class="export-btn" name="submit" value="transfers">エクスポート</button>
               </div>
             </form>
           </div>
