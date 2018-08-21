@@ -38,7 +38,7 @@ class CallOrdersTimeOut extends Notification implements ShouldQueue
      */
     public function via($notifiable)
     {
-        return [PushNotificationChannel::class];
+        return [CustomDatabaseChannel::class, PushNotificationChannel::class];
     }
 
     /**
@@ -59,12 +59,17 @@ class CallOrdersTimeOut extends Notification implements ShouldQueue
      */
     public function toArray($notifiable)
     {
-        return [];
+        $content = '残念ながらマッチングが成立しませんでした（；；）';
+
+        return [
+            'content' => $content,
+            'send_from' => UserType::ADMIN,
+        ];
     }
 
     public function pushData($notifiable)
     {
-        $content = 'ご希望の人数のキャストが揃わなかったため、'
+        $message = 'ご希望の人数のキャストが揃わなかったため、'
             . PHP_EOL . '下記の予約が無効となりました。'
             . PHP_EOL . '--------------------------------------------------'
             . PHP_EOL . '- キャンセル内容 -'
@@ -77,22 +82,19 @@ class CallOrdersTimeOut extends Notification implements ShouldQueue
             . PHP_EOL . '--------------------------------------------------'
             . PHP_EOL . 'お手数ですが、再度コールをし直してください。';
 
-        try {
-            $room = $notifiable->rooms()
-                ->where('rooms.type', RoomType::SYSTEM)
-                ->where('rooms.is_active', true)->first();
-            $roomMessage = $room->messages()->create([
-                'user_id' => 1,
-                'type' => MessageType::SYSTEM,
-                'message' => $content,
-                'system_type' => SystemMessageType::NORMAL
-            ]);
-            $roomMessage->recipients()->attach($notifiable->id, ['room_id' => $room->id]);
-        } catch (\Exception $e) {
-            LogService::writeErrorLog('Room Not Found. User Id:' . $notifiable->id);
-            LogService::writeErrorLog($e);
-        }
+        $room = $notifiable->rooms()
+            ->where('rooms.type', RoomType::SYSTEM)
+            ->where('rooms.is_active', true)->first();
+        $roomMessage = $room->messages()->create([
+            'user_id' => 1,
+            'type' => MessageType::SYSTEM,
+            'message' => $message,
+            'system_type' => SystemMessageType::NORMAL
+        ]);
+        $roomMessage->recipients()->attach($notifiable->id, ['room_id' => $room->id]);
 
+
+        $content = '残念ながらマッチングが成立しませんでした（；；）';
 
         $namedUser = 'user_' . $notifiable->id;
         $send_from = UserType::ADMIN;
