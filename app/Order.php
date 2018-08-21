@@ -61,6 +61,17 @@ class Order extends Model
             ->withTimestamps();
     }
 
+    public function canceledCasts()
+    {
+        return $this->belongsToMany(Cast::class)
+            ->where('cast_order.status', CastOrderStatus::CANCELED)
+            ->whereNotNull('cast_order.accepted_at')
+            ->withPivot('order_time', 'extra_time', 'order_point', 'extra_point', 'allowance_point', 'fee_point',
+                'total_point', 'type', 'started_at', 'stopped_at', 'status', 'accepted_at', 'canceled_at', 'guest_rated',
+                'cast_rated', 'is_thanked', 'temp_point', 'cost')
+            ->withTimestamps();
+    }
+
     public function nominees()
     {
         return $this->belongsToMany(Cast::class)
