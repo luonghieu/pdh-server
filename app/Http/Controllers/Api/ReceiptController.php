@@ -66,7 +66,7 @@ class ReceiptController extends ApiController
             ]);
 
             $data = [
-                'no' => $receipt->id,
+                'no' => $request->point_id,
                 'name' => $name,
                 'content' => $content,
                 'amount' => $point->payment->amount,
