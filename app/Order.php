@@ -42,6 +42,7 @@ class Order extends Model
         'type',
         'status',
         'canceled_at',
+        'is_changed'
     ];
 
     public function user()
