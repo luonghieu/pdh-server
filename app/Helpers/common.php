@@ -47,9 +47,9 @@ if (!function_exists('getImages')) {
     }
 }
 
-if (!function_exists('getNamePrefeture')) {
-    function getNamePrefeture($id)
+if (!function_exists('getPrefetureName')) {
+    function getPrefetureName($id)
     {
-        return App\Prefecture::find($id)->name_kana;
+        return App\Prefecture::find($id)->name;
     }
 }

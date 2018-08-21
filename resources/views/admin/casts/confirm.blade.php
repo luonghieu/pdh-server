@@ -130,7 +130,7 @@
                         <td>
                           <div class="form-group">
                             <div class="col-sm-2 col-sm-offset-5">
-                              {{ getNamePrefeture($data['prefecture_id']) }}
+                              {{ getPrefetureName($data['prefecture_id']) }}
                             </div>
                           </div>
                         </td>

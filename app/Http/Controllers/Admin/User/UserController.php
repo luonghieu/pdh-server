@@ -65,7 +65,7 @@ class UserController extends Controller
 
     public function show(User $user)
     {
-        $prefectures = Prefecture::whereIn('id', Prefecture::SUPPORTED_IDS)
+        $prefectures = Prefecture::supported()
             ->orderByRaw("FIELD(id, " . implode(',', Prefecture::SUPPORTED_IDS) . " )")
             ->get();
 

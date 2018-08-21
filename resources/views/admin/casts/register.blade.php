@@ -284,7 +284,7 @@
                               <select id="" name="prefecture" class="form-control select-time notify-type" >
                                 @foreach($prefectures as $prefecture)
                                 <option value=" {{ $prefecture->id }}"  class="for_user" {{ ($user->prefecture_id == $prefecture->id) ? 'selected' : '' }}>
-                                  {{ $prefecture->name_kana }}
+                                  {{ $prefecture->name }}
                                 </option>
                                 @endforeach
                               </select>

@@ -58,7 +58,7 @@
                       {{ csrf_field() }}
                       <select class="cast-class" name="prefecture">
                         @foreach ($prefectures as $prefecture)
-                          <option value="{{ $prefecture->id }}" {{ ($user->prefecture_id == $prefecture->id) ? 'selected' : '' }}>{{ $prefecture->name_kana }}</option>
+                          <option value="{{ $prefecture->id }}" {{ ($user->prefecture_id == $prefecture->id) ? 'selected' : '' }}>{{ $prefecture->name }}</option>
                         @endforeach
                       </select>
                       <button type="submit" class="btn-change-cast-class">変更する</button>
