@@ -24,10 +24,9 @@ class GuestController extends ApiController
 
         $user = $this->guard()->user();
 
-        $casts = Cast::with('orders')
+        $casts = Cast::join('cast_order as co', 'co.user_id', '=', 'users.id')
             ->whereHas('orders', function ($query) use ($user) {
-                $query
-                    ->where('orders.user_id', $user->id)
+                $query->where('orders.user_id', $user->id)
                     ->where('orders.status', OrderStatus::DONE);
             });
 
@@ -36,7 +35,9 @@ class GuestController extends ApiController
             $casts = $casts->where('nickname', 'like', "%$nickname%");
         }
 
-        $casts = $casts->paginate($request->per_page)->appends($request->query());
+        $casts = $casts->orderByDesc('co.created_at')
+            ->paginate($request->per_page)
+            ->appends($request->query());
 
         $casts = $casts->map(function ($item) {
             $item->latest_order_flag = true;
