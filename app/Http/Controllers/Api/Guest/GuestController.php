@@ -35,7 +35,8 @@ class GuestController extends ApiController
             $casts = $casts->where('nickname', 'like', "%$nickname%");
         }
 
-        $casts = $casts->orderByDesc('co.created_at')
+        $casts = $casts->select('users.*')
+            ->orderByDesc('co.created_at')
             ->paginate($request->per_page)
             ->appends($request->query());
 
