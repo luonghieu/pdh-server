@@ -101,7 +101,7 @@ img {
 .img_avatar {
   border-radius: 50%;
   width: 45px;
-  height: 45px;
+  height: 40px;
 }
 
 .img_received {
@@ -273,7 +273,11 @@ img {
 
 .nickname {
   border-bottom: 1px solid #c4c4c4;
-  padding: 5px 0 15px 0;
+  padding: 3px 0 17px 0;
+  color: black;
+  font-weight: bold;
+  line-height: normal;
+  font-size: 18px;
 }
 
 .msg_history {

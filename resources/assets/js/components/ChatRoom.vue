@@ -2,7 +2,7 @@
     <div class="col-md-9 col-sm-10 main ">
         <div class="messaging">
             <div class="inbox_msg">
-                <h3 class="text-center nickname"></h3>
+                <h3 class="text-center nickname">{{nickName}}</h3>
                 <list-users :user_id="user_id" :roomId="roomId" :realtime_message="realtime_message" :realtime_roomId="realtime_roomId" :realtime_count="realtime_count"
                 @interface="handleCountMessage" :users="users"
                 ></list-users>
@@ -67,12 +67,13 @@ export default {
       users: "",
       messageUnread_index: "",
       countUnread_realtime: 0,
-      list_messageData: []
+      list_messageData: [],
+      nickName: ""
     };
   },
 
   watch: {
-    $route(to, from) {
+    $route() {
       this.id = this.$route.params.id;
       if (this.id) {
         this.roomId = null;
@@ -84,14 +85,15 @@ export default {
   created() {
     this.getToken();
     this.getRoom();
+    this.getNickName();
     this.init();
     const url = window.location.href;
     const newUrl = new URL(url);
-    this.roomId = newUrl.searchParams.get("room");
+    this.roomId = Number(newUrl.searchParams.get("room"));
     if (this.roomId) {
       this.getMessagesInRoom(this.roomId);
     }
-    setInterval(this.getRoom, 2000);
+    // setInterval(this.getRoom, 2000);
   },
 
   methods: {
@@ -100,13 +102,12 @@ export default {
       window.Echo.private("user." + 1).listen("MessageCreated", e => {
         this.realtime_message = e.message.message;
         this.realtime_roomId = e.message.room_id;
+        console.log(e.message);
         if (
           this.realtime_roomId == Number(this.roomId) ||
           this.realtime_roomId == this.id
         ) {
           this.realtime_count = 0;
-        } else {
-          this.realtime_count += 1;
         }
         this.list_messages.push(e.message);
       });
@@ -123,6 +124,7 @@ export default {
 
     getMessagesInRoom(id) {
       window.axios.get("../../api/v1/rooms/" + id).then(response => {
+        this.list_messageData = [];
         this.list_messages = [];
         const room = response.data.data.data;
         this.totalMessage = response.data.data.total;
@@ -131,7 +133,6 @@ export default {
           let currentDate = new Date(messages[0].created_at);
           let date_data = messages[0].created_at;
           let isHeader = { isHeader: true, date_data, user: { avatars: null } };
-          this.list_messageData.unshift(isHeader);
           let i = 0;
           for (i; i < messages.length; i++) {
             let newDate = new Date(messages[i].created_at);
@@ -141,22 +142,21 @@ export default {
               currentDate = new Date(messages[i].created_at);
               date_data = messages[i].created_at;
               isHeader = { isHeader: true, date_data, user: { avatars: null } };
-              this.list_messageData.unshift(isHeader);
               this.list_messageData.unshift(messages[i]);
+              this.list_messageData.unshift(isHeader);
             }
           }
-          if (this.messageUnread_index || this.countUnread_realtime) {
+          if (this.messageUnread_index) {
             this.list_messageData.splice(
-              this.messageUnread_index || this.countUnread_realtime,
+              this.list_messageData.length - this.messageUnread_index,
               0,
               setUnRead
             );
           }
-          this.list_messageData.forEach(item => {
-            this.list_messages.unshift(item);
-            let messUnread_realtime = (this.countUnread_realtime = null);
-            let mees_index = (this.messageUnread_index = null);
-          });
+          this.list_messageData.unshift(isHeader);
+          this.list_messages = this.list_messageData;
+          let messUnread_realtime = (this.countUnread_realtime = null);
+          let mees_index = (this.messageUnread_index = null);
         });
       });
     },
@@ -296,12 +296,7 @@ export default {
     },
 
     handleCountMessage(event) {
-      if (event > 0) {
-        this.countUnread_realtime = event;
-      }
-      if (event) {
-        this.realtime_count = event - event;
-      }
+      this.nickName = event;
     },
 
     handleNewMessage(event) {

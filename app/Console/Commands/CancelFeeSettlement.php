@@ -2,18 +2,19 @@
 
 namespace App\Console\Commands;
 
-use App\User;
-use App\Order;
-use App\Point;
-use App\Transfer;
-use Carbon\Carbon;
-use App\Enums\UserType;
-use App\PaymentRequest;
-use App\Enums\PointType;
-use App\Enums\OrderStatus;
-use Illuminate\Console\Command;
 use App\Enums\OrderPaymentStatus;
+use App\Enums\OrderStatus;
 use App\Enums\PaymentRequestStatus;
+use App\Enums\PointType;
+use App\Enums\UserType;
+use App\Order;
+use App\PaymentRequest;
+use App\Point;
+use App\Services\LogService;
+use App\Transfer;
+use App\User;
+use Carbon\Carbon;
+use Illuminate\Console\Command;
 
 class CancelFeeSettlement extends Command
 {
@@ -54,7 +55,7 @@ class CancelFeeSettlement extends Command
         $orders = Order::where('status', OrderStatus::CANCELED)
             ->whereNull('payment_status')
             ->where('canceled_at', '<=', $now->subHours(24))
-            ->whereNotNull('total_point')
+            ->where('cancel_fee_percent', '>', 0)
             ->get();
 
         foreach ($orders as $order) {
@@ -63,7 +64,7 @@ class CancelFeeSettlement extends Command
 
                 $order->settle();
 
-                foreach ($order->casts as $cast) {
+                foreach ($order->canceledCasts as $cast) {
                     $paymentRequest = new PaymentRequest;
                     $paymentRequest->cast_id = $cast->id;
                     $paymentRequest->guest_id = $order->user_id;

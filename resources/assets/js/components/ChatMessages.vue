@@ -12,7 +12,7 @@
             <button class="loading_button" @click="loadMessage(pageCm)">もっと見る</button>
         </div>
         <transition-group>
-            <div v-for="(message, index) in list_message" :key="`keyIndex-${index}`">
+            <div v-for="(message, index) in getListMessage" :key="`keyIndex-${index}`">
                 <div v-if="message.isHeader == true" class="timeLine__dateHead">
                   <div class="timeLine__dateHeadContainer">
                     <div class="timeLine__dateHeadBody">
@@ -40,7 +40,7 @@
                     </div>
                 </div>
         <div v-else>
-            <div class="timeLine__unreadLine" v-if="message.setRead == true && (realtime_roomId == room_id || realtime_roomId == Id)" v-bind:class="isUnread == true ? '' : 'unread_count'">
+            <div class="timeLine__unreadLine" v-if="message.setRead == true && (realtime_roomId == room_id || realtime_roomId == Id || message.room_id == room_id || message.room_id == Id)" v-bind:class="isUnread == true ? '' : 'unread_count'">
                     <div class="timeLine__unreadLineBorder">
                         <div class="timeLine__unreadLineContainer">
                             <div class="timeLine__unreadLineBody">
@@ -52,7 +52,7 @@
             <div class="incoming_msg" v-if="(message.message || message.user.avatars) && (message.room_id == room_id || message.room_id == Id)">
                 <div class="received_msg">
                         <div v-if="message.user.avatars" class="incoming_msg_img"><img class="img_received"
-                                :src="message.user.avatars[0].path"></div>
+                                :src="message.user.avatars[0].thumbnail"></div>
                         <div class="received_withd_msg">
                             <div v-if="message.image">
                                 <img width="100" :src="message.image"/>
@@ -102,7 +102,8 @@ export default {
       messageUnread_id: "",
       isUnread: true,
       isCount: [],
-      list_messageData: []
+      list_messageData: [],
+      getListMessage: [],
     };
   },
 
@@ -133,9 +134,13 @@ export default {
       this.realtime_roomId == this.Id
     ) {
       setTimeout(this.setTimeOut, 5000);
-    } else {
-      this.isUnread = true;
     }
+
+    if(this.pageCm == this.totalpage){
+        this.pageCm = 1;
+    }
+
+    this.getListMessage = this.list_message;
   },
 
   methods: {
@@ -183,10 +188,9 @@ export default {
         .get(`../../api/v1/rooms/${Id}?paginate=${15}&page=${pageCm + 1}`)
         .then(getMessage => {
           const room = getMessage.data.data.data;
-          let currentDate = new Date(this.list_message[15].created_at);
-          let date_data = this.list_message[15].created_at;
+          let currentDate = new Date(this.getListMessage[this.getListMessage.length -1].created_at);
+          let date_data = this.getListMessage[this.getListMessage.length -1].created_at;
           let isHeader = { isHeader: true, date_data, user: { avatars: null } };
-          this.list_messageData.unshift(isHeader);
           room.forEach(messages => {
             let i = 0;
             for (i; i < messages.length; i++) {
@@ -201,13 +205,14 @@ export default {
                   date_data,
                   user: { avatars: null }
                 };
-                this.list_messageData.unshift(isHeader);
                 this.list_messageData.unshift(messages[i]);
+                this.list_messageData.unshift(isHeader);
               }
             }
-            this.list_messageData.forEach(item => {
-              this.list_message.unshift(item);
-            });
+            this.list_messageData.unshift(isHeader);
+            messages.forEach(items =>{
+              this.getListMessage.unshift(items);
+            })
           });
           this.pageCm = getMessage.data.data.current_page;
           this.totalItem = getMessage.data.data.total;
