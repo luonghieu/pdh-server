@@ -52,7 +52,7 @@ class OrderResource extends Resource
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
             'tags' => TagResource::collection($this->whenLoaded('tags')),
-            'casts' => UserCollection::make($this->whenLoaded('casts')),
+            'casts' => $this->when(true == $this->is_canceled, UserCollection::make($this->whenLoaded('canceledCasts')), UserCollection::make($this->whenLoaded('casts'))),
             'payment_requests' => PaymentRequestResource::collection($this->whenLoaded('paymentRequests')),
             'nominees' => UserCollection::make($this->whenLoaded('nominees')),
             'user' => new UserResource($this->user),
