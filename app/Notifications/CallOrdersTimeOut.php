@@ -86,7 +86,7 @@ class CallOrdersTimeOut extends Notification implements ShouldQueue
 
     public function pushData($notifiable)
     {
-        if (!$this->order->type == OrderType::NOMINATION) {
+        if ($this->order->type != OrderType::NOMINATION) {
             $message = 'ご希望の人数のキャストが揃わなかったため、'
                 . PHP_EOL . '下記の予約が無効となりました。'
                 . PHP_EOL . '--------------------------------------------------'
