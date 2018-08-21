@@ -4,7 +4,15 @@ namespace App\Console\Commands;
 
 use App\Enums\OrderPaymentStatus;
 use App\Enums\OrderStatus;
+use App\Enums\PaymentRequestStatus;
+use App\Enums\PointType;
+use App\Enums\UserType;
 use App\Order;
+use App\PaymentRequest;
+use App\Point;
+use App\Services\LogService;
+use App\Transfer;
+use App\User;
 use Carbon\Carbon;
 use Illuminate\Console\Command;
 
@@ -56,10 +64,48 @@ class CancelFeeSettlement extends Command
 
                 $order->settle();
 
+                foreach ($order->canceledCasts as $cast) {
+                    $paymentRequest = new PaymentRequest;
+                    $paymentRequest->cast_id = $cast->id;
+                    $paymentRequest->guest_id = $order->user_id;
+                    $paymentRequest->order_id = $order->id;
+                    $paymentRequest->order_time = (60 * $order->duration);
+                    $paymentRequest->order_point = 0;
+                    $paymentRequest->allowance_point = 0;
+                    $paymentRequest->fee_point = 0;
+                    $paymentRequest->extra_time = 0;
+                    $paymentRequest->old_extra_time = 0;
+                    $paymentRequest->extra_point = 0;
+                    $paymentRequest->total_point = ($cast->pivot->temp_point * $order->cancel_fee_percent) / 100;
+                    $paymentRequest->status = PaymentRequestStatus::CLOSED;
+                    $paymentRequest->save();
+                }
+
                 $order->payment_status = OrderPaymentStatus::CANCEL_FEE_PAYMENT_FINISHED;
                 $order->paid_at = $now;
-
                 $order->update();
+
+                $adminId = User::where('type', UserType::ADMIN)->first()->id;
+
+                $order = $order->load('paymentRequests');
+
+                $paymentRequests = $order->paymentRequests;
+
+                $receiveAdmin = 0;
+                $castPercent = config('common.cast_percent');
+
+                foreach ($paymentRequests as $paymentRequest) {
+                    $receiveCast = $paymentRequest->total_point * $castPercent;
+                    $receiveAdmin += $paymentRequest->total_point * (1 - $castPercent);
+
+                    $this->createTransfer($order, $paymentRequest, $receiveCast);
+
+                    // receive cast
+                    $this->createPoint($receiveCast, $paymentRequest->cast_id, $order);
+                }
+
+                // receive admin
+                $this->createPoint($receiveAdmin, $adminId, $order);
 
                 \DB::commit();
             } catch (\Exception $e) {
@@ -67,5 +113,31 @@ class CancelFeeSettlement extends Command
                 LogService::writeErrorLog($e);
             }
         }
+    }
+
+    public function createTransfer($order, $paymentRequest, $receiveCast)
+    {
+        $transfer = new Transfer;
+        $transfer->order_id = $order->id;
+        $transfer->user_id = $paymentRequest->cast_id;
+        $transfer->amount = $receiveCast;
+        $transfer->save();
+    }
+
+    public function createPoint($receive, $id, $order)
+    {
+        $user = User::find($id);
+
+        $point = new Point;
+        $point->point = $receive;
+        $point->balance = $user->point + $receive;
+        $point->user_id = $user->id;
+        $point->order_id = $order->id;
+        $point->type = PointType::RECEIVE;
+        $point->status = true;
+        $point->save();
+
+        $user->point += $receive;
+        $user->update();
     }
 }

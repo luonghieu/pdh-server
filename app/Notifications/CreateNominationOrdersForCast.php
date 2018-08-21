@@ -70,7 +70,7 @@ class CreateNominationOrdersForCast extends Notification implements ShouldQueue
     {
         $owner = $this->order->user;
         $room = $this->createDirectRoom($owner->id, $notifiable->id);
-        $message = $owner->nickname . '(提案したゲスト名)さんから指名予約が入りました。'
+        $message = $owner->nickname . 'さんから指名予約が入りました。'
             . PHP_EOL .'予約一覧から、承諾、キャンセルの処理を行ってください。';
 
         $roomMessage = $room->messages()->create([

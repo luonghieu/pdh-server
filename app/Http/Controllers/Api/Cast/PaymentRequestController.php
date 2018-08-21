@@ -10,6 +10,7 @@ use App\Order;
 use App\PaymentRequest;
 use App\Services\LogService;
 use Carbon\Carbon;
+use DB;
 use Illuminate\Http\Request;
 
 class PaymentRequestController extends ApiController
@@ -83,6 +84,7 @@ class PaymentRequestController extends ApiController
 
         try {
             if ($request->extra_time) {
+                DB::beginTransaction();
                 $castStartTime = Carbon::parse($cast->pivot->started_at);
                 $stoppedAt = $castStartTime->copy()->addMinutes($order->duration * 60)->addMinutes($request->extra_time);
 
@@ -98,14 +100,31 @@ class PaymentRequestController extends ApiController
                 $paymentRequest->fee_point = $feePoint;
                 $paymentRequest->total_point = $totalPoint;
                 $paymentRequest->status = PaymentRequestStatus::UPDATED;
+
+                $order->casts()->updateExistingPivot(
+                    $user->id,
+                    [
+                        'extra_time' => $request->extra_time,
+                        'total_point' => $totalPoint,
+                        'night_time' => $nightTime,
+                        'extra_point' => $extraPoint,
+                        'fee_point' => $feePoint,
+                        'allowance_point' => $allowance,
+                        'stopped_at' => $stoppedAt,
+                    ],
+                    false
+                );
+                DB::commit();
             } else {
                 $paymentRequest->status = PaymentRequestStatus::REQUESTED;
             }
 
             $paymentRequest->save();
             $paymentRequest->load('order.casts');
+
             return $this->respondWithData(PaymentRequestResource::make($paymentRequest));
         } catch (\Exception $e) {
+            DB::rollBack();
             LogService::writeErrorLog($e);
 
             return $this->respondServerError();

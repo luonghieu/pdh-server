@@ -14,7 +14,7 @@ class CastController extends ApiController
             'per_page' => 'numeric|min:1',
             'min_point' => 'numeric',
             'max_point' => 'numeric|required_with:min_point',
-            'favorited' => 'boolean'
+            'favorited' => 'boolean',
         ];
 
         $validator = validator($request->all(), $rules);
@@ -47,14 +47,20 @@ class CastController extends ApiController
         if (isset($request->min_point) && isset($request->max_point)) {
             $min = $request->min_point;
             $max = $request->max_point;
-            $casts->whereBetween('cost', [$min, $max]);
+            $casts->whereBetween('users.cost', [$min, $max]);
         }
 
-        $casts = $casts->latest()->active()->WhereDoesntHave('blockers', function($query) use ($user) {
-            $query->where('user_id', $user->id);
-        })->WhereDoesntHave('blocks', function($q) use ($user) {
-            $q->where('blocked_id', $user->id);
-        })->paginate($request->per_page)->appends($request->query());
+        $casts = $casts->leftJoin('cast_order as co', 'co.user_id', '=', 'users.id')
+            ->whereDoesntHave('blockers', function ($query) use ($user) {
+                $query->where('user_id', $user->id);
+            })->whereDoesntHave('blocks', function ($q) use ($user) {
+                $q->where('blocked_id', $user->id);
+            })->active()
+            ->groupBy('users.id')
+            ->orderByDesc('co.created_at')
+            ->select('users.*')
+            ->paginate($request->per_page)
+            ->appends($request->query());
 
         return $this->respondWithData(CastResource::collection($casts));
     }

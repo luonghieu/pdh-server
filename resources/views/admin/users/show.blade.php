@@ -29,27 +29,42 @@
                 <td>{{ $user->id }}</td>
               </tr>
               @if ($user->is_cast)
-              <tr>
-                <th>氏名</th>
-                <td>{{ $user->fullname }}</td>
-              </tr>
-              <tr>
-                <th>ふりがな</th>
-                <td>{{ $user->fullname_kana }}</td>
-              </tr>
-              <tr>
-                <th>キャストクラス</th>
-                <td>
-                  <form action="{{ route('admin.users.change_cast_class', ['user' => $user->id]) }}" class="form-cast-class" method="post">
-                    {{ csrf_field() }}
-                    <select class="cast-class" name="cast_class">
-                      @foreach ($castClasses as $castClass)
-                        <option value="{{ $castClass->id }}" {{ ($user->class_id == $castClass->id) ? 'selected' : '' }}>{{ $castClass->name }}</option>
-                      @endforeach
-                    </select>
-                    <button type="submit" class="btn-change-cast-class">変更する</button>
-                  </form>
-              </tr>
+                <tr>
+                  <th>氏名</th>
+                  <td>{{ $user->fullname }}</td>
+                </tr>
+                <tr>
+                  <th>ふりがな</th>
+                  <td>{{ $user->fullname_kana }}</td>
+                </tr>
+                <tr>
+                  <th>キャストクラス</th>
+                  <td>
+                    <form action="{{ route('admin.users.change_cast_class', ['user' => $user->id]) }}" class="form-cast-class" method="post">
+                      {{ csrf_field() }}
+                      <select class="cast-class" name="cast_class">
+                        @foreach ($castClasses as $castClass)
+                          <option value="{{ $castClass->id }}" {{ ($user->class_id == $castClass->id) ? 'selected' : '' }}>{{ $castClass->name }}</option>
+                        @endforeach
+                      </select>
+                      <button type="submit" class="btn-change-cast-class">変更する</button>
+                    </form>
+                </tr>
+                @if ($prefectures->count())
+                <tr>
+                  <th style="color: red;">エリア</th>
+                  <td>
+                    <form action="{{ route('admin.users.change_prefecture', ['user' => $user->id]) }}" class="form-cast-class" method="post">
+                      {{ csrf_field() }}
+                      <select class="cast-class" name="prefecture">
+                        @foreach ($prefectures as $prefecture)
+                          <option value="{{ $prefecture->id }}" {{ ($user->prefecture_id == $prefecture->id) ? 'selected' : '' }}>{{ $prefecture->name }}</option>
+                        @endforeach
+                      </select>
+                      <button type="submit" class="btn-change-cast-class">変更する</button>
+                    </form>
+                </tr>
+                @endif
               @endif
               <tr>
                 <th>ニックネーム</th>

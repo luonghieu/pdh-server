@@ -3,9 +3,9 @@
 namespace App\Http\Controllers\Admin\Order;
 
 use App\Enums\OrderPaymentStatus;
+use App\Enums\OrderType;
 use App\Enums\PaymentRequestStatus;
 use App\Http\Controllers\Controller;
-use App\Notifications\PaymentRequestUpdate;
 use App\Order;
 use App\PaymentRequest;
 use App\Services\LogService;
@@ -15,7 +15,6 @@ use Illuminate\Support\Facades\DB;
 
 class OrderController extends Controller
 {
-
     public function index(Request $request)
     {
         $keyword = $request->search;
@@ -78,8 +77,14 @@ class OrderController extends Controller
         return view('admin.orders.candidates', compact('casts', 'order'));
     }
 
-    public function orderCall(Order $order)
+    public function orderCall(Request $request, Order $order)
     {
+        if (OrderType::NOMINATION == $order->type) {
+            $request->session()->flash('msg', trans('messages.order_not_found'));
+
+            return redirect(route('admin.orders.index'));
+        }
+
         $order = $order->load('candidates', 'nominees', 'user', 'castClass', 'room', 'casts', 'tags');
 
         return view('admin.orders.order_call', compact('order'));
@@ -118,8 +123,14 @@ class OrderController extends Controller
         return redirect(route('admin.orders.casts_matching', compact('casts', 'order')));
     }
 
-    public function orderNominee(Order $order)
+    public function orderNominee(Request $request, Order $order)
     {
+        if (OrderType::NOMINATION != $order->type) {
+            $request->session()->flash('msg', trans('messages.order_not_found'));
+
+            return redirect(route('admin.orders.index'));
+        }
+
         return view('admin.orders.order_nominee', compact('order'));
     }
 
@@ -134,7 +145,7 @@ class OrderController extends Controller
                 ['order_id', '=', $order->id],
                 ['status', '=', PaymentRequestStatus::CONFIRM],
             ])->update(['status' => PaymentRequestStatus::OPEN]);
-            $order->user->notify(new PaymentRequestUpdate($order));
+
             \DB::commit();
         } catch (\Exception $e) {
             \DB::rollBack();
@@ -247,7 +258,20 @@ class OrderController extends Controller
             \DB::beginTransaction();
             $order->casts()->updateExistingPivot($castId, $input, false);
 
-            $paymentRequest = $order->paymentRequests->first();
+            $latestStoppedAt = $input['stopped_at'];
+            $earliesStartedtAt = $input['started_at'];
+
+            if ($order->actual_started_at > $earliesStartedtAt) {
+                $order->actual_started_at = $earliesStartedtAt;
+            }
+
+            if ($order->actual_ended_at < $latestStoppedAt) {
+                $order->actual_ended_at = $latestStoppedAt;
+            }
+
+            $order->save();
+
+            $paymentRequest = $order->paymentRequests->where('cast_id', $castId)->first();
 
             if ($paymentRequest) {
                 $paymentRequest->cast_id = $castId;

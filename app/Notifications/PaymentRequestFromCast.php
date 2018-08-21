@@ -3,9 +3,11 @@
 namespace App\Notifications;
 
 use App\Enums\MessageType;
+use App\Enums\PaymentRequestStatus;
 use App\Enums\RoomType;
 use App\Enums\SystemMessageType;
 use App\Enums\UserType;
+use App\Order;
 use Carbon\Carbon;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -16,15 +18,18 @@ class PaymentRequestFromCast extends Notification implements ShouldQueue
     use Queueable;
 
     public $order;
+    public $orderPoint;
 
     /**
      * Create a new notification instance.
      *
      * @param $order
+     * @param $orderPoint
      */
-    public function __construct($order)
+    public function __construct($order, $orderPoint)
     {
         $this->order = $order;
+        $this->orderPoint = $orderPoint;
     }
 
     /**
@@ -64,17 +69,16 @@ class PaymentRequestFromCast extends Notification implements ShouldQueue
     public function pushData($notifiable)
     {
         $orderStartDate = Carbon::parse($this->order->date . ' ' . $this->order->start_time);
-        $orderEndDate = Carbon::parse($this->order->actual_ended_at);
         $guestNickname = $this->order->user->nickname ? $this->order->user->nickname . '様' : 'お客様';
-        $casts = $this->order->casts;
-        $orderPoint = 0;
-        foreach ($casts as $cast) {
-            $orderPoint += $cast->pivot->total_point;
-        }
-
+        $requestedStatuses = [
+            PaymentRequestStatus::OPEN,
+            PaymentRequestStatus::REQUESTED,
+            PaymentRequestStatus::UPDATED,
+        ];
+        $totalPoint = Order::find($this->order->id)->paymentRequests()->whereIn('status', $requestedStatuses)->sum('total_point');
         $content = 'Cheersをご利用いただきありがとうございました♪'
-        . PHP_EOL . $orderStartDate->format('Y/m/d H:i') . '~' . $orderEndDate->format('H:i') . 'の合計ポイントは' .
-            $orderPoint . 'Pointです。'
+        . PHP_EOL . $orderStartDate->format('Y/m/d H:i') . '~' . 'の合計ポイントは' .
+            number_format($totalPoint) . 'Pointです。'
             . PHP_EOL . '合計ポイントの詳細はコチラから確認することができます。'
             . PHP_EOL . '※詳細に誤りがある場合は、24時間以内に「決済ポイントの修正依頼をする」を押してください。運営から確認のご連絡を差し上げます。'
             . PHP_EOL . PHP_EOL . 'ご不明点がございましたらいつでもお問い合わせください。'

@@ -3,14 +3,17 @@
 namespace App\Services;
 
 use DB;
+use League\Csv\CharsetConverter;
 use League\Csv\Writer;
 use SplTempFileObject;
 
 class CSVExport
 {
-
     public static function toCSV($input, $header = [], $isRaw = false)
     {
+        $encoder = (new CharsetConverter())->inputEncoding('UTF-8')->outputEncoding('SJIS');
+        $input = $encoder->convert($input);
+        $header = !($header = $encoder->convert([$header])) ? false : collect($header)->first();
 
         if ($isRaw) {
             $result = DB::select($input);

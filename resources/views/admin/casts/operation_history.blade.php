@@ -4,10 +4,10 @@
   <div class="row">
     <div class="col-lg-12">
       <div class="panel panel-default">
-         @include('admin.partials.menu-tab',compact('user'))
+         @include('admin.partials.menu-tab-cast', compact('user'))
         <div class="panel-body handling">
           <div class="search">
-            <form class="navbar-form navbar-left form-search" action="{{route('admin.users.points_history', ['user' => $user->id])}}" method="GET">
+            <form class="navbar-form navbar-left form-search" action="{{route('admin.casts.operation_history', ['user' => $user->id])}}" method="GET">
               <label for="">From date: </label>
               <input type="text" class="form-control date-picker input-search" name="from_date" id="date01" data-date-format="yyyy/mm/dd" value="{{request()->from_date}}" placeholder="yyyy/mm/dd" />
               <label for="">To date: </label>
@@ -44,13 +44,12 @@
             <thead>
               <tr>
                 <th>日付</th>
-                <th>取引タイプ</th>
-                <th>購入ID</th>
+                <th>取引種別</th>
                 <th>予約ID</th>
-                <th>請求金額</th>
-                <th>購入ポイント</th>
-                <th>決済ポイント</th>
+                <th>取得ポイント</th>
+                <th>消費ポイント</th>
                 <th>残高</th>
+                <th>引き落とし額</th>
               </tr>
             </thead>
             <tbody>
@@ -63,51 +62,21 @@
                   <tr>
                     <td>{{ Carbon\Carbon::parse($point->created_at)->format('Y年m月d日') }}</td>
                     <td>{{ App\Enums\PointType::getDescription($point->type) }}</td>
-                    @if ($point->is_buy || $point->is_autocharge)
-                      <td>{{ $point->id }}</td>
-                    @else
-                      <td>-</td>
-                    @endif
-                    @if ($point->is_pay && $point->order)
-                      @php
-                        if (($point->order->type == App\Enums\OrderType::NOMINATED_CALL) || ($point->order->type == App\Enums\OrderType::CALL))
-                        {
-                          $link = route('admin.orders.call', ['order' => $point->order->id]);
-                        } else {
-                          $link = route('admin.orders.order_nominee', ['order' => $point->order->id]);
-                        }
-                      @endphp
-                      <td><a href="{{ $link }}">{{ $point->order->id }}</a></td>
-                    @else
-                      <td>-</td>
-                    @endif
-                    @if ($point->is_adjusted || !$point->payment)
-                      <td>-</td>
-                    @else
-                      <td>￥ {{ $point->payment ? number_format($point->payment->amount) : 0 }}</td>
-                    @endif
-                    @if ($point->is_buy || $point->is_autocharge)
-                      <td>{{ number_format($point->point) }}</td>
-                    @else
-                      <td>-</td>
-                    @endif
-                    @if ($point->is_pay)
-                      <td>{{ number_format($point->point) }}</td>
-                    @else
-                      <td>-</td>
-                    @endif
+                    <td>{{ $point->is_receive ? $point->order->id : '--' }}</td>
+                    <td>{{ $point->is_receive ? number_format($point->point) : '' }}</td>
+                    <td>{{ $point->is_transfer ? number_format($point->point) : ''}}</td>
                     <td>{{ number_format($point->balance) }}</td>
+                    <td>￥ {{ number_format($point->balance) }}</td>
                   </tr>
                 @endforeach
                 <tr>
                   <td class="result">合計</td>
                   <td class="result">-</td>
                   <td class="result">-</td>
-                  <td class="result">-</td>
-                  <td class="result">￥ {{ number_format($sumAmount) }}</td>
-                  <td class="result">{{ number_format($sumPointBuy) }}</td>
-                  <td class="result">{{ number_format($sumPointPay) }}</td>
+                  <td class="result">{{ number_format($sumPointReceive) }}</td>
+                  <td class="result">{{ number_format($sumPointTransfer) }}</td>
                   <td class="result">{{ number_format($sumBalance) }}</td>
+                  <td class="result">￥ {{ number_format($sumBalance) }}</td>
                 </tr>
               @endif
             </tbody>
@@ -119,7 +88,7 @@
               <div class="modal-body">
                 <p>ポイントを修正する</p>
               </div>
-              <form action="{{ route('admin.users.change_point', ['user' => $user->id]) }}" method="POST">
+              <form action="{{ route('admin.casts.operation_history', ['user' => $user->id]) }}" method="POST">
                 {{ csrf_field() }}
                 {{ method_field('PUT') }}
                 <div class="change-point-input">
