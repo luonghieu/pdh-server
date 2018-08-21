@@ -24,7 +24,6 @@ class PaymentRequestController extends ApiController
         if (OrderPaymentStatus::REQUESTING != $order->payment_status) {
             return $this->respondErrorMessage(trans('messages.action_not_performed'), 422);
         }
-
         try {
             $order->payment_status = OrderPaymentStatus::EDIT_REQUESTING;
             $order->save();

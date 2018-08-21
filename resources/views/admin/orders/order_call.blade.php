@@ -170,7 +170,7 @@
                           $tempPoint = '-';
                         }
                       @endphp
-                    {{ $tempPoint.'P' }}
+                    {{ number_format($tempPoint).'P' }}
                     @endif
                   </td>
                 </tr>
