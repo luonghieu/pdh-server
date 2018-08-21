@@ -16,8 +16,8 @@
 "/>
               <button type="submit" class="fa fa-search btn btn-search"></button>
               <div class="export-csv">
-                <input type="hidden" name="is_export" value="1">
-                <button type="submit" class="export-btn" name="submit" value="export">CSV出力</button>
+                <input type="hidden" name="is_transfers" value="1">
+                <button type="submit" class="export-btn" name="submit" value="transfers">エクスポート</button>
               </div>
             </form>
           </div>

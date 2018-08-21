@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin\User;
 use App\Enums\Status;
 use App\Enums\UserType;
 use App\Http\Controllers\Controller;
+use App\Prefecture;
 use App\Repositories\CastClassRepository;
 use App\User;
 use Carbon\Carbon;
@@ -64,9 +65,11 @@ class UserController extends Controller
 
     public function show(User $user)
     {
+        $prefectures = Prefecture::supported()->get();
+
         $castClasses = $this->castClass->all();
 
-        return view('admin.users.show', compact('user', 'castClasses'));
+        return view('admin.users.show', compact('user', 'castClasses', 'prefectures'));
     }
 
     public function changeActive(User $user)
@@ -86,6 +89,18 @@ class UserController extends Controller
         $user->cost = $newClass->cost;
 
         $user->save();
+
+        return redirect()->route('admin.users.show', ['user' => $user->id]);
+    }
+
+    public function changePrefecture(User $user, Request $request)
+    {
+        $newPrefecture = Prefecture::find($request->prefecture);
+
+        if ($newPrefecture) {
+            $user->prefecture_id = $newPrefecture->id;
+            $user->save();
+        }
 
         return redirect()->route('admin.users.show', ['user' => $user->id]);
     }

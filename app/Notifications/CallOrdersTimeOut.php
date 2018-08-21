@@ -3,11 +3,13 @@
 namespace App\Notifications;
 
 use App\Enums\MessageType;
+use App\Enums\OrderType;
 use App\Enums\RoomType;
 use App\Enums\SystemMessageType;
 use App\Enums\UserType;
 use App\Order;
 use App\Services\LogService;
+use App\Traits\DirectRoom;
 use Carbon\Carbon;
 use Illuminate\Bus\Queueable;
 use Illuminate\Notifications\Notification;
@@ -16,7 +18,7 @@ use Illuminate\Notifications\Messages\MailMessage;
 
 class CallOrdersTimeOut extends Notification implements ShouldQueue
 {
-    use Queueable;
+    use Queueable, DirectRoom;
 
     public $order;
 
@@ -38,7 +40,11 @@ class CallOrdersTimeOut extends Notification implements ShouldQueue
      */
     public function via($notifiable)
     {
-        return [CustomDatabaseChannel::class, PushNotificationChannel::class];
+        if ($this->order->type == OrderType::NOMINATION) {
+            return [CustomDatabaseChannel::class, PushNotificationChannel::class];
+        } else {
+            return [PushNotificationChannel::class];
+        }
     }
 
     /**
@@ -59,40 +65,55 @@ class CallOrdersTimeOut extends Notification implements ShouldQueue
      */
     public function toArray($notifiable)
     {
-        $content = '残念ながらマッチングが成立しませんでした（；；）';
+        $nominees = $this->order->nomineesWithTrashed->first();
+        $room = $this->createDirectRoom($this->order->user_id, $nominees->id);
+        $roomMesage = '提案がキャンセルされました。';
+        $roomMessage = $room->messages()->create([
+            'user_id' => 1,
+            'type' => MessageType::SYSTEM,
+            'message' => $roomMesage,
+            'system_type' => SystemMessageType::NOTIFY
+        ]);
+        $roomMessage->recipients()->attach($notifiable->id, ['room_id' => $room->id]);
+
+        $notifyMessage = '残念ながらマッチングが成立しませんでした（；；）';
 
         return [
-            'content' => $content,
+            'content' => $notifyMessage,
             'send_from' => UserType::ADMIN,
         ];
     }
 
     public function pushData($notifiable)
     {
-        $message = 'ご希望の人数のキャストが揃わなかったため、'
-            . PHP_EOL . '下記の予約が無効となりました。'
-            . PHP_EOL . '--------------------------------------------------'
-            . PHP_EOL . '- キャンセル内容 -'
-            . PHP_EOL . '日時：' . Carbon::parse($this->order->date . ' ' . $this->order->start_time)->format('Y/m/d H:i') . '~'
-            . PHP_EOL . '時間：' . $this->order->duration . '時間'
-            . PHP_EOL . 'クラス：' . $this->order->castClass->name
-            . PHP_EOL . '人数：' . $this->order->total_cast . '人'
-            . PHP_EOL . '場所：' .  $this->order->address
-            . PHP_EOL . '予定合計ポイント：' . number_format($this->order->temp_point) . ' Point'
-            . PHP_EOL . '--------------------------------------------------'
-            . PHP_EOL . 'お手数ですが、再度コールをし直してください。';
+        if ($this->order->type != OrderType::NOMINATION) {
+            $message = 'ご希望の人数のキャストが揃わなかったため、'
+                . PHP_EOL . '下記の予約が無効となりました。'
+                . PHP_EOL . '--------------------------------------------------'
+                . PHP_EOL . '- キャンセル内容 -'
+                . PHP_EOL . '日時：' . Carbon::parse($this->order->date . ' ' . $this->order->start_time)->format('Y/m/d H:i') . '~'
+                . PHP_EOL . '時間：' . $this->order->duration . '時間'
+                . PHP_EOL . 'クラス：' . $this->order->castClass->name
+                . PHP_EOL . '人数：' . $this->order->total_cast . '人'
+                . PHP_EOL . '場所：' .  $this->order->address
+                . PHP_EOL . '予定合計ポイント：' . number_format($this->order->temp_point) . ' Point'
+                . PHP_EOL . '--------------------------------------------------'
+                . PHP_EOL . 'お手数ですが、再度コールをし直してください。';
 
-        $room = $notifiable->rooms()
-            ->where('rooms.type', RoomType::SYSTEM)
-            ->where('rooms.is_active', true)->first();
-        $roomMessage = $room->messages()->create([
-            'user_id' => 1,
-            'type' => MessageType::SYSTEM,
-            'message' => $message,
-            'system_type' => SystemMessageType::NORMAL
-        ]);
-        $roomMessage->recipients()->attach($notifiable->id, ['room_id' => $room->id]);
-
+            $room = $notifiable->rooms()
+                ->where('rooms.type', RoomType::SYSTEM)
+                ->where('rooms.is_active', true)->first();
+            $roomMessage = $room->messages()->create([
+                'user_id' => 1,
+                'type' => MessageType::SYSTEM,
+                'message' => $message,
+                'system_type' => SystemMessageType::NORMAL
+            ]);
+            $roomMessage->recipients()->attach($notifiable->id, ['room_id' => $room->id]);
+        } else {
+            $nominees = $this->order->nomineesWithTrashed->first();
+            $room = $this->createDirectRoom($this->order->user_id, $nominees->id);
+        }
 
         $content = '残念ながらマッチングが成立しませんでした（；；）';
 

@@ -28,4 +28,10 @@ class Prefecture extends Model
     {
         return $this->hasMany(User::class);
     }
+
+    public function scopeSupported($query)
+    {
+        return $query->whereIn('id', self::SUPPORTED_IDS)
+            ->orderByRaw("FIELD(id, " . implode(',', Prefecture::SUPPORTED_IDS) . " )");
+    }
 }
