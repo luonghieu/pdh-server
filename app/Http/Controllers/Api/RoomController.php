@@ -102,7 +102,9 @@ class RoomController extends ApiController
 
         $rooms = Room::active()->where('type', RoomType::SYSTEM);
 
-        $rooms = $rooms->with('latestMessage', 'users')->orderBy('updated_at', 'DESC')->get();
+        $rooms = $rooms->with(['users' => function($query){
+            $query->whereNotIn('type', [Usertype::ADMIN]);
+        }])->orderBy('updated_at', 'DESC')->get();
 
         return $this->respondWithData(RoomResource::collection($rooms));
 
