@@ -68,7 +68,7 @@
                     <td>{{ $point->id }}</td>
                     <td>{{ Carbon\Carbon::parse($point->created_at)->format('Y年m月d日') }}</td>
                     <td>{{ $point->user_id }}</td>
-                    <td>{{ $point->user ? $point->user->fullname : '' }}</td>
+                    <td>{{ $point->user ? $point->user->nickname : '' }}</td>
                     <td>{{ \App\Enums\PointType::getDescription($point->type) }}</td>
                     @if ($point->type == \App\Enums\PointType::ADJUSTED || !$point->payment)
                       <td>-</td>
