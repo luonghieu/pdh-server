@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin\Order;
 
 use App\Enums\OrderPaymentStatus;
 use App\Enums\OrderType;
+use App\Enums\OrderStatus;
 use App\Enums\PaymentRequestStatus;
 use App\Http\Controllers\Controller;
 use App\Order;
@@ -17,6 +18,16 @@ class OrderController extends Controller
 {
     public function index(Request $request)
     {
+        $pointStatus = [
+            OrderStatus::PROCESSING,
+            OrderStatus::TIMEOUT,
+            OrderStatus::DENIED,
+            OrderStatus::CANCELED,
+            OrderStatus::DONE,
+            OrderStatus::ACTIVE,
+            OrderStatus::OPEN,
+        ];
+
         $keyword = $request->search;
         $orderBy = $request->only('user_id', 'id', 'type', 'address',
             'created_at', 'date', 'start_time', 'status');
@@ -45,15 +56,28 @@ class OrderController extends Controller
                 });
         }
 
-        if (!empty($orderBy)) {
-            foreach ($orderBy as $key => $value) {
-                $orders->orderBy($key, $value);
-            }
+        if (!$request->alert && empty($orderBy)) {
+            $orders = $orders->orderBy('created_at', 'DESC');
         } else {
-            $orders->orderBy('created_at', 'DESC');
+            switch ($request->alert) {
+                case 'asc':
+                    $orders = $orders->orderByRaw("FIELD(status, " . implode(',', $pointStatus) . ") ");
+                    break;
+                case 'desc':
+                    $orders = $orders->orderByRaw("FIELD(status, " . implode(',', $pointStatus) . ") DESC ");
+                    break;
+
+                default:break;
+            }
+
+            if (!empty($orderBy)) {
+                foreach ($orderBy as $key => $value) {
+                    $orders->orderBy($key, $value);
+                }
+            }
         }
 
-        $orders = $orders->orderBy('created_at', 'DESC')->paginate($request->limit ?: 10);
+        $orders = $orders->paginate($request->limit ?: 10);
 
         return view('admin.orders.index', compact('orders'));
     }

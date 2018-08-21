@@ -98,7 +98,13 @@
                      ]) }}">ステータス
                    </a>
                 </th>
-                <th>アラート</th>
+                <th class="sorting{{ (request()->alert) ? '_' . request()->alert : '' }}">
+                  <a href="{{ route('admin.orders.index',
+                    ['page' => request()->page,
+                     'alert' => (request()->alert == 'asc') ? 'desc' : 'asc',
+                     ]) }}">アラート
+                   </a>
+                </th>
                 <th class="column-th-btn"></th>
               </tr>
             </thead>
