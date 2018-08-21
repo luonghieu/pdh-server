@@ -258,7 +258,20 @@ class OrderController extends Controller
             \DB::beginTransaction();
             $order->casts()->updateExistingPivot($castId, $input, false);
 
-            $paymentRequest = $order->paymentRequests->first();
+            $latestStoppedAt = $input['stopped_at'];
+            $earliesStartedtAt = $input['started_at'];
+
+            if ($order->actual_started_at > $earliesStartedtAt) {
+                $order->actual_started_at = $earliesStartedtAt;
+            }
+
+            if ($order->actual_ended_at < $latestStoppedAt) {
+                $order->actual_ended_at = $latestStoppedAt;
+            }
+
+            $order->save();
+
+            $paymentRequest = $order->paymentRequests->where('cast_id', $castId)->first();
 
             if ($paymentRequest) {
                 $paymentRequest->cast_id = $castId;
