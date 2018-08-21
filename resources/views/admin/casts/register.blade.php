@@ -247,6 +247,7 @@
                           @endif
                         </td>
                       </tr>
+                      @if ($castClass->count())
                       <tr>
                         <th>*キャストクラス</th>
                         <td>
@@ -273,6 +274,37 @@
                           @endif
                         </td>
                       </tr>
+                      @endif
+                      @if ($prefectures->count())
+                      <tr>
+                        <th style="color: red;">エリア</th>
+                        <td>
+                          <div class="form-group">
+                            <div class="col-sm-3 col-sm-offset-1">
+                              <select id="" name="prefecture" class="form-control select-time notify-type" >
+                                @foreach($prefectures as $prefecture)
+                                <option value=" {{ $prefecture->id }}"  class="for_user" {{ ($user->prefecture_id == $prefecture->id) ? 'selected' : '' }}>
+                                  {{ $prefecture->name_kana }}
+                                </option>
+                                @endforeach
+                              </select>
+                            </div>
+                          </div>
+                          @if(Session::has('prefecture'))
+                          <div class="form-group error-end-coupon" >
+                            <div class="alert alert-danger fade in col-sm-5 col-sm-offset-1">
+                              <button data-dismiss="alert" class="close close-sm" type="button">
+                                <i class="icon-remove"></i>
+                              </button>
+                              <strong>
+                                {{ Session::get('prefecture') }}
+                              </strong>
+                            </div>
+                          </div>
+                          @endif
+                        </td>
+                      </tr>
+                      @endif
                       <tr>
                         <th>*電話番号</th>
                         <td>

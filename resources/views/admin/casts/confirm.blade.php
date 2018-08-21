@@ -126,6 +126,16 @@
                         </td>
                       </tr>
                       <tr>
+                        <th style="color: red;">エリア</th>
+                        <td>
+                          <div class="form-group">
+                            <div class="col-sm-2 col-sm-offset-5">
+                              {{ getNamePrefeture($data['prefecture_id']) }}
+                            </div>
+                          </div>
+                        </td>
+                      </tr>
+                      <tr>
                         <th>*電話番号</th>
                         <td>
                           <div class="form-group">
@@ -229,6 +239,7 @@
           <input type="hidden" name="date" value="{{ $data['date'] }}">
           <input type="hidden" name="front_id_image" value="{{ $data['front_id_image'] }}">
           <input type="hidden" name="back_id_image" value="{{ $data['back_id_image'] }}">
+          <input type="hidden" name="prefecture" value="{{ $data['prefecture_id'] }}">
           <button type="submit" class="btn btn-accept">はい</button>
         </form>
       </div>

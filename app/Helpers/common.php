@@ -46,3 +46,10 @@ if (!function_exists('getImages')) {
         return Storage::url($path);
     }
 }
+
+if (!function_exists('getNamePrefeture')) {
+    function getNamePrefeture($id)
+    {
+        return App\Prefecture::find($id)->name_kana;
+    }
+}

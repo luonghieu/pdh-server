@@ -10,6 +10,7 @@ use App\Enums\Status;
 use App\Enums\UserType;
 use App\Http\Controllers\Controller;
 use App\Notifications\CreateCast;
+use App\Prefecture;
 use App\Services\CSVExport;
 use App\Services\LogService;
 use App\User;
@@ -58,8 +59,11 @@ class CastController extends Controller
     public function registerCast(User $user)
     {
         $castClass = CastClass::all();
+        $prefectures = Prefecture::whereIn('id', Prefecture::SUPPORTED_IDS)
+            ->orderByRaw("FIELD(id, " . implode(',', Prefecture::SUPPORTED_IDS) . " )")
+            ->get();
 
-        return view('admin.casts.register', compact('user', 'castClass'));
+        return view('admin.casts.register', compact('user', 'castClass', 'prefectures'));
     }
 
     public function validRegister($request)
@@ -102,6 +106,7 @@ class CastController extends Controller
             'month' => $month,
             'date' => $date,
             'age' => $age,
+            'prefecture_id' => $request->prefecture,
         ];
 
         if ($request->bank_name && $request->number && $request->branch_name) {
@@ -164,6 +169,7 @@ class CastController extends Controller
             'cost' => $castClass->cost,
             'date_of_birth' => $year . '-' . $month . '-' . $date,
             'type' => UserType::CAST,
+            'prefecture_id' => $request->prefecture,
         ];
 
         $user->update($data);
