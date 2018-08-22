@@ -85,7 +85,6 @@ export default {
   created() {
     this.getToken();
     this.getRoom();
-    this.getNickName();
     this.init();
     const url = window.location.href;
     const newUrl = new URL(url);
