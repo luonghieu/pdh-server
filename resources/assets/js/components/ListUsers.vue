@@ -66,7 +66,7 @@ export default {
     "realtime_message",
     "realtime_roomId",
     "realtime_count",
-    "users"
+    "users",
   ],
   data() {
     return {
@@ -79,7 +79,8 @@ export default {
       setUnread: 1,
       count: this.realtime_count,
       nickName: "",
-      unread_realtime: 0
+      unread_realtime: 0,
+      unRead: "",
     };
   },
 

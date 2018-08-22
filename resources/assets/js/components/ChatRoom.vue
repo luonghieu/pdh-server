@@ -68,7 +68,8 @@ export default {
       messageUnread_index: "",
       countUnread_realtime: 0,
       list_messageData: [],
-      nickName: ""
+      nickName: "",
+      userId: "",
     };
   },
 
@@ -92,7 +93,6 @@ export default {
     if (this.roomId) {
       this.getMessagesInRoom(this.roomId);
     }
-    // setInterval(this.getRoom, 2000);
   },
 
   methods: {
@@ -101,7 +101,9 @@ export default {
       window.Echo.private("user." + 1).listen("MessageCreated", e => {
         this.realtime_message = e.message.message;
         this.realtime_roomId = e.message.room_id;
-        console.log(e.message);
+        if (this.realtime_roomId) {
+          this.getRoom();
+        }
         if (
           this.realtime_roomId == Number(this.roomId) ||
           this.realtime_roomId == this.id
@@ -232,6 +234,7 @@ export default {
           if (this.image) {
             this.removeImage().click();
           }
+          this.getRoom();
         });
 
       const scroll = $(".msg_history")[0].scrollHeight;
