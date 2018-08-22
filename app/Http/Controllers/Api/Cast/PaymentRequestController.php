@@ -83,7 +83,7 @@ class PaymentRequestController extends ApiController
         }
 
         try {
-            if ($request->extra_time) {
+            if (isset($request->extra_time)) {
                 DB::beginTransaction();
                 $castStartTime = Carbon::parse($cast->pivot->started_at);
                 $stoppedAt = $castStartTime->copy()->addMinutes($order->duration * 60)->addMinutes($request->extra_time);
