@@ -61,10 +61,12 @@ class OrderController extends Controller
         } else {
             switch ($request->alert) {
                 case 'asc':
-                    $orders = $orders->orderByRaw("FIELD(status, " . implode(',', $pointStatus) . ") ");
+                    $orders = $orders->orderByRaw("FIELD(status, " . implode(',', $pointStatus) . ") ")
+                        ->orderBy('date')->orderBy('start_time');
                     break;
                 case 'desc':
-                    $orders = $orders->orderByRaw("FIELD(status, " . implode(',', $pointStatus) . ") DESC ");
+                    $orders = $orders->orderByRaw("FIELD(status, " . implode(',', $pointStatus) . ") DESC ")
+                        ->orderBy('date', 'DESC')->orderBy('start_time', 'DESC');
                     break;
 
                 default:break;
