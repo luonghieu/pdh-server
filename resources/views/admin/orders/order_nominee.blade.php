@@ -71,11 +71,10 @@
               <tr>
                 <th>予定合計ポイント</th>
                 <td>
-                  @if ($order->status == App\Enums\OrderStatus::OPEN)
-                    {{ number_format($order->temp_point).'P' }}
-                  @endif
-                  @if ($order->status >= App\Enums\OrderStatus::ACTIVE)
+                  @if (in_array($order->status, [App\Enums\OrderStatus::ACTIVE, App\Enums\OrderStatus::PROCESSING, App\Enums\OrderStatus::DONE]))
                   {{ count($order->casts) > 0 ? number_format($order->casts[0]->pivot->temp_point).'P' : '0P' }}
+                  @else
+                  {{ number_format($order->temp_point).'P' }}
                   @endif
                 </td>
               </tr>
@@ -150,7 +149,7 @@
                   {{ count($order->casts) > 0 ? number_format($order->casts[0]->pivot->temp_point).'P' : '0P' }}
                   @endif
                   @if ($order->status >= App\Enums\OrderStatus::DONE)
-                    @if ($order->payment_status == App\Enums\OrderPaymentStatus::REQUESTING)
+                    @if ($order->payment_status == App\Enums\OrderPaymentStatus::REQUESTING || $order->status == App\Enums\OrderStatus::CANCELED)
                     {{ number_format($order->total_point).'P' }}
                     @else
                     {{ count($order->casts) > 0 ? number_format($order->casts[0]->pivot->total_point).'P' : '0P' }}
