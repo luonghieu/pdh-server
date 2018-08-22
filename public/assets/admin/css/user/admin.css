@@ -632,6 +632,10 @@ tbody td {
   color: #fff;
 }
 
+.btn.btn-detail {
+  padding: 8px 10px;
+}
+
 .btn-show {
   background-color: #00B0E7;
   font-weight: bold;

@@ -44,18 +44,67 @@
               <tr>
                 <th></th>
                 <th>No.</th>
-                <th>予約者ID</th>
+                <th class="sorting{{ (request()->user_id) ? '_' . request()->user_id: '' }}">
+                  <a href="{{ route('admin.orders.index',
+                    ['page' => request()->page,
+                     'user_id' => (request()->user_id == 'asc') ? 'desc' : 'asc',
+                     ]) }}">予約者ID
+                   </a>
+                </th>
                 <th>予約者名</th>
-                <th>予約ID</th>
-                <th>予約区分</th>
-                <th>希望エリア</th>
-                <th>予約発生時刻</th>
-                <th>予定開始日時</th>
+                <th class="sorting{{ (request()->id) ? '_' . request()->id: '' }}">
+                  <a href="{{ route('admin.orders.index',
+                    ['page' => request()->page,
+                     'id' => (request()->id == 'asc') ? 'desc' : 'asc',
+                     ]) }}">予約ID
+                   </a>
+                </th>
+                <th class="sorting{{ (request()->type) ? '_' . request()->type: '' }}">
+                  <a href="{{ route('admin.orders.index',
+                    ['page' => request()->page,
+                     'type' => (request()->type == 'asc') ? 'desc' : 'asc',
+                     ]) }}">予約区分
+                   </a>
+                </th>
+                <th class="sorting{{ (request()->address) ? '_' . request()->address: '' }}">
+                  <a href="{{ route('admin.orders.index',
+                    ['page' => request()->page,
+                     'address' => (request()->address == 'asc') ? 'desc' : 'asc',
+                     ]) }}">希望エリア
+                   </a>
+                </th>
+                <th class="sorting{{ (request()->created_at) ? '_' . request()->created_at: '' }}">
+                  <a href="{{ route('admin.orders.index',
+                    ['page' => request()->page,
+                     'created_at' => (request()->created_at == 'asc') ? 'desc' : 'asc',
+                     ]) }}">予約発生時刻
+                   </a>
+                </th>
+                <th class="sorting{{ (request()->date && request()->start_time) ? '_' . request()->date . ' ' . request()->start_time: '' }}">
+                  <a href="{{ route('admin.orders.index',
+                    ['page' => request()->page,
+                     'date' => (request()->date == 'asc') ? 'desc' : 'asc',
+                     'start_time' => (request()->start_time == 'asc') ? 'desc' : 'asc',
+                     ]) }}">予定開始日時
+                   </a>
+                </th>
                 <th>希望人数</th>
                 <th>指名キャスト</th>
                 <th>応募キャスト</th>
-                <th>ステータス</th>
-                <th>アラート</th>
+                <th class="sorting{{ (request()->status) ? '_' . request()->status : '' }}">
+                  <a href="{{ route('admin.orders.index',
+                    ['page' => request()->page,
+                     'status' => (request()->status == 'asc') ? 'desc' : 'asc',
+                     ]) }}">ステータス
+                   </a>
+                </th>
+                <th class="sorting{{ (request()->alert) ? '_' . request()->alert : '' }}">
+                  <a href="{{ route('admin.orders.index',
+                    ['page' => request()->page,
+                     'alert' => (request()->alert == 'asc') ? 'desc' : 'asc',
+                     ]) }}">アラート
+                   </a>
+                </th>
                 <th class="column-th-btn"></th>
               </tr>
             </thead>
@@ -118,17 +167,21 @@
                   </td>
                   <td>
                     @php
-                      $endDay = Carbon\Carbon::createFromFormat('Y-m-d H:i:s', $order->date . ' ' . $order->start_time)->addHours($order->duration);
+                      $startTime = Carbon\Carbon::createFromFormat('Y-m-d H:i:s', $order->date . ' ' . $order->start_time);
+                      $endDay = $startTime->copy()->addHours($order->duration);
                       $now = Carbon\Carbon::now();
                     @endphp
-                    @if (($order->status == App\Enums\OrderStatus::PROCESSING) && ( $endDay < $now))
+                    @if (($order->status == App\Enums\OrderStatus::PROCESSING) && ($endDay < $now))
                       <span class="warning-order">予定時刻が過ぎています</span>
+                    @endif
+                    @if(($order->status == App\Enums\OrderStatus::ACTIVE) && ($startTime < $now))
+                      <span class="warning-order">スタートボタンが押されていません。</span>
                     @endif
                   </td>
                   @if ($order->type == App\Enums\OrderType::NOMINATION)
-                    <td><a href="{{ route('admin.orders.order_nominee', ['order' => $order->id]) }}" class="btn-detail">詳細</a></td>
+                    <td><a href="{{ route('admin.orders.order_nominee', ['order' => $order->id]) }}" class="btn btn-detail">詳細</a></td>
                   @else
-                    <td><a href="{{ route('admin.orders.call', ['order' => $order->id]) }}" class="btn-detail">詳細</a></td>
+                    <td><a href="{{ route('admin.orders.call', ['order' => $order->id]) }}" class="btn btn-detail">詳細</a></td>
                   @endif
                 </tr>
                 @endforeach

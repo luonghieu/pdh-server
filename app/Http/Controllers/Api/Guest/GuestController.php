@@ -4,9 +4,10 @@ namespace App\Http\Controllers\Api\Guest;
 
 use App\Cast;
 use App\Enums\OrderStatus;
-use App\Http\Controllers\Api\ApiController;
-use App\Http\Resources\CastResource;
 use Illuminate\Http\Request;
+use App\Enums\CastOrderStatus;
+use App\Http\Resources\CastResource;
+use App\Http\Controllers\Api\ApiController;
 
 class GuestController extends ApiController
 {
@@ -24,19 +25,24 @@ class GuestController extends ApiController
 
         $user = $this->guard()->user();
 
-        $casts = Cast::with('orders')
-            ->whereHas('orders', function ($query) use ($user) {
-                $query
-                    ->where('orders.user_id', $user->id)
-                    ->where('orders.status', OrderStatus::DONE);
-            });
+        $casts = Cast::join('cast_order as co', function ($query) {
+            $query->on('co.user_id', '=', 'users.id')
+                ->where('co.status', '=', CastOrderStatus::DONE);
+        })->whereHas('orders', function ($query) use ($user) {
+            $query->where('orders.user_id', $user->id)
+                ->where('orders.status', OrderStatus::DONE);
+        });
 
         if ($request->nickname) {
             $nickname = $request->nickname;
             $casts = $casts->where('nickname', 'like', "%$nickname%");
         }
 
-        $casts = $casts->paginate($request->per_page)->appends($request->query());
+        $casts = $casts->groupBy('users.id')
+            ->orderByDesc('co.created_at')
+            ->select('users.*')
+            ->paginate($request->per_page)
+            ->appends($request->query());
 
         $casts = $casts->map(function ($item) {
             $item->latest_order_flag = true;

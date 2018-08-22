@@ -55,7 +55,7 @@ class CancelFeeSettlement extends Command
         $orders = Order::where('status', OrderStatus::CANCELED)
             ->whereNull('payment_status')
             ->where('canceled_at', '<=', $now->subHours(24))
-            ->whereNotNull('total_point')
+            ->where('cancel_fee_percent', '>', 0)
             ->get();
 
         foreach ($orders as $order) {
