@@ -1,0 +1,9 @@
+<input type="hidden" name="user_id" value="{{ request()->user_id }}" />
+<input type="hidden" name="id" value="{{ request()->id }}" />
+<input type="hidden" name="type" value="{{ request()->type }}" />
+<input type="hidden" name="address" value="{{ request()->address }}" />
+<input type="hidden" name="created_at" value="{{ request()->created_at }}" />
+<input type="hidden" name="date" value="{{ request()->date }}" />
+<input type="hidden" name="start_time" value="{{ request()->start_time }}" />
+<input type="hidden" name="status" value="{{ request()->status }}" />
+<input type="hidden" name="alert" value="{{ request()->alert }}" />

@@ -13,6 +13,8 @@
               <label for="">To date: </label>
               <input type="text" class="form-control date-picker" name="to_date" id="date01" data-date-format="yyyy/mm/dd" value="{{request()->to_date}}" placeholder="yyyy/mm/dd"/>
               <button type="submit" class="fa fa-search btn-search"></button>
+              <input type="hidden" name="limit" value="{{ request()->limit }}" />
+              @include('admin.orders.request_sort')
             </form>
           </div>
         </div>
@@ -30,6 +32,7 @@
                 <input type="hidden" name="from_date" value="{{ request()->from_date }}" />
                 <input type="hidden" name="to_date" value="{{ request()->to_date }}" />
                 <input type="hidden" name="search" value="{{ request()->search }}" />
+                @include('admin.orders.request_sort')
               </div>
             </div>
           </form>
@@ -39,6 +42,15 @@
         </div>
         <div class="panel-body">
           @include('admin.partials.notification')
+          @php
+            $request = [
+              'page' => request()->page,
+              'limit' => request()->limit,
+              'search' => request()->search,
+              'from_date' => request()->from_date,
+              'to_date' => request()->to_date,
+           ];
+          @endphp
           <table class="table table-striped table-bordered bootstrap-datatable">
             <thead>
               <tr>
@@ -46,46 +58,40 @@
                 <th>No.</th>
                 <th class="sorting{{ (request()->user_id) ? '_' . request()->user_id: '' }}">
                   <a href="{{ route('admin.orders.index',
-                    ['page' => request()->page,
-                     'user_id' => (request()->user_id == 'asc') ? 'desc' : 'asc',
-                     ]) }}">予約者ID
+                    array_merge($request, ['user_id' => (request()->user_id == 'asc') ? 'desc' : 'asc',])
+                    ) }}">予約者ID
                    </a>
                 </th>
                 <th>予約者名</th>
                 <th class="sorting{{ (request()->id) ? '_' . request()->id: '' }}">
                   <a href="{{ route('admin.orders.index',
-                    ['page' => request()->page,
-                     'id' => (request()->id == 'asc') ? 'desc' : 'asc',
-                     ]) }}">予約ID
+                    array_merge($request, ['id' => (request()->id == 'asc') ? 'desc' : 'asc',])
+                    ) }}">予約ID
                    </a>
                 </th>
                 <th class="sorting{{ (request()->type) ? '_' . request()->type: '' }}">
                   <a href="{{ route('admin.orders.index',
-                    ['page' => request()->page,
-                     'type' => (request()->type == 'asc') ? 'desc' : 'asc',
-                     ]) }}">予約区分
+                    array_merge($request, ['type' => (request()->type == 'asc') ? 'desc' : 'asc',])
+                    ) }}">予約区分
                    </a>
                 </th>
                 <th class="sorting{{ (request()->address) ? '_' . request()->address: '' }}">
                   <a href="{{ route('admin.orders.index',
-                    ['page' => request()->page,
-                     'address' => (request()->address == 'asc') ? 'desc' : 'asc',
-                     ]) }}">希望エリア
+                    array_merge($request, ['address' => (request()->address == 'asc') ? 'desc' : 'asc',])
+                    ) }}">希望エリア
                    </a>
                 </th>
                 <th class="sorting{{ (request()->created_at) ? '_' . request()->created_at: '' }}">
                   <a href="{{ route('admin.orders.index',
-                    ['page' => request()->page,
-                     'created_at' => (request()->created_at == 'asc') ? 'desc' : 'asc',
-                     ]) }}">予約発生時刻
+                    array_merge($request, ['created_at' => (request()->created_at == 'asc') ? 'desc' : 'asc',])
+                    ) }}">予約発生時刻
                    </a>
                 </th>
                 <th class="sorting{{ (request()->date && request()->start_time) ? '_' . request()->date . ' ' . request()->start_time: '' }}">
                   <a href="{{ route('admin.orders.index',
-                    ['page' => request()->page,
-                     'date' => (request()->date == 'asc') ? 'desc' : 'asc',
-                     'start_time' => (request()->start_time == 'asc') ? 'desc' : 'asc',
-                     ]) }}">予定開始日時
+                    array_merge($request, ['date' => (request()->date == 'asc') ? 'desc' : 'asc',
+                     'start_time' => (request()->start_time == 'asc') ? 'desc' : 'asc',])
+                    ) }}">予定開始日時
                    </a>
                 </th>
                 <th>希望人数</th>
@@ -93,16 +99,14 @@
                 <th>応募キャスト</th>
                 <th class="sorting{{ (request()->status) ? '_' . request()->status : '' }}">
                   <a href="{{ route('admin.orders.index',
-                    ['page' => request()->page,
-                     'status' => (request()->status == 'asc') ? 'desc' : 'asc',
-                     ]) }}">ステータス
+                    array_merge($request, ['status' => (request()->status == 'asc') ? 'desc' : 'asc',])
+                    ) }}">ステータス
                    </a>
                 </th>
                 <th class="sorting{{ (request()->alert) ? '_' . request()->alert : '' }}">
                   <a href="{{ route('admin.orders.index',
-                    ['page' => request()->page,
-                     'alert' => (request()->alert == 'asc') ? 'desc' : 'asc',
-                     ]) }}">アラート
+                    array_merge($request, ['alert' => (request()->alert == 'asc') ? 'desc' : 'asc',])
+                    ) }}">アラート
                    </a>
                 </th>
                 <th class="column-th-btn"></th>
