@@ -105,10 +105,7 @@
               <tr>
                 <th>　予定合計ポイント</th>
                 <td>
-                  @if ($order->status == App\Enums\OrderStatus::OPEN)
-                    {{ number_format($order->temp_point).'P' }}
-                  @endif
-                  @if ($order->status >= App\Enums\OrderStatus::ACTIVE)
+                  @if (in_array($order->status, [App\Enums\OrderStatus::ACTIVE, App\Enums\OrderStatus::PROCESSING, App\Enums\OrderStatus::DONE]))
                   @php
                     $tempPoint = 0;
                     foreach ($order->casts as $cast) {
@@ -116,6 +113,8 @@
                     }
                   @endphp
                   {{ number_format($tempPoint).'P' }}
+                  @else
+                  {{ number_format($order->temp_point).'P' }}
                   @endif
               </tr>
               <tr>
