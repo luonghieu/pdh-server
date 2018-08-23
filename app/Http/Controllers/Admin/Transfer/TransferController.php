@@ -4,12 +4,12 @@ namespace App\Http\Controllers\Admin\Transfer;
 
 use App\Enums\BankAccountType;
 use App\Enums\PointType;
-use App\Enums\TransferStatus;
 use App\Http\Controllers\Controller;
 use App\Point;
 use App\Services\CSVExport;
 use App\Services\LogService;
 use App\Transfer;
+use App\User;
 use Carbon\Carbon;
 use DB;
 use Illuminate\Http\Request;
@@ -18,8 +18,8 @@ class TransferController extends Controller
 {
     public function getTransferedList(Request $request)
     {
-        $transfers = Transfer::with('user', 'order')->whereNotNull('transfered_at');
-
+        $transfers = Point::with('user', 'order')->where('type', PointType::RECEIVE)
+            ->where('is_transfered', true)->orderBy('created_at', 'DESC');
         if ($request->from_date) {
             $fromDate = Carbon::parse($request->from_date)->startOfDay();
             $toDate = Carbon::parse($request->to_date)->endOfDay();
@@ -48,8 +48,8 @@ class TransferController extends Controller
                     $item->order_id,
                     Carbon::parse($item->created_at)->format('Y年m月d日'),
                     $item->user_id,
-                    $item->user->fullname,
-                    '¥ ' . $item->amount,
+                    $item->user->nickname,
+                    '¥ ' . $item->point,
                 ];
             })->toArray();
 
@@ -58,7 +58,7 @@ class TransferController extends Controller
                 '',
                 '',
                 '',
-                '¥ ' . $transfers->sum('amount'),
+                '¥ ' . $transfers->sum('point'),
             ];
 
             array_push($data, $sum);
@@ -84,7 +84,7 @@ class TransferController extends Controller
 
             return;
         }
-        $transfers = $transfers->orderBy('created_at', 'DESC')->paginate($request->limit ?: 10);
+        $transfers = $transfers->paginate($request->limit ?: 10);
 
         return view('admin.transfers.transfered', compact('transfers'));
     }
@@ -93,7 +93,8 @@ class TransferController extends Controller
     {
         $keyword = $request->search;
 
-        $transfers = Transfer::with('user', 'order')->whereNull('transfered_at');
+        $transfers = Point::with('user', 'order')->where('type', PointType::RECEIVE)
+            ->where('is_transfered', false)->orderBy('created_at', 'DESC');
 
         if ($request->from_date) {
             $fromDate = Carbon::parse($request->from_date)->startOfDay();
@@ -114,12 +115,12 @@ class TransferController extends Controller
         if ($keyword) {
             $transfers->whereHas('user', function ($query) use ($keyword) {
                 $query->where('id', "$keyword")
-                    ->orWhere('fullname', 'like', "%$keyword%");
+                    ->orWhere('nickname', 'like', "%$keyword%");
             });
         }
 
         if ('transfers' == $request->submit) {
-            $transfers = $transfers->select(DB::raw('sum(amount) as sum_amount,  user_id'))->groupBy('user_id')->get();
+            $transfers = $transfers->select(DB::raw('sum(point) as sum_amount,  user_id'))->groupBy('user_id')->get();
 
             $header = [
                 '1',
@@ -159,7 +160,7 @@ class TransferController extends Controller
             $trailer = [
                 8,
                 str_pad(count($data), 6, "0", STR_PAD_LEFT),
-                str_pad($transfers->sum('amount'), 12, "0", STR_PAD_LEFT),
+                str_pad($transfers->sum('point'), 12, "0", STR_PAD_LEFT),
                 str_repeat(" ", 101),
             ];
 
@@ -180,7 +181,7 @@ class TransferController extends Controller
 
             return;
         }
-        $transfers = $transfers->orderBy('created_at', 'DESC')->paginate($request->limit ?: 10);
+        $transfers = $transfers->paginate($request->limit ?: 10);
 
         return view('admin.transfers.non_transfer', compact('transfers'));
     }
@@ -190,58 +191,57 @@ class TransferController extends Controller
         if ($request->has('transfer_ids')) {
             $transferIds = $request->transfer_ids;
 
-            $checkTransferExist = Transfer::whereIn('id', $transferIds)->whereNull('transfered_at')->exists();
+            $checkTransferExist = Point::whereIn('id', $transferIds)->where('type', PointType::RECEIVE)->where('is_transfered', false)->exists();
 
             try {
                 if ($checkTransferExist) {
-                    $transfers = Transfer::whereIn('id', $transferIds);
-                    $pointIds = [];
-
                     \DB::beginTransaction();
+                    $transfers = Point::whereIn('id', $transferIds);
+                    $transfers->update(['is_transfered' => true]);
+
+                    $transfers = $transfers->groupBy('user_id')->selectRaw('sum(point) as sum, user_id');
+
                     foreach ($transfers->cursor() as $transfer) {
                         $user = $transfer->user;
-                        $user->total_point += $transfer->amount;
-                        $user->point -= $transfer->amount;
+                        $user->total_point += $transfer->sum;
+                        $user->point -= $transfer->sum;
                         $user->save();
 
-                        $pointId = Point::where('user_id', $transfer->user_id)
-                            ->where('order_id', $transfer->order_id)
-                            ->where('type', PointType::RECEIVE)
-                            ->pluck('id')
-                            ->first();
+                        $data['point'] = $transfer->sum;
+                        $data['balance'] = $user->point;
+                        $data['user_id'] = $transfer->user_id;
+                        $data['type'] = PointType::TRANSFER;
 
-                        array_push($pointIds, $pointId);
+                        $point = new Point;
+
+                        $point->createPoint($data);
                     }
 
-                    Point::whereIn('id', $pointIds)->update(['type' => PointType::TRANSFER]);
-
-                    $transfers->update(['transfered_at' => now(), 'status' => TransferStatus::CLOSED]);
                     \DB::commit();
 
                     return redirect(route('admin.transfers.transfered'));
                 } else {
-                    $transfers = Transfer::whereIn('id', $transferIds);
-                    $pointIds = [];
-
                     \DB::beginTransaction();
+                    $transfers = Point::whereIn('id', $transferIds);
+                    $transfers->update(['is_transfered' => false]);
+                    $transfers = $transfers->groupBy('user_id')->selectRaw('sum(point) as sum, user_id');
+
                     foreach ($transfers->cursor() as $transfer) {
                         $user = $transfer->user;
-                        $user->total_point -= $transfer->amount;
-                        $user->point += $transfer->amount;
+                        $user->total_point -= $transfer->sum;
+                        $user->point += $transfer->sum;
                         $user->save();
 
-                        $pointId = Point::where('user_id', $transfer->user_id)
-                            ->where('order_id', $transfer->order_id)
-                            ->where('type', PointType::TRANSFER)
-                            ->pluck('id')
-                            ->first();
+                        $data['point'] = $transfer->sum;
+                        $data['balance'] = $user->point;
+                        $data['user_id'] = $transfer->user_id;
+                        $data['type'] = PointType::ADJUSTED;
 
-                        array_push($pointIds, $pointId);
+                        $point = new Point;
+
+                        $point->createPoint($data);
                     }
 
-                    Point::whereIn('id', $pointIds)->update(['type' => PointType::RECEIVE]);
-
-                    $transfers->update(['transfered_at' => null, 'status' => TransferStatus::OPEN]);
                     \DB::commit();
 
                     return redirect(route('admin.transfers.non_transfers'));

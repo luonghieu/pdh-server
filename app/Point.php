@@ -15,6 +15,7 @@ class Point extends Model
         'is_autocharge',
         'type',
         'status',
+        'is_transfered',
         'created_at',
         'updated_at',
     ];
