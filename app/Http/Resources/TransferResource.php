@@ -2,6 +2,7 @@
 
 namespace App\Http\Resources;
 
+use App\Enums\PointType;
 use App\Traits\ResourceResponse;
 use Illuminate\Http\Resources\Json\JsonResource;
 
@@ -21,7 +22,7 @@ class TransferResource extends JsonResource
             'id' => $this->id,
             'order_id' => $this->order_id,
             'user_id' => $this->user_id,
-            'amount' => abs($this->point),
+            'amount' => $this->type == PointType::TRANSFER ? abs($this->point) : $this->point,
             'status' => $this->status,
             'transfered_at' => $this->created_at,
             'user' => UserResource::make($this->whenLoaded('user')),
