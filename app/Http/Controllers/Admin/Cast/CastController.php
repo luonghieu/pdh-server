@@ -209,7 +209,7 @@ class CastController extends Controller
                 $sum += $product->point;
             }
 
-            if ($product->is_auto_charge && $product->point < 0) {
+            if ($product->is_adjusted && $product->point < 0) {
                 $sum += -$product->point;
             }
 
