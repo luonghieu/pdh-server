@@ -62,6 +62,7 @@ class CastResource extends Resource
             'status' => $this->status,
             'cost' => $this->cost,
             'point' => $this->point,
+            'total_point' => $this->total_point + $this->point,
             'avatars' => AvatarResource::collection($this->avatars),
             'working_today' => $this->working_today,
             'class_id' => $this->class_id,
