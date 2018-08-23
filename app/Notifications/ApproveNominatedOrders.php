@@ -3,6 +3,7 @@
 namespace App\Notifications;
 
 use App\Enums\UserType;
+use App\Room;
 use Illuminate\Bus\Queueable;
 use Illuminate\Notifications\Notification;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -59,7 +60,7 @@ class ApproveNominatedOrders extends Notification implements ShouldQueue
 
     public function pushData($notifiable)
     {
-        $room = $this->order->room;
+        $room = Room::find($this->order->room_id);
 
         $startTime = Carbon::parse($this->order->date . ' ' . $this->order->start_time);
 
@@ -93,7 +94,7 @@ class ApproveNominatedOrders extends Notification implements ShouldQueue
                         'push_id' => $pushId,
                         'send_from' => $send_from,
                         'order_id' => $this->order->id,
-                        'room_id' => $room->id
+                        'room_id' => ($room) ? $room->id : ''
                     ],
                 ],
             ],
