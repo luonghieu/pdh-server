@@ -23,6 +23,7 @@ class Message extends Model
         'image',
         'type',
         'system_type',
+        'is_manual',
     ];
 
     protected $casts = [

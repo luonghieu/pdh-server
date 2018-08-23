@@ -110,6 +110,7 @@ class MessageController extends ApiController
             'message' => 'required_if:type,2',
             'image' => 'required_if:type,3|image|mimes:jpeg,png,jpg,gif,svg|max:5120',
             'type' => 'required',
+            'is_manual' => '',
         ];
 
         $validator = validator($request->all(), $rules);
@@ -133,6 +134,10 @@ class MessageController extends ApiController
 
         if ($request->message) {
             $message->message = $request->message;
+        }
+
+        if ($request->is_manual) {
+            $message->is_manual = true;
         }
 
         if (request()->has('image')) {
