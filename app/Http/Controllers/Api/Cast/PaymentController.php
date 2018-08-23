@@ -2,10 +2,10 @@
 
 namespace App\Http\Controllers\Api\Cast;
 
-use App\Enums\TransferStatus;
+use App\Enums\PointType;
 use App\Http\Controllers\Api\ApiController;
 use App\Http\Resources\TransferResource;
-use App\Transfer;
+use App\Point;
 use Illuminate\Http\Request;
 
 class PaymentController extends ApiController
@@ -14,7 +14,7 @@ class PaymentController extends ApiController
     {
         $user = $this->guard()->user();
 
-        $payments = Transfer::where('user_id', $user->id)->where('status', TransferStatus::CLOSED);
+        $payments = Point::where('user_id', $user->id)->whereIn('type', [PointType::TRANSFER, PointType::ADJUSTED]);
 
         $payments = $payments->latest()->paginate($request->per_page)->appends($request->query());
 
