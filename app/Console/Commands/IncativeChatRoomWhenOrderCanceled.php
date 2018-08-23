@@ -2,12 +2,12 @@
 
 namespace App\Console\Commands;
 
-use Illuminate\Console\Command;
 use App\Enums\OrderStatus;
 use App\Enums\RoomType;
 use App\Enums\Status;
 use App\Room;
 use Carbon\Carbon;
+use Illuminate\Console\Command;
 
 class IncativeChatRoomWhenOrderCanceled extends Command
 {
@@ -47,8 +47,7 @@ class IncativeChatRoomWhenOrderCanceled extends Command
         Room::whereHas('order', function ($query) use ($today) {
             $query->where('canceled_at', '<=', $today->subDays(1))
                 ->where(function ($query) {
-                    $query->where('status', OrderStatus::CANCELED)
-                        ->orWhere('status', OrderStatus::DENIED);
+                    $query->whereIn('status', [OrderStatus::CANCELED, OrderStatus::DENIED]);
                 });
         })
             ->where([

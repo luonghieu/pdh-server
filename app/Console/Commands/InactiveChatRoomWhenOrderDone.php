@@ -47,7 +47,7 @@ class InactiveChatRoomWhenOrderDone extends Command
         Room::whereHas('order', function ($query) use ($today) {
             $query->where([
                 ['status', '=', OrderStatus::DONE],
-                ['actual_ended_at', '<', $today->subDays(1)],
+                ['paid_at', '<', $today->subDays(1)],
             ]);
         })
             ->where([
