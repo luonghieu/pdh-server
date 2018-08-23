@@ -49,6 +49,7 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.'], function () {
         Route::put('change_start_time_order_call', ['as' => 'change_start_time_order_call', 'uses' => 'OrderController@changeStartTimeOrderCall']);
         Route::put('change_stopped_time_order_call', ['as' => 'change_stopped_time_order_call', 'uses' => 'OrderController@changeStopTimeOrderCall']);
         Route::put('{order}/change_payment_request_status', ['as' => 'change_payment_request_status', 'uses' => 'OrderController@changePaymentRequestStatus'])->where('order', '[0-9]+');
+        Route::put('{order}/point_settlement', ['as' => 'point_settlement', 'uses' => 'OrderController@pointSettlement'])->where('order', '[0-9]+');
         Route::put('change_start_time_order_nominee', ['as' => 'change_start_time_order_nominee', 'uses' => 'OrderController@changeStartTimeOrderNominee']);
         Route::put('change_stop_time_order_nominee', ['as' => 'change_stop_time_order_nominee', 'uses' => 'OrderController@changeStopTimeOrderNominee']);
     });
