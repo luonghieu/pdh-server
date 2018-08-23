@@ -1156,13 +1156,24 @@ tbody td {
 
 .wrap-status {
   position: relative;
+  height: 70px;
 }
 
 .wrap-status .btn-nominee {
   top: 7px;
+  width: 160px;
+  right: 180px;
 }
 
 .wrap-status .btn-order-call {
+  top: 7px;
+  width: 160px;
+  right: 180px;
+}
+
+.btn-pay-point {
+  width: 160px;
+  right: 10px;
   top: 7px;
 }
 
