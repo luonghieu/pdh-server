@@ -17,16 +17,15 @@ class TransferResource extends JsonResource
      */
     public function toArray($request)
     {
-        return [
+        return $this->filterNull([
             'id' => $this->id,
             'order_id' => $this->order_id,
             'user_id' => $this->user_id,
-            'amount' => $this->amount,
+            'amount' => $this->point,
             'status' => $this->status,
-            'transfered_at' => $this->transfered_at,
-            'amount' => $this->amount,
+            'transfered_at' => $this->created_at,
             'user' => UserResource::make($this->whenLoaded('user')),
             'order' => OrderResource::make($this->whenLoaded('order')),
-        ];
+        ]);
     }
 }
