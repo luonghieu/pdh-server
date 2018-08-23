@@ -86,13 +86,13 @@ export default {
   created() {
     this.getToken();
     this.getRoom();
+    this.init();
     const url = window.location.href;
     const newUrl = new URL(url);
     this.roomId = Number(newUrl.searchParams.get("room"));
     if (this.roomId) {
       this.getMessagesInRoom(this.roomId);
     }
-    this.init();
   },
 
   methods: {
