@@ -69,7 +69,7 @@ export default {
       countUnread_realtime: 0,
       list_messageData: [],
       nickName: "",
-      userId: "",
+      userId: ""
     };
   },
 
@@ -86,13 +86,13 @@ export default {
   created() {
     this.getToken();
     this.getRoom();
-    this.init();
     const url = window.location.href;
     const newUrl = new URL(url);
     this.roomId = Number(newUrl.searchParams.get("room"));
     if (this.roomId) {
       this.getMessagesInRoom(this.roomId);
     }
+    this.init();
   },
 
   methods: {
@@ -109,6 +109,8 @@ export default {
           this.realtime_roomId == this.id
         ) {
           this.realtime_count = 0;
+        } else {
+          this.realtime_count += 1;
         }
         this.list_messages.push(e.message);
       });
@@ -204,7 +206,8 @@ export default {
       this.userId = this.user_id;
       let data = {
         message: this.message,
-        type: this.type
+        type: this.type,
+        is_manual: true
       };
 
       let config = {
@@ -217,6 +220,7 @@ export default {
         data = new FormData();
         data.append("image", this.file_upload);
         data.append("type", 3);
+        data.append("is_manual", true);
       }
 
       let Id;
@@ -298,7 +302,11 @@ export default {
     },
 
     handleCountMessage(event) {
-      this.nickName = event;
+        if(event == 0){
+            this.realtime_count = event;
+        } else {
+            this.nickName = event;
+        }
     },
 
     handleNewMessage(event) {
