@@ -216,7 +216,7 @@ class TransferController extends Controller
                         $user->point -= $transfer->sum;
                         $user->save();
 
-                        $data['point'] = $transfer->sum;
+                        $data['point'] = -$transfer->sum;
                         $data['balance'] = $user->point;
                         $data['user_id'] = $transfer->user_id;
                         $data['type'] = PointType::TRANSFER;
@@ -241,7 +241,7 @@ class TransferController extends Controller
                         $user->point += $transfer->sum;
                         $user->save();
 
-                        $data['point'] = -$transfer->sum;
+                        $data['point'] = $transfer->sum;
                         $data['balance'] = $user->point;
                         $data['user_id'] = $transfer->user_id;
                         $data['type'] = PointType::ADJUSTED;
