@@ -127,6 +127,8 @@ class Room extends Model
                     })
                     ->whereIn('status', $statuses)
                     ->orderByRaw('FIELD(status, ' . implode(',', $statuses) . ' )')
+                    ->orderBy('date')
+                    ->orderBy('start_time')
                     ->first();
                 break;
             default:
