@@ -247,7 +247,6 @@ class TransferController extends Controller
                         $data['type'] = PointType::ADJUSTED;
 
                         $point = new Point;
-
                         $point->createPoint($data, true);
                     }
 
