@@ -68,9 +68,9 @@
         <div style="display: table-cell; vertical-align: middle;">
             <div class="text" style="width: 320px; margin-right: auto; margin-left: auto; white-space: nowrap;">
                 <span style="display: block; font-size: 24px;">〒164-0014</span>
-                <span style="display: block; font-size: 24px;">東京都中野区南台 2丁目3番6号 004号室</span>
-                <span style="display: block; font-size: 24px;">株式会社RESTILL</span>
-                <span style="display: block; font-size: 24px">TEL 03-5789-5356</span>
+                <span style="display: block; font-size: 24px;">東京都中野区南台2丁目3番6号</span>
+                <span style="display: block; font-size: 24px;">Cheers運営局</span>
+                <span style="display: block; font-size: 24px">Mail：support@cheers.style</span>
             </div>
         </div>
     </div>
