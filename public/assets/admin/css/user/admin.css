@@ -1032,6 +1032,12 @@ tbody td {
   border: 1px solid #919191 !important;
 }
 
+.correction-type {
+  width: 80% !important;
+  height: 0% !important;
+  border: 1px solid #919191 !important;
+}
+
 .select-checkbox {
   width: 50px;
   text-align: -webkit-center;
