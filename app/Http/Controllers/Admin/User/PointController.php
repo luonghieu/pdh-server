@@ -65,6 +65,7 @@ class PointController extends Controller
             PointType::PAY => 'ポイント決済',
             PointType::AUTO_CHARGE => 'オートチャージ',
             PointType::ADJUSTED => '調整',
+            PointType::EVICT => 'ポイント失効',
         ];
 
         $points = $user->points()->with('payment', 'order')->where('status', Status::ACTIVE);
@@ -156,6 +157,16 @@ class PointController extends Controller
 
     public function changePoint(User $user, Request $request)
     {
+        $rules = [
+            'point' => 'regex:/^[0-9]+$/',
+        ];
+
+        $validator = validator($request->all(), $rules);
+
+        if ($validator->fails()) {
+            return response()->json(['errors' => $validator->errors()->all()], 400);
+        }
+
         $newPoint = $request->point;
         $oldPoint = $user->point;
         $differencePoint = $newPoint - $oldPoint;
