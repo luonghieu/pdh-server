@@ -193,6 +193,6 @@ class PointController extends Controller
             return $this->respondServerError();
         }
 
-        return redirect(route('admin.users.points_history', ['user' => $user->id]));
+        return response()->json(['success' => true]);
     }
 }

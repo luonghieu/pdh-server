@@ -331,7 +331,7 @@ class CastController extends Controller
         );
     }
 
-    public function changePoint(Cast $user, Request $request)
+    public function changePoint(Request $request, Cast $user)
     {
         $rules = [
             'point' => 'regex:/^[0-9]+$/',
@@ -377,6 +377,6 @@ class CastController extends Controller
             $request->session()->flash('msg', trans('messages.server_error'));
         }
 
-        return redirect(route('admin.casts.operation_history', ['user' => $user->id]));
+        return response()->json(['success' => true]);
     }
 }
