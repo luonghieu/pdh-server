@@ -40,7 +40,7 @@
                     </div>
                 </div>
         <div v-else>
-            <div class="timeLine__unreadLine" v-if="message.setRead == true && (realtime_roomId == room_id || realtime_roomId == Id || message.room_id == room_id || message.room_id == Id)" v-bind:class="isUnread == true ? '' : 'unread_count'">
+            <div class="timeLine__unreadLine" v-if="message.setRead == true && (message.room_id == room_id || message.room_id == Id)" v-bind:class="isUnread == true ? '' : 'unread_count'">
                     <div class="timeLine__unreadLineBorder">
                         <div class="timeLine__unreadLineContainer">
                             <div class="timeLine__unreadLineBody">
@@ -80,7 +80,7 @@ export default {
     "totalMessage",
     "roomId",
     "realtime_roomId",
-    "countUnread_realtime"
+    "unreadMessage"
   ],
   data() {
     return {
@@ -103,7 +103,7 @@ export default {
       isUnread: true,
       isCount: [],
       list_messageData: [],
-      getListMessage: [],
+      getListMessage: []
     };
   },
 
@@ -120,8 +120,6 @@ export default {
         (this.realtime_roomId == this.Id && this.pageCm < 2)
       ) {
         this.isScroll = true;
-      } else {
-        this.isScroll = false;
       }
     }
 
@@ -134,10 +132,11 @@ export default {
       this.realtime_roomId == this.Id
     ) {
       setTimeout(this.setTimeOut, 5000);
+    } else {
+         this.isUnread = true;
     }
-
-    if(this.pageCm == this.totalpage){
-        this.pageCm = 1;
+    if (this.pageCm == this.totalpage) {
+      this.pageCm = 1;
     }
 
     this.getListMessage = this.list_message;
@@ -188,8 +187,11 @@ export default {
         .get(`../../api/v1/rooms/${Id}?paginate=${15}&page=${pageCm + 1}`)
         .then(getMessage => {
           const room = getMessage.data.data.data;
-          let currentDate = new Date(this.getListMessage[this.getListMessage.length -1].created_at);
-          let date_data = this.getListMessage[this.getListMessage.length -1].created_at;
+          let currentDate = new Date(
+            this.getListMessage[this.getListMessage.length - 1].created_at
+          );
+          let date_data = this.getListMessage[this.getListMessage.length - 1]
+            .created_at;
           let isHeader = { isHeader: true, date_data, user: { avatars: null } };
           room.forEach(messages => {
             let i = 0;
@@ -210,9 +212,9 @@ export default {
               }
             }
             this.list_messageData.unshift(isHeader);
-            messages.forEach(items =>{
+            messages.forEach(items => {
               this.getListMessage.unshift(items);
-            })
+            });
           });
           this.pageCm = getMessage.data.data.current_page;
           this.totalItem = getMessage.data.data.total;
