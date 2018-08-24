@@ -3,10 +3,11 @@
 namespace App\Http\Controllers\Admin\Order;
 
 use App\Enums\OrderPaymentStatus;
-use App\Enums\OrderType;
 use App\Enums\OrderStatus;
+use App\Enums\OrderType;
 use App\Enums\PaymentRequestStatus;
 use App\Http\Controllers\Controller;
+use App\Jobs\PointSettlement;
 use App\Order;
 use App\PaymentRequest;
 use App\Services\LogService;
@@ -331,6 +332,17 @@ class OrderController extends Controller
             LogService::writeErrorLog($e);
 
             return $this->respondServerError();
+        }
+    }
+
+    public function pointSettlement(Request $request, Order $order)
+    {
+        PointSettlement::dispatchNow($order);
+
+        if ('order_nominee' == $request->page) {
+            return redirect(route('admin.orders.order_nominee', compact('order')));
+        } else {
+            return redirect(route('admin.orders.call', compact('order')));
         }
     }
 }

@@ -17,27 +17,36 @@
                   <option value="{{ $key }}" {{ request()->search_point_type == $key ? 'selected' : '' }}>{{ $pointType }}</option>
                 @endforeach
               </select>
-              <button type="submit" class="fa fa-search btn-search" name="submit" value="search"></button>
+              <button type="submit" class="fa fa-search btn btn-search" name="submit" value="search"></button>
               <div class="export-csv">
-                  <input type="hidden" name="is_export" value="1">
-                  <button type="submit" class="export-btn" name="submit" value="export">CSV出力</button>
+                <input type="hidden" name="is_export" value="1">
+                <button type="submit" class="export-btn" name="submit" value="export">CSV出力</button>
               </div>
-            </form>
-            <form class="navbar-form navbar-left form-search" action="{{route('admin.users.points_history', ['user' => $user->id])}}" id="limit-page" method="GET">
-              <div class="form-group">
-                <div class="col-md-1">
-                  <input type="hidden" name="from_date" value="{{ request()->from_date }}" />
-                  <input type="hidden" name="to_date" value="{{ request()->to_date }}" />
-                  <input type="hidden" name="search" value="{{ request()->search }}" />
-                </div>
-              </div>
+              <input type="hidden" name="limit" value="{{ request()->limit }}" />
             </form>
           </div>
         </div>
         <div class="current_point">
-          <p>現在の残高: {{ number_format($user->point )}}<span class="link-change-point"><a href="javascript:void(0)" data-toggle="modal" data-target="#changePoint">ポイントを修正する</a></span></p>
+          <p>現在の残高: {{ number_format($user->point) }}<span class="link-change-point"><a href="javascript:void(0)" id="link-change-point" data-user-id="{{ $user->id }}" data-toggle="modal" data-target="#changePoint">ポイントを修正する</a></span></p>
         </div>
         <div class="clearfix"></div>
+        <div class="panel-body">
+          <form class="navbar-form navbar-left form-search" action="{{ route('admin.casts.operation_history', ['user' => $user->id]) }}" id="limit-page" method="GET">
+            <div class="form-group">
+              <label class="col-md-1 limit-page">表示件数：</label>
+              <div class="col-md-1">
+                <select id="select-limit" name="limit" class="form-control">
+                  @foreach ([10, 20, 50, 100] as $limit)
+                    <option value="{{ $limit }}" {{ request()->limit == $limit ? 'selected' : '' }}>{{ $limit }}</option>
+                  @endforeach
+                </select>
+                <input type="hidden" name="from_date" value="{{ request()->from_date }}" />
+                <input type="hidden" name="to_date" value="{{ request()->to_date }}" />
+                <input type="hidden" name="search_point_type" value="{{ request()->search_point_type }}" />
+              </div>
+            </div>
+          </form>
+        </div>
         <div class="panel-body">
           @include('admin.partials.notification')
           <table class="table table-striped table-bordered bootstrap-datatable">
@@ -62,11 +71,11 @@
                   <tr>
                     <td>{{ Carbon\Carbon::parse($point->created_at)->format('Y年m月d日') }}</td>
                     <td>{{ App\Enums\PointType::getDescription($point->type) }}</td>
-                    <td>{{ $point->is_receive ? $point->order->id : '--' }}</td>
-                    <td>{{ $point->is_receive ? number_format($point->point) : '' }}</td>
-                    <td>{{ $point->is_transfer ? number_format($point->point) : ''}}</td>
+                    <td>{{ ($point->is_receive) ? $point->order->id : '--' }}</td>
+                    <td>{{ ($point->is_receive || ($point->is_adjusted && $point->point > 0)) ? number_format($point->point) : '' }}</td>
+                    <td>{{ (($point->is_transfer) || ($point->is_adjusted && $point->point < 0)) ? number_format($point->point) : ''}}</td>
                     <td>{{ number_format($point->balance) }}</td>
-                    <td>￥ {{ number_format($point->balance) }}</td>
+                    <td>{{ ($point->is_transfer) ? '￥' . number_format(abs($point->point)) : '' }}</td>
                   </tr>
                 @endforeach
                 <tr>
@@ -74,9 +83,9 @@
                   <td class="result">-</td>
                   <td class="result">-</td>
                   <td class="result">{{ number_format($sumPointReceive) }}</td>
-                  <td class="result">{{ number_format($sumPointTransfer) }}</td>
+                  <td class="result">{{ number_format($sumConsumedPoint) }}</td>
                   <td class="result">{{ number_format($sumBalance) }}</td>
-                  <td class="result">￥ {{ number_format($sumBalance) }}</td>
+                  <td class="result">￥{{ number_format(abs($sumDebitAmount)) }}</td>
                 </tr>
               @endif
             </tbody>
@@ -88,11 +97,26 @@
               <div class="modal-body">
                 <p>ポイントを修正する</p>
               </div>
-              <form action="{{ route('admin.casts.operation_history', ['user' => $user->id]) }}" method="POST">
+              <!-- message js -->
+              <div class="has-error text-center">
+                <div class="help-block" id="point-alert">
+                </div>
+              </div>
+              <!--  -->
+              <form action="{{ route('admin.casts.change_point', ['user' => $user->id]) }}" method="POST" id="change-point-form">
                 {{ csrf_field() }}
                 {{ method_field('PUT') }}
-                <div class="change-point-input">
-                  <input type="text" name="point" value=""> P
+                <div class="change-point-input row">
+                  <div class="col-sm-offset-1 col-sm-4">
+                    <select class="form-control correction-type" name="correction_type">
+                      @foreach ($pointCorrectionTypes as $key => $pointCorrectionType)
+                        <option value="{{ $key }}" {{ request()->correction_type == $key ? 'selected' : '' }}>{{ $pointCorrectionType }}</option>
+                      @endforeach
+                    </select>
+                  </div>
+                  <div class="col-sm-6">
+                    <input type="text" name="point" id="point" value=""> P
+                  </div>
                 </div>
                 <div class="modal-footer">
                   <button type="button" class="btn btn-canceled" data-dismiss="modal">キャンセル</button>
@@ -121,3 +145,7 @@
   <!--/row-->
 </div>
 @endsection
+@section('admin.js')
+  <script src="/assets/admin/js/changepoint/change_point.js"></script>
+@stop
+

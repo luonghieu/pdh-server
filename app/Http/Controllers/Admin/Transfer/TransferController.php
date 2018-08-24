@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin\Transfer;
 
 use App\Enums\BankAccountType;
 use App\Enums\PointType;
+use App\Enums\UserType;
 use App\Http\Controllers\Controller;
 use App\Point;
 use App\Services\CSVExport;
@@ -18,7 +19,13 @@ class TransferController extends Controller
 {
     public function getTransferedList(Request $request)
     {
+        $adminType = UserType::ADMIN;
+        $keyword = $request->search;
+
         $transfers = Point::with('user', 'order')->where('type', PointType::RECEIVE)
+            ->whereHas('user', function ($query) use ($adminType) {
+                $query->where('users.type', '!=', $adminType);
+            })
             ->where('is_transfered', true)->orderBy('created_at', 'DESC');
         if ($request->from_date) {
             $fromDate = Carbon::parse($request->from_date)->startOfDay();
@@ -33,6 +40,13 @@ class TransferController extends Controller
             $toDate = Carbon::parse($request->to_date)->endOfDay();
             $transfers->where(function ($query) use ($fromDate, $toDate) {
                 $query->where('created_at', '<=', $toDate);
+            });
+        }
+
+        if ($keyword) {
+            $transfers->whereHas('user', function ($query) use ($keyword) {
+                $query->where('id', "$keyword")
+                    ->orWhere('nickname', 'like', "%$keyword%");
             });
         }
 
@@ -92,8 +106,12 @@ class TransferController extends Controller
     public function getNotTransferedList(Request $request)
     {
         $keyword = $request->search;
+        $adminType = UserType::ADMIN;
 
         $transfers = Point::with('user', 'order')->where('type', PointType::RECEIVE)
+            ->whereHas('user', function ($query) use ($adminType) {
+                $query->where('users.type', '!=', $adminType);
+            })
             ->where('is_transfered', false)->orderBy('created_at', 'DESC');
 
         if ($request->from_date) {
@@ -207,14 +225,14 @@ class TransferController extends Controller
                         $user->point -= $transfer->sum;
                         $user->save();
 
-                        $data['point'] = $transfer->sum;
+                        $data['point'] = -$transfer->sum;
                         $data['balance'] = $user->point;
                         $data['user_id'] = $transfer->user_id;
                         $data['type'] = PointType::TRANSFER;
 
                         $point = new Point;
 
-                        $point->createPoint($data);
+                        $point->createPoint($data, true);
                     }
 
                     \DB::commit();
@@ -238,8 +256,7 @@ class TransferController extends Controller
                         $data['type'] = PointType::ADJUSTED;
 
                         $point = new Point;
-
-                        $point->createPoint($data);
+                        $point->createPoint($data, true);
                     }
 
                     \DB::commit();

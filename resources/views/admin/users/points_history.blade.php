@@ -35,7 +35,7 @@
           </div>
         </div>
         <div class="current_point">
-          <p>現在の残高: {{ number_format($user->point )}}<span class="link-change-point"><a href="javascript:void(0)" data-toggle="modal" data-target="#changePoint">ポイントを修正する</a></span></p>
+          <p>現在の残高: {{ number_format($user->point )}}<span class="link-change-point"><a href="javascript:void(0)" id="link-change-point" data-user-id="{{ $user->id }}" data-toggle="modal" data-target="#changePoint">ポイントを修正する</a></span></p>
         </div>
         <div class="clearfix"></div>
         <div class="panel-body">
@@ -119,11 +119,17 @@
               <div class="modal-body">
                 <p>ポイントを修正する</p>
               </div>
-              <form action="{{ route('admin.users.change_point', ['user' => $user->id]) }}" method="POST">
+              <!-- message js -->
+              <div class="has-error text-center">
+                <div class="help-block" id="point-alert">
+                </div>
+              </div>
+              <!--  -->
+              <form action="{{ route('admin.users.change_point', ['user' => $user->id]) }}" method="POST" id="change-point-form">
                 {{ csrf_field() }}
                 {{ method_field('PUT') }}
                 <div class="change-point-input">
-                  <input type="text" name="point" value=""> P
+                  <input type="text" name="point" id="point" value=""> P
                 </div>
                 <div class="modal-footer">
                   <button type="button" class="btn btn-canceled" data-dismiss="modal">キャンセル</button>
@@ -152,3 +158,6 @@
   <!--/row-->
 </div>
 @endsection
+@section('admin.js')
+  <script src="/assets/admin/js/changepoint/change_point.js"></script>
+@stop

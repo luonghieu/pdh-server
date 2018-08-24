@@ -128,6 +128,9 @@ return [
         'attribute-name' => [
             'rule-name' => 'custom-message',
         ],
+        'point' => [
+            'regex' => 'Please enter points with numbers',
+        ],
     ],
 
     /*

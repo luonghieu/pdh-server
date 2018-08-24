@@ -52,8 +52,9 @@ class DeleteUnusedPointAfter180Days extends Command
             foreach ($points->cursor() as $point) {
                 DB::beginTransaction();
 
+                $balancePoint = $point->balance;
                 $data = [
-                    'point' => $point->balance,
+                    'point' => -$balancePoint,
                     'balance' => $point->user->point - $point->balance,
                     'user_id' => $point->user_id,
                     'type' => PointType::EVICT,
@@ -67,6 +68,7 @@ class DeleteUnusedPointAfter180Days extends Command
 
                 $data['user_id'] = 1;
                 $data['type'] = PointType::RECEIVE;
+                $data['point'] = $point->balance;
 
                 $pointAdmin = new Point;
                 $pointAdmin->createPoint($data);
@@ -75,12 +77,12 @@ class DeleteUnusedPointAfter180Days extends Command
                 $point->save();
 
                 $user = User::find($point->user->id);
-                $user->point -= $pointUnused->point;
+                $user->point -= $balancePoint;
                 $user->save();
 
                 $admin = User::find(1);
                 if ($admin->is_admin) {
-                    $admin->point += $pointUnused->point;
+                    $admin->point += $balancePoint;
                     $admin->save();
                 }
 

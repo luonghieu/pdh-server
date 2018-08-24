@@ -6,6 +6,7 @@ use App\BankAccount;
 use App\Cast;
 use App\CastClass;
 use App\Enums\PointType;
+use App\Enums\PointCorrectionType;
 use App\Enums\Status;
 use App\Enums\UserType;
 use App\Http\Controllers\Controller;
@@ -200,18 +201,22 @@ class CastController extends Controller
         return $sumPointReceive;
     }
 
-    public function sumPointTransfer($points)
+    public function sumConsumedPoint($points)
     {
-        $sumPointTransfer = $points->sum(function ($product) {
+        $sumConsumedPoint = $points->sum(function ($product) {
             $sum = 0;
             if ($product->is_transfer) {
                 $sum += $product->point;
             }
 
+            if ($product->is_adjusted && $product->point < 0) {
+                $sum += -$product->point;
+            }
+
             return $sum;
         });
 
-        return $sumPointTransfer;
+        return $sumConsumedPoint;
     }
 
     public function getOperationHistory(Cast $user, Request $request)
@@ -224,7 +229,12 @@ class CastController extends Controller
             PointType::TRANSFER => '振込',
         ];
 
-        $points = $user->points()->with('payment', 'order')
+        $pointCorrectionTypes = [
+            PointCorrectionType::ACQUISITION => '取得ポイント',
+            PointCorrectionType::CONSUMPTION => '消費ポイント',
+        ];
+
+        $points = $user->points()->with('order')
             ->whereIn('type', [PointType::RECEIVE, PointType::TRANSFER, PointType::ADJUSTED])
             ->where('status', Status::ACTIVE);
 
@@ -255,20 +265,29 @@ class CastController extends Controller
         $pointsExport = $points->get();
         $points = $points->paginate($request->limit ?: 10);
 
-        $sumPointReceive = $this->sumPointReceive($points);
-        $sumPointTransfer = $this->sumPointTransfer($points);
-        $sumBalance = $points->sum('balance');
+        $sumPointReceive = $this->sumPointReceive($pointsExport);
+        $sumConsumedPoint = -$this->sumConsumedPoint($pointsExport);
+        $sumBalance = $sumPointReceive - $sumConsumedPoint;
+
+        $sumDebitAmount = $points->sum(function ($product) {
+            $sum = 0;
+            if ($product->is_transfer && $product->point < 0) {
+                $sum += $product->point;
+            }
+
+            return $sum;
+        });
 
         if ('export' == $request->submit) {
             $data = collect($pointsExport)->map(function ($item) {
                 return [
                     Carbon::parse($item->created_at)->format('Y年m月d日'),
                     PointType::getDescription($item->type),
-                    $item->is_receive ? $item->order->id : '--',
-                    $item->is_receive ? number_format($item->point) : '',
-                    $item->is_transfer ? number_format($item->point) : '',
+                    ($item->is_receive) ? $item->order->id : '--',
+                    ($item->is_receive || ($item->is_adjusted && $item->point > 0)) ? number_format($item->point) : '',
+                    (($item->is_transfer) || ($item->is_adjusted && $item->point < 0)) ? number_format($item->point) : '',
                     number_format($item->balance),
-                    '￥' . number_format($item->balance),
+                    ($item->is_transfer) ? '￥' . number_format(abs($item->point)) : '',
                 ];
             })->toArray();
 
@@ -276,10 +295,10 @@ class CastController extends Controller
                 '合計',
                 '-',
                 '-',
-                $this->sumPointReceive($pointsExport),
-                $this->sumPointTransfer($pointsExport),
-                $pointsExport->sum('balance'),
-                '¥ ' . number_format($pointsExport->sum('balance')),
+                $sumPointReceive,
+                $sumConsumedPoint,
+                $sumBalance,
+                '¥' . number_format(abs($sumDebitAmount)),
             ];
 
             array_push($data, $sum);
@@ -307,17 +326,38 @@ class CastController extends Controller
             return;
         }
 
-        return view('admin.casts.operation_history', compact('user', 'points', 'pointTypes', 'sumPointReceive', 'sumPointTransfer', 'sumBalance'));
+        return view('admin.casts.operation_history', compact('user', 'points', 'pointTypes',
+            'sumPointReceive', 'sumConsumedPoint', 'sumBalance', 'sumDebitAmount', 'pointCorrectionTypes')
+        );
     }
 
     public function changePoint(Cast $user, Request $request)
     {
-        $newPoint = $request->point;
-        $oldPoint = $user->point;
-        $differencePoint = $newPoint - $oldPoint;
+        $rules = [
+            'point' => 'regex:/^[0-9]+$/',
+        ];
+
+        $validator = validator($request->all(), $rules);
+
+        if ($validator->fails()) {
+            return response()->json(['errors' => $validator->errors()->all()], 400);
+        }
+
+        switch ($request->correction_type) {
+            case PointCorrectionType::ACQUISITION:
+                $point = $request->point;
+                break;
+            case PointCorrectionType::CONSUMPTION:
+                $point = -$request->point;
+                break;
+
+            default:break;
+        }
+
+        $newPoint = $user->point + $point;
 
         $input = [
-            'point' => $differencePoint,
+            'point' => $point,
             'balance' => $newPoint,
             'type' => PointType::ADJUSTED,
             'status' => Status::ACTIVE,
@@ -334,8 +374,7 @@ class CastController extends Controller
         } catch (\Exception $e) {
             DB::rollBack();
             LogService::writeErrorLog($e);
-
-            return $this->respondServerError();
+            $request->session()->flash('msg', trans('messages.server_error'));
         }
 
         return redirect(route('admin.casts.operation_history', ['user' => $user->id]));

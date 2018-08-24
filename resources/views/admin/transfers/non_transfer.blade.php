@@ -73,13 +73,7 @@
                       value="{{ $transfer->id }}"
                       name="transfer_ids[]">
                   </td>
-                  <td>
-                    @if ($transfer->order_id)
-                    {{ $transfer->order_id }}
-                    @else
-                    {{ trans('messages.order_not_found') }}
-                    @endif
-                  </td>
+                  <td>{{ $transfer->order_id }}</td>
                   <td>{{ Carbon\Carbon::parse($transfer->created_at)->format('Y年m月d日') }}</td>
                   <td>{{ $transfer->user_id }}</td>
                   <td>{{ $transfer->user->nickname }}</td>

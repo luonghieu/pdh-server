@@ -82,7 +82,7 @@
                 <th>ステータス</th>
                 <td class="wrap-status">
                   @if ($order->payment_status != null)
-                  {{ App\Enums\OrderPaymentStatus::getDescription($order->payment_status) }}
+                  <span>{{ App\Enums\OrderPaymentStatus::getDescription($order->payment_status) }}</span>
                   @else
                     @if (App\Enums\OrderStatus::DENIED == $order->status || App\Enums\OrderStatus::CANCELED == $order->status)
                       @if ($order->type == App\Enums\OrderType::NOMINATION && (count($order->nominees) > 0 ? empty($order->nominees[0]->pivot->accepted_at) : false))
@@ -95,11 +95,12 @@
                         @endif
                       @endif
                     @else
-                    {{ App\Enums\OrderStatus::getDescription($order->status) }}
+                    <span>{{ App\Enums\OrderStatus::getDescription($order->status) }}</span>
                     @endif
                   @endif
                   @if (App\Enums\OrderPaymentStatus::EDIT_REQUESTING == $order->payment_status)
                   <button class="change-time payment-request btn-nominee" data-toggle="modal" data-target="#payment-request">ステータスを売上申請待ちに切り替える</button>
+                  <button class="change-time btn-pay-point" data-toggle="modal" data-target="#pay-point">ステータスをポイント決済完了に切り替える</button>
                   @endif
                 </td>
               </tr>
@@ -167,6 +168,25 @@
                   </div>
                   <div class="modal-footer">
                     <form action="{{ route('admin.orders.change_payment_request_status',['order' => $order->id]) }}" method="POST">
+                    {{ csrf_field() }}
+                    {{ method_field('PUT') }}
+                      <input type="hidden" name="page" value="order_nominee">
+                      <button type="button" class="btn btn-canceled" data-dismiss="modal">キャンセル</button>
+                      <button type="submit" class="btn btn-accept">はい</button>
+                    </form>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="modal fade" id="pay-point" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+              <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                  <div class="modal-body">
+                    <p>ステータスを「ポイント決済」に変更しますか？</p>
+                    <p>「はい」をタップすると、決済が実行されます。</p>
+                  </div>
+                  <div class="modal-footer">
+                    <form action="{{ route('admin.orders.point_settlement',['order' => $order->id]) }}" method="POST">
                     {{ csrf_field() }}
                     {{ method_field('PUT') }}
                       <input type="hidden" name="page" value="order_nominee">
