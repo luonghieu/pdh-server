@@ -1159,6 +1159,10 @@ tbody td {
   height: 70px;
 }
 
+.wrap-status span {
+  padding-right: 10px;
+}
+
 .wrap-status .btn-nominee {
   top: 7px;
   width: 160px;
@@ -1194,6 +1198,12 @@ tbody td {
     margin-left: 0;
   }
 
+  .btn-pay-point {
+    width: 160px;
+    right: 10px;
+    top: 7px;
+  }
+
 }
 
 @media (max-width: 1740px) and (min-width: 1200px) {
@@ -1217,14 +1227,26 @@ tbody td {
     height: 90px;
   }
 
+  .wrap-status span {
+    padding-right: 230px;
+  }
+
   .wrap-status .btn-nominee {
-    top: 54px;
-    left: 130px;
+    top: 8px;
+    right: 155px;
+    width: 100px;
   }
 
   .wrap-status .btn-order-call {
-    top: 54px;
-    left: 130px;
+    top: 8px;
+    right: 155px;
+    width: 100px;
+  }
+
+  .btn-pay-point {
+    width: 135px;
+    right: 10px;
+    top: 7px;
   }
 
   .order-nominee-started-time {
@@ -1251,15 +1273,26 @@ tbody td {
     height: 107px;
   }
 
+  .wrap-status span {
+    padding-right: 230px;
+  }
+
   .wrap-status .btn-nominee {
-    top: 65px;
-    left: 66px;
-    width: 275px;
+    top: 17px;
+    left: 285px;
+    width: 120px;
   }
 
   .wrap-status .btn-order-call {
-    top: 54px;
-    left: 130px;
+    top: 17px;
+    left: 285px;
+    width: 120px;
+  }
+
+  .btn-pay-point {
+    width: 134px;
+    right: 15px;
+    top: 16px;
   }
 
   .order-nominee-started-time {
@@ -1300,6 +1333,10 @@ tbody td {
     height: 153px;
   }
 
+  .wrap-status span {
+
+  }
+
   .wrap-status .btn-nominee {
     top: 90px;
     left: 40px;
@@ -1307,8 +1344,15 @@ tbody td {
   }
 
   .wrap-status .btn-order-call {
-    top: 54px;
-    left: 130px;
+    top: 90px;
+    left: 40px;
+    width: 170px;
+  }
+
+  .btn-pay-point {
+    width: 160px;
+    right: 10px;
+    top: 7px;
   }
 
   .order-nominee-started-time {

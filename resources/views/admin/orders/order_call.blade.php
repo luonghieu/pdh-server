@@ -121,7 +121,7 @@
                 <th>ステータス</th>
                 <td class="wrap-status">
                   @if ($order->payment_status != null)
-                  {{ App\Enums\OrderPaymentStatus::getDescription($order->payment_status) }}
+                  <span>{{ App\Enums\OrderPaymentStatus::getDescription($order->payment_status) }}</span>
                   @else
                     @if (App\Enums\OrderStatus::DENIED == $order->status || App\Enums\OrderStatus::CANCELED == $order->status)
                       @if ($order->type == App\Enums\OrderType::NOMINATION && (count($order->nominees) > 0 ? empty($order->nominees[0]->pivot->accepted_at) : false))
@@ -134,7 +134,7 @@
                         @endif
                       @endif
                     @else
-                    {{ App\Enums\OrderStatus::getDescription($order->status) }}
+                    <span>{{ App\Enums\OrderStatus::getDescription($order->status) }}</span>
                     @endif
                   @endif
                   @if (App\Enums\OrderPaymentStatus::EDIT_REQUESTING == $order->payment_status)
