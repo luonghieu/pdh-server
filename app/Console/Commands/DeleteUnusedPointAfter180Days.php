@@ -64,14 +64,14 @@ class DeleteUnusedPointAfter180Days extends Command
                 }
 
                 $pointUnused = new Point;
-                $pointUnused->createPoint($data);
+                $pointUnused->createPoint($data, true);
 
                 $data['user_id'] = 1;
                 $data['type'] = PointType::RECEIVE;
                 $data['point'] = $point->balance;
 
                 $pointAdmin = new Point;
-                $pointAdmin->createPoint($data);
+                $pointAdmin->createPoint($data, true);
 
                 $point->balance = 0;
                 $point->save();
