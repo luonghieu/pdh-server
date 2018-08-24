@@ -30,7 +30,7 @@
                             <div class="on_mess" v-if="message.image">
                                 <img width="100" :src="message.image"/>
                             </div>
-                            <p :id="message.room_id" class="on_mess" ref="linkOut" v-if="message.message" :key='message.id'>{{message.message}}</p>
+                            <p :id="message.room_id" class="on_mess" ref="linkOut" v-if="message.message" :key='message.id' v-html="isLinkMessage(message.message)"></p>
                         </div>
                         <div style="clear:both"></div>
                         <!-- <confirm-delete :delete="selectedMessage" v-if='confirmModal' @confirm="deleteMessage"
@@ -57,7 +57,7 @@
                             <div v-if="message.image">
                                 <img width="100" :src="message.image"/>
                             </div>
-                            <p :id="message.room_id" ref="linkIncom" v-if="message.message">{{message.message}}</p>
+                            <p :id="message.room_id" ref="linkIncom" v-if="message.message" v-html="isLinkMessage(message.message)"></p>
                             <span class="time_incom" v-if="message.created_at">{{message.created_at.substr(6,10)}}</span>
                         </div>
                 </div>
@@ -95,7 +95,6 @@ export default {
       room_id: "",
       Id: Number(this.roomId),
       isHidden: false,
-      linkOut: "",
       linkInMessage: "",
       realtime_id: 0,
       index: 0,
@@ -133,7 +132,7 @@ export default {
     ) {
       setTimeout(this.setTimeOut, 5000);
     } else {
-         this.isUnread = true;
+      this.isUnread = true;
     }
     if (this.pageCm == this.totalpage) {
       this.pageCm = 1;
@@ -255,6 +254,14 @@ export default {
         const scroll = $(".msg_history")[0].scrollHeight;
         $(".msg_history").animate({ scrollTop: scroll });
       });
+    },
+
+    isLinkMessage(isLinkMessage) {
+      let data = isLinkMessage.match(/\bhttps?:\/\/\S+/gi);
+      if (data) {
+        return "<a  href=" + data[0] + "> " + data[0] + "</a>";
+      }
+      return isLinkMessage;
     }
   }
 };
