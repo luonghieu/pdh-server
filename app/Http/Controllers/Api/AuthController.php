@@ -44,7 +44,7 @@ class AuthController extends ApiController
 
     public function refresh()
     {
-        return $this->respondWithData($this->respondWithToken($this->guard()->refresh())->getData());
+        return $this->respondWithData($this->respondWithToken($this->guard()->refresh(), $this->guard()->user())->getData());
     }
 
     public function logout()
