@@ -20,6 +20,8 @@ class TransferController extends Controller
     public function getTransferedList(Request $request)
     {
         $adminType = UserType::ADMIN;
+        $keyword = $request->search;
+
         $transfers = Point::with('user', 'order')->where('type', PointType::RECEIVE)
             ->whereHas('user', function ($query) use ($adminType) {
                 $query->where('users.type', '!=', $adminType);
@@ -38,6 +40,13 @@ class TransferController extends Controller
             $toDate = Carbon::parse($request->to_date)->endOfDay();
             $transfers->where(function ($query) use ($fromDate, $toDate) {
                 $query->where('created_at', '<=', $toDate);
+            });
+        }
+
+        if ($keyword) {
+            $transfers->whereHas('user', function ($query) use ($keyword) {
+                $query->where('id', "$keyword")
+                    ->orWhere('nickname', 'like', "%$keyword%");
             });
         }
 
