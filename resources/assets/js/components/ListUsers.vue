@@ -11,12 +11,11 @@
             </ul>
         </div>
         <div class="inbox_chat inbox_cast" id="cast">
-            <div v-for="value in filteredData">
+            <div v-for="(value, index) in filteredData" :key="index">
                     <router-link :to="{ name: 'ChatRoom', params: { id: value.id }}" v-on:click.native="setRoomId(value.id, value.unread_count, value.users)">
                         <div v-bind:class="value.id == Id || value.id == room_id  ? 'active_chat' : ''">
-                            <div class="chat_list" v-for="userDetail in value.users"
+                            <div class="chat_list" v-for="(userDetail, index) in value.users" :key="index"
                                  v-if="userDetail.type == cast">
-
                                 <div class="chat_people">
                                     <div class="chat_img" v-if=userDetail.avatars><img
                                             class="img_avatar"
@@ -24,22 +23,20 @@
                                     </div>
                                     <div class="chat_ib">
                                         <h5 class="chat_id fa fa-id-badge"> {{userDetail.id}}</h5>
-                                          <h5 v-if="unread_realtime > 0 && realtime_roomId == value.id" class="chat_nickname" v-bind:class="unread_realtime == 0 ? '' : 'chat_ib_nickname' "><i v-bind:class="userDetail.gender == 2 ? 'fa fa-female' : 'fa fa-male' "></i> {{userDetail.nickname}}</h5>
-                                        <h5 v-if="!realtime_roomId && unread_realtime <= 0" class="chat_nickname" v-bind:class="value.unread_count == 0 || value.id == Id || value.id == room_id || setUnread == 0  ? '' : 'chat_ib_nickname' "><i v-bind:class="userDetail.gender == 2 ? 'fa fa-female' : 'fa fa-male' "></i> {{userDetail.nickname}}</h5>
+                                        <h5 class="chat_nickname"><i v-bind:class="userDetail.gender == 2 ? 'fa fa-female' : 'fa fa-male' "></i> {{userDetail.nickname}}</h5>
                                     </div>
                                 </div>
-                                 <span v-if="unread_realtime > 0 && realtime_roomId == value.id" v-bind:class="unread_realtime == 0 ? 'notification' : 'notify-chat'">{{unread_realtime}}</span>
-                                <span v-if="!realtime_roomId && unread_realtime <= 0" v-bind:class="value.unread_count == 0 || value.id == Id || value.id == room_id || setUnread == 0 ? 'notification' : 'notify-chat'">{{value.unread_count}}</span>
+                                <span v-for="(unread, index) in unreadMessage" :key="index" v-if="unread.id == value.id && unread.count > 0" v-bind:class="unread.count == 0 || value.id == Id || value.id == room_id  ? 'notification' : 'notify-chat'">{{unread.count}}</span>
                             </div>
                         </div>
                     </router-link>
             </div>
         </div>
         <div class="inbox_chat inbox_guest" id="guest">
-            <div v-for="value in filteredData">
+            <div v-for="(value, index) in filteredData" :key="index">
                     <router-link :to="{ name: 'ChatRoom', params: { id: value.id }}" v-on:click.native="setRoomId(value.id, value.unread_count, value.users)">
                         <div v-bind:class="value.id == Id || value.id == room_id ? 'active_chat ' : ''">
-                            <div class="chat_list" v-for="userDetail in value.users" v-if="userDetail.type == guest">
+                            <div class="chat_list" v-for="(userDetail, index) in value.users" v-if="userDetail.type == guest" :key="index">
                                 <div class="chat_people">
                                     <div class="chat_img" v-if=userDetail.avatars><img
                                             class="img_avatar"
@@ -47,12 +44,10 @@
                                     </div>
                                     <div class="chat_ib">
                                         <h5 class="chat_id fa fa-id-badge"> {{userDetail.id}}</h5>
-                                        <h5 v-if="unread_realtime > 0 && realtime_roomId == value.id" class="chat_nickname" v-bind:class="unread_realtime == 0 ? '' : 'chat_ib_nickname' "><i v-bind:class="userDetail.gender == 2 ? 'fa fa-female' : 'fa fa-male' "></i> {{userDetail.nickname}}</h5>
-                                        <h5 v-if="!realtime_roomId && unread_realtime <= 0" class="chat_nickname" v-bind:class="value.unread_count == 0 || value.id == Id || value.id == room_id || setUnread == 0  ? '' : 'chat_ib_nickname' "><i v-bind:class="userDetail.gender == 2 ? 'fa fa-female' : 'fa fa-male' "></i> {{userDetail.nickname}}</h5>
+                                        <h5 class="chat_nickname"><i v-bind:class="userDetail.gender == 2 ? 'fa fa-female' : 'fa fa-male' "></i> {{userDetail.nickname}}</h5>
                                     </div>
                                 </div>
-                                <span v-if="unread_realtime > 0 && realtime_roomId == value.id" v-bind:class="unread_realtime == 0 ? 'notification' : 'notify-chat'">{{unread_realtime}}</span>
-                                <span v-if="!realtime_roomId && unread_realtime <= 0" v-bind:class="value.unread_count == 0 || value.id == Id || value.id == room_id || setUnread == 0 ? 'notification' : 'notify-chat'">{{value.unread_count}}</span>
+                                <span v-for="(unread, index) in unreadMessage" :key="index" v-if="unread.id == value.id && unread.count > 0" v-bind:class="unread.count == 0 || value.id == Id || value.id == room_id  ? 'notification' : 'notify-chat'">{{unread.count}}</span>
                             </div>
                         </div>
                     </router-link>
@@ -69,8 +64,9 @@ export default {
     "roomId",
     "realtime_message",
     "realtime_roomId",
-    "realtime_count",
-    "users"
+    "users",
+    "unreadMessage",
+    "getRoom"
   ],
   data() {
     return {
@@ -81,10 +77,9 @@ export default {
       Id: "",
       room_id: this.roomId,
       setUnread: 1,
-      count: 0,
+      count: this.unreadMessage,
       nickName: "",
-      unread_realtime: 0,
-      unRead: ""
+      unRead: 0
     };
   },
 
@@ -98,21 +93,21 @@ export default {
       user.forEach(item => {
         this.nickName = item.nickname;
       });
-      if (this.realtime_roomId == roomID) {
-          this.unread_realtime = 0;
-        this.$emit("interface", this.count);
-      }
 
-      if(this.unread_realtime == 0){
+      this.unRead = 0;
+      let index = this.unreadMessage.findIndex(function(object) {
+        return object.id === roomID;
+      });
+      this.$emit("interface", index);
+
+      if (this.unRead == 0) {
         this.$emit("interface", this.nickName);
       }
-
     }
   },
 
   computed: {
     filteredData: function() {
-      this.unread_realtime = this.realtime_count;
       let search_array = this.users;
       let searchName = this.searchName;
 

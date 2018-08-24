@@ -3,12 +3,12 @@
         <div class="messaging">
             <div class="inbox_msg">
                 <h3 class="text-center nickname">{{nickName}}</h3>
-                <list-users :user_id="user_id" :roomId="roomId" :realtime_message="realtime_message" :realtime_roomId="realtime_roomId" :realtime_count="realtime_count"
-                @interface="handleCountMessage" :users="users"
+                <list-users :user_id="user_id" :roomId="roomId" :realtime_message="realtime_message" :realtime_roomId="realtime_roomId"
+                @interface="handleCountMessage" :users="users" :unreadMessage="unreadMessage"
                 ></list-users>
                 <div class="mesgs">
-                    <chat-messages :list_message="list_messages" :user_id="user_id"
-                                   :totalMessage="totalMessage" :roomId="roomId" :realtime_roomId="realtime_roomId" @interface="handleNewMessage" :countUnread_realtime="countUnread_realtime"></chat-messages>
+                    <chat-messages :list_message="list_messages" :user_id="user_id" :unreadMessage="unreadMessage"
+                                   :totalMessage="totalMessage" :roomId="roomId" :realtime_roomId="realtime_roomId" @interface="handleNewMessage"></chat-messages>
                     <div class="type_msg">
                         <div class="input_msg_write">
                             <a name="bottom"></a>
@@ -17,7 +17,7 @@
                                           placeholder="メッセージを入力してください*"></textarea>
                                 <input id="fileUpload" name="image" type="file" accept="image/*" style="display: none"
                                        @change="onFileChange">
-                                <p style="color: red" v-for="error in errors">{{error}}</p>
+                                <p style="color: red" v-for="(error, index) in errors" :key="index">{{error}}</p>
                             </div>
                             <div v-else>
                                 <img width="100" :src="image"/>
@@ -63,13 +63,12 @@ export default {
       id: "",
       realtime_message: "",
       realtime_roomId: "",
-      realtime_count: 0,
       users: "",
       messageUnread_index: "",
-      countUnread_realtime: 0,
       list_messageData: [],
       nickName: "",
-      userId: ""
+      userId: "",
+      unreadMessage: []
     };
   },
 
@@ -103,14 +102,6 @@ export default {
         this.realtime_roomId = e.message.room_id;
         if (this.realtime_roomId) {
           this.getRoom();
-        }
-        if (
-          this.realtime_roomId == Number(this.roomId) ||
-          this.realtime_roomId == this.id
-        ) {
-          this.realtime_count = 0;
-        } else {
-          this.realtime_count += 1;
         }
         this.list_messages.push(e.message);
       });
@@ -158,7 +149,6 @@ export default {
           }
           this.list_messageData.unshift(isHeader);
           this.list_messages = this.list_messageData;
-          let messUnread_realtime = (this.countUnread_realtime = null);
           let mees_index = (this.messageUnread_index = null);
         });
       });
@@ -184,6 +174,7 @@ export default {
     },
 
     getRoom() {
+      this.unreadMessage = [];
       window.axios.get("../../api/v1/rooms/admin/get_users").then(response => {
         const rooms = response.data.data;
         this.users = rooms;
@@ -191,6 +182,7 @@ export default {
           if (items.unread_count > 0) {
             this.messageUnread_index = items.unread_count;
           }
+          this.unreadMessage.push({ id: items.id, count: items.unread_count });
         });
       });
     },
@@ -302,11 +294,14 @@ export default {
     },
 
     handleCountMessage(event) {
-        if(event == 0){
-            this.realtime_count = event;
-        } else {
-            this.nickName = event;
-        }
+      if (event >= 0) {
+        this.unreadMessage.splice(event, 1, {
+          id: this.$route.params.id,
+          count: 0
+        });
+      } else {
+        this.nickName = event;
+      }
     },
 
     handleNewMessage(event) {
