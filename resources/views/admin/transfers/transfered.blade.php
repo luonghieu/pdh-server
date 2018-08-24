@@ -12,6 +12,8 @@
               <input type="text" class="form-control date-picker input-search" name="from_date" id="date01" data-date-format="yyyy/mm/dd" value="{{ request()->from_date }}" placeholder="yyyy/mm/dd" />
               <label for="">To date: </label>
               <input type="text" class="form-control date-picker" name="to_date" id="date01" data-date-format="yyyy/mm/dd" value="{{ request()->to_date }}" placeholder="yyyy/mm/dd"/>
+              <input type="text"  name="search" class="form-control transfer-search" value="{{ request()->search }}" placeholder="ユーザーID,名前
+"/>
               <button type="submit" class="fa fa-search btn btn-search"></button>
               <div class="export-csv">
                 <input type="hidden" name="is_export" value="1">
@@ -33,7 +35,7 @@
                 </select>
                 <input type="hidden" name="from_date" value="{{ request()->from_date }}" />
                 <input type="hidden" name="to_date" value="{{ request()->to_date }}" />
-                <input type="hidden" name="search_point_type" value="{{ request()->search_point_type }}" />
+                <input type="hidden" name="search" value="{{ request()->search }}" />
               </div>
             </div>
           </form>
@@ -72,7 +74,7 @@
                       name="transfer_ids[]">
                   </td>
                   <td>{{ $transfer->order_id }}</td>
-                  <td>{{ Carbon\Carbon::parse($transfer->created_at)->format('Y年m月d日') }}</td>
+                  <td>{{ Carbon\Carbon::parse($transfer->updated_at)->format('Y年m月d日') }}</td>
                   <td>{{ $transfer->user_id }}</td>
                   <td>{{ $transfer->user->nickname }}</td>
                   <td>￥{{ number_format($transfer->point) }}</td>
