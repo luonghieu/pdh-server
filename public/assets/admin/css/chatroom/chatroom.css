@@ -218,6 +218,7 @@ img {
   display: block;
   min-width: 30%;
   float: right;
+  word-break: break-all;
 }
 
 .outgoing_msg {
@@ -365,8 +366,12 @@ img {
   display: block;
 }
 
-.on_mess{
-  /* cursor: pointer; */
+.on_mess a{
+  color: white
+}
+
+.on_mess a:hover{
+  color: orange
 }
 
 /*Popup confirm delete*/
