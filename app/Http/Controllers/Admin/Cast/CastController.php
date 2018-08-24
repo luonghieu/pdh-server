@@ -271,7 +271,7 @@ class CastController extends Controller
 
         $sumDebitAmount = $points->sum(function ($product) {
             $sum = 0;
-            if ($product->is_receive) {
+            if ($product->is_transfer && $product->point < 0) {
                 $sum += $product->point;
             }
 
@@ -287,7 +287,7 @@ class CastController extends Controller
                     ($item->is_receive || ($item->is_adjusted && $item->point > 0)) ? number_format($item->point) : '',
                     (($item->is_transfer) || ($item->is_adjusted && $item->point < 0)) ? number_format($item->point) : '',
                     number_format($item->balance),
-                    ($item->is_transfer) ? '￥' . number_format(-$item->point) : '',
+                    ($item->is_transfer) ? '￥' . number_format(abs($item->point)) : '',
                 ];
             })->toArray();
 
@@ -298,7 +298,7 @@ class CastController extends Controller
                 $sumPointReceive,
                 $sumConsumedPoint,
                 $sumBalance,
-                '¥' . number_format($sumDebitAmount),
+                '¥' . number_format(abs($sumDebitAmount)),
             ];
 
             array_push($data, $sum);
@@ -333,6 +333,16 @@ class CastController extends Controller
 
     public function changePoint(Cast $user, Request $request)
     {
+        $rules = [
+            'point' => 'regex:/^[0-9]+$/',
+        ];
+
+        $validator = validator($request->all(), $rules);
+
+        if ($validator->fails()) {
+            return response()->json(['errors' => $validator->errors()->all()], 400);
+        }
+
         switch ($request->correction_type) {
             case PointCorrectionType::ACQUISITION:
                 $point = $request->point;
