@@ -1,17 +1,21 @@
 $(document).ready(function(){
-  $('#change-point-form').click(function(e){
-    e.preventDefault();
-
+  $('#change-point-form').submit(function(e){
+    const point = $('#point').val();
+    const correctionType = $('#correction-type').val();
     var id = $('#link-change-point').attr('data-user-id');
+
     $.ajax({
-      url: '/admin/casts/' + id + '/operation_history',
+      url: $(this).attr('action'),
       method: 'PUT',
       data: {
         _token: $('meta[name="csrf-token"]').attr('content'),
-        point: $('#point').val(),
+        point: point,
+        correction_type: correctionType,
       },
       success: function(result, xhr){
-        console.log(result);
+        if (result.success) {
+          window.location.reload();
+        }
       },
       error: function(xhr) {
         $('#point-alert').empty();
@@ -21,6 +25,8 @@ $(document).ready(function(){
           $('#point-alert').append(`<strong>${error}</strong>`);
         }
       }
-    }, "json");
+    });
+
+    e.preventDefault();
   });
 });

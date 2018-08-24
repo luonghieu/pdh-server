@@ -108,7 +108,7 @@
                 {{ method_field('PUT') }}
                 <div class="change-point-input row">
                   <div class="col-sm-offset-1 col-sm-4">
-                    <select class="form-control correction-type" name="correction_type">
+                    <select class="form-control correction-type" id="correction-type" name="correction_type">
                       @foreach ($pointCorrectionTypes as $key => $pointCorrectionType)
                         <option value="{{ $key }}" {{ request()->correction_type == $key ? 'selected' : '' }}>{{ $pointCorrectionType }}</option>
                       @endforeach
