@@ -81,7 +81,7 @@ class DeleteUnusedPointAfter180Days extends Command
 
                 $admin = User::find(1);
                 if ($admin->is_admin) {
-                    $admin->point += $pointUnused->point;
+                    $admin->point += $point->balance;
                     $admin->save();
                 }
 
