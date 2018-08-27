@@ -50,7 +50,7 @@ class Kernel extends ConsoleKernel
         $schedule->command('cheers:send_payment_request_when_cast_stop_order')->everyMinute()->onOneServer()->runInBackground();
         $schedule->command('cheers:cancel_fee_settlement')->everyMinute()->onOneServer()->runInBackground();
         $schedule->command('cheers:delete_unused_point_after_180_days')->hourly()->onOneServer()->runInBackground();
-        $schedule->command('cheers:inactive_chatroom_when_order_canceled')->hourly()->onOneServer()->runInBackground();
+        $schedule->command('cheers:inactive_chatroom_when_order_canceled')->hourlyAt(5)->onOneServer()->runInBackground();
     }
 
     /**
