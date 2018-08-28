@@ -6,6 +6,7 @@ use App\Cast;
 use App\Enums\OrderStatus;
 use Illuminate\Http\Request;
 use App\Enums\CastOrderStatus;
+use Illuminate\Support\Facades\DB;
 use App\Http\Resources\CastResource;
 use App\Http\Controllers\Api\ApiController;
 
@@ -27,9 +28,8 @@ class GuestController extends ApiController
 
         $casts = Cast::join('cast_order as co', function ($query) {
             $query->on('co.user_id', '=', 'users.id')
+                ->on('co.updated_at', '=', DB::raw('(select max(updated_at) from cast_order where user_id = co.user_id)'))
                 ->where('co.status', '=', CastOrderStatus::DONE);
-        })->join('orders as o', function ($query) {
-            $query->on('o.id', '=', 'co.order_id');
         })->whereHas('orders', function ($query) use ($user) {
             $query->where('orders.user_id', $user->id)
                 ->where('orders.status', OrderStatus::DONE);
@@ -41,7 +41,7 @@ class GuestController extends ApiController
         }
 
         $casts = $casts->groupBy('users.id')
-            ->orderByDesc('o.updated_at')
+            ->orderByDesc('co.updated_at')
             ->select('users.*')
             ->paginate($request->per_page)
             ->appends($request->query());
