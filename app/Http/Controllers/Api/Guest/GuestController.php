@@ -28,8 +28,10 @@ class GuestController extends ApiController
 
         $casts = Cast::join('cast_order as co', function ($query) {
             $query->on('co.user_id', '=', 'users.id')
-                ->on('co.updated_at', '=', DB::raw('(select max(updated_at) from cast_order where user_id = co.user_id)'))
                 ->where('co.status', '=', CastOrderStatus::DONE);
+        })->join('orders as o', function ($query) {
+            $query->on('o.id', '=', 'co.order_id')
+                ->where('o.status', OrderStatus::DONE);
         })->whereHas('orders', function ($query) use ($user) {
             $query->where('orders.user_id', $user->id)
                 ->where('orders.status', OrderStatus::DONE);
@@ -42,6 +44,7 @@ class GuestController extends ApiController
 
         $casts = $casts->groupBy('users.id')
             ->orderByDesc('co.updated_at')
+            ->orderByDesc('o.updated_at')
             ->select('users.*')
             ->paginate($request->per_page)
             ->appends($request->query());
