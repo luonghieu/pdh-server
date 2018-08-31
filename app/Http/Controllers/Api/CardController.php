@@ -3,12 +3,12 @@
 namespace App\Http\Controllers\Api;
 
 use App\Card;
-use App\User;
-use App\Services\Payment;
-use App\Services\LogService;
-use Illuminate\Http\Request;
-use App\Http\Resources\CardResource;
 use App\Http\Controllers\Api\ApiController;
+use App\Http\Resources\CardResource;
+use App\Services\LogService;
+use App\Services\Payment;
+use App\User;
+use Illuminate\Http\Request;
 
 class CardController extends ApiController
 {

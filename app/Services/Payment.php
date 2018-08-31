@@ -2,16 +2,16 @@
 
 namespace App\Services;
 
-use Stripe\Token;
-use Stripe\Charge;
-use Stripe\Refund;
-use Stripe\Stripe;
+use App\Services\LogService;
 use Stripe\Account;
 use Stripe\Balance;
-use Stripe\Customer;
-use Stripe\Transfer;
+use Stripe\Charge;
 use Stripe\CountrySpec;
-use App\Services\LogService;
+use Stripe\Customer;
+use Stripe\Refund;
+use Stripe\Stripe;
+use Stripe\Token;
+use Stripe\Transfer;
 
 class Payment extends Service
 {
@@ -160,5 +160,4 @@ class Payment extends Service
 
         return $transfer;
     }
-
 }
