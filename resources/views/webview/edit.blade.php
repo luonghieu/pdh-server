@@ -3,6 +3,8 @@
 <head>
 <title>Cheers</title>
 <meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="csrf-token" content="{{ csrf_token() }}">
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
 <link rel="stylesheet" href="/assets/webview/css/style.css"/>
 </head>
 <body>
@@ -14,17 +16,15 @@
         <span>クレジットカード登録</span>
       </div>
       <div class="btn-register header-item">
-        <a onclick="createCreditCard()">登録</a>
+        <a id="btn-create">登録</a>
       </div>
   </header>
   <div class="image-main">
     <img src="/assets/webview/images/ic_credit_cards@2x.png" alt="">
   </div>
-  @if(Session::has('err'))
-  <div class="error">
-    <span>{{ Session::get('err') }}</span>
+  <div class="notify">
+    <span></span>
   </div>
-  @endif
   <div class="content">
     <form action="{{ route('webview.add_card') }}" id="payment-form" method="POST">
       {{ csrf_field() }}
@@ -43,7 +43,7 @@
     <div class="expiration-date border-bottom">
       <span class="left">有効期限</span>
       <div class="date-select right">
-        <select name="month">
+        <select name="month" id="month">
           @for ($i = 1; $i < 13; $i++)
           <option value="{{ $i }}" {{ ($card->exp_month == $i) ? 'selected' : '' }}>{{ $i }}月</option>
           @endfor
@@ -51,7 +51,7 @@
           @php
             $currenYear = \Carbon\Carbon::now()->format('Y');
           @endphp
-        <select name="year">
+        <select name="year" id="year">
           @for ($i = $currenYear; $i <= $currenYear+20; $i++)
           <option value="{{ $i }}" {{ ($card->exp_year == $i) ? 'selected' : '' }}>{{ $i }}年</option>
           @endfor

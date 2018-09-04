@@ -50,15 +50,12 @@ class CreditCardController extends Controller
         $validator = validator($request->all(), $rules);
 
         $numberCardVisa = preg_match("/^4[0-9]{12}(?:[0-9]{3})?$/", $request->number_card);
-
         $numberMasterCard = preg_match("/^5[1-5][0-9]{14}$/", $request->number_card);
 
         $numberAmericanExpress = preg_match("/^3[47][0-9]{13,14}$/", $request->number_card);
 
         if ($validator->fails()) {
-            $request->session()->flash('err', trans('messages.action_not_performed'));
-
-            return redirect(route('webview.create'));
+            return response()->json(['success' => false, 'error' => trans('messages.action_not_performed')]);
         }
 
         if ($numberCardVisa || $numberMasterCard || $numberAmericanExpress) {
@@ -72,15 +69,15 @@ class CreditCardController extends Controller
             $response = $this->createToken($input, $accessToken);
 
             if ($response->getStatusCode() != 200) {
-                $request->session()->flash('err', trans('messages.action_not_performed'));
-
-                return redirect(route('webview.create'));
+                return response()->json(['success' => false, 'error' => trans('messages.action_not_performed')]);
             }
             if ($user->card) {
                 $card = $user->card;
 
-                return redirect(route('webview.show', ['card' => $card->id]));
+                return response()->json(['success' => true, 'url' => 'cheers://adding_card?result=1']);
             }
+        } else {
+            return response()->json(['success' => false, 'error' => trans('messages.action_not_performed')]);
         }
     }
 

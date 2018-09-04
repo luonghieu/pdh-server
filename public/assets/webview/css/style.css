@@ -321,12 +321,12 @@ header .btn-register {
   color: #ff6090;
 }
 
-.error {
+.notify {
   height: 40px;
   margin: 0 8px;
 }
 
-.error span {
+.notify span {
   color: red;
   font-size: 15px;
   font-weight: bold;
