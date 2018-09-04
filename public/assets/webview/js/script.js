@@ -28,7 +28,8 @@ function numberCvvLength(event)
   }
 
 }
-
+var flag = false;
+var flag_color = false;
 function creditValidate()
 {
   var str = document.getElementById("number-card").value;
@@ -37,12 +38,13 @@ function creditValidate()
   var americanExpress = '^3[47][0-9]{13,14}$';
 
   if(str.match(visa) || str.match(mastercard) || str.match(americanExpress) || str === "") {
-     var element = document.getElementById("error");
-     element.classList.remove("error");
-     var element2 = document.getElementById("number-card-display");
-     element2.classList.add("number-true");
-     var element3 = document.getElementById("number-card");
-     element3.classList.add("color-caret");
+    var element = document.getElementById("error");
+    element.classList.remove("error");
+    var element2 = document.getElementById("number-card-display");
+    element2.classList.add("number-true");
+    var element3 = document.getElementById("number-card");
+    element3.classList.add("color-caret");
+    flag = true;
   } else{
     var element = document.getElementById("number-card-display");
     element.classList.remove("number-true");
@@ -50,6 +52,7 @@ function creditValidate()
     element2.classList.remove("color-caret");
     var element1 = document.getElementById("error");
     element1.classList.add("error");
+    flag = false;
   }
   var changeString = "";
   var count = 3;
@@ -64,11 +67,15 @@ function creditValidate()
     document.getElementById("number-card-display").innerHTML = "0000 0000 0000 0000";
     document.getElementById("number-card-display").classList.remove('number-true');
     document.getElementById("number-card-display").classList.add('color-placeholder');
-
   } else {
     document.getElementById("number-card-display").innerHTML = changeString;
     document.getElementById("number-card-display").classList.remove('color-placeholder');
     document.getElementById("number-card-display").classList.add('color');
+  }
+  if(flag && flag_color){
+    $('#btn-create').css('color', "#ff6090");
+  }else{
+    $('#btn-create').css('color', "#cccccc");
   }
 }
 
@@ -77,6 +84,7 @@ function addColor()
   var str = document.getElementById("card-cvv").value;
   var strlen = str.length;
   var parsed = Number.parseInt(str);
+
   if (((strlen == 3 || strlen == 4) && !Number.isNaN(parsed)) || str === "" ) {
     var element = document.getElementById("error-cvv");
     element.classList.remove("error-cvv");
@@ -84,6 +92,7 @@ function addColor()
     element1.classList.remove("card-cvv-color");
     var element2 = document.getElementById("card-cvv");
     element2.classList.add("number-true");
+    flag_color = true;
   } else {
     var element = document.getElementById("card-cvv");
     element.classList.remove("number-true");
@@ -91,6 +100,12 @@ function addColor()
     element1.classList.add("error-cvv");
     var element2 = document.getElementById("card-cvv");
     element2.classList.add("card-cvv-color");
+    flag_color = false;
+  }
+  if(flag && flag_color){
+    $('#btn-create').css('color', "#ff6090");
+  }else{
+    $('#btn-create').css('color', "#cccccc");
   }
 }
 

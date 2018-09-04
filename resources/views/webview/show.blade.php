@@ -14,7 +14,7 @@
         <span>クレジットカード登録</span>
       </div>
       <div class="btn-register header-item">
-        <a href="{{ route('webview.edit', ['card' => $card->id]) }}">登録</a>
+        <a href="{{ route('webview.edit', ['card' => $card->id]) }}" class="btn-redirect-edit">編集</a>
       </div>
   </header>
   <div class="image-main">

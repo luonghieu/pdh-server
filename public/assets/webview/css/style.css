@@ -171,6 +171,10 @@ header .btn-register {
   top: 2.3px;
 }
 
+.old-card {
+  color: #ff6090 !important;
+}
+
 .color {
   color: #ff6090 !important;
 }
@@ -243,7 +247,7 @@ header .btn-register {
   line-height: normal;
   letter-spacing: -0.3px;
   text-align: right;
-  color: #c8c8c8;
+  color: #303030;
   background: none;
   border: none;
   outline: none;
@@ -331,6 +335,10 @@ header .btn-register {
   font-size: 15px;
   font-weight: bold;
   padding: 0 10px;
+}
+
+.btn-redirect-edit {
+  color: #ff6090 !important;
 }
 
 @media (min-width: 768px) {
