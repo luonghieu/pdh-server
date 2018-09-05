@@ -8,7 +8,7 @@
 <body>
   <header class="border-bottom">
       <div class="btn-back header-item">
-        <img src="/assets/webview/images/back.png" alt="">
+        <a href="cheers://back"><img src="/assets/webview/images/back.png" alt=""></a>
       </div>
       <div class="title-main header-item">
         <span>クレジットカード登録</span>
