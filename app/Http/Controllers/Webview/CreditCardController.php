@@ -6,6 +6,7 @@ use App\Card;
 use App\Http\Controllers\Controller;
 use App\Services\Payment;
 use Auth;
+use Carbon\Carbon;
 use GuzzleHttp\Client;
 use Illuminate\Http\Request;
 use JWTAuth;
@@ -15,7 +16,14 @@ class CreditCardController extends Controller
     public function create(Request $request)
     {
         if (Auth::check()) {
-            return view('webview.create_card');
+            $user = Auth::user();
+
+            if ($user->card) {
+                $card = $user->card;
+                return redirect(route('webview.show', ['card' => $card->id]));
+            } else {
+                return view('webview.create_card');
+            }
         } else {
             try {
                 if ($request->has('access_token')) {
@@ -29,7 +37,6 @@ class CreditCardController extends Controller
                     return abort(403);
                 }
             } catch (\Exception $e) {
-
                 return abort(403);
             }
         }
@@ -55,6 +62,12 @@ class CreditCardController extends Controller
         $numberAmericanExpress = preg_match("/^3[47][0-9]{13,14}$/", $request->number_card);
 
         if ($validator->fails()) {
+            return response()->json(['success' => false, 'error' => trans('messages.action_not_performed')]);
+        }
+        $currentMonth = Carbon::now()->format('m');
+        $currentYear = Carbon::now()->format('Y');
+
+        if ($currentMonth >= $request->month && $currentYear >= $request->year) {
             return response()->json(['success' => false, 'error' => trans('messages.action_not_performed')]);
         }
 

@@ -16,7 +16,7 @@
         <span>クレジットカード登録</span>
       </div>
       <div class="btn-register header-item">
-        <a id="btn-create">登録</a>
+        <a id="btn-create">完了</a>
       </div>
   </header>
   <div class="image-main">
@@ -36,7 +36,7 @@
       <div class="right number">
         <span id="error">カード番号を正しく入力してください</span>
         <input type="number" name="number_card" id="number-card" onkeyup="creditValidate()" onkeydown="return numberCardLength(event)">
-        <span id="number-card-display">0000 0000 0000 0000</span>
+        <span id="number-card-display" class="old-card">下4桁{{ $card->last4 }}</span>
       </div>
     </div>
     <div class="clear"></div>
