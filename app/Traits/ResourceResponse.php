@@ -9,7 +9,13 @@ trait ResourceResponse
     public function filterNull($input)
     {
         array_walk_recursive($input, function (&$item, $key) {
-            $item = !is_null($item) ? $item : '';
+            $exceptKeys = [
+                'latest_order',
+            ];
+
+            if (!in_array($key, $exceptKeys)) {
+                $item = !is_null($item) ? $item : '';
+            }
 
             if ($item instanceof Carbon) {
                 $item = $item->toDateTimeString();
