@@ -299,28 +299,6 @@ header .btn-register {
   margin-right: 20px;
 }
 
-#error-cvv {
-  display: none;
-}
-
-.error-cvv {
-  width: 204px;
-  display: inline-block !important;
-  height: 18px;
-  font-family: NotoSansCJKjp;
-  font-size: 12px;
-  font-weight: normal;
-  font-style: normal;
-  font-stretch: normal;
-  line-height: normal;
-  letter-spacing: normal;
-  text-align: left;
-  color: #ff6090;
-  position: absolute;
-  top: 1px;
-  right: 20px;
-}
-
 .card-cvv-color {
   color: #ff6090;
 }
@@ -328,6 +306,8 @@ header .btn-register {
 .notify {
   height: 40px;
   margin: 0 8px;
+  position: absolute;
+  top: 185px;
 }
 
 .notify span {
@@ -344,11 +324,6 @@ header .btn-register {
 @media (min-width: 768px) {
   .number input{
     padding-top: 25px;
-  }
-
-  .error-cvv {
-    width: 265px;
-    padding-top: 5px;
   }
 
   .security-code input {

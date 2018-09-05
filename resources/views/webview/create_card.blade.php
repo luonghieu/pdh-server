@@ -63,7 +63,6 @@
     </div>
     <div class="security-code border-bottom">
       <img src="/assets/webview/images/ic_card_cvv.png" alt="" class="left">
-      <span id="error-cvv">指定したカードのセキュリティコードが無効です</span>
       <input type="number" placeholder="3桁または4桁の数字" class="right" name="card_cvv" onkeyup="addColor()" onkeydown="return numberCvvLength(event)" id="card-cvv">
     </div>
     </form>
