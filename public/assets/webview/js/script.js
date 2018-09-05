@@ -3,12 +3,14 @@ function numberCardLength(event)
   var str = document.getElementById("number-card").value;
   var strlen = str.length;
   var keyCode = event.keyCode;
-  if (keyCode == 8 || keyCode == 46 || keyCode == 37 || keyCode == 39)
-  {
+  if(keyCode == 8 || keyCode == 46 || keyCode == 37 || keyCode == 39) {
     return true;
   }
 
-  if (strlen >= 16) {
+  if (((keyCode >= 96 && keyCode <=105 ) || (keyCode >= 48 && keyCode <=57 )) && strlen < 16 && keyCode != 69)
+  {
+    return true;
+  } else {
     return false;
   }
 }
@@ -18,16 +20,18 @@ function numberCvvLength(event)
   var str = document.getElementById("card-cvv").value;
   var strlen = str.length;
   var keyCode = event.keyCode;
-  if (keyCode == 8 || keyCode == 46 || keyCode == 37 || keyCode == 39)
-  {
+  if(keyCode == 8 || keyCode == 46 || keyCode == 37 || keyCode == 39) {
     return true;
   }
 
-  if (strlen >= 4) {
+  if (((keyCode >= 96 && keyCode <=105 ) || (keyCode >= 48 && keyCode <=57 )) && strlen < 4 && keyCode != 69)
+  {
+    return true;
+  } else {
     return false;
   }
-
 }
+
 var flag = false;
 var flag_color = false;
 function creditValidate()
@@ -84,10 +88,7 @@ function addColor()
   var str = document.getElementById("card-cvv").value;
   var strlen = str.length;
   var parsed = Number.parseInt(str);
-
   if (((strlen == 3 || strlen == 4) && !Number.isNaN(parsed)) || str === "" ) {
-    var element = document.getElementById("error-cvv");
-    element.classList.remove("error-cvv");
     var element1 = document.getElementById("card-cvv");
     element1.classList.remove("card-cvv-color");
     var element2 = document.getElementById("card-cvv");
@@ -96,12 +97,12 @@ function addColor()
   } else {
     var element = document.getElementById("card-cvv");
     element.classList.remove("number-true");
-    var element1 = document.getElementById("error-cvv");
-    element1.classList.add("error-cvv");
     var element2 = document.getElementById("card-cvv");
     element2.classList.add("card-cvv-color");
     flag_color = false;
   }
+  console.log(flag);
+  console.log(flag_color);
   if(flag && flag_color){
     $('#btn-create').css('color', "#ff6090");
   }else{
