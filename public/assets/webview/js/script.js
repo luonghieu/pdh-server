@@ -41,7 +41,7 @@ function creditValidate()
   var mastercard = '^5[1-5][0-9]{14}$';
   var americanExpress = '^3[47][0-9]{13,14}$';
 
-  if(str.match(visa) || str.match(mastercard) || str.match(americanExpress) || str === "") {
+  if(str.match(visa) || str.match(mastercard) || str.match(americanExpress)) {
     var element = document.getElementById("error");
     element.classList.remove("error");
     var element2 = document.getElementById("number-card-display");
@@ -76,6 +76,7 @@ function creditValidate()
     document.getElementById("number-card-display").classList.remove('color-placeholder');
     document.getElementById("number-card-display").classList.add('color');
   }
+
   if(flag && flag_color){
     $('#btn-create').css('color', "#ff6090");
   }else{
@@ -101,8 +102,7 @@ function addColor()
     element2.classList.add("card-cvv-color");
     flag_color = false;
   }
-  console.log(flag);
-  console.log(flag_color);
+
   if(flag && flag_color){
     $('#btn-create').css('color', "#ff6090");
   }else{
