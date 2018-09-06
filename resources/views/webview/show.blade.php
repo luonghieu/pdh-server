@@ -33,7 +33,7 @@
       <span class="left">カード番号</span>
       <div class="right number">
         <span id="error">カード番号を正しく入力してください</span>
-        <input type="number" name="number_card" id="number-card">
+        <input type="number" name="number_card" id="number-card" readonly>
         <span id="number-card-display" class="color-show-page">下4桁{{ $card->last4 }}</span>
       </div>
     </div>
@@ -41,10 +41,10 @@
     <div class="expiration-date border-bottom">
       <span class="left">有効期限</span>
       <div class="date-select right">
-        <select name="month" class="color-show-page">
+        <select name="month" class="color-show-page" disabled>
           <option  value="{{ $card->exp_month }}">{{ $card->exp_month }}月</option>
         </select>
-        <select name="year" class="color-show-page">
+        <select name="year" class="color-show-page" disabled>
           <option value="{{ $card->exp_year }}">{{ $card->exp_year }}年</option>
         </select>
       </div>
@@ -54,7 +54,7 @@
     </div>
     <div class="security-code border-bottom">
       <img src="/assets/webview/images/ic_card_cvv.png" alt="" class="left">
-      <input type="password" placeholder="3桁または4桁の数字" class="right color-show-page" name="card_cvv" value="0000" id="card-cvv">
+      <input type="password" placeholder="3桁または4桁の数字" class="right color-show-page" name="card_cvv" value="0000" id="card-cvv" readonly>
     </div>
   </div>
 </body>
