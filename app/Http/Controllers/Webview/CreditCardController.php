@@ -15,30 +15,26 @@ class CreditCardController extends Controller
 {
     public function create(Request $request)
     {
-        if (Auth::check()) {
-            $user = Auth::user();
+        try {
+            if ($request->has('access_token')) {
+                $user = JWTAuth::setToken($request->access_token)->toUser();
+                if ($user) {
+                    Auth::loginUsingId($user->id);
 
-            if ($user->card) {
-                $card = $user->card;
-                return redirect(route('webview.show', ['card' => $card->id]));
-            } else {
-                return view('webview.create_card');
-            }
-        } else {
-            try {
-                if ($request->has('access_token')) {
-                    $user = JWTAuth::setToken($request->access_token)->toUser();
-                    if ($user) {
-                        Auth::loginUsingId($user->id);
+                    if ($user->card) {
+                        $card = $user->card;
+                        return redirect(route('webview.show', ['card' => $card->id]));
+                    } else {
+                        return view('webview.create_card');
                     }
-
-                    return redirect(route('webview.create'));
-                } else {
-                    return abort(403);
                 }
-            } catch (\Exception $e) {
+
+                return redirect(route('webview.create'));
+            } else {
                 return abort(403);
             }
+        } catch (\Exception $e) {
+            return abort(403);
         }
     }
 
@@ -67,7 +63,7 @@ class CreditCardController extends Controller
         $currentMonth = Carbon::now()->format('m');
         $currentYear = Carbon::now()->format('Y');
 
-        if ($currentMonth >= $request->month && $currentYear >= $request->year) {
+        if ($currentMonth > $request->month && $currentYear > $request->year) {
             return response()->json(['success' => false, 'error' => trans('messages.action_not_performed')]);
         }
 
@@ -78,16 +74,19 @@ class CreditCardController extends Controller
                 'year',
                 'card_cvv',
             ]);
+            try {
+                $response = $this->createToken($input, $accessToken);
 
-            $response = $this->createToken($input, $accessToken);
+                if ($response->getStatusCode() != 200) {
+                    return response()->json(['success' => false, 'error' => trans('messages.action_not_performed')]);
+                }
+                if ($user->card) {
+                    $card = $user->card;
 
-            if ($response->getStatusCode() != 200) {
+                    return response()->json(['success' => true, 'url' => 'cheers://adding_card?result=1']);
+                }
+            } catch (\Exception $e) {
                 return response()->json(['success' => false, 'error' => trans('messages.action_not_performed')]);
-            }
-            if ($user->card) {
-                $card = $user->card;
-
-                return response()->json(['success' => true, 'url' => 'cheers://adding_card?result=1']);
             }
         } else {
             return response()->json(['success' => false, 'error' => trans('messages.action_not_performed')]);
