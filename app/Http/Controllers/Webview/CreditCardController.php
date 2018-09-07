@@ -48,7 +48,7 @@ class CreditCardController extends Controller
         $accessToken = JWTAuth::fromUser($user);
 
         $rules = [
-            'number_card' => 'required|regex:/[0-9]{16}/',
+            'number_card' => 'required|regex:/[0-9]{0,16}/',
             'month' => 'required|numeric',
             'year' => 'required|numeric',
             'card_cvv' => 'required|regex:/[0-9]{3,4}/',

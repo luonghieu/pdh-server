@@ -152,7 +152,7 @@ header .btn-register {
 .number input{
   padding-top: 25px;
   position: absolute;
-  top: -3px;
+  top: -2px;
   right: 20px;
   color: transparent !important;
   z-index: 1;
