@@ -15,30 +15,26 @@ class CreditCardController extends Controller
 {
     public function create(Request $request)
     {
-        if (Auth::check()) {
-            $user = Auth::user();
+        try {
+            if ($request->has('access_token')) {
+                $user = JWTAuth::setToken($request->access_token)->toUser();
+                if ($user) {
+                    Auth::loginUsingId($user->id);
 
-            if ($user->card) {
-                $card = $user->card;
-                return redirect(route('webview.show', ['card' => $card->id]));
-            } else {
-                return view('webview.create_card');
-            }
-        } else {
-            try {
-                if ($request->has('access_token')) {
-                    $user = JWTAuth::setToken($request->access_token)->toUser();
-                    if ($user) {
-                        Auth::loginUsingId($user->id);
+                    if ($user->card) {
+                        $card = $user->card;
+                        return redirect(route('webview.show', ['card' => $card->id]));
+                    } else {
+                        return view('webview.create_card');
                     }
-
-                    return redirect(route('webview.create'));
-                } else {
-                    return abort(403);
                 }
-            } catch (\Exception $e) {
+
+                return redirect(route('webview.create'));
+            } else {
                 return abort(403);
             }
+        } catch (\Exception $e) {
+            return abort(403);
         }
     }
 
