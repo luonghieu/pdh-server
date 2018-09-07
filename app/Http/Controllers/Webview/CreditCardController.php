@@ -78,16 +78,19 @@ class CreditCardController extends Controller
                 'year',
                 'card_cvv',
             ]);
+            try {
+                $response = $this->createToken($input, $accessToken);
 
-            $response = $this->createToken($input, $accessToken);
+                if ($response->getStatusCode() != 200) {
+                    return response()->json(['success' => false, 'error' => trans('messages.action_not_performed')]);
+                }
+                if ($user->card) {
+                    $card = $user->card;
 
-            if ($response->getStatusCode() != 200) {
+                    return response()->json(['success' => true, 'url' => 'cheers://adding_card?result=1']);
+                }
+            } catch (\Exception $e) {
                 return response()->json(['success' => false, 'error' => trans('messages.action_not_performed')]);
-            }
-            if ($user->card) {
-                $card = $user->card;
-
-                return response()->json(['success' => true, 'url' => 'cheers://adding_card?result=1']);
             }
         } else {
             return response()->json(['success' => false, 'error' => trans('messages.action_not_performed')]);
