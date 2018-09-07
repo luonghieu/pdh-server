@@ -282,6 +282,7 @@ header .btn-register {
   border: none;
   margin-right: 20px;
   padding-top: 15px;
+  letter-spacing: 1px;
 }
 
 .security-code input::placeholder{
