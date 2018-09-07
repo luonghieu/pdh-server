@@ -35,7 +35,7 @@
       <span class="left">カード番号</span>
       <div class="right number">
         <span id="error">カード番号を正しく入力してください</span>
-        <input type="number" pattern="[0-9]{16}" name="number_card" id="number-card" onkeyup="creditValidate()" onkeydown="return numberCardLength(event)">
+        <input type="text" pattern="[0-9]{16}" name="number_card" id="number-card" onkeyup="creditValidate()" onkeydown="return numberCardLength(event)">
         <span id="number-card-display">0000 0000 0000 0000</span>
       </div>
     </div>
@@ -63,7 +63,7 @@
     </div>
     <div class="security-code border-bottom">
       <img src="/assets/webview/images/ic_card_cvv.png" alt="" class="left">
-      <input type="number" pattern="[0-9]{3,4}" placeholder="3桁または4桁の数字" class="right" name="card_cvv" onkeyup="addColor()" onkeydown="return numberCvvLength(event)" id="card-cvv">
+      <input type="text" pattern="[0-9]{3,4}" placeholder="3桁または4桁の数字" class="right" name="card_cvv" onkeyup="addColor()" onkeydown="return numberCvvLength(event)" id="card-cvv">
     </div>
     </form>
   </div>
