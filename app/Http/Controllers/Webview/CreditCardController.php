@@ -63,7 +63,7 @@ class CreditCardController extends Controller
         $currentMonth = Carbon::now()->format('m');
         $currentYear = Carbon::now()->format('Y');
 
-        if ($currentMonth >= $request->month && $currentYear >= $request->year) {
+        if ($currentMonth > $request->month && $currentYear > $request->year) {
             return response()->json(['success' => false, 'error' => trans('messages.action_not_performed')]);
         }
 
