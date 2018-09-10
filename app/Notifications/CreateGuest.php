@@ -100,6 +100,14 @@ class CreateGuest extends Notification implements ShouldQueue
                         'room_id' => $room->id
                     ],
                 ],
+                'android' => [
+                    'alert' => $content,
+                    'extra' => [
+                        'push_id' => $pushId,
+                        'send_from' => $send_from,
+                        'room_id' => $room->id
+                    ],
+                ]
             ],
         ];
     }
