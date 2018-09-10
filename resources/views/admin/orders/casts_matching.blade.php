@@ -10,9 +10,9 @@
           </div>
         </div>
         <div class="clearfix"></div>
-        @include('admin.partials.notification')
         <div class="clearfix"></div>
         <div class="panel-body">
+        @include('admin.partials.notification')
           <table class="table table-striped table-bordered bootstrap-datatable info-cast-matching">
             <thead>
               <tr>
@@ -87,6 +87,7 @@
                     <form action="{{ route('admin.orders.change_start_time_order_call') }}" method="post">
                     {{ csrf_field() }}
                     {{ method_field('PUT') }}
+                      <input type="text" class="date-picker input-update-date-order input-search" name="start_date" id="date01" data-date-format="yyyy/mm/dd" value="{{ Carbon\Carbon::parse($cast->pivot->started_at)->format('Y/m/d') }}" placeholder="yyyy/mm/dd" />
                       <select name="start_time_hour">
                         @for ($i = 0; $i < 24; $i++)
                         <option value="{{ $i }}" {{ Carbon\Carbon::parse($cast->pivot->started_at)->format('H') == $i ? 'selected' : '' }}>{{ $i }}</option>
@@ -119,6 +120,7 @@
                     <form action="{{ route('admin.orders.change_stopped_time_order_call') }}" method="post">
                     {{ csrf_field() }}
                     {{ method_field('PUT') }}
+                      <input type="text" class="date-picker input-update-date-order input-search" name="stop_date" id="date01" data-date-format="yyyy/mm/dd" value="{{ Carbon\Carbon::parse($cast->pivot->stopped_at)->format('Y/m/d') }}" placeholder="yyyy/mm/dd" />
                       <select name="stop_time_hour">
                         @for ($i = 0; $i < 24; $i++)
                         <option value="{{ $i }}" {{ Carbon\Carbon::parse($cast->pivot->stopped_at)->format('H') == $i ? 'selected' : '' }}>{{ $i }}</option>

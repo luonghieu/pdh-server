@@ -13,9 +13,9 @@
           </div>
         </div>
         <div class="clearfix"></div>
-        @include('admin.partials.notification')
         <div class="clearfix"></div>
         <div class="panel-body">
+        @include('admin.partials.notification')
           <div class="info-table col-lg-10">
             <table class="table table-bordered change-width-th">
               <!--  table-striped -->
@@ -206,6 +206,7 @@
                       <form action="{{ route('admin.orders.change_start_time_order_nominee') }}" method="POST">
                       {{ csrf_field() }}
                       {{ method_field('PUT') }}
+                        <input type="text" class="date-picker input-update-date-order input-search" name="start_date" id="date01" data-date-format="yyyy/mm/dd" value="{{ count($order->casts) > 0 ? Carbon\Carbon::parse($order->casts[0]->pivot->started_at)->format('Y/m/d') : '' }}" placeholder="yyyy/mm/dd" />
                         <select name="start_time_hour">
                           @for ($i = 0; $i < 24; $i++)
                           <option value="{{ $i }}" {{ Carbon\Carbon::parse((count($order->casts) > 0) ? $order->casts[0]->pivot->started_at : '')->format('H') == $i ? 'selected' : '' }}>{{ $i }}</option>
@@ -238,6 +239,7 @@
                       <form action="{{ route('admin.orders.change_stop_time_order_nominee') }}" method="POST">
                       {{ csrf_field() }}
                       {{ method_field('PUT') }}
+                        <input type="text" class="date-picker input-update-date-order input-search" name="stop_date" id="date01" data-date-format="yyyy/mm/dd" value="{{ count($order->casts) > 0 ? Carbon\Carbon::parse($order->casts[0]->pivot->stopped_at)->format('Y/m/d') : '' }}" placeholder="yyyy/mm/dd" />
                         <select name="stop_time_hour">
                           @for ($i = 0; $i < 24; $i++)
                           <option value="{{ $i }}" {{ Carbon\Carbon::parse((count($order->casts) > 0) ? $order->casts[0]->pivot->stopped_at : '')->format('H') == $i ? 'selected' : '' }}>{{ $i }}</option>

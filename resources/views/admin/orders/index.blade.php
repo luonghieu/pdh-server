@@ -128,7 +128,7 @@
                   <td>{{ $order->user ? $order->user->nickname : '' }}</td>
                   <td>{{ $order->id }}</td>
                   <td>{{ App\Enums\OrderType::getDescription($order->type) }}</td>
-                  <td>{{ $order->address }}</td>
+                  <td class="long-text">{{ $order->address }}</td>
                   <td>{{ Carbon\Carbon::parse($order->created_at)->format('Y/m/d H:i') }}</td>
                   <td>{{ Carbon\Carbon::parse($order->date)->format('Y/m/d') }} {{ Carbon\Carbon::parse($order->start_time)->format('H:i') }}</td>
                   <td>{{ $order->total_cast }} 名</td>

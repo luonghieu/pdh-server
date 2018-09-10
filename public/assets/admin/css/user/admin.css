@@ -1181,6 +1181,12 @@ tbody td {
   top: 7px;
 }
 
+.input-update-date-order {
+  border: 1px solid #dfe6ee;
+  height: 29.5px;
+  padding-left: 8px;
+}
+
 @media (max-width: 767px) {
   .navbar {
     background: #20a8d817;
