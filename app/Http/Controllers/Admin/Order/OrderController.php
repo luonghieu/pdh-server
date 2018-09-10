@@ -142,7 +142,9 @@ class OrderController extends Controller
 
         $newHour = $request->start_time_hour;
         $newMinute = $request->start_time_minute;
-        $this->changeStartTime($newHour, $newMinute, $order, $castId);
+        $newDay = $request->start_date;
+        $newStartTime = Carbon::parse($newDay . ' ' . $newHour . ':' . $newMinute);
+        $this->changeStartTime($newStartTime, $order, $castId);
 
         return redirect(route('admin.orders.casts_matching', compact('casts', 'order')));
     }
@@ -155,7 +157,16 @@ class OrderController extends Controller
 
         $newHour = $request->stop_time_hour;
         $newMinute = $request->stop_time_minute;
-        $this->changeStopTime($newHour, $newMinute, $order, $castId);
+        $newDay = $request->stop_date;
+        $newstoppedTime = Carbon::parse($newDay . ' ' . $newHour . ':' . $newMinute);
+        $cast = $order->casts()->withPivot('started_at', 'stopped_at', 'type')->where('user_id', $castId)->first();
+        $startedDay = Carbon::parse($cast->pivot->started_at);
+        if ($startedDay > $newstoppedTime) {
+            $request->session()->flash('err', trans('messages.time_invalid'));
+
+            return redirect(route('admin.orders.casts_matching', ['order' => $order->id]));
+        }
+        $this->changeStopTime($newstoppedTime, $order, $castId);
 
         return redirect(route('admin.orders.casts_matching', compact('casts', 'order')));
     }
@@ -204,7 +215,9 @@ class OrderController extends Controller
         $castId = $request->cast_id;
         $newHour = $request->start_time_hour;
         $newMinute = $request->start_time_minute;
-        $this->changeStartTime($newHour, $newMinute, $order, $castId);
+        $newDay = $request->start_date;
+        $newStartTime = Carbon::parse($newDay . ' ' . $newHour . ':' . $newMinute);
+        $this->changeStartTime($newStartTime, $order, $castId);
 
         return redirect(route('admin.orders.order_nominee', compact('order')));
     }
@@ -216,16 +229,23 @@ class OrderController extends Controller
 
         $newHour = $request->stop_time_hour;
         $newMinute = $request->stop_time_minute;
-        $this->changeStopTime($newHour, $newMinute, $order, $castId);
+        $newDay = $request->stop_date;
+        $newstoppedTime = Carbon::parse($newDay . ' ' . $newHour . ':' . $newMinute);
+        $cast = $order->casts()->withPivot('started_at', 'stopped_at', 'type')->where('user_id', $castId)->first();
+        $startedDay = Carbon::parse($cast->pivot->started_at);
+        if ($startedDay > $newstoppedTime) {
+            $request->session()->flash('err', trans('messages.time_invalid'));
+
+            return redirect(route('admin.orders.order_nominee', ['order' => $order->id]));
+        }
+        $this->changeStopTime($newstoppedTime, $order, $castId);
 
         return redirect(route('admin.orders.order_nominee', compact('order')));
     }
 
-    private function changeStartTime($newHour, $newMinute, $order, $castId)
+    private function changeStartTime($newStartedTime, $order, $castId)
     {
         $cast = $order->casts()->withPivot('started_at', 'stopped_at', 'type')->where('user_id', $castId)->first();
-        $startedDay = Carbon::parse($cast->pivot->started_at)->format('Y-m-d');
-        $newStartedTime = Carbon::parse($startedDay . ' ' . $newHour . ':' . $newMinute);
         $stoppedAt = $cast->pivot->stopped_at;
         $totalTime = $newStartedTime->diffInMinutes($stoppedAt);
         $nightTime = $order->nightTime($stoppedAt);
@@ -254,12 +274,10 @@ class OrderController extends Controller
         $this->calculatorPoint($input, $castId, $order);
     }
 
-    private function changeStopTime($newHour, $newMinute, $order, $castId)
+    private function changeStopTime($newstoppedTime, $order, $castId)
     {
         $cast = $order->casts()->withPivot('started_at', 'stopped_at', 'type')->where('user_id', $castId)->first();
         $startedDay = Carbon::parse($cast->pivot->started_at);
-        $stoppedDay = Carbon::parse($cast->pivot->stopped_at)->format('Y-m-d');
-        $newstoppedTime = Carbon::parse($stoppedDay . ' ' . $newHour . ':' . $newMinute);
         $extraTime = $order->extraTime($startedDay, $newstoppedTime);
         $nightTime = $order->nightTime($newstoppedTime);
         $extraPoint = $order->extraPoint($cast, $extraTime);
