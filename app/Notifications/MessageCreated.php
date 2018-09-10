@@ -92,6 +92,14 @@ class MessageCreated extends Notification implements ShouldQueue
                         'room_id' => $this->message->room_id
                     ],
                 ],
+                'android' => [
+                    'alert' => $content,
+                    'extra' => [
+                        'push_id' => $pushId,
+                        'send_from' => $send_from,
+                        'room_id' => $this->message->room_id
+                    ],
+                ]
             ],
         ];
     }
