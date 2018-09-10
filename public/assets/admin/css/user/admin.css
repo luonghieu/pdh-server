@@ -1187,6 +1187,10 @@ tbody td {
   padding-left: 8px;
 }
 
+.address {
+  width: 250px;
+}
+
 @media (max-width: 767px) {
   .navbar {
     background: #20a8d817;
