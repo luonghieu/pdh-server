@@ -304,7 +304,7 @@ class OrderController extends Controller
             ];
 
             $this->calculatorPoint($input, $castId, $order);
-        };
+        }
     }
 
     private function calculatorPoint($input, $castId, $order)

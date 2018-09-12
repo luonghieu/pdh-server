@@ -92,6 +92,15 @@ class TenMinBeforeOrderEnded extends Notification implements ShouldQueue
                         'room_id' => $room->id
                     ],
                 ],
+                'android' => [
+                    'alert' => $content,
+                    'extra' => [
+                        'push_id' => $pushId,
+                        'send_from' => $send_from,
+                        'order_id' => $this->order->id,
+                        'room_id' => $room->id
+                    ],
+                ]
             ],
         ];
     }

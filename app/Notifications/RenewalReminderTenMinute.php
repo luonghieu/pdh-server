@@ -101,6 +101,14 @@ class RenewalReminderTenMinute extends Notification implements ShouldQueue
                         'order_id' => $this->order->id
                     ],
                 ],
+                'android' => [
+                    'alert' => $content,
+                    'extra' => [
+                        'push_id' => $pushId,
+                        'send_from' => $send_from,
+                        'order_id' => $this->order->id
+                    ],
+                ]
             ],
         ];
     }
