@@ -143,7 +143,7 @@
               </tr>
               <tr>
                 <th>深夜手当</th>
-                <td>{{ (count($order->casts) > 0) ? number_format($order->casts[0]->pivot->night_time).'P' : '' }}</td>
+                <td>{{ (count($order->casts) > 0) ? number_format($order->casts[0]->pivot->allowance_point).'P' : '' }}</td>
               </tr>
               <tr>
                 <th>実績合計ポイント</th>
