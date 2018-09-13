@@ -81,6 +81,13 @@
                 <div class="title m-b-md">
                     Laravel
                 </div>
+                @if(!Auth::check())
+                <a href="{{ action('Auth\LineController@login') }}">
+                    <img src="{{ asset('images/btn_login_base.png') }}" alt="">
+                </a>
+                @else
+                    <h1>hello, {{ Auth::user()->email }}</h1>
+                @endif
 
                 <div class="links">
                     <a href="https://laravel.com/docs">Documentation</a>
