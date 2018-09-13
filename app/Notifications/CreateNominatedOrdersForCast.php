@@ -56,31 +56,6 @@ class CreateNominatedOrdersForCast extends Notification implements ShouldQueue
      */
     public function toArray($notifiable)
     {
-        $startTime = Carbon::parse($this->order->date . ' ' . $this->order->start_time);
-        $endTime = Carbon::parse($this->order->date . ' ' . $this->order->end_time);
-        $cost = $this->order->castClass->cost;
-        $message = 'おめでとう！指名予約が入りました♪'
-            . PHP_EOL . '------------------------------------------'
-            . PHP_EOL . PHP_EOL . '- ご予約内容 -'
-            . PHP_EOL . PHP_EOL . '日時：' . $startTime->format('Y/m/d H:i') . '~'
-            . PHP_EOL . PHP_EOL . '時間：' . $this->order->duration . '時間'
-            . PHP_EOL . 'クラス：' . $this->order->castClass->name
-            . PHP_EOL . '人数：' . $this->order->total_cast . '人'
-            . PHP_EOL . '場所：' . $this->order->address
-            . PHP_EOL . '獲得ポイント：' . number_format($cost * ($startTime->diffInMinutes($endTime) / 30))
-            . PHP_EOL . '--------------------------------------------------';
-
-        $room = $notifiable->rooms()
-            ->where('rooms.type', RoomType::SYSTEM)
-            ->where('rooms.is_active', true)->first();
-
-        $roomMessage = $room->messages()->create([
-            'user_id' => 1,
-            'type' => MessageType::SYSTEM,
-            'message' => $message
-        ]);
-        $roomMessage->recipients()->attach($notifiable->id, ['room_id' => $room->id]);
-
         $content = '指名予約が入りました。'
             . PHP_EOL . '5分以内に承諾、キャンセルの処理を行ってください！';
 
