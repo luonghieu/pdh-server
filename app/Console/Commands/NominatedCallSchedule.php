@@ -2,6 +2,7 @@
 
 namespace App\Console\Commands;
 
+use App\Cast;
 use App\Enums\CastOrderStatus;
 use App\Enums\OrderStatus;
 use App\Enums\OrderType;
@@ -100,7 +101,7 @@ class NominatedCallSchedule extends Command
                     ->get()->pluck('id')->toArray();
 
                 $nomineeIds = array_merge($nomineeIds, $nomineeAcceptedIds);
-                $casts = User::where('type', UserType::CAST)->where('class_id', $order->class_id)->whereNotIn('id',
+                $casts = Cast::where('type', UserType::CAST)->where('class_id', $order->class_id)->whereNotIn('id',
                     $nomineeIds)->get();
 
                 \Notification::send($casts, new CallOrdersCreated($order));
