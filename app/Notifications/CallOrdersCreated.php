@@ -32,7 +32,7 @@ class CallOrdersCreated extends Notification implements ShouldQueue
      */
     public function via($notifiable)
     {
-        return [PushNotificationChannel::class];
+        return [CustomDatabaseChannel::class, PushNotificationChannel::class];
     }
 
     /**
@@ -53,8 +53,11 @@ class CallOrdersCreated extends Notification implements ShouldQueue
      */
     public function toArray($notifiable)
     {
+        $content = '新着のキャスト募集が追加されました♪';
+
         return [
-            //
+            'content' => $content,
+            'send_from' => UserType::ADMIN,
         ];
     }
 
