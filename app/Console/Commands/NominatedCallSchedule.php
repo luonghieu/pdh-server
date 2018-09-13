@@ -101,7 +101,7 @@ class NominatedCallSchedule extends Command
                     ->get()->pluck('id')->toArray();
 
                 $nomineeIds = array_merge($nomineeIds, $nomineeAcceptedIds);
-                $casts = Cast::where('type', UserType::CAST)->where('class_id', $order->class_id)->whereNotIn('id',
+                $casts = Cast::where('class_id', $order->class_id)->whereNotIn('id',
                     $nomineeIds)->get();
 
                 \Notification::send($casts, new CallOrdersCreated($order));
