@@ -95,6 +95,11 @@ class NominatedCallSchedule extends Command
                     ]);
                 }
 
+                $nomineeAcceptedIds = $order->nominees()
+                    ->where('cast_order.status', CastOrderStatus::ACCEPTED)
+                    ->get()->pluck('id')->toArray();
+
+                $nomineeIds = array_merge($nomineeIds, $nomineeAcceptedIds);
                 $casts = User::where('type', UserType::CAST)->where('class_id', $order->class_id)->whereNotIn('id',
                     $nomineeIds)->get();
 
