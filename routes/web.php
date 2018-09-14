@@ -19,3 +19,10 @@ Route::group(['namespace' => 'Webview', 'prefix' => 'webview', 'as' => 'webview.
         Route::get('card/edit/{card}', ['as' => 'edit', 'uses' => 'CreditCardController@edit'])->where('card', '[0-9]+');
     });
 });
+
+Route::get('/', function() {
+    return view('welcome');
+});
+
+Route::get('/login/line', 'Auth\LineController@login');
+Route::get('/login/line/callback', 'Auth\LineController@handleCallBack');
