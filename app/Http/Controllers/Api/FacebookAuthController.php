@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Enums\MessageType;
+use App\Enums\ProviderType;
 use App\Enums\Status;
 use App\Enums\UserGender;
 use App\Enums\UserType;
@@ -69,7 +70,8 @@ class FacebookAuthController extends ApiController
                 'date_of_birth' => (isset($fbResponse['birthday'])) ? Carbon::parse($fbResponse['birthday']) : null,
                 'gender' => (isset($fbResponse['gender'])) ? ($fbResponse['gender'] == 'male') ? UserGender::MALE : UserGender::FEMALE : null,
                 'type' => UserType::GUEST,
-                'status' => Status::ACTIVE
+                'status' => Status::ACTIVE,
+                'provider' => ProviderType::FACEBOOK
             ];
 
             $user = User::create($data);

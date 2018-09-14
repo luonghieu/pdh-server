@@ -24,5 +24,5 @@ Route::get('/', function() {
     return view('welcome');
 });
 
-Route::get('/line/login', 'Auth\LineController@login');
-Route::get('/line/callback', 'Auth\LineController@handleCallBack');
+Route::get('/login/line', 'Auth\LineController@login');
+Route::get('/login/line/callback', 'Auth\LineController@handleCallBack');
