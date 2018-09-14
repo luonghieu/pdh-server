@@ -12,11 +12,13 @@ use Socialite;
 
 class LineController extends Controller
 {
-    public function login() {
+    public function login()
+    {
         return Socialite::driver('line')->redirect();
     }
 
-    public function handleCallBack() {
+    public function handleCallBack()
+    {
         $lineResponse = Socialite::driver('line')->user();
 
         $user = $this->findOrCreate($lineResponse);
