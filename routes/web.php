@@ -21,6 +21,9 @@ Route::group(['namespace' => 'Webview', 'prefix' => 'webview', 'as' => 'webview.
 });
 
 Route::get('/', function() {
+    if (request()->all()) {
+        return 'fooo';
+    }
     return view('welcome');
 });
 
