@@ -18,4 +18,5 @@ mix.styles([
 ], 'public/bundle/css/all.css').version();
 
 mix.js("resources/assets/js/app.js", "public/js");
+mix.js("resources/assets/js/web.js", "public/js");
 
