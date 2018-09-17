@@ -72,7 +72,7 @@ class LineController extends Controller
             $data = [
                 'email' => (isset($lineResponse->email)) ? $lineResponse->email : '',
                 'fullname' => $lineResponse->name,
-                'nickname' => $lineResponse->nickname,
+                'nickname' => ($lineResponse->nickname) ? $lineResponse->nickname : $lineResponse->name,
                 'line_id' => $lineResponse->id,
                 'type' => UserType::GUEST,
                 'status' => Status::ACTIVE,
