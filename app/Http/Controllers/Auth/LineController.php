@@ -9,22 +9,40 @@ use App\Notifications\CreateGuest;
 use App\User;
 use App\Http\Controllers\Controller;
 use Auth;
+use Illuminate\Http\Request;
+use Illuminate\Support\Str;
+use Redirect;
 use Socialite;
 
 class LineController extends Controller
 {
-    public function login()
-    {
-        return Socialite::driver('line')->redirect();
+    public function login() {
+        $clientId = env('LINE_KEY');
+        $redirectUri = env('LINE_REDIRECT_URI');
+        $scope = 'openid+profile+email';
+        $state = Str::random(6);
+        $url = "https://access.line.me/oauth2/v2.1/authorize?response_type=code&client_id=$clientId&redirect_uri=$redirectUri&bot_prompt=normal&scope=$scope&state=$state";
+
+//        return Socialite::driver('line')->redirect();
+        return Redirect::to($url);
     }
 
-    public function handleCallBack()
-    {
-        $lineResponse = Socialite::driver('line')->user();
+    public function handleCallBack(Request $request) {
+        if (isset($request->friendship_status_changed) || !$request->friendship_status_changed) {
+            dd($request->all());
+            return Socialite::driver('line')->redirect();
+        }
 
-        $user = $this->findOrCreate($lineResponse);
+//        $lineResponse = Socialite::driver('line')->user();
+//        dd($lineResponse);
+        if (!isset($request->error)) {
+            $lineResponse = Socialite::driver('line')->user();
 
-        Auth::login($user);
+            $user = $this->findOrCreate($lineResponse);
+
+            Auth::login($user);
+        }
+
         return view('welcome');
     }
 
