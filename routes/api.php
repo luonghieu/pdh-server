@@ -1,7 +1,7 @@
 <?php
 
 Route::group(['prefix' => 'v1'], function () {
-    Route::post('line/push', ['as' => 'line_webhook_push', 'uses' => 'Bot\LineController@sendMessage']);
+    Route::post('line/push', ['as' => 'line_push', 'uses' => 'Bot\LineController@sendMessage']);
     Route::get('prefectures', ['as' => 'prefectures', 'uses' => 'PrefectureController@index']);
     Route::get('hometowns', ['as' => 'hometowns', 'uses' => 'PrefectureController@getHometowns']);
     Route::get('municipalities', ['as' => 'municipalities', 'uses' => 'MunicipalityController@index']);
