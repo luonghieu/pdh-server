@@ -68,7 +68,7 @@
     @endslot
   @endmodal
 
-  @confirm(['triggerId' => 'trigger2'])
+  @confirm(['triggerId' => 'trigger2', 'triggerClass' =>''])
     @slot('title')
       タイトルが入りますタイトルが
     @endslot

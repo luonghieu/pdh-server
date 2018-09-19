@@ -14,3 +14,10 @@ Route::get('/logout', 'HomeController@logout');
 
 Route::get('/login/line', 'Auth\LineController@login')->name('auth.line');
 Route::get('/login/line/callback', 'Auth\LineController@handleCallBack');
+
+Route::group(['middleware' => ['auth', 'guest'], 'prefix' => 'guest', 'as' => 'guest.'], function () {
+    Route::group(['prefix' => 'orders', 'as' => 'orders.'], function () {
+        Route::get('/', ['as' => 'index', 'uses' => 'OrderController@index']);
+        Route::post('/cancel', ['as' => 'cancel', 'uses' => 'OrderController@cancel']);
+    });
+});

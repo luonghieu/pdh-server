@@ -3050,7 +3050,7 @@ label.mm-check:before {
       color: #111;
       font-weight: bold; }
 
-/* http://meyerweb.com/eric/tools/css/reset/ 
+/* http://meyerweb.com/eric/tools/css/reset/
    v2.0 | 20110126
    License: none (public domain)
 */
@@ -5745,6 +5745,7 @@ nav:not(.mm-menu) {
           width: 49%;
           display: inline-block;
           color: white;
+          text-align: center;
           border-radius: 30px;
           padding: .7em 0em;
           background: #cccccc;
@@ -5752,6 +5753,7 @@ nav:not(.mm-menu) {
           font-size: 1.2em; }
           @media (max-width: 320px) {
             .gn-1 .list_wrap .list_item .btn_wrap .btn-cancel {
+              text-align: center;
               font-size: 1em; } }
         .gn-1 .list_wrap .list_item .btn_wrap .mess-btn {
           font-weight: normal;
