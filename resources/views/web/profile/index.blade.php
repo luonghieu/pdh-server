@@ -1,4 +1,4 @@
-@section('title', 'Profile')
+@section('title', 'プロフィール')
 @section('screen.id', 'gm1')
 
 @extends('layouts.web')
@@ -21,7 +21,7 @@
       <h2 class="portlet-header__title">ひとこと</h2>
     </div>
     <div class="portlet-content">
-      <p class="portlet-content__text">{{ $profile['intro'] }}</p>
+      <p class="portlet-content__text">{{ $profile['intro'] or '未設定' }}</p>
     </div>
   </section>
   <!-- profile-word -->
@@ -31,7 +31,7 @@
       <h2 class="portlet-header__title">自己紹介</h2>
     </div>
     <div class="portlet-content">
-      <p class="portlet-content__text">{{ $profile['description'] }}</p>
+      <p class="portlet-content__text">{{ $profile['description'] or '未設定' }}</p>
     </div>
   </section>
   <!-- profile-introduction -->
@@ -44,39 +44,39 @@
       <ul class="portlet-content__list">
         <li class="portlet-content__item">
           <p class="portlet-content__text--list">ニックネーム</p>
-          <p class="portlet-content__value">{{ $profile['nickname'] }}</p>
+          <p class="portlet-content__value">{{ $profile['nickname'] or '未設定' }}</p>
         </li>
         <li class="portlet-content__item">
           <p class="portlet-content__text--list">身長</p>
-          <p class="portlet-content__value"><span>{{ $profile['height'] }}</span>cm</p>
+          <p class="portlet-content__value"><span>{{ $profile['height'] or '未設定' }}</span>cm</p>
         </li>
         <li class="portlet-content__item">
           <p class="portlet-content__text--list">体型</p>
-          <p class="portlet-content__value">{{ $profile['body_type'] }}</p>
+          <p class="portlet-content__value">{{ $profile['body_type'] or '未設定' }}</p>
         </li>
         <li class="portlet-content__item">
           <p class="portlet-content__text--list">居住地</p>
-          <p class="portlet-content__value">{{ $profile['hometown'] }}</p>
+          <p class="portlet-content__value">{{ $profile['hometown'] or '未設定' }}</p>
         </li>
         <li class="portlet-content__item">
           <p class="portlet-content__text--list">お仕事</p>
-          <p class="portlet-content__value">{{ $profile['job'] }}</p>
+          <p class="portlet-content__value">{{ $profile['job'] or '未設定' }}</p>
         </li>
         <li class="portlet-content__item">
           <p class="portlet-content__text--list">お酒</p>
-          <p class="portlet-content__value">{{ $profile['drink_volume'] }}</p>
+          <p class="portlet-content__value">{{ $profile['drink_volume'] or '未設定' }}</p>
         </li>
         <li class="portlet-content__item">
           <p class="portlet-content__text--list">タバコ</p>
-          <p class="portlet-content__value">{{ $profile['smoking'] }}</p>
+          <p class="portlet-content__value">{{ $profile['smoking'] or '未設定' }}</p>
         </li>
         <li class="portlet-content__item">
           <p class="portlet-content__text--list">兄弟</p>
-          <p class="portlet-content__value">{{ $profile['siblings'] }}</p>
+          <p class="portlet-content__value">{{ $profile['siblings'] or '未設定' }}</p>
         </li>
         <li class="portlet-content__item">
           <p class="portlet-content__text--list">同居人</p>
-          <p class="portlet-content__value">{{ $profile['cohabitant'] }}</p>
+          <p class="portlet-content__value">{{ $profile['cohabitant'] or '未設定' }}</p>
         </li>
       </ul>
     </div>
