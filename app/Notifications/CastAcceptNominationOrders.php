@@ -2,7 +2,10 @@
 
 namespace App\Notifications;
 
+use App\Enums\ProviderType;
 use App\Enums\UserType;
+use App\Services\Line;
+use Carbon\Carbon;
 use Illuminate\Bus\Queueable;
 use Illuminate\Notifications\Notification;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -32,7 +35,11 @@ class CastAcceptNominationOrders extends Notification implements ShouldQueue
      */
     public function via($notifiable)
     {
-        return [CustomDatabaseChannel::class, PushNotificationChannel::class];
+        if ($notifiable->provider == ProviderType::LINE) {
+            return [CustomDatabaseChannel::class, LineBotNotificationChannel::class];
+        } else {
+            return [CustomDatabaseChannel::class, PushNotificationChannel::class];
+        }
     }
 
     /**
@@ -105,6 +112,42 @@ class CastAcceptNominationOrders extends Notification implements ShouldQueue
                     ],
                 ]
             ],
+        ];
+    }
+
+    public function lineBotPushData($notifiable)
+    {
+        $startTime = Carbon::parse($this->order->date . ' ' . $this->order->start_time);
+        $firstMessage = '\\\\ おめでとうございます！マッチングが確定しました🎊//';
+        $secondMessage = '▼ご予約内容'
+            . PHP_EOL . '場所：' . $this->order->address
+            . PHP_EOL . '合流予定時間：' . $startTime->format('H:i') . '～'
+            . PHP_EOL . PHP_EOL .'ゲストの方はキャストに来て欲しい場所の詳細をお伝えください。';
+
+        $line = new Line();
+        $liffId = $line->getLiffId('https://localhost');
+
+        return [
+            [
+                'type' => 'text',
+                'text' => $firstMessage
+            ],
+            [
+                'type' => 'template',
+                'altText' => $secondMessage,
+                'text' => $secondMessage,
+                'template' => [
+                    'type' => 'buttons',
+                    'text' => $secondMessage,
+                    'actions' => [
+                        [
+                            'type' => 'uri',
+                            'label' => '今すぐキャストを呼ぶ ',
+                            'uri' => "line://app/$liffId"
+                        ]
+                    ]
+                ]
+            ]
         ];
     }
 }

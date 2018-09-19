@@ -4,11 +4,12 @@ namespace App\Notifications;
 
 use App\Enums\MessageType;
 use App\Enums\OrderType;
+use App\Enums\ProviderType;
 use App\Enums\RoomType;
 use App\Enums\SystemMessageType;
 use App\Enums\UserType;
 use App\Order;
-use App\Services\LogService;
+use App\Services\Line;
 use App\Traits\DirectRoom;
 use Carbon\Carbon;
 use Illuminate\Bus\Queueable;
@@ -43,7 +44,11 @@ class CallOrdersTimeOut extends Notification implements ShouldQueue
         if ($this->order->type == OrderType::NOMINATION) {
             return [CustomDatabaseChannel::class, PushNotificationChannel::class];
         } else {
-            return [PushNotificationChannel::class];
+            if ($notifiable->provider == ProviderType::LINE) {
+                return [LineBotNotificationChannel::class];
+            } else {
+                return [PushNotificationChannel::class];
+            }
         }
     }
 
@@ -147,6 +152,34 @@ class CallOrdersTimeOut extends Notification implements ShouldQueue
                     ],
                 ]
             ],
+        ];
+    }
+
+    public function lineBotPushData($notifiable)
+    {
+        $content = 'ご希望の人数のキャストが揃わなかったため、予約が無効となりました。'
+            . PHP_EOL . 'お手数ですが、下記の「今すぐキャストを呼ぶ」をタップし、キャストクラスを変更して再度コールをし直してください。';
+
+        $line = new Line();
+        $liffId = $line->getLiffId('https://localhost');
+
+        return [
+            [
+                'type' => 'template',
+                'altText' => $content,
+                'text' => $content,
+                'template' => [
+                    'type' => 'buttons',
+                    'text' => $content,
+                    'actions' => [
+                        [
+                            'type' => 'uri',
+                            'label' => '今すぐキャストを呼ぶ',
+                            'uri' => "line://app/$liffId"
+                        ]
+                    ]
+                ]
+            ]
         ];
     }
 }

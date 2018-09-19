@@ -2,7 +2,7 @@
 
 namespace App\Notifications;
 
-use App\Services\LineBot;
+use App\Services\Line;
 use Illuminate\Notifications\Notification;
 
 class LineBotNotificationChannel
@@ -10,7 +10,7 @@ class LineBotNotificationChannel
 
     public function send($notifiable, Notification $notification)
     {
-        $lineBot = new LineBot();
+        $lineBot = new Line();
 
         $data = $notification->lineBotPushData($notifiable);
 

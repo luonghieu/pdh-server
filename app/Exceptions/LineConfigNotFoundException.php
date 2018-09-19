@@ -2,7 +2,7 @@
 
 namespace App\Exceptions;
 
-class LineBotConfigNotFoundException extends \Exception
+class LineConfigNotFoundException extends \Exception
 {
 
     public function __construct($message)

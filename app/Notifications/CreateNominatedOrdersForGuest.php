@@ -3,6 +3,7 @@
 namespace App\Notifications;
 
 use App\Enums\MessageType;
+use App\Enums\ProviderType;
 use App\Enums\RoomType;
 use App\Enums\SystemMessageType;
 use App\Enums\UserType;
@@ -35,7 +36,11 @@ class CreateNominatedOrdersForGuest extends Notification implements ShouldQueue
      */
     public function via($notifiable)
     {
-        return [PushNotificationChannel::class];
+        if ($notifiable->provider == ProviderType::LINE) {
+            return [LineBotNotificationChannel::class];
+        } else {
+            return [PushNotificationChannel::class];
+        }
     }
 
     /**
@@ -117,6 +122,31 @@ class CreateNominatedOrdersForGuest extends Notification implements ShouldQueue
                     ],
                 ]
             ],
+        ];
+    }
+
+    public function lineBotPushData($notifiable)
+    {
+        $startTime = Carbon::parse($this->order->date . ' ' . $this->order->start_time);
+        $endTime = Carbon::parse($this->order->date . ' ' . $this->order->end_time);
+
+        $content = 'Cheersをご利用いただきありがとうございます！'
+            . PHP_EOL . 'キャストのご予約を承りました。'
+            . PHP_EOL . '--------------------------------------'
+            . PHP_EOL . PHP_EOL . '- ご予約内容 -'
+            . PHP_EOL . '日時：' . $startTime->format('Y/m/d H:i') . '~'
+            . PHP_EOL . '時間：' . $startTime->diffInMinutes($endTime) / 60 . '時間'
+            . PHP_EOL . 'クラス：' . $this->order->castClass->name
+            . PHP_EOL . '人数：' . $this->order->total_cast . '人'
+            . PHP_EOL . '場所：' . $this->order->address
+            . PHP_EOL . PHP_EOL . '現在、キャストの調整を行っております。'
+            . PHP_EOL . 'しばらくお待ちください☆';
+
+        return [
+            [
+                'type' => 'text',
+                'text' => $content
+            ]
         ];
     }
 }

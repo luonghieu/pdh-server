@@ -3,6 +3,7 @@
 namespace App\Notifications;
 
 use App\Enums\MessageType;
+use App\Enums\ProviderType;
 use App\Enums\RoomType;
 use App\Enums\SystemMessageType;
 use App\Enums\UserType;
@@ -35,7 +36,11 @@ class CompletedPayment extends Notification
      */
     public function via($notifiable)
     {
-        return [PushNotificationChannel::class];
+        if ($notifiable->provider == ProviderType::LINE) {
+            return [LineBotNotificationChannel::class];
+        } else {
+            return [PushNotificationChannel::class];
+        }
     }
 
     /**
@@ -119,6 +124,27 @@ class CompletedPayment extends Notification
                     ],
                 ]
             ],
+        ];
+    }
+
+    public function lineBotPushData($notifiable)
+    {
+        $orderStartDate = Carbon::parse($this->order->date . ' ' . $this->order->start_time);
+        $orderEndDate = Carbon::parse($this->order->actual_ended_at);
+
+        $content = 'Cheersをご利用いただきありがとうございました♪'
+            . PHP_EOL . $orderStartDate->format('Y/m/d H:i') . '~' . $orderEndDate->format('H:i') . 'のご利用ポイント、' .
+            number_format($this->order->total_point) . 'Point'
+            . PHP_EOL . 'のご清算が完了いたしました。'
+            . PHP_EOL . PHP_EOL . 'マイページの「ポイント履歴」から領収書の発行が可能です。'
+            . PHP_EOL . PHP_EOL . '○○様のまたのご利用をお待ちしております♪';
+
+
+        return [
+            [
+                'type' => 'text',
+                'text' => $content,
+            ]
         ];
     }
 }
