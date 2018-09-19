@@ -6,10 +6,11 @@
   <meta name="keywords" content="">
   <meta name="description" content="">
   <meta name="csrf-token" content="{{ csrf_token() }}">
-  <link rel="stylesheet" href="assets/web/css/style.css">
+  <link rel="stylesheet" href="{{ asset('assets/web/css/style.css') }}">
 </head>
 
 <body>
+  @yield('web.extra')
   @include('web.partials.header')
 
   <main id="@yield('screen.id')">
