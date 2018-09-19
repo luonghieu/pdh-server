@@ -9,7 +9,8 @@ Route::group(['namespace' => 'Webview', 'prefix' => 'webview', 'as' => 'webview.
     });
 });
 
-Route::view('/', 'web.index');
+Route::get('/', 'HomeController@index')->name('web.index');
+Route::get('/logout', 'HomeController@logout');
 
-Route::get('/login/line', 'Auth\LineController@login');
+Route::get('/login/line', 'Auth\LineController@login')->name('auth.line');
 Route::get('/login/line/callback', 'Auth\LineController@handleCallBack');
