@@ -58,7 +58,7 @@
 @endsection
 
 @section('web.extra')
-  @modal(['triggerId' => 'trigger'])
+  @modal(['triggerId' => 'trigger', 'triggerClass' =>''])
     @slot('title')
       タイトルが入りますタイトルが
     @endslot

@@ -7,7 +7,7 @@
         <h2>{{ $title }}</h2>
         <p>{{ $content }}</p>
       </div>
-      <label for="trigger" class="close_button">キャンセルする</label>
+      <label for="trigger" class="close_button {{ $triggerClass }}">OK</label>
     </div>
   </div>
 </div>

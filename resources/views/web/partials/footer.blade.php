@@ -6,4 +6,3 @@
 <script src="{{ asset('assets/web/js/mmenu/jquery.mhead.js') }}"></script>
 <script src="{{ asset('assets/web/js/mmenu/jquery.mmenu.all.js') }}"></script>
 <script src="{{ asset('assets/web/js/common.js') }}"></script>
-<script src="{{ asset('assets/web/js/web.js') }}"></script>

@@ -50,6 +50,9 @@
      </div>
    </div> <!-- /list_item -->
   @endforeach
+  <section class="modal-cancel-order">
+    <label for="trigger" class="lb-modal-cancel" >キャンセル</label>
+  </section>
   @endif
  </div>  <!-- /list_wrap -->
 </main>
@@ -57,7 +60,7 @@
 @endsection
 
 @section('web.extra')
-  @confirm(['triggerId' => 'trigger2', 'triggerClass' =>'cancel-order'])
+  @confirm(['triggerId' => 'trigger2', 'triggerClass' =>'cf-cancel-order'])
     @slot('title')
       この日程をキャンセルしますか？
     @endslot
@@ -65,4 +68,13 @@
     @slot('content')
     @endslot
   @endconfirm
+
+  @modal(['triggerId' => 'trigger', 'triggerClass' =>'md-cancel-order'])
+    @slot('title')
+      予約キャンセルが完了しました
+    @endslot
+
+    @slot('content')
+    @endslot
+  @endmodal
 @endsection
