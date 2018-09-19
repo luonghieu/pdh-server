@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Cast;
+use App\CastClass;
 use App\Enums\CastOrderStatus;
 use App\Enums\CastOrderType;
 use App\Enums\OrderStatus;
@@ -190,5 +191,87 @@ class OrderController extends ApiController
         }
 
         return $this->respondWithData(new OrderResource($order));
+    }
+
+    public function price(Request $request)
+    {
+        $rules = [
+            'date' => 'required|date|date_format:Y-m-d|after_or_equal:today',
+            'start_time' => 'required|date_format:H:i',
+            'duration' => 'required|numeric|min:1|max:10',
+            'class_id' => 'required|exists:cast_classes,id',
+            'type' => 'required|in:1,2,3,4',
+            'nominee_ids' => '',
+        ];
+
+        $validator = validator($request->all(), $rules);
+
+        if ($validator->fails()) {
+            return $this->respondWithValidationError($validator->errors()->messages());
+        }
+
+        $orderStartTime = Carbon::parse($request->date . ' ' . $request->start_time);
+        $stoppedAt = $orderStartTime->copy()->addHours($request->duration);
+
+        //nightTime
+
+        $nightTime = 0;
+        $allowanceStartTime = Carbon::parse('00:01:00');
+        $allowanceEndTime = Carbon::parse('04:00:00');
+
+        $startDay = Carbon::parse($orderStartTime)->startOfDay();
+        $endDay = Carbon::parse($stoppedAt)->startOfDay();
+
+        $timeStart = Carbon::parse(Carbon::parse($orderStartTime->format('H:i:s')));
+        $timeEnd = Carbon::parse(Carbon::parse($stoppedAt->format('H:i:s')));
+
+        $allowance = false;
+
+        if ($startDay->diffInDays($endDay) != 0 && $stoppedAt->diffInMinutes($endDay) != 0) {
+            $allowance = true;
+        }
+
+        if ($timeStart->between($allowanceStartTime, $allowanceEndTime) || $timeEnd->between($allowanceStartTime, $allowanceEndTime)) {
+            $allowance = true;
+        }
+
+        if ($timeStart < $allowanceStartTime && $timeEnd > $allowanceEndTime) {
+            $allowance = true;
+        }
+
+        if ($allowance) {
+            $nightTime = $stoppedAt->diffInMinutes($endDay);
+        }
+
+        //allowance
+
+        $allowancePoint = 0;
+        if ($nightTime) {
+            $allowancePoint = 4000;
+        }
+
+        //orderPoint
+
+        $orderPoint = 0;
+
+        $nomineeIds = explode(",", trim($request->nominee_ids, ","));
+        if (OrderType::NOMINATION != $request->type) {
+            $cost = CastClass::findOrFail($request->class_id)->cost;
+        } else {
+            $cost = Cast::findOrFail($nomineeIds[0])->cost;
+        }
+
+        $orderDuration = $request->duration * 60;
+
+        $orderPoint = ($cost / 2) * floor($orderDuration / 15);
+
+        //ordersFee
+
+        $orderFee = 0;
+        $multiplier = floor($orderDuration / 15);
+        $nomineeCount = count($nomineeIds);
+        $orderFee = 500 * $multiplier * $nomineeCount;
+
+        return $this->respondWithData($orderPoint + $orderFee + $allowancePoint);
     }
 }

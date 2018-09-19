@@ -2,18 +2,18 @@
 
 namespace App\Http\Controllers\Auth;
 
-use App\Enums\ProviderType;
+use Auth;
+use App\User;
+use Socialite;
 use App\Enums\Status;
 use App\Enums\UserType;
+use App\Enums\ProviderType;
 use App\Notifications\CreateGuest;
-use App\User;
 use App\Http\Controllers\Controller;
-use Auth;
 use GuzzleHttp\Client;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use Redirect;
-use Socialite;
 
 class LineController extends Controller
 {
@@ -62,7 +62,7 @@ class LineController extends Controller
             \Session::flash('error', 'Login Error.');
         }
 
-        return view('welcome');
+        return redirect()->route('web.index');
     }
 
     protected function findOrCreate($lineResponse)
