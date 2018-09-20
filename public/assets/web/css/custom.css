@@ -10,3 +10,7 @@
 .modal-cancel-order {
   display: none;
 }
+
+.init-image-radius {
+  border-radius: 50%;
+}
