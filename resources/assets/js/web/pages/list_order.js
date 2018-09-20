@@ -4,10 +4,11 @@ $(document).ready(function(){
     $('.cf-cancel-order').on('click', function (e) {
       window.axios.post('/api/v1/orders/' + id+'/cancel')
       .then(function(response) {
-        $( ".lb-modal-cancel" ).click();
+        $( ".lb-modal-cancel").click();
         $('.md-cancel-order').on('click', function (e) {
           window.location.reload();
         });
       });
     });
   });
+});
