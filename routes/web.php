@@ -13,6 +13,10 @@ Route::group(['middleware' => 'auth'], function () {
     Route::group(['prefix' => 'profile', 'as' => 'profile.'], function () {
         Route::get('/', ['as' => 'index', 'uses' => 'ProfileController@index']);
     });
+
+    Route::group(['prefix' => 'user', 'as' => 'user.'], function () {
+        Route::get('/{id}', ['as' => 'show', 'uses' => 'UserController@show'])->where('id', '[0-9]+');
+    });
 });
 
 Route::get('/', 'HomeController@index')->name('web.index');
