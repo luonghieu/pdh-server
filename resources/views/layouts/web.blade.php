@@ -7,6 +7,7 @@
   <meta name="description" content="">
   <meta name="csrf-token" content="{{ csrf_token() }}">
   <link rel="stylesheet" href="{{ asset('assets/web/css/style.css') }}">
+  <link rel="stylesheet" href="{{ asset('assets/web/css/custom.css') }}">
 </head>
 
 <body>
