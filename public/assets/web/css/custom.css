@@ -6,7 +6,9 @@
     text-align: center;
   }
 }
-
+.wrapper {
+  background: url('../images/line/login-bg.jpg') center center no-repeat !important;
+}
 .modal-cancel-order {
   display: none;
 }

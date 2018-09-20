@@ -8,6 +8,9 @@ $('#buypoint-confirm').on('click', function() {
         $('#total_point').html(newTotalPoint.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") + 'P');
         $('#buypoint-alert-content').html('ポイント購入完了しました！');
         $('#buypoint-alert-label').trigger('click');
+        setTimeout(() => {
+            $('#buypoint-alert-label').trigger('click');
+        }, 2000);
     }).catch(err => {
         $('#buypoint-alert-content').html(err.response.data.error);
         $('#buypoint-alert-label').trigger('click');

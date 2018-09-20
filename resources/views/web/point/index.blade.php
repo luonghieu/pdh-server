@@ -57,9 +57,6 @@
 
 @endsection
 @section('web.content')
-    <section class="button-box">
-        <label for="popup-require-card" class="open_button button-settlement">モーダル3</label>
-    </section>
 <div class="list_wrap">
     <div class="current_point">
         <div class="point_inner"><h2 class="">現在の保有ポイント</h2></div>
