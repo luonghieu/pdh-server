@@ -40,3 +40,4 @@ window.axios.interceptors.request.use(
 require('./web/pages/index');
 require('./web/pages/login');
 require('./web/pages/list_order');
+require('./web/pages/point');

@@ -19,3 +19,11 @@
 #login-controller nav {
   z-index: 9;
 }
+#index-point-controller footer {
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+}
+#index-point-controller .list_wrap {
+  padding-top: 15px;
+}
