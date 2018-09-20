@@ -1,0 +1,28 @@
+<?php
+
+namespace App\Observers;
+
+use App\Enums\OrderPaymentStatus;
+use App\Enums\OrderType;
+use App\Notifications\CompletedPayment;
+use App\Notifications\CreateNominatedOrdersForGuest;
+use App\Order;
+
+class OrderObserver
+{
+    public function created(Order $order)
+    {
+        if (OrderType::NOMINATED_CALL == $order->type || OrderType::CALL == $order->type) {
+            $order->user->notify(new CreateNominatedOrdersForGuest($order));
+        }
+    }
+
+    public function updated(Order $order)
+    {
+        if ($order->getOriginal('payment_status') != $order->payment_status) {
+            if (OrderPaymentStatus::PAYMENT_FINISHED == $order->payment_status) {
+                $order->user->notify(new CompletedPayment($order));
+            }
+        }
+    }
+}
