@@ -10,6 +10,7 @@ Route::group(['namespace' => 'Webview', 'prefix' => 'webview', 'as' => 'webview.
 });
 
 Route::group(['middleware' => 'auth'], function () {
+    Route::get('/logout', 'HomeController@logout');
     Route::group(['prefix' => 'profile', 'as' => 'profile.'], function () {
         Route::get('/', ['as' => 'index', 'uses' => 'ProfileController@index']);
     });
@@ -17,11 +18,13 @@ Route::group(['middleware' => 'auth'], function () {
     Route::group(['prefix' => 'user', 'as' => 'user.'], function () {
         Route::get('/{id}', ['as' => 'show', 'uses' => 'UserController@show'])->where('id', '[0-9]+');
     });
+
+    Route::group(['prefix' => 'rooms', 'as' => 'rooms.'], function () {
+        Route::get('{room}/messages', ['as' => 'messages', 'uses' => 'MessageController@message'])->where('room', '[0-9]+');
+    });
 });
 
 Route::get('/', 'HomeController@index')->name('web.index');
-Route::get('/logout', 'HomeController@logout');
-
 Route::get('/login/line', 'Auth\LineController@login')->name('auth.line');
 Route::get('/login/line/callback', 'Auth\LineController@handleCallBack');
 

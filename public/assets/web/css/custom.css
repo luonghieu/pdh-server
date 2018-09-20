@@ -1,6 +1,23 @@
 .gn-1 .list_wrap .list_item .btn_wrap .btn-cancel {
   text-align: center;
 }
+
+#gg2 .msg-wrap .text::after {
+  background: url(../images/gg2/msg.png) no-repeat center;
+}
+
+#gg2 .tgl .d-top .d-top-time:before {
+  background: url(../images/gg2/glass.svg) no-repeat bottom;
+}
+
+#gg2 .tgl .d-top .d-top-place:before {
+  background: url(../images/gg2/glass.svg) no-repeat bottom;
+}
+
+#gg2 .tgl {
+  position: fixed;
+}
+
 @media (max-width: 320px) {
   .gn-1 .list_wrap .list_item .btn_wrap .btn-cancel {
     text-align: center;
@@ -13,4 +30,16 @@
 
 .init-image-radius {
   border-radius: 50%;
+}
+
+#login-controller footer {
+  display: none;
+}
+
+#login-controller #login {
+  padding-top: 0;
+}
+
+#login-controller nav {
+  z-index: 9;
 }

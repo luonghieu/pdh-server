@@ -6,13 +6,14 @@
   <meta name="keywords" content="">
   <meta name="description" content="">
   <meta name="csrf-token" content="{{ csrf_token() }}">
+  <link rel="stylesheet" href="{{ asset('assets/web/css/plugin/mmenu/jquery.mmenu.all.css') }}" />
   <link rel="stylesheet" href="{{ asset('assets/web/css/style.css') }}">
   <link rel="stylesheet" href="{{ asset('assets/web/css/plugin/slick/slick-theme.css') }}">
   <link rel="stylesheet" href="{{ asset('assets/web/css/plugin/slick/slick.css') }}">
   <link rel="stylesheet" href="{{ asset('assets/web/css/custom.css') }}">
 </head>
 
-<body>
+<body id="@yield('controller.id')">
   @yield('web.extra')
   @include('web.partials.header')
 
@@ -22,5 +23,6 @@
 
   @include('web.partials.footer')
   <script src="{{ mix('js/web.js') }}" type="text/javascript"></script>
+  @yield('web.extra_js')
 </body>
 </html>

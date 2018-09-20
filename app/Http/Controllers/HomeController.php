@@ -12,13 +12,13 @@ class HomeController extends Controller
 {
     public function index(Request $request)
     {
-        $token = '';
-
         if (Auth::check()) {
+            $token = '';
             $token = JWTAuth::fromUser(Auth::user());
+            return view('web.index', compact('token'));
         }
 
-        return view('web.index', compact('token'));
+        return view('web.login');
     }
 
     public function logout()

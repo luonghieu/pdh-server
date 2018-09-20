@@ -9,7 +9,7 @@
       @if ($profile['avatars'][0] && $profile['avatars'][0]['path'])
       <img class="init-image-radius" src="{{ $profile['avatars'][0]['path'] }}" alt="">
       @else
-      <img class="init-image-radius" src="{{ asset('assets/web/images/common/ic_default_avatar@3x.png') }}" alt="">
+      <img class="init-image-radius" src="{{ asset('assets/web/images/gm1/ic_default_avatar@3x.png') }}" alt="">
       @endif
     </div>
     <div class="profile-photo__list">
