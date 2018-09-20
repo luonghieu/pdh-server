@@ -23,7 +23,6 @@ class HomeController extends Controller
 
     public function login()
     {
-        \Session::flash('error', trans('messages.login_line_failed'));
         return view('web.login');
     }
 
