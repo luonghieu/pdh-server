@@ -1,8 +1,10 @@
+// compileExpanded: ../css/$1.css
 @charset "UTF-8";
 
 /*
 * Noto Sans Japanese (japanese) http://www.google.com/fonts/earlyaccess
  */
+
 @font-face {
   font-family: 'Noto Sans Japanese';
   font-style: normal;
@@ -28,6 +30,7 @@
       url(//fonts.gstatic.com/ea/notosansjapanese/v6/NotoSansJP-Bold.otf) format('opentype');
 }
 
+
 // Tool  ============================
 @import "./plugin/mmenu/_jquery.mmenu.all";
 @import "./plugin/mmenu/_jquery.mhead";
@@ -47,12 +50,11 @@
 @import "./layout/_gl2-1";
 @import "./layout/_gl-3.scss";
 @import "./layout/_gl4";
-@import "./layout/_gm1";
+@import "./layout/_gm1.scss";
+@import "./layout/_gm1_edit";
 @import "./layout/_gn1.scss";
 @import "./layout/_gn1-drwer";
 @import "./layout/_go1";
 @import "./layout/_ge2-1-a-3";
-@import "./layout/_gb6";
-
-
-
+@import "./layout/_login";
+@import "./layout/_ge3.scss";
