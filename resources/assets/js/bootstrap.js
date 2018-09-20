@@ -50,6 +50,6 @@ window.io = require('socket.io-client');
 
 window.Echo = new Echo({
     broadcaster: 'socket.io',
-    host: window.location.hostname,
+    host: 'http://localhost:6001',
     transports: ['websocket']
 });

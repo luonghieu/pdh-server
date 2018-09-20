@@ -5,7 +5,7 @@ namespace App\Services;
 use App\Exceptions\LineBotConfigNotFoundException;
 use GuzzleHttp\Client;
 
-class LineBot {
+class Line {
 
     public $pushUrl;
     public $liffUrl;

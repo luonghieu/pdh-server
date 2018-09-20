@@ -2,18 +2,18 @@
 
 namespace App\Http\Controllers\Auth;
 
-use App\Enums\ProviderType;
+use Auth;
+use App\User;
+use Socialite;
 use App\Enums\Status;
 use App\Enums\UserType;
+use App\Enums\ProviderType;
 use App\Notifications\CreateGuest;
-use App\User;
 use App\Http\Controllers\Controller;
-use Auth;
 use GuzzleHttp\Client;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use Redirect;
-use Socialite;
 
 class LineController extends Controller
 {
@@ -56,18 +56,21 @@ class LineController extends Controller
             if (!isset($lineResponse)) {
                 $lineResponse = Socialite::driver('line')->user();
             }
+
             $user = $this->findOrCreate($lineResponse);
             Auth::login($user);
         } else {
-            \Session::flash('error', 'Login Error.');
+            \Session::flash('error', trans('messages.login_line_failed'));
+            return redirect()->route('web.login');
         }
 
-        return view('welcome');
+        return redirect()->route('web.index');
     }
 
     protected function findOrCreate($lineResponse)
     {
         $user = User::where('line_id', $lineResponse->id)->first();
+
         if (!$user) {
             $data = [
                 'email' => (isset($lineResponse->email)) ? $lineResponse->email : '',
