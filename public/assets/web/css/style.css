@@ -6675,12 +6675,3 @@ html, body {
 .usage-contract a {
   color: #00c3c3;
   text-decoration: underline; }
-#login-controller #login {
-  padding-top: 0;
-}
-#login-controller nav {
-  z-index: 9;
-}
-#login-controller footer {
-  display: none;
-}

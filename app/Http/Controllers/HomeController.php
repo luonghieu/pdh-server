@@ -21,11 +21,6 @@ class HomeController extends Controller
         return view('web.index', compact('token'));
     }
 
-    public function login()
-    {
-        return view('web.login');
-    }
-
     public function logout()
     {
         Auth::logout();

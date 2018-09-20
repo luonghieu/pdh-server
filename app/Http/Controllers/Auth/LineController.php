@@ -8,8 +8,6 @@ use App\Enums\UserType;
 use App\Http\Controllers\Controller;
 use GuzzleHttp\Client;
 use Illuminate\Http\Request;
-use Illuminate\Support\Str;
-use Redirect;
 use App\Notifications\CreateGuest;
 use App\User;
 use Auth;
@@ -17,14 +15,11 @@ use Socialite;
 
 class LineController extends Controller
 {
-    public function login() {
-        $clientId = env('LINE_KEY');
-        $redirectUri = env('LINE_REDIRECT_URI');
-        $scope = 'openid+profile+email';
-        $state = Str::random(6);
-        $url = "https://access.line.me/oauth2/v2.1/authorize?response_type=code&client_id=$clientId&redirect_uri=$redirectUri&bot_prompt=aggressive&scope=$scope&state=$state&prompt=consent";
-
-        return Redirect::to($url);
+    public function login()
+    {
+        return Socialite::driver('line')
+            ->with(['bot_prompt' => 'aggressive'])
+            ->redirect();
     }
 
     public function handleCallBack(Request $request) {
@@ -36,7 +31,7 @@ class LineController extends Controller
                 'Content-Type' => 'application/x-www-form-urlencoded',
             ];
             $client = new Client([ 'headers' => $header ]);
-            $response = $client->post('https://api.line.me/oauth2/v2.1/token',
+            $response = $client->post(env('LINE_API_URI') . '/oauth2/v2.1/token',
                 [
                     'form_params' => [
                         'grant_type' => 'authorization_code',
