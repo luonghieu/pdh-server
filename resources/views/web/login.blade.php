@@ -4,13 +4,13 @@
 @extends('layouts.web')
 @section('web.extra')
     @if ($error = Session::pull('error'))
-        @alert(['triggerId' => 'trigger3'])
+        @alert(['triggerId' => 'login-error', 'labelId' => 'login-error-label'])
         @slot('content')
             {{ $error }}
         @endslot
         @endalert
         <script>
-            document.getElementById('trigger3').click();
+            document.getElementById('login-error-label').click();
         </script>
     @endif
 @endsection

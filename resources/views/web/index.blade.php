@@ -73,7 +73,7 @@
   @endslot
   @endconfirm
 
-  @alert(['triggerId' => 'trigger3'])
+  @alert(['triggerId' => 'trigger3', 'labelId' => 'label-3'])
   @slot('content')
     ここにタイトルが入ります
   @endslot
