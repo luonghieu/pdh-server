@@ -44,14 +44,14 @@
      </div>
      <div class="btn_wrap">
        <section class="btn-cancel">
-        <label for="trigger2" data-id ="{{ $order['id'] }}" class="lb-cancel" >キャンセル</label>
+        <label for="cancel" data-id ="{{ $order['id'] }}" class="lb-cancel" >キャンセル</label>
        </section>
        <button class="mess-btn" type="button" name="button">メッセージを確認</button>
      </div>
    </div> <!-- /list_item -->
   @endforeach
   <section class="modal-cancel-order">
-    <label for="trigger" class="lb-modal-cancel" >キャンセル</label>
+    <label for="md-cancel" class="lb-modal-cancel" >キャンセル</label>
   </section>
   @endif
  </div>  <!-- /list_wrap -->
@@ -60,7 +60,7 @@
 @endsection
 
 @section('web.extra')
-  @confirm(['triggerId' => 'trigger2', 'triggerClass' =>'cf-cancel-order'])
+  @confirm(['triggerId' => 'cancel', 'triggerClass' =>'cf-cancel-order'])
     @slot('title')
       この日程をキャンセルしますか？
     @endslot
@@ -69,7 +69,7 @@
     @endslot
   @endconfirm
 
-  @modal(['triggerId' => 'trigger', 'triggerClass' =>'md-cancel-order'])
+  @modal(['triggerId' => 'md-cancel', 'triggerClass' =>'md-cancel-order'])
     @slot('title')
       予約キャンセルが完了しました
     @endslot
