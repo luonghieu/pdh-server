@@ -9,7 +9,7 @@ use Auth;
 use GuzzleHttp\Client;
 use JWTAuth;
 
-class ChatController extends Controller
+class MessageController extends Controller
 {
     public function message(Room $room)
     {
@@ -25,6 +25,6 @@ class ChatController extends Controller
         $getContents = json_decode($response->getBody()->getContents(), JSON_NUMERIC_CHECK);
         $messages = $getContents['data'];
 
-        return view('web.chat', compact('room', 'accessToken', 'messages'));
+        return view('web.message', compact('room', 'accessToken', 'messages'));
     }
 }

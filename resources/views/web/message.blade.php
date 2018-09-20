@@ -68,7 +68,7 @@
 
   <div class="msg">
     <section id="message-box">
-      @include('web.content-chat',compact('messages'))
+      @include('web.content-message',compact('messages'))
     </section>
   </div><!--  msg -->
   <div class="msg-input">
