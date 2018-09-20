@@ -15,8 +15,18 @@ Route::group(['middleware' => 'auth'], function () {
     Route::group(['prefix' => 'profile', 'as' => 'profile.'], function () {
         Route::get('/', ['as' => 'index', 'uses' => 'ProfileController@index']);
     });
+
+    Route::group(['prefix' => 'user', 'as' => 'user.'], function () {
+        Route::get('/{id}', ['as' => 'show', 'uses' => 'UserController@show'])->where('id', '[0-9]+');
+    });
 });
 
 Route::get('/login', 'HomeController@login')->name('web.login');
 Route::get('/login/line', 'Auth\LineController@login')->name('auth.line');
 Route::get('/login/line/callback', 'Auth\LineController@handleCallBack');
+
+Route::group(['middleware' => ['auth', 'guest'], 'prefix' => 'guest', 'as' => 'guest.'], function () {
+    Route::group(['prefix' => 'orders', 'as' => 'orders.'], function () {
+        Route::get('/', ['as' => 'index', 'uses' => 'OrderController@index']);
+    });
+});

@@ -2,18 +2,18 @@
 
 namespace App\Http\Controllers\Auth;
 
-use Auth;
-use App\User;
-use Socialite;
+use App\Enums\ProviderType;
 use App\Enums\Status;
 use App\Enums\UserType;
-use App\Enums\ProviderType;
-use App\Notifications\CreateGuest;
 use App\Http\Controllers\Controller;
 use GuzzleHttp\Client;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use Redirect;
+use App\Notifications\CreateGuest;
+use App\User;
+use Auth;
+use Socialite;
 
 class LineController extends Controller
 {
@@ -79,7 +79,7 @@ class LineController extends Controller
                 'line_id' => $lineResponse->id,
                 'type' => UserType::GUEST,
                 'status' => Status::ACTIVE,
-                'provider' => ProviderType::LINE
+                'provider' => ProviderType::LINE,
             ];
 
             $user = User::create($data);
@@ -88,7 +88,7 @@ class LineController extends Controller
                 $user->avatars()->create([
                     'path' => $lineResponse->avatar,
                     'thumbnail' => $lineResponse->avatar,
-                    'is_default' => true
+                    'is_default' => true,
                 ]);
             }
 
