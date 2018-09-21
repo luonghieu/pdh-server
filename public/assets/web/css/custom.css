@@ -27,12 +27,19 @@
 .modal-cancel-order {
   display: none;
 }
+
+.init-image-radius {
+  border-radius: 50%;
+}
+
 #login-controller footer {
   display: none;
 }
+
 #login-controller #login {
   padding-top: 0;
 }
+
 #login-controller nav {
   z-index: 9;
 }
