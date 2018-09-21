@@ -28,6 +28,37 @@
   display: none;
 }
 
+#gm1 .btn-l button {
+  font-size: 14px;
+}
+
+.btn-l button {
+  margin: 0;
+  border: 0px solid;
+  border-radius: 30px;
+  padding: 1.13em 5.375em;
+  display: inline-block;
+  color: white;
+  background: linear-gradient(20deg, #42E4B2 0%, #00C3C3 100%);
+}
+
+.help-block {
+  color: red;
+}
+
+input[type="date"] {
+  background-color: #dcdce5;
+  outline: none;
+}
+
+input[type="date"]::-webkit-inner-spin-button {
+  height: 28px;
+}
+
+input[type="date"]::-webkit-calendar-picker-indicator {
+  font-size: 14px;
+}
+
 .init-image-radius {
   border-radius: 50%;
 }

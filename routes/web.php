@@ -13,6 +13,7 @@ Route::group(['middleware' => 'auth'], function () {
     Route::get('/logout', 'HomeController@logout');
     Route::group(['prefix' => 'profile', 'as' => 'profile.'], function () {
         Route::get('/', ['as' => 'index', 'uses' => 'ProfileController@index']);
+        Route::get('edit', ['as' => 'edit', 'uses' => 'ProfileController@edit']);
     });
 
     Route::group(['prefix' => 'user', 'as' => 'user.'], function () {

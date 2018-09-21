@@ -40,17 +40,71 @@ main{
       width: 100%;
       display: flex;
       align-items: center;
-      justify-content: center;
-      -webkit-justify-content: space-between;
-      justify-content: space-between;
+      justify-content:flex-start;
+      -webkit-flex-wrap: wrap;
+    flex-wrap: wrap;
+    align-items: stretch;
     }
   }
   &__item{
-    width: 19.39058%;
+    width: 19%;
     height: auto;
-    min-width: 70px;
+    // min-width: 70px;
     border-radius: 8px;
     overflow: hidden;
+  }
+  &__item--add-button{
+    width: 19%;
+    height: auto;
+    // min-width: 70px;
+    border-radius: 8px;
+    overflow: hidden;
+    border: 3px #53bec0 solid;
+    border-radius: 10px;
+    overflow: hidden;
+    box-sizing: border-box;
+
+    position: relative;
+    &:before{
+      content: "";
+      width: 25px;
+      height: 3px;
+      background-color: #53bec0;
+      position: absolute;
+      border-radius: 5px;
+      overflow: hidden;
+      top: 50%;
+      left: 50%;
+      -webkit-transform: translateY(-50%) translateX(-50%);
+      transform: translateY(-50%) translateX(-50%);
+    }
+    &:after{
+      content: "";
+      width: 3;
+      height: 25px;
+      background-color: #53bec0;
+      position: absolute;
+      border-radius: 5px;
+      overflow: hidden;
+      top: 50%;
+      left: 50%;
+      -webkit-transform: translateY(-50%) translateX(-50%);
+      transform: translateY(-50%) translateX(-50%);
+    }
+
+  }
+  .profile-photo__item +.profile-photo__item--add-button{
+    margin-left: 8%;
+  }
+
+  .profile-photo__item + .profile-photo__item{
+    margin-left: 8%;
+  }
+  [class^="profile-photo__item"]:nth-child(n+5){
+    margin-top: 20px;
+  }
+  [class^="profile-photo__item"]:nth-child(4n+1){
+    margin-left: 0;
   }
 }
 
@@ -116,5 +170,7 @@ main{
 
 
 }
-
+  .btn-l a{
+    font-size:14px;
+  }
 }

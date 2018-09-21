@@ -17,11 +17,12 @@
   @yield('web.extra')
   @include('web.partials.header')
 
-  <main id="@yield('screen.id')">
+  <main id="@yield('screen.id')" class="@yield('screen.class')">
     @yield('web.content')
   </main>
 
   @include('web.partials.footer')
+  @yield('web.script')
   <script src="{{ mix('js/web.js') }}" type="text/javascript"></script>
   @yield('web.extra_js')
 </body>
