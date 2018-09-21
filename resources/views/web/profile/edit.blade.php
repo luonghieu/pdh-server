@@ -3,6 +3,10 @@
 @section('screen.class', 'gm1-edit')
 
 @extends('layouts.web')
+@section('web.extra')
+<div>
+@endsection
+
 @section('web.content')
 <div class="cast-profile">
   <section class="profile-photo">
