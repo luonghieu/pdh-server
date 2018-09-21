@@ -23,6 +23,11 @@ Route::group(['middleware' => 'auth'], function () {
     Route::group(['prefix' => 'rooms', 'as' => 'rooms.'], function () {
         Route::get('{room}/messages', ['as' => 'messages', 'uses' => 'MessageController@message'])->where('room', '[0-9]+');
     });
+
+    Route::group(['prefix' => 'ratings', 'as' => 'ratings.'], function () {
+        Route::get('/', ['as' => 'index', 'uses' => 'RatingController@index']);
+    });
+
 });
 
 Route::get('/', 'HomeController@index')->name('web.index');
