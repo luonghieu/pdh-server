@@ -1,14 +1,18 @@
+var store = require('./store');
 window.axios = require('axios');
 
 window.axios.defaults.headers.common['X-Requested-With'] = 'XMLHttpRequest';
 
 let token = document.head.querySelector('meta[name="csrf-token"]');
 
+const accessToken = store.getToken();
+
 if (token) {
   window.axios.defaults.headers.common['X-CSRF-TOKEN'] = token.content;
 } else {
   console.error('CSRF token not found: https://laravel.com/docs/csrf#csrf-x-csrf-token');
 }
+
 
 import Echo from 'laravel-echo'
 
@@ -20,15 +24,13 @@ window.Echo = new Echo({
   transports: ['websocket']
 });
 
-var store = require('./store');
+window.Echo.connector.options.auth.headers["Authorization"] = "Bearer " + accessToken;
 
 window.axios.interceptors.request.use(
   config => {
     if (!config.headers.Authorization) {
-      const token = store.getToken();
-
-      if (token) {
-        config.headers.Authorization = `Bearer ${token}`;
+      if (accessToken) {
+        config.headers.Authorization = `Bearer ${accessToken}`;
       }
     }
 
@@ -41,3 +43,4 @@ require('./web/pages/index');
 require('./web/pages/login');
 require('./web/pages/list_order');
 require('./web/pages/point');
+require('./web/pages/chat');

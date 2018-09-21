@@ -20,7 +20,11 @@ Route::group(['middleware' => 'auth'], function () {
     });
 
     Route::group(['prefix' => 'points', 'as' => 'points.'], function () {
-       Route::get('/', ['as' => 'index', 'uses' => 'PointController@index']);
+        Route::get('/', ['as' => 'index', 'uses' => 'PointController@index']);
+    });
+
+    Route::group(['prefix' => 'rooms', 'as' => 'rooms.'], function () {
+        Route::get('{room}/messages', ['as' => 'messages', 'uses' => 'MessageController@message'])->where('room', '[0-9]+');
     });
 });
 

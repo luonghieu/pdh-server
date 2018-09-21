@@ -86,6 +86,9 @@ class MessageController extends ApiController
         $messages['order'] = $room->room_order ? OrderResource::make($room->room_order->load(['casts', 'user'])) : null;
         $messages['room'] = RoomResource::make($room->load('users'));
 
+        if ('html' == $request->response_type) {
+            return view('web.content-message', compact('messages'));
+        }
         return $this->respondWithData($messages);
     }
 
