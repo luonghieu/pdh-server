@@ -3,55 +3,91 @@
 @section('screen.id', 'go1')
 @extends('layouts.web')
 @section('web.extra')
+    <div class="modal_wrap">
+        <input id="rating-confirm-popup" type="checkbox">
+        <div class="modal_overlay">
+            <label for="rating-confirm-popup" class="modal_trigger" id="rating-confirm-label"></label>
+            <div class="modal_content modal_content-btn2">
+                <div class="text-box">
+                    <p>この内容で評価しますか？</p>
+                </div>
+                <div class="close_button-box">
+                    <div class="close_button-block">
+                        <label for="rating-confirm-popup" class="close_button  left">キャンセル</label>
+                    </div>
+                    <div class="close_button-block" id="rating-confirm-btn">
+                        <label class="close_button">評価する</label>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 
+    <div class="modal_wrap">
+        <input id="rating-alert" type="checkbox">
+        <div class="modal_overlay">
+            <label for="rating-alert" class="modal_trigger" id="rating-alert-label"></label>
+            <div class="modal_content modal_content-btn3">
+                <div class="content-in">
+                    <h2 id="rating-alert-content"></h2>
+                </div>
+            </div>
+        </div>
+    </div>
 @endsection
 @section('web.content')
+    <?php
+    $orderStartTime = \Carbon\Carbon::parse($order->date . ' ' . $order->start_time);
+    $orderEndTime = $orderStartTime->copy()->addMinutes($order->duration * 60);
+    ?>
     <div class="cast-profile">
         <section class="profile-photo">
-            <div class="profile-photo_top"><img src="assets/images/go1/cast1.png" alt=""></div>
-            <h2>Satomi♥♥(21)</h2>
-            <p>2018年01月23日(土)</p>
-            <p>13:00〜15:00</p>
+            <div class="profile-photo_top"><img src="{{ $cast->avatars->first()->thumbnail }}" alt=""></div>
+            <h2>{{ $cast->nickname . '(' . \Carbon\Carbon::parse($cast->date_of_birth)->age . ')'}}</h2>
+            <p>{{ $orderStartTime->format('Y年m月d日') . '(' . dayOfWeek()[$orderStartTime->dayOfWeek] . ')' }}</p>
+            <p>{{ $orderStartTime->format('H:i') }}〜{{ $orderEndTime->format('H:i') }}</p>
         </section>
     </div>
-    <!-- profile-photos -->
-    <section class="evaluation-box">
-        <ul class="">
-            <li><p class="label1">満足度</p>
-                <span class="star-rating">
-            <input type="radio" name="rating" value="1"><i></i>
-            <input type="radio" name="rating" value="2"><i></i>
-            <input type="radio" name="rating" value="3"><i></i>
-            <input type="radio" name="rating" value="4"><i></i>
-            <input type="radio" name="rating" value="5"><i></i>
-          </span>
-            </li>
-            <li><p class="label2">ルックス・<br>身だしなみ</p>
-                <span class="star-rating">
-            <input type="radio" name="rating2" value="1"><i></i>
-            <input type="radio" name="rating2" value="2"><i></i>
-            <input type="radio" name="rating2" value="3"><i></i>
-            <input type="radio" name="rating2" value="4"><i></i>
-            <input type="radio" name="rating2" value="5"><i></i>
-          </span>
-            </li>
-            <li><p class="label3">愛想・気遣い</p>
-                <span class="star-rating">
-            <input type="radio" name="rating3" value="1"><i></i>
-            <input type="radio" name="rating3" value="2"><i></i>
-            <input type="radio" name="rating3" value="3"><i></i>
-            <input type="radio" name="rating3" value="4"><i></i>
-            <input type="radio" name="rating3" value="5"><i></i>
-          </span>
-            </li>
-        </ul>
-        <div>
-            <textarea class="form" name="example" cols="50" rows="10" wrap="soft" placeholder="よろしければ評価内容をご入力ください"></textarea>
-        </div>
-    </section>
-
-
-    <section class="settlement-confirm">
-        <button type="button" class="button button-settlement">評価する</button>
-    </section>
+    <form action="{{ action('Api\RatingController@create') }}" method="POST" id="rating-create">
+        <section class="evaluation-box">
+            <ul class="">
+                <li><p class="label1">満足度</p>
+                    <span class="star-rating">
+                <input type="radio" name="satisfaction" value="1"><i></i>
+                <input type="radio" name="satisfaction" value="2"><i></i>
+                <input type="radio" name="satisfaction" value="3"><i></i>
+                <input type="radio" name="satisfaction" value="4"><i></i>
+                <input type="radio" name="satisfaction" value="5" checked><i></i>
+              </span>
+                </li>
+                <li><p class="label2">ルックス・<br>身だしなみ</p>
+                    <span class="star-rating">
+                <input type="radio" name="appearance" value="1" ><i></i>
+                <input type="radio" name="appearance" value="2"><i></i>
+                <input type="radio" name="appearance" value="3"><i></i>
+                <input type="radio" name="appearance" value="4"><i></i>
+                <input type="radio" name="appearance" value="5" checked><i></i>
+              </span>
+                </li>
+                <li><p class="label3">愛想・気遣い</p>
+                    <span class="star-rating">
+                <input type="radio" name="friendliness" value="1" ><i></i>
+                <input type="radio" name="friendliness" value="2"><i></i>
+                <input type="radio" name="friendliness" value="3"><i></i>
+                <input type="radio" name="friendliness" value="4"><i></i>
+                <input type="radio" name="friendliness" value="5" checked><i></i>
+              </span>
+                </li>
+            </ul>
+            <div>
+                <textarea class="form" name="comment" cols="50" rows="10" wrap="soft"
+                          placeholder="よろしければ評価内容をご入力ください"></textarea>
+            </div>
+        </section>
+        <section class="settlement-confirm">
+            <input type="hidden" name="order_id" value="{{ request()->order_id }}">
+            <input type="hidden" name="rated_id" value="{{ request()->cast_id }}">
+            <button type="button" class="button button-settlement" id="rating-submit-btn">評価する</button>
+        </section>
+    </form>
 @endsection

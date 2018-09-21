@@ -53,3 +53,10 @@ if (!function_exists('getPrefectureName')) {
         return App\Prefecture::find($id)->name;
     }
 }
+
+if (!function_exists('dayOfWeek')) {
+    function dayOfWeek()
+    {
+        return ['日', '月', '火', '水', '木', '金', '土'];
+    }
+}
