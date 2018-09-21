@@ -74,7 +74,7 @@ class LineController extends Controller
 
         if (!$user) {
             $data = [
-                'email' => (isset($lineResponse->email)) ? $lineResponse->email : '',
+                'email' => (isset($lineResponse->email)) ? $lineResponse->email : null,
                 'fullname' => $lineResponse->name,
                 'nickname' => ($lineResponse->nickname) ? $lineResponse->nickname : $lineResponse->name,
                 'line_id' => $lineResponse->id,
