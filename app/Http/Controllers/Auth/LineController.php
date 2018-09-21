@@ -100,6 +100,7 @@ class LineController extends Controller
 
         if (!$user->line_id) {
             $user->line_id = $lineResponse->id;
+            $user->save();
         }
 
         return $user;
