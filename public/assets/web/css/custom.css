@@ -59,6 +59,10 @@ input[type="date"]::-webkit-calendar-picker-indicator {
   font-size: 14px;
 }
 
+.init-image-radius {
+  border-radius: 50%;
+}
+
 #login-controller footer {
   display: none;
 }

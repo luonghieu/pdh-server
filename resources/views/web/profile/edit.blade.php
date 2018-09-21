@@ -8,7 +8,7 @@
   <section class="profile-photo">
     <div class="profile-photo__top">
       @if ($profile['avatars'][0] && $profile['avatars'][0]['path'])
-      <img src="{{ $profile['avatars'][0]['path'] }}" alt="">
+      <img class="init-image-radius" src="{{ $profile['avatars'][0]['path'] }}" alt="">
       @else
       <img src="{{ asset('assets/web/images/gm1/ic_default_avatar@3x.png') }}" alt="">
       @endif
@@ -36,9 +36,9 @@
       <div class="portlet-header">
         <h2 class="portlet-header__title">ひとこと</h2>
       </div>
-      <div class="portlet-content" data-field="intro">
+      <div data-field="intro" class="help-block"></div>
+      <div class="portlet-content">
         <textarea rows="2" onchange="limitMaxLength(this, 30, '30文字以内で入力してください')" id="intro">{{ $profile['intro'] }}</textarea>
-        <div class="help-block"></div>
       </div>
     </section>
     <!-- profile-word -->
@@ -47,9 +47,9 @@
       <div class="portlet-header">
         <h2 class="portlet-header__title">自己紹介</h2>
       </div>
-      <div class="portlet-content" data-field="description">
+      <div  data-field="description" class="help-block"></div>
+      <div class="portlet-content">
         <textarea rows="5" onchange="limitMaxLength(this, 1000, '1000文字以内で入力してください')" id="description">{{ $profile['description'] }}</textarea>
-        <div class="help-block"></div>
       </div>
     </section>
     <!-- profile-introduction -->
@@ -63,7 +63,7 @@
           <div data-field="nickname" class="help-block"></div>
           <li class="portlet-content__item">
             <p class="portlet-content__text--list">ニックネーム</p>
-            <input type="text" id="nickname" value="{{ $profile['nickname'] }}">
+            <input type="text" onchange="limitMaxLength(this, 20, '20文字以内で入力してください')" id="nickname" value="{{ $profile['nickname'] }}">
           </li>
           <div data-field="gender" class="help-block"></div>
           <li class="portlet-content__item">
