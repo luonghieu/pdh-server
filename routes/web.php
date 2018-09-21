@@ -20,6 +20,10 @@ Route::group(['middleware' => 'auth'], function () {
         Route::get('/{id}', ['as' => 'show', 'uses' => 'UserController@show'])->where('id', '[0-9]+');
     });
 
+    Route::group(['prefix' => 'points', 'as' => 'points.'], function () {
+        Route::get('/', ['as' => 'index', 'uses' => 'PointController@index']);
+    });
+
     Route::group(['prefix' => 'rooms', 'as' => 'rooms.'], function () {
         Route::get('{room}/messages', ['as' => 'messages', 'uses' => 'MessageController@message'])->where('room', '[0-9]+');
     });
