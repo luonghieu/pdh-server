@@ -28,7 +28,7 @@ Route::group(['middleware' => 'auth'], function () {
         Route::get('{room}/messages', ['as' => 'messages', 'uses' => 'MessageController@message'])->where('room', '[0-9]+');
     });
 
-    Route::group(['prefix' => 'ratings', 'as' => 'ratings.'], function () {
+    Route::group(['prefix' => 'evaluation', 'as' => 'evaluation.'], function () {
         Route::get('/', ['as' => 'index', 'uses' => 'RatingController@index']);
     });
 

@@ -48,34 +48,34 @@
             <p>{{ $orderStartTime->format('H:i') }}〜{{ $orderEndTime->format('H:i') }}</p>
         </section>
     </div>
-    <form action="{{ action('Api\RatingController@create') }}" method="POST" id="rating-create">
+    <form action="{{ route('create_rating') }}" method="POST" id="rating-create">
         <section class="evaluation-box">
             <ul class="">
                 <li><p class="label1">満足度</p>
                     <span class="star-rating">
                 <input type="radio" name="satisfaction" value="1"><i></i>
-                <input type="radio" name="satisfaction" value="2"><i></i>
+                <input type="radio" name="satisfaction" value="2" checked><i></i>
                 <input type="radio" name="satisfaction" value="3"><i></i>
                 <input type="radio" name="satisfaction" value="4"><i></i>
-                <input type="radio" name="satisfaction" value="5" checked><i></i>
+                <input type="radio" name="satisfaction" value="5"><i></i>
               </span>
                 </li>
                 <li><p class="label2">ルックス・<br>身だしなみ</p>
                     <span class="star-rating">
                 <input type="radio" name="appearance" value="1" ><i></i>
-                <input type="radio" name="appearance" value="2"><i></i>
+                <input type="radio" name="appearance" value="2" checked><i></i>
                 <input type="radio" name="appearance" value="3"><i></i>
                 <input type="radio" name="appearance" value="4"><i></i>
-                <input type="radio" name="appearance" value="5" checked><i></i>
+                <input type="radio" name="appearance" value="5"><i></i>
               </span>
                 </li>
                 <li><p class="label3">愛想・気遣い</p>
                     <span class="star-rating">
                 <input type="radio" name="friendliness" value="1" ><i></i>
-                <input type="radio" name="friendliness" value="2"><i></i>
+                <input type="radio" name="friendliness" value="2" checked><i></i>
                 <input type="radio" name="friendliness" value="3"><i></i>
                 <input type="radio" name="friendliness" value="4"><i></i>
-                <input type="radio" name="friendliness" value="5" checked><i></i>
+                <input type="radio" name="friendliness" value="5"><i></i>
               </span>
                 </li>
             </ul>
