@@ -23,7 +23,7 @@
     text-align: center;
   }
 }
-.wrapper {
+#login-controller .wrapper {
   background: url('../images/line/login-bg.jpg') center center no-repeat !important;
 }
 .modal-cancel-order {
