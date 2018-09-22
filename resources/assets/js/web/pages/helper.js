@@ -9,16 +9,16 @@ export function getFormData(domQuery){
     return out;
 }
 
-export function getResponseMessage(errorData) {
+export function getResponseMessage(data) {
     let message = '';
-    if (typeof errorData === 'object') {
-        for (let key in errorData) {
-            if (errorData.hasOwnProperty(key)) {
-                message += errorData[key] + '</br>';
+    if (typeof data === 'object') {
+        for (let key in data) {
+            if (data.hasOwnProperty(key)) {
+                message += data[key] + '</br>';
             }
         }
     } else {
-        message = errorData;
+        message = data;
     }
 
     return message;
