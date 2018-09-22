@@ -23,9 +23,11 @@
     text-align: center;
   }
 }
+
 #login-controller .wrapper {
   background: url('../images/line/login-bg.jpg') center center no-repeat !important;
 }
+
 .modal-cancel-order {
   display: none;
 }
@@ -76,11 +78,17 @@ input[type="date"]::-webkit-calendar-picker-indicator {
 #login-controller nav {
   z-index: 9;
 }
+
+.init-point-minus {
+  color: red;
+}
+
 #index-point-controller footer {
   position: absolute;
   bottom: 0;
   width: 100%;
 }
+
 #index-point-controller .list_wrap {
   padding-top: 15px;
 }
