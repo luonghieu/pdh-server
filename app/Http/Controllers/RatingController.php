@@ -19,7 +19,7 @@ class RatingController extends Controller
         $cast = $order->casts()->wherePivot('guest_rated', false)->first();
 
         if (!$cast) {
-            return redirect()->back();
+            return redirect()->route('web.index');
         }
 
         return view('web.ratings.index', compact(['order', 'cast']));
