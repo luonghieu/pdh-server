@@ -11,9 +11,11 @@
         <div class="text-box">
           <h2>領収書を発行する</h2>
           <p>宛名(任意)</p>
-          <input type="text" placeholder="例：株式会社チアーズ">
+          <input type="text" id="name" placeholder="例：株式会社チアーズ">
+          <div data-field="name" class="help-block"></div>
           <p>但し書き(任意)</p>
-          <input type="text" placeholder="例：飲食代">
+          <input type="text" id="content" placeholder="例：飲食代">
+          <div data-field="content" class="help-block"></div>
         </div>
         <div class="close_button-box">
           <div class="close_button-block left">
@@ -82,10 +84,29 @@
         </div>
       @else
         <div class="item_right">
-          <label for="trigger5" class="btn-bg">領収書を発行</label>
+          @if (!$point['receipt'])
+            <label for="trigger5" class="btn-bg">領収書を発行</label>
+          @else
+            <label for="" class="btn-bg">領収書を発行</label>
+          @endif
         </div>
       @endif
     </div>
   @endforeach
 </div>  <!-- /list_wrap -->
 @endsection
+
+@section('web.script')
+<script>
+  function limitMaxLength(target, len, err)
+  {
+    if (target.value.length > len) {
+      target.value = target.value.substr(0, len);
+
+      if ("undefined" != typeof(err)) {
+        ;
+      }
+    }
+  }
+</script>
+@stop
