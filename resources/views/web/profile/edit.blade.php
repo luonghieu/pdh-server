@@ -7,8 +7,8 @@
 <div class="cast-profile">
   <section class="profile-photo">
     <div class="profile-photo__top">
-      @if ($profile['avatars'][0] && $profile['avatars'][0]['path'])
-      <img class="init-image-radius" src="{{ $profile['avatars'][0]['path'] }}" alt="">
+      @if ($profile['avatars'] && $profile['avatars'][0]['path'])
+      <img class="init-image-radius" name="img" src="{{ $profile['avatars'][0]['path'] }}" alt="">
       @else
       <img src="{{ asset('assets/web/images/gm1/ic_default_avatar@3x.png') }}" alt="">
       @endif
@@ -18,7 +18,7 @@
         @foreach ($profile['avatars'] as $avatar)
           @if ($avatar['path'])
           <li class="profile-photo__item">
-            <a href="#"><img src="" alt=""></a>
+            <a href="#"><img src="{{ $avatar['path'] }}" alt=""></a>
           </li>
           @endif
         @endforeach
@@ -27,19 +27,20 @@
           <img src="{{ asset('assets/web/images/gm1/add-button_bg.png') }}" alt="">
         </label>
       </ul>
+      <div class="image-error help-block"></div>
     </div>
   </section>
   <!-- profile-photos -->
-  <form id="update-profile" action="#" method="POST">
+  <form id="update-profile" action="" method="GET">
     {{ csrf_field() }}
     <section class="portlet">
       <div class="portlet-header">
         <h2 class="portlet-header__title">ひとこと</h2>
       </div>
-      <div data-field="intro" class="help-block"></div>
       <div class="portlet-content">
         <textarea rows="2" onchange="limitMaxLength(this, 30, '30文字以内で入力してください')" id="intro">{{ $profile['intro'] }}</textarea>
       </div>
+      <div data-field="intro" class="help-block"></div>
     </section>
     <!-- profile-word -->
 
@@ -47,10 +48,10 @@
       <div class="portlet-header">
         <h2 class="portlet-header__title">自己紹介</h2>
       </div>
-      <div  data-field="description" class="help-block"></div>
       <div class="portlet-content">
         <textarea rows="5" onchange="limitMaxLength(this, 1000, '1000文字以内で入力してください')" id="description">{{ $profile['description'] }}</textarea>
       </div>
+      <div  data-field="description" class="help-block"></div>
     </section>
     <!-- profile-introduction -->
 
@@ -60,12 +61,11 @@
       </div>
       <div class="portlet-content">
         <ul class="portlet-content__list">
-          <div data-field="nickname" class="help-block"></div>
           <li class="portlet-content__item">
             <p class="portlet-content__text--list">ニックネーム</p>
-            <input type="text" onchange="limitMaxLength(this, 20, '20文字以内で入力してください')" id="nickname" value="{{ $profile['nickname'] }}">
+            <input type="text" onchange="limitMaxLength(this, 20, '20文字以内で入力してください')" id="nickname" name="nickname" value="{{ $profile['nickname'] }}" >
           </li>
-          <div data-field="gender" class="help-block"></div>
+          <label data-field="nickname" id="nickname-error" class="error help-block" for="nickname"></label>
           <li class="portlet-content__item">
             <p class="portlet-content__text--list">性別</p>
             <label class="time-input">
@@ -82,12 +82,12 @@
               </div>
             </label>
           </li>
-          <div data-field="date_of_birth" class="help-block"></div>
+          <div data-field="gender" class="help-block"></div>
           <li class="portlet-content__item">
             <p class="portlet-content__text--list">生年月日</p>
-            <input type="date" id="date-of-birth" value="{{ $profile['date_of_birth'] }}">
+            <input type="date" id="date-of-birth" name="date_of_birth" value="{{ $profile['date_of_birth'] }}">
           </li>
-          <div data-field="height" class="help-block"></div>
+          <label data-field="date_of_birth" id="date-of-birth-error" class="error help-block" for="date-of-birth"></label>
           <li class="portlet-content__item">
             <p class="portlet-content__text--list">身長</p>
             <label class="time-input">
@@ -104,7 +104,7 @@
               </div>
             </label>
           </li>
-          <div data-field="body_type_id" class="help-block"></div>
+          <div data-field="height" class="help-block"></div>
           <li class="portlet-content__item">
             <p class="portlet-content__text--list">体型</p>
             <label class="time-input">
@@ -123,7 +123,7 @@
               </div>
             </label>
           </li>
-          <div data-field="hometown_id" class="help-block"></div>
+          <div data-field="body_type_id" class="help-block"></div>
           <li class="portlet-content__item">
             <p class="portlet-content__text--list">居住地</p>
             <label class="time-input">
@@ -142,7 +142,7 @@
               </div>
             </label>
           </li>
-          <div data-field="job_id" class="help-block"></div>
+          <div data-field="hometown_id" class="help-block"></div>
           <li class="portlet-content__item">
             <p class="portlet-content__text--list">お仕事</p>
             <label class="time-input">
@@ -161,7 +161,7 @@
               </div>
             </label>
           </li>
-          <div data-field="drink_volume_type" class="help-block"></div>
+          <div data-field="job_id" class="help-block"></div>
           <li class="portlet-content__item">
             <p class="portlet-content__text--list">お酒</p>
             <label class="time-input">
@@ -177,11 +177,10 @@
                   @endforeach
                 </select>
                 <i></i>
-                <div class="help-block"></div>
               </div>
             </label>
           </li>
-          <div data-field="smoking-type" class="help-block"></div>
+          <div data-field="drink_volume_type" class="help-block"></div>
           <li class="portlet-content__item">
             <p class="portlet-content__text--list">タバコ</p>
             <label class="time-input">
@@ -200,7 +199,7 @@
               </div>
             </label>
           </li>
-          <div data-field="siblings_type" class="help-block"></div>
+          <div data-field="smoking-type" class="help-block"></div>
           <li class="portlet-content__item">
             <p class="portlet-content__text--list">兄弟</p>
             <label class="time-input">
@@ -219,7 +218,7 @@
               </div>
             </label>
           </li>
-          <div data-field="cohabitant_type" class="help-block"></div>
+          <div data-field="siblings_type" class="help-block"></div>
           <li class="portlet-content__item">
             <p class="portlet-content__text--list">同居人</p>
             <label class="time-input">
@@ -239,6 +238,7 @@
               </div>
             </label>
           </li>
+          <div data-field="cohabitant_type" class="help-block"></div>
         </ul>
       </div>
     </section>
@@ -250,6 +250,7 @@
 @endsection
 @section('web.script')
 <script>
+  const bool = "<?php $profile['avatars'] ? true : false; ?>";
   //time_input--------------------------------------------
   var tiemButton = $(".button--green.time");
   tiemButton.on("change",function(){
