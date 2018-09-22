@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Cast;
+use App\Enums\OrderStatus;
 use App\Order;
 use Illuminate\Http\Request;
 
@@ -10,14 +11,14 @@ class RatingController extends Controller
 {
     public function index(Request $request)
     {
-        if (!isset($request->order_id) && !isset($request->cast_id)) {
+        $order = Order::where('status', OrderStatus::DONE)->find($request->order_id);
+        if (!$order) {
             return redirect()->back();
         }
 
-        $cast = Cast::find($request->cast_id);
-        $order = Order::find($request->order_id);
+        $cast = $order->casts()->wherePivot('guest_rated', false)->first();
 
-        if (!$order || !$cast) {
+        if (!$cast) {
             return redirect()->back();
         }
 

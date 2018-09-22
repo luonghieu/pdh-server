@@ -1,10 +1,9 @@
 const helper = require('./helper');
-
 $('#rating-submit-btn').on('click', function () {
-   $('#rating-confirm-label').click();
+    $('#rating-confirm-label').click();
 });
 
-$('#rating-confirm-btn').on('click', function() {
+$('#rating-confirm-btn').on('click', function () {
     $('#rating-confirm-label').click();
     $('#rating-create').submit();
 });
@@ -16,6 +15,9 @@ $('#rating-create').submit(function (e) {
         const message = helper.getResponseMessage(response.data.message);
         $('#rating-alert-content').html(message);
         $('#rating-alert').trigger('click');
+        setTimeout(() => {
+            window.location.href = `/evaluation?order_id=${formData.order_id}`;
+        }, 1500);
     }).catch(err => {
         const message = helper.getResponseMessage(err.response.data.error);
         $('#rating-alert-content').html(message);

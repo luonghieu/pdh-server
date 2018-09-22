@@ -86,7 +86,7 @@
         </section>
         <section class="settlement-confirm">
             <input type="hidden" name="order_id" value="{{ request()->order_id }}">
-            <input type="hidden" name="rated_id" value="{{ request()->cast_id }}">
+            <input type="hidden" name="rated_id" value="{{ $cast->id }}">
             <button type="button" class="button button-settlement" id="rating-submit-btn">評価する</button>
         </section>
     </form>
