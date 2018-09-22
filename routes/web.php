@@ -33,8 +33,14 @@ Route::get('/', 'HomeController@index')->name('web.index');
 Route::get('/login/line', 'Auth\LineController@login')->name('auth.line');
 Route::get('/login/line/callback', 'Auth\LineController@handleCallBack');
 
-Route::group(['middleware' => ['auth', 'guest'], 'prefix' => 'guest', 'as' => 'guest.'], function () {
-    Route::group(['prefix' => 'orders', 'as' => 'orders.'], function () {
-        Route::get('/', ['as' => 'index', 'uses' => 'OrderController@index']);
+Route::group(['middleware' => ['auth', 'guest']], function () {
+    Route::group(['prefix' => 'guest', 'as' => 'guest.'], function () {
+        Route::group(['prefix' => 'orders', 'as' => 'orders.'], function () {
+            Route::get('/', ['as' => 'index', 'uses' => 'OrderController@index']);
+        });
+    });
+
+    Route::group(['prefix' => 'points', 'as' => 'points.'], function () {
+        Route::get('/', ['as' => 'points_history', 'uses' => 'PointController@getPointsHistory']);
     });
 });
