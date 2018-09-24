@@ -583,7 +583,6 @@ class Order extends Model
             ->get();
 
         foreach ($points as $value) {
-
             if (0 == $subPoint) {
                 return true;
             } elseif ($value->point > $subPoint && $subPoint > 0) {
@@ -598,7 +597,6 @@ class Order extends Model
                 $value->update();
             }
         }
-
 
         return true;
     }
