@@ -9,7 +9,7 @@
   </div>
 </div>
 @if (!$rooms->data)
-  @include('web.rooms.no_room');
+  @include('web.rooms.no_room')
 @else
 <div class="msg-input">
   <form action="" class="msg-input-form">
