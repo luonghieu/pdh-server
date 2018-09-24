@@ -20,7 +20,7 @@ window.io = require('socket.io-client');
 
 window.Echo = new Echo({
   broadcaster: 'socket.io',
-  host: window.location.hostname,
+  host: 'http://localhost:6001',
   transports: ['websocket']
 });
 
@@ -47,3 +47,4 @@ require('./web/pages/list_order');
 require('./web/pages/point');
 require('./web/pages/chat');
 require('./web/pages/rating');
+require('./web/pages/payment');

@@ -32,6 +32,14 @@ Route::group(['middleware' => 'auth'], function () {
         Route::get('/', ['as' => 'index', 'uses' => 'RatingController@index']);
     });
 
+    Route::group(['prefix' => 'history', 'as' => 'history.'], function () {
+        Route::get('/{orderId}', ['as' => 'index', 'uses' => 'OrderController@history']);
+    });
+
+    Route::group(['prefix' => 'point_settement', 'as' => 'point_settement.'], function () {
+        Route::post('/{orderId}', ['as' => 'create', 'uses' => 'OrderController@pointSettlement']);
+    });
+
 });
 
 Route::get('/', 'HomeController@index')->name('web.index');
