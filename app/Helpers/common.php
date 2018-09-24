@@ -53,3 +53,23 @@ if (!function_exists('getPrefectureName')) {
         return App\Prefecture::find($id)->name;
     }
 }
+
+if (!function_exists('getDay')) {
+    function getDay($data = null)
+    {
+        $date = \Carbon\Carbon::now();
+        $dayOfWeek = ['日', '月', '火', '水', '木', '金', '土'];
+
+        if (!$data['month']) {
+            $data['month'] = $date->month;
+        }
+
+        $number = cal_days_in_month(CAL_GREGORIAN, $data['month'], $date->year);
+        $days = [];
+        foreach (range(01, $number) as $val) {
+            $days[$val] = $val . '日' . '(' . $dayOfWeek[Carbon\Carbon::parse($date->year . '-' . $data['month'] . '-' . $val)->dayOfWeek] . ')';
+        }
+
+        return $days;
+    }
+}

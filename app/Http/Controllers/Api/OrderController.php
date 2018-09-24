@@ -28,7 +28,6 @@ class OrderController extends ApiController
     public function create(Request $request)
     {
         $user = $this->guard()->user();
-
         $rules = [
             'prefecture_id' => 'nullable|exists:prefectures,id',
             'address' => 'required',

@@ -1,5 +1,5 @@
 @section('title', 'Cheers')
-@section('screen.id', 'gn-1')
+@section('screen.class', 'gn-1')
 
 @extends('layouts.web')
 @section('web.content')
@@ -60,7 +60,7 @@
 @endsection
 
 @section('web.extra')
-  @confirm(['triggerId' => 'cancel', 'triggerClass' =>'cf-cancel-order'])
+  @confirm(['triggerId' => 'cancel', 'triggerCancel' =>'cf-cancel-order','triggerSuccess' =>''])
     @slot('title')
       この日程をキャンセルしますか？
     @endslot

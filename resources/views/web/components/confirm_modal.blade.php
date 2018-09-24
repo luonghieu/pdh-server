@@ -9,10 +9,10 @@
       </div>
       <div class="close_button-box">
         <div class="close_button-block">
-          <label for="{{ $triggerId }}" class="close_button  left {{ $triggerClass }}">はい</label>
+          <label for="{{ $triggerId }}" class="close_button  left {{ $triggerCancel }}">{{ isset($cfCancel) ? $cfCancel : 'はい' }}</label>
         </div>
         <div class="close_button-block">
-          <label for="{{ $triggerId }}" class="close_button">いいえ</label>
+          <label for="{{ $triggerId }}" class="close_button {{ $triggerSuccess }}">{{ isset($cfSuccess) ? $cfSuccess : 'いいえ' }}</label>
         </div>
       </div>
     </div>

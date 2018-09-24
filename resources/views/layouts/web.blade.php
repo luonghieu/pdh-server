@@ -11,6 +11,8 @@
   <link rel="stylesheet" href="{{ asset('assets/web/css/plugin/slick/slick-theme.css') }}">
   <link rel="stylesheet" href="{{ asset('assets/web/css/plugin/slick/slick.css') }}">
   <link rel="stylesheet" href="{{ asset('assets/web/css/custom.css') }}">
+  <link rel="stylesheet" href="{{ asset('assets/web/css/ge_2_3.css') }}">
+  <link rel="stylesheet" href="{{ asset('assets/web/css/ge_2_4.css') }}">
 </head>
 
 <body id="@yield('controller.id')">
