@@ -34,9 +34,17 @@ Route::group(['middleware' => 'auth'], function () {
         Route::get('/', ['as' => 'index', 'uses' => 'RatingController@index']);
     });
 
+    Route::group(['prefix' => 'history', 'as' => 'history.'], function () {
+        Route::get('/{orderId}', ['as' => 'index', 'uses' => 'OrderController@history']);
+    });
+
     Route::group(['middleware' => ['guest'], 'prefix' => 'credit_card', 'as' => 'credit_card.'], function () {
         Route::get('/', ['as' => 'index', 'uses' => 'CardController@index']);
         Route::get('edit', ['as' => 'update', 'uses' => 'CardController@update']);
+    });
+
+    Route::group(['prefix' => 'point_settement', 'as' => 'point_settement.'], function () {
+        Route::post('/{orderId}', ['as' => 'create', 'uses' => 'OrderController@pointSettlement']);
     });
 });
 

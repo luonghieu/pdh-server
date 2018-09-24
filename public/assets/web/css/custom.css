@@ -158,7 +158,6 @@ input[type="date"]::-webkit-calendar-picker-indicator {
 #go1 .star-rating {
   z-index: 0;
 }
-
 .btn-cancel {
   color: #222222;
   font-weight: normal;
@@ -205,7 +204,61 @@ input[type="date"]::-webkit-calendar-picker-indicator {
 #gg .msg-input {
   margin-top: 50px;
 }
-
+#order-history-controller .details-list__thumbnail img {
+  border-radius: 15px;
+}
+#order-history-controller main {
+  padding-top: 30px;
+}
+#order-history-controller .big-title {
+  text-align: center;
+  padding-bottom: 15px;
+  border-bottom: 1px #30ccc3 solid;
+  font-size: 18px;
+  color: #30ccc3;
+  font-weight: bold;
+}
+#order-history-controller .action {
+  margin-top: 15px;
+}
+#order-history-controller #gl3 .details-list__button.collapse:after {
+  transform: rotate(133deg);
+  top: -2px;
+}
+#order-history-controller .details-list__content .details-info-list {
+  display: none;
+}
+#order-history-controller .details-list__content.show .details-info-list {
+  display: block;
+}
+#order-history-controller button {
+  font-size: 16px;
+  border-radius: 30px;
+  padding: 1.13em 5.375em;
+  display: inline-block;
+  color: white;
+  background: -webkit-linear-gradient(20deg, #42E4B2 0%, #00C3C3 100%);
+  background: -o-linear-gradient(20deg, #42E4B2 0%, #00C3C3 100%);
+  background: -ms-linear-gradient(20deg, #42E4B2 0%, #00C3C3 100%);
+  background: -webkit-linear-gradient(70deg, #42E4B2 0%, #00C3C3 100%);
+  background: -o-linear-gradient(70deg, #42E4B2 0%, #00C3C3 100%);
+  background: linear-gradient(20deg, #42E4B2 0%, #00C3C3 100%);
+}
+#order-history-controller .point-fix {
+  text-align: center;
+  padding-top: 10px;
+  color: #00C3C3;
+}
+#order-history-controller .modal_content-btn2 .close_button-block.w-100 {
+  width: 100%;
+}
+#order-history-controller .modal_content-btn2 .close_button a {
+  display: block;
+  color: #FF66BB;
+  font-size: 1.2em;
+  width: 100%;
+  cursor: pointer;
+}
 /*create card*/
 #gl1 .btn-register {
   display: inline-block;
