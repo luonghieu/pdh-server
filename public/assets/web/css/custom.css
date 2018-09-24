@@ -92,3 +92,6 @@ input[type="date"]::-webkit-calendar-picker-indicator {
 #index-point-controller .list_wrap {
   padding-top: 15px;
 }
+#go1 .star-rating {
+  z-index: 0;
+}

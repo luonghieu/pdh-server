@@ -28,7 +28,6 @@
       </div>
     </div>
 </div>
-<div id="page">
 @endsection
 @section('web.content')
 <div class="list_wrap">

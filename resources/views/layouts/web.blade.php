@@ -15,13 +15,15 @@
 
 <body id="@yield('controller.id')">
   @yield('web.extra')
-  @include('web.partials.header')
+  <div id="page">
+    @include('web.partials.header')
 
-  <main id="@yield('screen.id')" class="@yield('screen.class')">
-    @yield('web.content')
-  </main>
+    <main id="@yield('screen.id')" class="@yield('screen.class')">
+      @yield('web.content')
+    </main>
 
-  @include('web.partials.footer')
+    @include('web.partials.footer')
+  </div>
   @yield('web.script')
   <script src="{{ mix('js/web.js') }}" type="text/javascript"></script>
   @yield('web.extra_js')
