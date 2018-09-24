@@ -35,8 +35,7 @@ class CompletedPayment extends Notification
      */
     public function via($notifiable)
     {
-        return [];
-//        return [PushNotificationChannel::class];
+        return [PushNotificationChannel::class];
     }
 
     /**
