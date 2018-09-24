@@ -6,7 +6,7 @@
 <div class="cast-profile">
   <section class="profile-photo">
     <div class="profile-photo__top">
-      @if ($profile['avatars'][0] && $profile['avatars'][0]['path'])
+      @if ($profile['avatars'] && $profile['avatars'][0]['path'])
       <img class="init-image-radius" src="{{ $profile['avatars'][0]['path'] }}" alt="">
       @else
       <img class="init-image-radius" src="{{ asset('assets/web/images/gm1/ic_default_avatar@3x.png') }}" alt="">
