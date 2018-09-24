@@ -23,7 +23,7 @@ $(document).ready(function(){
           var error = msg.error;
           $(".notify span").text(error);
         } else {
-          window.location.href = "http://cheers.dev/credit_card";
+          window.location.href = "/credit_card";
         }
       },
     });
