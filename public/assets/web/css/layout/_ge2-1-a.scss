@@ -17,7 +17,7 @@ $img-path-ge2-common:"../images/common/";
     display: flex;
     align-items: center;
     justify-content: flex-start;
-    background: url(../img/ge-2-1-a/place.png)left center no-repeat;
+    background:url(#{$img-path-ge2-1-a}place.png)left center no-repeat;
     background-size: 13px auto;
   }
 
@@ -261,6 +261,9 @@ $img-path-ge2-common:"../images/common/";
     h2{
       font-size: 12px;
     }
+    a{
+      color:#00c3c3;
+    }
   }
 
   .form-grpup{
@@ -275,7 +278,7 @@ $img-path-ge2-common:"../images/common/";
     margin: 0 auto;
     margin-top: 10px;
     padding-left: 30px;
-    background: url(../img/common/woman.svg)left center no-repeat;
+    background:url(#{$img-path-ge2-common}woman.svg)left center no-repeat;
     background-size: 23px auto;
     display: flex;
     align-items: center;
