@@ -10,7 +10,7 @@ Route::group(['namespace' => 'Webview', 'prefix' => 'webview', 'as' => 'webview.
 });
 
 Route::group(['middleware' => 'auth'], function () {
-    Route::get('/logout', 'HomeController@logout');
+    Route::get('/logout', 'HomeController@logout')->name('web.logout');
     Route::group(['prefix' => 'profile', 'as' => 'profile.'], function () {
         Route::get('/', ['as' => 'index', 'uses' => 'ProfileController@index']);
         Route::get('edit', ['as' => 'edit', 'uses' => 'ProfileController@edit']);
@@ -20,12 +20,14 @@ Route::group(['middleware' => 'auth'], function () {
         Route::get('/{id}', ['as' => 'show', 'uses' => 'UserController@show'])->where('id', '[0-9]+');
     });
 
-    Route::group(['prefix' => 'points', 'as' => 'points.'], function () {
+    Route::group(['prefix' => 'purchase', 'as' => 'purchase.'], function () {
         Route::get('/', ['as' => 'index', 'uses' => 'PointController@index']);
     });
 
-    Route::group(['prefix' => 'rooms', 'as' => 'rooms.'], function () {
-        Route::get('{room}/messages', ['as' => 'messages', 'uses' => 'MessageController@message'])->where('room', '[0-9]+');
+    Route::group(['prefix' => 'message', 'as' => 'message.'], function () {
+        Route::get('/', ['as' => 'index', 'uses' => 'RoomController@index']);
+
+        Route::get('{room}', ['as' => 'messages', 'uses' => 'MessageController@message'])->where('room', '[0-9]+');
     });
 
     Route::group(['prefix' => 'evaluation', 'as' => 'evaluation.'], function () {

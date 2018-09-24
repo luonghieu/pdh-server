@@ -46,4 +46,5 @@ require('./web/pages/update_profile');
 require('./web/pages/list_order');
 require('./web/pages/point');
 require('./web/pages/chat');
+require('./web/pages/room');
 require('./web/pages/rating');

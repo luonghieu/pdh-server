@@ -4,5 +4,5 @@ $(document).ready(function() {
   // axios example
   window.axios.get('/api/v1/auth/me').then(function(response) {
     console.log(response);
-  })
+  });
 });
