@@ -1,5 +1,6 @@
 $(document).ready(function() {
   var roomId = $("#room-id").val();
+  var orderId = $("#order-id").val();
   window.Echo.private('room.'+roomId)
     .listen('MessageCreated', (e) => {
       var message = e.message.message;
@@ -57,7 +58,7 @@ $(document).ready(function() {
     var content = $("#content").val();
     var files = $('#image').prop('files');
     var filesCamera = $('#image-camera').prop('files');
-   var currentDate = new Date();
+    var currentDate = new Date();
     var time = currentDate.getHours()+':'+currentDate.getMinutes();
 
     if (files.length > 0) {
@@ -134,11 +135,20 @@ $(document).ready(function() {
       })
       .then(function (response) {
         $('#message-box').prepend(response.data);
-
       })
       .catch(function (error) {
         console.log(error);
       });
     }
+  });
+
+  $('.cancel-order').click(function(event) {
+    axios.post(`/api/v1/orders/`+orderId+`/cancel`)
+    .then(function (response) {
+      console.log(response);
+    })
+    .catch(function (error) {
+      console.log(error);
+    });
   });
 });
