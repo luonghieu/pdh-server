@@ -2,7 +2,7 @@
 $img-path-gl4:"../images/gl4/";
 #gl4{
 	.list_wrap{
-		margin:5px 10px 0;
+		margin:25px 10px 0;
 	}
 	.list_item{
 		padding:10px 0;		
@@ -69,13 +69,15 @@ $img-path-gl4:"../images/gl4/";
 		}		
 	}
 	.item_right{
-		.btn-m{
-			a{
+			.btn-bg{
+				text-align:center;
 				width:round-decimal(140 / 16 + 0em);
 				height:3.07em;
 				line-height:3.17em;
 				padding:0;
+				&:before{
+					content:"¥";
+				}
 			}
-		}
 	}
 }
