@@ -122,7 +122,7 @@
     <?php $orderStartTime = \Carbon\Carbon::parse($order->date . ' ' . $order->start_time) ?>
         <?php $orderEndTime = $orderStartTime->copy()->addMinutes($order->duration * 60) ?>
         <?php $casts = $order->casts; ?>
-            <h1 class="title">{{ $orderStartTime->format('Y年m月d日') . ' ' . $orderStartTime->format('H:i') . '~' .
+            <h1 class="big-title">{{ $orderStartTime->format('Y年m月d日') . ' ' . $orderStartTime->format('H:i') . '~' .
             $orderEndTime->format
             ('H:i') }}</h1>
             <div class="settlement-confirm">
