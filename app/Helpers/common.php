@@ -73,3 +73,10 @@ if (!function_exists('getDay')) {
         return $days;
     }
 }
+
+if (!function_exists('dayOfWeek')) {
+    function dayOfWeek()
+    {
+        return ['日', '月', '火', '水', '木', '金', '土'];
+    }
+}

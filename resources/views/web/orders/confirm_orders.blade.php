@@ -75,7 +75,7 @@
         <div class="details-list__header">
           <div class="details-header__title">合計</div>
         </div>
-          <div class="details-total__marks">{{ number_format($data['temp_point']) .' P' }}</div>
+          <div class="details-total__marks">{{ number_format($data['temp_point']) .'P' }}</div>
         </div>
       </section>
     </div>
@@ -109,8 +109,8 @@
 @endsection
 
 @section('web.extra')
-  @confirm(['triggerId' => 'orders', 'triggerCancel' =>'', 'cfCancel' =>'キャンセル',
-   'cfSuccess' =>'確定する','triggerSuccess' =>'sb-form-orders'])
+  @confirm(['triggerId' => 'orders', 'triggerCancel' =>'', 'buttonLeft' =>'キャンセル',
+   'buttonRight' =>'確定する','triggerSuccess' =>'sb-form-orders'])
 
     @slot('title')
       予約を確定しますか？

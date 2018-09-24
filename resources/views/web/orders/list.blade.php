@@ -8,7 +8,6 @@
   <img src="{{ asset('images/btn_login_base.png') }}" alt="">
 </a>
 @else
-<main class="gn-1">
   <div class="list_wrap">
   @if(count($orders['data']))
 
@@ -55,7 +54,6 @@
   </section>
   @endif
  </div>  <!-- /list_wrap -->
-</main>
 @endif
 @endsection
 

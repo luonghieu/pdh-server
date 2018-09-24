@@ -34,7 +34,7 @@ $img-path-go1:"../images/go1/";
   height: 100%;
   text-align: center;
   .cancel_title {
-    padding: 2em 2em 0em 2em;
+    padding: 2em 1.8em 0em 1.8em;
     font-size: 1.3em;
     color: #FF66BB;
     line-height: 1.8;
@@ -45,6 +45,11 @@ $img-path-go1:"../images/go1/";
   .cancel_txt {
     padding: 1.2em 2.1em 2em 2.1em;
     color:  #111;
+    @media #{$sssmall} {
+      .sp-none {
+        display: none;
+      }
+    }
   }
   table {
     width: 90%;

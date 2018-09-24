@@ -63,11 +63,18 @@ class LineController extends Controller
 
     protected function findOrCreate($lineResponse)
     {
-        $user = User::where('line_id', $lineResponse->id)->first();
+        $email = $lineResponse->email;
+        $user = User::query();
+
+        if ($email) {
+            $user = $user->where('email', $email);
+        }
+
+        $user = $user->orWhere('line_id', $lineResponse->id)->first();
 
         if (!$user) {
             $data = [
-                'email' => (isset($lineResponse->email)) ? $lineResponse->email : '',
+                'email' => (isset($lineResponse->email)) ? $lineResponse->email : null,
                 'fullname' => $lineResponse->name,
                 'nickname' => ($lineResponse->nickname) ? $lineResponse->nickname : $lineResponse->name,
                 'line_id' => $lineResponse->id,
@@ -89,6 +96,11 @@ class LineController extends Controller
             $user->notify(new CreateGuest());
 
             return $user;
+        }
+
+        if (!$user->line_id) {
+            $user->line_id = $lineResponse->id;
+            $user->save();
         }
 
         return $user;

@@ -7,6 +7,7 @@ use App\CastClass;
 use App\Enums\OrderType;
 use App\Enums\TagType;
 use App\Http\Controllers\Controller;
+use App\Services\LogService;
 use App\Tag;
 use Auth;
 use Carbon\Carbon;
@@ -30,7 +31,12 @@ class OrderController extends Controller
             'allow_redirects' => false,
         ];
 
-        $response = $client->get(route('guest.index'), $option);
+        try {
+            $response = $client->get(route('guest.index'), $option);
+        } catch (\Exception $e) {
+            LogService::writeErrorLog($e);
+            abort(500);
+        }
 
         $result = $response->getBody();
         $contents = $result->getContents();
@@ -240,7 +246,13 @@ class OrderController extends Controller
             'allow_redirects' => false,
         ];
 
-        $casts = $client->get(route('casts.index', ['working_today' => 1, 'class_id' => $data['cast_class']]), $option);
+        try {
+            $casts = $client->get(route('casts.index', ['working_today' => 1, 'class_id' => $data['cast_class']]), $option);
+        } catch (\Exception $e) {
+            LogService::writeErrorLog($e);
+            abort(500);
+        }
+
         $casts = json_decode(($casts->getBody())->getContents(), JSON_NUMERIC_CHECK);
 
         $casts = $casts['data'];
@@ -322,16 +334,21 @@ class OrderController extends Controller
             'allow_redirects' => false,
         ];
 
-        $tempPoint = $client->post(route('orders.price', [
-            'type' => $type,
-            'class_id' => $data['cast_class'],
-            'duration' => $data['duration'],
-            'nominee_ids' => $nomineeIds,
-            'date' => $startDate,
-            'start_time' => $startTime,
-        ]), $option);
+        try {
+            $tempPoint = $client->post(route('orders.price', [
+                'type' => $type,
+                'class_id' => $data['cast_class'],
+                'duration' => $data['duration'],
+                'nominee_ids' => $nomineeIds,
+                'date' => $startDate,
+                'start_time' => $startTime,
+            ]), $option);
 
-        $tempPoint = json_decode(($tempPoint->getBody())->getContents(), JSON_NUMERIC_CHECK);
+            $tempPoint = json_decode(($tempPoint->getBody())->getContents(), JSON_NUMERIC_CHECK);
+        } catch (\Exception $e) {
+            LogService::writeErrorLog($e);
+            abort(500);
+        }
 
         $tempPoint = $tempPoint['data'];
 
@@ -416,21 +433,26 @@ class OrderController extends Controller
             'allow_redirects' => false,
         ];
 
-        $order = $client->post(route('orders.create', [
-            'prefecture_id' => 13,
-            'address' => $data['area'],
-            'class_id' => $data['cast_class'],
-            'duration' => $data['duration'],
-            'nominee_ids' => $nomineeIds,
-            'date' => $startDate,
-            'start_time' => $startTime,
-            'total_cast' => $data['cast_numbers'],
-            'temp_point' => $data['temp_point'],
-            'type' => $type,
-            'tags' => $tags,
-        ]), $option);
+        try {
+            $order = $client->post(route('orders.create', [
+                'prefecture_id' => 13,
+                'address' => $data['area'],
+                'class_id' => $data['cast_class'],
+                'duration' => $data['duration'],
+                'nominee_ids' => $nomineeIds,
+                'date' => $startDate,
+                'start_time' => $startTime,
+                'total_cast' => $data['cast_numbers'],
+                'temp_point' => $data['temp_point'],
+                'type' => $type,
+                'tags' => $tags,
+            ]), $option);
 
-        $order = json_decode(($order->getBody())->getContents(), JSON_NUMERIC_CHECK);
+            $order = json_decode(($order->getBody())->getContents(), JSON_NUMERIC_CHECK);
+        } catch (\Exception $e) {
+            LogService::writeErrorLog($e);
+            abort(500);
+        }
 
         $request->session()->forget('data');
 

@@ -63,7 +63,7 @@ class FacebookAuthController extends ApiController
 
         if (!$user) {
             $data = [
-                'email' => (isset($fbResponse['email'])) ? $fbResponse['email'] : '',
+                'email' => (isset($fbResponse['email'])) ? $fbResponse['email'] : null,
                 'fullname' => $fbResponse['name'],
                 'nickname' => (isset($fbResponse['first_name'])) ? $fbResponse['first_name'] : '',
                 'facebook_id' => $fbResponse['id'],

@@ -18,3 +18,4 @@
 <script src="{{ asset('assets/web/js/slick/slick.min.js') }}"></script>
 <script src="{{ asset('assets/web/js/gf-2.js') }}"></script>
 <script src="{{ asset('assets/web/js/ge-2-1-a.js') }}"></script>
+<script src="{{ asset('assets/web/js/jquery.validate.min.js') }}"></script>
