@@ -3,42 +3,68 @@
 @section('screen.class', 'gm1-edit')
 
 @extends('layouts.web')
+@section('web.extra')
+<div class="modal_wrap">
+  <input id="trigger4" type="checkbox">
+    <div class="modal_overlay">
+      <label for="trigger4" class="modal_trigger"></label>
+      <div class="modal_content modal_content-btn4">
+        <div class="select-box">
+          <label for="trigger4" class="close_button" id="main-image">メインにする</label>
+          <label for="trigger4" class="close_button" id="del-image">削除する</label>
+          <label for="trigger4" class="close_button" id="change-image">変更する</label>
+        </div>
+        <div class="cancel">
+          <label for="trigger4" class="close_button fw">キャンセル</label>
+        </div>
+      </div>
+    </div>
+</div>
+@endsection
 @section('web.content')
-<div class="cast-profile">
-  <section class="profile-photo">
-    <div class="profile-photo__top">
-      @if ($profile['avatars'] && $profile['avatars'][0]['path'])
-      <img class="init-image-radius" src="{{ $profile['avatars'][0]['path'] }}" alt="">
-      @else
-      <img src="{{ asset('assets/web/images/gm1/ic_default_avatar@3x.png') }}" alt="">
-      @endif
-    </div>
-    <div class="profile-photo__list">
-      <ul>
-        @foreach ($profile['avatars'] as $avatar)
-          @if ($avatar['path'])
-          <li class="profile-photo__item">
-            <a href="#"><img src="{{ $avatar['path'] }}" alt=""></a>
+<form id="update-profile" action="#" method="GET" enctype="multipart/form-data">
+  {{ csrf_field() }}
+  <div class="cast-profile">
+    <section class="profile-photo">
+      <div class="profile-photo__top">
+        @if ($profile['avatars'] && $profile['avatars'][0]['path'])
+        <section class="button-box">
+          <label for="trigger4" class="open_button button-settlement">
+            <img class="init-image-radius" src="{{ $profile['avatars'][0]['path'] }}" alt="">
+          </label>
+        </section>
+        @else
+        <img src="{{ asset('assets/web/images/gm1/ic_default_avatar@3x.png') }}" alt="">
+        @endif
+      </div>
+      <div class="profile-photo__list">
+        <ul>
+          @foreach ($profile['avatars'] as $avatar)
+            @if ($avatar['path'])
+            <li class="profile-photo__item">
+              <a href="#"><img src="{{ $avatar['path'] }}" alt=""></a>
+            </li>
+            @endif
+          @endforeach
+          <li id="display">
+            <img id="output" hidden="" />
           </li>
-          @endif
-        @endforeach
-        <label class="profile-photo__item--add-button">
-          <input type="file" id="image" hidden="">
-          <img src="{{ asset('assets/web/images/gm1/add-button_bg.png') }}" alt="">
-        </label>
-      </ul>
-      <div class="image-error help-block"></div>
-    </div>
-  </section>
-  <!-- profile-photos -->
-  <form id="update-profile" action="" method="GET">
-    {{ csrf_field() }}
+          <label class="profile-photo__item--add-button">
+            <input type="file" id="image" onchange="openFile(event)" hidden="">
+            <img src="{{ asset('assets/web/images/gm1/add-button_bg.png') }}" alt="">
+          </label>
+        </ul>
+        <div class="image-error help-block"></div>
+      </div>
+    </section>
+    <!-- profile-photos -->
     <section class="portlet">
       <div class="portlet-header">
         <h2 class="portlet-header__title">ひとこと</h2>
       </div>
       <div class="portlet-content">
-        <textarea rows="2" onchange="limitMaxLength(this, 30, '30文字以内で入力してください')" id="intro">{{ $profile['intro'] }}</textarea>
+        <textarea rows="2" id="intro" name="intro">{{ $profile['intro'] }}</textarea>
+        <label data-field="intro" id="intro-error" class="error help-block" for="intro"></label>
       </div>
       <div data-field="intro" class="help-block"></div>
     </section>
@@ -49,9 +75,9 @@
         <h2 class="portlet-header__title">自己紹介</h2>
       </div>
       <div class="portlet-content">
-        <textarea rows="5" onchange="limitMaxLength(this, 1000, '1000文字以内で入力してください')" id="description">{{ $profile['description'] }}</textarea>
+        <textarea rows="5" id="description" name="description">{{ $profile['description'] }}</textarea>
+        <label data-field="description" id="description-error" class="error help-block" for="description"></label>
       </div>
-      <div  data-field="description" class="help-block"></div>
     </section>
     <!-- profile-introduction -->
 
@@ -63,7 +89,7 @@
         <ul class="portlet-content__list">
           <li class="portlet-content__item">
             <p class="portlet-content__text--list">ニックネーム</p>
-            <input type="text" onchange="limitMaxLength(this, 20, '20文字以内で入力してください')" id="nickname" name="nickname" value="{{ $profile['nickname'] }}" >
+            <input type="text" id="nickname" name="nickname" value="{{ $profile['nickname'] }}" >
           </li>
           <label data-field="nickname" id="nickname-error" class="error help-block" for="nickname"></label>
           <li class="portlet-content__item">
@@ -245,38 +271,41 @@
     <!-- profile-word -->
 
     <div class="btn-l init-button"><button type="submit">完了</button></div>
-    </div>
-  </form>
+  </div>
+</form>
 @endsection
 @section('web.script')
 <script>
-  const bool = "<?php $profile['avatars'] ? true : false; ?>";
-  //time_input--------------------------------------------
-  var tiemButton = $(".button--green.time");
-  tiemButton.on("change",function(){
-    var thisButton = $(this);
-    $(this).siblings().removeClass("active");
-    $(this).toggleClass("active");
-    if($(this).attr("id") != "time-input"){
-      $(".time-input").css("display","none");
-    }
-  })
-  $("#time-input").on("change",function(){
-    if($("input[type='radio']:checked")){
-      $(".time-input").css("display","flex");
-    }
-  })
+var openFile = function(file) {
+  var input = file.target;
 
-  function limitMaxLength(target, len, err)
-  {
-    if( target.value.length > len )
-    {
-      target.value = target.value.substr(0, len);
-      if( "undefined" != typeof(err) )
-      {
-        alert(err);
-      }
-    }
+  var reader = new FileReader();
+  reader.onload = function() {
+    var dataURL = reader.result;
+    var output = document.getElementById('output');
+    output.src = dataURL;
+    $('#output').attr('open');
+    $('#display').attr('class', 'profile-photo__item');
+  };
+  reader.readAsDataURL(input.files[0]);
+};
+
+//time_input--------------------------------------------
+var tiemButton = $(".button--green.time");
+tiemButton.on("change", function() {
+  var thisButton = $(this);
+
+  $(this).siblings().removeClass("active");
+  $(this).toggleClass("active");
+
+  if ($(this).attr("id") != "time-input") {
+      $(".time-input").css("display", "none");
   }
+})
+$("#time-input").on("change", function() {
+    if ($("input[type='radio']:checked")) {
+        $(".time-input").css("display", "flex");
+    }
+});
 </script>
 @stop
