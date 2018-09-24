@@ -3,11 +3,6 @@
 
 @extends('layouts.web')
 @section('web.content')
-@if(!Auth::check())
-<a href="{{ route('auth.line') }}">
-  <img src="{{ asset('images/btn_login_base.png') }}" alt="">
-</a>
-@else
   <div class="list_wrap">
   @if(count($orders['data']))
 
@@ -54,7 +49,6 @@
   </section>
   @endif
  </div>  <!-- /list_wrap -->
-@endif
 @endsection
 
 @section('web.extra')

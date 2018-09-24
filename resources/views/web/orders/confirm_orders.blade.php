@@ -2,13 +2,7 @@
 @section('screen.id', 'gl3')
 @section('screen.class', 'ge3')
 @extends('layouts.web')
-<div id="page">
 @section('web.content')
-@if(!Auth::check())
-<a href="{{ route('auth.line') }}">
-  <img src="{{ asset('images/btn_login_base.png') }}" alt="">
-</a>
-@else
   @if(session()->has('data'))
   @php
   $data = Session::get('data');
@@ -104,7 +98,6 @@
   </form>
   @endif
 
-@endif
 @endif
 @endsection
 

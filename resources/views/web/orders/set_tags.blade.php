@@ -1,13 +1,8 @@
 @section('title', 'キャスト予約')
 @section('screen.id', 'ge2-1-x')
+@section('screen.class', 'ge2-1-b')
 @extends('layouts.web')
-<div id="page">
 @section('web.content')
-@if(!Auth::check())
-<a href="{{ route('auth.line') }}">
-  <img src="{{ asset('images/btn_login_base.png') }}" alt="">
-</a>
-@else
 <form action="{{ route('guest.orders.post_step2') }}" method="POST" class="create-call-form" id="" name="select_tags_form">
   {{ csrf_field() }}
   <div class="reservation-item">
@@ -42,7 +37,6 @@
 <section class="button-box">
   <label for="max-tags" class="lbmax"></label>
 </section>
-@endif
 @endsection
 
 @section('web.extra')

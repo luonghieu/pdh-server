@@ -1,13 +1,10 @@
 @section('title', 'キャスト予約')
 @section('screen.class', '')
 @extends('layouts.web')
-<div id="page">
+@section('web.extra_css')
+<link rel="stylesheet" href="{{ asset('assets/web/css/ge_2_4.css') }}">
+@endsection
 @section('web.content')
-@if(!Auth::check())
-<a href="{{ route('auth.line') }}">
-  <img src="{{ asset('images/btn_login_base.png') }}" alt="">
-</a>
-@else
   <div class="ge2-4-block">
     <h2>キャンセル料金</h2>
     <p>予約確定後のキャンセルは、100％有償のキャンセルとなります。<br />詳しくは<a href="{{ route('guest.orders.cancel') }}">キャンセルポリシー</a>をご確認ください。</p>
@@ -37,5 +34,4 @@
     {{ csrf_field() }}
     <button type="submit" class="form_footer ct-button">次に進む(4/4)</button>
   </form>
-@endif
 @endsection

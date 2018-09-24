@@ -1,13 +1,7 @@
 @section('title', 'キャスト予約')
 @section('screen.id', 'ge2-1-x')
 @extends('layouts.web')
-<div id="page">
 @section('web.content')
-@if(!Auth::check())
-<a href="{{ route('auth.line') }}">
-  <img src="{{ asset('images/btn_login_base.png') }}" alt="">
-</a>
-@else
 <form action="{{ route('guest.orders.post_call') }}" method="POST" class="create-call-form" id="" name="create_call_form">
   {{ csrf_field() }}
   <div class="reservation-item">
@@ -115,7 +109,7 @@
     <div class="caption"><!-- 見出し用div -->
       <h2>キャストとを呼ぶ時間</h2>
     </div>
-    <div class="form-group"><!-- フォーム内容 -->
+    <div class="form-grpup"><!-- フォーム内容 -->
       <label class="button button--green time {{ (isset($currentDuration) && $currentDuration == '1') ? 'active' : '' }}">
         <input type="radio" name="time_set" value="1" {{ (isset($currentDuration) && $currentDuration == 1) ? 'checked="checked"' : '' }} >
         1時間
@@ -214,7 +208,6 @@
   </div>
   <button type="submit" class="form_footer ct-button disable" name="sb_create" disabled>次に進む (1/3)</button>
 </form>
-@endif
 @endsection
 
 @section('web.extra')

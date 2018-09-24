@@ -34,6 +34,18 @@ Route::group(['middleware' => 'auth'], function () {
         Route::get('/', ['as' => 'index', 'uses' => 'RatingController@index']);
     });
 
+    Route::group(['prefix' => 'history', 'as' => 'history.'], function () {
+        Route::get('/{orderId}', ['as' => 'index', 'uses' => 'OrderController@history']);
+    });
+
+    Route::group(['middleware' => ['guest'], 'prefix' => 'credit_card', 'as' => 'credit_card.'], function () {
+        Route::get('/', ['as' => 'index', 'uses' => 'CardController@index']);
+        Route::get('edit', ['as' => 'update', 'uses' => 'CardController@update']);
+    });
+
+    Route::group(['prefix' => 'point_settement', 'as' => 'point_settement.'], function () {
+        Route::post('/{orderId}', ['as' => 'create', 'uses' => 'OrderController@pointSettlement']);
+    });
 });
 
 Route::get('/', 'HomeController@index')->name('web.index');
@@ -51,7 +63,7 @@ Route::group(['middleware' => ['auth', 'guest'], 'as' => 'guest.'], function () 
         Route::get('/call/step3', ['as' => 'get_step3', 'uses' => 'OrderController@selectCasts']);
         Route::post('/call/step3', ['as' => 'post_step3', 'uses' => 'OrderController@getSelectCasts']);
         Route::get('/call/step4', ['as' => 'get_step4', 'uses' => 'OrderController@attention']);
-        Route::get('/cancel', ['as' => 'cancel', 'uses' => 'OrderController@cancel']);
+        Route::get('/cancellation_policies', ['as' => 'cancel', 'uses' => 'OrderController@cancel']);
         Route::get('/call/confirm', ['as' => 'get_confirm', 'uses' => 'OrderController@confirm']);
         Route::post('/call/confirm', ['as' => 'post_confirm', 'uses' => 'OrderController@getConfirm']);
         Route::post('/call/add', ['as' => 'add', 'uses' => 'OrderController@add']);
