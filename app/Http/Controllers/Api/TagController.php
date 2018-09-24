@@ -2,10 +2,10 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Enums\TagType;
 use App\Http\Resources\TagResource;
 use App\Repositories\TagRepository;
 use Illuminate\Http\Request;
-use App\Enums\TagType;
 
 class TagController extends ApiController
 {
@@ -19,7 +19,8 @@ class TagController extends ApiController
     public function index(Request $request)
     {
         $type = $request->type;
-        if ($type == TagType::DESIRE || $type == TagType::SITUATION) {
+
+        if (TagType::DESIRE == $type || TagType::SITUATION == $type) {
             $tags = $this->repository->findByField('type', $type);
         } else {
             $tags = $this->repository->all();

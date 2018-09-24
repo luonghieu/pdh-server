@@ -155,6 +155,42 @@ input[type="date"]::-webkit-calendar-picker-indicator {
 #index-point-controller .list_wrap {
   padding-top: 15px;
 }
+
+.create-call-form .ct-button {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+  -ms-flex-align: center;
+  align-items: center;
+  -webkit-box-pack: center;
+  -ms-flex-pack: center;
+  justify-content: center;
+  font-size: 18px;
+  line-height: 1;
+  color: #fff;
+  border: none;
+}
+
+.sp-name-cast {
+  text-align: center;
+}
+
+.disable {
+  background-image: linear-gradient(-162deg, #cccccc 0%, #cccccc 100%) !important;
+}
+
+#ge2-1-x .cast-number__button-minus.active:after {
+  background: #00c3c3;
+}
+
+#ge2-1-x .cast-number__button-plus.active:after {
+  background: #cccccc;
+}
+
+#ge2-1-x .cast-number__button-plus.active:before {
+  background: #cccccc;
+}
 #go1 .star-rating {
   z-index: 0;
 }
@@ -333,11 +369,11 @@ input[type="date"]::-webkit-calendar-picker-indicator {
   padding-top: 18px;
 }
 
-.left {
+#gl1 .left {
   float: left;
 }
 
-.right {
+#gl1 .right {
   float: right;
 }
 
