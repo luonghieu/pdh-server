@@ -45,6 +45,35 @@
     @endif
   </div>
   <a href="#" class="cast-call">今すぐキャストを呼ぶ<span>最短20分で合流!</span></a>
+  <div class="booking">
+    <h2>現在の予約</h2>
+    <div class="booking-block">
+      <div class="booking-date">
+        <div class="date-left">
+          <span>{{ \Carbon\Carbon::parse($order->date_start)->format('m月d日') }}(土)</span>
+          <span>西麻布 {{ \Carbon\Carbon::parse($order->start_time)->format('h:i') }}〜</span>
+          <ul>
+            <li>#ワイワイ</li>
+            <li>#カラオケ</li>
+          </ul>
+        </div>
+        <ul class="date-right">
+          <li><img src="{{ asset('assets/web/images/common/glass.svg') }}" alt=""><span>{{ $order->duration }}時間</span></li>
+          <li><img src="{{ asset('assets/web/images/common/diamond.svg') }}" alt=""><span>{{ number_format($order->total_point) }}P〜</span></li>
+          <li><img src="{{ asset('assets/web/images/common/woman.svg') }}" alt=""><span>{{ $order->total_cast }}名</span></li>
+        </ul>
+      </div>
+      <ul class="casts">
+        @foreach($order->casts as $cast)
+          <li><img src="{{ $cast->avatars->first()->thumbnail }}" alt=""></li>
+        @endforeach
+
+      </ul>
+      <div class="btn-m cast-message">
+        <a href="#">メッセージを確認する</a>
+      </div>
+    </div>
+  </div>
   @if($token)
     <script>
         window.localStorage.setItem('access_token', '{{ $token }}');

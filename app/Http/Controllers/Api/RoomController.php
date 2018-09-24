@@ -49,6 +49,16 @@ class RoomController extends ApiController
 
         $rooms = $rooms->with('latestMessage', 'users')->orderBy('updated_at', 'DESC')->paginate($request->per_page)->appends($request->query());
 
+        if ('html' == $request->response_type) {
+            $rooms = $this->respondWithData(RoomResource::collection($rooms));
+            $rooms = $rooms->getData()->data;
+
+            if (!$rooms->data) {
+                return view('web.rooms.no_room');
+            }
+            return view('web.rooms.content-room', compact('rooms'));
+        }
+
         return $this->respondWithData(RoomResource::collection($rooms));
     }
 
@@ -102,11 +112,10 @@ class RoomController extends ApiController
 
         $rooms = Room::active()->where('type', RoomType::SYSTEM);
 
-        $rooms = $rooms->with(['users' => function($query){
+        $rooms = $rooms->with(['users' => function ($query) {
             $query->whereNotIn('type', [Usertype::ADMIN]);
         }])->orderBy('updated_at', 'DESC')->get();
 
         return $this->respondWithData(RoomResource::collection($rooms));
-
     }
 }
