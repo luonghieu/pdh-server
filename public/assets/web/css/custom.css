@@ -16,6 +16,64 @@
 
 #gg2 .tgl {
   position: fixed;
+  margin-top: 45px;
+}
+
+#gg .msg-box .msg-box-img li {
+  background: url(../images/gg1/man.svg) no-repeat center center;
+}
+
+#gg .msg-box .msg-box-ttl .msg-msg h2 {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  width: 50%;
+}
+
+.msg-msg {
+  width: 285px;
+}
+
+#gg2 .msg-head {
+  margin-top: 45px;
+}
+
+#gg .msg-box .msg-box-ttl .msg-msg p {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  width: 240px;
+}
+
+#gg .msg-input input[type="text"] {
+  padding-left: 35px;
+}
+
+.search-box::placeholder {
+  padding-left: 0 !important;
+}
+
+.wrap-balloon {
+  position: relative;
+}
+
+.balloon {
+  position: absolute;
+  width: 30px;
+  height: 30px;
+  bottom: 10px;
+  right: 0;
+  border-radius: 30px;
+  background-color: #00D2CC;
+  text-align: center;
+}
+
+.balloon span {
+  color: #fff;
+  display: inline-block;
+  margin-top: 5px;
+  font-weight: bold;
+  font-size: 14px;
 }
 
 @media (max-width: 320px) {
@@ -79,6 +137,11 @@ input[type="date"]::-webkit-calendar-picker-indicator {
   z-index: 9;
 }
 
+#rooms footer {
+  margin-top: 30px !important;
+  padding-top: 15px !important;
+}
+
 .init-point-minus {
   color: red;
 }
@@ -94,6 +157,52 @@ input[type="date"]::-webkit-calendar-picker-indicator {
 }
 #go1 .star-rating {
   z-index: 0;
+}
+.btn-cancel {
+  color: #222222;
+  font-weight: normal;
+  display: block;
+  border: 1px solid #222222;
+  border-radius: 45px;
+  padding: 0.79em 1em;
+}
+
+.title {
+  position: fixed;
+  background-color: #fff;
+  width: 100%;
+  z-index: 1;
+  text-align: center;
+  height: 45px;
+  border-bottom: 1px solid #E4E4E4;
+}
+
+.title .btn-back {
+  display: inline-block;
+  position: absolute;
+  left: 15px;
+  top: 12px;
+}
+
+.title .btn-back a img{
+  width: 12px;
+  height: 21px;
+}
+
+.title .title-name span {
+  color: #00CAC2;
+  display: inline-block;
+  margin-top: 10px;
+  font-weight: bold;
+  font-size: 16px;
+}
+
+#message-box {
+  margin-top: 100px;
+}
+
+#gg .msg-input {
+  margin-top: 50px;
 }
 #order-history-controller .details-list__thumbnail img {
   border-radius: 15px;

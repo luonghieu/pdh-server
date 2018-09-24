@@ -89,6 +89,7 @@ class MessageController extends ApiController
         if ('html' == $request->response_type) {
             return view('web.content-message', compact('messages'));
         }
+
         return $this->respondWithData($messages);
     }
 
