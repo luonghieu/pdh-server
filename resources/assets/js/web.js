@@ -49,3 +49,5 @@ require('./web/pages/chat');
 require('./web/pages/room');
 require('./web/pages/rating');
 require('./web/pages/receipt');
+require('./web/pages/card');
+require('./web/pages/payment');
