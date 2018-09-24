@@ -48,3 +48,4 @@ require('./web/pages/point');
 require('./web/pages/chat');
 require('./web/pages/room');
 require('./web/pages/rating');
+require('./web/pages/receipt');

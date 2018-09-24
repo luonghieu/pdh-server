@@ -47,7 +47,5 @@ Route::group(['middleware' => ['auth', 'guest']], function () {
         });
     });
 
-    Route::group(['prefix' => 'points', 'as' => 'points.'], function () {
-        Route::get('/', ['as' => 'points_history', 'uses' => 'PointController@getPointsHistory']);
-    });
+    Route::get('/history', ['as' => 'points.history', 'uses' => 'PointController@history']);
 });

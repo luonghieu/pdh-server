@@ -3,31 +3,35 @@
 
 @extends('layouts.web')
 @section('web.extra')
-<div class="modal_wrap modal5">
-  <input id="trigger5" type="checkbox">
-    <div class="modal_overlay">
-      <label for="trigger5" class="modal_trigger"></label>
-      <div class="modal_content modal_content-btn5">
-        <div class="text-box">
-          <h2>領収書を発行する</h2>
-          <p>宛名(任意)</p>
-          <input type="text" id="name" placeholder="例：株式会社チアーズ">
-          <div data-field="name" class="help-block"></div>
-          <p>但し書き(任意)</p>
-          <input type="text" id="content" placeholder="例：飲食代">
-          <div data-field="content" class="help-block"></div>
-        </div>
-        <div class="close_button-box">
-          <div class="close_button-block left">
-            <label for="trigger5" class="btn4">キャンセル</label>
+<form action="#" method="post" id="form-receipt">
+  {{ csrf_field() }}
+  <div class="modal_wrap modal5">
+    <input id="trigger5" type="checkbox">
+      <div class="modal_overlay">
+        <label for="trigger5" class="modal_trigger"></label>
+          <div class="modal_content modal_content-btn5">
+            <div class="text-box">
+              <h2>領収書を発行する</h2>
+              <p>宛名(任意)</p>
+              <label data-field="name" id="name-error" class="error help-block" for="name"></label>
+              <input type="text" id="name" name="name" placeholder="例：株式会社チアーズ">
+              <p>但し書き(任意)</p>
+              <label data-field="content" id="content-error" class="error help-block" for="content"></label>
+              <input type="text" id="content" name="content" placeholder="例：飲食代">
+              <input type="hidden" name="point_id" value="" />
+            </div>
+            <div class="close_button-box">
+              <div class="close_button-block left">
+                <label for="trigger5" class="btn4">キャンセル</label>
+              </div>
+              <div class="close_button-block">
+                <button type="submit" for="trigger5" class="btn btn-bg">発行する</button>
+              </div>
+            </div>
           </div>
-          <div class="close_button-block">
-            <label for="trigger5" class="btn-bg">発行する</label>
-          </div>
-        </div>
       </div>
-    </div>
-</div>
+  </div>
+</form>
 @endsection
 @section('web.content')
 <div class="list_wrap">
@@ -84,7 +88,7 @@
       @else
         <div class="item_right">
           @if (!$point['receipt'])
-            <label for="trigger5" class="btn-bg">領収書を発行</label>
+            <label for="trigger5" class="btn-bg js-point" point-id="{{ $point['id'] }}">領収書を発行</label>
           @else
             <label for="" class="btn-bg">領収書を発行</label>
           @endif
