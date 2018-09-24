@@ -20,7 +20,7 @@ Route::group(['middleware' => 'auth'], function () {
         Route::get('/{id}', ['as' => 'show', 'uses' => 'UserController@show'])->where('id', '[0-9]+');
     });
 
-    Route::group(['prefix' => 'points', 'as' => 'points.'], function () {
+    Route::group(['prefix' => 'purchase', 'as' => 'purchase.'], function () {
         Route::get('/', ['as' => 'index', 'uses' => 'PointController@index']);
     });
 
