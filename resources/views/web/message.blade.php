@@ -2,14 +2,27 @@
 @section('screen.id', 'gg2')
 @extends('layouts.web')
 @section('web.content')
-  @if ($messages['order']['status'] == App\Enums\OrderStatus::OPEN)
+  <div class="title">
+    <div class="btn-back">
+      <a href="{{ route('message.index') }}"><img src="/assets/webview/images/back.png" alt=""></a>
+    </div>
+    <div class="title-name">
+      <span>メッセージ詳細</span>
+    </div>
+  </div>
+  @if ($messages['order'] == null)
   <div class="msg-head">
-    <h2><span class="teian msg-head-ttl">提案中</span>キャストの回答待ちです。</h2>
+    <h2><span class="mitei msg-head-ttl">日程未定</span> {{ (Auth::user()->type == App\Enums\UserType::GUEST) ? 'ゲストに予約リクエストしよう！' : 'ゲストにメッセージを送ってみよう！' }}</h2>
   </div>
   @endif
-  @if ($messages['room'] == null || ($messages['order']['type'] == App\Enums\OrderType::NOMINATION && $messages['order']['status'] == App\Enums\OrderStatus::DONE))
+  @if ($messages['order']['status'] == App\Enums\OrderStatus::DONE)
   <div class="msg-head">
-    <h2><span class="mitei msg-head-ttl">日程未定</span>キャストに予約リクエストしよう！</h2>
+    <h2><span class="mitei msg-head-ttl">完了</span> このチャットは終了から24時間使用できます</h2>
+  </div>
+  @endif
+  @if ($messages['order']['status'] == App\Enums\OrderStatus::OPEN && $messages['order']['type'] != App\Enums\OrderType::CALL)
+  <div class="msg-head">
+    <h2><span class="teian msg-head-ttl">提案中</span>キャストの回答待ちです。</h2>
   </div>
   @endif
   @if ($messages['order']['status'] == App\Enums\OrderStatus::ACTIVE)
@@ -31,7 +44,11 @@
             <ul class="detail d-btm">
               <li class="d-btm-money"><p>予定料金：<span>{{ number_format($messages['order']['temp_point']) }}P〜</span></p></li>
               @if ($messages['room']['type'] != App\Enums\RoomType::GROUP && Auth::user()->type != App\Enums\UserType::CAST)
-              <li class="d-btm-cancel"><a href="#">キャンセル</a></li>
+              <li class="d-btm-cancel">
+                <section class="button-box">
+                  <label for="trigger2" class="open_button button-settlement"><span class="btn-cancel">キャンセル</span></label>
+                </section>
+              </li>
               @endif
             </ul>
           </dt>
@@ -65,6 +82,11 @@
     </dl>
   </div><!--  msg-head -->
   @endif
+  @if (($messages['order']['type'] == App\Enums\OrderType::NOMINATION && $messages['order']['status'] == App\Enums\OrderStatus::DONE))
+  <div class="msg-head">
+    <h2><span class="mitei msg-head-ttl">日程未定</span>キャストに予約リクエストしよう！</h2>
+  </div>
+  @endif
 
   <div class="msg">
     <section id="message-box">
@@ -74,6 +96,7 @@
   <div class="msg-input">
     <form action="" enctype="multipart/form-data" method="POST" class="msg-input-box">
       <input type="hidden" name="room_id" value="{{ $room->id }}" id="room-id">
+      <input type="hidden" name="order_id" value="{{ $room->order_id }}" id="order-id">
       <label class="msg-input-pic">
         <img src="/assets/web/images/gg2/picture.svg">
         <input type="file" style="display: none" name="image" accept="image/*" id="image">
@@ -91,6 +114,18 @@
       </label>
     </form>
   </div>
+@endsection
+@section('web.extra')
+  @confirm(['triggerId' => 'trigger2', 'triggerClass' =>'cancel-order', 'buttonLeft' => 'いいえ', 'buttonRight' => 'キャンセルする'])
+  @slot('title')
+    確定予約をキャンセルしますか？
+  @endslot
+
+  @slot('content')
+  <p>※この操作は取り消しできません</p>
+  <p>※キャンセル料が発生する場合があります</p>
+  @endslot
+  @endconfirm
 @endsection
 @section('web.extra_js')
 <script>
