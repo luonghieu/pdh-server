@@ -94,7 +94,6 @@ $(document).ready(function() {
         .then(window.axios.spread(function(profile, avatar) {
           window.location = '/profile';
         }));
-
     }
   });
 });

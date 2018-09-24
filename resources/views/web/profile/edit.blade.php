@@ -10,9 +10,10 @@
       <label for="trigger4" class="modal_trigger"></label>
       <div class="modal_content modal_content-btn4">
         <div class="select-box">
-          <label for="trigger4" class="close_button" id="main-image">メインにする</label>
-          <label for="trigger4" class="close_button" id="del-image">削除する</label>
-          <label for="trigger4" class="close_button" id="change-image">変更する</label>
+          <label for="trigger4" class="close_button" id="set-default-avatar">メインにする</label>
+          <label for="trigger4" class="close_button" id="delete-avatar">削除する</label>
+          <label for="trigger4" class="close_button" id="update-avatar">変更する</label>
+          <input for="trigger4" class="close_button" type="file" accept="image/*" id="upload-btn" style="position: absolute; left: 99999px" />
         </div>
         <div class="cancel">
           <label for="trigger4" class="close_button fw">キャンセル</label>
@@ -28,11 +29,7 @@
     <section class="profile-photo">
       <div class="profile-photo__top">
         @if ($profile['avatars'] && $profile['avatars'][0]['path'])
-        <section class="button-box">
-          <label for="trigger4" class="open_button button-settlement">
-            <img class="init-image-radius" src="{{ $profile['avatars'][0]['path'] }}" alt="">
-          </label>
-        </section>
+          <img class="init-image-radius" src="{{ $profile['avatars'][0]['path'] }}" alt="">
         @else
         <img src="{{ asset('assets/web/images/gm1/ic_default_avatar@3x.png') }}" alt="">
         @endif
@@ -41,9 +38,11 @@
         <ul>
           @foreach ($profile['avatars'] as $avatar)
             @if ($avatar['path'])
-            <li class="profile-photo__item">
-              <a href="#"><img src="{{ $avatar['path'] }}" alt=""></a>
-            </li>
+              <li class="button-box profile-photo__item">
+                <label for="trigger4" class="open_button button-settlement img" id="{{ $avatar['id'] }}">
+                  <img type="file" src="{{ $avatar['path'] }}" alt="">
+                </label>
+              </li>
             @endif
           @endforeach
           <li id="display">

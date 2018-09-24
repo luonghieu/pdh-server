@@ -96,3 +96,7 @@ input[type="date"]::-webkit-calendar-picker-indicator {
 #go1 .star-rating {
   z-index: 0;
 }
+
+#display {
+  margin-left: 10px;
+}

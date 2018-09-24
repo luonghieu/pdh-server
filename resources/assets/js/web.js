@@ -41,7 +41,7 @@ window.axios.interceptors.request.use(
 
 require('./web/pages/index');
 require('./web/pages/login');
-require('./web/pages/update_avatar');
+require('./web/pages/avatar');
 require('./web/pages/update_profile');
 require('./web/pages/list_order');
 require('./web/pages/point');
