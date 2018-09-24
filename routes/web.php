@@ -34,6 +34,10 @@ Route::group(['middleware' => 'auth'], function () {
         Route::get('/', ['as' => 'index', 'uses' => 'RatingController@index']);
     });
 
+    Route::group(['middleware' => ['guest'], 'prefix' => 'credit_card', 'as' => 'credit_card.'], function () {
+        Route::get('/', ['as' => 'index', 'uses' => 'CardController@index']);
+        Route::get('edit', ['as' => 'update', 'uses' => 'CardController@update']);
+    });
 });
 
 Route::get('/', 'HomeController@index')->name('web.index');
