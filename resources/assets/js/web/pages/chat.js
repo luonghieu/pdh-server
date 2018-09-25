@@ -1,6 +1,9 @@
 $(document).ready(function() {
   var roomId = $("#room-id").val();
   var orderId = $("#order-id").val();
+  var formData = new FormData();
+  var currentDate = new Date();
+  var time = currentDate.getHours()+':'+currentDate.getMinutes();
   window.Echo.private('room.'+roomId)
     .listen('MessageCreated', (e) => {
       var message = e.message.message;
@@ -54,30 +57,45 @@ $(document).ready(function() {
     });
 
   $("#send-message").click(function() {
-    var formData = new FormData();
-    var content = $("#content").val();
-    var files = $('#image').prop('files');
-    var filesCamera = $('#image-camera').prop('files');
-    var currentDate = new Date();
-    var time = currentDate.getHours()+':'+currentDate.getMinutes();
+    if($.trim($("#content").val())) {
+      var content = $("#content").val();
 
-    if (files.length > 0) {
-        formData.append('image', files[0]);
-        formData.append('type', 3);
-    }
-    if(filesCamera.length > 0){
-        formData.append('image', filesCamera[0]);
-        formData.append('type', 3);
-      }
-    if (files.length == 0 && filesCamera.length == 0) {
       formData.append('message', content);
       formData.append('type', 2);
+
+      sendMessage(formData);
+    } else {
+      return false;
+    }
+  });
+
+  $("#image-camera").change(function(event) {
+    var filesCamera = $('#image-camera').prop('files');
+    if(filesCamera.length > 0){
+      formData.append('image', filesCamera[0]);
+      formData.append('type', 3);
     }
 
+    sendMessage(formData);
+  });
+
+  $("#image").change(function(event) {
+    var files = $('#image').prop('files');
+
+    if (files.length > 0) {
+      formData.append('image', files[0]);
+      formData.append('type', 3);
+    }
+
+    sendMessage(formData);
+  });
+
+  function sendMessage(formData) {
     axios.post(`/api/v1/rooms/${roomId}/messages`, formData)
     .then(function (response) {
       var avatar = response.data.data.user.avatars[0]['path'];
       if(response.data.data.type == 2) {
+        var message = response.data.data.message;
         $("#message-box").append(`
           <div class="msg-right msg-wrap">
           <figure>
@@ -86,7 +104,7 @@ $(document).ready(function() {
           <div class="msg-right-text">
             <div class="text">
               <div class="text-wrapper">
-                <p>`+content+`</p>
+                <p>`+message+`</p>
               </div>
             </div>
             <div class="time"><p>`+time+`</p></div>
@@ -118,8 +136,7 @@ $(document).ready(function() {
     .catch(function (error) {
       console.log(error);
     });
-  });
-
+  }
   window.addEventListener('scroll', function(e) {
     if(!$(".next-page").attr("data-url")) {
       return false;
