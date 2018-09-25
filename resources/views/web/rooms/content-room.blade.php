@@ -67,7 +67,8 @@
               @php
               $listName = implode(",",$listName);
               @endphp
-              <h2>{{ $listName }} {{ ($sumUser > 2) ? '('.$sumUser.')': ''}}</h2>
+              <h2>{{ $listName }}</h2>
+              <h2 class="sum-users">{{ ($sumUser > 2) ? '('.$sumUser.')': ''}}</h2>
             @endif
             @if ($room->latest_message != null)
               @if ($room->latest_message->image)
