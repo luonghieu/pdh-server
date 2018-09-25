@@ -1,5 +1,8 @@
 @section('title', 'Cheers')
 @extends('layouts.web')
+@section('web.extra_css')
+<link rel="stylesheet" href="{{ asset('assets/web/css/ge_1.css') }}">
+@endsection
 @section('web.extra')
   <div class="modal_wrap">
     <input id="trigger" type="checkbox">
