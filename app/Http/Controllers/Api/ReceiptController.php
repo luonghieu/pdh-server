@@ -80,6 +80,7 @@ class ReceiptController extends ApiController
             \Storage::put($fileName, $pdf->output(), 'public');
 
             $receipt->file = $fileName;
+            $receipt->save();
 
             $im = new imagick($receipt->file);
             $im->setImageUnits(imagick::RESOLUTION_PIXELSPERINCH);
