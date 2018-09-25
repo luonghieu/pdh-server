@@ -74,6 +74,6 @@ class Handler extends ExceptionHandler
             ], 401);
         }
 
-        return redirect()->guest(url('/'));
+        return redirect()->route('web.index');
     }
 }

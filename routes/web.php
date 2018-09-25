@@ -48,7 +48,9 @@ Route::group(['middleware' => 'auth'], function () {
     });
 });
 
-Route::get('/', 'HomeController@index')->name('web.index');
+Route::get('/', 'HomeController@login');
+Route::get('/login', 'HomeController@login')->name('web.login');
+Route::get('/mypage', 'HomeController@index')->name('web.index');
 Route::get('/login/line', 'Auth\LineController@login')->name('auth.line');
 Route::get('/login/line/callback', 'Auth\LineController@handleCallBack');
 
