@@ -149,7 +149,7 @@ class CompletedPayment extends Notification
             number_format($this->order->total_point) . 'Point'
             . PHP_EOL . 'のご清算が完了いたしました。'
             . PHP_EOL . PHP_EOL . 'マイページの「ポイント履歴」から領収書の発行が可能です。'
-            . PHP_EOL . PHP_EOL . '○○様のまたのご利用をお待ちしております♪';
+            . PHP_EOL . PHP_EOL . $guestNickname . '様のまたのご利用をお待ちしております♪';
 
 
         return [
