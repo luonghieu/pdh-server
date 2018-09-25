@@ -9,7 +9,7 @@ use GuzzleHttp\Client;
 
 class PointController extends Controller
 {
-    public function getPointsHistory()
+    public function history()
     {
         try {
             $user = Auth::user();
@@ -33,7 +33,7 @@ class PointController extends Controller
 
             $points = $contents['data'];
 
-            return view('web.points.points_history', compact('points'));
+            return view('web.points.history', compact('points'));
         } catch (\Exception $e) {
             LogService::writeErrorLog($e);
             abort(500);
