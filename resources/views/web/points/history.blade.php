@@ -7,32 +7,33 @@
   {{ csrf_field() }}
   <div class="modal_wrap modal5">
     <input id="trigger5" type="checkbox">
-      <div class="modal_overlay">
-        <label for="trigger5" class="modal_trigger"></label>
-          <div class="modal_content modal_content-btn5">
-            <div class="text-box">
-              <h2>領収書を発行する</h2>
-              <p>宛名(任意)</p>
-              <label data-field="name" id="name-error" class="error help-block" for="name"></label>
-              <input type="text" id="name" name="name" placeholder="例：株式会社チアーズ">
-              <p>但し書き(任意)</p>
-              <label data-field="content" id="content-error" class="error help-block" for="content"></label>
-              <input type="text" id="content" name="content" placeholder="例：飲食代">
-              <input type="hidden" name="point_id" value="" />
-            </div>
-            <div class="close_button-box">
-              <div class="close_button-block left">
-                <label for="trigger5" class="btn4">キャンセル</label>
-              </div>
-              <div class="close_button-block">
-                <button type="submit" for="trigger5" class="btn btn-bg bd-none">発行する</button>
-              </div>
-            </div>
+    <div class="modal_overlay">
+      <label for="trigger5" class="modal_trigger"></label>
+      <div class="modal_content modal_content-btn5">
+        <div class="text-box">
+          <h2>領収書を発行する</h2>
+          <p>宛名(任意)</p>
+          <label data-field="name" id="name-error" class="error help-block" for="name"></label>
+          <input type="text" id="name" name="name" placeholder="例：株式会社チアーズ">
+          <p>但し書き(任意)</p>
+          <label data-field="content" id="content-error" class="error help-block" for="content"></label>
+          <input type="text" id="content" name="content" placeholder="例：飲食代">
+          <input type="hidden" name="point_id" value="" />
+        </div>
+        <div class="close_button-box">
+          <div class="close_button-block left">
+            <label for="trigger5" class="btn4">キャンセル</label>
           </div>
+          <div class="close_button-block">
+            <button type="submit" for="trigger5" class="btn btn-bg bd-none">発行する</button>
+          </div>
+        </div>
       </div>
+    </div>
   </div>
 </form>
 <div class="modal_wrap">
+  <a href="" id='mailto'></a>
   <input id="trigger2" type="checkbox">
     <div class="modal_overlay">
       <label for="trigger2" class="modal_trigger"></label>
@@ -40,7 +41,7 @@
         <img id="img-pdf" name="pdf" alt="">
         <div class="mb-10">
           <div class="close_button-block">
-            <button type="submit" id="send-mail" class="btn btn-bg bd-none">メールで送信</button>
+            <button type="submit" id="send-mail" img-file="" class="btn btn-bg bd-none">メールで送信</button>
           </div>
           <div class="close_button-block">
             <a class="btn btn-bg bd-none" id="img-download" download>画像を保存</a>
@@ -51,6 +52,7 @@
 </div>
 @endsection
 @section('web.content')
+<label for="trigger2" class="open_button button-settlement"></label>
 <div class="list_wrap">
   @foreach ($points['data'] as $point)
     @php
@@ -103,7 +105,7 @@
           <div class=""><a href="{{ route('history.show', $point['order_id']) }}"><img src="{{ asset('assets/web/images/gl2-1/arrow.svg') }}" alt=">"></a></div>
         </div>
       @else
-        <div class="item_right">
+        <div class="item_right" id="point-{{ $point['id'] }}-btn">
           @if (!$point['receipt'])
             <label for="trigger5" class="btn-bg js-point" point-id="{{ $point['id'] }}">領収書を発行</label>
           @else
@@ -115,18 +117,3 @@
   @endforeach
 </div>  <!-- /list_wrap -->
 @endsection
-
-@section('web.script')
-<script>
-  function limitMaxLength(target, len, err)
-  {
-    if (target.value.length > len) {
-      target.value = target.value.substr(0, len);
-
-      if ("undefined" != typeof(err)) {
-        ;
-      }
-    }
-  }
-</script>
-@stop
