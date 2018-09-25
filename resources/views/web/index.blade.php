@@ -39,7 +39,7 @@
         <img src="{{ asset('assets/web/images/gm1/ic_default_avatar@3x.png') }}" alt="">
         @endif
       </div>
-      <a href="#" class="edit-button">
+      <a href="{{ route('profile.edit') }}" class="edit-button">
         <img src="{{ asset('assets/web/images/ge1/pencil.svg') }}" alt="">
       </a>
     </div>
@@ -47,7 +47,7 @@
     <span class="user-name">{{ Auth::user()->nickname }}</span>
     @endif
   </div>
-  <a href="#" class="cast-call">今すぐキャストを呼ぶ<span>最短20分で合流!</span></a>
+  <a href="{{ route('guest.orders.call') }}" class="cast-call">今すぐキャストを呼ぶ<span>最短20分で合流!</span></a>
   @if ($order)
   <div class="booking">
     <h2>現在の予約</h2>

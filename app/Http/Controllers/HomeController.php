@@ -34,6 +34,15 @@ class HomeController extends Controller
             return view('web.index', compact('token', 'order'));
         }
 
+        return redirect()->route('web.login');
+    }
+
+    public function login()
+    {
+        if (Auth::check()) {
+            return redirect()->route('web.index');
+        }
+
         return view('web.login');
     }
 
