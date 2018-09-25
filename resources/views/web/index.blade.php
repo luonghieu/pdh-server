@@ -48,6 +48,7 @@
     @endif
   </div>
   <a href="#" class="cast-call">今すぐキャストを呼ぶ<span>最短20分で合流!</span></a>
+  @if ($order)
   <div class="booking">
     <h2>現在の予約</h2>
     <div class="booking-block">
@@ -73,10 +74,11 @@
 
       </ul>
       <div class="btn-m cast-message">
-        <a href="#">メッセージを確認する</a>
+        <a href="{{ route('message.messages', $order->room_id) }}">メッセージを確認する</a>
       </div>
     </div>
   </div>
+  @endif
   @if($token)
     <script>
         window.localStorage.setItem('access_token', '{{ $token }}');
