@@ -49,7 +49,7 @@ function creditValidate()
     var element3 = document.getElementById("number-card");
     element3.classList.add("color-caret");
     flag = true;
-  } else{
+  } else {
     var element = document.getElementById("number-card-display");
     element.classList.remove("number-true");
     var element2 = document.getElementById("number-card");
@@ -69,7 +69,7 @@ function creditValidate()
   }
 
   if (str === ""){
-    document.getElementById("number-card-display").classList.add('hidden-text');
+    document.getElementById("number-card-display").innerHTML = '0000 0000 0000 0000';
     document.getElementById("number-card-display").classList.remove('number-true');
     document.getElementById("number-card-display").classList.add('color-placeholder');
   } else {
@@ -84,6 +84,8 @@ function creditValidate()
     $('#btn-create').css('color', "#cccccc");
   }
 }
+
+
 
 function addColor()
 {

@@ -1,3 +1,7 @@
+@font-face {
+  font-family: NotoSansCJKjp;
+  src: url("../../webview/css/fonts/noto-regular.ttf");
+}
 .gn-1 .list_wrap .list_item .btn_wrap .btn-cancel {
   text-align: center;
 }
@@ -396,7 +400,6 @@ input[type="date"]::-webkit-calendar-picker-indicator {
   position: absolute;
   right: 12px;
   color: transparent !important;
-  z-index: 1;
   caret-color: #ff6090;
   width: 200px;
   border: none;
@@ -406,11 +409,10 @@ input[type="date"]::-webkit-calendar-picker-indicator {
 
 #gl1 #number-card-display {
   position: absolute;
-  right: 13px;
+  right: 20px;
   color: #c8c8c8;
   font-size: 14px;
   top: 5.3px;
-  z-index: 1;
 }
 
 .border-bottom {
@@ -440,6 +442,7 @@ input[type="date"]::-webkit-calendar-picker-indicator {
 
 .date-select {
   padding-top: 20px;
+  padding-right: 10px;
 }
 
 .sub-title {
@@ -495,10 +498,10 @@ input[type="date"]::-webkit-calendar-picker-indicator {
   border: none;
   outline: none;
   -webkit-appearance: none;
-  width: 50px;
-  background-image: url(../images/IC_down.png);
+  width: 60px;
+  background-image: url(/assets/webview/images/IC_down.png);
   background-repeat: no-repeat, repeat;
-  background-position: 50px 11px;
+  background-position: 47px 11px;
   margin-left: 5px;
 }
 
@@ -560,10 +563,6 @@ input[type="date"]::-webkit-calendar-picker-indicator {
   z-index: 2;
 }
 
-.hidden-text {
-  display: none;
-}
-
 #gl1 .notify span {
   color: red;
   font-size: 15px;
@@ -576,4 +575,8 @@ input[type="date"]::-webkit-calendar-picker-indicator {
   margin: 0 8px;
   position: absolute;
   top: 185px;
+}
+
+.hidden-text {
+  display: none;
 }

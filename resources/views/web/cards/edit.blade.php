@@ -4,7 +4,7 @@
 @section('web.content')
 <div class="title">
   <div class="btn-back">
-    <a href=""><img src="/assets/webview/images/back.png" alt=""></a>
+    <a href="{{ \URL::previous() }}"><img src="/assets/webview/images/back.png" alt=""></a>
   </div>
   <div class="title-name">
     <span>メッセージ一覧</span>
