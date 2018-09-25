@@ -588,3 +588,21 @@ input[type="date"]::-webkit-calendar-picker-indicator {
 .hidden-text {
   display: none;
 }
+
+.name-member {
+  width: 118px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.sum-name {
+  position: absolute;
+}
+
+.sum-users {
+  display: inline-block;
+  position: absolute;
+  right: 0;
+  top: 0;
+}

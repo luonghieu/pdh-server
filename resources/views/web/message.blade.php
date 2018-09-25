@@ -6,16 +6,29 @@
     <div class="btn-back">
       <a href="{{ route('message.index') }}"><img src="/assets/webview/images/back.png" alt=""></a>
     </div>
+    @php
+      $listName = [];
+      foreach ($messages['room']['users'] as $user) {
+        if ($user['id'] != Auth::user()->id) {
+           array_push($listName, $user['nickname']);
+        }
+      }
+      $countName = count($messages['room']['users']);
+      $listName = implode(",",$listName);
+    @endphp
     <div class="title-name">
-      <span>メッセージ詳細</span>
+      <span class="name-member">{{ $listName }}</span>
+      @if ($countName > 2)
+      <span class="sum-name">({{ $countName }})</span>
+      @endif
     </div>
   </div>
-  @if ($messages['order'] == null)
+  @if ($messages['order'] == null || ($messages['order']['type'] == App\Enums\OrderType::NOMINATION && $messages['order']['status'] == App\Enums\OrderStatus::DONE))
   <div class="msg-head">
     <h2><span class="mitei msg-head-ttl">日程未定</span> {{ (Auth::user()->type == App\Enums\UserType::GUEST) ? 'ゲストに予約リクエストしよう！' : 'ゲストにメッセージを送ってみよう！' }}</h2>
   </div>
   @endif
-  @if ($messages['order']['status'] == App\Enums\OrderStatus::DONE)
+  @if ($messages['order']['status'] == App\Enums\OrderStatus::DONE && $messages['order']['type'] != App\Enums\OrderType::NOMINATION)
   <div class="msg-head">
     <h2><span class="mitei msg-head-ttl">完了</span> このチャットは終了から24時間使用できます</h2>
   </div>
