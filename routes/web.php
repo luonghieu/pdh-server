@@ -35,7 +35,8 @@ Route::group(['middleware' => 'auth'], function () {
     });
 
     Route::group(['prefix' => 'history', 'as' => 'history.'], function () {
-        Route::get('/{orderId}', ['as' => 'index', 'uses' => 'OrderController@history']);
+        Route::get('/', ['as' => 'index', 'uses' => 'PointController@getPointsHistory']);
+        Route::get('/{orderId}', ['as' => 'show', 'uses' => 'OrderController@history']);
     });
 
     Route::group(['middleware' => ['guest'], 'prefix' => 'credit_card', 'as' => 'credit_card.'], function () {
@@ -54,7 +55,7 @@ Route::get('/login/line/callback', 'Auth\LineController@handleCallBack');
 
 Route::group(['middleware' => ['auth', 'guest'], 'as' => 'guest.'], function () {
     Route::group(['as' => 'orders.'], function () {
-        Route::get('/reserve', ['as' => 'index', 'uses' => 'OrderController@index']);
+        Route::get('/reserve', ['as' => 'reserve', 'uses' => 'OrderController@index']);
         Route::get('/call', ['as' => 'call', 'uses' => 'OrderController@call']);
         Route::post('/get_day', ['as' => 'get_day', 'uses' => 'OrderController@getDayOfMonth']);
         Route::post('/call', ['as' => 'post_call', 'uses' => 'OrderController@getParams']);
@@ -67,17 +68,5 @@ Route::group(['middleware' => ['auth', 'guest'], 'as' => 'guest.'], function () 
         Route::get('/call/confirm', ['as' => 'get_confirm', 'uses' => 'OrderController@confirm']);
         Route::post('/call/confirm', ['as' => 'post_confirm', 'uses' => 'OrderController@getConfirm']);
         Route::post('/call/add', ['as' => 'add', 'uses' => 'OrderController@add']);
-    });
-});
-
-Route::group(['middleware' => ['auth', 'guest']], function () {
-    Route::group(['prefix' => 'guest', 'as' => 'guest.'], function () {
-        Route::group(['prefix' => 'orders', 'as' => 'orders.'], function () {
-            Route::get('/', ['as' => 'index', 'uses' => 'OrderController@index']);
-        });
-    });
-
-    Route::group(['prefix' => 'points', 'as' => 'points.'], function () {
-        Route::get('/', ['as' => 'points_history', 'uses' => 'PointController@getPointsHistory']);
     });
 });
