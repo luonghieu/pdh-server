@@ -467,7 +467,7 @@ class OrderController extends Controller
 
         $request->session()->forget('data');
 
-        $order = $order['data'];
+        return redirect()->route('web.index');
     }
 
     public function history(Request $request, $orderId)

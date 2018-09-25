@@ -91,9 +91,9 @@
       <label for="md-success-card" class="sm-form"></label>
   </section>
   @else
-  <form action="">
+  <form action="{{ route('credit_card.index') }}" method="GET" class="register-card">
     <section class="button-box">
-      <label for="md-require-card" class="md-require-card"></label>
+      <label for="md-require-card" class="lable-register-card"></label>
     </section>
   </form>
   @endif
@@ -113,7 +113,7 @@
     @endslot
   @endconfirm
   @if(!$user->card)
-    @modal(['triggerId' => 'md-require-card', 'triggerClass' =>'md-require-card'])
+    @modal(['triggerId' => 'md-require-card', 'triggerClass' =>'lable-register-card'])
       @slot('title')
         クレジットカードを登録してキャストとマッチングしよう！
       @endslot
