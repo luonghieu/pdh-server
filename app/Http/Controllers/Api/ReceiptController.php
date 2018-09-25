@@ -10,6 +10,7 @@ use Barryvdh\DomPDF\Facade as PDF;
 use Carbon\Carbon;
 use DB;
 use Illuminate\Http\Request;
+use Imagick;
 use Webpatser\Uuid\Uuid;
 
 class ReceiptController extends ApiController
@@ -42,9 +43,9 @@ class ReceiptController extends ApiController
 
         $receipt = Receipt::where('point_id', $request->point_id)->first();
 
-        if ($receipt) {
-            return $this->respondErrorMessage(trans('messages.receipt_exists'), 409);
-        }
+//        if ($receipt) {
+//            return $this->respondErrorMessage(trans('messages.receipt_exists'), 409);
+//        }
 
         try {
             $name = null;
@@ -74,10 +75,22 @@ class ReceiptController extends ApiController
             ];
 
             $pdf = PDF::loadView('pdf.invoice', $data)->setPaper('a4', 'portrait');
+
             $fileName = 'receipts/' . Uuid::generate()->string . '.pdf';
             \Storage::put($fileName, $pdf->output(), 'public');
 
             $receipt->file = $fileName;
+
+            $im = new imagick($receipt->file);
+            $im->setImageUnits(imagick::RESOLUTION_PIXELSPERINCH);
+            $im->setImageResolution(595,842);
+            $im->setImageFormat('png');
+            header('Content-Type: image/png');
+
+            $fileName = 'receipts/' . Uuid::generate()->string . '.png';
+            \Storage::put($fileName, $im, 'public');
+
+            $receipt->img_file = $fileName;
             $receipt->save();
 
             DB::commit();
