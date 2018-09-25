@@ -147,7 +147,9 @@
                     <div class="details-list__line"><p></p></div>
                     <div class="details-list__header">
                         <div class="details-list__thumbnail">
-                            <img src="{{ $cast->avatars->first()->thumbnail }}" alt="Avatar">
+                            <a href="{{ route('user.show', ['id' => $cast->id]) }}" target="_blank">
+                                <img src="{{ $cast->avatars->first()->thumbnail }}" alt="Avatar">
+                            </a>
                         </div>
                         <p class="details-list__name">
                             {{ $cast->nickname . '(' . \Carbon\Carbon::parse($cast->date_of_birth)->age . ')' }}
