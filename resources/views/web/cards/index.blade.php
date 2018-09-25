@@ -4,7 +4,7 @@
 @section('web.content')
 <div class="title">
   <div class="btn-back">
-    <a href=""><img src="/assets/webview/images/back.png" alt=""></a>
+    <a href="{{ \URL::previous() }}"><img src="/assets/webview/images/back.png" alt=""></a>
   </div>
   <div class="title-name">
     <span>メッセージ一覧</span>
@@ -29,7 +29,7 @@
     <div class="right number">
       <span id="error">カード番号を正しく入力してください</span>
       <input type="text" pattern="[0-9]*" name="number_card" id="number-card" onkeyup="creditValidate()" onkeydown="return numberCardLength(event)" value="">
-      <span id="number-card-display" class="old-card">下4桁{{ $card->last4 }}</span>
+      <span id="number-card-display" class="number-true">下4桁{{ $card->last4 }}</span>
     </div>
   </div>
   <div class="clear"></div>
@@ -56,7 +56,7 @@
   </div>
   <div class="security-code border-bottom">
     <img src="/assets/webview/images/ic_card_cvv.png" alt="" class="left">
-    <input type="text" pattern="[0-9]*" placeholder="3桁または4桁の数字" class="right" name="card_cvv" id="card-cvv" value="***">
+    <input type="text" pattern="[0-9]*" placeholder="3桁または4桁の数字" class="right number-true" name="card_cvv" id="card-cvv" value="***">
   </div>
   </form>
 </div>
