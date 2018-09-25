@@ -21,7 +21,10 @@
                 </p>
               </li>
               <li><i><img src="{{ asset('assets/web/images/common/glass.svg') }}"></i><p>{{ $data['duration'] }}時間</p></li>
-              <li><i><img src="{{ asset('assets/web/images/common/diamond.svg') }}"></i><p>{{ $data['obj_cast_class']->name }}</p></li>
+              <li><i><img src="{{ asset('assets/web/images/common/diamond.svg') }}"></i>
+                <p>{{ $data['obj_cast_class']->name }} {{ $data['cast_numbers'] .'名' }}
+                </p>
+              </li>
             </ul>
             <div class="btn2-s"><a href="{{ route('guest.orders.call') }}">変更</a></div>
           </div>

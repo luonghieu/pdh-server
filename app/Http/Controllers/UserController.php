@@ -2,10 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Services\LogService;
 use Auth;
 use GuzzleHttp\Client;
 use JWTAuth;
-use App\Services\LogService;
 
 class UserController extends Controller
 {

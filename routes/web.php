@@ -16,7 +16,7 @@ Route::group(['middleware' => 'auth'], function () {
         Route::get('edit', ['as' => 'edit', 'uses' => 'ProfileController@edit']);
     });
 
-    Route::group(['prefix' => 'user', 'as' => 'user.'], function () {
+    Route::group(['prefix' => 'cast', 'as' => 'cast.'], function () {
         Route::get('/{id}', ['as' => 'show', 'uses' => 'UserController@show'])->where('id', '[0-9]+');
     });
 
@@ -69,6 +69,8 @@ Route::group(['middleware' => ['auth', 'guest'], 'as' => 'guest.'], function () 
         Route::get('/call/confirm', ['as' => 'get_confirm', 'uses' => 'OrderController@confirm']);
         Route::post('/call/confirm', ['as' => 'post_confirm', 'uses' => 'OrderController@getConfirm']);
         Route::post('/call/add', ['as' => 'add', 'uses' => 'OrderController@add']);
+        Route::get('/nominate', ['as' => 'nominate', 'uses' => 'OrderController@nominate']);
+        Route::post('/nominate', ['as' => 'post_nominate', 'uses' => 'OrderController@createNominate']);
     });
 });
 
