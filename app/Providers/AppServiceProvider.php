@@ -25,6 +25,10 @@ class AppServiceProvider extends ServiceProvider
         // Fixing for RDS old version
         Schema::defaultStringLength(191);
 
+        if (app()->environment() != 'local') {
+            $this->app['request']->server->set('HTTPS', true);
+        }
+
         Horizon::auth(function ($request) {
             return auth()->check() && auth()->user()->is_admin;
         });
