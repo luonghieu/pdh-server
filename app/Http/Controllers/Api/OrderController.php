@@ -187,7 +187,6 @@ class OrderController extends ApiController
 
     public function price(Request $request)
     {
-
         $rules = [
             'date' => 'required|date|date_format:Y-m-d|after_or_equal:today',
             'start_time' => 'required|date_format:H:i',
