@@ -2,6 +2,7 @@
 
 namespace App\Notifications;
 
+use App\Enums\ProviderType;
 use App\Enums\UserType;
 use Carbon\Carbon;
 use Illuminate\Bus\Queueable;
@@ -36,7 +37,11 @@ class CancelOrderFromGuest extends Notification implements ShouldQueue
      */
     public function via($notifiable)
     {
-        return [PushNotificationChannel::class];
+        if ($notifiable->provider == ProviderType::LINE) {
+            return [LineBotNotificationChannel::class];
+        } else {
+            return [PushNotificationChannel::class];
+        }
     }
 
     /**
@@ -113,6 +118,35 @@ class CancelOrderFromGuest extends Notification implements ShouldQueue
                     ],
                 ]
             ],
+        ];
+    }
+
+    public function lineBotPushData($notifiable)
+    {
+        $content = '予約のキャンセルを承りました。'
+            . PHP_EOL . '--------------------------------------'
+            . PHP_EOL . '▼キャンセル内容'
+            . PHP_EOL . '日時：' . Carbon::parse($this->order->date . ' ' . $this->order->start_time)->format('Y/m/d H:i') . '~'
+            . PHP_EOL . '時間：' . $this->order->duration . '時間'
+            . PHP_EOL . 'クラス：' . $this->order->castClass->name
+            . PHP_EOL . '人数：' . $this->order->total_cast . '人'
+            . PHP_EOL . '場所：' . $this->order->address
+            . PHP_EOL . '予定合計ポイント：' . number_format($this->orderPoint) . ' Point'
+            . PHP_EOL . '--------------------------------------'
+            . PHP_EOL . PHP_EOL . 'キャンセル規定は以下の通りとなっています。'
+            . PHP_EOL . '該当期間内のキャンセルについては、キャンセル料が決済されます。'
+            . PHP_EOL . '当日：予約時の金額100%'
+            . PHP_EOL . '1日前：予約時の金額50%'
+            . PHP_EOL . '2日前〜７日前：予約時の金額30%'
+            . PHP_EOL . PHP_EOL . '※キャスト都合によるキャンセルの場合、キャンセル料金はいただきません。'
+            . PHP_EOL . '※ご不明点がある場合は、こちらのチャットにて、ご返信くださいませ。';
+
+
+        return [
+            [
+                'type' => 'text',
+                'text' => $content
+            ]
         ];
     }
 }

@@ -2,8 +2,10 @@
 
 namespace App\Notifications;
 
+use App\Enums\ProviderType;
 use App\Enums\UserType;
 use App\Room;
+use App\Services\Line;
 use Illuminate\Bus\Queueable;
 use Illuminate\Notifications\Notification;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -34,7 +36,11 @@ class ApproveNominatedOrders extends Notification implements ShouldQueue
      */
     public function via($notifiable)
     {
-        return [PushNotificationChannel::class];
+        if ($notifiable->provider == ProviderType::LINE) {
+            return [LineBotNotificationChannel::class];
+        } else {
+            return [PushNotificationChannel::class];
+        }
     }
 
     /**
@@ -105,6 +111,44 @@ class ApproveNominatedOrders extends Notification implements ShouldQueue
                         'order_id' => $this->order->id,
                         'room_id' => ($room) ? $room->id : ''
                     ],
+                ]
+            ]
+        ];
+    }
+
+    public function lineBotPushData($notifiable)
+    {
+        $room = Room::find($this->order->room_id);
+        $startTime = Carbon::parse($this->order->date . ' ' . $this->order->start_time);
+
+        $firstMessage = '\\\\ おめでとうございます！マッチングが確定しました🎊//';
+        $secondMessage = '▼ご予約内容'
+            . PHP_EOL . '場所：' . $this->order->address
+            . PHP_EOL . '合流予定時間：' . $startTime->format('H:i') . '～'
+            . PHP_EOL . PHP_EOL .'ゲストの方はキャストに来て欲しい場所の詳細をお伝えください。';
+
+        $line = new Line();
+        $liffId = $line->getLiffId(route('message.messages', ['room' => $room->id]));
+
+        return [
+            [
+                'type' => 'text',
+                'text' => $firstMessage
+            ],
+            [
+                'type' => 'template',
+                'altText' => $secondMessage,
+                'text' => $secondMessage,
+                'template' => [
+                    'type' => 'buttons',
+                    'text' => $secondMessage,
+                    'actions' => [
+                        [
+                            'type' => 'uri',
+                            'label' => 'メッセージを確認する',
+                            'uri' => "line://app/$liffId"
+                        ]
+                    ]
                 ]
             ]
         ];

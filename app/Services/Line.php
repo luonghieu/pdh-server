@@ -2,7 +2,7 @@
 
 namespace App\Services;
 
-use App\Exceptions\LineBotConfigNotFoundException;
+use App\Exceptions\LineConfigNotFoundException;
 use GuzzleHttp\Client;
 
 class Line {
@@ -20,7 +20,7 @@ class Line {
         $this->pushUrl = env('LINE_PUSH_URL');
         $this->liffUrl = env('LINE_LIFF_URL');
         if (!$this->access_token && !$this->pushUrl && !$this->liffUrl) {
-            throw new LineBotConfigNotFoundException('ENV configurations not found');
+            throw new LineConfigNotFoundException('ENV configurations not found');
         }
 
         $this->headers = [
