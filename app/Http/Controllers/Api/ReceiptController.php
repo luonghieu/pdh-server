@@ -10,6 +10,7 @@ use Barryvdh\DomPDF\Facade as PDF;
 use Carbon\Carbon;
 use DB;
 use Illuminate\Http\Request;
+use Imagick;
 use Webpatser\Uuid\Uuid;
 
 class ReceiptController extends ApiController
@@ -78,6 +79,17 @@ class ReceiptController extends ApiController
             \Storage::put($fileName, $pdf->output(), 'public');
 
             $receipt->file = $fileName;
+            $receipt->save();
+
+            $im = new Imagick($receipt->file);
+            $im->setImageUnits(Imagick::RESOLUTION_PIXELSPERINCH);
+            $im->setImageResolution(595,842);
+            $im->setImageFormat('png');
+
+            $fileName = 'receipts/' . Uuid::generate()->string . '.png';
+            \Storage::put($fileName, $im->__toString(), 'public');
+
+            $receipt->img_file = $fileName;
             $receipt->save();
 
             DB::commit();

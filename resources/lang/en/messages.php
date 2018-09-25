@@ -57,4 +57,6 @@ return [
     'point_buy_not_found' => 'Point buy not found',
     'message_not_found' => 'Message not found',
     'results_not_found' => 'The results were not found',
+    'login_line_failed' => 'Login by Line failed.',
+    'payment_completed' => 'Payment completed.'
 ];

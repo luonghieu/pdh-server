@@ -5,11 +5,19 @@
 @section('web.content')
 <div class="cast-profile">
   <section class="profile-photo">
-    <div class="profile-photo__top"><img id="avatar" src="{{ $profile['avatars'][0]['path'] }}" alt=""></div>
+    <div class="profile-photo__top">
+      @if ($profile['avatars'] && $profile['avatars'][0]['thumbnail'])
+      <img class="init-image-radius" src="{{ $profile['avatars'][0]['thumbnail'] }}" alt="">
+      @else
+      <img class="init-image-radius" src="{{ asset('assets/web/images/ge1/user_icon.svg') }}" alt="">
+      @endif
+    </div>
     <div class="profile-photo__list">
       <ul>
         @foreach ($profile['avatars'] as $avatar)
-        <li class="profile-photo__item"><img src="{{ $avatar['path'] }}" alt=""></li>
+          @if ($avatar['thumbnail'])
+          <li class="profile-photo__item"><img src="{{ $avatar['thumbnail'] }}" alt=""></li>
+          @endif
         @endforeach
       </ul>
     </div>
@@ -82,5 +90,7 @@
     </div>
   </section>
   <!-- profile-word -->
+
+  <div class="btn-l"><a href="{{ route('profile.edit') }}">修正</a></div>
 </div>
 @endsection

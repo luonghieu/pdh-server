@@ -57,4 +57,6 @@ return [
     'point_buy_not_found' => '購入履歴はありません',
     'message_not_found' => 'メッセージが存在しません',
     'results_not_found' => '結果が見つかりません',
+    'login_line_failed' => 'ログインに失敗しました',
+    'payment_completed' => '決済が完了しました'
 ];

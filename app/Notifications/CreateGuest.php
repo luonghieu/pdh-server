@@ -12,6 +12,7 @@ use Illuminate\Bus\Queueable;
 use Illuminate\Notifications\Notification;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
+use URL;
 
 class CreateGuest extends Notification implements ShouldQueue
 {
@@ -66,12 +67,12 @@ class CreateGuest extends Notification implements ShouldQueue
     public function pushData($notifiable)
     {
         $content = 'ようこそCheersへ！'
-            . PHP_EOL .'Cheersはプライベートでの飲み会や接待など様々なシーンにキャストを呼べるマッチングアプリです。'
+            . PHP_EOL . 'Cheersはプライベートでの飲み会や接待など様々なシーンにキャストを呼べるマッチングアプリです。'
             . PHP_EOL . PHP_EOL . 'クオリティの高いキャストと今すぐ出会えるのはCheersだけ！'
             . PHP_EOL . PHP_EOL . '呼びたいときに、呼びたい人数・場所を入力するだけ。'
             . PHP_EOL . PHP_EOL . '最短20分でキャストがゲストの元に駆けつけます♪'
             . PHP_EOL . PHP_EOL . '「キャスト一覧」からお気に入りのキャストを見つけてアピールすることも可能です！'
-            . PHP_EOL . PHP_EOL .'まずはHomeの「今すぐキャストを呼ぶ」からキャストを呼んで素敵な時間をお過ごし下さい♪'
+            . PHP_EOL . PHP_EOL . 'まずはHomeの「今すぐキャストを呼ぶ」からキャストを呼んで素敵な時間をお過ごし下さい♪'
             . PHP_EOL . PHP_EOL . 'ご不明点はお気軽にお問い合わせください。';
 
         $room = Room::create([
@@ -120,11 +121,33 @@ class CreateGuest extends Notification implements ShouldQueue
 
     public function lineBotPushData($notifiable)
     {
-        $name = ($notifiable->nickname) ? $notifiable->nickname : $notifiable->fullname;
+        $content = 'ようこそCheersへ！'
+            . PHP_EOL . 'Cheersはプライベートでの飲み会や接待など様々なシーンにキャストを呼べるマッチングアプリです。'
+            . PHP_EOL . PHP_EOL . 'クオリティの高いキャストと今すぐ出会えるのはCheersだけ！'
+            . PHP_EOL . PHP_EOL . '呼びたいときに、呼びたい人数・場所を入力するだけ。'
+            . PHP_EOL . PHP_EOL . '最短20分でキャストがゲストの元に駆けつけます♪'
+            . PHP_EOL . PHP_EOL . '「キャスト一覧」からお気に入りのキャストを見つけてアピールすることも可能です！'
+            . PHP_EOL . PHP_EOL . 'まずはHomeの「今すぐキャストを呼ぶ」からキャストを呼んで素敵な時間をお過ごし下さい♪'
+            . PHP_EOL . PHP_EOL . 'ご不明点はお気軽にお問い合わせください。';
+
+        $room = Room::create([
+            'owner_id' => $notifiable->id
+        ]);
+
+        $room->users()->attach([1, $notifiable->id]);
+        $roomMessage = $room->messages()->create([
+            'user_id' => 1,
+            'type' => MessageType::SYSTEM,
+            'message' => $content,
+            'system_type' => SystemMessageType::NORMAL
+        ]);
+        $roomMessage->recipients()->attach($notifiable->id, ['room_id' => $room->id]);
+
+        $name = $notifiable->nickname ? $notifiable->nickname : $notifiable->name;
         $content = 'こんにちは！' . $name . 'さん🌼';
 
         $line = new Line();
-        $liffId = $line->getLiffId('https://localhost');
+        $liffId = $line->getLiffId(secure_url(URL::route('web.index')));
 
         return [
             [

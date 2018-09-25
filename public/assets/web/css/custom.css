@@ -1,0 +1,579 @@
+.gn-1 .list_wrap .list_item .btn_wrap .btn-cancel {
+  text-align: center;
+}
+
+#gg2 .msg-wrap .text::after {
+  background: url(../images/gg2/msg.png) no-repeat center;
+}
+
+#gg2 .tgl .d-top .d-top-time:before {
+  background: url(../images/gg2/glass.svg) no-repeat bottom;
+}
+
+#gg2 .tgl .d-top .d-top-place:before {
+  background: url(../images/gg2/glass.svg) no-repeat bottom;
+}
+
+#gg2 .tgl {
+  position: fixed;
+  margin-top: 45px;
+}
+
+#gg .msg-box .msg-box-img li {
+  background: url(../images/gg1/man.svg) no-repeat center center;
+}
+
+#gg .msg-box .msg-box-ttl .msg-msg h2 {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  width: 50%;
+}
+
+.msg-msg {
+  width: 285px;
+}
+
+#gg2 .msg-head {
+  margin-top: 45px;
+}
+
+#gg .msg-box .msg-box-ttl .msg-msg p {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  width: 240px;
+}
+
+#gg .msg-input input[type="text"] {
+  padding-left: 35px;
+}
+
+.search-box::placeholder {
+  padding-left: 0 !important;
+}
+
+.wrap-balloon {
+  position: relative;
+}
+
+.balloon {
+  position: absolute;
+  width: 30px;
+  height: 30px;
+  bottom: 10px;
+  right: 0;
+  border-radius: 30px;
+  background-color: #00D2CC;
+  text-align: center;
+}
+
+.balloon span {
+  color: #fff;
+  display: inline-block;
+  margin-top: 5px;
+  font-weight: bold;
+  font-size: 14px;
+}
+
+@media (max-width: 320px) {
+  .gn-1 .list_wrap .list_item .btn_wrap .btn-cancel {
+    text-align: center;
+  }
+}
+
+#login-controller .wrapper {
+  background: url('../images/line/login-bg.jpg') center center no-repeat !important;
+}
+
+.modal-cancel-order {
+  display: none;
+}
+
+#gm1 .btn-l button {
+  font-size: 14px;
+}
+
+.btn-l button {
+  margin: 0;
+  border: 0px solid;
+  border-radius: 30px;
+  padding: 1.13em 5.375em;
+  display: inline-block;
+  color: white;
+  background: linear-gradient(20deg, #42E4B2 0%, #00C3C3 100%);
+}
+
+.help-block {
+  color: red;
+}
+
+input[type="date"] {
+  background-color: #dcdce5;
+  outline: none;
+}
+
+input[type="date"]::-webkit-inner-spin-button {
+  height: 28px;
+}
+
+input[type="date"]::-webkit-calendar-picker-indicator {
+  font-size: 14px;
+}
+
+.init-image-radius {
+  border-radius: 50%;
+}
+
+#login-controller footer {
+  display: none;
+}
+
+#login-controller #login {
+  padding-top: 0;
+}
+
+#login-controller nav {
+  z-index: 9;
+}
+
+#rooms footer {
+  margin-top: 30px !important;
+  padding-top: 15px !important;
+}
+
+.init-point-minus {
+  color: red;
+}
+
+#index-point-controller .list_wrap {
+  padding-top: 15px;
+}
+
+.create-call-form .ct-button {
+  display: -webkit-box;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+  -ms-flex-align: center;
+  align-items: center;
+  -webkit-box-pack: center;
+  -ms-flex-pack: center;
+  justify-content: center;
+  font-size: 18px;
+  line-height: 1;
+  color: #fff;
+  border: none;
+}
+
+.sp-name-cast {
+  text-align: center;
+}
+
+.disable {
+  background-image: linear-gradient(-162deg, #cccccc 0%, #cccccc 100%) !important;
+}
+
+#ge2-1-x .cast-number__button-minus.active:after {
+  background: #00c3c3;
+}
+
+#ge2-1-x .cast-number__button-plus.active:after {
+  background: #cccccc;
+}
+
+#ge2-1-x .cast-number__button-plus.active:before {
+  background: #cccccc;
+}
+
+#go1 .star-rating {
+  z-index: 0;
+}
+
+#display {
+  margin-left: 10px;
+}
+
+.btn-cancel {
+  color: #222222;
+  font-weight: normal;
+  display: block;
+  border: 1px solid #222222;
+  border-radius: 45px;
+  padding: 0.79em 1em;
+}
+
+.title {
+  position: fixed;
+  background-color: #fff;
+  width: 100%;
+  z-index: 1;
+  text-align: center;
+  height: 45px;
+  border-bottom: 1px solid #E4E4E4;
+}
+
+.title .btn-back {
+  display: inline-block;
+  position: absolute;
+  left: 15px;
+  top: 12px;
+}
+
+.title .btn-back a img {
+  width: 12px;
+  height: 21px;
+}
+
+.title .title-name span {
+  color: #00CAC2;
+  display: inline-block;
+  margin-top: 10px;
+  font-weight: bold;
+  font-size: 16px;
+}
+
+#message-box {
+  margin-top: 100px;
+}
+
+#gg .msg-input {
+  margin-top: 50px;
+}
+
+#order-history-controller .details-list__thumbnail img {
+  border-radius: 15px;
+}
+
+#order-history-controller main {
+  padding-top: 30px;
+}
+
+#order-history-controller .big-title {
+  text-align: center;
+  padding-bottom: 15px;
+  border-bottom: 1px #30ccc3 solid;
+  font-size: 18px;
+  color: #30ccc3;
+  font-weight: bold;
+}
+
+#order-history-controller .action {
+  margin-top: 15px;
+}
+
+#order-history-controller #gl3 .details-list__button.collapse:after {
+  transform: rotate(133deg);
+  top: -2px;
+}
+
+#order-history-controller .details-list__content .details-info-list {
+  display: none;
+}
+
+#order-history-controller .details-list__content.show .details-info-list {
+  display: block;
+}
+
+#order-history-controller button {
+  font-size: 16px;
+  border-radius: 30px;
+  padding: 1.13em 5.375em;
+  display: inline-block;
+  color: white;
+  background: -webkit-linear-gradient(20deg, #42E4B2 0%, #00C3C3 100%);
+  background: -o-linear-gradient(20deg, #42E4B2 0%, #00C3C3 100%);
+  background: -ms-linear-gradient(20deg, #42E4B2 0%, #00C3C3 100%);
+  background: -webkit-linear-gradient(70deg, #42E4B2 0%, #00C3C3 100%);
+  background: -o-linear-gradient(70deg, #42E4B2 0%, #00C3C3 100%);
+  background: linear-gradient(20deg, #42E4B2 0%, #00C3C3 100%);
+}
+
+#order-history-controller .point-fix {
+  text-align: center;
+  padding-top: 10px;
+  color: #00C3C3;
+}
+
+#order-history-controller .modal_content-btn2 .close_button-block.w-100 {
+  width: 100%;
+}
+
+#order-history-controller .modal_content-btn2 .close_button a {
+  display: block;
+  color: #FF66BB;
+  font-size: 1.2em;
+  width: 100%;
+  cursor: pointer;
+}
+
+
+/*create card*/
+
+#gl1 .btn-register {
+  display: inline-block;
+  position: absolute;
+  right: 14px;
+  top: 8px;
+  color: #e3e3e3;
+}
+
+#gl1 .btn-register a {
+  text-decoration: none;
+  color: #cccccc;
+  cursor: pointer;
+  font-size: 18px;
+}
+
+.image-main {
+  text-align: center;
+  margin-top: 45px;
+}
+
+.image-main img {
+  height: 46px;
+  width: 210px;
+  margin-left: 81px;
+  padding-top: 23px;
+}
+
+#gl1 .sub-title {
+  height: 45px;
+  background-color: #f3f2f2;
+  margin: 0 8px;
+}
+
+#gl1 .sub-title p {
+  font-family: NotoSansCJKjp;
+  font-size: 13px;
+  font-weight: normal;
+  font-style: normal;
+  font-stretch: normal;
+  line-height: normal;
+  letter-spacing: 0.9px;
+  text-align: left;
+  color: #505050;
+  padding-top: 14px;
+  padding-left: 11px;
+}
+
+#gl1 .card-number {
+  height: 50px;
+  background-color: #ffffff;
+  padding: 0 18px;
+  position: relative;
+}
+
+#gl1 .border-bottom {
+  border-bottom: 1px solid #cccccc;
+  margin: 0 8px;
+}
+
+#gl1 .card-number span {
+  height: 15px;
+  font-family: NotoSansCJKjp;
+  font-size: 15px;
+  font-weight: normal;
+  font-style: normal;
+  font-stretch: normal;
+  line-height: normal;
+  letter-spacing: -0.3px;
+  text-align: left;
+  color: #30ccc3;
+  padding-top: 18px;
+}
+
+#gl1 .left {
+  float: left;
+}
+
+#gl1 .right {
+  float: right;
+}
+
+.number input {
+  padding-top: 25px;
+  position: absolute;
+  right: 12px;
+  color: transparent !important;
+  z-index: 1;
+  caret-color: #ff6090;
+  width: 200px;
+  border: none;
+  outline: none;
+  text-align: right;
+}
+
+#gl1 #number-card-display {
+  position: absolute;
+  right: 13px;
+  color: #c8c8c8;
+  font-size: 14px;
+  top: 5.3px;
+  z-index: 1;
+}
+
+.border-bottom {
+  border-bottom: 1px solid #cccccc;
+  margin: 0 8px;
+}
+
+.expiration-date {
+  height: 60px;
+  background-color: #ffffff;
+}
+
+.expiration-date span {
+  height: 15px;
+  font-family: NotoSansCJKjp;
+  font-size: 15px;
+  font-weight: normal;
+  font-style: normal;
+  font-stretch: normal;
+  line-height: normal;
+  letter-spacing: -0.3px;
+  text-align: left;
+  color: #30ccc3;
+  padding-top: 15px;
+  margin-left: 18px;
+}
+
+.date-select {
+  padding-top: 20px;
+}
+
+.sub-title {
+  height: 45px;
+  background-color: #f3f2f2;
+  margin: 0 8px;
+}
+
+.security-code {
+  height: 50px;
+  background-color: #ffffff;
+  padding-top: 20px;
+  position: relative;
+}
+
+.security-code img {
+  padding-left: 20px;
+  width: 40px;
+}
+
+.security-code input {
+  width: 52.8%;
+  color: #ff6090;
+  background: none;
+  border: none;
+  margin-right: 20px;
+  padding-top: 12px;
+  letter-spacing: 1px;
+  text-align: right;
+  outline: none;
+}
+
+#gl1 form {
+  margin-top: 60px;
+}
+
+.date-select select:first-child {
+  padding-left: 15px;
+}
+
+.date-select select {
+  height: 21px;
+  font-family: NotoSansCJKjp;
+  font-size: 14px;
+  font-weight: normal;
+  font-style: normal;
+  font-stretch: normal;
+  line-height: normal;
+  letter-spacing: -0.3px;
+  text-align: right;
+  color: #303030;
+  background: none;
+  border: none;
+  outline: none;
+  -webkit-appearance: none;
+  width: 50px;
+  background-image: url(../images/IC_down.png);
+  background-repeat: no-repeat, repeat;
+  background-position: 50px 11px;
+  margin-left: 5px;
+}
+
+#error {
+  display: none;
+}
+
+.old-card {
+  color: #ff6090 !important;
+}
+
+.color {
+  color: #ff6090 !important;
+}
+
+.color-placeholder {
+  color: #c8c8c8!important;
+}
+
+.number-true {
+  color: #303030 !important;
+}
+
+#gl1 .number input::placeholder {
+  color: #c8c8c8;
+  padding-top: 35px;
+}
+
+.security-code input::placeholder {
+  font-family: NotoSansCJKjp;
+  font-size: 15px;
+  font-weight: normal;
+  font-style: normal;
+  font-stretch: normal;
+  line-height: normal;
+  letter-spacing: -0.3px;
+  text-align: right;
+  color: #c8c8c8;
+  background: none;
+  border: none;
+  margin-right: 20px;
+}
+
+#gl1 .card-number span.error {
+  display: inline-block !important;
+  height: 18px;
+  font-family: NotoSansCJKjp;
+  font-size: 12px;
+  font-weight: normal;
+  font-style: normal;
+  font-stretch: normal;
+  line-height: normal;
+  letter-spacing: normal;
+  text-align: left;
+  color: #ff6090;
+  position: absolute;
+  top: -16px;
+  right: 20px;
+  z-index: 2;
+}
+
+.hidden-text {
+  display: none;
+}
+
+#gl1 .notify span {
+  color: red;
+  font-size: 15px;
+  font-weight: bold;
+  padding: 0 10px;
+}
+
+#gl1 .notify {
+  height: 40px;
+  margin: 0 8px;
+  position: absolute;
+  top: 185px;
+}

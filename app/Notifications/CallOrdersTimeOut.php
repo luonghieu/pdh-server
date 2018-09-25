@@ -157,6 +157,32 @@ class CallOrdersTimeOut extends Notification implements ShouldQueue
 
     public function lineBotPushData($notifiable)
     {
+        if ($this->order->type != OrderType::NOMINATION) {
+            $message = 'ご希望の人数のキャストが揃わなかったため、'
+                . PHP_EOL . '下記の予約が無効となりました。'
+                . PHP_EOL . '--------------------------------------------------'
+                . PHP_EOL . '- キャンセル内容 -'
+                . PHP_EOL . '日時：' . Carbon::parse($this->order->date . ' ' . $this->order->start_time)->format('Y/m/d H:i') . '~'
+                . PHP_EOL . '時間：' . $this->order->duration . '時間'
+                . PHP_EOL . 'クラス：' . $this->order->castClass->name
+                . PHP_EOL . '人数：' . $this->order->total_cast . '人'
+                . PHP_EOL . '場所：' .  $this->order->address
+                . PHP_EOL . '予定合計ポイント：' . number_format($this->order->temp_point) . ' Point'
+                . PHP_EOL . '--------------------------------------------------'
+                . PHP_EOL . 'お手数ですが、再度コールをし直してください。';
+
+            $room = $notifiable->rooms()
+                ->where('rooms.type', RoomType::SYSTEM)
+                ->where('rooms.is_active', true)->first();
+            $roomMessage = $room->messages()->create([
+                'user_id' => 1,
+                'type' => MessageType::SYSTEM,
+                'message' => $message,
+                'system_type' => SystemMessageType::NORMAL
+            ]);
+            $roomMessage->recipients()->attach($notifiable->id, ['room_id' => $room->id]);
+        }
+
         $content = 'ご希望の人数のキャストが揃わなかったため、予約が無効となりました。'
             . PHP_EOL . 'お手数ですが、下記の「今すぐキャストを呼ぶ」をタップし、キャストクラスを変更して再度コールをし直してください。';
 

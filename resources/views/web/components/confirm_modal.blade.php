@@ -9,10 +9,10 @@
       </div>
       <div class="close_button-box">
         <div class="close_button-block">
-          <label for="trigger2" class="close_button  left">はい</label>
+          <label for="{{ $triggerId }}" class="close_button  left {{ $triggerCancel or '' }}">{{ $buttonLeft or '' }}</label>
         </div>
         <div class="close_button-block">
-          <label for="trigger2" class="close_button">いいえ</label>
+          <label for="{{ $triggerId }}" class="close_button {{ $triggerClass or '' }} {{ $triggerSuccess or '' }}">{{ $buttonRight or '' }}</label>
         </div>
       </div>
     </div>

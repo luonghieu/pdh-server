@@ -16,4 +16,4 @@ yarn-error.log
 .env
 deploy
 .DS_Store
-package-lock.json
+laravel-echo-server.json

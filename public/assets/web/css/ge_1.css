@@ -1,0 +1,145 @@
+.top-header {
+  width: 100%;
+  height: 160px;
+  margin: 0 0 70px;
+  background-image: linear-gradient(-162deg, #42E4B2 0%, #00C3C3 100%);
+  /* border-bottom-right-radius: 100% 60px; */
+  border-radius: 0 0 2000px 2000px / 0 0 500px 500px;
+}
+
+.user-data {
+  position: relative;
+  width: 100px;
+  height: 100%;
+  margin: 0 auto;
+}
+
+.user-icon {
+  position: absolute;
+  bottom: -30px;
+  left: 0;
+  right: 0;
+  margin: 0 auto;
+  max-width: 100px;
+  max-height: 100px;
+  overflow: hidden;
+}
+
+.edit-button {
+  position: absolute;
+  bottom: -33px;
+  left: auto;
+  right: -6px;
+  display: block;
+  width: 37px;
+  height: 37px;
+  border-radius: 50%;
+}
+
+.user-name {
+  display: block;
+  margin: 30px auto 0;
+  font-size: 18px;
+  text-align: center;
+}
+
+.cast-call {
+  display: block;
+  width: 320px;
+  height: 75px;
+  margin: 0 auto;
+  padding: 15px 0 0;
+  background-image: linear-gradient(-162deg, #42E4B2 0%, #00C3C3 100%);
+  border-radius: 60px;
+  text-align: center;
+  color: #fff;
+  font-size: 24px;
+  font-weight: 600;
+}
+.cast-call span {
+  display: block;
+  font-size: 14px;
+  letter-spacing: 2px;
+}
+
+.booking {
+  position: relative;
+  margin: 15px 0 0;
+  padding: 0 15px;
+  width: calc(100% - 30px);
+}
+
+.booking h2 {
+  margin: 0 0 8px;
+  color: #30CCC3;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.booking-block {
+  padding: 10px 20px;
+  border: solid 3px #E7E7E7;
+  border-radius: 20px;
+}
+
+.booking-date {
+  position: relative;
+  font-weight: 600;
+  padding: 0 0 10px;
+  background-image: linear-gradient(to right, #CCC, #CCC 5px, transparent 1px, transparent 9px);
+  background-size: 10px 1px;
+  background-position: bottom;
+  background-repeat: repeat-x;
+}
+
+.booking-date .date-left span {
+  display: block;
+  font-size: 16px;
+}
+
+.booking-date .date-left ul {
+  display: block;
+}
+
+.booking-date .date-left li {
+  display: inline-block;
+  font-weight: normal;
+}
+
+.booking-date .date-right {
+  position: absolute;
+  top: 5px;
+  right: 0;
+  width: 35%;
+}
+
+.booking-date .date-right li img {
+  display: inline-block;
+  max-width: 30px;
+  max-height: 14px;
+}
+.booking-date .date-right li span {
+  display: inline-block;
+  font-size: 14px;
+}
+
+.booking-block .casts {
+  margin: 10px 0 0;
+}
+
+.booking-block .casts li {
+  display: inline-block;
+  max-width: 40px;
+  max-height: 40px;
+  margin: 0 4px;
+}
+
+.booking-block .cast-message {
+  width: 100%;
+  margin: 8px 0;
+  font-weight: 300;
+}
+
+.booking-block .cast-message a {
+  display: block;
+}
