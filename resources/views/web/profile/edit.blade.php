@@ -49,7 +49,7 @@
             <img id="output" hidden="" />
           </li>
           <label class="profile-photo__item--add-button">
-            <input type="file" id="image" onchange="openFile(event)" hidden="">
+            <input type="file" id="image" accept="image/*" onchange="openFile(event)" hidden="">
             <img src="{{ asset('assets/web/images/gm1/add-button_bg.png') }}" alt="">
           </label>
         </ul>
