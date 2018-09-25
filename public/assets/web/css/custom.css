@@ -577,6 +577,14 @@ input[type="date"]::-webkit-calendar-picker-indicator {
   top: 185px;
 }
 
+.bd-none {
+  border: none;
+}
+
+.mb-10 {
+  margin-bottom: 10px;
+}
+
 .hidden-text {
   display: none;
 }

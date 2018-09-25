@@ -36,7 +36,7 @@ $(document).ready(function() {
 
           window.axios.post('/api/v1/receipts', params)
             .then(function(response) {
-              console.log(response);
+              window.location = '/history';
             })
             .catch(function(error) {
               if (error.response.status == 401) {
@@ -55,4 +55,16 @@ $(document).ready(function() {
       });
   });
 
+  $('.js-receipt').on('click', function() {
+    var img_file = $(this).attr('img-file');
+
+    $('#img-pdf').attr('src', img_file);
+    $('#img-download').attr('href', img_file);
+  });
+
+  $('#send-mail').on('click', function() {
+    var img_file = $('.js-receipt').attr('img-file');
+
+    window.location = 'mailto:?body=' + img_file;
+  })
 });
