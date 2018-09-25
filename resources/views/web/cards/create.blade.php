@@ -4,7 +4,7 @@
 @section('web.content')
 <div class="title">
   <div class="btn-back">
-    <a href=""><img src="/assets/webview/images/back.png" alt=""></a>
+    <a href="{{ \URL::previous() }}"><img src="/assets/webview/images/back.png" alt=""></a>
   </div>
   <div class="title-name">
     <span>メッセージ一覧</span>
@@ -16,7 +16,7 @@
 <div class="image-main">
   <img src="/assets/webview/images/ic_credit_cards@2x.png" alt="">
 </div>
-<div class="notify">
+<div class="notify" id="notify">
   <span></span>
 </div>
 <div class="content">
@@ -28,8 +28,8 @@
     <span class="left">カード番号</span>
     <div class="right number">
       <span id="error">カード番号を正しく入力してください</span>
-      <input type="text" pattern="[0-9]*" name="number_card" id="number-card" onkeyup="creditValidate()" onkeydown="return numberCardLength(event)" placeholder="0000 0000 0000 0000">
-      <span id="number-card-display"></span>
+      <input type="text" pattern="[0-9]*" name="number_card" id="number-card" value="" onkeyup="creditValidate()" onkeydown="return numberCardLength(event)">
+      <span id="number-card-display">0000 0000 0000 0000</span>
     </div>
   </div>
   <div class="clear"></div>

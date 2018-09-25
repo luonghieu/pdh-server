@@ -87,7 +87,7 @@ class ReceiptController extends ApiController
             $im->setImageFormat('png');
 
             $fileName = 'receipts/' . Uuid::generate()->string . '.png';
-            \Storage::put($fileName, $im, 'public');
+            \Storage::put($fileName, $im->__toString(), 'public');
 
             $receipt->img_file = $fileName;
             $receipt->save();

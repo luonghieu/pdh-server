@@ -35,8 +35,8 @@
       <span class="left">カード番号</span>
       <div class="right number">
         <span id="error">カード番号を正しく入力してください</span>
-        <input type="text" pattern="[0-9]*" name="number_card" id="number-card" onkeyup="creditValidate()" onkeydown="return numberCardLength(event)" placeholder="0000 0000 0000 0000">
-        <span id="number-card-display"></span>
+        <input type="text" pattern="[0-9]*" name="number_card" id="number-card" onkeyup="creditValidate()" onkeydown="return numberCardLength(event)">
+        <span id="number-card-display">0000 0000 0000 0000</span>
       </div>
     </div>
     <div class="clear"></div>
