@@ -18,14 +18,17 @@ class HomeController extends Controller
             $token = '';
             $token = JWTAuth::fromUser(Auth::user());
 
+            $order = null;
             $orders = Order::where('user_id', Auth::user()->id)
                 ->whereIn('status', [OrderStatus::OPEN, OrderStatus::ACTIVE, OrderStatus::PROCESSING])
                 ->orderBy('created_at');
 
-            if ($order = $orders->where('status', OrderStatus::PROCESSING)) {
-                $order = $order->first();
-            } else {
-                $order = $orders->first();
+            if ($orders) {
+                if ($order = $orders->where('status', OrderStatus::PROCESSING)) {
+                    $order = $order->first();
+                } else {
+                    $order = $orders->first();
+                }
             }
 
             return view('web.index', compact('token', 'order'));
