@@ -34,7 +34,7 @@
   </div>
   <div class="clear"></div>
   <div class="expiration-date border-bottom">
-    <span class="left" id="thuong">有効期限</span>
+    <span class="left">有効期限</span>
     <div class="date-select right">
       <select name="month" id="month">
         @for ($i = 1; $i < 13; $i++)
