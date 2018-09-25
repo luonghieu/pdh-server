@@ -70,6 +70,23 @@ $(document).ready(function(){
     $('.sp-month').text(month +'日');
     $('.sp-time').text(time);
 
+
+    var area = $("input:radio[name='area']:checked").val();
+    var otherArea = $("input:text[name='other_area']").val();
+    var castClass = $("input:radio[name='cast_class']:checked").val();
+    var duration = $("input:radio[name='time_set']:checked").val();
+    var totalCast = $("input[type='text'][name='txtCast_Number']").val();
+    var date = $('.sp-date').text();
+
+    if((!area || (area=='その他' && !otherArea)) || !castClass ||
+     (!duration || duration<1) ||(!totalCast || totalCast<1) || !date) {
+      $("button[type='submit'][name='sb_create']").addClass("disable");
+      $("button[type='submit'][name='sb_create']").prop('disabled', true);
+    } else {
+      $("button[type='submit'][name='sb_create']").removeClass('disable');
+      $("button[type='submit'][name='sb_create']").prop('disabled', false);
+    }
+
     $(".overlay").fadeOut();
   });
 
@@ -132,17 +149,21 @@ $(document).ready(function(){
    $('#add-orders').submit();
   });
 
+  $('.lable-register-card').on('click',function(){
+   $('.register-card').submit();
+  });
+
   var area = $("input:radio[name='area']:checked").val();
   var otherArea = $("input:text[name='other_area']").val();
   var time = $("input:radio[name='time_join']:checked").val();
   var castClass = $("input:radio[name='cast_class']:checked").val();
   var duration = $("input:radio[name='time_set']:checked").val();
-  var totalCast = $("input[type='text'][name='txtCast_Number']").val();
 
-   if((area || (area=='その他' && otherArea)) || time || castClass || duration || totalCast) {
+   if((area || (area=='その他' && otherArea)) || time || castClass || duration) {
     $("button[type='submit'][name='sb_create']").removeClass('disable');
     $("button[type='submit'][name='sb_create']").prop('disabled', false);
   }
+
 
   var buttonGreen = $(".button--green.area");
   buttonGreen.on("change",function(){
@@ -152,8 +173,10 @@ $(document).ready(function(){
     var castClass = $("input:radio[name='cast_class']:checked").val();
     var duration = $("input:radio[name='time_set']:checked").val();
     var totalCast = $("input[type='text'][name='txtCast_Number']").val();
+    var date = $('.sp-date').text();
 
-    if((!area || (area=='その他' && !otherArea)) || !time || !castClass || (!duration || duration<1) ||(!totalCast || totalCast<1)) {
+    if((!area || (area=='その他' && !otherArea)) || !time || !castClass ||
+     (!duration || duration<1) ||(!totalCast || totalCast<1) || (time=='other_time' && !date)) {
       $("button[type='submit'][name='sb_create']").addClass("disable");
       $("button[type='submit'][name='sb_create']").prop('disabled', true);
     } else {
@@ -169,8 +192,11 @@ $(document).ready(function(){
     var castClass = $("input:radio[name='cast_class']:checked").val();
     var duration = $("input:radio[name='time_set']:checked").val();
     var totalCast = $("input[type='text'][name='txtCast_Number']").val();
+    var time = $("input:radio[name='time_join']:checked").val();
+    var date = $('.sp-date').text();
 
-    if((!area || (area=='その他' && !otherArea)) || !castClass || (!duration || duration<1) ||(!totalCast || totalCast<1)) {
+    if((!area || (area=='その他' && !otherArea)) || !castClass ||
+     (!duration || duration<1) ||(!totalCast || totalCast<1) || (time=='other_time' && !date)) {
       $("button[type='submit'][name='sb_create']").addClass("disable");
       $("button[type='submit'][name='sb_create']").prop('disabled', true);
     } else {
@@ -179,23 +205,25 @@ $(document).ready(function(){
     }
   })
 
-    var txtArea = $("input:text[name='other_area']");
-    txtArea.on("input",function(){
-      var otherArea = $(this).val();
-      var time = $("input:radio[name='time_join']:checked").val();
-      var area = $("input:radio[name='area']:checked").val();
-      var castClass = $("input:radio[name='cast_class']:checked").val();
-      var duration = $("input:radio[name='time_set']:checked").val();
-      var totalCast = $("input[type='text'][name='txtCast_Number']").val();
+  var txtArea = $("input:text[name='other_area']");
+  txtArea.on("input",function(){
+    var otherArea = $(this).val();
+    var time = $("input:radio[name='time_join']:checked").val();
+    var area = $("input:radio[name='area']:checked").val();
+    var castClass = $("input:radio[name='cast_class']:checked").val();
+    var duration = $("input:radio[name='time_set']:checked").val();
+    var totalCast = $("input[type='text'][name='txtCast_Number']").val();
+    var date = $('.sp-date').text();
 
-      if( !time || (!area || (!otherArea)) || !castClass || (!duration || duration<1) ||(!totalCast || totalCast<1)) {
-        $("button[type='submit'][name='sb_create']").addClass("disable");
-        $("button[type='submit'][name='sb_create']").prop('disabled', true);
-      } else {
-        $("button[type='submit'][name='sb_create']").removeClass('disable');
-        $("button[type='submit'][name='sb_create']").prop('disabled', false);
-      }
-    })
+    if( !time || (!area || (!otherArea)) || !castClass ||
+     (!duration || duration<1) ||(!totalCast || totalCast<1) || (time=='other_time' && !date)) {
+      $("button[type='submit'][name='sb_create']").addClass("disable");
+      $("button[type='submit'][name='sb_create']").prop('disabled', true);
+    } else {
+      $("button[type='submit'][name='sb_create']").removeClass('disable');
+      $("button[type='submit'][name='sb_create']").prop('disabled', false);
+    }
+  })
 
   //duration
   var timeButton = $(".button--green.time");
@@ -206,8 +234,10 @@ $(document).ready(function(){
     var duration = $("input:radio[name='time_set']:checked").val();
     var totalCast = $("input[type='text'][name='txtCast_Number']").val();
     var time = $("input:radio[name='time_join']:checked").val();
+    var date = $('.sp-date').text();
 
-    if( !time || (!area || (area=='その他' && !otherArea)) || !castClass || (duration && duration<1) ||(!totalCast || totalCast<1)) {
+    if( !time || (!area || (area=='その他' && !otherArea)) ||
+     !castClass || (duration && duration<1) ||(!totalCast || totalCast<1) || (time=='other_time' && !date)) {
       $("button[type='submit'][name='sb_create']").addClass("disable");
       $("button[type='submit'][name='sb_create']").prop('disabled', true);
     } else {
@@ -224,8 +254,10 @@ $(document).ready(function(){
     var duration = $("input:radio[name='time_set']:checked").val();
     var totalCast = $("input[type='text'][name='txtCast_Number']").val();
     var time = $("input:radio[name='time_join']:checked").val();
+    var date = $('.sp-date').text();
 
-    if( !time || (!area || (area=='その他' && !otherArea)) || !castClass || (duration && duration<1) ||(!totalCast || totalCast<1)) {
+    if( !time || (!area || (area=='その他' && !otherArea)) || !castClass ||
+     (duration && duration<1) ||(!totalCast || totalCast<1) || (time=='other_time' && !date)) {
       $("button[type='submit'][name='sb_create']").addClass("disable");
       $("button[type='submit'][name='sb_create']").prop('disabled', true);
     } else {
