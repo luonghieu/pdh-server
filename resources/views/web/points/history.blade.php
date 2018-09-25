@@ -25,13 +25,30 @@
                 <label for="trigger5" class="btn4">キャンセル</label>
               </div>
               <div class="close_button-block">
-                <button type="submit" for="trigger5" class="btn btn-bg">発行する</button>
+                <button type="submit" for="trigger5" class="btn btn-bg bd-none">発行する</button>
               </div>
             </div>
           </div>
       </div>
   </div>
 </form>
+<div class="modal_wrap">
+  <input id="trigger2" type="checkbox">
+    <div class="modal_overlay">
+      <label for="trigger2" class="modal_trigger"></label>
+      <div class="modal_content modal_content-btn2">
+        <img id="img-pdf" name="pdf" alt="">
+        <div class="mb-10">
+          <div class="close_button-block">
+            <button type="submit" id="send-mail" class="btn btn-bg bd-none">メールで送信</button>
+          </div>
+          <div class="close_button-block">
+            <a class="btn btn-bg bd-none" id="img-download" download>画像を保存</a>
+          </div>
+        </div>
+      </div>
+  </div>
+</div>
 @endsection
 @section('web.content')
 <div class="list_wrap">
@@ -90,7 +107,7 @@
           @if (!$point['receipt'])
             <label for="trigger5" class="btn-bg js-point" point-id="{{ $point['id'] }}">領収書を発行</label>
           @else
-            <label for="" class="btn-bg">領収書を発行</label>
+            <label for="trigger2" class="btn-bg js-receipt" img-file="{{ $point['receipt']['img_file'] }}">領収書を発行</label>
           @endif
         </div>
       @endif

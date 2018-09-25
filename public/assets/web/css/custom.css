@@ -577,3 +577,11 @@ input[type="date"]::-webkit-calendar-picker-indicator {
   position: absolute;
   top: 185px;
 }
+
+.bd-none {
+  border: none;
+}
+
+.mb-10 {
+  margin-bottom: 10px;
+}
