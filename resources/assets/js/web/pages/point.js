@@ -5,7 +5,7 @@ $('#buypoint-confirm').on('click', function() {
     window.axios.post('/api/v1/points', {amount: pointAmount}).then(function(response) {
         const newTotalPoint = Number(currentPoint) + Number(pointAmount);
         $('#current_point').val(newTotalPoint);
-        $('#total_point').html(newTotalPoint.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") + 'P');
+        $('#total_point').html(newTotalPoint.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ","));
         $('#buypoint-alert-content').html('ポイント購入完了しました！');
         $('#buypoint-alert-label').trigger('click');
         setTimeout(() => {
