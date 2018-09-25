@@ -43,9 +43,9 @@ class ReceiptController extends ApiController
 
         $receipt = Receipt::where('point_id', $request->point_id)->first();
 
-//        if ($receipt) {
-//            return $this->respondErrorMessage(trans('messages.receipt_exists'), 409);
-//        }
+        if ($receipt) {
+            return $this->respondErrorMessage(trans('messages.receipt_exists'), 409);
+        }
 
         try {
             $name = null;
