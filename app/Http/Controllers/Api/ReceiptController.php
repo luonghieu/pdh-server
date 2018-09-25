@@ -85,7 +85,6 @@ class ReceiptController extends ApiController
             $im->setImageUnits(Imagick::RESOLUTION_PIXELSPERINCH);
             $im->setImageResolution(595,842);
             $im->setImageFormat('png');
-            header('Content-Type: image/png');
 
             $fileName = 'receipts/' . Uuid::generate()->string . '.png';
             \Storage::put($fileName, $im, 'public');
