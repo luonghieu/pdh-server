@@ -5,7 +5,7 @@ $(document).ready(function() {
     $('#set-default-avatar').on('click', function(e) {
       window.axios.patch('/api/v1/avatars/' + id)
         .then(function(response) {
-          window.location = '/profile';
+          window.location = '/profile/edit';
         })
         .catch(function(error) {
           if (error.response.status == 401) {
@@ -17,7 +17,7 @@ $(document).ready(function() {
     $('#delete-avatar').on('click', function(e) {
       window.axios.delete('/api/v1/avatars/' + id)
         .then(function(response) {
-          window.location = '/profile';
+          window.location = '/profile/edit';
         })
         .catch(function(error) {
           if (error.response.status == 401) {
@@ -36,7 +36,7 @@ $(document).ready(function() {
 
       window.axios.post('/api/v1/avatars/' + id, data)
         .then(function(response) {
-          window.location = '/profile';
+          window.location = '/profile/edit';
         })
         .catch(function(error) {
           if (error.response.status == 401) {

@@ -7,7 +7,6 @@
   <div class="modal_wrap">
     <input id="trigger" type="checkbox">
     <div class="modal_overlay">
-      <label for="trigger" class="modal_trigger"></label>
       <div class="modal_content modal_content-btn1">
       <div class="text-box">
         <h2>Cheersへようこそ！！</h2>
@@ -32,11 +31,11 @@
   </section>
   <div class="top-header">
     <div class="user-data">
-      <div class="user-icon">
-        @if (Auth::user()->avatars && !empty(Auth::user()->avatars->first()->path))
-        <img src="{{ Auth::user()->avatars->first()->path }}" alt="">
+      <div class="user-icon init-image-radius">
+        @if (Auth::user()->avatars && !empty(Auth::user()->avatars->first()->thumbnail))
+          <img src="{{ Auth::user()->avatars->first()->thumbnail }}" alt="">
         @else
-        <img src="{{ asset('assets/web/images/gm1/ic_default_avatar@3x.png') }}" alt="">
+          <img src="{{ asset('assets/web/images/ge1/user_icon.svg') }}" alt="">
         @endif
       </div>
       <a href="{{ route('profile.edit') }}" class="edit-button">
