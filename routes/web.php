@@ -35,7 +35,6 @@ Route::group(['middleware' => 'auth'], function () {
     });
 
     Route::group(['prefix' => 'history', 'as' => 'history.'], function () {
-        Route::get('/', ['as' => 'index', 'uses' => 'PointController@getPointsHistory']);
         Route::get('/{orderId}', ['as' => 'show', 'uses' => 'OrderController@history']);
     });
 
@@ -69,4 +68,8 @@ Route::group(['middleware' => ['auth', 'guest'], 'as' => 'guest.'], function () 
         Route::post('/call/confirm', ['as' => 'post_confirm', 'uses' => 'OrderController@getConfirm']);
         Route::post('/call/add', ['as' => 'add', 'uses' => 'OrderController@add']);
     });
+});
+
+Route::group(['middleware' => ['auth', 'guest']], function () {
+    Route::get('/history', ['as' => 'points.history', 'uses' => 'PointController@history']);
 });
