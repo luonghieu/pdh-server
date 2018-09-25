@@ -9,7 +9,7 @@
 <nav id="menu">
   <ul>
     @if (Auth::check())
-      <li><a href="#"><i><img src="{{ asset('assets/web/images/common/man.svg') }}"></i>マイページ</a></li>
+      <li><a href="{{ route('web.index') }}"><i><img src="{{ asset('assets/web/images/common/man.svg') }}"></i>マイページ</a></li>
       <li><a href="{{ route('guest.orders.call') }}"><i><img src="{{ asset('assets/web/images/common/woman.svg') }}"></i>今すぐキャストを呼ぶ</a></li>
       <li><a href="{{ route('message.index') }}"><i><img src="{{ asset('assets/web/images/common/msg.svg') }}"></i>メッセージ</a></li>
       <li><a href="{{ route('guest.orders.reserve') }}"><i><img src="{{ asset('assets/web/images/common/glass.svg') }}"></i>予約一覧</a></li>
