@@ -61,18 +61,18 @@ $(function(){
 
 
   //-----------------------------
-  $(".cast-number__button-plus").on("click",function(){
-    var number_val = parseInt( $(".cast-number__value input").val());
-    number_val = number_val + 1;
-    $(".cast-number__value input").val(number_val)
-  })
+  // $(".cast-number__button-plus").on("click",function(){
+  //   var number_val = parseInt( $(".cast-number__value input").val());
+  //   number_val = number_val + 1;
+  //   $(".cast-number__value input").val(number_val)
+  // })
 
-  $(".cast-number__button-minus").on("click",function(){
-    var number_val = parseInt( $(".cast-number__value input").val());
-    if(number_val > 0){
-      number_val = number_val - 1;
-      $(".cast-number__value input").val(number_val)
-    }
-  })
+  // $(".cast-number__button-minus").on("click",function(){
+  //   var number_val = parseInt( $(".cast-number__value input").val());
+  //   if(number_val > 0){
+  //     number_val = number_val - 1;
+  //     $(".cast-number__value input").val(number_val)
+  //   }
+  // })
 
 })

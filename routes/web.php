@@ -34,20 +34,44 @@ Route::group(['middleware' => 'auth'], function () {
         Route::get('/', ['as' => 'index', 'uses' => 'RatingController@index']);
     });
 
+    Route::group(['prefix' => 'history', 'as' => 'history.'], function () {
+        Route::get('/{orderId}', ['as' => 'show', 'uses' => 'OrderController@history']);
+    });
+
+    Route::group(['middleware' => ['guest'], 'prefix' => 'credit_card', 'as' => 'credit_card.'], function () {
+        Route::get('/', ['as' => 'index', 'uses' => 'CardController@index']);
+        Route::get('edit', ['as' => 'update', 'uses' => 'CardController@update']);
+    });
+
+    Route::group(['prefix' => 'point_settement', 'as' => 'point_settement.'], function () {
+        Route::post('/{orderId}', ['as' => 'create', 'uses' => 'OrderController@pointSettlement']);
+    });
 });
 
-Route::get('/', 'HomeController@index')->name('web.index');
+Route::get('/', 'HomeController@login');
+Route::get('/login', 'HomeController@login')->name('web.login');
+Route::get('/mypage', 'HomeController@index')->name('web.index');
 Route::get('/login/line', 'Auth\LineController@login')->name('auth.line');
 Route::get('/login/line/callback', 'Auth\LineController@handleCallBack');
 
-Route::group(['middleware' => ['auth', 'guest']], function () {
-    Route::group(['prefix' => 'guest', 'as' => 'guest.'], function () {
-        Route::group(['prefix' => 'orders', 'as' => 'orders.'], function () {
-            Route::get('/', ['as' => 'index', 'uses' => 'OrderController@index']);
-        });
+Route::group(['middleware' => ['auth', 'guest'], 'as' => 'guest.'], function () {
+    Route::group(['as' => 'orders.'], function () {
+        Route::get('/reserve', ['as' => 'reserve', 'uses' => 'OrderController@index']);
+        Route::get('/call', ['as' => 'call', 'uses' => 'OrderController@call']);
+        Route::post('/get_day', ['as' => 'get_day', 'uses' => 'OrderController@getDayOfMonth']);
+        Route::post('/call', ['as' => 'post_call', 'uses' => 'OrderController@getParams']);
+        Route::get('/call/step2', ['as' => 'get_step2', 'uses' => 'OrderController@selectTags']);
+        Route::post('/call/step2', ['as' => 'post_step2', 'uses' => 'OrderController@getTags']);
+        Route::get('/call/step3', ['as' => 'get_step3', 'uses' => 'OrderController@selectCasts']);
+        Route::post('/call/step3', ['as' => 'post_step3', 'uses' => 'OrderController@getSelectCasts']);
+        Route::get('/call/step4', ['as' => 'get_step4', 'uses' => 'OrderController@attention']);
+        Route::get('/cancellation_policies', ['as' => 'cancel', 'uses' => 'OrderController@cancel']);
+        Route::get('/call/confirm', ['as' => 'get_confirm', 'uses' => 'OrderController@confirm']);
+        Route::post('/call/confirm', ['as' => 'post_confirm', 'uses' => 'OrderController@getConfirm']);
+        Route::post('/call/add', ['as' => 'add', 'uses' => 'OrderController@add']);
     });
+});
 
-    Route::group(['prefix' => 'points', 'as' => 'points.'], function () {
-        Route::get('/', ['as' => 'points_history', 'uses' => 'PointController@getPointsHistory']);
-    });
+Route::group(['middleware' => ['auth', 'guest']], function () {
+    Route::get('/history', ['as' => 'points.history', 'uses' => 'PointController@history']);
 });

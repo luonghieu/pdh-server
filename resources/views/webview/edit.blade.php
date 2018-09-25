@@ -68,5 +68,6 @@
     </form>
   </div>
   <script src="/assets/webview/js/script.js"></script>
+  <script src="/assets/webview/js/create_card.js"></script>
 </body>
 </html>
