@@ -125,7 +125,7 @@ class CastAcceptNominationOrders extends Notification implements ShouldQueue
             . PHP_EOL . PHP_EOL .'ゲストの方はキャストに来て欲しい場所の詳細をお伝えください。';
 
         $line = new Line();
-        $liffId = $line->getLiffId('https://localhost');
+        $liffId = $line->getLiffId(route('message.messages', ['room' => $this->order->room->id]));
 
         return [
             [

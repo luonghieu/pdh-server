@@ -170,7 +170,7 @@ class PaymentRequestFromCast extends Notification implements ShouldQueue
             . PHP_EOL . 'またのご利用をお待ちしております😁💫';
 
         $line = new Line();
-        $liffId = $line->getLiffId('https://localhost');
+        $liffId = $line->getLiffId(route('evaluation.index', ['order_id' => $this->order->id]));
 
         return [
             [

@@ -127,7 +127,7 @@ class CastDenyOrders extends Notification implements ShouldQueue
             . PHP_EOL . 'お手数ですが、キャストクラスを変更して再度コールをし直してください。';
 
         $line = new Line();
-        $liffId = $line->getLiffId('https://localhost');
+        $liffId = $line->getLiffId(route('guest.orders.call'));
 
         return [
             [

@@ -118,6 +118,7 @@ class ApproveNominatedOrders extends Notification implements ShouldQueue
 
     public function lineBotPushData($notifiable)
     {
+        $room = Room::find($this->order->room_id);
         $startTime = Carbon::parse($this->order->date . ' ' . $this->order->start_time);
 
         $firstMessage = '\\\\ おめでとうございます！マッチングが確定しました🎊//';
@@ -127,7 +128,7 @@ class ApproveNominatedOrders extends Notification implements ShouldQueue
             . PHP_EOL . PHP_EOL .'ゲストの方はキャストに来て欲しい場所の詳細をお伝えください。';
 
         $line = new Line();
-        $liffId = $line->getLiffId('https://localhost');
+        $liffId = $line->getLiffId(route('message.messages', ['room' => $room->id]));
 
         return [
             [
