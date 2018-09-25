@@ -83,7 +83,7 @@
       </div>
       @if (($pointView <= 0) && ($point['type'] != \App\Enums\PointType::EVICT))
         <div class="item_right">
-          <div class=""><img src="{{ asset('assets/web/images/gl2-1/arrow.svg') }}" alt=">"></div>
+          <div class=""><a href="{{ route('history.show', $point['order_id']) }}"><img src="{{ asset('assets/web/images/gl2-1/arrow.svg') }}" alt=">"></a></div>
         </div>
       @else
         <div class="item_right">

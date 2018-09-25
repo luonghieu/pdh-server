@@ -31,7 +31,7 @@
         @if ($profile['avatars'] && $profile['avatars'][0]['thumbnail'])
           <img class="init-image-radius" src="{{ $profile['avatars'][0]['thumbnail'] }}" alt="">
         @else
-        <img src="{{ asset('assets/web/images/gm1/ic_default_avatar@3x.png') }}" alt="">
+        <img src="{{ asset('assets/web/images/ge1/user_icon.svg') }}" alt="">
         @endif
       </div>
       <div class="profile-photo__list">
