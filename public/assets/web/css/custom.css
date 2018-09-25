@@ -146,12 +146,6 @@ input[type="date"]::-webkit-calendar-picker-indicator {
   color: red;
 }
 
-#index-point-controller footer {
-  position: absolute;
-  bottom: 0;
-  width: 100%;
-}
-
 #index-point-controller .list_wrap {
   padding-top: 15px;
 }

@@ -14,7 +14,7 @@
       <li><a href="{{ route('message.index') }}"><i><img src="{{ asset('assets/web/images/common/msg.svg') }}"></i>メッセージ</a></li>
       <li><a href="{{ route('guest.orders.reserve') }}"><i><img src="{{ asset('assets/web/images/common/glass.svg') }}"></i>予約一覧</a></li>
       <li><a href="{{ route('purchase.index') }}"><i><img src="{{ asset('assets/web/images/common/point.svg') }}"></i>POINT購入</a></li>
-      <li><a href="{{ route('point.history') }}"><i><img src="{{ asset('assets/web/images/common/date.svg') }}"></i>予約履歴</a></li>
+      <li><a href="#"><i><img src="{{ asset('assets/web/images/common/date.svg') }}"></i>予約履歴</a></li>
       <li><a href="{{ route('credit_card.index') }}"><i><img src="{{ asset('assets/web/images/common/card.svg') }}"></i>クレジットカード情報</a></li>
       <li><span><i><img src="{{ asset('assets/web/images/common/help.svg') }}"></i>ヘルプ</span>
         <ul>

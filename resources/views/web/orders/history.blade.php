@@ -96,7 +96,7 @@
                 </div>
                 <div class="close_button-box">
                     <div class="close_button-block w-100">
-                        <label class="close_button"><a href="#">カード情報を確認する</a></label>
+                        <label class="close_button"><a href="{{ route('credit_card.index') }}">カード情報を確認する</a></label>
                     </div>
                 </div>
             </div>

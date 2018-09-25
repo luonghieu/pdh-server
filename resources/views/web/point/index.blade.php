@@ -37,7 +37,7 @@
                 <p>クレジットカードを登録して
                     キャストとマッチングしよう！</p>
             </div>
-            <label class="close_button">クレジットカードを登録する</label>
+            <a class="close_button" href="{{ route('credit_card.index') }}">クレジットカードを登録する</a>
         </div>
     </div>
 </div>
