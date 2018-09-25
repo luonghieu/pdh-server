@@ -75,7 +75,6 @@ class ReceiptController extends ApiController
             ];
 
             $pdf = PDF::loadView('pdf.invoice', $data)->setPaper('a4', 'portrait');
-
             $fileName = 'receipts/' . Uuid::generate()->string . '.pdf';
             \Storage::put($fileName, $pdf->output(), 'public');
 
