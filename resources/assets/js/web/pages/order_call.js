@@ -45,7 +45,7 @@ $(document).ready(function(){
     nd = new Date(utc + (3600000*9));
 
     if(add_minutes(nd,20) > selectDate) {
-      selectDate = add_minutes(nd,25);
+      selectDate = add_minutes(nd,20);
       date = selectDate.getDate();
       month = selectDate.getMonth() +1;
 

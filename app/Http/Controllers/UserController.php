@@ -2,10 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Services\LogService;
 use Auth;
 use GuzzleHttp\Client;
 use JWTAuth;
-use App\Services\LogService;
 
 class UserController extends Controller
 {
@@ -32,7 +32,7 @@ class UserController extends Controller
             $contents = $result->getContents();
             $contents = json_decode($contents, JSON_NUMERIC_CHECK);
             $cast = $contents['data'];
-
+            dd($cast);
             return view('web.users.show', compact('cast'));
         } catch (\Exception $e) {
             LogService::writeErrorLog($e);

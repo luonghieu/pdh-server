@@ -74,6 +74,6 @@
 </div>
 <div class="cast-call-btn">
   <button><img src="{{ asset('assets/web/images/common/msg2.svg') }}"></button>
-  <div class="btn-l"><a href="#">指名予約する</a></div>
+  <div class="btn-l"><a href="{{ route('guest.orders.nominate',['id' => $cast['id'] ]) }}">指名予約する</a></div>
 </div>
 @endsection
