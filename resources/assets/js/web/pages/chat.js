@@ -8,9 +8,11 @@ $(document).ready(function() {
     .listen('MessageCreated', (e) => {
       var message = e.message.message;
       var createdAt = e.message.created_at;
+      var pattern = /([0-9]{2}):([0-9]{2}):/g;
+      var result = pattern.exec(createdAt);
+      var time = result[1]+':'+result[2];
       var avatar = e.message.user.avatars[0]['path'];
-      var date = new Date(createdAt);
-      var time = date.getHours()+':'+date.getMinutes();
+
       if(e.message.type == 2 || (e.message.type == 1 && e.message.system_type == 1)) {
         $("#message-box").append(`
           <div class="msg-left msg-wrap">
@@ -55,6 +57,12 @@ $(document).ready(function() {
        `);
       }
     });
+
+  $('#send-message, #content').keydown(function(event) {
+    if(event.keyCode == 13) {
+      event.preventDefault();
+    }
+  });
 
   $("#send-message").click(function() {
     if($.trim($("#content").val())) {
