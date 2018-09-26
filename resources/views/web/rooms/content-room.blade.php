@@ -43,7 +43,7 @@
         <div class="msg-box-ttl wrap-balloon">
           <div class="msg_time">
             @if ($room->latest_message != null)
-            <p>{{ $room->latest_message ? Carbon\Carbon::parse($room->latest_message->created_at)->format('H:i') : ''}} </p>
+            <p class="latest-message">{{ $room->latest_message ? Carbon\Carbon::parse($room->latest_message->created_at)->format('H:i') : ''}} </p>
             @else
             <p></p>
             @endif

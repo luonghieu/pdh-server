@@ -649,3 +649,7 @@ input[type="date"]::-webkit-calendar-picker-indicator {
 .btn-redirect-edit {
   color: #ff6090 !important;
 }
+
+.latest-message {
+  height: 20px;
+}
