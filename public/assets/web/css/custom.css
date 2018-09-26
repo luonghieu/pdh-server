@@ -476,6 +476,7 @@ input[type="date"]::-webkit-calendar-picker-indicator {
   letter-spacing: 1px;
   text-align: right;
   outline: none;
+  height: 25px;
 }
 
 #gl1 form {
@@ -643,4 +644,8 @@ input[type="date"]::-webkit-calendar-picker-indicator {
 
 #mm-0 .profile-photo .profile-photo__item {
   margin-bottom: 10px;
+}
+
+.btn-redirect-edit {
+  color: #ff6090 !important;
 }
