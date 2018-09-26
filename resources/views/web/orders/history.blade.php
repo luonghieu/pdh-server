@@ -147,7 +147,7 @@
                     <div class="details-list__line"><p></p></div>
                     <div class="details-list__header">
                         <div class="details-list__thumbnail">
-                            <a href="{{ route('user.show', ['id' => $cast->id]) }}">
+                            <a href="{{ route('cast.show', ['id' => $cast->id]) }}">
                                 <img src="{{ $cast->avatars->first()->thumbnail }}" alt="Avatar">
                             </a>
                         </div>

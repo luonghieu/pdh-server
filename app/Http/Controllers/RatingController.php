@@ -21,6 +21,19 @@ class RatingController extends Controller
             return redirect()->route('message.messages', ['room' => $order->room_id]);
         }
 
-        return view('web.ratings.index', compact(['order', 'cast']));
+        $totalRated = 1;
+        if ($order->total_cast > 1) {
+            $casts = $order->casts;
+            foreach ($casts as $cast) {
+                if ($cast->pivot->guest_rated) {
+                    $totalRated++;
+                }
+            }
+        } else {
+            $totalRated = -1;
+        }
+
+
+        return view('web.ratings.index', compact(['order', 'cast', 'totalRated']));
     }
 }
