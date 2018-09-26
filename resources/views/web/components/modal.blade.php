@@ -7,7 +7,7 @@
         <h2>{{ $title }}</h2>
         <p>{{ $content }}</p>
       </div>
-      <label for="{{ $triggerId }}" class="close_button {{ $triggerClass }}">OK</label>
+      <label for="{{ $triggerId }}" class="close_button {{ $triggerClass }}">{{ $button or 'OK'}}</label>
     </div>
   </div>
 </div>
