@@ -11,11 +11,11 @@ $(document).ready(function() {
       var avatar = e.message.user.avatars[0]['path'];
       var date = new Date(createdAt);
       var time = date.getHours()+':'+date.getMinutes();
-      if(e.message.type == 2 || (e.message.type == 1 && e.message.system_type == 1)) {
+      if(e.message.type == 2 || (e.message.type == 1 && e.message.system_type == 1) || e.message.type == 4) {
         $("#message-box").append(`
           <div class="msg-left msg-wrap">
           <figure>
-            <a href="https://www.yahoo.co.jp/"><img src="`+avatar+`"  alt="" title="" class="alignnone size-full wp-image-515" /></a>
+            <a href=""><img src="`+avatar+`"  alt="" title="" class="alignnone size-full wp-image-515" /></a>
           </figure>
           <div class="msg-left-text">
             <div class="text">
@@ -33,7 +33,7 @@ $(document).ready(function() {
         $("#message-box").append(`
           <div class="msg-left msg-wrap">
           <figure>
-           <a href="https://www.yahoo.co.jp/"><img src="`+avatar+`"  alt="" title="" class="alignnone size-full wp-image-515" /></a>
+           <a href=""><img src="`+avatar+`"  alt="" title="" class="alignnone size-full wp-image-515" /></a>
           </figure>
           <div class="msg-left-text">
             <div class="pic">
@@ -99,7 +99,7 @@ $(document).ready(function() {
         $("#message-box").append(`
           <div class="msg-right msg-wrap">
           <figure>
-            <a href="https://www.yahoo.co.jp/"><img src="`+avatar+`"  alt="" title="" class="alignnone size-full wp-image-515" /></a>
+            <a href=""><img src="`+avatar+`"  alt="" title="" class="alignnone size-full wp-image-515" /></a>
           </figure>
           <div class="msg-right-text">
             <div class="text">
@@ -116,7 +116,7 @@ $(document).ready(function() {
         $("#message-box").append(`
           <div class="msg-right msg-wrap">
           <figure>
-            <a href="https://www.yahoo.co.jp/"><img src="`+avatar+`"  alt="" title="" class="alignnone size-full wp-image-515" /></a>
+            <a href=""><img src="`+avatar+`"  alt="" title="" class="alignnone size-full wp-image-515" /></a>
           </figure>
           <div class="msg-right-text">
             <div class="pic">
