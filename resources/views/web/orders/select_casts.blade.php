@@ -28,6 +28,6 @@
       <input type="hidden" value="{{ $castNumbers }}" class="cast-numbers">
       @endif
     </div>
-    <button type="submit" class="form_footer ct-button" id="sb-select-casts">次に進む(3/3)</button>
+    <button type="submit" class="form_footer ct-button" id="sb-select-casts">次に進む(3/4)</button>
   </form>
 @endsection

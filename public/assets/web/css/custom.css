@@ -256,7 +256,7 @@ input[type="date"]::-webkit-calendar-picker-indicator {
   padding-top: 30px;
 }
 
-#order-history-controller .big-title {
+.big-title {
   text-align: center;
   padding-bottom: 15px;
   border-bottom: 1px #30ccc3 solid;
@@ -648,4 +648,18 @@ input[type="date"]::-webkit-calendar-picker-indicator {
 
 .btn-redirect-edit {
   color: #ff6090 !important;
+}
+
+.color-show-page {
+  color: #000 !important;
+}
+
+#index-rating-controller #go1 img {
+  height: 100%;
+}
+#index-rating-controller #rating-submit-btn:disabled {
+  background: #cccccc;
+}
+#index-rating-controller .cast-profile {
+  padding-top: 15px;
 }
