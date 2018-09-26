@@ -162,7 +162,13 @@ $(document).ready(function() {
   $('.cancel-order').click(function(event) {
     axios.post(`/api/v1/orders/`+orderId+`/cancel`)
     .then(function (response) {
-      console.log(response);
+      var message = response.data.message;
+
+      $("#message-box").append(`
+        <div class="msg-alert">
+          <h3><span>`+time+`</span><br>`+message+`</h3>
+        </div>
+      `);
     })
     .catch(function (error) {
       console.log(error);
