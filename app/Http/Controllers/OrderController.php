@@ -455,22 +455,23 @@ class OrderController extends Controller
         $desires = [];
         $situations = [];
 
-        if (isset($data['desires'])) {
-            $desires = $data['desires'];
-        }
-
-        if (isset($data['situations'])) {
-            $situations = $data['situations'];
-        }
-
         if (isset($data['area'])) {
             $area = $data['area'];
         } else {
             $area = $data['other_area'];
         }
 
-        $tags = array_merge($desires, $situations);
-        $tags = implode(',', $tags);
+        if (isset($data['obj_tags'])) {
+            $tags = [];
+
+            foreach ($data['obj_tags'] as $val) {
+                array_push($tags, $val->name);
+            }
+
+            $tags = implode(',', $tags);
+        } else {
+            $tags = '';
+        }
 
         $client = new Client();
         $user = Auth::user();
