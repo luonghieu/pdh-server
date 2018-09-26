@@ -32,7 +32,7 @@
       @endif
     </div>
   </div>
-  <button type="submit" class="form_footer ct-button">次に進む　(2/3)</button>
+  <button type="submit" class="form_footer ct-button">次に進む　(2/4)</button>
 </form>
 <section class="button-box">
   <label for="max-tags" class="lbmax"></label>

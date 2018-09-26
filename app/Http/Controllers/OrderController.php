@@ -64,6 +64,11 @@ class OrderController extends Controller
             $currentArea = Session::get('data')['area'];
         }
 
+        $currentOtherArea = null;
+        if (isset(Session::get('data')['other_area'])) {
+            $currentOtherArea = Session::get('data')['other_area'];
+        }
+
         $currentTime = null;
         if (isset(Session::get('data')['time'])) {
             $currentTime = Session::get('data')['time'];
@@ -84,7 +89,12 @@ class OrderController extends Controller
             $currentCastClass = Session::get('data')['cast_class'];
         }
 
-        return view('web.orders.create_call', compact('currentArea', 'currentTime', 'currentDuration', 'currentCastNumbers', 'currentCastClass'));
+        $timeDetail = null;
+        if (isset(Session::get('data')['time_detail'])) {
+            $timeDetail = Session::get('data')['time_detail'];
+        }
+
+        return view('web.orders.create_call', compact('currentArea', 'currentTime', 'currentDuration', 'currentCastNumbers', 'currentCastClass', 'timeDetail', 'currentOtherArea'));
     }
 
     public function getDayOfMonth(Request $request)
@@ -103,33 +113,39 @@ class OrderController extends Controller
         $input = [];
         $now = Carbon::now();
         $area = $request->area;
-
-        if ($area && $request->other_area) {
-            $area = $request->other_area;
-        }
-
-        if (!$area) {
+        $otherArea = $request->other_area;
+        if (!$area && !$otherArea) {
             return redirect()->route('guest.orders.call');
         }
 
-        $input['area'] = $area;
+        if ('その他' == $area && $request->other_area) {
+            $input['other_area'] = $otherArea;
+        } else {
+            $input['area'] = $area;
+        }
 
         if (!$request->time_join) {
             return redirect()->route('guest.orders.call');
         }
 
         if ('other_time' == $request->time_join) {
+            $timeDetail = [];
+
             if ($request->sl_month < 10) {
                 $month = '0' . $request->sl_month;
             } else {
                 $month = $request->sl_month;
             }
 
+            $timeDetail['month'] = $month;
+
             if ($request->sl_date < 10) {
                 $date = '0' . $request->sl_date;
             } else {
                 $date = $request->sl_date;
             }
+
+            $timeDetail['date'] = $date;
 
             if ($request->sl_hour < 10) {
                 $hour = '0' . $request->sl_hour;
@@ -143,10 +159,20 @@ class OrderController extends Controller
                 $minute = $request->sl_minute;
             }
 
+            $timeDetail['hour'] = $hour;
+
+            $timeDetail['minute'] = $minute;
+
+            $input['time_detail'] = $timeDetail;
+
             $timeJoin = $now->year . '-' . $month . '-' . $date . ' ' . $hour . ':' . $minute;
             $input['otherTime'] = $timeJoin;
         } else {
             $timeJoin = $request->time_join;
+            if (!$timeJoin) {
+                $timeJoin = 20;
+            }
+
             $input['time'] = $timeJoin;
         }
 
@@ -187,13 +213,18 @@ class OrderController extends Controller
 
         $client = new Client();
 
-        $desires = $client->get(route('tags', ['type' => TagType::DESIRE]));
+        try {
+            $desires = $client->get(route('tags', ['type' => TagType::DESIRE]));
 
-        $desires = json_decode(($desires->getBody())->getContents(), JSON_NUMERIC_CHECK);
+            $desires = json_decode(($desires->getBody())->getContents(), JSON_NUMERIC_CHECK);
 
-        $situations = $client->get(route('tags', ['type' => TagType::SITUATION]));
+            $situations = $client->get(route('tags', ['type' => TagType::SITUATION]));
 
-        $situations = json_decode(($situations->getBody())->getContents(), JSON_NUMERIC_CHECK);
+            $situations = json_decode(($situations->getBody())->getContents(), JSON_NUMERIC_CHECK);
+        } catch (\Exception $e) {
+            LogService::writeErrorLog($e);
+            abort(500);
+        }
 
         $currentDesires = null;
         if (isset(Session::get('data')['desires'])) {
@@ -431,6 +462,13 @@ class OrderController extends Controller
         if (isset($data['situations'])) {
             $situations = $data['situations'];
         }
+
+        if (isset($data['area'])) {
+            $area = $data['area'];
+        } else {
+            $area = $data['other_area'];
+        }
+
         $tags = array_merge($desires, $situations);
         $tags = implode(',', $tags);
 
