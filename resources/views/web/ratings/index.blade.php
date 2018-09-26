@@ -40,6 +40,7 @@
     $orderStartTime = \Carbon\Carbon::parse($order->date . ' ' . $order->start_time);
     $orderEndTime = $orderStartTime->copy()->addMinutes($order->duration * 60);
     ?>
+    <h1 class="big-title">キャスト評価</h1>
     <div class="cast-profile">
         <section class="profile-photo">
             <div class="profile-photo_top"><img src="{{ $cast->avatars->first()->thumbnail }}" alt=""></div>
@@ -81,13 +82,15 @@
             </ul>
             <div>
                 <textarea class="form" name="comment" cols="50" rows="10" wrap="soft"
-                          placeholder="よろしければ評価内容をご入力ください"></textarea>
+                          placeholder="よろしければ評価内容をご入力ください" id="rating-comment"></textarea>
             </div>
         </section>
         <section class="settlement-confirm">
             <input type="hidden" name="order_id" value="{{ request()->order_id }}">
             <input type="hidden" name="rated_id" value="{{ $cast->id }}">
-            <button type="button" class="button button-settlement" id="rating-submit-btn">評価する</button>
+            <button type="button" class="button button-settlement" id="rating-submit-btn" disabled>評価する
+                {{ ($totalRated != -1 || $order->total_cast != 1) ? $totalRated . '/' . $order->total_cast  : ''
+                }}</button>
         </section>
     </form>
 @endsection

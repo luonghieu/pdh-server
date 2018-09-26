@@ -24,3 +24,11 @@ $('#rating-create').submit(function (e) {
         $('#rating-alert').trigger('click');
     });
 });
+
+$('#rating-comment').on('keyup', function(e) {
+    if ($(this).val().length) {
+        $('#rating-submit-btn').prop("disabled", false);
+    } else {
+        $('#rating-submit-btn').prop("disabled", true);
+    }
+});
