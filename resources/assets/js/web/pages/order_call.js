@@ -122,11 +122,11 @@ $(document).ready(function(){
 
   $(".cb-cancel").on("change",function(event){
     if ($(this).is(':checked')) {
-        $('#sp-cancel').removeClass('disable');
+        $('#sp-cancel').removeClass('sp-disable');
         $('#btn-confirm-orders').removeClass('disable');
         $('#btn-confirm-orders').prop('disabled', false);
       } else {
-        $('#sp-cancel').addClass("disable");
+        $('#sp-cancel').addClass("sp-disable");
         $('#btn-confirm-orders').addClass("disable");
         $('#btn-confirm-orders').prop('disabled', true);
       }

@@ -79,7 +79,7 @@
     <div class="reservation-policy">
       <label class="checkbox">
         <input type="checkbox" class="cb-cancel">
-        <span class="disable" id="sp-cancel"></span>
+        <span class="sp-disable" id="sp-cancel"></span>
         <a href="{{ route('guest.orders.cancel') }}">キャンセルポリシー</a>
         に同意する
       </label>
