@@ -52,4 +52,5 @@ require('./web/pages/rating');
 require('./web/pages/receipt');
 require('./web/pages/card');
 require('./web/pages/payment');
+require('./web/pages/upload_avatar');
 require('./web/pages/order_nomination');

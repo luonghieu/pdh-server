@@ -11,7 +11,9 @@
       <div class="modal_content modal_content-btn4">
         <div class="select-box">
           <label for="trigger4" class="close_button" id="set-default-avatar">メインにする</label>
+          @if (count($profile['avatars']) > 1)
           <label for="trigger4" class="close_button" id="delete-avatar">削除する</label>
+          @endif
           <label for="trigger4" class="close_button" id="update-avatar">変更する</label>
           <input for="trigger4" class="close_button" type="file" accept="image/*" id="upload-btn" style="position: absolute; left: 99999px" />
         </div>
@@ -38,20 +40,19 @@
         <ul>
           @foreach ($profile['avatars'] as $avatar)
             @if ($avatar['thumbnail'])
-              <li class="button-box profile-photo__item">
-                <label for="trigger4" class="open_button button-settlement img" id="{{ $avatar['id'] }}">
+              <li class="profile-photo__item">
+                <label for="trigger4" class="open_button button-settlement js-img" id="{{ $avatar['id'] }}">
                   <img type="file" src="{{ $avatar['thumbnail'] }}" alt="">
                 </label>
               </li>
             @endif
           @endforeach
-          <li id="display">
-            <img id="output" hidden="" />
-          </li>
+          @if (count($profile['avatars']) < 10)
           <label class="profile-photo__item--add-button">
-            <input type="file" id="image" accept="image/*" onchange="openFile(event)" hidden="">
+            <input type="file" accept="image/*" id="upload" style="position: absolute; left: 99999px" hidden=""/>
             <img src="{{ asset('assets/web/images/gm1/add-button_bg.png') }}" alt="">
           </label>
+          @endif
         </ul>
         <div class="image-error help-block"></div>
       </div>
@@ -275,20 +276,6 @@
 @endsection
 @section('web.script')
 <script>
-var openFile = function(file) {
-  var input = file.target;
-
-  var reader = new FileReader();
-  reader.onload = function() {
-    var dataURL = reader.result;
-    var output = document.getElementById('output');
-    output.src = dataURL;
-    $('#output').attr('open');
-    $('#display').attr('class', 'profile-photo__item');
-  };
-  reader.readAsDataURL(input.files[0]);
-};
-
 //time_input--------------------------------------------
 var tiemButton = $(".button--green.time");
 tiemButton.on("change", function() {
@@ -298,13 +285,13 @@ tiemButton.on("change", function() {
   $(this).toggleClass("active");
 
   if ($(this).attr("id") != "time-input") {
-      $(".time-input").css("display", "none");
+    $(".time-input").css("display", "none");
   }
 })
 $("#time-input").on("change", function() {
-    if ($("input[type='radio']:checked")) {
-        $(".time-input").css("display", "flex");
-    }
+  if ($("input[type='radio']:checked")) {
+    $(".time-input").css("display", "flex");
+  }
 });
 </script>
 @stop
