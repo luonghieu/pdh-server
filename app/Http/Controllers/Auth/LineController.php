@@ -6,6 +6,7 @@ use App\Enums\ProviderType;
 use App\Enums\Status;
 use App\Enums\UserType;
 use App\Http\Controllers\Controller;
+use App\Services\LogService;
 use GuzzleHttp\Client;
 use Illuminate\Http\Request;
 use App\Notifications\CreateGuest;
@@ -23,40 +24,46 @@ class LineController extends Controller
     }
 
     public function handleCallBack(Request $request) {
-        if (isset($request->friendship_status_changed) && $request->friendship_status_changed == 'false') {
-            $redirectUri = env('LINE_REDIRECT_URI');
-            $clientId = env('LINE_KEY');
-            $clientSecret = env('LINE_SECRET');
-            $header = [
-                'Content-Type' => 'application/x-www-form-urlencoded',
-            ];
-            $client = new Client([ 'headers' => $header ]);
-            $response = $client->post(env('LINE_API_URI') . '/oauth2/v2.1/token',
-                [
-                    'form_params' => [
-                        'grant_type' => 'authorization_code',
-                        'code' => $request->code,
-                        'redirect_uri' => $redirectUri,
-                        'client_id' => $clientId,
-                        'client_secret' => $clientSecret,
+        try {
+            if (isset($request->friendship_status_changed) && $request->friendship_status_changed == 'false') {
+                $redirectUri = env('LINE_REDIRECT_URI');
+                $clientId = env('LINE_KEY');
+                $clientSecret = env('LINE_SECRET');
+                $header = [
+                    'Content-Type' => 'application/x-www-form-urlencoded',
+                ];
+                $client = new Client([ 'headers' => $header ]);
+                $response = $client->post(env('LINE_API_URI') . '/oauth2/v2.1/token',
+                    [
+                        'form_params' => [
+                            'grant_type' => 'authorization_code',
+                            'code' => $request->code,
+                            'redirect_uri' => $redirectUri,
+                            'client_id' => $clientId,
+                            'client_secret' => $clientSecret,
+                        ]
                     ]
-                ]
-            );
+                );
 
-            $body = json_decode($response->getBody()->getContents(), true);
-            $lineResponse = Socialite::driver('line')->userFromToken($body['access_token']);
-        }
-
-        if (!isset($request->error)) {
-            if (!isset($lineResponse)) {
-                $lineResponse = Socialite::driver('line')->user();
+                $body = json_decode($response->getBody()->getContents(), true);
+                $lineResponse = Socialite::driver('line')->userFromToken($body['access_token']);
             }
 
-            $user = $this->findOrCreate($lineResponse);
-            Auth::login($user);
-        } else {
+            if (!isset($request->error)) {
+                if (!isset($lineResponse)) {
+                    $lineResponse = Socialite::driver('line')->user();
+                }
+
+                $user = $this->findOrCreate($lineResponse);
+                Auth::login($user);
+            } else {
+                \Session::flash('error', trans('messages.login_line_failed'));
+            }
+        } catch (\Exception $e) {
+            LogService::writeErrorLog($e);
             \Session::flash('error', trans('messages.login_line_failed'));
         }
+
 
         return redirect()->route('web.index');
     }

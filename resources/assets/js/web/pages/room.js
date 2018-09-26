@@ -1,4 +1,9 @@
 $(document).ready(function() {
+  $('.search-box').keydown(function(event) {
+    if(event.keyCode == 13) {
+      event.preventDefault();
+    }
+  });
   $('.search-box').keyup(function(event) {
     var keywork = $('.search-box').val();
     axios.get('api/v1/rooms',{
