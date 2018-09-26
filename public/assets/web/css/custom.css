@@ -114,8 +114,9 @@
 }
 
 input[type="date"] {
-  background-color: #dcdce5;
   outline: none;
+  border: none;
+  color: #4c4b4b;
 }
 
 input[type="date"]::-webkit-inner-spin-button {
@@ -124,6 +125,10 @@ input[type="date"]::-webkit-inner-spin-button {
 
 input[type="date"]::-webkit-calendar-picker-indicator {
   font-size: 14px;
+}
+
+.init-date {
+  margin-right: -25px;
 }
 
 #mm-0 .init-image-radius {
@@ -188,20 +193,21 @@ input[type="date"]::-webkit-calendar-picker-indicator {
 .sp-disable {
   background-image: linear-gradient(-162deg, #cccccc 0%, #cccccc 100%) !important;
 }
+
 .sp-disable::after {
-    content: "";
-    top: 50%;
-    left: 50%;
-    margin-left: -5px;
-    margin-top: -12px;
-    width: 9px;
-    height: 16px;
-    border-width: 0 3px 3px 0 !important;
-    -webkit-transform: rotate(45deg);
-    -ms-transform: rotate(45deg);
-    transform: rotate(45deg);
-    position: absolute;
-    border: solid #fff;
+  content: "";
+  top: 50%;
+  left: 50%;
+  margin-left: -5px;
+  margin-top: -12px;
+  width: 9px;
+  height: 16px;
+  border-width: 0 3px 3px 0 !important;
+  -webkit-transform: rotate(45deg);
+  -ms-transform: rotate(45deg);
+  transform: rotate(45deg);
+  position: absolute;
+  border: solid #fff;
 }
 
 #ge2-1-x .cast-number__button-minus.active:after {
@@ -630,39 +636,25 @@ input[type="date"]::-webkit-calendar-picker-indicator {
   top: 0;
 }
 
-#mm-0 .profile-photo__item {
-  width: 60px;
-  height: 60px;
+.css-img {
+  width: 5rem;
+  height: 5rem;
+  display: inline-block;
 }
 
-#mm-0 .profile-photo__item img {
-  height: 60px;
+#gm1 img {
+  width: 4.5rem;
+  height: 4.5rem;
+  border-radius: 1rem;
 }
 
-#mm-0 .profile-photo__item--add-button {
-  width: 60px;
-  height: 60px;
+#gm1 .profile-photo__item--add-button {
+  width: 4.5rem;
+  height: 4.5rem;
 }
 
-#mm-0 .profile-photo .profile-photo__item {
-  margin-left: 10px;
-}
-
-#mm-0 .profile-photo [class^="profile-photo__item"]:nth-child(n+5) {
-  margin-top: 0;
-}
-
-#mm-0 .profile-photo .profile-photo__item {
-  margin: 0;
-}
-
-#mm-0 .profile-photo__item img {
-  margin: auto;
-  display: block;
-}
-
-#mm-0 .profile-photo .profile-photo__item {
-  margin-bottom: 10px;
+.css-img.profile-photo__item--add-button {
+  margin-left: 0.3rem;
 }
 
 .btn-redirect-edit {
@@ -676,9 +668,31 @@ input[type="date"]::-webkit-calendar-picker-indicator {
 #index-rating-controller #go1 img {
   height: 100%;
 }
+
 #index-rating-controller #rating-submit-btn:disabled {
   background: #cccccc;
 }
+
 #index-rating-controller .cast-profile {
   padding-top: 15px;
+}
+
+@media screen and (max-width: 360px) {
+  .css-img {
+    width: 4.5rem;
+    height: 4.5rem;
+    display: inline-block;
+    margin: 0.2rem;
+  }
+
+  #gm1 img {
+    width: 4rem;
+    height: 4rem;
+    border-radius: 1rem;
+  }
+
+  #gm1 .profile-photo__item--add-button {
+    width: 4rem;
+    height: 4rem;
+  }
 }

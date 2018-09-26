@@ -16,7 +16,7 @@
       <ul>
         @foreach ($profile['avatars'] as $avatar)
           @if ($avatar['thumbnail'])
-          <li class="profile-photo__item"><img src="{{ $avatar['thumbnail'] }}" alt=""></li>
+          <li class="css-img"><img src="{{ $avatar['thumbnail'] }}" alt=""></li>
           @endif
         @endforeach
       </ul>
@@ -54,9 +54,45 @@
           <p class="portlet-content__text--list">ニックネーム</p>
           <p class="portlet-content__value">{{ $profile['nickname'] or '未設定' }}</p>
         </li>
+        @php
+        switch ($profile['gender']) {
+            case 0:
+                $gender = '非公開';
+                break;
+            case 1:
+                $gender = '男性';
+                break;
+            case 2:
+                $gender = '女性';
+                break;
+
+            default:
+                $gender = '未設定';
+                break;
+        }
+        @endphp
+        <li class="portlet-content__item">
+          <p class="portlet-content__text--list">性別</p>
+          <p class="portlet-content__value">{{ $gender }}</p>
+        </li>
+        <li class="portlet-content__item">
+          <p class="portlet-content__text--list">生年月日</p>
+          <p class="portlet-content__value">
+            {{ ($profile['date_of_birth']) ? \Carbon\Carbon::parse($profile['date_of_birth'])->format('Y年m月d日') : '未設定' }}
+          </p>
+        </li>
+        <li class="portlet-content__item">
+          <p class="portlet-content__text--list">年齢</p>
+          <p class="portlet-content__value">{{ $profile['age'] or '未設定' }}{{ (!$profile['age']) ? '' : '歳' }}</p>
+        </li>
+
         <li class="portlet-content__item">
           <p class="portlet-content__text--list">身長</p>
-          <p class="portlet-content__value"><span>{{ $profile['height'] or '未設定' }}</span>cm</p>
+          <p class="portlet-content__value"><span>{{ !($profile['height'] > 0) ? '未設定' : $profile['height'] . 'cm' }}</span></p>
+        </li>
+        <li class="portlet-content__item">
+          <p class="portlet-content__text--list">年収</p>
+          <p class="portlet-content__value"><span>{{ ($profile['salary']) ? $profile['salary'] : '未設定' }}</span></p>
         </li>
         <li class="portlet-content__item">
           <p class="portlet-content__text--list">体型</p>
@@ -64,6 +100,10 @@
         </li>
         <li class="portlet-content__item">
           <p class="portlet-content__text--list">居住地</p>
+          <p class="portlet-content__value">{{ $profile['prefecture'] or '未設定' }}</p>
+        </li>
+        <li class="portlet-content__item">
+          <p class="portlet-content__text--list">出身地</p>
           <p class="portlet-content__value">{{ $profile['hometown'] or '未設定' }}</p>
         </li>
         <li class="portlet-content__item">

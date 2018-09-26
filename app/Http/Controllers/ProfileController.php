@@ -43,7 +43,7 @@ class ProfileController extends Controller
     {
         try {
             $glossaries = $this->getApi(route('glossaries'))['data'];
-
+// dd($glossaries);
             $contents = $this->getApi(route('auth.me'));
             $profile = $contents['data'];
 
@@ -57,10 +57,13 @@ class ProfileController extends Controller
     public function index()
     {
         try {
+            $glossaries = $this->getApi(route('glossaries'))['data'];
+
             $contents = $this->getApi(route('auth.me'));
             $profile = $contents['data'];
+            // dd($glossaries);
 
-            return view('web.profile.index', compact('profile'));
+            return view('web.profile.index', compact('profile', 'glossaries'));
         } catch (\Exception $e) {
             LogService::writeErrorLog($e);
             abort(500);
