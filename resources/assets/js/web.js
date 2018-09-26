@@ -20,11 +20,13 @@ window.io = require('socket.io-client');
 
 window.Echo = new Echo({
   broadcaster: 'socket.io',
-  host: window.location.hostname,
+  host: window.App.api_url,
   transports: ['websocket']
 });
 
 window.Echo.connector.options.auth.headers["Authorization"] = "Bearer " + accessToken;
+
+window.axios.defaults.baseURL = window.App.api_url;
 
 window.axios.interceptors.request.use(
   config => {
