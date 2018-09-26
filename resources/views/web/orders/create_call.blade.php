@@ -48,10 +48,13 @@
       <label class="button button--green area {{ (isset($currentArea) && $currentArea == '新宿') ? 'active' : '' }}">
         <input type="radio" name="area" value="新宿"
         {{ (isset($currentArea) && $currentArea == '新宿') ? 'checked="checked"' : '' }}>新宿</label>
-      <label id="area_input" class="button button--green area {{ (isset($currentArea) && $currentArea == 'その他') ? 'active' : '' }}">
-        <input type="radio" name="area" value="その他">その他</label>
-      <label class="area-input"><span>希望エリア</span><input type="text" placeholder="入力してください" name="other_area"
-       ></label>
+      <label id="area_input" class="button button--green area {{ (isset($currentOtherArea)) ? 'active' : '' }}">
+        <input type="radio" name="area" value="その他" {{ (isset($currentOtherArea)) ? 'checked="checked"' : '' }}>その他</label>
+      <label class="area-input" style="{{ (isset($currentOtherArea)) ? 'display: flex;' : '' }}">
+        <span>希望エリア</span>
+        <input type="text" placeholder="入力してください" name="other_area" value="{{ $currentOtherArea or '' }}"
+       >
+     </label>
     </div>
   </div>
 
@@ -76,13 +79,15 @@
         <input type="radio" name="time_join" value="90" {{ (isset($currentTime) && $currentTime == 90) ? 'checked="checked"' : '' }} >
         90分後
       </label>
-      <label id="date_input" class="button button--green date "><input type="radio" name="time_join" value="other_time">それ以外</label>
-      <label class="date-input">
+      <label id="date_input" class="button button--green date {{ (isset($timeDetail)) ? 'active' : '' }}" >
+        <input type="radio" name="time_join" value="other_time" {{ (isset($timeDetail)) ? 'checked="checked"' : '' }}>それ以外
+      </label>
+      <label class="date-input" style="{{ (isset($timeDetail)) ? 'display: flex;' : '' }}">
         <span>希望日時</span>
         <p class="date-input__text">
-          <span class='sp-date'></span>
-          <span class='sp-month'></span>
-          <span class="sp-time"></span>
+          <span class='sp-date'>{{ (isset($timeDetail)) ? $timeDetail['date'] .'月' : ''}}</span>
+          <span class='sp-month'>{{ (isset($timeDetail)) ? $timeDetail['month'] .'日' : ''}}</span>
+          <span class="sp-time">{{ (isset($timeDetail)) ? $timeDetail['hour'].':'.$timeDetail['minute'] : ''}}</span>
         </p>
       </label>
     </div>
@@ -175,26 +180,32 @@
       <div class="date-select__content">
          <select class="select-month" name="sl_month">
           @foreach(range(1, 12) as $month)
-           <option value="{{ $month }}" {{ \Carbon\Carbon::now()->format('m') == $month ? 'selected' : '' }}>{{ $month }}月</option>
+           <option value="{{ $month }}"
+           {{ (isset($timeDetail) && $timeDetail['month'] ==$month ) ? 'selected' : \Carbon\Carbon::now()->format('m') == $month ? 'selected' : '' }}>
+           {{ $month }}月
+       </option>
           @endforeach
          </select>
          <select class="select-date" name="sl_date">
             @foreach(getDay() as $key => $val)
-             <option value="{{ $key }}" {{ \Carbon\Carbon::now()->format('d') == $key ? 'selected' : '' }}>
+             <option value="{{ $key }}"
+              {{ (isset($timeDetail) && $timeDetail['date'] ==$key ) ? 'selected' : \Carbon\Carbon::now()->format('d') == $key ? 'selected' : '' }}
+              >
+
              {{ $val }}
              </option>
             @endforeach
          </select>
          <select class="select-hour" name="sl_hour">
           @foreach(range(00, 23) as $hour)
-           <option value="{{ $hour }}" {{ \Carbon\Carbon::now()->format('H') == $hour ? 'selected' : '' }}>
+           <option value="{{ $hour }}" {{ (isset($timeDetail) && $timeDetail['hour'] ==$hour ) ? 'selected' : \Carbon\Carbon::now()->format('H') == $hour ? 'selected' : '' }}>
                 {{ $hour<10 ? '0'.$hour : $hour }}時
           </option>
           @endforeach
          </select>
          <select class="select-minute" name="sl_minute">
            @foreach(range(00, 59) as $minute)
-           <option value="{{ $minute }}" {{ \Carbon\Carbon::now()->format('i') == $minute ? 'selected' : '' }}>
+           <option value="{{ $minute }}" {{ (isset($timeDetail) && $timeDetail['minute'] ==$minute ) ? 'selected' : \Carbon\Carbon::now()->format('i') == $minute ? 'selected' : '' }}>
                 {{ $minute<10 ? '0'.$minute : $minute }}分
           </option>
           @endforeach
@@ -206,7 +217,7 @@
       </div>
     </div>
   </div>
-  <button type="submit" class="form_footer ct-button disable" name="sb_create" disabled>次に進む (1/3)</button>
+  <button type="submit" class="form_footer ct-button disable" name="sb_create" disabled>次に進む (1/4)</button>
 </form>
 @endsection
 
