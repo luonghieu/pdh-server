@@ -103,6 +103,7 @@ $(document).ready(function(){
       $(this).children().attr("disabled", "disabled");
       $('.lbmax').click();
     }else{
+      $(".form-grpup .checkbox-tags").children().prop('disabled', false);
       $(this).toggleClass("active");
     }
   });
