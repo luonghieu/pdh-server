@@ -202,7 +202,7 @@
       </div>
       <div class="date-select__footer">
         <button class="date-select__cancel" type="button">キャンセル</button>
-        <button class="date-select__ok" type="button">完了</button>
+        <button class="date-select__ok date-select-nomination" type="button">完了</button>
       </div>
     </div>
   </div>

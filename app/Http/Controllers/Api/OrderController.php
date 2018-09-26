@@ -197,10 +197,11 @@ class OrderController extends ApiController
         $rules = [
             'date' => 'required|date|date_format:Y-m-d|after_or_equal:today',
             'start_time' => 'required|date_format:H:i',
-            'duration' => 'required|numeric|min:1|max:10',
-            'class_id' => 'required|exists:cast_classes,id',
+            'duration' => 'numeric|min:1|max:10',
+            'class_id' => 'exists:cast_classes,id',
             'type' => 'required|in:1,2,3,4',
             'nominee_ids' => '',
+            'total_cast' => 'required|numeric|min:1',
         ];
 
         $validator = validator($request->all(), $rules);
@@ -252,24 +253,25 @@ class OrderController extends ApiController
         //orderPoint
 
         $orderPoint = 0;
-
-        $nomineeIds = explode(",", trim($request->nominee_ids, ","));
-        if (OrderType::NOMINATION != $request->type) {
-            $cost = CastClass::findOrFail($request->class_id)->cost;
-        } else {
-            $cost = Cast::findOrFail($nomineeIds[0])->cost;
-        }
-
         $orderDuration = $request->duration * 60;
+        $nomineeIds = explode(",", trim($request->nominee_ids, ","));
+        $totalCast = $request->total_cast;
 
-        $orderPoint = ($cost / 2) * floor($orderDuration / 15);
+        if (OrderType::NOMINATION != $request->type) {
+            $cost = CastClass::find($request->class_id)->cost;
+            $orderPoint = $totalCast * (($cost / 2) * floor($orderDuration / 15));
+        } else {
+            $cost = Cast::find($nomineeIds[0])->cost;
+            $orderPoint = ($cost / 2) * floor($orderDuration / 15);
+        }
 
         //ordersFee
 
         $orderFee = 0;
-        $multiplier = floor($orderDuration / 15);
-        $nomineeCount = count($nomineeIds);
-        $orderFee = 500 * $multiplier * $nomineeCount;
+        if (OrderType::NOMINATION != $request->type) {
+            $multiplier = floor($orderDuration / 15);
+            $orderFee = 500 * $multiplier * $totalCast;
+        }
 
         return $this->respondWithData($orderPoint + $orderFee + $allowancePoint);
     }

@@ -36,7 +36,20 @@ $(document).ready(function() {
 
           window.axios.post('/api/v1/receipts', params)
             .then(function(response) {
-              window.location = '/history';
+              const img_file = response.data.data.img_file;
+
+              $('#img-pdf').attr('src', img_file);
+              $('#img-download').attr('href', img_file);
+              $('#send-mail').attr('img-file', img_file);
+
+              $('#trigger5').trigger('click');
+              $('#trigger2').trigger('click');
+
+              var btn = '#point-' + response.data.data.point_id + '-btn';
+              var label = '<label for="trigger2" class="btn-bg js-receipt" img-file="' + img_file +'">領収書を発行</label>'
+              $(btn).html(label);
+              $('#name').val('');
+              $('#content').val('');
             })
             .catch(function(error) {
               if (error.response.status == 401) {
@@ -63,8 +76,8 @@ $(document).ready(function() {
   });
 
   $('#send-mail').on('click', function() {
-    var img_file = $('.js-receipt').attr('img-file');
+    img_file = $(this).attr('img-file') ? $(this).attr('img-file') : $('.js-receipt').attr('img-file');
 
     window.location = 'mailto:?body=' + img_file;
-  })
+  });
 });

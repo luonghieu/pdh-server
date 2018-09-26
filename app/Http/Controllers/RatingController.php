@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use App\Cast;
 use App\Enums\OrderStatus;
 use App\Order;
 use Illuminate\Http\Request;
@@ -19,7 +18,7 @@ class RatingController extends Controller
         $cast = $order->casts()->wherePivot('guest_rated', false)->first();
 
         if (!$cast) {
-            return redirect()->route('web.index');
+            return redirect()->route('message.messages', ['room' => $order->room_id]);
         }
 
         return view('web.ratings.index', compact(['order', 'cast']));

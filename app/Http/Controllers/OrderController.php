@@ -353,6 +353,7 @@ class OrderController extends Controller
                 'nominee_ids' => $nomineeIds,
                 'date' => $startDate,
                 'start_time' => $startTime,
+                'total_cast' => $data['cast_numbers'],
             ]), $option);
 
             $tempPoint = json_decode(($tempPoint->getBody())->getContents(), JSON_NUMERIC_CHECK);
@@ -553,5 +554,157 @@ class OrderController extends Controller
 
         $user->point += $receive;
         $user->update();
+    }
+
+    public function nominate(Request $request)
+    {
+        $id = $request->id;
+
+        $user = Auth::user();
+        $token = JWTAuth::fromUser($user);
+
+        $authorization = empty($token) ?: 'Bearer ' . $token;
+
+        $client = new Client([
+            'http_errors' => false,
+            'debug' => false,
+            'headers' => [
+                'Accept' => 'application/json',
+                'Authorization' => $authorization,
+                'Content-Type' => 'application/json',
+            ],
+        ]);
+
+        try {
+            $cast = $client->get(route('users.show', $id));
+            $cast = json_decode(($cast->getBody())->getContents(), JSON_NUMERIC_CHECK);
+            $cast = $cast['data'];
+        } catch (\Exception $e) {
+            LogService::writeErrorLog($e);
+            abort(500);
+        }
+        $user = \Auth::user();
+
+        if (UserType::CAST != $cast['type']) {
+            return redirect()->route('web.index');
+        }
+
+        return view('web.orders.nomination', compact('cast', 'user'));
+    }
+
+    public function createNominate(Request $request)
+    {
+        if (!isset($request->nomination_area)) {
+            return redirect()->route('guest.orders.nominate');
+        }
+
+        if ($request->nomination_area) {
+            $area = $request->nomination_area;
+        }
+
+        if ($request->other_area_nomination) {
+            $area = $request->other_area_nomination;
+        }
+
+        if (!$request->time_join_nomination) {
+            return redirect()->route('guest.orders.call');
+        }
+
+        $now = Carbon::now();
+        if ('other_time' == $request->time_join_nomination) {
+            if ($request->sl_month < 10) {
+                $month = '0' . $request->sl_month;
+            } else {
+                $month = $request->sl_month;
+            }
+
+            if ($request->sl_date < 10) {
+                $date = '0' . $request->sl_date;
+            } else {
+                $date = $request->sl_date;
+            }
+
+            if ($request->sl_hour < 10) {
+                $hour = '0' . $request->sl_hour;
+            } else {
+                $hour = $request->sl_hour;
+            }
+
+            if ($request->sl_minute < 10) {
+                $minute = '0' . $request->sl_minute;
+            } else {
+                $minute = $request->sl_minute;
+            }
+
+            $date = $now->year . '-' . $month . '-' . $date;
+            $time = $hour . ':' . $minute;
+        } else {
+            $now->addMinutes($request->time_join_nomination);
+
+            $date = $now->format('Y-m-d');
+            $time = $now->format('H:i');
+        }
+
+        $classId = $request->class_id;
+
+        $duration = $request->time_set_nomination;
+        if (4 == $duration) {
+            $duration = $request->time_set_nomination;
+        }
+
+        if (!$duration || $duration <= 0) {
+            return redirect()->route('guest.orders.call');
+        }
+
+        $client = new Client();
+        $user = Auth::user();
+
+        $accessToken = JWTAuth::fromUser($user);
+
+        $option = [
+            'headers' => ['Authorization' => 'Bearer ' . $accessToken],
+            'form_params' => [],
+            'allow_redirects' => false,
+        ];
+
+        try {
+            $tempPoint = $client->post(route('orders.price', [
+                'type' => OrderType::NOMINATION,
+                'class_id' => $classId,
+                'duration' => $duration,
+                'date' => $date,
+                'start_time' => $time,
+                'total_cast' => 1,
+                'nominee_ids' => $request->cast_id,
+            ]), $option);
+
+            $tempPoint = json_decode(($tempPoint->getBody())->getContents(), JSON_NUMERIC_CHECK);
+        } catch (\Exception $e) {
+            LogService::writeErrorLog($e);
+            abort(500);
+        }
+
+        $tempPoint = $tempPoint['data'];
+
+        try {
+            $order = $client->post(route('orders.create', [
+                'prefecture_id' => 13,
+                'address' => $area,
+                'class_id' => $classId,
+                'duration' => $duration,
+                'date' => $date,
+                'start_time' => $time,
+                'total_cast' => 1,
+                'temp_point' => $tempPoint,
+                'type' => OrderType::NOMINATION,
+                'nominee_ids' => $request->cast_id,
+            ]), $option);
+        } catch (\Exception $e) {
+
+            LogService::writeErrorLog($e);
+            abort(500);
+        }
+
+        return redirect()->route('web.index');
     }
 }
