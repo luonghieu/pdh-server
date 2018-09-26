@@ -649,6 +649,11 @@ input[type="date"]::-webkit-calendar-picker-indicator {
 .btn-redirect-edit {
   color: #ff6090 !important;
 }
+
+.color-show-page {
+  color: #000 !important;
+}
+
 #index-rating-controller #go1 img {
   height: 100%;
 }

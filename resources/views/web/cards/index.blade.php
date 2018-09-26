@@ -28,15 +28,15 @@
     <span class="left">カード番号</span>
     <div class="right number">
       <span id="error">カード番号を正しく入力してください</span>
-      <input type="text" pattern="[0-9]*" name="number_card" id="number-card" onkeyup="creditValidate()" onkeydown="return numberCardLength(event)" value="">
-      <span id="number-card-display" class="number-true">下4桁{{ $card->last4 }}</span>
+        <input type="number" name="number_card" id="number-card" readonly>
+        <span id="number-card-display" class="color-show-page">下4桁{{ $card->last4 }}</span>
     </div>
   </div>
   <div class="clear"></div>
   <div class="expiration-date border-bottom">
     <span class="left">有効期限</span>
     <div class="date-select right">
-      <select name="month" id="month">
+      <select name="month" id="month" disabled>
         @for ($i = 1; $i < 13; $i++)
         <option value="{{ $i }}" {{ ($card->exp_month == $i) ? 'selected' : '' }}>{{ $i }}月</option>
         @endfor
@@ -44,7 +44,7 @@
         @php
           $currenYear = \Carbon\Carbon::now()->format('Y');
         @endphp
-      <select name="year" id="year">
+      <select name="year" id="year" disabled>
         @for ($i = $currenYear; $i <= $currenYear+20; $i++)
         <option value="{{ $i }}" {{ ($card->exp_year == $i) ? 'selected' : '' }}>{{ $i }}年</option>
         @endfor
@@ -56,7 +56,7 @@
   </div>
   <div class="security-code border-bottom">
     <img src="/assets/webview/images/ic_card_cvv.png" alt="" class="left">
-    <input type="text" pattern="[0-9]*" placeholder="3桁または4桁の数字" class="right number-true" name="card_cvv" id="card-cvv" value="***">
+    <input type="text" pattern="[0-9]*" placeholder="3桁または4桁の数字" class="right number-true" name="card_cvv" id="card-cvv" value="***" disabled>
   </div>
   </form>
 </div>
