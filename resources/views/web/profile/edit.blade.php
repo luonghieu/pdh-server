@@ -98,7 +98,7 @@
                 <select dir="rtl" id="gender">
                   @foreach ($glossaries['genders'] as $gender)
                     @php
-                      ($gender == $profile['gender']) ? ($selected = "selected='selected'") : ($selected = '')
+                      ($gender['id'] == $profile['gender']) ? ($selected = "selected='selected'") : ($selected = '')
                     @endphp
                     <option value="{{ $gender['id'] }}" {{ $selected }}>{{ $gender['name'] }}</option>
                   @endforeach
