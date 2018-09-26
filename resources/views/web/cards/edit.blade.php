@@ -10,7 +10,7 @@
     <span>メッセージ一覧</span>
   </div>
   <div class="btn-register header-item">
-    <a id="btn-create">登録</a>
+    <a id="btn-create">完了</a>
   </div>
 </div>
 <div class="image-main">

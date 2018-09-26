@@ -10,7 +10,7 @@
     <span>メッセージ一覧</span>
   </div>
   <div class="btn-register header-item">
-    <a href="{{ route('credit_card.update') }}">編集</a>
+    <a href="{{ route('credit_card.update') }}" class="btn-redirect-edit">編集</a>
   </div>
 </div>
 <div class="image-main">
