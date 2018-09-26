@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Enums\OrderStatus;
 use App\Http\Controllers\Controller;
 use App\Message;
+use App\Order;
 use App\Room;
 use Auth;
 use GuzzleHttp\Client;
@@ -25,6 +27,16 @@ class MessageController extends Controller
         $getContents = json_decode($response->getBody()->getContents(), JSON_NUMERIC_CHECK);
         $messages = $getContents['data'];
 
-        return view('web.message', compact('room', 'accessToken', 'messages'));
+        if ($messages['order'] && OrderStatus::DONE == $messages['order']['status']) {
+            $order = Order::where('status', OrderStatus::DONE)->find($messages['order']['id']);
+            $cast = $room->order->casts()->wherePivot('guest_rated', false)->first();
+            if ($cast) {
+                return redirect(route('evaluation.index', ['order_id' => $order->id]));
+            } else {
+                return view('web.message', compact('room', 'messages'));
+            }
+        } else {
+            return view('web.message', compact('room', 'messages'));
+        }
     }
 }
