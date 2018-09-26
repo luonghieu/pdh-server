@@ -57,6 +57,8 @@ $(document).ready(function() {
     });
 
   $("#send-message").click(function() {
+    $(this).prop('disabled', true);
+
     if($.trim($("#content").val())) {
       var content = $("#content").val();
 
@@ -67,6 +69,10 @@ $(document).ready(function() {
     } else {
       return false;
     }
+  });
+
+  $("#content").click(function(event) {
+    $("#send-message").prop('disabled', false);
   });
 
   $("#image-camera").change(function(event) {
