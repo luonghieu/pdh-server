@@ -2,6 +2,7 @@
   font-family: NotoSansCJKjp;
   src: url("../../webview/css/fonts/noto-regular.ttf");
 }
+
 .gn-1 .list_wrap .list_item .btn_wrap .btn-cancel {
   text-align: center;
 }
@@ -125,8 +126,14 @@ input[type="date"]::-webkit-calendar-picker-indicator {
   font-size: 14px;
 }
 
-.init-image-radius {
+#mm-0 .init-image-radius {
   border-radius: 50%;
+  height: 120px;
+  width: 120px;
+}
+
+#mm-0 .init-image-radius img {
+  height: 100%;
 }
 
 #login-controller footer {
@@ -192,10 +199,6 @@ input[type="date"]::-webkit-calendar-picker-indicator {
 
 #go1 .star-rating {
   z-index: 0;
-}
-
-#display {
-  margin-left: 10px;
 }
 
 .btn-cancel {
@@ -605,4 +608,39 @@ input[type="date"]::-webkit-calendar-picker-indicator {
   position: absolute;
   right: 0;
   top: 0;
+}
+
+#mm-0 .profile-photo__item {
+  width: 60px;
+  height: 60px;
+}
+
+#mm-0 .profile-photo__item img {
+  height: 60px;
+}
+
+#mm-0 .profile-photo__item--add-button {
+  width: 60px;
+  height: 60px;
+}
+
+#mm-0 .profile-photo .profile-photo__item {
+  margin-left: 10px;
+}
+
+#mm-0 .profile-photo [class^="profile-photo__item"]:nth-child(n+5) {
+  margin-top: 0;
+}
+
+#mm-0 .profile-photo .profile-photo__item {
+  margin: 0;
+}
+
+#mm-0 .profile-photo__item img {
+  margin: auto;
+  display: block;
+}
+
+#mm-0 .profile-photo .profile-photo__item {
+  margin-bottom: 10px;
 }

@@ -1,5 +1,5 @@
 $(document).ready(function() {
-  $('.img').on('click', function() {
+  $('.js-img').on('click', function() {
     id = $(this).attr('id');
 
     $('#set-default-avatar').on('click', function(e) {
@@ -43,6 +43,6 @@ $(document).ready(function() {
             window.location = '/login/line';
           }
         });
-     });
     });
+  });
 });
