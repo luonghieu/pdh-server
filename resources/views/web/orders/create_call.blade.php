@@ -85,8 +85,8 @@
       <label class="date-input" style="{{ (isset($timeDetail)) ? 'display: flex;' : '' }}">
         <span>希望日時</span>
         <p class="date-input__text">
-          <span class='sp-date'>{{ (isset($timeDetail)) ? $timeDetail['date'] .'月' : ''}}</span>
-          <span class='sp-month'>{{ (isset($timeDetail)) ? $timeDetail['month'] .'日' : ''}}</span>
+          <span class='sp-month'>{{ (isset($timeDetail)) ? $timeDetail['month'] .'月' : ''}}</span>
+          <span class='sp-date'>{{ (isset($timeDetail)) ? $timeDetail['date'] .'日' : ''}}</span>
           <span class="sp-time">{{ (isset($timeDetail)) ? $timeDetail['hour'].':'.$timeDetail['minute'] : ''}}</span>
         </p>
       </label>
