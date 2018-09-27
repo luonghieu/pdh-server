@@ -282,26 +282,40 @@ $(document).ready(function(){
     }
   })
 
-    $(".cast-number__button-plus").on("click",function(){
-      var number_val = parseInt( $(".cast-number__value input").val());
+  var checkNumber = parseInt( $(".cast-number__value input").val());
 
-      if(number_val>=1) {
-        $(".cast-number__button-minus").addClass('active');
-        $(".cast-number__button-minus").css({"border": "1.5px #00c3c3 solid"});
-        $(".cast-number__button-minus").prop('disabled', false);
-      }
+  if (checkNumber>1) {
+    if (checkNumber==10) {
+      $(".cast-number__button-plus").prop('disabled', false);
+      $(".cast-number__button-plus").css({"border": "1.5px #cccccc solid"});
+      $(".cast-number__button-plus").addClass('active');
+    }
 
-      if(number_val==9){
-        $(this).css({"border": "1.5px #cccccc solid"});
-        $(this).addClass('active');
-      }
+    $(".cast-number__button-minus").addClass('active');
+    $(".cast-number__button-minus").css({"border": "1.5px #00c3c3 solid"});
+    $(".cast-number__button-minus").prop('disabled', false);
+  }
 
-      if(number_val>=10) {
-        $(this).attr("disabled", "disabled");
-      }else {
-        number_val = number_val + 1;
-        $(".cast-number__value input").val(number_val);
-      }
+  $(".cast-number__button-plus").on("click",function(){
+    var number_val = parseInt( $(".cast-number__value input").val());
+
+    if(number_val>=1) {
+      $(".cast-number__button-minus").addClass('active');
+      $(".cast-number__button-minus").css({"border": "1.5px #00c3c3 solid"});
+      $(".cast-number__button-minus").prop('disabled', false);
+    }
+
+    if(number_val==9){
+      $(this).css({"border": "1.5px #cccccc solid"});
+      $(this).addClass('active');
+    }
+
+    if(number_val>=10) {
+      $(this).attr("disabled", "disabled");
+    }else {
+      number_val = number_val + 1;
+      $(".cast-number__value input").val(number_val);
+    }
   })
 
   $(".cast-number__button-minus").on("click",function(){
