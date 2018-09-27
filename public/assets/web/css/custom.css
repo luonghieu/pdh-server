@@ -28,15 +28,11 @@
   background: url(../images/gg1/man.svg) no-repeat center center;
 }
 
-#gg .msg-box .msg-box-ttl .msg-msg h2 {
+.list-name {
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
-  width: 50%;
-}
-
-.msg-msg {
-  width: 285px;
+  width: 60%;
 }
 
 #gg2 .msg-head {
@@ -632,7 +628,7 @@ input[type="date"]::-webkit-calendar-picker-indicator {
 .sum-users {
   display: inline-block;
   position: absolute;
-  right: 0;
+  right: 30px;
   top: 10.5px;
 }
 
