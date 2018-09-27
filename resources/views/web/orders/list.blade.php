@@ -40,7 +40,13 @@
        <section class="btn-cancel">
         <label for="cancel" data-id ="{{ $order['id'] }}" class="lb-cancel" >キャンセル</label>
        </section>
-       <button class="mess-btn" type="button" name="button">メッセージを確認</button>
+       <button class="mess-btn" type="button" name="button">
+          @if($order['room_id'])
+            <a href="{{ route('message.messages',['room' =>$order['room_id']]) }}">メッセージを確認</a>
+          @else
+            メッセージを確認
+          @endif
+       </button>
      </div>
    </div> <!-- /list_item -->
   @endforeach
@@ -53,7 +59,7 @@
 
 @section('web.extra')
   @confirm(['triggerId' => 'cancel', 'buttonRight' =>'はい',
-   'buttonLeft' =>'いいえ', 'triggerCancel' =>'cf-cancel-order','triggerSuccess' =>''])
+   'buttonLeft' =>'いいえ', 'triggerCancel' =>'','triggerSuccess' =>'cf-cancel-order'])
     @slot('title')
       この日程をキャンセルしますか？
     @endslot
