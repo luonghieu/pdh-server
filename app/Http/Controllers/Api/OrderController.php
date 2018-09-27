@@ -244,9 +244,10 @@ class OrderController extends ApiController
 
         //allowance
 
+        $totalCast = $request->total_cast;
         $allowancePoint = 0;
         if ($nightTime) {
-            $allowancePoint = 4000;
+            $allowancePoint = $totalCast * 4000;
         }
 
         //orderPoint
@@ -254,7 +255,6 @@ class OrderController extends ApiController
         $orderPoint = 0;
         $orderDuration = $request->duration * 60;
         $nomineeIds = explode(",", trim($request->nominee_ids, ","));
-        $totalCast = $request->total_cast;
 
         if (OrderType::NOMINATION != $request->type) {
             $cost = CastClass::find($request->class_id)->cost;
