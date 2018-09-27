@@ -419,13 +419,16 @@
 .number input {
   padding-top: 25px;
   position: absolute;
-  right: 12px;
-  color: transparent !important;
+  font-size: 15px;
+  right: 15px;
+  background-color: transparent !important;
   caret-color: #ff6090;
+  color: transparent;
   width: 200px;
   border: none;
   outline: none;
   text-align: right;
+  z-index: 1;
 }
 
 #gl1 #number-card-display {

@@ -57,7 +57,7 @@
   </div>
   <div class="security-code border-bottom">
     <img src="/assets/webview/images/ic_card_cvv.png" alt="" class="left">
-    <input type="text" pattern="[0-9]*" placeholder="3桁または4桁の数字" class="right" name="card_cvv" id="card-cvv" onkeyup="addColor()" onkeydown="return numberCvvLength(event)">
+    <input type="tel" pattern="[0-9]*" placeholder="3桁または4桁の数字" class="right" name="card_cvv" id="card-cvv" onkeyup="addColor()" onkeydown="return numberCvvLength(event)">
   </div>
   </form>
 </div>
