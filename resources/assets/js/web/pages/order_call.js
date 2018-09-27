@@ -92,6 +92,14 @@ $(document).ready(function(){
     $(".overlay").fadeOut();
   });
 
+  $('.tags-name').on('change', function(e) {
+    var activeTag = $('.tags-name:checked').length;
+
+    if (activeTag > 5) {
+      $('.lbmax').click();
+    }
+  });
+
   $(".form-grpup .checkbox-tags").on("change",function(event){
     if ($(this).hasClass("active")) {
       $(this).children().attr('checked',false);
@@ -99,11 +107,10 @@ $(document).ready(function(){
       $(this).children().attr('checked',true);
     }
 
-    activeSum = $(".active").length;
+    var activeSum = $(".active").length;
 
     if(activeSum >= 5 && !$(this).hasClass("active")){
       $(this).children().attr('checked',false);
-      $('.lbmax').click();
     }else{
       $(this).toggleClass("active");
     }
@@ -179,7 +186,6 @@ $(document).ready(function(){
     $("button[type='submit'][name='sb_create']").removeClass('disable');
     $("button[type='submit'][name='sb_create']").prop('disabled', false);
   }
-
 
   var buttonGreen = $(".button--green.area");
   buttonGreen.on("change",function(){

@@ -27,7 +27,7 @@
       @if(count($situations['data']))
        @foreach($situations['data'] as $tag)
        <label class="button button--green checkbox-tags {{ (isset($currentSituations) && in_array($tag['id'], $currentSituations) ) ? 'active' : '' }}">
-        <input type="checkbox" name="situations[]" value="{{ $tag['id'] }}" {{ (isset($currentSituations) && in_array($tag['id'], $currentSituations) ) ? 'checked="checked"' : '' }}>{{ $tag['name'] }}</label>
+        <input type="checkbox" name="situations[]" value="{{ $tag['id'] }}" {{ (isset($currentSituations) && in_array($tag['id'], $currentSituations) ) ? 'checked="checked"' : '' }} class="tags-name">{{ $tag['name'] }}</label>
        @endforeach
       @endif
     </div>
