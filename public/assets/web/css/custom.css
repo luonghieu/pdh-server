@@ -633,7 +633,11 @@ input[type="date"]::-webkit-calendar-picker-indicator {
   display: inline-block;
   position: absolute;
   right: 0;
-  top: 0;
+  top: 10.5px;
+}
+
+.time-msg {
+  height: 11px;
 }
 
 .css-img {
@@ -659,6 +663,10 @@ input[type="date"]::-webkit-calendar-picker-indicator {
 
 .btn-redirect-edit {
   color: #ff6090 !important;
+}
+
+.latest-message {
+  height: 20px;
 }
 
 .color-show-page {
