@@ -21,7 +21,6 @@
 
 #gg2 .tgl {
   position: fixed;
-  margin-top: 45px;
 }
 
 #gg .msg-box .msg-box-img li {
@@ -705,7 +704,7 @@
   color: #fff;
 }
 
-#gg2 footer {
+#chat footer {
   visibility: hidden;
 }
 
