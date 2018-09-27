@@ -55,7 +55,7 @@
           @endif
           <div class="msg-msg">
             @if ($room->type == App\Enums\RoomType::SYSTEM)
-            <h2>Cheers運営局</h2>
+            <h2 class="list-name">Cheers運営局</h2>
             @else
               @foreach ($room->users as $user)
                 @if ($user->id != Auth::user()->id)
@@ -67,7 +67,7 @@
               @php
               $listName = implode(",",$listName);
               @endphp
-              <h2>{{ $listName }}</h2>
+              <h2 class="list-name">{{ $listName }}</h2>
               <h2 class="sum-users">{{ ($sumUser > 2) ? '('.$sumUser.')': ''}}</h2>
             @endif
             @if ($room->latest_message != null)
