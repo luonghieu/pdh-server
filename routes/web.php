@@ -49,6 +49,7 @@ Route::group(['middleware' => 'auth'], function () {
 });
 
 Route::get('/', 'HomeController@login');
+Route::get('/redirect', 'RedirectController@index');
 Route::get('/login', 'HomeController@login')->name('web.login');
 Route::get('/mypage', 'HomeController@index')->name('web.index');
 Route::get('/login/line', 'Auth\LineController@login')->name('auth.line');

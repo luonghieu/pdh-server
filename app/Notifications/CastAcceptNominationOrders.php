@@ -4,7 +4,6 @@ namespace App\Notifications;
 
 use App\Enums\ProviderType;
 use App\Enums\UserType;
-use App\Services\Line;
 use Carbon\Carbon;
 use Illuminate\Bus\Queueable;
 use Illuminate\Notifications\Notification;
@@ -124,8 +123,7 @@ class CastAcceptNominationOrders extends Notification implements ShouldQueue
             . PHP_EOL . '合流予定時間：' . $startTime->format('Y/m/d H:i') . '～'
             . PHP_EOL . PHP_EOL .'ゲストの方はキャストに来て欲しい場所の詳細をお伝えください。';
 
-        $line = new Line();
-        $liffId = $line->getLiffId(route('message.messages', ['room' => $this->order->room->id]));
+        $page = env('LINE_LIFF_REDIRECT_PAGE') . '?page=room&room_id=' . $this->order->room->id;
 
         return [
             [
@@ -143,7 +141,7 @@ class CastAcceptNominationOrders extends Notification implements ShouldQueue
                         [
                             'type' => 'uri',
                             'label' => '今すぐキャストを呼ぶ ',
-                            'uri' => "line://app/$liffId"
+                            'uri' => "line://app/$page"
                         ]
                     ]
                 ]

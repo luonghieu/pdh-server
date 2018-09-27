@@ -6,7 +6,6 @@ use App\Enums\MessageType;
 use App\Enums\ProviderType;
 use App\Enums\SystemMessageType;
 use App\Enums\UserType;
-use App\Services\Line;
 use App\Traits\DirectRoom;
 use Illuminate\Bus\Queueable;
 use Illuminate\Notifications\Notification;
@@ -126,8 +125,7 @@ class CastDenyOrders extends Notification implements ShouldQueue
         $content = '残念ながらマッチングが成立しませんでした😭'
             . PHP_EOL . 'お手数ですが、キャストクラスを変更して再度コールをし直してください。';
 
-        $line = new Line();
-        $liffId = $line->getLiffId(route('guest.orders.call'));
+        $page = env('LINE_LIFF_REDIRECT_PAGE') . '?page=call';
 
         return [
             [
@@ -141,7 +139,7 @@ class CastDenyOrders extends Notification implements ShouldQueue
                         [
                             'type' => 'uri',
                             'label' => '今すぐキャストを呼ぶ ',
-                            'uri' => "line://app/$liffId"
+                            'uri' => "line://app/$page"
                         ]
                     ]
                 ]
