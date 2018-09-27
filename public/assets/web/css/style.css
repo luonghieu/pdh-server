@@ -6856,3 +6856,11 @@ html, body {
 
 .ge3 .form_footer {
   margin-top: 30px; }
+
+.ge3 .word18 {
+  max-width: 180px; }
+
+@media screen and (max-width: 350px) {
+  .ge3 .word18 {
+    max-width: 140px;
+    font-size: 13px; } }
