@@ -43,7 +43,7 @@ class OrderController extends Controller
         ];
 
         try {
-            $response = $client->get(route('guest.index'), $option);
+            $response = $client->get(route('guest.index', ['status' => OrderStatus::ACTIVE]), $option);
         } catch (\Exception $e) {
             LogService::writeErrorLog($e);
             abort(500);

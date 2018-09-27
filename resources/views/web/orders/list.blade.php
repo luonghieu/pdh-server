@@ -41,11 +41,7 @@
         <label for="cancel" data-id ="{{ $order['id'] }}" class="lb-cancel" >キャンセル</label>
        </section>
        <button class="mess-btn" type="button" name="button">
-          @if($order['room_id'])
             <a href="{{ route('message.messages',['room' =>$order['room_id']]) }}">メッセージを確認</a>
-          @else
-            メッセージを確認
-          @endif
        </button>
      </div>
    </div> <!-- /list_item -->
