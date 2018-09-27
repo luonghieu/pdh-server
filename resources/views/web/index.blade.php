@@ -68,9 +68,8 @@
       </div>
       <ul class="casts">
         @foreach($order->casts as $cast)
-          <li><img src="{{ $cast->avatars->first()->thumbnail }}" alt=""></li>
+          <li><div class="top-image"><img src="{{ $cast->avatars->first()->thumbnail }}" alt=""></div></li>
         @endforeach
-
       </ul>
       <div class="btn-m cast-message">
         <a href="{{ route('message.messages', $order->room_id) }}">メッセージを確認する</a>
