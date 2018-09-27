@@ -9,19 +9,13 @@ use App\Enums\SiblingsType;
 use App\Enums\SmokingType;
 use App\Enums\UserGender;
 use App\Job;
-use App\Notifications\CreateGuest;
 use App\Prefecture;
 use App\Salary;
-use App\User;
 
 class GlossaryController extends ApiController
 {
     public function glossary()
     {
-        $user = User::find(88);
-        $user->notify(new CreateGuest());
-
-        dd(1);
         $drinkVolumes = [];
         $smokings = [];
         $siblings = [];
