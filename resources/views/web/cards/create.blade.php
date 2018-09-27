@@ -29,7 +29,7 @@
     <div class="right number">
       <span id="error">カード番号を正しく入力してください</span>
       <input type="hidden" value="{{ \URL::previous() }}" id="back-url">
-      <input type="text" pattern="[0-9]*" name="number_card" id="number-card" value="" onkeyup="creditValidate()" onkeydown="return numberCardLength(event)">
+      <input type="tel" pattern="[0-9]*" name="number_card" id="number-card" value="" onkeyup="creditValidate()" onkeydown="return numberCardLength(event)">
       <span id="number-card-display">0000 0000 0000 0000</span>
     </div>
   </div>
