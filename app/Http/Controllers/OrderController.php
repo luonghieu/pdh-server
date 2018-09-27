@@ -79,6 +79,11 @@ class OrderController extends Controller
             $currentDuration = Session::get('data')['duration'];
         }
 
+        $currentOtherDuration = null;
+        if (isset(Session::get('data')['other_duration'])) {
+            $currentOtherDuration = Session::get('data')['other_duration'];
+        }
+
         $currentCastNumbers = null;
         if (isset(Session::get('data')['cast_numbers'])) {
             $currentCastNumbers = Session::get('data')['cast_numbers'];
@@ -94,7 +99,7 @@ class OrderController extends Controller
             $timeDetail = Session::get('data')['time_detail'];
         }
 
-        return view('web.orders.create_call', compact('currentArea', 'currentTime', 'currentDuration', 'currentCastNumbers', 'currentCastClass', 'timeDetail', 'currentOtherArea'));
+        return view('web.orders.create_call', compact('currentArea', 'currentTime', 'currentDuration', 'currentCastNumbers', 'currentCastClass', 'timeDetail', 'currentOtherArea', 'currentOtherDuration'));
     }
 
     public function getDayOfMonth(Request $request)
@@ -177,12 +182,15 @@ class OrderController extends Controller
         }
 
         $duration = $request->time_set;
-        if (4 == $duration) {
-            $duration = $request->sl_duration;
+
+        if (!$duration || ('other_duration' != $duration && $duration <= 0)) {
+            return redirect()->route('guest.orders.call');
         }
 
-        if (!$duration || $duration <= 0) {
-            return redirect()->route('guest.orders.call');
+        if ('other_duration' == $duration) {
+            $input['other_duration'] = $duration;
+
+            $duration = $request->sl_duration;
         }
 
         $input['duration'] = $duration;
@@ -249,7 +257,7 @@ class OrderController extends Controller
         $data['desires'] = $request->desires;
 
         $data['situations'] = $request->situations;
-
+        dd($data);
         Session::put('data', $data);
 
         return redirect()->route('guest.orders.get_step3');
