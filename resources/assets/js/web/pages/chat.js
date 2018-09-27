@@ -182,6 +182,10 @@ $(document).ready(function() {
           <h3><span>`+time+`</span><br>`+message+`</h3>
         </div>
       `);
+
+      $(".msg-head").html(`
+        <h2><span class="mitei msg-head-ttl">日程未定</span>キャストに予約リクエストしよう！</h2>
+      `);
     })
     .catch(function (error) {
       console.log(error);
