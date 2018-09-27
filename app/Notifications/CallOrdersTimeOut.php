@@ -9,7 +9,6 @@ use App\Enums\RoomType;
 use App\Enums\SystemMessageType;
 use App\Enums\UserType;
 use App\Order;
-use App\Services\Line;
 use App\Traits\DirectRoom;
 use Carbon\Carbon;
 use Illuminate\Bus\Queueable;
@@ -186,8 +185,7 @@ class CallOrdersTimeOut extends Notification implements ShouldQueue
         $content = 'ご希望の人数のキャストが揃わなかったため、予約が無効となりました。'
             . PHP_EOL . 'お手数ですが、下記の「今すぐキャストを呼ぶ」をタップし、キャストクラスを変更して再度コールをし直してください。';
 
-        $line = new Line();
-        $liffId = $line->getLiffId(route('guest.orders.call'));
+        $page = env('LINE_LIFF_REDIRECT_PAGE') . '?page=call';
 
         return [
             [
@@ -201,7 +199,7 @@ class CallOrdersTimeOut extends Notification implements ShouldQueue
                         [
                             'type' => 'uri',
                             'label' => '今すぐキャストを呼ぶ',
-                            'uri' => "line://app/$liffId"
+                            'uri' => "line://app/$page"
                         ]
                     ]
                 ]

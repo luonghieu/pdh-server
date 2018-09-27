@@ -7,12 +7,10 @@ use App\Enums\ProviderType;
 use App\Enums\SystemMessageType;
 use App\Enums\UserType;
 use App\Room;
-use App\Services\Line;
 use Illuminate\Bus\Queueable;
 use Illuminate\Notifications\Notification;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
-use URL;
 
 class CreateGuest extends Notification implements ShouldQueue
 {
@@ -145,9 +143,7 @@ class CreateGuest extends Notification implements ShouldQueue
 
         $name = $notifiable->nickname ? $notifiable->nickname : $notifiable->name;
         $content = 'こんにちは！' . $name . 'さん🌼';
-
-        $line = new Line();
-        $liffId = $line->getLiffId(secure_url('/call'));
+        $page = env('LINE_LIFF_REDIRECT_PAGE') . '?page=call';
 
         return [
             [
@@ -161,7 +157,7 @@ class CreateGuest extends Notification implements ShouldQueue
                         [
                             'type' => 'uri',
                             'label' => '今すぐキャストを呼ぶ ',
-                            'uri' => "line://app/$liffId"
+                            'uri' => "line://app/$page"
                         ]
                     ]
                 ]

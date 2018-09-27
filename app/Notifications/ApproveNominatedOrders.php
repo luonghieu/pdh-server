@@ -5,7 +5,6 @@ namespace App\Notifications;
 use App\Enums\ProviderType;
 use App\Enums\UserType;
 use App\Room;
-use App\Services\Line;
 use Illuminate\Bus\Queueable;
 use Illuminate\Notifications\Notification;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -127,8 +126,7 @@ class ApproveNominatedOrders extends Notification implements ShouldQueue
             . PHP_EOL . '合流予定時間：' . $startTime->format('Y/m/d H:i') . '～'
             . PHP_EOL . PHP_EOL .'ゲストの方はキャストに来て欲しい場所の詳細をお伝えください。';
 
-        $line = new Line();
-        $liffId = $line->getLiffId(route('message.messages', ['room' => $room->id]));
+        $page = env('LINE_LIFF_REDIRECT_PAGE') . '?page=room&room_id=' . $room->id;
 
         return [
             [
@@ -146,7 +144,7 @@ class ApproveNominatedOrders extends Notification implements ShouldQueue
                         [
                             'type' => 'uri',
                             'label' => 'メッセージを確認する',
-                            'uri' => "line://app/$liffId"
+                            'uri' => "line://app/$page"
                         ]
                     ]
                 ]
