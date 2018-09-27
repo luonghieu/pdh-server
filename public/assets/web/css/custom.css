@@ -84,7 +84,8 @@
 }
 
 #login-controller .wrapper {
-  background: url('../images/line/login-bg.jpg') center center no-repeat !important;
+  background: url('../images/line/login-bg.jpg') center center no-repeat;
+  background-size:cover;
 }
 
 .modal-cancel-order {
