@@ -702,7 +702,7 @@
 }
 
 #gg2 footer {
-  display: none;
+  visibility: hidden;
 }
 
 .casts .top-image img {
