@@ -163,17 +163,6 @@ $img-path:"../../images/gg2/";
 		    position: relative;
 		    border-radius: 20px;
 		    background-color: $input-bg;
-			&::after {
-				content: '';
-				position: absolute;
-				top:15px;
-				margin:0 auto;
-				display: block;
-				width: 10px;
-				height: 10px;
-				background:url(#{$img-path}msg.png) no-repeat center;
-				background-size:contain;
-			}
 			.text-wrapper{
 		    	padding: 10px;				
 			}
