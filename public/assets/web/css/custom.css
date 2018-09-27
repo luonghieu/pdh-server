@@ -712,3 +712,13 @@
   height: 100%;
   border-radius: 0.5rem;
 }
+
+#gl2-1 .point-empty {
+  margin-top: 10rem;
+  text-align: center;
+}
+
+#gl2-1 .point-empty img {
+  width: 3rem;
+  margin: 0 auto;
+}
