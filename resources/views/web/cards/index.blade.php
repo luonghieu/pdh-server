@@ -28,7 +28,6 @@
     <span class="left">カード番号</span>
     <div class="right number">
       <span id="error">カード番号を正しく入力してください</span>
-        <input type="number" name="number_card" id="number-card" readonly>
         <span id="number-card-display" class="color-show-page">下4桁{{ $card->last4 }}</span>
     </div>
   </div>
