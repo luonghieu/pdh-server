@@ -147,7 +147,7 @@ class CreateGuest extends Notification implements ShouldQueue
         $content = 'こんにちは！' . $name . 'さん🌼';
 
         $line = new Line();
-        $liffId = $line->getLiffId(route('guest.orders.call'));
+        $liffId = $line->getLiffId(secure_url('/call'));
 
         return [
             [
