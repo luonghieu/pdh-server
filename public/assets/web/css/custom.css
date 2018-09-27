@@ -501,11 +501,10 @@ input[type="date"]::-webkit-calendar-picker-indicator {
   background: none;
   border: none;
   margin-right: 20px;
-  padding-top: 12px;
   letter-spacing: 1px;
   text-align: right;
   outline: none;
-  height: 25px;
+  height: 35px;
 }
 
 #gl1 form {
@@ -565,7 +564,6 @@ input[type="date"]::-webkit-calendar-picker-indicator {
 
 .security-code input::placeholder {
   font-family: NotoSansCJKjp;
-  font-size: 15px;
   font-weight: normal;
   font-style: normal;
   font-stretch: normal;
