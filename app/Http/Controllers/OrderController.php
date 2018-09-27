@@ -637,12 +637,14 @@ class OrderController extends Controller
             return redirect()->route('guest.orders.nominate');
         }
 
-        if ($request->nomination_area) {
-            $area = $request->nomination_area;
+        $area = $request->nomination_area;
+        $otherArea = $request->other_area_nomination;
+        if (!$area && !$otherArea) {
+            return redirect()->route('guest.orders.call');
         }
 
-        if ($request->other_area_nomination) {
-            $area = $request->other_area_nomination;
+        if ('その他' == $area && $otherArea) {
+            $area = $otherArea;
         }
 
         if (!$request->time_join_nomination) {

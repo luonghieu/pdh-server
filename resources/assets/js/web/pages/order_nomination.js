@@ -1,26 +1,4 @@
 $(document).ready(function(){
-  //text area
-  var txtArea = $("input:text[name='other_area_nomination']");
-  txtArea.on("input",function(){
-    var otherArea = $(this).val();
-    var time = $("input:radio[name='time_join_nomination']:checked").val();
-    var area = $("input:radio[name='nomination_area']:checked").val();
-    var duration = $("input:radio[name='time_set_nomination']:checked").val();
-    var date = $('.sp-date').text();
-    var cancel=$("input:checkbox[name='confrim_order_nomination']:checked").length;
-
-    if( !time || (!area || (!otherArea)) ||
-     (!duration || duration<1) || (time=='other_time' && !date) || !cancel) {
-      $("button[type='submit'][name='orders_nomination']").addClass("disable");
-      $("button[type='submit'][name='orders_nomination']").prop('disabled', true);
-      $('#sp-cancel').addClass("disable");
-    } else {
-      $("button[type='submit'][name='orders_nomination']").removeClass('disable');
-      $("button[type='submit'][name='orders_nomination']").prop('disabled', false);
-      $('#sp-cancel').removeClass('disable');
-    }
-  })
-
   //checkbox
   $(".checked-order").on("change",function(event){
   if ($(this).is(':checked')) {
@@ -33,63 +11,28 @@ $(document).ready(function(){
 
       if((!area || (area=='その他' && !otherArea)) || !time ||
        (!duration || duration<1) || (time=='other_time' && !date)) {
+
         $('#confirm-orders-nomination').addClass("disable");
+        $(this).prop('checked', false);
         $('#confirm-orders-nomination').prop('disabled', true);
-        $('#sp-cancel').addClass("disable");
+        $('#sp-cancel').addClass("sp-disable");
       } else {
         $('#confirm-orders-nomination').removeClass('disable');
+        $(this).prop('checked', true);
         $('#confirm-orders-nomination').prop('disabled', false);
-        $('#sp-cancel').removeClass('disable');
+        $('#sp-cancel').removeClass('sp-disable');
       }
     } else {
-         $('#confirm-orders-nomination').addClass("disable");
+        $(this).prop('checked', false);
+        $('#confirm-orders-nomination').addClass("disable");
         $('#confirm-orders-nomination').prop('disabled', true);
-        $('#sp-cancel').addClass("disable");
+        $('#sp-cancel').addClass("sp-disable");
     }
   });
-
-  //area
-  var area = $("input:radio[name='nomination_area']");
-  area.on("input",function(){
-    var time = $("input:radio[name='time_join_nomination']:checked").val();
-    var area = $("input:radio[name='nomination_area']:checked").val();
-    var duration = $("input:radio[name='time_set_nomination']:checked").val();
-    var date = $('.sp-date').text();
-    var cancel=$("input:checkbox[name='confrim_order_nomination']:checked").length;
-    var otherArea = $("input:text[name='other_area_nomination']").val();
-
-    if( !time || (!area || (area=='その他' && !otherArea)) ||
-     (!duration || duration<1) || (time=='other_time' && !date) || !cancel) {
-      $("button[type='submit'][name='orders_nomination']").addClass("disable");
-      $("button[type='submit'][name='orders_nomination']").prop('disabled', true);
-      $('#sp-cancel').addClass("disable");
-    } else {
-      $("button[type='submit'][name='orders_nomination']").removeClass('disable');
-      $("button[type='submit'][name='orders_nomination']").prop('disabled', false);
-      $('#sp-cancel').removeClass('disable');
-    }
-  })
 
   //duration
   var timeSet = $("input:radio[name='time_set_nomination']");
   timeSet.on("change",function(){
-    var time = $("input:radio[name='time_join_nomination']:checked").val();
-    var area = $("input:radio[name='nomination_area']:checked").val();
-    var duration = $("input:radio[name='time_set_nomination']:checked").val();
-    var date = $('.sp-date').text();
-    var cancel=$("input:checkbox[name='confrim_order_nomination']:checked").length;
-    var otherArea = $("input:text[name='other_area_nomination']").val();
-
-    if( !time || (!area || (area=='その他' && !otherArea)) ||
-     (!duration || duration<1) || (time=='other_time' && !date) || !cancel) {
-      $("button[type='submit'][name='orders_nomination']").addClass("disable");
-      $("button[type='submit'][name='orders_nomination']").prop('disabled', true);
-      $('#sp-cancel').addClass("disable");
-    } else {
-      $("button[type='submit'][name='orders_nomination']").removeClass('disable');
-      $("button[type='submit'][name='orders_nomination']").prop('disabled', false);
-      $('#sp-cancel').removeClass('disable');
-    }
 
     var cost = $('.cost-order').val();
     var totalPoint=cost*(duration*6)/3;
@@ -182,48 +125,6 @@ $(document).ready(function(){
         totalPoint = parseInt(totalPoint).toLocaleString(undefined,{ minimumFractionDigits: 0 });
         $('.total-point').text(totalPoint +'P~');
       }
-  })
-
-  //timeJoin
-  var timeJoin = $("input:radio[name='time_join_nomination']");
-  timeJoin.on("change",function(){
-    var time = $("input:radio[name='time_join_nomination']:checked").val();
-    var area = $("input:radio[name='nomination_area']:checked").val();
-    var duration = $("input:radio[name='time_set_nomination']:checked").val();
-    var date = $('.sp-date').text();
-    var cancel=$("input:checkbox[name='confrim_order_nomination']:checked").length;
-    var otherArea = $("input:text[name='other_area_nomination']").val();
-
-    if( !time || (!area || (area=='その他' && !otherArea)) ||
-     (!duration || duration<1) || (time=='other_time' && !date) || !cancel) {
-      $("button[type='submit'][name='orders_nomination']").addClass("disable");
-      $("button[type='submit'][name='orders_nomination']").prop('disabled', true);
-      $('#sp-cancel').addClass("disable");
-    } else {
-      $("button[type='submit'][name='orders_nomination']").removeClass('disable');
-      $("button[type='submit'][name='orders_nomination']").prop('disabled', false);
-      $('#sp-cancel').removeClass('disable');
-    }
-  })
-
-  $(".date-select__ok").on("click",function(){
-    var time = $("input:radio[name='time_join_nomination']:checked").val();
-    var area = $("input:radio[name='nomination_area']:checked").val();
-    var duration = $("input:radio[name='time_set_nomination']:checked").val();
-    var date = $('.sp-date').text();
-    var cancel=$("input:checkbox[name='confrim_order_nomination']:checked").length;
-    var otherArea = $("input:text[name='other_area_nomination']").val();
-
-    if( !time || (!area || (area=='その他' && !otherArea)) ||
-     (!duration || duration<1) || (time=='other_time' && !date) || !cancel) {
-      $("button[type='submit'][name='orders_nomination']").addClass("disable");
-      $("button[type='submit'][name='orders_nomination']").prop('disabled', true);
-      $('#sp-cancel').addClass("disable");
-    } else {
-      $("button[type='submit'][name='orders_nomination']").removeClass('disable');
-      $("button[type='submit'][name='orders_nomination']").prop('disabled', false);
-      $('#sp-cancel').removeClass('disable');
-    }
   })
 
   $('.select-duration').on("change",function(){

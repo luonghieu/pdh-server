@@ -5,7 +5,9 @@ $(document).ready(function(){
       .then(function(response) {
         var html = '';
         Object.keys(response.data).forEach(function (key) {
+          if(key!='debug') {
           html +='<option value="'+key+'">'+ response.data[key] +'</option>';
+          }
         })
       $('.select-date').html(html);
       })
@@ -66,8 +68,8 @@ $(document).ready(function(){
       $('.select-minute').val(selectDate.getMinutes());
     }
 
-    $('.sp-date').text(date +'月');
-    $('.sp-month').text(month +'日');
+    $('.sp-date').text(date +'日');
+    $('.sp-month').text(month +'月');
     $('.sp-time').text(time);
 
 
