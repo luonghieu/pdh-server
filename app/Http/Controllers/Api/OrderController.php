@@ -13,7 +13,7 @@ use App\Http\Resources\OrderResource;
 use App\Notifications\CallOrdersCreated;
 use App\Notifications\CreateNominatedOrdersForCast;
 use App\Notifications\CreateNominationOrdersForCast;
-use App\Notifications\CreateNominationOrdersForGuest;
+use App\Notifications\CreateOrdersForLineGuest;
 use App\Order;
 use App\Services\LogService;
 use App\Tag;
@@ -161,9 +161,6 @@ class OrderController extends ApiController
                     \Notification::send($nominees, new CreateNominatedOrdersForCast($order));
                 }
 
-                if (ProviderType::LINE == $order->user->provider) {
-                    $order->user->notify(new CreateNominationOrdersForGuest($order));
-                }
             } else {
                 $casts = Cast::where('class_id', $request->class_id)->get();
                 \Notification::send($casts, new CallOrdersCreated($order));
