@@ -640,7 +640,7 @@ class OrderController extends Controller
         $area = $request->nomination_area;
         $otherArea = $request->other_area_nomination;
         if (!$area && !$otherArea) {
-            return redirect()->route('guest.orders.call');
+            return redirect()->route('web.index');
         }
 
         if ('その他' == $area && $otherArea) {
@@ -648,7 +648,7 @@ class OrderController extends Controller
         }
 
         if (!$request->time_join_nomination) {
-            return redirect()->route('guest.orders.call');
+            return redirect()->route('web.index');
         }
 
         $now = Carbon::now();
@@ -694,7 +694,7 @@ class OrderController extends Controller
         }
 
         if (!$duration || $duration <= 0) {
-            return redirect()->route('guest.orders.call');
+            return redirect()->route('web.index');
         }
 
         $client = new Client();
@@ -741,7 +741,6 @@ class OrderController extends Controller
                 'nominee_ids' => $request->cast_id,
             ]), $option);
         } catch (\Exception $e) {
-
             LogService::writeErrorLog($e);
             abort(500);
         }
