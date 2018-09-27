@@ -487,7 +487,7 @@ class OrderController extends Controller
         try {
             $order = $client->post(route('orders.create', [
                 'prefecture_id' => 13,
-                'address' => $data['area'],
+                'address' => $area,
                 'class_id' => $data['cast_class'],
                 'duration' => $data['duration'],
                 'nominee_ids' => $nomineeIds,
