@@ -144,7 +144,7 @@
          <div class="reservation-policy">
           <label class="checkbox">
             <input type="checkbox" class="checked-order" name="confrim_order_nomination">
-            <span class="disable" id="sp-cancel"></span>
+            <span class="sp-disable" id="sp-cancel"></span>
             <a href="{{ route('guest.orders.cancel') }}">キャンセルポリシー</a>
             に同意する
           </label>
