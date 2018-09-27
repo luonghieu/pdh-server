@@ -1,5 +1,6 @@
 @section('title', 'メッセージ詳細')
 @section('screen.id', 'gg2')
+@section('controller.id', 'gg2')
 @extends('layouts.web')
 @section('web.content')
   <div class="title">
