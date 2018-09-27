@@ -32,7 +32,7 @@
        <hr class="border-blue">
        <ul class="face-img">
         @foreach($order['casts'] as $cast)
-         <li class=""><img src="{{ $cast['avatars'][0]['thumbnail'] }}" alt="顔の写真"></li>
+         <li class="reserve-image"><img src="{{ $cast['avatars'][0]['thumbnail'] }}" alt="顔の写真"></li>
         @endforeach
        </ul>
      </div>

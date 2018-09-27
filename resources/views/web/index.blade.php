@@ -53,16 +53,21 @@
     <div class="booking-block">
       <div class="booking-date">
         <div class="date-left">
-          <span>{{ \Carbon\Carbon::parse($order->date_start)->format('m月d日') }}(土)</span>
-          <span>西麻布 {{ \Carbon\Carbon::parse($order->start_time)->format('h:i') }}〜</span>
+          <span>{{ Carbon\Carbon::parse($order->date)->format('m月d日') }} ({{ dayOfWeek()[Carbon\Carbon::parse($order->date)->dayOfWeek] }})</span>
+          <span>{{ $order->address }} {{ \Carbon\Carbon::parse($order->start_time)->format('H:i') }}〜</span>
           <ul>
-            <li>#ワイワイ</li>
-            <li>#カラオケ</li>
+            @if(count($order->tags))
+              <li>
+                @foreach($order->tags as $tag)
+                  #{{ $tag->name }}
+                @endforeach
+              </li>
+            @endif
           </ul>
         </div>
         <ul class="date-right">
           <li><img src="{{ asset('assets/web/images/common/glass.svg') }}" alt=""><span>{{ $order->duration }}時間</span></li>
-          <li><img src="{{ asset('assets/web/images/common/diamond.svg') }}" alt=""><span>{{ number_format($order->total_point) }}P〜</span></li>
+          <li><img src="{{ asset('assets/web/images/common/diamond.svg') }}" alt=""><span>{{ number_format($order->temp_point) }}P〜</span></li>
           <li><img src="{{ asset('assets/web/images/common/woman.svg') }}" alt=""><span>{{ $order->total_cast }}名</span></li>
         </ul>
       </div>
