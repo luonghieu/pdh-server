@@ -125,15 +125,29 @@ $(document).ready(function(){
 
   $(".cb-cancel").on("change",function(event){
     if ($(this).is(':checked')) {
+        $(this).prop('checked', true);
         $('#sp-cancel').removeClass('sp-disable');
         $('#btn-confirm-orders').removeClass('disable');
         $('#btn-confirm-orders').prop('disabled', false);
       } else {
+        $(this).prop('checked', false);
         $('#sp-cancel').addClass("sp-disable");
         $('#btn-confirm-orders').addClass("disable");
         $('#btn-confirm-orders').prop('disabled', true);
       }
   });
+
+  if ($(".cb-cancel").is(':checked')) {
+      $(this).prop('checked', true);
+      $('#sp-cancel').removeClass('sp-disable');
+      $('#btn-confirm-orders').removeClass('disable');
+      $('#btn-confirm-orders').prop('disabled', false);
+    } else {
+      $(this).prop('checked', false);
+      $('#sp-cancel').addClass("sp-disable");
+      $('#btn-confirm-orders').addClass("disable");
+      $('#btn-confirm-orders').prop('disabled', true);
+    }
 
   $('#btn-confirm-orders').on('click',function(){
     $('.lb-orders').click();
