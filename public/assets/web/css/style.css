@@ -4978,7 +4978,6 @@ header {
     justify-content: flex-start;
     border-bottom: 1px solid #cccccc; }
     #gg2 .tgl .d-top .d-top-place {
-      color: #581818;
       margin-right: 2.5em; }
       #gg2 .tgl .d-top .d-top-place:before {
         content: "";
@@ -5049,16 +5048,6 @@ header {
     position: relative;
     border-radius: 20px;
     background-color: #f6f6f6; }
-    #gg2 .msg-wrap .text::after {
-      content: '';
-      position: absolute;
-      top: 15px;
-      margin: 0 auto;
-      display: block;
-      width: 10px;
-      height: 10px;
-      background: url(../../images/gg2/msg.png) no-repeat center;
-      background-size: contain; }
     #gg2 .msg-wrap .text .text-wrapper {
       padding: 10px; }
   #gg2 .msg-wrap .pic {

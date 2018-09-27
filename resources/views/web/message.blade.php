@@ -1,5 +1,6 @@
 @section('title', 'メッセージ詳細')
 @section('screen.id', 'gg2')
+@section('controller.id', 'gg2')
 @extends('layouts.web')
 @section('web.content')
   <div class="title">
@@ -123,11 +124,11 @@
 @endsection
 @section('web.extra_js')
 <script>
-  $(function(){
-    $('.tgl dl dt').click(function(){
-      $(this).next().slideToggle();
-      $(this).toggleClass("active");
+    $(function(){
+      $('.tgl > dl > dt',).click(function(){
+        $(this).toggleClass("active");
+        $(this).next().slideToggle();
+      });
     });
-  });
 </script>
 @endsection

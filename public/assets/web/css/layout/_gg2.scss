@@ -77,7 +77,6 @@ $img-path:"../../images/gg2/";
 			justify-content:flex-start;
 			border-bottom:1px solid $gray-color;
 			.d-top-place{
-				color:#581818;
 				margin-right:round-decimal(35 / 14 + 0em);
 				&:before{
 					content:"";
@@ -163,17 +162,6 @@ $img-path:"../../images/gg2/";
 		    position: relative;
 		    border-radius: 20px;
 		    background-color: $input-bg;
-			&::after {
-				content: '';
-				position: absolute;
-				top:15px;
-				margin:0 auto;
-				display: block;
-				width: 10px;
-				height: 10px;
-				background:url(#{$img-path}msg.png) no-repeat center;
-				background-size:contain;
-			}
 			.text-wrapper{
 		    	padding: 10px;				
 			}

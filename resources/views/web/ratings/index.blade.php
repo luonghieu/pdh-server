@@ -43,8 +43,8 @@
     <h1 class="big-title">キャスト評価</h1>
     <div class="cast-profile">
         <section class="profile-photo">
-            <div class="profile-photo_top"><img src="{{ $cast->avatars->first()->thumbnail }}" alt=""></div>
-            <h2>{{ $cast->nickname . '(' . \Carbon\Carbon::parse($cast->date_of_birth)->age . ')'}}</h2>
+            <div class="profile-photo_top"><img src="{{ $castUnrate->avatars->first()->thumbnail }}" alt=""></div>
+            <h2>{{ $castUnrate->nickname . '(' . \Carbon\Carbon::parse($castUnrate->date_of_birth)->age . ')'}}</h2>
             <p>{{ $orderStartTime->format('Y年m月d日') . '(' . dayOfWeek()[$orderStartTime->dayOfWeek] . ')' }}</p>
             <p>{{ $orderStartTime->format('H:i') }}〜{{ $orderEndTime->format('H:i') }}</p>
         </section>
@@ -85,9 +85,10 @@
                           placeholder="よろしければ評価内容をご入力ください" id="rating-comment"></textarea>
             </div>
         </section>
+
         <section class="settlement-confirm">
             <input type="hidden" name="order_id" value="{{ request()->order_id }}">
-            <input type="hidden" name="rated_id" value="{{ $cast->id }}">
+            <input type="hidden" name="rated_id" value="{{ $castUnrate->id }}">
             <button type="button" class="button button-settlement" id="rating-submit-btn" disabled>評価する
                 {{ ($totalRated != -1 || $order->total_cast != 1) ? $totalRated . '/' . $order->total_cast  : ''
                 }}</button>
