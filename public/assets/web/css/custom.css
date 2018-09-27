@@ -704,3 +704,8 @@
 #gg2 footer {
   display: none;
 }
+
+.casts .top-image img {
+  height: 100%;
+  border-radius: 0.5rem;
+}
