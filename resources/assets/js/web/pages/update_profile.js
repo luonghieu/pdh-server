@@ -11,6 +11,30 @@ $(document).ready(function() {
     $('#age').html(age + '歳 ');
   });
 
+  $('#date-display').on('click', function() {
+    $('input[type="date"]').trigger('click');
+  });
+
+  $('#date-of-birth').on('change', function() {
+      date = new Date($('#date-of-birth').val());
+
+      var year = date.getFullYear();
+      var month = date.getMonth() + 1;
+      var day = date.getDate();
+
+      if (month < 10) {
+          month = '0' + month;
+      }
+
+      if (day < 10) {
+          day = '0' + day;
+      }
+
+      $('#date-display').val(year + '年' + month + '月' + day + '日');
+  });
+
+  $('.hidden').hide();
+
   $('#update-profile').submit(function(e) {
     e.preventDefault();
   }).validate({
@@ -73,13 +97,23 @@ $(document).ready(function() {
         cohabitant_type: $('#cohabitant-type').val(),
       };
 
+      Object.keys(params).forEach(function(key) {
+        if (!params[key]) {
+          delete params[key];
+        }
+      });
+
       $('.help-block').each(function() {
         $(this).html('');
       });
 
       window.axios.post('/api/v1/auth/update', params)
         .then(function(response) {
-          window.location = '/profile';
+          $('#profile-popup').trigger('click');
+          $('#profile-message h2').html('情報の更新に成功しました。');
+          setTimeout(() => {
+            window.location.href = '/profile';
+          }, 1500);
         })
         .catch(function(error) {
           if (error.response.status == 401) {

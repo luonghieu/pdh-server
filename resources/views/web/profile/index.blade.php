@@ -29,7 +29,7 @@
       <h2 class="portlet-header__title">ひとこと</h2>
     </div>
     <div class="portlet-content">
-      <p class="portlet-content__text">{{ $profile['intro'] or '未設定' }}</p>
+      <p class="portlet-content__text">{{ (!$profile['intro']) ? 'ひとこと設定されていません' : $profile['intro'] }}</p>
     </div>
   </section>
   <!-- profile-word -->
@@ -39,7 +39,7 @@
       <h2 class="portlet-header__title">自己紹介</h2>
     </div>
     <div class="portlet-content">
-      <p class="portlet-content__text">{{ $profile['description'] or '未設定' }}</p>
+      <p class="portlet-content__text">{{ (!$profile['description']) ? '自己紹介設定されていません' : $profile['description'] }}</p>
     </div>
   </section>
   <!-- profile-introduction -->
@@ -56,13 +56,13 @@
         </li>
         @php
         switch ($profile['gender']) {
-            case 0:
+            case '0':
                 $gender = '非公開';
                 break;
-            case 1:
+            case '1':
                 $gender = '男性';
                 break;
-            case 2:
+            case '2':
                 $gender = '女性';
                 break;
 
@@ -78,53 +78,69 @@
         <li class="portlet-content__item">
           <p class="portlet-content__text--list">生年月日</p>
           <p class="portlet-content__value">
-            {{ ($profile['date_of_birth']) ? \Carbon\Carbon::parse($profile['date_of_birth'])->format('Y年m月d日') : '未設定' }}
+            {{ (!$profile['date_of_birth']) ? '未設定' : \Carbon\Carbon::parse($profile['date_of_birth'])->format('Y年m月d日') }}
           </p>
         </li>
         <li class="portlet-content__item">
           <p class="portlet-content__text--list">年齢</p>
           <p class="portlet-content__value">{{ $profile['age'] or '未設定' }}{{ (!$profile['age']) ? '' : '歳' }}</p>
         </li>
+        @php
+        switch ($profile['height']) {
+            case '0':
+                $height = '非公開';
+                break;
 
+            default:
+                $height = $profile['height'] . 'cm';
+                break;
+        }
+        @endphp
         <li class="portlet-content__item">
           <p class="portlet-content__text--list">身長</p>
-          <p class="portlet-content__value"><span>{{ !($profile['height'] > 0) ? '未設定' : $profile['height'] . 'cm' }}</span></p>
+          <p class="portlet-content__value">{{ $height or '未設定' }}</p>
         </li>
         <li class="portlet-content__item">
           <p class="portlet-content__text--list">年収</p>
-          <p class="portlet-content__value"><span>{{ ($profile['salary']) ? $profile['salary'] : '未設定' }}</span></p>
+          <p class="portlet-content__value">
+            {{ (!$profile['salary']) ? '未設定' : $profile['salary'] }}
+          </p>
         </li>
         <li class="portlet-content__item">
           <p class="portlet-content__text--list">体型</p>
-          <p class="portlet-content__value">{{ $profile['body_type'] or '未設定' }}</p>
+          <p class="portlet-content__value">
+            {{ (!$profile['body_type']) ? '未設定' : $profile['body_type'] }}
+          </p>
         </li>
         <li class="portlet-content__item">
           <p class="portlet-content__text--list">居住地</p>
-          <p class="portlet-content__value">{{ $profile['prefecture'] or '未設定' }}</p>
+          <p class="portlet-content__value">
+            {{ (!$profile['prefecture']) ? '未設定' : $profile['prefecture'] }}
+          </p>
         </li>
         <li class="portlet-content__item">
           <p class="portlet-content__text--list">出身地</p>
-          <p class="portlet-content__value">{{ $profile['hometown'] or '未設定' }}</p>
+          <p class="portlet-content__value">{{ (!$profile['hometown']) ? '未設定' : $profile['hometown'] }}</p>
         </li>
         <li class="portlet-content__item">
           <p class="portlet-content__text--list">お仕事</p>
-          <p class="portlet-content__value">{{ $profile['job'] or '未設定' }}</p>
+          <p class="portlet-content__value">{{ (!$profile['job']) ? '未設定' : $profile['job'] }}</p>
         </li>
         <li class="portlet-content__item">
           <p class="portlet-content__text--list">お酒</p>
-          <p class="portlet-content__value">{{ $profile['drink_volume'] or '未設定' }}</p>
+          <p class="portlet-content__value">{{ (!$profile['drink_volume']) ? '未設定' : $profile['drink_volume'] }}</p>
         </li>
         <li class="portlet-content__item">
           <p class="portlet-content__text--list">タバコ</p>
-          <p class="portlet-content__value">{{ $profile['smoking'] or '未設定' }}</p>
+          <p class="portlet-content__value">{{ (!$profile['smoking']) ? '未設定' : $profile['smoking'] }}</p>
         </li>
         <li class="portlet-content__item">
           <p class="portlet-content__text--list">兄弟</p>
-          <p class="portlet-content__value">{{ $profile['siblings'] or '未設定' }}</p>
+          <p class="portlet-content__value">{{ (!$profile['siblings']) ? '未設定' : $profile['siblings'] }}</p>
         </li>
         <li class="portlet-content__item">
           <p class="portlet-content__text--list">同居人</p>
-          <p class="portlet-content__value">{{ $profile['cohabitant'] or '未設定' }}</p>
+          <p class="portlet-content__value">{{ (!$profile['cohabitant']) ? '未設定' : $profile['cohabitant'] }}</p>
         </li>
       </ul>
     </div>
