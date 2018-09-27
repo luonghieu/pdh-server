@@ -124,7 +124,7 @@ class ApproveNominatedOrders extends Notification implements ShouldQueue
         $firstMessage = '\\\\ おめでとうございます！マッチングが確定しました🎊//';
         $secondMessage = '▼ご予約内容'
             . PHP_EOL . '場所：' . $this->order->address
-            . PHP_EOL . '合流予定時間：' . $startTime->format('H:i') . '～'
+            . PHP_EOL . '合流予定時間：' . $startTime->format('Y/m/d H:i') . '～'
             . PHP_EOL . PHP_EOL .'ゲストの方はキャストに来て欲しい場所の詳細をお伝えください。';
 
         $line = new Line();
