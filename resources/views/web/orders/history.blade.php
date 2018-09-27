@@ -137,7 +137,7 @@
                     </li>
                     <li><i><img src="{{ asset('assets/web/images/common/map.svg') }}"></i>
                         <p>{{ $order->address }}</p></li>
-                    <li><i><img src="{{ asset('assets/web/images/common/man.svg') }}"></i>
+                    <li><i><img src="{{ asset('assets/web/images/common/woman.svg') }}"></i>
                         <p>{{ $order->total_cast . '名' }}</p></li>
                 </ul>
             </section>

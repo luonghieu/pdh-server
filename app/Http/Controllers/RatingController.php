@@ -17,7 +17,7 @@ class RatingController extends Controller
 
         $castUnrate = $order->casts()->wherePivot('guest_rated', false)->orderBy('cast_order.id', 'ASC')->first();
         if (!$castUnrate) {
-            return redirect()->route('message.messages', ['room' => $order->room_id]);
+            return redirect()->route('history.show', ['orderId' => $order->id]);
         }
 
         $totalRated = 1;
