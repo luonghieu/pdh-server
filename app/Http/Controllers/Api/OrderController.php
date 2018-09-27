@@ -161,7 +161,7 @@ class OrderController extends ApiController
                     \Notification::send($nominees, new CreateNominatedOrdersForCast($order));
                 }
 
-                if (OrderType::NOMINATION && ProviderType::LINE == $order->user->provider) {
+                if (ProviderType::LINE == $order->user->provider) {
                     $order->user->notify(new CreateNominationOrdersForGuest($order));
                 }
             } else {
