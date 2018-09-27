@@ -12,7 +12,6 @@ use App\Enums\ProviderType;
 use App\Http\Resources\OrderResource;
 use App\Notifications\CallOrdersCreated;
 use App\Notifications\CreateNominatedOrdersForCast;
-use App\Notifications\CreateNominatedOrdersForGuest;
 use App\Notifications\CreateNominationOrdersForCast;
 use App\Notifications\CreateNominationOrdersForGuest;
 use App\Order;
@@ -162,7 +161,7 @@ class OrderController extends ApiController
                     \Notification::send($nominees, new CreateNominatedOrdersForCast($order));
                 }
 
-                if (OrderType::NOMINATION && $order->user->provider == ProviderType::LINE) {
+                if (OrderType::NOMINATION && ProviderType::LINE == $order->user->provider) {
                     $order->user->notify(new CreateNominationOrdersForGuest($order));
                 }
             } else {
@@ -270,7 +269,7 @@ class OrderController extends ApiController
         $orderFee = 0;
         if (OrderType::NOMINATION != $request->type) {
             $multiplier = floor($orderDuration / 15);
-            $orderFee = 500 * $multiplier * $totalCast;
+            $orderFee = 500 * $multiplier * count($nomineeIds);
         }
 
         return $this->respondWithData($orderPoint + $orderFee + $allowancePoint);
