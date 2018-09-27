@@ -1,26 +1,4 @@
 $(document).ready(function(){
-  //text area
-  var txtArea = $("input:text[name='other_area_nomination']");
-  txtArea.on("input",function(){
-    var otherArea = $(this).val();
-    var time = $("input:radio[name='time_join_nomination']:checked").val();
-    var area = $("input:radio[name='nomination_area']:checked").val();
-    var duration = $("input:radio[name='time_set_nomination']:checked").val();
-    var date = $('.sp-date').text();
-    var cancel=$("input:checkbox[name='confrim_order_nomination']:checked").length;
-
-    if( !time || (!area || (!otherArea)) ||
-     (!duration || duration<1) || (time=='other_time' && !date) || !cancel) {
-      $("button[type='submit'][name='orders_nomination']").addClass("disable");
-      $("button[type='submit'][name='orders_nomination']").prop('disabled', true);
-      $('#sp-cancel').addClass("disable");
-    } else {
-      $("button[type='submit'][name='orders_nomination']").removeClass('disable');
-      $("button[type='submit'][name='orders_nomination']").prop('disabled', false);
-      $('#sp-cancel').removeClass('disable');
-    }
-  })
-
   //checkbox
   $(".checked-order").on("change",function(event){
     if ($(this).is(':checked')) {
