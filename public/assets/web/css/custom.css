@@ -723,6 +723,6 @@
   margin: 0 auto;
 }
 
-#number-card-display a {
-  color: #c8c8c8;
+.reserve-image img {
+  height: 100%;
 }
