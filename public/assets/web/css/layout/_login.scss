@@ -24,7 +24,7 @@ html,body{
   .feature-title{
     width: 78.666666%;
     height: auto;
-    margin-top:12.62%;
+    margin-top:26%;
     img{
       width: 100%;
       height: auto;
@@ -36,7 +36,7 @@ html,body{
   .service-list{
     width: 85.866666%;
     height: auto;
-    margin-top:28.59%;
+    margin-top:12%;
     img{
       width: 100%;
       height: auto;
@@ -44,7 +44,6 @@ html,body{
       font-size: 0;
     }
   }
-
   .line-button{
     width: 79.7333333%;
     height: auto;
@@ -68,19 +67,17 @@ html,body{
   }
 
   .usage-contract{
-    width: 100%;
     height: auto;
     line-height: 1;
     font-size: 11px;
     text-align: center;
     color: #fff;
-    display: flex;
-    align-items: center;
-    justify-content: center;
     margin-top:2.548%;
+    width: 90%;
     a{
       color:  #00c3c3;
       text-decoration: underline;
+      display: initial;
     }
   }
 }

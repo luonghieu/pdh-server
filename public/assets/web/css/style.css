@@ -6774,25 +6774,17 @@ html, body {
       font-size: 0; }
 
 #login .usage-contract {
-  width: 100%;
   height: auto;
   line-height: 1;
   font-size: 11px;
   text-align: center;
   color: #fff;
-  display: -webkit-box;
-  display: -ms-flexbox;
-  display: flex;
-  -webkit-box-align: center;
-  -ms-flex-align: center;
-  align-items: center;
-  -webkit-box-pack: center;
-  -ms-flex-pack: center;
-  justify-content: center;
-  margin-top: 2.548%; }
+  margin-top: 2.548%;
+  width: 90%; }
   #login .usage-contract a {
     color: #00c3c3;
-    text-decoration: underline; }
+    text-decoration: underline;
+    display: initial; }
 
 .ge3 .details-header__title {
   text-align: left !important; }
