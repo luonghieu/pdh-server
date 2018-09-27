@@ -1,4 +1,16 @@
 $(document).ready(function() {
+  var maxYear = $('#date-of-birth').attr('max');
+
+  $('#date-of-birth').on('change', function() {
+    var today = (new Date()) / 1000;
+    var date = (new Date($(this).val())) / 1000;
+
+    var range = (today - date) / (24 * 60 * 60 * 365);
+    var age = Math.floor(range);
+
+    $('#age').html(age + '歳 ');
+  });
+
   $('#update-profile').submit(function(e) {
     e.preventDefault();
   }).validate({
@@ -9,13 +21,14 @@ $(document).ready(function() {
       },
       date_of_birth: {
         required: true,
+        max: maxYear,
       },
       intro: {
         maxlength: 30,
       },
       description: {
         maxlength: 1000,
-      }
+      },
     },
     messages: {
       date_of_birth: {
@@ -30,11 +43,11 @@ $(document).ready(function() {
       },
       description: {
         maxlength: "1000文字以内で入力してください。",
-      }
+      },
     },
 
     submitHandler: function(form) {
-      if ($('.profile-photo__list ul li.profile-photo__item').length < 1) {
+      if ($('.css-img #valid').length < 1) {
         if (document.getElementById('upload').files.length <= 0) {
           $('.image-error').html('imageには、画像を指定してください。');
           return false;

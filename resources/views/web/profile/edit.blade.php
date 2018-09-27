@@ -40,18 +40,20 @@
         <ul>
           @foreach ($profile['avatars'] as $avatar)
             @if ($avatar['thumbnail'])
-              <li class="profile-photo__item">
-                <label for="trigger4" class="open_button button-settlement js-img" id="{{ $avatar['id'] }}">
-                  <img type="file" src="{{ $avatar['thumbnail'] }}" alt="">
-                </label>
-              </li>
+            <div class="css-img">
+              <label for="trigger4" class="open_button button-settlement js-img" id="{{ $avatar['id'] }}">
+                <img type="file" id="valid" src="{{ $avatar['thumbnail'] }}" alt="">
+              </label>
+            </div>
             @endif
           @endforeach
           @if (count($profile['avatars']) < 10)
-          <label class="profile-photo__item--add-button">
-            <input type="file" accept="image/*" id="upload" style="position: absolute; left: 99999px" hidden=""/>
-            <img src="{{ asset('assets/web/images/gm1/add-button_bg.png') }}" alt="">
-          </label>
+          <div class="css-img profile-photo__item--add-button">
+            <label>
+              <input type="file" accept="image/*" id="upload" style="position: absolute; left: 99999px" hidden=""/>
+              <img src="{{ asset('assets/web/images/gm1/add-button_bg.png') }}" alt="">
+            </label>
+          </div>
           @endif
         </ul>
         <div class="image-error help-block"></div>
@@ -111,31 +113,60 @@
           <div data-field="gender" class="help-block"></div>
           <li class="portlet-content__item">
             <p class="portlet-content__text--list">生年月日</p>
-            <input type="date" id="date-of-birth" name="date_of_birth" value="{{ $profile['date_of_birth'] }}">
+            @php
+              $max = \Carbon\Carbon::parse(now())->subYear(20);
+            @endphp
+            <div class="init-date">
+              <input type="date" id="date-of-birth" max="{{ $max->format('Y-m-d') }}" name="date_of_birth" value="{{ $profile['date_of_birth'] }}">
+            </div>
           </li>
           <label data-field="date_of_birth" id="date-of-birth-error" class="error help-block" for="date-of-birth"></label>
+          <li class="portlet-content__item">
+            <p class="portlet-content__text--list">年齢</p>
+            <span id="age">{{ $profile['age'] }}歳</span>
+          </li>
           <li class="portlet-content__item">
             <p class="portlet-content__text--list">身長</p>
             <label class="time-input">
               <div class="selectbox" data-field="height">
-                <select dir="rtl" id="height">
+                <select dir="rtl" id="height" name="height">
+                  <option value="0">非公開</option>
                   @for ($height = 130; $height <= 200; $height++)
                     @php
                       ($height == $profile['height']) ? ($selected = "selected='selected'") : ($selected = '')
                     @endphp
-                    <option value="{{ $height }}" {{ $selected }}>{{ $height }}</option>
+                    <option value="{{ $height }}" {{ $selected }}>{{ $height }}cm</option>
                   @endfor
                 </select>
                 <i></i>
               </div>
             </label>
           </li>
-          <div data-field="height" class="help-block"></div>
+          <label data-field="height" id="height-error" class="error help-block" for="height"></label>
+          <li class="portlet-content__item">
+            <p class="portlet-content__text--list">年収</p>
+            <label class="time-input">
+              <div class="selectbox" data-field="salary">
+                <select dir="rtl" id="salary" name="salary">
+                  @foreach ($glossaries['salaries'] as $salary)
+                    @php
+                      ($salary['id'] == $profile['salary_id']) ? ($selected = "selected='selected'") : ($selected = '')
+                    @endphp
+                    <option value="{{ $salary['id'] }}" {{ $selected }}>
+                      {{ $salary['name'] }}
+                    </option>
+                  @endforeach
+                </select>
+                <i></i>
+              </div>
+            </label>
+          </li>
+          <label data-field="height" id="height-error" class="error help-block" for="height"></label>
           <li class="portlet-content__item">
             <p class="portlet-content__text--list">体型</p>
             <label class="time-input">
               <div class="selectbox">
-                <select dir="rtl" id="body-type-id">
+                <select dir="rtl" id="body-type-id" name="body_type_id">
                   @foreach ($glossaries['body_types'] as $bodyType)
                     @php
                       ($bodyType['id'] == $profile['body_type_id']) ? ($selected = "selected='selected'") : ($selected = '')
@@ -149,9 +180,28 @@
               </div>
             </label>
           </li>
-          <div data-field="body_type_id" class="help-block"></div>
+          <label data-field="body_type_id" id="body-type-id-error" class="error help-block" for="body-type-id"></label>
           <li class="portlet-content__item">
             <p class="portlet-content__text--list">居住地</p>
+            <label class="time-input">
+              <div class="selectbox">
+                <select dir="rtl" id="prefecture-id">
+                  @foreach ($glossaries['prefectures'] as $prefecture)
+                    @php
+                      ($prefecture['id'] == $profile['prefecture_id']) ? ($selected = "selected='selected'") : ($selected = '')
+                    @endphp
+                    <option value="{{ $prefecture['id'] }}" {{ $selected }}>
+                      {{ $prefecture['name'] }}
+                    </option>
+                  @endforeach
+                </select>
+                <i></i>
+              </div>
+            </label>
+          </li>
+          <div data-field="prefecture_id" class="help-block"></div>
+          <li class="portlet-content__item">
+            <p class="portlet-content__text--list">出身地</p>
             <label class="time-input">
               <div class="selectbox">
                 <select dir="rtl" id="hometown-id">
