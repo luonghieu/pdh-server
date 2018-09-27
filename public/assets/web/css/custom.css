@@ -158,6 +158,10 @@ input[type="date"]::-webkit-calendar-picker-indicator {
   padding-top: 15px !important;
 }
 
+#rooms footer small {
+  display: none;
+}
+
 .init-point-minus {
   color: red;
 }

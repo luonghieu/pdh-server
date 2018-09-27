@@ -3933,11 +3933,13 @@ header {
       line-height: 1;
       color: #30ccc3; }
     #ge2-1-x .area-input input {
-      width: 120px;
+      min-width: 120px;
+      width: 60%;
       border: none;
       font-size: 14px;
       line-height: 1;
-      outline: none; }
+      outline: none;
+      text-align: right; }
   #ge2-1-x .date-input {
     width: 100%;
     height: auto;
@@ -4115,14 +4117,15 @@ header {
         display: table;
         width: 30px;
         min-width: 30px;
-        height: 25px;
+        height: 28px;
         border: none;
         color: #00c3c3;
         font-size: 25px;
         line-height: 1;
         font-weight: bold;
         position: relative;
-        text-align: right; }
+        text-align: right;
+        padding: 0; }
     #ge2-1-x .cast-number__button-minus {
       width: 36px;
       height: 36px;
@@ -6734,7 +6737,7 @@ html, body {
 #login .feature-title {
   width: 78.666666%;
   height: auto;
-  margin-top: 12.62%; }
+  margin-top: 26%; }
   #login .feature-title img {
     width: 100%;
     height: auto;
@@ -6744,7 +6747,7 @@ html, body {
 #login .service-list {
   width: 85.866666%;
   height: auto;
-  margin-top: 28.59%; }
+  margin-top: 12%; }
   #login .service-list img {
     width: 100%;
     height: auto;
@@ -6810,6 +6813,7 @@ html, body {
   -ms-flex-preferred-size: 88px;
   flex-basis: 88px; }
   .ge3 .btn2-s a {
+    margin-bottom: 2px;
     padding: 0.83em 23px; }
 
 .ge3 .details-list-box {

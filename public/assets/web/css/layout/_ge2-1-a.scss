@@ -129,11 +129,13 @@ $img-path-ge2-common:"../images/common/";
       color: #30ccc3;
     }
     input{
-      width: 120px;
+      min-width:120px;
+      width: 60%;
       border:none;
       font-size: 14px;
       line-height: 1;
       outline: none;
+      text-align:right;
     }
   }
 
@@ -301,7 +303,7 @@ $img-path-ge2-common:"../images/common/";
         display: table;
         width: 30px;
         min-width: 30px;
-        height: 25px;
+        height: 28px;
         border: none;
         color: #00c3c3;
         font-size: 25px;
@@ -309,6 +311,7 @@ $img-path-ge2-common:"../images/common/";
         font-weight: bold;
         position: relative;
         text-align: right;
+        padding:0;
       }
     }
     &__button-minus{
