@@ -257,7 +257,7 @@ class OrderController extends Controller
         $data['desires'] = $request->desires;
 
         $data['situations'] = $request->situations;
-        dd($data);
+
         Session::put('data', $data);
 
         return redirect()->route('guest.orders.get_step3');
