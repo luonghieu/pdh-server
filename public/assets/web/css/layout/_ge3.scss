@@ -69,4 +69,13 @@
 	.form_footer{
 		margin-top:30px;
 	}
+	.word18 {
+		max-width: 180px;
+	}
+	@media screen and (max-width:350px){
+		.word18 {
+			max-width: 140px;
+	    font-size: 13px;
+		}
+	}
 }

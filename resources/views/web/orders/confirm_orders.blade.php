@@ -14,7 +14,7 @@
         <div class="details-header__title">予約内容</div>
           <div class="details-list-box">
             <ul class="details-header__list">
-              <li><i><img src="{{ asset('assets/web/images/common/map.svg') }}"></i><p>{{ $data['area'] or $data['other_area'] }}</p></li>
+              <li><i><img src="{{ asset('assets/web/images/common/map.svg') }}"></i><p class="word18">{{ $data['area'] or $data['other_area'] }}</p></li>
               <li><i><img src="{{ asset('assets/web/images/common/clock.svg') }}"></i>
                 <p>
                 {{ isset($data['time']) ? $data['time'].'分後' : Carbon\Carbon::parse($data['otherTime'])->format('Y年m月d日') }}
@@ -30,6 +30,24 @@
             <div class="btn2-s"><a href="{{ route('guest.orders.call') }}">変更</a></div>
           </div>
       </section>
+      <script>
+        $(function(){
+            var $setElm = $('p');
+            var cutFigure = '17'; // カットする文字数
+            var afterTxt = ' …'; // 文字カット後に表示するテキスト
+         
+            $setElm.each(function(){
+                var textLength = $(this).text().length;
+                var textTrim = $(this).text().substr(0,(cutFigure))
+         
+                if(cutFigure < textLength) {
+                    $(this).html(textTrim + afterTxt).css({visibility:'visible'});
+                } else if(cutFigure >= textLength) {
+                    $(this).css({visibility:'visible'});
+                }
+            });
+        });
+      </script>
       <section class="details-list">
         <div class="details-list__line"><p></p></div>
         <div class="details-list__header">
