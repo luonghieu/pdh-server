@@ -16,7 +16,7 @@
         <div class="cast_block" id="cb-casts">
           <input type="checkbox" name="casts[]" value="{{ $cast['id'] }}" {{ (isset($currentCasts) && in_array($cast['id'], $currentCasts) ) ? 'checked="checked"' : '' }} id="{{ $cast['id'] }}" class="select-casts">
           <div class="icon">
-            <img src="{{ $cast['avatars'][0]['thumbnail'] }}" alt="">
+            <p><img src="{{ $cast['avatars'][0]['thumbnail'] }}" alt=""></p>
           </div>
           <span class="sp-name-cast">{{ $cast['nickname'] }}</span>
           <label for="{{ $cast['id'] }}">指名する</label>
