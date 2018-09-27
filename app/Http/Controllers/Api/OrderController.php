@@ -268,8 +268,10 @@ class OrderController extends ApiController
 
         $orderFee = 0;
         if (OrderType::NOMINATION != $request->type) {
-            $multiplier = floor($orderDuration / 15);
-            $orderFee = 500 * $multiplier * count($nomineeIds);
+            if (!empty($nomineeIds[0])) {
+                $multiplier = floor($orderDuration / 15);
+                $orderFee = 500 * $multiplier * count($nomineeIds);
+            }
         }
 
         return $this->respondWithData($orderPoint + $orderFee + $allowancePoint);
