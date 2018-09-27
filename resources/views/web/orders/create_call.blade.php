@@ -127,21 +127,21 @@
         <input type="radio" name="time_set" value="3" {{ (isset($currentDuration) && $currentDuration == 3) ? 'checked="checked"' : '' }}>
         3時間
       </label>
-      <label id="time-input" class="button button--green time {{ (isset($currentDuration) && $currentDuration == '4') ? 'active' : '' }}">
-        <input type="radio" name="time_set" value="4" {{ (isset($currentDuration) && $currentDuration == 4) ? 'checked="checked"' : '' }}>
+      <label id="time-input" class="button button--green time {{ (isset($currentOtherDuration)) ? 'active' : '' }}">
+        <input type="radio" name="time_set" value="other_duration" {{ (isset($currentOtherDuration)) ? 'checked="checked"' : '' }}>
         4時間以上
       </label>
-      <label class="time-input">
+      <label class="time-input" style="{{ (isset($currentOtherDuration)) ? 'display: flex;' : '' }}">
         <span>呼ぶ時間</span>
         <div class="selectbox">
           <select class="" name="sl_duration">
-            <option value="4">4時間</option>
-            <option value="5">5時間</option>
-            <option value="6">6時間</option>
-            <option value="7">7時間</option>
-            <option value="8">8時間</option>
-            <option value="9">9時間</option>
-            <option value="10">10時間</option>
+            <option value="4" {{ (isset($currentDuration) && $currentDuration == 4) ? 'selected' : '' }}>4時間</option>
+            <option value="5" {{ (isset($currentDuration) && $currentDuration == 5) ? 'selected' : '' }}>5時間</option>
+            <option value="6" {{ (isset($currentDuration) && $currentDuration == 6) ? 'selected' : '' }}>6時間</option>
+            <option value="7" {{ (isset($currentDuration) && $currentDuration == 7) ? 'selected' : '' }}>7時間</option>
+            <option value="8" {{ (isset($currentDuration) && $currentDuration == 8) ? 'selected' : '' }}>8時間</option>
+            <option value="9" {{ (isset($currentDuration) && $currentDuration == 9) ? 'selected' : '' }}>9時間</option>
+            <option value="10" {{ (isset($currentDuration) && $currentDuration == 10) ? 'selected' : '' }}>10時間</option>
           </select>
           <i></i>
         </div>

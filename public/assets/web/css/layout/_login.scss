@@ -67,19 +67,17 @@ html,body{
   }
 
   .usage-contract{
-    width: 100%;
     height: auto;
     line-height: 1;
     font-size: 11px;
     text-align: center;
     color: #fff;
-    display: flex;
-    align-items: center;
-    justify-content: center;    
     margin-top:2.548%;
+    width: 90%;
     a{
       color:  #00c3c3;
       text-decoration: underline;
+      display: initial;
     }
   }
 }
