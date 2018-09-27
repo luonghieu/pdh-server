@@ -156,7 +156,7 @@
       <div class="grade-list">
         <label>
           <img src="{{ asset('assets/web/images/ge2-1-a/grade-icon_001.png') }}" alt="">
-          <span class="cast_class">ダイアモンド</span>
+          <span class="cast_class">ダイヤモンド</span>
           <span class="cast_price">12,500P/30分</span>
           <input type="radio" name="cast_class" class="grade-radio" value="3" {{ (isset($currentCastClass) && $currentCastClass == 3) ? 'checked="checked"' : '' }}>
         </label>
