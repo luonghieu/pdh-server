@@ -81,7 +81,6 @@
                 </li>
             </ul>
             <div>
-                <h1>{{ $castUnrate->id }}</h1>
                 <textarea class="form" name="comment" cols="50" rows="10" wrap="soft"
                           placeholder="よろしければ評価内容をご入力ください" id="rating-comment"></textarea>
             </div>
