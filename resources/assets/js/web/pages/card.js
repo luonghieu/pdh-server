@@ -1,4 +1,6 @@
 $(document).ready(function(){
+  var backUrl = $("#back-url").val();
+
   $('#btn-create').on('click', function (e) {
     var numberCard = $("#number-card").val();
     var month = $("#month").val();
@@ -23,7 +25,7 @@ $(document).ready(function(){
           var error = msg.error;
           $(".notify span").text(error);
         } else {
-          window.location.href = "/credit_card";
+          window.location.href = backUrl;
         }
       },
     });

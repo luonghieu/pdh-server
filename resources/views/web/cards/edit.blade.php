@@ -14,7 +14,7 @@
   </div>
 </div>
 <div class="image-main">
-  <img src="/assets/webview/images/ic_credit_cards@2x.png" alt="">
+  <img src="/assets/web/images/card/allCard.png" alt="">
 </div>
 <div class="notify">
   <span></span>
@@ -28,6 +28,7 @@
     <span class="left">カード番号</span>
     <div class="right number">
       <span id="error">カード番号を正しく入力してください</span>
+      <input type="hidden" value="{{ \URL::previous() }}" id="back-url">
       <input type="text" pattern="[0-9]*" name="number_card" id="number-card" onkeyup="creditValidate()" onkeydown="return numberCardLength(event)">
       <span id="number-card-display" class="old-card">下4桁{{ $card->last4 }}</span>
     </div>

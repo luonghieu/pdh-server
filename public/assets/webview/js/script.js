@@ -40,8 +40,10 @@ function creditValidate()
   var visa = '^4[0-9]{12}(?:[0-9]{3})?$';
   var mastercard = '^5[1-5][0-9]{14}$';
   var americanExpress = '^3[47][0-9]{13,14}$';
+  var dinnersClub = '^3(?:0[0-5]|[68][0-9])[0-9]{11}$';
+  var jcb = '^(?:2131|1800|35\\d{3})\\d{11}$';
 
-  if(str.match(visa) || str.match(mastercard) || str.match(americanExpress)) {
+  if(str.match(visa) || str.match(mastercard) || str.match(americanExpress) || str.match(dinnersClub) || str.match(jcb)) {
     var element = document.getElementById("error");
     element.classList.remove("error");
     var element2 = document.getElementById("number-card-display");
