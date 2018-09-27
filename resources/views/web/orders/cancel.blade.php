@@ -11,20 +11,20 @@
   <table>
     <tbody>
       <tr>
-        <td>施述予定日の8日前まで</td>
+        <td>合流予定日の8日前まで</td>
         <td class="right">キャンセル料なし</td>
       </tr>
       <tr>
-        <td>施述予定日の7日前</td>
-        <td class="right">施術料の30％</td>
+        <td>合流予定日の7日前</td>
+        <td class="right">予定合計ポイントの30％</td>
       </tr>
       <tr>
-        <td>施述予定日の1日前</td>
-        <td class="right">施術料の50％</td>
+        <td>合流予定日の1日前</td>
+        <td class="right">予定合計ポイントの50％</td>
       </tr>
       <tr>
-        <td>施述予定日の当日</td>
-        <td class="right">施術料の100％</td>
+        <td>合流予定日の当日</td>
+        <td class="right">予定合計ポイントの100％</td>
       </tr>
     </tbody>
   </table>
