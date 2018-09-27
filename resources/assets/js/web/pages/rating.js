@@ -15,8 +15,13 @@ $('#rating-create').submit(function (e) {
         const message = helper.getResponseMessage(response.data.message);
         $('#rating-alert-content').html(message);
         $('#rating-alert').trigger('click');
+        const nextRatting = Number($('#next-rating-cast').val());
         setTimeout(() => {
-            window.location.href = `/evaluation?order_id=${formData.order_id}`;
+            if (nextRatting != -1) {
+                window.location.href = `/evaluation?order_id=${formData.order_id}`;
+            } else {
+                window.location.href = `/history/${formData.order_id}`;
+            }
         }, 1500);
     }).catch(err => {
         const message = helper.getResponseMessage(err.response.data.error);

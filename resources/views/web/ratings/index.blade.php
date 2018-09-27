@@ -92,6 +92,7 @@
             <button type="button" class="button button-settlement" id="rating-submit-btn" disabled>評価する
                 {{ ($totalRated != -1 || $order->total_cast != 1) ? $totalRated . '/' . $order->total_cast  : ''
                 }}</button>
+            <input type="hidden" id="next-rating-cast" value="{{ ($nextCast) ? $nextCast->id : '-1' }}">
         </section>
     </form>
 @endsection

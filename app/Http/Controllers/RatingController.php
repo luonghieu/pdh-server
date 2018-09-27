@@ -15,8 +15,7 @@ class RatingController extends Controller
             return redirect()->back();
         }
 
-        $castUnrate = $order->casts()->wherePivot('guest_rated', false)->first();
-
+        $castUnrate = $order->casts()->wherePivot('guest_rated', false)->orderBy('cast_order.id', 'ASC')->first();
         if (!$castUnrate) {
             return redirect()->route('message.messages', ['room' => $order->room_id]);
         }
@@ -33,6 +32,9 @@ class RatingController extends Controller
             $totalRated = -1;
         }
 
-        return view('web.ratings.index', compact(['order', 'castUnrate', 'totalRated']));
+        $nextCast = $order->casts()->wherePivot('id', '>', $castUnrate->pivot->id)->wherePivot('guest_rated', false)
+            ->first();
+
+        return view('web.ratings.index', compact(['order', 'castUnrate', 'totalRated', 'nextCast']));
     }
 }
