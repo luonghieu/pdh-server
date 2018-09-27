@@ -2,13 +2,16 @@
 
 namespace App\Notifications;
 
+use App\Enums\MessageType;
+use App\Enums\RoomType;
+use App\Enums\SystemMessageType;
 use App\Order;
 use Carbon\Carbon;
 use Illuminate\Bus\Queueable;
 use Illuminate\Notifications\Notification;
 use Illuminate\Contracts\Queue\ShouldQueue;
 
-class CreateNominationOrdersForGuest extends Notification implements ShouldQueue
+class CreateOrdersForLineGuest extends Notification implements ShouldQueue
 {
     use Queueable;
 
@@ -62,6 +65,29 @@ class CreateNominationOrdersForGuest extends Notification implements ShouldQueue
     {
         $startTime = Carbon::parse($this->order->date . ' ' . $this->order->start_time);
         $endTime = Carbon::parse($this->order->date . ' ' . $this->order->end_time);
+
+        $content = 'Cheersをご利用いただきありがとうございます！'
+            . PHP_EOL . 'キャストのご予約を承りました。'
+            . PHP_EOL . '------------------------------------------'
+            . PHP_EOL . PHP_EOL . '- ご予約内容 -'
+            . PHP_EOL . '日時：' . $startTime->format('Y/m/d H:i') . '~'
+            . PHP_EOL . '時間：' . $startTime->diffInMinutes($endTime) / 60 . '時間'
+            . PHP_EOL . 'クラス：' . $this->order->castClass->name
+            . PHP_EOL . '人数：' . $this->order->total_cast . '人'
+            . PHP_EOL . '場所：' . $this->order->address
+            . PHP_EOL . PHP_EOL . '現在、キャストの調整を行っております。'
+            . PHP_EOL . 'しばらくお待ちください☆';
+
+        $room = $notifiable->rooms()
+            ->where('rooms.type', RoomType::SYSTEM)
+            ->where('rooms.is_active', true)->first();
+        $roomMessage = $room->messages()->create([
+            'user_id' => 1,
+            'type' => MessageType::SYSTEM,
+            'message' => $content,
+            'system_type' => SystemMessageType::NORMAL,
+        ]);
+        $roomMessage->recipients()->attach($notifiable->id, ['room_id' => $room->id]);
 
         $content = 'Cheersをご利用いただきありがとうございます！✨'
             . PHP_EOL . 'キャストのご予約を承りました。'
