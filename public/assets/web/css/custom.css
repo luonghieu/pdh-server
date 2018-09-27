@@ -704,3 +704,7 @@ input[type="date"]::-webkit-calendar-picker-indicator {
     height: 4rem;
   }
 }
+
+.mess-btn a {
+  color: #fff;
+}
