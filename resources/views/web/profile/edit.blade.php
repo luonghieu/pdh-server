@@ -23,8 +23,23 @@
       </div>
     </div>
 </div>
+
+<div class="modal_wrap">
+  <input id="trigger3" type="checkbox">
+    <div class="modal_overlay">
+      <label for="trigger3" class="modal_trigger"></label>
+      <div class="modal_content modal_content-btn3">
+        <div class="content-in" id="profile-message">
+          <h2></h2>
+        </div>
+      </div>
+    </div>
+</div>
 @endsection
 @section('web.content')
+<section class="button-box" hidden="">
+  <label for="trigger3" class="open_button button-settlement" id="profile-popup"></label>
+</section>
 <form id="update-profile" action="#" method="GET" enctype="multipart/form-data">
   {{ csrf_field() }}
   <div class="cast-profile">
@@ -65,7 +80,7 @@
         <h2 class="portlet-header__title">ひとこと</h2>
       </div>
       <div class="portlet-content">
-        <textarea rows="2" id="intro" name="intro">{{ $profile['intro'] }}</textarea>
+        <textarea rows="2" id="intro" name="intro" placeholder="ひとこと設定されていません">{{ $profile['intro'] }}</textarea>
         <label data-field="intro" id="intro-error" class="error help-block" for="intro"></label>
       </div>
       <div data-field="intro" class="help-block"></div>
@@ -77,7 +92,7 @@
         <h2 class="portlet-header__title">自己紹介</h2>
       </div>
       <div class="portlet-content">
-        <textarea rows="5" id="description" name="description">{{ $profile['description'] }}</textarea>
+        <textarea rows="5" id="description" name="description" placeholder="自己紹介設定されていません">{{ $profile['description'] }}</textarea>
         <label data-field="description" id="description-error" class="error help-block" for="description"></label>
       </div>
     </section>
@@ -99,9 +114,10 @@
             <label class="time-input">
               <div class="selectbox" data-field="gender">
                 <select dir="rtl" id="gender">
+                  <option value="" class="hidden">未設定</option>
                   @foreach ($glossaries['genders'] as $gender)
                     @php
-                      ($gender['id'] == $profile['gender']) ? ($selected = "selected='selected'") : ($selected = '')
+                      (($gender['id'] == $profile['gender']) && !empty($profile['gender'])) ? ($selected = "selected='selected'") : ($selected = '')
                     @endphp
                     <option value="{{ $gender['id'] }}" {{ $selected }}>{{ $gender['name'] }}</option>
                   @endforeach
@@ -117,6 +133,7 @@
               $max = \Carbon\Carbon::parse(now())->subYear(20);
             @endphp
             <div class="init-date">
+              <input id="date-display" value="{{ \Carbon\Carbon::parse($profile['date_of_birth'])->format('Y年m月d日') }}" readonly />
               <input type="date" id="date-of-birth" max="{{ $max->format('Y-m-d') }}" name="date_of_birth" value="{{ $profile['date_of_birth'] }}">
             </div>
           </li>
@@ -130,10 +147,13 @@
             <label class="time-input">
               <div class="selectbox" data-field="height">
                 <select dir="rtl" id="height" name="height">
-                  <option value="0">非公開</option>
+                  <option value="" class="hidden">未設定</option>
+                  <option value="0" {{ ($profile['height'] == 0) ? ($selected = "selected='selected'") : ($selected = '') }}>
+                    非公開
+                  </option>
                   @for ($height = 130; $height <= 200; $height++)
                     @php
-                      ($height == $profile['height']) ? ($selected = "selected='selected'") : ($selected = '')
+                      ($height === $profile['height']) ? ($selected = "selected='selected'") : ($selected = '')
                     @endphp
                     <option value="{{ $height }}" {{ $selected }}>{{ $height }}cm</option>
                   @endfor
@@ -148,6 +168,7 @@
             <label class="time-input">
               <div class="selectbox" data-field="salary">
                 <select dir="rtl" id="salary" name="salary">
+                  <option value="" class="hidden">未設定</option>
                   @foreach ($glossaries['salaries'] as $salary)
                     @php
                       ($salary['id'] == $profile['salary_id']) ? ($selected = "selected='selected'") : ($selected = '')
@@ -167,6 +188,7 @@
             <label class="time-input">
               <div class="selectbox">
                 <select dir="rtl" id="body-type-id" name="body_type_id">
+                  <option value="" class="hidden">未設定</option>
                   @foreach ($glossaries['body_types'] as $bodyType)
                     @php
                       ($bodyType['id'] == $profile['body_type_id']) ? ($selected = "selected='selected'") : ($selected = '')
@@ -186,6 +208,7 @@
             <label class="time-input">
               <div class="selectbox">
                 <select dir="rtl" id="prefecture-id">
+                  <option value="" class="hidden">未設定</option>
                   @foreach ($glossaries['prefectures'] as $prefecture)
                     @php
                       ($prefecture['id'] == $profile['prefecture_id']) ? ($selected = "selected='selected'") : ($selected = '')
@@ -205,6 +228,7 @@
             <label class="time-input">
               <div class="selectbox">
                 <select dir="rtl" id="hometown-id">
+                  <option value="" class="hidden">未設定</option>
                   @foreach ($glossaries['hometowns'] as $hometown)
                     @php
                       ($hometown['id'] == $profile['hometown_id']) ? ($selected = "selected='selected'") : ($selected = '')
@@ -224,6 +248,7 @@
             <label class="time-input">
               <div class="selectbox">
                 <select dir="rtl" id="job-id">
+                  <option value="" class="hidden">未設定</option>
                   @foreach ($glossaries['jobs'] as $job)
                     @php
                       ($job['id'] == $profile['job_id']) ? ($selected = "selected='selected'") : ($selected = '')
@@ -243,6 +268,7 @@
             <label class="time-input">
               <div class="selectbox">
                 <select dir="rtl" id="drink-volume-type">
+                  <option value="" class="hidden">未設定</option>
                   @foreach ($glossaries['drink_volumes'] as $drinkVolume)
                     @php
                       ($drinkVolume['id'] == $profile['drink_volume_type']) ? ($selected = "selected='selected'") : ($selected = '')
@@ -262,6 +288,7 @@
             <label class="time-input">
               <div class="selectbox">
                 <select dir="rtl" id="smoking-type">
+                  <option value="" class="hidden">未設定</option>
                   @foreach ($glossaries['smokings'] as $smoking)
                     @php
                       ($smoking['id'] == $profile['smoking_type']) ? ($selected = "selected='selected'") : ($selected = '')
@@ -281,6 +308,7 @@
             <label class="time-input">
               <div class="selectbox">
                 <select  dir="rtl" id="siblings-type">
+                  <option value="" class="hidden">未設定</option>
                   @foreach ($glossaries['siblings'] as $sibling)
                     @php
                       ($sibling['id'] == $profile['siblings_type']) ? ($selected = "selected='selected'") : ($selected = '')
@@ -300,7 +328,7 @@
             <label class="time-input">
               <div class="selectbox">
                 <select dir="rtl" id="cohabitant-type">
-                  cohabitant_type
+                  <option value="" class="hidden">未設定</option>
                   @foreach ($glossaries['cohabitants'] as $cohabitant)
                     @php
                       ($cohabitant['id'] == $profile['cohabitant_type']) ? ($selected = "selected='selected'") : ($selected = '')

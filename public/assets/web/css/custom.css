@@ -113,22 +113,15 @@
   color: red;
 }
 
-input[type="date"] {
-  outline: none;
+.init-date #date-of-birth {
+  width: 1rem;
+  background-color: #fff;
   border: none;
-  color: #4c4b4b;
 }
 
-input[type="date"]::-webkit-inner-spin-button {
-  height: 28px;
-}
-
-input[type="date"]::-webkit-calendar-picker-indicator {
-  font-size: 14px;
-}
-
-.init-date {
-  margin-right: -25px;
+.init-date #date-display {
+  border: none;
+  width: 6.1rem;
 }
 
 #mm-0 .init-image-radius {
