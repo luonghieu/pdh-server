@@ -87,8 +87,8 @@
             <label class="date-input">
               <span>希望日時</span>
               <p class="date-input__text">
-                <span class='sp-date'></span>
                 <span class='sp-month'></span>
+                <span class='sp-date'></span>
                 <span class="sp-time"></span>
               </p>
             </label>
