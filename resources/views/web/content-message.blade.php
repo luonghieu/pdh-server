@@ -42,7 +42,7 @@
             <a href="#"><img src="{{ $element['user']['avatars'] ? $element['user']['avatars'][0]['path']:'' }}"  alt="" title="" class="alignnone size-full wp-image-515" /></a>
           </figure>
           <div class="{{ $className }}-text">
-            @if ($element['type'] == App\Enums\MessageType::MESSAGE)
+            @if (in_array($element['type'], [App\Enums\MessageType::MESSAGE, App\Enums\MessageType::THANKFUL]))
            <div class="text">
               <div class="text-wrapper">
                 <p>{{ $element['message'] }}</p>

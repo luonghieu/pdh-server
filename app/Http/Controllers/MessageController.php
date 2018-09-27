@@ -29,7 +29,7 @@ class MessageController extends Controller
 
         if ($messages['order'] && OrderStatus::DONE == $messages['order']['status']) {
             $order = Order::where('status', OrderStatus::DONE)->find($messages['order']['id']);
-            $cast = $room->order->casts()->wherePivot('guest_rated', false)->first();
+            $cast = $order->casts()->wherePivot('guest_rated', false)->first();
             if ($cast) {
                 return redirect(route('evaluation.index', ['order_id' => $order->id]));
             } else {

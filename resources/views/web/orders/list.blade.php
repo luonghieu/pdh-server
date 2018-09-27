@@ -11,7 +11,7 @@
      <div class="item_up">
        <ul class="item_left">
          <li class="time-text">
-         {{ Carbon\Carbon::parse($order['date'])->format('m月d日(土)') }}
+         {{ Carbon\Carbon::parse($order['date'])->format('m月d日') }} ({{ dayOfWeek()[Carbon\Carbon::parse($order['date'])->dayOfWeek] }})
          </li>
          <li class="time-text">{{ $order['address'] }} {{ Carbon\Carbon::parse($order['start_time'])->format('H:i') }}〜</li>
          @if(count($order['tags']))
@@ -52,7 +52,8 @@
 @endsection
 
 @section('web.extra')
-  @confirm(['triggerId' => 'cancel', 'triggerCancel' =>'cf-cancel-order','triggerSuccess' =>''])
+  @confirm(['triggerId' => 'cancel', 'buttonLeft' =>'はい',
+   'buttonRight' =>'いいえ', 'triggerCancel' =>'cf-cancel-order','triggerSuccess' =>''])
     @slot('title')
       この日程をキャンセルしますか？
     @endslot

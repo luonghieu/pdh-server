@@ -43,9 +43,9 @@
         <div class="msg-box-ttl wrap-balloon">
           <div class="msg_time">
             @if ($room->latest_message != null)
-            <p class="latest-message">{{ $room->latest_message ? Carbon\Carbon::parse($room->latest_message->created_at)->format('H:i') : ''}} </p>
+            <p class="time-msg">{{ $room->latest_message ? Carbon\Carbon::parse($room->latest_message->created_at)->format('H:i') : ''}} </p>
             @else
-            <p></p>
+            <p class="time-msg"></p>
             @endif
           </div>
           @if ($room->unread_count > 0)
@@ -72,12 +72,12 @@
             @endif
             @if ($room->latest_message != null)
               @if ($room->latest_message->image)
-              <p>{{ $room->latest_message ? $room->latest_message->user->nickname:'' }}さんが写真を送信しました</p>
+              <p class="latest-message">{{ $room->latest_message ? $room->latest_message->user->nickname:'' }}さんが写真を送信しました</p>
               @else
-              <p>{{ $room->latest_message ? $room->latest_message->message:'' }}</p>
+              <p class="latest-message">{{ $room->latest_message ? $room->latest_message->message:'' }}</p>
               @endif
             @else
-            <p></p>
+            <p class="latest-message"></p>
             @endif
           </div>
         </div>

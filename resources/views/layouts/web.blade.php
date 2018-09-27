@@ -12,6 +12,11 @@
   <link rel="stylesheet" href="{{ asset('assets/web/css/plugin/slick/slick.css') }}">
   <link rel="stylesheet" href="{{ asset('assets/web/css/custom.css') }}">
   @yield('web.extra_css')
+  <script>
+    window.App = {!! json_encode([
+          'api_url' => config('common.api_url')
+      ]) !!};
+  </script>
 </head>
 
 <body id="@yield('controller.id')">

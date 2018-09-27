@@ -14,10 +14,11 @@
         <div class="details-header__title">予約内容</div>
           <div class="details-list-box">
             <ul class="details-header__list">
-              <li><i><img src="{{ asset('assets/web/images/common/map.svg') }}"></i><p>{{ $data['area'] }}</p></li>
+              <li><i><img src="{{ asset('assets/web/images/common/map.svg') }}"></i><p>{{ $data['area'] or $data['other_area'] }}</p></li>
               <li><i><img src="{{ asset('assets/web/images/common/clock.svg') }}"></i>
                 <p>
                 {{ isset($data['time']) ? $data['time'].'分後' : Carbon\Carbon::parse($data['otherTime'])->format('Y年m月d日') }}
+                {{ (isset($data['time_detail'])) ? $data['time_detail']['hour'].':'.$data['time_detail']['minute'] : ''}}
                 </p>
               </li>
               <li><i><img src="{{ asset('assets/web/images/common/glass.svg') }}"></i><p>{{ $data['duration'] }}時間</p></li>
@@ -79,7 +80,7 @@
     <div class="reservation-policy">
       <label class="checkbox">
         <input type="checkbox" class="cb-cancel">
-        <span class="disable" id="sp-cancel"></span>
+        <span class="sp-disable" id="sp-cancel"></span>
         <a href="{{ route('guest.orders.cancel') }}">キャンセルポリシー</a>
         に同意する
       </label>
@@ -116,7 +117,8 @@
     @endslot
   @endconfirm
   @if(!$user->card)
-    @modal(['triggerId' => 'md-require-card', 'triggerClass' =>'lable-register-card'])
+    @modal(['triggerId' => 'md-require-card', 'triggerClass' =>'lable-register-card','button' =>'クレジットカードを登録する
+'])
       @slot('title')
         クレジットカードを登録してキャストとマッチングしよう！
       @endslot
