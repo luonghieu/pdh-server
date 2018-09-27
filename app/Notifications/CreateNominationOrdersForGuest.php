@@ -69,6 +69,8 @@ class CreateNominationOrdersForGuest extends Notification implements ShouldQueue
             . PHP_EOL . '▼ご予約内容'
             . PHP_EOL . '日時：' . $startTime->format('Y/m/d H:i') . '~'
             . PHP_EOL . '時間：' . $startTime->diffInMinutes($endTime) / 60 . '時間'
+            . PHP_EOL . 'クラス：' . $this->order->castClass->name
+            . PHP_EOL . '人数：' . $this->order->total_cast . '人'
             . PHP_EOL . '場所：' . $this->order->address
             . PHP_EOL . PHP_EOL . '現在、キャストの調整を行っております。'
             . PHP_EOL . 'しばらくお待ちください☆'
