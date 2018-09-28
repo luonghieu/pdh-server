@@ -114,10 +114,14 @@ $(document).ready(function(){
     if($('.select-casts:checked').length > castNumbers) {
       $(this).attr('checked',false);
     }else {
+
+      var id = $(this).val();
       if ($(this).is(':checked')) {
         $(this).attr('checked',true);
+        $('.label-select-casts[for='+  id  +']').text('指名中');
       } else {
         $(this).attr('checked',false);
+        $('.label-select-casts[for='+  id  +']').text('指名する');
       }
     }
   });

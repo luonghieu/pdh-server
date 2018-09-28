@@ -19,7 +19,7 @@
             <p><img src="{{ $cast['avatars'][0]['thumbnail'] }}" alt=""></p>
           </div>
           <span class="sp-name-cast">{{ $cast['nickname'] }}</span>
-          <label for="{{ $cast['id'] }}">指名する</label>
+          <label for="{{ $cast['id'] }}" class="label-select-casts">指名する</label>
         </div>
         @endforeach
         @endif
