@@ -357,9 +357,6 @@
 </form>
 @endsection
 @section('web.script')
-<input type="hidden" id="nickname" value="{{ Auth::user()->nickname }}" />
-<input type="hidden" id="date_of_birth" value="{{ Auth::user()->date_of_birth }}" />
-<input type="hidden" id="avatars" value="{{ Auth::user()->avatars[0] }}" />
 <script>
 //time_input--------------------------------------------
 var tiemButton = $(".button--green.time");
