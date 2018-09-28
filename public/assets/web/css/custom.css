@@ -64,7 +64,7 @@
   bottom: 10px;
   right: 0;
   border-radius: 30px;
-  background-color: #00D2CC;
+  background-color: transparent;
   text-align: center;
 }
 
@@ -725,4 +725,23 @@
 
 .reserve-image img {
   height: 100%;
+}
+
+.notyfi-msg {
+  position: absolute;
+  width: 30px;
+  height: 30px;
+  bottom: 10px;
+  right: 0;
+  border-radius: 30px;
+  text-align: center;
+  background-color: #00D2CC;
+}
+
+.notyfi-msg span {
+  color: #fff;
+  display: inline-block;
+  margin-top: 5px;
+  font-weight: bold;
+  font-size: 14px;
 }
