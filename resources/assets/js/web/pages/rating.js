@@ -37,3 +37,13 @@ $('#rating-comment').on('keyup', function(e) {
         $('#rating-submit-btn').prop("disabled", true);
     }
 });
+
+$("#rating-comment").bind({
+    paste : function(){
+        if ($(this).val().length) {
+            $('#rating-submit-btn').prop("disabled", false);
+        } else {
+            $('#rating-submit-btn').prop("disabled", true);
+        }
+    },
+});
