@@ -351,4 +351,7 @@ $(document).ready(function(){
     }
   })
 
+  if($("label").hasClass("status-code")){
+    $('.status-code').click();
+  }
 });
