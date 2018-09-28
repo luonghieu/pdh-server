@@ -1,6 +1,6 @@
 @section('title', 'Order History')
 @section('controller.id', 'order-history-controller')
-@section('screen.id', 'gl-3')
+@section('screen.id', 'gl3')
 @extends('layouts.web')
 @section('web.extra')
     <div class="modal_wrap">
@@ -118,119 +118,114 @@
 @endsection
 
 @section('web.content')
-    <main id="gl3">
-        @if ($order->status == \App\Enums\OrderStatus::CANCELED)
-            <?php $orderStartTime = \Carbon\Carbon::parse($order->start_time) ?>
-            <?php $orderEndTime = $orderStartTime->copy()->addMinutes($order->duration * 60) ?>
-        @else
-            <?php $orderStartTime = \Carbon\Carbon::parse($order->actual_started_at) ?>
-            <?php $orderEndTime = \Carbon\Carbon::parse($order->actual_ended_at) ?>
+@if ($order->status == \App\Enums\OrderStatus::CANCELED)
+    <?php $orderStartTime = \Carbon\Carbon::parse($order->start_time) ?>
+    <?php $orderEndTime = $orderStartTime->copy()->addMinutes($order->duration * 60) ?>
+@else
+    <?php $orderStartTime = \Carbon\Carbon::parse($order->actual_started_at) ?>
+    <?php $orderEndTime = \Carbon\Carbon::parse($order->actual_ended_at) ?>
+@endif
+
+<?php $casts = $order->casts; ?>
+    <div class="settlement-confirm">
+    <section class="details-header">
+        <div class="details-header__title">予約詳細</div>
+        <ul class="details-header__list">
+            <li><i><img src="{{ asset('assets/web/images/common/date.svg') }}"></i>
+                <p>
+                    <span class="details-header__date">{{ $orderStartTime->format('Y年m月d日') }}</span>
+                    @if ($order->status == \App\Enums\OrderStatus::CANCELED)
+                        <span class="details-header__time">{{ $orderStartTime->format('H:i') . '~' }}</span>
+                    @else
+                        <span class="details-header__time">{{ $orderStartTime->format('H:i') . '~' . $orderEndTime->format('H:i') }}</span>
+                    @endif
+            </li>
+            <li><i><img src="{{ asset('assets/web/images/common/map.svg') }}"></i>
+                <p>{{ $order->address }}</p></li>
+            <li><i><img src="{{ asset('assets/web/images/common/woman.svg') }}"></i>
+                <p>{{ $order->total_cast . '名' }}</p></li>
+        </ul>
+    </section>
+    <?php $orderTotalPoint = 0; ?>
+    @foreach($casts as $cast)
+        <section class="details-list" id="cast-{{ $cast->id }}">
+            <div class="details-list__line"><p></p></div>
+            <div class="details-list__header">
+                <div class="details-list__thumbnail">
+                    <a href="{{ route('cast.show', ['id' => $cast->id]) }}">
+                        <img src="{{ $cast->avatars[0]->thumbnail }}" alt="Avatar">
+                    </a>
+                </div>
+                <p class="details-list__name text-nickname">{{ $cast->nickname }}</p>
+                <b>{{ '(' . \Carbon\Carbon::parse($cast->date_of_birth)->age . ')' }}</b>
+                <span class="details-list__button" onclick="expandInfo('cast-{{ $cast->id }}', this)"></span>
+            </div>
+            <div class="details-list__content">
+                <ul class="details-info-list">
+                    <li class="details-info-list__itme">
+                        <p class="details-info-list__text">{{ '合流' . $order->duration * 60 . '分' }}</p>
+                        <p class="details-info-list__marks">{{ number_format($cast->cast_order->order_point) .
+                         'P'
+                         }}</p>
+                    </li>
+                    <li class="details-info-list__itme">
+                        <p class="details-info-list__text">{{ '延長' . $cast->cast_order->extra_time . '分' }}</p>
+                        <p class="details-info-list__marks">{{ number_format($cast->cast_order->extra_point) .
+                         'P'
+                        }}</p>
+                    </li>
+                    <li class="details-info-list__itme">
+                        <p class="details-info-list__text">指名料</p>
+                        <p class="details-info-list__marks">{{ number_format($cast->cast_order->fee_point) . 'P'
+                        }}</p>
+                    </li>
+                    <li class="details-info-list__itme">
+                        <p class="details-info-list__text">深夜手当</p>
+                        <p class="details-info-list__marks">{{ number_format
+                        ($cast->cast_order->allowance_point) .
+                         'P'
+                        }}</p>
+                    </li>
+                </ul>
+                <ul class="">
+                    <li class="details-info-list__itme">
+                        <p class="details-info-list__text--subtotal">小計</p>
+                        <p class="details-info-list__marks--subtotal point-fix-mt">
+                            <?php $castTotalPoint = $cast->cast_order->total_point ?
+                                $cast->cast_order->total_point :
+                                $cast->cast_order->temp_point ?>
+                            <?php $orderTotalPoint += $castTotalPoint; ?>
+                            {{ number_format($castTotalPoint) . 'P' }}
+                        </p>
+                    </li>
+                </ul>
+            </div>
+        </section>
+    @endforeach
+
+    <section class="details-total">
+        <div class="details-list__line"><p></p></div>
+        <div class="details-total__content">
+            <div class="details-total__text">合計</div>
+            <div class="details-total__marks">{{ number_format($orderTotalPoint) . 'P' }}</div>
+        </div>
+        <span class="details-total-desc">❉1P=1.1円で決済が実行されます</span>
+    </section>
+    <form action="{{ route('point_settement.create', ['id' => $order->id]) }}" method="POST" id="payment-form">
+        {{ csrf_field() }}
+        @if ($order->payment_status == \App\Enums\OrderPaymentStatus::REQUESTING)
+        <div class="action" style="width: 100%; text-align: center;">
+            <button class="btn-l" type="submit" id="payment-submit">決済を確定する</button>
+        </div>
+
+            @if ($order->payment_status != \App\Enums\OrderPaymentStatus::EDIT_REQUESTING)
+                <a href="javascript:void(0)" class="point-fix"
+                   onclick="openRequestUpdatePoint('{{ $order->id }}')">決済ポイントの修正を依頼する場合はこちら</a>
+            @endif
         @endif
 
-        <?php $casts = $order->casts; ?>
-            <div class="settlement-confirm">
-            <section class="details-header">
-                <div class="details-header__title">予約詳細</div>
-                <ul class="details-header__list">
-                    <li><i><img src="{{ asset('assets/web/images/common/date.svg') }}"></i>
-                        <p>
-                            <span class="details-header__date">{{ $orderStartTime->format('Y年m月d日') }}</span>
-                            @if ($order->status == \App\Enums\OrderStatus::CANCELED)
-                                <span class="details-header__time">{{ $orderStartTime->format('H:i') . '~' }}</span>
-                            @else
-                                <span class="details-header__time">{{ $orderStartTime->format('H:i') . '~' . $orderEndTime->format('H:i') }}</span>
-                            @endif
-                    </li>
-                    <li><i><img src="{{ asset('assets/web/images/common/map.svg') }}"></i>
-                        <p>{{ $order->address }}</p></li>
-                    <li><i><img src="{{ asset('assets/web/images/common/woman.svg') }}"></i>
-                        <p>{{ $order->total_cast . '名' }}</p></li>
-                </ul>
-            </section>
-            <?php $orderTotalPoint = 0; ?>
-            @foreach($casts as $cast)
-                {{--{{ dd($cast) }}--}}
-                <section class="details-list" id="cast-{{ $cast->id }}">
-                    <div class="details-list__line"><p></p></div>
-                    <div class="details-list__header">
-                        <div class="details-list__thumbnail">
-                            <a href="{{ route('cast.show', ['id' => $cast->id]) }}">
-                                <img src="{{ $cast->avatars[0]->thumbnail }}" alt="Avatar">
-                            </a>
-                        </div>
-                        <p class="details-list__name">
-                            <span class="text-ellipsis">{{ ($cast->nickname) }}</span>
-                            <b>{{'(' . \Carbon\Carbon::parse($cast->date_of_birth)->age . ')' }}</b>
-                        </p>
-                        <span class="details-list__button" onclick="expandInfo('cast-{{ $cast->id }}', this)"></span>
-                    </div>
-                    <div class="details-list__content">
-                        <ul class="details-info-list">
-                            <li class="details-info-list__itme">
-                                <p class="details-info-list__text">{{ '合流' . $order->duration * 60 . '分' }}</p>
-                                <p class="details-info-list__marks">{{ number_format($cast->cast_order->order_point) .
-                                 'P'
-                                 }}</p>
-                            </li>
-                            <li class="details-info-list__itme">
-                                <p class="details-info-list__text">{{ '延長' . $cast->cast_order->extra_time . '分' }}</p>
-                                <p class="details-info-list__marks">{{ number_format($cast->cast_order->extra_point) .
-                                 'P'
-                                }}</p>
-                            </li>
-                            <li class="details-info-list__itme">
-                                <p class="details-info-list__text">指名料</p>
-                                <p class="details-info-list__marks">{{ number_format($cast->cast_order->fee_point) . 'P'
-                                }}</p>
-                            </li>
-                            <li class="details-info-list__itme">
-                                <p class="details-info-list__text">深夜手当</p>
-                                <p class="details-info-list__marks">{{ number_format
-                                ($cast->cast_order->allowance_point) .
-                                 'P'
-                                }}</p>
-                            </li>
-                        </ul>
-                        <ul class="">
-                            <li class="details-info-list__itme">
-                                <p class="details-info-list__text--subtotal">小計</p>
-                                <p class="details-info-list__marks--subtotal point-fix-mt">
-                                    <?php $castTotalPoint = $cast->cast_order->total_point ?
-                                        $cast->cast_order->total_point :
-                                        $cast->cast_order->temp_point ?>
-                                    <?php $orderTotalPoint += $castTotalPoint; ?>
-                                    {{ number_format($castTotalPoint) . 'P' }}
-                                </p>
-                            </li>
-                        </ul>
-                    </div>
-                </section>
-            @endforeach
-
-            <section class="details-total">
-                <div class="details-list__line"><p></p></div>
-                <div class="details-total__content">
-                    <div class="details-total__text">合計</div>
-                    <div class="details-total__marks">{{ number_format($orderTotalPoint) . 'P' }}</div>
-                </div>
-                <span class="details-total-desc">❉1P=1.1円で決済が実行されます</span>
-            </section>
-            <form action="{{ route('point_settement.create', ['id' => $order->id]) }}" method="POST" id="payment-form">
-                {{ csrf_field() }}
-                @if ($order->payment_status == \App\Enums\OrderPaymentStatus::REQUESTING)
-                <div class="action" style="width: 100%; text-align: center;">
-                    <button class="btn-l" type="submit" id="payment-submit">決済を確定する</button>
-                </div>
-
-                    @if ($order->payment_status != \App\Enums\OrderPaymentStatus::EDIT_REQUESTING)
-                        <a href="javascript:void(0)" class="point-fix"
-                           onclick="openRequestUpdatePoint('{{ $order->id }}')">決済ポイントの修正を依頼する場合はこちら</a>
-                    @endif
-                @endif
-
-            </form>
-        </div>
-    </main>
+    </form>
+</div>
 @endsection
 
 @section('web.extra_js')
