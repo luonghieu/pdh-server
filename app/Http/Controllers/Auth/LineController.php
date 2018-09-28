@@ -25,14 +25,15 @@ class LineController extends Controller
 
     public function webhook(Request $request)
     {
-        if ($request->events[0]['type'] == 'follow') {
-            try {
-                $header = [
-                    'Content-Type' => 'application/json',
-                    'Authorization' => 'Bearer ' . env('LINE_BOT_CHANNEL_ACCESS_TOKEN')
-                ];
-                $client = new Client(['headers' => $header]);
+        $header = [
+            'Content-Type' => 'application/json',
+            'Authorization' => 'Bearer ' . env('LINE_BOT_CHANNEL_ACCESS_TOKEN')
+        ];
+        $client = new Client(['headers' => $header]);
+        $response = null;
 
+        try {
+            if ($request->events[0]['type'] == 'follow') {
                 $message = 'Cheersへようこそ！'
                     . PHP_EOL . 'Cheersは飲み会や接待など様々なシーンに素敵なキャストを呼べるマッチングアプリです♪'
                     . PHP_EOL . '【現在対応可能エリア】'
@@ -72,12 +73,45 @@ class LineController extends Controller
                     ['body' => $body]
                 );
                 return $response;
-            } catch (\Exception $e) {
-                LogService::writeErrorLog($e);
+
+            } else {
+                $message = 'メッセージありがとうございます♪'
+                    . PHP_EOL . '申し訳ございませんが、このアカウントでは個別のご返信ができません。'
+                    . PHP_EOL . PHP_EOL . 'お手数ですが、サービスのお問い合わせやご予約などに関するお問い合わせは、サイト内のメッセージからCheers運営局宛にご連絡ください。';
+                $page = env('LINE_LIFF_REDIRECT_PAGE') . '?page=message';
+
+                $body = [
+                    'replyToken' => $request->events[0]['replyToken'],
+                    'messages' => [
+                        [
+                            'type' => 'template',
+                            'altText' => $message,
+                            'text' => $message,
+                            'template' => [
+                                'type' => 'buttons',
+                                'text' => $message,
+                                'actions' => [
+                                    [
+                                        'type' => 'uri',
+                                        'label' => '問い合わせる',
+                                        'uri' => "line://app/$page"
+                                    ],
+                                ]
+                            ]
+                        ]
+                    ],
+                ];
+
+                $body = \GuzzleHttp\json_encode($body);
+                $response = $client->post(env('LINE_REPLY_URL'),
+                    ['body' => $body]
+                );
             }
+        } catch (\Exception $e) {
+            LogService::writeErrorLog($e);
         }
 
-        return;
+        return $response;
     }
 
     public function handleCallBack(Request $request) {
