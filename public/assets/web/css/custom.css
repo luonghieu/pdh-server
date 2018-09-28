@@ -291,10 +291,6 @@
   border-radius: 15px;
 }
 
-#order-history-controller main {
-  padding-top: 30px;
-}
-
 .big-title {
   text-align: center;
   padding-bottom: 15px;
@@ -824,7 +820,7 @@
   width: 35%;
 }
 
-#gl-3 .text-nickname {
+#gl3 .text-nickname {
   width: 25%;
 }
 
