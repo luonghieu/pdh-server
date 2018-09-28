@@ -5275,6 +5275,14 @@ header {
       -ms-transform: rotate(-90deg);
       transform: rotate(-90deg); }
 
+.modal6 .mb-10 .close_button-block .btn-bg {
+  padding: 1.08em 0;
+  max-width: 140px;
+  width: 90%;
+  text-align: center;
+  border-width: 0;
+  line-height: 1.5; }
+
 #gl3 img {
   width: 100%;
   height: auto; }
