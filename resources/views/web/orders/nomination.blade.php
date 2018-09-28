@@ -33,30 +33,37 @@
             </label>
           </div>
           <div class="form-grpup"><!-- フォーム内容 -->
-            <label class="button button--green area ">
-              <input type="radio" name="nomination_area" value="六本木">六本木</label>
-            <label class="button button--green area ">
-              <input type="radio" name="nomination_area" value="恵比寿" >恵比寿</label>
-            <label class="button button--green area ">
-              <input type="radio" name="nomination_area" value="西麻布">西麻布</label>
-            <label class="button button--green area ">
-              <input type="radio" name="nomination_area" value="渋谷">渋谷</label>
-            <label class="button button--green area ">
-              <input type="radio" name="nomination_area" value="赤坂">赤坂</label>
-            <label class="button button--green area ">
-              <input type="radio" name="nomination_area" value="銀座">銀座</label>
-            <label class="button button--green area ">
-              <input type="radio" name="nomination_area" value="中目黒">中目黒</label>
-            <label class="button button--green area " >
-              <input type="radio" name="nomination_area" value="新橋">新橋</label>
-            <label class="button button--green area ">
-              <input type="radio" name="nomination_area" value="池袋">池袋</label>
-            <label class="button button--green area ">
-              <input type="radio" name="nomination_area" value="新宿">新宿</label>
-            <label id="area_input" class="button button--green area">
-              <input type="radio" name="nomination_area" value="その他">その他</label>
-            <label class="area-input"><span>希望エリア</span>
-              <input type="text" placeholder="入力してください" name="other_area_nomination">
+            <label class="button button--green area">
+              <input class="input-area" type="radio" name="nomination_area" value="六本木">六本木</label>
+            <label class="button button--green area">
+              <input class="input-area" type="radio" name="nomination_area" value="恵比寿">恵比寿</label>
+            <label class="button button--green area">
+              <input class="input-area" type="radio" name="nomination_area" value="西麻布">西麻布</label>
+            <label class="button button--green area {{ (isset($currentArea) && $currentArea == '渋谷') ? 'active' : '' }}">
+              <input class="input-area" type="radio" name="nomination_area" value="渋谷"
+              {{ (isset($currentArea) && $currentArea == '渋谷') ? 'checked="checked"' : '' }}>渋谷</label>
+            <label class="button button--green area {{ (isset($currentArea) && $currentArea == '赤坂') ? 'active' : '' }}">
+              <input class="input-area" type="radio" name="nomination_area" value="赤坂"
+              {{ (isset($currentArea) && $currentArea == '赤坂') ? 'checked="checked"' : '' }}>赤坂</label>
+            <label class="button button--green area {{ (isset($currentArea) && $currentArea == '銀座') ? 'active' : '' }}">
+              <input class="input-area" type="radio" name="nomination_area" value="銀座"
+              {{ (isset($currentArea) && $currentArea == '銀座') ? 'checked="checked"' : '' }}>銀座</label>
+            <label class="button button--green area {{ (isset($currentArea) && $currentArea == '中目黒') ? 'active' : '' }}">
+              <input class="input-area" type="radio" name="nomination_area" value="中目黒"
+              {{ (isset($currentArea) && $currentArea == '中目黒') ? 'checked="checked"' : '' }}>中目黒</label>
+            <label class="button button--green area {{ (isset($currentArea) && $currentArea == '新橋') ? 'active' : '' }}" >
+              <input class="input-area" type="radio" name="nomination_area" value="新橋"
+              {{ (isset($currentArea) && $currentArea == '新橋') ? 'checked="checked"' : '' }}>新橋</label>
+            <label class="button button--green area {{ (isset($currentArea) && $currentArea == '池袋') ? 'active' : '' }}">
+              <input class="input-area" type="radio" name="nomination_area" value="池袋"
+              {{ (isset($currentArea) && $currentArea == '池袋') ? 'checked="checked"' : '' }}>池袋</label>
+            <label class="button button--green area {{ (isset($currentArea) && $currentArea == '新宿') ? 'active' : '' }}">
+              <input class="input-area" type="radio" name="nomination_area" value="新宿"
+        {{ (isset($currentArea) && $currentArea == '新宿') ? 'checked="checked"' : '' }}>新宿</label>
+            <label id="area_input" class="button button--green area {{ (isset($currentOtherArea)) ? 'active' : '' }}">
+              <input class="input-area" type="radio" name="nomination_area" value="その他" {{ (isset($currentOtherArea)) ? 'checked="checked"' : '' }}>その他</label>
+            <label class="area-input area-nomination"><span>希望エリア</span>
+              <input type="text" id="other_area_nomination" placeholder="入力してください" name="other_area_nomination" value="{{ $currentOtherArea or '' }}">
            </label>
           </div>
         </div>
@@ -66,30 +73,30 @@
             <h2>キャストとの合流時間</h2>
           </div>
           <div class="form-grpup"><!-- フォーム内容 -->
-            <label class="button button--green date ">
-              <input type="radio" name="time_join_nomination" value="20">
+            <label class="button button--green date {{ (isset($currentTime) && $currentTime == '20') ? 'active' : '' }}">
+              <input class="input-time-join" type="radio" name="time_join_nomination" value="20" {{ (isset($currentTime) && $currentTime == 20) ? 'checked="checked"' : '' }}>
               20分後
             </label>
-            <label class="button button--green date ">
-              <input type="radio" name="time_join_nomination" value="30">
+            <label class="button button--green date {{ (isset($currentTime) && $currentTime == '30') ? 'active' : '' }} ">
+              <input class="input-time-join" type="radio" name="time_join_nomination" value="30" {{ (isset($currentTime) && $currentTime == 30) ? 'checked="checked"' : '' }}>
               30分後
             </label>
-            <label class="button button--green date ">
-              <input type="radio" name="time_join_nomination" value="60">
+            <label class="button button--green date {{ (isset($currentTime) && $currentTime == '60') ? 'active' : '' }} ">
+              <input class="input-time-join" type="radio" name="time_join_nomination" value="60" {{ (isset($currentTime) && $currentTime == 60) ? 'checked="checked"' : '' }}>
               60分後
             </label>
-            <label class="button button--green date">
-              <input type="radio" name="time_join_nomination" value="90" >
+            <label class="button button--green date {{ (isset($currentTime) && $currentTime == '90') ? 'active' : '' }} ">
+              <input class="input-time-join" type="radio" name="time_join_nomination" value="90" {{ (isset($currentTime) && $currentTime == 90) ? 'checked="checked"' : '' }} >
               90分後
             </label>
-            <label id="date_input" class="button button--green date ">
-              <input type="radio" name="time_join_nomination" value="other_time">それ以外</label>
-            <label class="date-input">
+            <label id="date_input" class="button button--green date {{ (isset($timeDetail)) ? 'active' : '' }}">
+              <input class="input-time-join" type="radio" name="time_join_nomination" value="other_time" {{ (isset($timeDetail)) ? 'checked="checked"' : '' }}>それ以外</label>
+            <label class="date-input date-input-nomination" style="{{ (isset($timeDetail)) ? 'display: flex;' : '' }}">
               <span>希望日時</span>
               <p class="date-input__text">
-                <span class='sp-date'></span>
-                <span class='sp-month'></span>
-                <span class="sp-time"></span>
+                <span class='sp-month'>{{ (isset($timeDetail)) ? $timeDetail['month'] .'月' : ''}}</span>
+                <span class='sp-date'>{{ (isset($timeDetail)) ? $timeDetail['date'] .'日' : ''}}</span>
+                <span class="sp-time">{{ (isset($timeDetail)) ? $timeDetail['hour'].':'.$timeDetail['minute'] : ''}}</span>
               </p>
             </label>
         </div>
@@ -99,33 +106,33 @@
             <h2>キャストとを呼ぶ時間</h2>
           </div>
           <div class="form-grpup"><!-- フォーム内容 -->
-            <label class="button button--green time ">
-              <input type="radio" name="time_set_nomination" value="1">
+            <label class="button button--green time {{ (isset($currentDuration) && $currentDuration == '1') ? 'active' : '' }}">
+              <input class="input-duration" type="radio" name="time_set_nomination" value="1" {{ (isset($currentDuration) && $currentDuration == 1) ? 'checked="checked"' : '' }} >
               1時間
             </label>
-            <label class="button button--green time">
-              <input type="radio" name="time_set_nomination" value="2">
+            <label class="button button--green time {{ (isset($currentDuration) && $currentDuration == '2') ? 'active' : '' }}">
+              <input class="input-duration" type="radio" name="time_set_nomination" value="2" {{ (isset($currentDuration) && $currentDuration == 2) ? 'checked="checked"' : '' }}>
               2時間
             </label>
-            <label class="button button--green time ">
-              <input type="radio" name="time_set_nomination" value="3">
+            <label class="button button--green time {{ (isset($currentDuration) && $currentDuration == '3') ? 'active' : '' }}">
+              <input class="input-duration" type="radio" name="time_set_nomination" value="3" {{ (isset($currentDuration) && $currentDuration == 3) ? 'checked="checked"' : '' }}>
               3時間
             </label>
-            <label id="time-input" class="button button--green time">
-              <input type="radio" name="time_set_nomination" value="4">
+            <label id="time-input" class="button button--green time {{ (isset($currentOtherDuration)) ? 'active' : '' }}">
+              <input class="input-duration" type="radio" name="time_set_nomination" value="other_time_set" {{ (isset($currentOtherDuration)) ? 'checked="checked"' : '' }}>
               4時間以上
             </label>
-            <label class="time-input">
+            <label class="time-input time-input-nomination">
               <span>呼ぶ時間</span>
               <div class="selectbox">
-                <select class="select-duration" name="sl_duration">
-                  <option value="4">4時間</option>
-                  <option value="5">5時間</option>
-                  <option value="6">6時間</option>
-                  <option value="7">7時間</option>
-                  <option value="8">8時間</option>
-                  <option value="9">9時間</option>
-                  <option value="10">10時間</option>
+                <select class="select-duration" name="sl_duration_nominition">
+                  <option value="4" {{ (isset($currentDuration) && $currentDuration == 4) ? 'selected' : '' }}>4時間</option>
+                  <option value="5" {{ (isset($currentDuration) && $currentDuration == 5) ? 'selected' : '' }}>5時間</option>
+                  <option value="6" {{ (isset($currentDuration) && $currentDuration == 6) ? 'selected' : '' }}>6時間</option>
+                  <option value="7" {{ (isset($currentDuration) && $currentDuration == 7) ? 'selected' : '' }}>7時間</option>
+                  <option value="8" {{ (isset($currentDuration) && $currentDuration == 8) ? 'selected' : '' }}>8時間</option>
+                  <option value="9" {{ (isset($currentDuration) && $currentDuration == 9) ? 'selected' : '' }}>9時間</option>
+                  <option value="10" {{ (isset($currentDuration) && $currentDuration == 10) ? 'selected' : '' }}>10時間</option>
                 </select>
                 <i></i>
               </div>
@@ -135,7 +142,7 @@
 
         <div class="reservation-total">
           <div class="reservation-total__content">
-            <div class="reservation-total__sum">合計<span class="total-point">0P~</span></div>
+            <div class="reservation-total__sum">合計<span class="total-point">{{ isset($currentPoint) ? $currentPoin .'P~' : '0P~' }}</span></div>
             <p class="reservation-total__text">内訳：{{ number_format($cast['cost']) .'P' }}(キャストP/30分)✖0時間</p>
           </div>
 
@@ -192,6 +199,11 @@
   <section class="button-box">
     <label for="orders-nominate" class="lb-orders-nominate"></label>
   </section>
+  @if((Session::has('status_code')))
+  <section class="button-box">
+    <label for="{{ Session::get('status_code') }}" class="status-code-nomination"></label>
+  </section>
+  @endif
   @if($user->card)
   <section class="button-box">
       <label for="md-success-card" class="sm-form"></label>
@@ -238,6 +250,37 @@
       ただいまキャストの調整中です
       予約状況はホーム画面の予約一覧をご確認ください
       @endslot
+    @endmodal
+  @endif
+
+  @if((Session::has('status_code')))
+    @modal(['triggerId' => Session::get('status_code'), 'triggerClass' =>''])
+      @slot('title')
+      @endslot
+
+      @if(Session::get('status_code') ==400)
+        @slot('content')
+        開始時間は現在以降の時間を指定してください
+        @endslot
+      @endif
+
+      @if(Session::get('status_code') ==409)
+        @slot('content')
+        すでに予約があります
+        @endslot
+      @endif
+
+      @if(Session::get('status_code') ==422)
+        @slot('content')
+        この操作は実行できません
+        @endslot
+      @endif
+
+      @if(Session::get('status_code') ==500)
+        @slot('content')
+        サーバーエラーが発生しました
+        @endslot
+      @endif
     @endmodal
   @endif
 

@@ -189,6 +189,9 @@ class OrderController extends Controller
         }
 
         if ('other_duration' == $duration) {
+            if ($request->sl_duration < 0) {
+                return redirect()->back();
+            }
             $input['other_duration'] = $duration;
 
             $duration = $request->sl_duration;
@@ -613,7 +616,6 @@ class OrderController extends Controller
     public function nominate(Request $request)
     {
         $id = $request->id;
-
         $user = Auth::user();
         $token = JWTAuth::fromUser($user);
 
@@ -643,42 +645,85 @@ class OrderController extends Controller
             return redirect()->route('web.index');
         }
 
-        return view('web.orders.nomination', compact('cast', 'user'));
+        $areaNomination = null;
+        if (isset(Session::get('data')['area_nomination'])) {
+            $areaNomination = Session::get('data')['area_nomination'];
+        }
+
+        $currentOtherArea = null;
+        if (isset(Session::get('data')['other_area_nomination'])) {
+            $currentOtherArea = Session::get('data')['other_area_nomination'];
+        }
+
+        $currentTime = null;
+        if (isset(Session::get('data')['time_nomination'])) {
+            $currentTime = Session::get('data')['time_nomination'];
+        }
+
+        $timeDetail = null;
+        if (isset(Session::get('data')['time_detail_nomination'])) {
+            $timeDetail = Session::get('data')['time_detail_nomination'];
+        }
+
+        $currentDuration = null;
+        if (isset(Session::get('data')['duration_nomination'])) {
+            $currentDuration = Session::get('data')['duration_nomination'];
+        }
+
+        $currentOtherDuration = null;
+        if (isset(Session::get('data')['other_duration_nomination'])) {
+            $currentOtherDuration = Session::get('data')['other_duration_nomination'];
+        }
+
+        $currentPoint = null;
+        if (isset(Session::get('data')['temp_point_nomination'])) {
+            $currentOtherDuration = Session::get('data')['temp_point_nomination'];
+        }
+
+        return view('web.orders.nomination', compact('cast', 'user', 'currentArea', 'currentOtherArea', 'currentTime', 'timeDetail', 'currentDuration', 'currentOtherDuration', 'currentPoint'));
     }
 
     public function createNominate(Request $request)
     {
-        if (!isset($request->nomination_area)) {
-            return redirect()->route('guest.orders.nominate');
-        }
-
+        $input = [];
         $area = $request->nomination_area;
         $otherArea = $request->other_area_nomination;
-        if (!$area && !$otherArea) {
-            return redirect()->route('web.index');
+        if (!isset($area)) {
+            return redirect()->back();
+        }
+
+        if ('その他' == $area && !$otherArea) {
+            return redirect()->back();
         }
 
         if ('その他' == $area && $otherArea) {
-            $area = $otherArea;
+            $input['other_area_nomination'] = $otherArea;
+        } else {
+            $input['area_nomination'] = $area;
         }
 
         if (!$request->time_join_nomination) {
-            return redirect()->route('web.index');
+            return redirect()->back();
         }
 
         $now = Carbon::now();
         if ('other_time' == $request->time_join_nomination) {
+            $timeDetail = [];
             if ($request->sl_month < 10) {
                 $month = '0' . $request->sl_month;
             } else {
                 $month = $request->sl_month;
             }
 
+            $timeDetail['month_nomination'] = $month;
+
             if ($request->sl_date < 10) {
                 $date = '0' . $request->sl_date;
             } else {
                 $date = $request->sl_date;
             }
+
+            $timeDetail['date_nomination'] = $date;
 
             if ($request->sl_hour < 10) {
                 $hour = '0' . $request->sl_hour;
@@ -692,10 +737,18 @@ class OrderController extends Controller
                 $minute = $request->sl_minute;
             }
 
+            $timeDetail['hour_nomination'] = $hour;
+
+            $timeDetail['minute_nomination'] = $minute;
+
+            $input['time_detail_nomination'] = $timeDetail;
+
             $date = $now->year . '-' . $month . '-' . $date;
             $time = $hour . ':' . $minute;
         } else {
             $now->addMinutes($request->time_join_nomination);
+
+            $input['time_nomination'] = $request->time_join_nomination;
 
             $date = $now->format('Y-m-d');
             $time = $now->format('H:i');
@@ -703,14 +756,24 @@ class OrderController extends Controller
 
         $classId = $request->class_id;
 
+        //duration
         $duration = $request->time_set_nomination;
-        if (4 == $duration) {
-            $duration = $request->time_set_nomination;
+
+        if (!$duration || ('other_time_set' != $duration && $duration <= 0)) {
+            return redirect()->back();
         }
 
-        if (!$duration || $duration <= 0) {
-            return redirect()->route('web.index');
+        if ('other_time_set' == $duration) {
+            if ($request->sl_duration < 0) {
+                return redirect()->back();
+            }
+
+            $input['other_duration_nomination'] = $request->sl_duration;
+
+            $duration = $request->sl_duration;
         }
+
+        $input['duration_nomination'] = $duration;
 
         $client = new Client();
         $user = Auth::user();
@@ -742,6 +805,11 @@ class OrderController extends Controller
 
         $tempPoint = $tempPoint['data'];
 
+        $input['area_nomination'] = $area;
+        $input['temp_point_nomination'] = $tempPoint;
+        $input['duration_nomination'] = $duration;
+        dd($input);
+        Session::put('data', $input);
         try {
             $order = $client->post(route('orders.create', [
                 'prefecture_id' => 13,
@@ -757,7 +825,11 @@ class OrderController extends Controller
             ]), $option);
         } catch (\Exception $e) {
             LogService::writeErrorLog($e);
-            abort(500);
+            $statusCode = $e->getResponse()->getStatusCode();
+
+            $request->session()->flash('status_code', $statusCode);
+
+            return redirect()->back();
         }
 
         return redirect()->route('web.index');
