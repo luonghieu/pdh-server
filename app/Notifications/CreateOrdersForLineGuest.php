@@ -67,7 +67,7 @@ class CreateOrdersForLineGuest extends Notification implements ShouldQueue
         $startTime = Carbon::parse($this->order->date . ' ' . $this->order->start_time);
         $endTime = Carbon::parse($this->order->date . ' ' . $this->order->end_time);
 
-        $content = 'Cheersをご利用いただきありがとうございます！'
+        $roomMessage = 'Cheersをご利用いただきありがとうございます！'
             . PHP_EOL . 'キャストのご予約を承りました。'
             . PHP_EOL . '------------------------------------------'
             . PHP_EOL . PHP_EOL . '- ご予約内容 -'
@@ -85,7 +85,7 @@ class CreateOrdersForLineGuest extends Notification implements ShouldQueue
         $roomMessage = $room->messages()->create([
             'user_id' => 1,
             'type' => MessageType::SYSTEM,
-            'message' => $content,
+            'message' => $roomMessage,
             'system_type' => SystemMessageType::NORMAL,
         ]);
         $roomMessage->recipients()->attach($notifiable->id, ['room_id' => $room->id]);
