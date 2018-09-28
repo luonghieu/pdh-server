@@ -11,7 +11,7 @@
     }
   @endphp
   <div class="btn-back">
-    <a href="{{ $backUrl }}"><img src="/assets/webview/images/back.png" alt=""></a>
+    <a href="{{ \URL::previous() }}"><img src="/assets/webview/images/back.png" alt=""></a>
   </div>
   <div class="title-name">
     <span>メッセージ一覧</span>
