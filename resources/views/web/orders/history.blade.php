@@ -119,8 +119,14 @@
 
 @section('web.content')
     <main id="gl3">
-        <?php $orderStartTime = \Carbon\Carbon::parse($order->actual_started_at) ?>
-        <?php $orderEndTime = \Carbon\Carbon::parse($order->actual_ended_at) ?>
+        @if ($order->status == \App\Enums\OrderStatus::CANCELED)
+            <?php $orderStartTime = \Carbon\Carbon::parse($order->start_time) ?>
+            <?php $orderEndTime = $orderStartTime->copy()->addMinutes($order->duration * 60) ?>
+        @else
+            <?php $orderStartTime = \Carbon\Carbon::parse($order->actual_started_at) ?>
+            <?php $orderEndTime = \Carbon\Carbon::parse($order->actual_ended_at) ?>
+        @endif
+
         <?php $casts = $order->casts; ?>
             <div class="settlement-confirm">
             <section class="details-header">
@@ -129,8 +135,11 @@
                     <li><i><img src="{{ asset('assets/web/images/common/date.svg') }}"></i>
                         <p>
                             <span class="details-header__date">{{ $orderStartTime->format('Y年m月d日') }}</span>
-                            <span class="details-header__time">{{ $orderStartTime->format('H:i') . '~' .  $orderEndTime->format('H:i')
-                            }}</span>
+                            @if ($order->status == \App\Enums\OrderStatus::CANCELED)
+                                <span class="details-header__time">{{ $orderStartTime->format('H:i') . '~' }}</span>
+                            @else
+                                <span class="details-header__time">{{ $orderStartTime->format('H:i') . '~' . $orderEndTime->format('H:i') }}</span>
+                            @endif
                     </li>
                     <li><i><img src="{{ asset('assets/web/images/common/map.svg') }}"></i>
                         <p>{{ $order->address }}</p></li>
@@ -197,7 +206,7 @@
                     <div class="details-total__text">合計</div>
                     <div class="details-total__marks">{{ number_format($orderTotalPoint) . 'P' }}</div>
                 </div>
-                <span class="details-total-desc">1P=1.1円で決済が実行されます</span>
+                <span class="details-total-desc">❉1P=1.1円で決済が実行されます</span>
             </section>
             <form action="{{ route('point_settement.create', ['id' => $order->id]) }}" method="POST" id="payment-form">
                 {{ csrf_field() }}
