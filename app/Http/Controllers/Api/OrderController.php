@@ -16,7 +16,6 @@ use App\Order;
 use App\Services\LogService;
 use App\Tag;
 use App\Traits\DirectRoom;
-use App\User;
 use Carbon\Carbon;
 use DB;
 use Illuminate\Http\Request;
