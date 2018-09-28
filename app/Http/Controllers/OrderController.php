@@ -24,6 +24,7 @@ use Carbon\Carbon;
 use DB;
 use GuzzleHttp\Client;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 use JWTAuth;
 use Session;
 
@@ -506,11 +507,13 @@ class OrderController extends Controller
                 'type' => $type,
                 'tags' => $tags,
             ]), $option);
-
-            $order = json_decode(($order->getBody())->getContents(), JSON_NUMERIC_CHECK);
         } catch (\Exception $e) {
             LogService::writeErrorLog($e);
-            abort(500);
+            $statusCode = $e->getResponse()->getStatusCode();
+
+            $request->session()->flash('statusCode', $statusCode);
+
+            return redirect()->route('guest.orders.get_confirm');
         }
 
         $request->session()->forget('data');
