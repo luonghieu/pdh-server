@@ -820,3 +820,7 @@
 #order-history-controller .point-fix {
   text-decoration: underline;
 }
+
+#chat #gg2 .msg-input .msg-input-text input[type="text"]::placeholder {
+  font-size: 13px;
+}
