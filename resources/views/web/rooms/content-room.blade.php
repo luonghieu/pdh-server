@@ -50,7 +50,7 @@
           </div>
           @if ($room->unread_count > 0)
             <div class="balloon">
-              <span>{{ $room->unread_count }}</span>
+              <span data-unread="{{ $room->unread_count }}" id="room_{{ $room->id }}">{{ $room->unread_count }}</span>
             </div>
           @endif
           <div class="msg-msg">
@@ -72,12 +72,12 @@
             @endif
             @if ($room->latest_message != null)
               @if ($room->latest_message->image)
-              <p class="latest-message">{{ $room->latest_message ? $room->latest_message->user->nickname:'' }}さんが写真を送信しました</p>
+              <p class="latest-message" id="latest-message_{{ $room->id }}">{{ $room->latest_message ? $room->latest_message->user->nickname:'' }}さんが写真を送信しました</p>
               @else
-              <p class="latest-message">{{ $room->latest_message ? $room->latest_message->message:'' }}</p>
+              <p class="latest-message" id="latest-message_{{ $room->id }}">{{ $room->latest_message ? $room->latest_message->message:'' }}</p>
               @endif
             @else
-            <p class="latest-message"></p>
+            <p class="latest-message" id="latest-message_{{ $room->id }}"></p>
             @endif
           </div>
         </div>
