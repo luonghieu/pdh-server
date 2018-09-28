@@ -30,6 +30,7 @@
       @endif
     </div>
   </div>
+<<<<<<< HEAD
   @if ($room->type != \App\Enums\RoomType::SYSTEM)
     @if ($messages['order'] == null || ($messages['order']['type'] == App\Enums\OrderType::NOMINATION && $messages['order']['status'] == App\Enums\OrderStatus::DONE))
     <div class="msg-head">
@@ -89,6 +90,65 @@
       <h2><span class="mitei msg-head-ttl">日程未定</span>キャストに予約リクエストしよう！</h2>
     </div>
     @endif
+=======
+  @if ($messages['order'] == null || ($messages['order']['type'] == App\Enums\OrderType::NOMINATION && $messages['order']['status'] == App\Enums\OrderStatus::DONE))
+  <div class="msg-head">
+    <h2><span class="mitei msg-head-ttl">日程未定</span> {{ (Auth::user()->type == App\Enums\UserType::GUEST) ? 'ゲストに予約リクエストしよう！' : 'ゲストにメッセージを送ってみよう！' }}</h2>
+  </div>
+  @endif
+  @if ($messages['order']['status'] == App\Enums\OrderStatus::DONE && $messages['order']['type'] != App\Enums\OrderType::NOMINATION)
+  <div class="msg-head">
+    <h2><span class="mitei msg-head-ttl">完了</span> このチャットは終了から24時間使用できます</h2>
+  </div>
+  @endif
+  @if ($messages['order']['status'] == App\Enums\OrderStatus::OPEN && $messages['order']['type'] != App\Enums\OrderType::CALL)
+  <div class="msg-head">
+    <h2><span class="teian msg-head-ttl">提案中</span>キャストの回答待ちです。</h2>
+  </div>
+  @endif
+  @if (in_array($messages['order']['status'], [App\Enums\OrderStatus::ACTIVE, App\Enums\OrderStatus::PROCESSING]))
+  <div class="msg-head tgl">
+    <dl>
+      <dt>
+        <h2>
+          @if ($messages['order']['status'] == App\Enums\OrderStatus::ACTIVE)
+          <span class="kakutei msg-head-ttl">予約確定</span>
+          @else
+          <span class="goryu msg-head-ttl">合流中</span>
+          @endif
+          {{ Carbon\Carbon::parse($messages['order']['date'])->format('Y年m月d日') }} {{ Carbon\Carbon::parse($messages['order']['start_time'])->format('H:i') }}〜</h2>
+        <i><img src="/assets/web/images/gg2/arrow.svg"></i>
+      </dt>
+      <dd class="msg-head-detail">
+        <dl>
+          <dt>
+            <ul class="detail d-top">
+              <li class="d-top-place address-order">{{ $messages['order']['address'] }}</li>
+              <li class="d-top-time">{{ $messages['order']['duration'] }}時間({{ $messages['order']['cast_class']['cost'] }}P/30分)</li>
+            </ul>
+          </dt>
+          <dt>
+            <ul class="detail d-btm">
+              <li class="d-btm-money"><p>予定料金：<span>{{ number_format($messages['order']['temp_point']) }}P〜</span></p></li>
+              @if ($messages['order']['status'] == App\Enums\OrderStatus::ACTIVE)
+              <li class="d-btm-cancel">
+                <section class="button-box">
+                  <label for="trigger2" class="open_button button-settlement"><span class="btn-cancel">キャンセル</span></label>
+                </section>
+              </li>
+              @endif
+            </ul>
+          </dt>
+        </dl>
+      </dd>
+    </dl>
+  </div>
+  @endif
+  @if (($messages['order']['type'] == App\Enums\OrderType::NOMINATION && $messages['order']['status'] == App\Enums\OrderStatus::DONE))
+  <div class="msg-head">
+    <h2><span class="mitei msg-head-ttl">日程未定</span>キャストに予約リクエストしよう！</h2>
+  </div>
+>>>>>>> develop
   @endif
 
   <div class="msg">
