@@ -92,16 +92,6 @@
   background-repeat: repeat-x;
 }
 
-.date-left {
-  width: 60%;
-}
-@media screen and (max-width: 350px) {
-  .booking-date .date-right {
-    width: 60%;
-  }
-}
-
-
 .booking-date .date-left span {
   display: block;
   font-size: 16px;
@@ -158,3 +148,11 @@
   display: block;
 }
 
+.date-left {
+  width: 60%;
+}
+@media screen and (max-width: 350px) {
+  .booking-date .date-right {
+    width: 46%;
+  }
+}
