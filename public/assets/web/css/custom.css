@@ -817,19 +817,19 @@
 }
 
 #gf2 .text-nickname {
-  width: 35%;
+  max-width: 35%;
 }
 
 #gl3 .text-nickname {
-  width: 25%;
+  max-width: 25%;
 }
 
 #go1 .text-nickname {
-  width: 50%;
+  max-width: 50%;
 }
 
 .ge2-3 .text-nickname {
-  width: 50%;
+  max-width: 50%;
 }
 
 #chat #gg2 .msg-input .msg-input-text input[type="text"] {
