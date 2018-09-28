@@ -3,8 +3,15 @@
 @extends('layouts.web')
 @section('web.content')
 <div class="title">
+  @php
+    if (\Session::has('backUrl')) {
+      $backUrl = \Session::get('backUrl')[0];
+    } else {
+      $backUrl = \URL::previous();
+    }
+  @endphp
   <div class="btn-back">
-    <a href="{{ \URL::previous() }}"><img src="/assets/webview/images/back.png" alt=""></a>
+    <a href="{{ $backUrl }}"><img src="/assets/webview/images/back.png" alt=""></a>
   </div>
   <div class="title-name">
     <span>メッセージ一覧</span>
@@ -28,7 +35,7 @@
     <span class="left">カード番号</span>
     <div class="right number">
       <span id="error">カード番号を正しく入力してください</span>
-      <input type="hidden" value="{{ \URL::previous() }}" id="back-url">
+      <input type="hidden" value="{{ $backUrl }}" id="back-url">
       <input type="tel" pattern="[0-9]*" name="number_card" id="number-card" onkeyup="creditValidate()" onkeydown="return numberCardLength(event)">
       <span id="number-card-display" class="old-card">下4桁{{ $card->last4 }}</span>
     </div>
