@@ -37,3 +37,12 @@ $('#rating-comment').on('keyup', function(e) {
         $('#rating-submit-btn').prop("disabled", true);
     }
 });
+
+$('#rating-comment').bind('paste', function(e){
+    const pastedData = e.originalEvent.clipboardData.getData('text');
+    if (pastedData.length) {
+        $('#rating-submit-btn').prop("disabled", false);
+    } else {
+        $('#rating-submit-btn').prop("disabled", true);
+    }
+});
