@@ -92,7 +92,7 @@ $(document).ready(function(){
     $(".overlay").fadeOut();
   });
 
-  $('.tags-name').on('change', function(e) {
+  $('.tags-name').on('click', function(e) {
     var activeTag = $('.tags-name:checked').length;
 
     if (activeTag > 5) {
