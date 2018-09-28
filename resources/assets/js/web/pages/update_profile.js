@@ -16,21 +16,21 @@ $(document).ready(function() {
   });
 
   $('#date-of-birth').on('change', function() {
-      date = new Date($('#date-of-birth').val());
+    date = new Date($('#date-of-birth').val());
 
-      var year = date.getFullYear();
-      var month = date.getMonth() + 1;
-      var day = date.getDate();
+    var year = date.getFullYear();
+    var month = date.getMonth() + 1;
+    var day = date.getDate();
 
-      if (month < 10) {
-          month = '0' + month;
-      }
+    if (month < 10) {
+      month = '0' + month;
+    }
 
-      if (day < 10) {
-          day = '0' + day;
-      }
+    if (day < 10) {
+      day = '0' + day;
+    }
 
-      $('#date-display').val(year + '年' + month + '月' + day + '日');
+    $('#date-display').val(year + '年' + month + '月' + day + '日');
   });
 
   $('.hidden').hide();
@@ -97,6 +97,10 @@ $(document).ready(function() {
         cohabitant_type: $('#cohabitant-type').val(),
       };
 
+      const name = $('#name').val();
+      const day = $('#day').val();
+      const img = $('#img').val();
+
       Object.keys(params).forEach(function(key) {
         if (!params[key]) {
           delete params[key];
@@ -111,9 +115,16 @@ $(document).ready(function() {
         .then(function(response) {
           $('#profile-popup').trigger('click');
           $('#profile-message h2').html('情報の更新に成功しました。');
-          setTimeout(() => {
-            window.location.href = '/mypage';
-          }, 1500);
+
+          if (!name || !day || !img) {
+            setTimeout(() => {
+              window.location.href = '/mypage';
+            }, 1500);
+          } else {
+            setTimeout(() => {
+              window.location.href = '/profile';
+            }, 1500);
+          }
         })
         .catch(function(error) {
           if (error.response.status == 401) {
