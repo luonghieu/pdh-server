@@ -103,7 +103,7 @@
       <div class="cast-number">
         <!-- アイコン -->
         <span class="cast-number__text">キャスト人数</span>
-        <label class="cast-number__value"><input type="text" value="{{ (isset($currentCastNumbers)) ? $currentCastNumbers : 1 }}" name="txtCast_Number">人</label>
+        <label class="cast-number__value"><input type="text" value="{{ (isset($currentCastNumbers)) ? $currentCastNumbers : 1 }}" name="txtCast_Number" readonly>人</label>
 
         <button class="cast-number__button-minus" type="button" name="button"></button>
         <button class="cast-number__button-plus"type="button" name="button"></button>
