@@ -54,6 +54,7 @@ Route::get('/login', 'HomeController@login')->name('web.login');
 Route::get('/mypage', 'HomeController@index')->name('web.index');
 Route::get('/login/line', 'Auth\LineController@login')->name('auth.line');
 Route::get('/login/line/callback', 'Auth\LineController@handleCallBack');
+Route::post('/line/webhook', 'Auth\LineController@webhook');
 
 Route::group(['middleware' => ['auth', 'guest'], 'as' => 'guest.'], function () {
     Route::group(['as' => 'orders.'], function () {
