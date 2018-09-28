@@ -71,10 +71,6 @@ $(document).ready(function() {
     },
 
     submitHandler: function(form) {
-      const nickname = $('#nickname').val();
-      const day_of_birth = $('#day-of-birth').val();
-      const avatars = $('#avatars').val();
-
       if ($('.css-img #valid').length < 1) {
         if (document.getElementById('upload').files.length <= 0) {
           $('.image-error').html('imageには、画像を指定してください。');
@@ -101,6 +97,10 @@ $(document).ready(function() {
         cohabitant_type: $('#cohabitant-type').val(),
       };
 
+      const name = $('#name').val();
+      const day = $('#day').val();
+      const img = $('#img').val();
+
       Object.keys(params).forEach(function(key) {
         if (!params[key]) {
           delete params[key];
@@ -116,16 +116,15 @@ $(document).ready(function() {
           $('#profile-popup').trigger('click');
           $('#profile-message h2').html('情報の更新に成功しました。');
 
-          if (!nickname || !day_of_birth || !avatars) {
+          if (!name || !day || !img) {
             setTimeout(() => {
               window.location.href = '/mypage';
             }, 1500);
+          } else {
+            setTimeout(() => {
+              window.location.href = '/profile';
+            }, 1500);
           }
-
-          setTimeout(() => {
-            window.location.href = '/profile';
-          }, 1500);
-
         })
         .catch(function(error) {
           if (error.response.status == 401) {
