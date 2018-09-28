@@ -16,21 +16,21 @@ $(document).ready(function() {
   });
 
   $('#date-of-birth').on('change', function() {
-      date = new Date($('#date-of-birth').val());
+    date = new Date($('#date-of-birth').val());
 
-      var year = date.getFullYear();
-      var month = date.getMonth() + 1;
-      var day = date.getDate();
+    var year = date.getFullYear();
+    var month = date.getMonth() + 1;
+    var day = date.getDate();
 
-      if (month < 10) {
-          month = '0' + month;
-      }
+    if (month < 10) {
+      month = '0' + month;
+    }
 
-      if (day < 10) {
-          day = '0' + day;
-      }
+    if (day < 10) {
+      day = '0' + day;
+    }
 
-      $('#date-display').val(year + '年' + month + '月' + day + '日');
+    $('#date-display').val(year + '年' + month + '月' + day + '日');
   });
 
   $('.hidden').hide();
@@ -71,6 +71,10 @@ $(document).ready(function() {
     },
 
     submitHandler: function(form) {
+      const nickname = $('#nickname').val();
+      const day_of_birth = $('#day-of-birth').val();
+      const avatars = $('#avatars').val();
+
       if ($('.css-img #valid').length < 1) {
         if (document.getElementById('upload').files.length <= 0) {
           $('.image-error').html('imageには、画像を指定してください。');
@@ -111,9 +115,17 @@ $(document).ready(function() {
         .then(function(response) {
           $('#profile-popup').trigger('click');
           $('#profile-message h2').html('情報の更新に成功しました。');
+
+          if (!nickname || !day_of_birth || !avatars) {
+            setTimeout(() => {
+              window.location.href = '/mypage';
+            }, 1500);
+          }
+
           setTimeout(() => {
-            window.location.href = '/mypage';
+            window.location.href = '/profile';
           }, 1500);
+
         })
         .catch(function(error) {
           if (error.response.status == 401) {
