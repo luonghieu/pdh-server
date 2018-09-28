@@ -149,12 +149,13 @@
             </section>
             <?php $orderTotalPoint = 0; ?>
             @foreach($casts as $cast)
+                {{--{{ dd($cast) }}--}}
                 <section class="details-list" id="cast-{{ $cast->id }}">
                     <div class="details-list__line"><p></p></div>
                     <div class="details-list__header">
                         <div class="details-list__thumbnail">
                             <a href="{{ route('cast.show', ['id' => $cast->id]) }}">
-                                <img src="{{ $cast->avatars->first()->thumbnail }}" alt="Avatar">
+                                <img src="{{ $cast->avatars[0]->thumbnail }}" alt="Avatar">
                             </a>
                         </div>
                         <p class="details-list__name">
@@ -167,22 +168,25 @@
                         <ul class="details-info-list">
                             <li class="details-info-list__itme">
                                 <p class="details-info-list__text">{{ '合流' . $order->duration * 60 . '分' }}</p>
-                                <p class="details-info-list__marks">{{ number_format($cast->pivot->order_point) . 'P'
+                                <p class="details-info-list__marks">{{ number_format($cast->cast_order->order_point) .
+                                 'P'
                                  }}</p>
                             </li>
                             <li class="details-info-list__itme">
-                                <p class="details-info-list__text">{{ '延長' . $cast->pivot->extra_time . '分' }}</p>
-                                <p class="details-info-list__marks">{{ number_format($cast->pivot->extra_point) . 'P'
+                                <p class="details-info-list__text">{{ '延長' . $cast->cast_order->extra_time . '分' }}</p>
+                                <p class="details-info-list__marks">{{ number_format($cast->cast_order->extra_point) .
+                                 'P'
                                 }}</p>
                             </li>
                             <li class="details-info-list__itme">
                                 <p class="details-info-list__text">指名料</p>
-                                <p class="details-info-list__marks">{{ number_format($cast->pivot->fee_point) . 'P'
+                                <p class="details-info-list__marks">{{ number_format($cast->cast_order->fee_point) . 'P'
                                 }}</p>
                             </li>
                             <li class="details-info-list__itme">
                                 <p class="details-info-list__text">深夜手当</p>
-                                <p class="details-info-list__marks">{{ number_format($cast->pivot->allowance_point) .
+                                <p class="details-info-list__marks">{{ number_format
+                                ($cast->cast_order->allowance_point) .
                                  'P'
                                 }}</p>
                             </li>
@@ -191,7 +195,9 @@
                             <li class="details-info-list__itme">
                                 <p class="details-info-list__text--subtotal">小計</p>
                                 <p class="details-info-list__marks--subtotal point-fix-mt">
-                                    <?php $castTotalPoint = $cast->pivot->total_point ? $cast->pivot->total_point : $cast->pivot->temp_point ?>
+                                    <?php $castTotalPoint = $cast->cast_order->total_point ?
+                                        $cast->cast_order->total_point :
+                                        $cast->cast_order->temp_point ?>
                                     <?php $orderTotalPoint += $castTotalPoint; ?>
                                     {{ number_format($castTotalPoint) . 'P' }}
                                 </p>
