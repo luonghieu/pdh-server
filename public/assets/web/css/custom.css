@@ -807,6 +807,16 @@
 .messge-input .msg-input-pic {
   margin-bottom: 30px;
 }
+
+.text-ellipsis {
+  width: 40%;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: block;
+  font-weight: bold;
+}
+
 #order-history-controller .point-fix {
   text-decoration: underline;
 }
