@@ -821,6 +821,6 @@
   text-decoration: underline;
 }
 
-.content-message::placeholder {
-  font-size: 13px !important;
+#chat #gg2 .msg-input .msg-input-text input[type="text"]::placeholder {
+  font-size: 13px;
 }
