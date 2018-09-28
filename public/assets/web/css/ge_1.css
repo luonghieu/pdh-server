@@ -149,10 +149,11 @@
 }
 
 .date-left {
-  width: 60%;
+  max-width: 170px;
 }
 @media screen and (max-width: 350px) {
   .booking-date .date-right {
+    max-width: 112px;
     width: 46%;
   }
 }
