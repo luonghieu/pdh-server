@@ -158,7 +158,8 @@
                             </a>
                         </div>
                         <p class="details-list__name">
-                            {{ $cast->nickname . '(' . \Carbon\Carbon::parse($cast->date_of_birth)->age . ')' }}
+                            <span class="text-ellipsis">{{ ($cast->nickname) }}</span>
+                            <b>{{'(' . \Carbon\Carbon::parse($cast->date_of_birth)->age . ')' }}</b>
                         </p>
                         <span class="details-list__button" onclick="expandInfo('cast-{{ $cast->id }}', this)"></span>
                     </div>

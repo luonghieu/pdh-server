@@ -17,7 +17,7 @@
   <div class="cast-set">
     <section class="cast-info">
       <ul class="cast-info__list">
-        <li class="cast-info__item">●●{{ (!$cast['nickname']) ? '未設定' : $cast['nickname'] }}●●</li>
+        <li class="cast-info__item">●●<span class="text-ellipsis">{{ $cast['nickname'] }}</span>●●</li>
         <li class="cast-info__item">{{ (!$cast['age']) ? '未設定' : ($cast['age'] . "歳") }}</li>
         <li class="cast-info__item--level">{{ (!$cast['class']) ? '未設定' : $cast['class'] }}</li>
       </ul>
