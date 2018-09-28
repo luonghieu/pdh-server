@@ -16,7 +16,8 @@
 }
 
 #gg2 .tgl .d-top .d-top-place:before {
-  background: url(../images/gg2/glass.svg) no-repeat bottom;
+  background: url(../images/gg2/address.png) no-repeat bottom;
+  background-size: 20px 20px;
 }
 
 #gg2 .tgl {
@@ -760,3 +761,29 @@
   color: grey;
 }
 
+.address-order {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  width: 38%;
+}
+
+.messge-input {
+  height: 60px;
+}
+
+.messge-input .msg-input-pic {
+  margin-bottom: 30px;
+}
+
+.messge-input .msg-input-camera {
+  margin-bottom: 30px;
+}
+
+.messge-input .msg-input-text {
+  margin-bottom: 30px;
+}
+
+.messge-input .msg-input-pic {
+  margin-bottom: 30px;
+}

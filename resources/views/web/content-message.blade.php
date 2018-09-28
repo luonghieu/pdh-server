@@ -15,9 +15,9 @@
   @endphp
   @foreach ($messagesData as $key => $message)
     @if ($key == now()->today()->format('Y-m-d'))
-      <div class="msg-date"><h3>今日</h3></div>
-   @else
-      <div class="msg-date"><h3>{{ Carbon\Carbon::parse($key)->diffForHumans()}}</h3></div>
+    <div class="msg-date"><h3>今日</h3></div>
+    @else
+    <div class="msg-date"><h3>{{ Carbon\Carbon::parse($key)->diffForHumans()}}</h3></div>
     @endif
     @foreach ($message[0] as $elements)
     @php
@@ -43,26 +43,26 @@
           </figure>
           <div class="{{ $className }}-text">
             @if (in_array($element['type'], [App\Enums\MessageType::MESSAGE, App\Enums\MessageType::THANKFUL]))
-           <div class="text">
+            <div class="text">
               <div class="text-wrapper">
                 <p>{{ $element['message'] }}</p>
               </div>
             </div>
             @endif
-           @if ($element['type'] == App\Enums\MessageType::IMAGE)
-            <div class="pic">
+            @if ($element['type'] == App\Enums\MessageType::IMAGE)
+              <div class="pic">
                 <p>
                   <img src="{{ $element['image'] }}"  alt="" title="" class="">
                 </p>
-            </div>
-           @endif
-            @if ($element['type'] == App\Enums\MessageType::SYSTEM && $element['system_type'] == App\Enums\SystemMessageType::NORMAL)
-              <div class="text">
-                <div class="text-wrapper">
-                  <p>{{ $element['message'] }}</p>
-                </div>
               </div>
-           @endif
+            @endif
+            @if ($element['type'] == App\Enums\MessageType::SYSTEM && $element['system_type'] == App\Enums\SystemMessageType::NORMAL)
+            <div class="text">
+              <div class="text-wrapper">
+                <p>{!! nl2br($element['message']) !!}</p>
+              </div>
+            </div>
+            @endif
             <div class="time"><p>{{ Carbon\Carbon::parse($element['created_at'])->format('H:i') }}</p></div>
           </div>
         </div>

@@ -56,7 +56,7 @@
         <dl>
           <dt>
             <ul class="detail d-top">
-              <li class="d-top-place">{{ $messages['order']['address'] }}</li>
+              <li class="d-top-place address-order">{{ $messages['order']['address'] }}</li>
               <li class="d-top-time">{{ $messages['order']['duration'] }}時間({{ $messages['order']['cast_class']['cost'] }}P/30分)</li>
             </ul>
           </dt>
@@ -88,7 +88,7 @@
       @include('web.content-message',compact('messages'))
     </section>
   </div><!--  msg -->
-  <div class="msg-input">
+  <div class="msg-input messge-input">
     <form action="" enctype="multipart/form-data" method="POST" class="msg-input-box">
       <input type="hidden" name="room_id" value="{{ $room->id }}" id="room-id">
       <input type="hidden" name="order_id" value="{{ $messages['order']['id'] }}" id="order-id">
