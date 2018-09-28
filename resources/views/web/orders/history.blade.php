@@ -208,7 +208,7 @@
 
                     @if ($order->payment_status != \App\Enums\OrderPaymentStatus::EDIT_REQUESTING)
                         <a href="javascript:void(0)" class="point-fix"
-                           onclick="openRequestUpdatePoint('{{ $order->id }}')">決済ポイントの修正依頼する</a>
+                           onclick="openRequestUpdatePoint('{{ $order->id }}')">決済ポイントの修正を依頼する場合はこちら</a>
                     @endif
                 @endif
 
