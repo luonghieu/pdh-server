@@ -726,3 +726,12 @@
 #number-card-display a {
   color: #c8c8c8;
 }
+#order-history-controller .details-list__name {
+  font-weight: bold;
+}
+#order-history-controller .details-total-desc {
+  float: right;
+  margin-top: 6px;
+  padding-right: 12px;
+  color: grey;
+}

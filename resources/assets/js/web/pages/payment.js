@@ -20,7 +20,19 @@ $('#payment-submit').on('click', function(e) {
 });
 
 $('#request-update-point-btn').on('click', function(e) {
-    alert('update payment order: ' + orderId);
+    const url = `api/v1/guest/orders/${orderId}/payment_requests`;
+    window.axios.patch(url).then(response => {
+        $('#alert-payment-content').html('修正依頼しました');
+        $('#request-update-point').trigger('click');
+        $('#alert-payment-label').trigger('click');
+        
+        setTimeout(() => {
+            window.location.href = '/';
+        }, 2000);
+    }).catch(err => {
+        $('#request-update-point').trigger('click');
+        $('#payment-failed').trigger('click');
+    });
 });
 
 $('#payment-form').on('submit', function (e) {

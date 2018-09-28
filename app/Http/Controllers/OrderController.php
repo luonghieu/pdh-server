@@ -521,10 +521,14 @@ class OrderController extends Controller
     public function history(Request $request, $orderId)
     {
         $user = Auth::user();
-        $order = Order::whereIn('status', [OrderStatus::OPEN, OrderStatus::ACTIVE, OrderStatus::PROCESSING, OrderStatus::DONE])
+        $order = Order::where('status', OrderStatus::DONE)
             ->where('user_id', $user->id)
             ->with(['user', 'casts', 'nominees', 'tags'])
             ->find($orderId);
+
+        if (!$order) {
+            return redirect()->back();
+        }
 
         return view('web.orders.history', compact('order', 'user'));
     }
