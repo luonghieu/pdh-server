@@ -47,10 +47,10 @@
                 </div>
                 <div class="close_button-box">
                     <div class="close_button-block">
-                        <label for="request-buy-point" class="close_button  left">いいえ</label>
+                        <label for="request-buy-point" class="close_button  left">キャンセル</label>
                     </div>
                     <div class="close_button-block">
-                        <label class="close_button" id="request-buy-point-btn">修正依頼する</label>
+                        <label class="close_button" id="request-buy-point-btn">決済を確定する</label>
                     </div>
                 </div>
             </div>
@@ -119,12 +119,9 @@
 
 @section('web.content')
     <main id="gl3">
-    <?php $orderStartTime = \Carbon\Carbon::parse($order->date . ' ' . $order->start_time) ?>
-        <?php $orderEndTime = $orderStartTime->copy()->addMinutes($order->duration * 60) ?>
+        <?php $orderStartTime = \Carbon\Carbon::parse($order->actual_started_at) ?>
+        <?php $orderEndTime = \Carbon\Carbon::parse($order->actual_ended_at) ?>
         <?php $casts = $order->casts; ?>
-            <h1 class="big-title">{{ $orderStartTime->format('Y年m月d日') . ' ' . $orderStartTime->format('H:i') . '~' .
-            $orderEndTime->format
-            ('H:i') }}</h1>
             <div class="settlement-confirm">
             <section class="details-header">
                 <div class="details-header__title">予約詳細</div>
@@ -179,6 +176,8 @@
                                  'P'
                                 }}</p>
                             </li>
+                        </ul>
+                        <ul class="">
                             <li class="details-info-list__itme">
                                 <p class="details-info-list__text--subtotal">小計</p>
                                 <p class="details-info-list__marks--subtotal point-fix-mt">
@@ -198,6 +197,7 @@
                     <div class="details-total__text">合計</div>
                     <div class="details-total__marks">{{ number_format($orderTotalPoint) . 'P' }}</div>
                 </div>
+                <span class="details-total-desc">1P=1.1円で決済が実行されます</span>
             </section>
             <form action="{{ route('point_settement.create', ['id' => $order->id]) }}" method="POST" id="payment-form">
                 {{ csrf_field() }}
@@ -208,7 +208,7 @@
 
                     @if ($order->payment_status != \App\Enums\OrderPaymentStatus::EDIT_REQUESTING)
                         <a href="javascript:void(0)" class="point-fix"
-                           onclick="openRequestUpdatePoint('{{ $order->id }}')">決済ポイントの修正依頼する</a>
+                           onclick="openRequestUpdatePoint('{{ $order->id }}')">決済ポイントの修正を依頼する場合はこちら</a>
                     @endif
                 @endif
 

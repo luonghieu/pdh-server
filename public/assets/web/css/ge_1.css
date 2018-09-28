@@ -127,6 +127,10 @@
   margin: 10px 0 0;
 }
 
+.booking-block .casts img{
+  object-fit: cover;
+}
+
 .booking-block .casts li {
   display: inline-block;
   max-width: 40px;
@@ -142,4 +146,14 @@
 
 .booking-block .cast-message a {
   display: block;
+}
+
+.date-left {
+  max-width: 170px;
+}
+@media screen and (max-width: 350px) {
+  .booking-date .date-right {
+    max-width: 112px;
+    width: 46%;
+  }
 }

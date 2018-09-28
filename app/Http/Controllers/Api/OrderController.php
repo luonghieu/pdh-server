@@ -8,17 +8,14 @@ use App\Enums\CastOrderStatus;
 use App\Enums\CastOrderType;
 use App\Enums\OrderStatus;
 use App\Enums\OrderType;
-use App\Enums\ProviderType;
 use App\Http\Resources\OrderResource;
 use App\Notifications\CallOrdersCreated;
 use App\Notifications\CreateNominatedOrdersForCast;
 use App\Notifications\CreateNominationOrdersForCast;
-use App\Notifications\CreateOrdersForLineGuest;
 use App\Order;
 use App\Services\LogService;
 use App\Tag;
 use App\Traits\DirectRoom;
-use App\User;
 use Carbon\Carbon;
 use DB;
 use Illuminate\Http\Request;
@@ -160,7 +157,6 @@ class OrderController extends ApiController
                     $nominees = $order->nominees;
                     \Notification::send($nominees, new CreateNominatedOrdersForCast($order));
                 }
-
             } else {
                 $casts = Cast::where('class_id', $request->class_id)->get();
                 \Notification::send($casts, new CallOrdersCreated($order));

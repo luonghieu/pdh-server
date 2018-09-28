@@ -24,6 +24,7 @@ use Carbon\Carbon;
 use DB;
 use GuzzleHttp\Client;
 use Illuminate\Http\Request;
+use Illuminate\Http\Response;
 use JWTAuth;
 use Session;
 
@@ -506,11 +507,13 @@ class OrderController extends Controller
                 'type' => $type,
                 'tags' => $tags,
             ]), $option);
-
-            $order = json_decode(($order->getBody())->getContents(), JSON_NUMERIC_CHECK);
         } catch (\Exception $e) {
             LogService::writeErrorLog($e);
-            abort(500);
+            $statusCode = $e->getResponse()->getStatusCode();
+
+            $request->session()->flash('statusCode', $statusCode);
+
+            return redirect()->route('guest.orders.get_confirm');
         }
 
         $request->session()->forget('data');
@@ -521,10 +524,14 @@ class OrderController extends Controller
     public function history(Request $request, $orderId)
     {
         $user = Auth::user();
-        $order = Order::whereIn('status', [OrderStatus::OPEN, OrderStatus::ACTIVE, OrderStatus::PROCESSING, OrderStatus::DONE])
+        $order = Order::whereIn('status', [OrderStatus::DONE, OrderStatus::CANCELED])
             ->where('user_id', $user->id)
             ->with(['user', 'casts', 'nominees', 'tags'])
             ->find($orderId);
+
+        if (!$order) {
+            return redirect()->back();
+        }
 
         return view('web.orders.history', compact('order', 'user'));
     }

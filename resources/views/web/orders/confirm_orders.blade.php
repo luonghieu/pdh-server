@@ -90,6 +90,11 @@
   <section class="button-box">
     <label for="orders" class="lb-orders"></label>
   </section>
+  @if((Session::has('statusCode')))
+  <section class="button-box">
+    <label for="{{ Session::get('statusCode') }}" class="status-code"></label>
+  </section>
+  @endif
   @if($user->card)
   <section class="button-box">
       <label for="md-success-card" class="sm-form"></label>
@@ -138,6 +143,37 @@
       ただいまキャストの調整中です
       予約状況はホーム画面の予約一覧をご確認ください
       @endslot
+    @endmodal
+  @endif
+
+  @if((Session::has('statusCode')))
+    @modal(['triggerId' => Session::get('statusCode'), 'triggerClass' =>''])
+      @slot('title')
+      @endslot
+
+      @if(Session::get('statusCode') ==400)
+        @slot('content')
+        開始時間は現在以降の時間を指定してください
+        @endslot
+      @endif
+
+      @if(Session::get('statusCode') ==409)
+        @slot('content')
+        すでに予約があります
+        @endslot
+      @endif
+
+      @if(Session::get('statusCode') ==422)
+        @slot('content')
+        この操作は実行できません
+        @endslot
+      @endif
+
+      @if(Session::get('statusCode') ==500)
+        @slot('content')
+        サーバーエラーが発生しました
+        @endslot
+      @endif
     @endmodal
   @endif
 @endsection

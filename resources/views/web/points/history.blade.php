@@ -117,7 +117,7 @@
             @if (!$point['receipt'])
               <label for="trigger5" class="btn-bg js-point" point-id="{{ $point['id'] }}">領収書を発行</label>
             @else
-              <label for="trigger2" class="btn-bg js-receipt" img-file="{{ $point['receipt']['img_file'] }}">領収書を発行</label>
+              <label for="trigger2" class="btn-bg js-receipt" img-file="{{ $point['receipt']['img_file'] }}">領収書を再発行</label>
             @endif
           </div>
         @endif

@@ -92,7 +92,7 @@ $(document).ready(function(){
     $(".overlay").fadeOut();
   });
 
-  $('.tags-name').on('change', function(e) {
+  $('.tags-name').on('click', function(e) {
     var activeTag = $('.tags-name:checked').length;
 
     if (activeTag > 5) {
@@ -121,10 +121,14 @@ $(document).ready(function(){
     if($('.select-casts:checked').length > castNumbers) {
       $(this).attr('checked',false);
     }else {
+
+      var id = $(this).val();
       if ($(this).is(':checked')) {
         $(this).attr('checked',true);
+        $('.label-select-casts[for='+  id  +']').text('指名中');
       } else {
         $(this).attr('checked',false);
+        $('.label-select-casts[for='+  id  +']').text('指名する');
       }
     }
   });
@@ -347,4 +351,7 @@ $(document).ready(function(){
     }
   })
 
+  if($("label").hasClass("status-code")){
+    $('.status-code').click();
+  }
 });
