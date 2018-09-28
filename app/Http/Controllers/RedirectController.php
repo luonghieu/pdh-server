@@ -17,6 +17,8 @@ class RedirectController extends Controller
                 return \Redirect::to(route('message.messages', ['room' => $request->room_id]));
             case 'evaluation':
                 return \Redirect::to(route('evaluation.index', ['order_id' => $request->order_id]));
+            case 'message':
+                return \Redirect::to(route('message.index'));
             default:
                 return \Redirect::to(route('web.index'));
         }
