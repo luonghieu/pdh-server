@@ -1,6 +1,7 @@
 <?php
 
 Route::group(['prefix' => 'v1'], function () {
+    Route::post('webhook', 'LineController@webhook');
     Route::get('prefectures', ['as' => 'prefectures', 'uses' => 'PrefectureController@index']);
     Route::get('hometowns', ['as' => 'hometowns', 'uses' => 'PrefectureController@getHometowns']);
     Route::get('municipalities', ['as' => 'municipalities', 'uses' => 'MunicipalityController@index']);
