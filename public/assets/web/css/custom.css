@@ -767,3 +767,23 @@
   white-space: nowrap;
   width: 38%;
 }
+
+.messge-input {
+  height: 60px;
+}
+
+.messge-input .msg-input-pic {
+  margin-bottom: 30px;
+}
+
+.messge-input .msg-input-camera {
+  margin-bottom: 30px;
+}
+
+.messge-input .msg-input-text {
+  margin-bottom: 30px;
+}
+
+.messge-input .msg-input-pic {
+  margin-bottom: 30px;
+}
