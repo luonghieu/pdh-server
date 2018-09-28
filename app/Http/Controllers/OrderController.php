@@ -521,14 +521,21 @@ class OrderController extends Controller
     public function history(Request $request, $orderId)
     {
         $user = Auth::user();
-        $order = Order::whereIn('status', [OrderStatus::DONE, OrderStatus::CANCELED])
-            ->where('user_id', $user->id)
-            ->with(['user', 'casts', 'nominees', 'tags'])
-            ->find($orderId);
+        $accessToken = JWTAuth::fromUser(Auth::user());
+        $client = new Client();
+        $option = [
+            'headers' => ['Authorization' => 'Bearer ' . $accessToken],
+            'form_params' => [],
+            'allow_redirects' => false,
+        ];
 
-        if (!$order) {
+        $response = $client->get(route('guest.get_payment_requests', ['id' => $orderId]), $option);
+        $response = json_decode($response->getBody()->getContents());
+
+        if (!$response->status) {
             return redirect()->back();
         }
+        $order = $response->data;
 
         return view('web.orders.history', compact('order', 'user'));
     }

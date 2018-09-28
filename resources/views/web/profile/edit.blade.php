@@ -37,6 +37,10 @@
 </div>
 @endsection
 @section('web.content')
+<input type="hidden" id="name" value="{{ $profile['nickname'] }}" />
+<input type="hidden" id="day" value="{{ $profile['date_of_birth'] }}" />
+<input type="hidden" id="img" value="{{ count($profile['avatars']) }}" />
+
 <section class="button-box" hidden="">
   <label for="trigger3" class="open_button button-settlement" id="profile-popup"></label>
 </section>

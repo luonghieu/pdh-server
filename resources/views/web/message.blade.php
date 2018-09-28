@@ -31,7 +31,7 @@
     </div>
   </div>
   @if ($room->type != \App\Enums\RoomType::SYSTEM)
-    @if ($messages['order'] == null || ($messages['order']['type'] == App\Enums\OrderType::NOMINATION && $messages['order']['status'] == App\Enums\OrderStatus::DONE))
+    @if ($messages['order'] == null || (count($messages['room']['users']) == 2 && $messages['order']['status'] == App\Enums\OrderStatus::DONE))
     <div class="msg-head">
       <h2><span class="mitei msg-head-ttl">日程未定</span> {{ (Auth::user()->type == App\Enums\UserType::GUEST) ? 'ゲストに予約リクエストしよう！' : 'ゲストにメッセージを送ってみよう！' }}</h2>
     </div>
@@ -84,7 +84,7 @@
       </dl>
     </div>
     @endif
-    @if (($messages['order']['type'] == App\Enums\OrderType::NOMINATION && $messages['order']['status'] == App\Enums\OrderStatus::DONE))
+    @if (($room->type == App\Enums\RoomType::GROUP && $messages['order']['status'] == App\Enums\OrderStatus::CANCELED) || ($messages['order']['type'] == App\Enums\OrderType::NOMINATION && $messages['order']['status'] == App\Enums\OrderStatus::DONE))
     <div class="msg-head">
       <h2><span class="mitei msg-head-ttl">日程未定</span>キャストに予約リクエストしよう！</h2>
     </div>
@@ -109,7 +109,7 @@
         <input type="file" style="display: none" name="image-camera" accept="image/*" id="image-camera" capture="camera">
       </label>
       <div class="msg-input-text">
-        <input type="text" id="content" name="content" placeholder="入力してください">
+        <input type="text" id="content" name="content" placeholder="入力してください" class="content-message">
       </div>
       <label class="msg-input-pic">
         <img src="/assets/web/images/gg2/send.svg">

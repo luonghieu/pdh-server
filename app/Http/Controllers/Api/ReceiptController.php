@@ -82,8 +82,6 @@ class ReceiptController extends ApiController
             $receipt->save();
 
             $im = new Imagick($receipt->file);
-            $im->setImageUnits(Imagick::RESOLUTION_PIXELSPERINCH);
-            $im->setImageResolution(595,842);
             $im->setImageFormat('png');
 
             $fileName = 'receipts/' . Uuid::generate()->string . '.png';

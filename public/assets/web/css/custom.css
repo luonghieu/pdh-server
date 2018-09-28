@@ -66,7 +66,7 @@
   bottom: 10px;
   right: 0;
   border-radius: 30px;
-  background-color: #00D2CC;
+  background-color: transparent;
   text-align: center;
 }
 
@@ -289,10 +289,6 @@
 
 #order-history-controller .details-list__thumbnail img {
   border-radius: 15px;
-}
-
-#order-history-controller main {
-  padding-top: 30px;
 }
 
 .big-title {
@@ -748,6 +744,25 @@
   height: 100%;
 }
 
+.notyfi-msg {
+  position: absolute;
+  width: 30px;
+  height: 30px;
+  bottom: 10px;
+  right: 0;
+  border-radius: 30px;
+  text-align: center;
+  background-color: #00D2CC;
+}
+
+.notyfi-msg span {
+  color: #fff;
+  display: inline-block;
+  margin-top: 5px;
+  font-weight: bold;
+  font-size: 14px;
+}
+
 #number-card-display a {
   color: #c8c8c8;
 }
@@ -788,6 +803,43 @@
 .messge-input .msg-input-pic {
   margin-bottom: 30px;
 }
+
+.text-ellipsis {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: block;
+  font-weight: bold;
+}
+
 #order-history-controller .point-fix {
   text-decoration: underline;
+}
+
+#gf2 .text-nickname {
+  width: 35%;
+}
+
+#gl3 .text-nickname {
+  width: 25%;
+}
+
+#go1 .text-nickname {
+  width: 50%;
+}
+
+.ge2-3 .text-nickname {
+  width: 50%;
+}
+
+#chat #gg2 .msg-input .msg-input-text input[type="text"] {
+  font-size: 13px;
+}
+
+#chat #gg2 .msg-input .msg-input-text input[type="text"]::placeholder {
+  font-size: 13px;
+}
+
+#chat #gg2 .msg-input .msg-input-text input[type="text"] {
+  height: 35px;
 }
