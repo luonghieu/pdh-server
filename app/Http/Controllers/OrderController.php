@@ -521,7 +521,7 @@ class OrderController extends Controller
     public function history(Request $request, $orderId)
     {
         $user = Auth::user();
-        $order = Order::where('status', OrderStatus::DONE)
+        $order = Order::whereIn('status', [OrderStatus::DONE, OrderStatus::CANCELED])
             ->where('user_id', $user->id)
             ->with(['user', 'casts', 'nominees', 'tags'])
             ->find($orderId);
