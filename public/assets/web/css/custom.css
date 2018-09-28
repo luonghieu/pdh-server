@@ -788,3 +788,6 @@
 .messge-input .msg-input-pic {
   margin-bottom: 30px;
 }
+#order-history-controller .point-fix {
+  text-decoration: underline;
+}

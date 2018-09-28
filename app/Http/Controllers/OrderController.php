@@ -11,8 +11,6 @@ use App\Enums\PaymentRequestStatus;
 use App\Enums\PointType;
 use App\Enums\TagType;
 use App\Enums\UserType;
-use App\Http\Controllers\Controller;
-use App\Jobs\PointSettlement;
 use App\Order;
 use App\Point;
 use App\Services\LogService;
@@ -24,7 +22,6 @@ use Carbon\Carbon;
 use DB;
 use GuzzleHttp\Client;
 use Illuminate\Http\Request;
-use Illuminate\Http\Response;
 use JWTAuth;
 use Session;
 
@@ -538,6 +535,11 @@ class OrderController extends Controller
 
     public function pointSettlement(Request $request, $id)
     {
+        $user = Auth::user();
+        if (!$user->card) {
+            return response()->json(['success' => false], 400);
+        }
+
         $now = Carbon::now();
         $order = Order::where('payment_status', OrderPaymentStatus::REQUESTING)->find($id);
         if (!$order) {

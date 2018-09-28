@@ -36,8 +36,8 @@
     </div>
 @endsection
 @section('web.content')
-    <?php $orderStartTime = \Carbon\Carbon::parse($order->actual_started_at) ?>
-    <?php $orderEndTime = \Carbon\Carbon::parse($order->actual_ended_at) ?>
+    <?php $orderStartTime = \Carbon\Carbon::parse($order->start_time) ?>
+    <?php $orderEndTime = $orderStartTime->copy()->addMinutes($order->duration * 60) ?>
     <h1 class="big-title">キャスト評価</h1>
     <div class="cast-profile">
         <section class="profile-photo">
