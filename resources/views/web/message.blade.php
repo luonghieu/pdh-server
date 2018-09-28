@@ -109,7 +109,7 @@
         <input type="file" style="display: none" name="image-camera" accept="image/*" id="image-camera" capture="camera">
       </label>
       <div class="msg-input-text">
-        <input type="text" id="content" name="content" placeholder="入力してください">
+        <input type="text" id="content" name="content" placeholder="入力してください" class="content-message">
       </div>
       <label class="msg-input-pic">
         <img src="/assets/web/images/gg2/send.svg">

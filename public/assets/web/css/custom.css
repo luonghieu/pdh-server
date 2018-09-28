@@ -810,3 +810,7 @@
 #order-history-controller .point-fix {
   text-decoration: underline;
 }
+
+.content-message::placeholder {
+  font-size: 13px !important;
+}
