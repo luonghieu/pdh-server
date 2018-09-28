@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Enums\OrderPaymentStatus;
 use App\Enums\OrderStatus;
 use App\Http\Controllers\Controller;
 use App\Message;
@@ -32,9 +33,13 @@ class MessageController extends Controller
             $cast = $order->casts()->wherePivot('guest_rated', false)->first();
             if ($cast) {
                 return redirect(route('evaluation.index', ['order_id' => $order->id]));
-            } else {
-                return view('web.message', compact('room', 'messages'));
             }
+
+            if (in_array($messages['order']['payment_status'], [OrderPaymentStatus::WAITING, OrderPaymentStatus::REQUESTING, OrderPaymentStatus::EDIT_REQUESTING])) {
+                return redirect(route('history.show', ['orderId' => $order->id]));
+            }
+
+            return view('web.message', compact('room', 'messages'));
         } else {
             return view('web.message', compact('room', 'messages'));
         }
