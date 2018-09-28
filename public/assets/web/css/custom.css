@@ -824,3 +824,7 @@
 #chat #gg2 .msg-input .msg-input-text input[type="text"]::placeholder {
   font-size: 13px;
 }
+
+#chat #gg2 .msg-input .msg-input-text input[type="text"] {
+  height: 35px;
+}
