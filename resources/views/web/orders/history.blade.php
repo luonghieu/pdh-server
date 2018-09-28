@@ -149,7 +149,6 @@
             </section>
             <?php $orderTotalPoint = 0; ?>
             @foreach($casts as $cast)
-                {{--{{ dd($cast) }}--}}
                 <section class="details-list" id="cast-{{ $cast->id }}">
                     <div class="details-list__line"><p></p></div>
                     <div class="details-list__header">
@@ -158,10 +157,8 @@
                                 <img src="{{ $cast->avatars[0]->thumbnail }}" alt="Avatar">
                             </a>
                         </div>
-                        <p class="details-list__name">
-                            <span class="text-ellipsis">{{ ($cast->nickname) }}</span>
-                            <b>{{'(' . \Carbon\Carbon::parse($cast->date_of_birth)->age . ')' }}</b>
-                        </p>
+                        <p class="details-list__name text-nickname">{{ $cast->nickname }}</p>
+                        <b>{{ '(' . \Carbon\Carbon::parse($cast->date_of_birth)->age . ')' }}</b>
                         <span class="details-list__button" onclick="expandInfo('cast-{{ $cast->id }}', this)"></span>
                     </div>
                     <div class="details-list__content">

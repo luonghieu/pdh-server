@@ -43,8 +43,8 @@
         <section class="profile-photo">
             <div class="profile-photo_top"><img src="{{ $castUnrate->avatars->first()->thumbnail }}" alt=""></div>
             <h2>
-              <span class="text-ellipsis">{{ $castUnrate->nickname }}</span>
-              <b>{{'(' . \Carbon\Carbon::parse($castUnrate->date_of_birth)->age . ')'}}</b>
+              <b class="text-ellipsis text-nickname">{{ $castUnrate->nickname }}</b>
+              <b>{{ '(' . \Carbon\Carbon::parse($castUnrate->date_of_birth)->age . ')'}}</b>
             </h2>
             <p>{{ $orderStartTime->format('Y年m月d日') . '(' . dayOfWeek()[$orderStartTime->dayOfWeek] . ')' }}</p>
             <p>{{ $orderStartTime->format('H:i') }}〜{{ $orderEndTime->format('H:i') }}</p>

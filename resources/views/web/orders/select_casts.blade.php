@@ -18,7 +18,7 @@
           <div class="icon">
             <p><img src="{{ $cast['avatars'][0]['thumbnail'] }}" alt=""></p>
           </div>
-          <span class="sp-name-cast text-ellipsis">{{ $cast['nickname'] }}</span>
+          <span class="sp-name-cast text-ellipsis text-nickname">{{ $cast['nickname'] }}</span>
           <label for="{{ $cast['id'] }}" class="label-select-casts">指名する</label>
         </div>
         @endforeach
