@@ -26,6 +26,7 @@
 
 #gg .msg-box .msg-box-img li {
   background: url(../images/gg1/man.svg) no-repeat center center;
+  background-size: contain;
 }
 
 .list-name {
