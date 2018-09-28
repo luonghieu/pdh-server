@@ -7,7 +7,9 @@
   <section class="cast-photo">
     <div class="slider cast-photo__show">
       @foreach ($cast['avatars'] as $avatar)
-      <img src="{{ $avatar['path'] }}" alt="">
+        @if ($avatar['thumbnail'])
+        <img src="{{ $avatar['thumbnail'] }}" alt="">
+        @endif
       @endforeach
     </div>
   </section>
@@ -15,11 +17,11 @@
   <div class="cast-set">
     <section class="cast-info">
       <ul class="cast-info__list">
-        <li class="cast-info__item">●●{{ $cast['nickname'] or '未設定' }}●●</li>
-        <li class="cast-info__item">{{ $cast['age'] or '未設定' }}歳</li>
-        <li class="cast-info__item--level">{{ $cast['class'] or '未設定' }}</li>
+        <li class="cast-info__item">●●{{ (!$cast['nickname']) ? '未設定' : $cast['nickname'] }}●●</li>
+        <li class="cast-info__item">{{ (!$cast['age']) ? '未設定' : ($cast['age'] . "歳") }}</li>
+        <li class="cast-info__item--level">{{ (!$cast['class']) ? '未設定' : $cast['class'] }}</li>
       </ul>
-      <p class="cast-info__signature">保育士 | ばっち飯ですのでご一緒どうでしょうか？</p>
+      <p class="cast-info__signature">{{ $cast['job'] }} | {{ $cast['intro'] }}</p>
       <p class="cast-info__price">30分あたりの料金<span>{{ $cast['cost'] ? number_format($cast['cost']) : '未設定' }}P</span></p>
     </section>
 
@@ -28,7 +30,7 @@
         <h2 class="portlet-header__title">自己紹介</h2>
       </div>
       <div class="portlet-content">
-        <p class="portlet-content__text">{{ $cast['intro'] or '未設定' }}</p>
+        <p class="portlet-content__text">{{ (!$cast['intro']) ? '' : $cast['intro'] }}</p>
       </div>
     </section>
 
@@ -36,35 +38,71 @@
       <div class="portlet-header">
         <h2 class="portlet-header__title">基本情報</h2>
       </div>
+      @php
+        switch ($cast['height']) {
+            case '0':
+                $height = '非公開';
+                break;
+
+            default:
+                $height = $cast['height'] . 'cm';
+                break;
+        }
+      @endphp
       <div class="portlet-content">
         <ul class="portlet-content__list">
           <li class="portlet-content__item">
             <p class="portlet-content__text--list">身長</p>
-            <p class="portlet-content__value"><span>{{ $cast['height'] or '未設定' }}</span>cm</p>
+
+            <p class="portlet-content__value"><span>{{ $height or '未設定' }}</span></p>
           </li>
           <li class="portlet-content__item">
             <p class="portlet-content__text--list">体型</p>
-            <p class="portlet-content__value">{{ $cast['body_type'] or '未設定' }}</p>
+            @if (!$cast['body_type'])
+            <p class="portlet-content__text--list">未設定</p>
+            @else
+            <p class="portlet-content__value">{{ $cast['body_type'] }}</p>
+            @endif
           </li>
           <li class="portlet-content__item">
             <p class="portlet-content__text--list">居住地</p>
-            <p class="portlet-content__value">{{ $cast['prefecture'] or '未設定' }}</p>
+            @if (!$cast['prefecture'])
+            <p class="portlet-content__text--list">未設定</p>
+            @else
+            <p class="portlet-content__value">{{ $cast['prefecture'] }}</p>
+            @endif
           </li>
           <li class="portlet-content__item">
             <p class="portlet-content__text--list">出身地</p>
-            <p class="portlet-content__value">{{ $cast['hometown'] or '未設定' }}</p>
+            @if (!$cast['hometown'])
+            <p class="portlet-content__text--list">未設定</p>
+            @else
+            <p class="portlet-content__value">{{ $cast['hometown'] }}</p>
+            @endif
           </li>
           <li class="portlet-content__item">
             <p class="portlet-content__text--list">お仕事</p>
-            <p class="portlet-content__value">{{ $cast['job'] or '未設定' }}</p>
+            @if (!$cast['job'])
+            <p class="portlet-content__text--list">未設定</p>
+            @else
+            <p class="portlet-content__value">{{ $cast['job'] }}</p>
+            @endif
           </li>
           <li class="portlet-content__item">
             <p class="portlet-content__text--list">お酒</p>
-            <p class="portlet-content__value">{{ $cast['drink_volume'] or '未設定' }}</p>
+            @if (!$cast['drink_volume'])
+            <p class="portlet-content__text--list">未設定</p>
+            @else
+            <p class="portlet-content__value">{{ $cast['drink_volume'] }}</p>
+            @endif
           </li>
           <li class="portlet-content__item">
             <p class="portlet-content__text--list">同居人</p>
-            <p class="portlet-content__value">{{ $cast['cohabitant'] or '未設定' }}</p>
+            @if (!$cast['cohabitant'])
+            <p class="portlet-content__text--list">未設定</p>
+            @else
+            <p class="portlet-content__value">{{ $cast['cohabitant'] }}</p>
+            @endif
           </li>
         </ul>
       </div>
@@ -73,7 +111,7 @@
   </div>
 </div>
 <div class="cast-call-btn">
-  <button><img src="{{ asset('assets/web/images/common/msg2.svg') }}"></button>
+  <a href="{{ route('message.index') }}"><img src="{{ asset('assets/web/images/common/msg2.svg') }}"></a>
   <div class="btn-l"><a href="{{ route('guest.orders.nominate',['id' => $cast['id'] ]) }}">指名予約する</a></div>
 </div>
 @endsection
