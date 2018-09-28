@@ -88,7 +88,7 @@
       @include('web.content-message',compact('messages'))
     </section>
   </div><!--  msg -->
-  <div class="msg-input">
+  <div class="msg-input messge-input">
     <form action="" enctype="multipart/form-data" method="POST" class="msg-input-box">
       <input type="hidden" name="room_id" value="{{ $room->id }}" id="room-id">
       <input type="hidden" name="order_id" value="{{ $messages['order']['id'] }}" id="order-id">
