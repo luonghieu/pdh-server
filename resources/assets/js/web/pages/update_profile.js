@@ -112,7 +112,7 @@ $(document).ready(function() {
           $('#profile-popup').trigger('click');
           $('#profile-message h2').html('情報の更新に成功しました。');
           setTimeout(() => {
-            window.location.href = '/profile';
+            window.location.href = '/mypage';
           }, 1500);
         })
         .catch(function(error) {

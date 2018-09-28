@@ -57,11 +57,9 @@
           <span>{{ $order->address }} {{ \Carbon\Carbon::parse($order->start_time)->format('H:i') }}〜</span>
           <ul>
             @if(count($order->tags))
-              <li>
-                @foreach($order->tags as $tag)
-                  #{{ $tag->name }}
-                @endforeach
-              </li>
+              @foreach($order->tags as $tag)
+                <li>#{{ $tag->name }}</li>
+              @endforeach
             @endif
           </ul>
         </div>

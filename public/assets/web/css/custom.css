@@ -126,6 +126,25 @@
   width: 120px;
 }
 
+#page #gm1 .init-image-radius {
+  border-radius: 50%;
+  height: 7rem;
+  width: 7rem;
+}
+
+#page #gm1 .profile-photo__list ul {
+  margin: 0 auto;
+  display: -webkit-box;
+}
+
+#page #gm1 .profile-photo__list ul li {
+  margin: 0.2rem auto;
+}
+
+#page #gm1 .profile-photo__list ul li img {
+  margin: 0 auto;
+}
+
 #mm-0 .init-image-radius img {
   height: 100%;
 }
@@ -726,6 +745,11 @@
 .reserve-image img {
   height: 100%;
 }
+
+#number-card-display a {
+  color: #c8c8c8;
+}
+
 #order-history-controller .details-list__name {
   font-weight: bold;
 }
@@ -735,3 +759,4 @@
   padding-right: 12px;
   color: grey;
 }
+
