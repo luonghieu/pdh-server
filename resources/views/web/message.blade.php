@@ -84,7 +84,7 @@
       </dl>
     </div>
     @endif
-    @if (($messages['order']['type'] == App\Enums\OrderType::NOMINATION && $messages['order']['status'] == App\Enums\OrderStatus::DONE))
+    @if (($room->type == App\Enums\RoomType::GROUP && $messages['order']['status'] == App\Enums\OrderStatus::CANCELED) || ($messages['order']['type'] == App\Enums\OrderType::NOMINATION && $messages['order']['status'] == App\Enums\OrderStatus::DONE))
     <div class="msg-head">
       <h2><span class="mitei msg-head-ttl">日程未定</span>キャストに予約リクエストしよう！</h2>
     </div>
