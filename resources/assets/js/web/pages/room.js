@@ -14,6 +14,9 @@ $(document).ready(function() {
 
     var roomId = e.message.room_id;
     var unreadCount = $('#room_' + roomId).data('unread');
+
+    $('#balloon_' + roomId).removeClass("balloon");
+    $('#balloon_' + roomId).addClass("notyfi-msg");
     unreadCount = unreadCount + 1;
 
     $('#room_' + roomId).data('unread', unreadCount);

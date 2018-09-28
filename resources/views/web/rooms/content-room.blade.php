@@ -48,11 +48,9 @@
             <p class="time-msg"></p>
             @endif
           </div>
-          @if ($room->unread_count > 0)
-            <div class="balloon">
-              <span data-unread="{{ $room->unread_count }}" id="room_{{ $room->id }}">{{ $room->unread_count }}</span>
+            <div id="balloon_{{ $room->id }}" @if($room->unread_count > 0) class="notyfi-msg"@else class="balloon"@endif>
+              <span data-unread="{{ $room->unread_count }}" id="room_{{ $room->id }}" >{{ $room->unread_count }}</span>
             </div>
-          @endif
           <div class="msg-msg">
             @if ($room->type == App\Enums\RoomType::SYSTEM)
             <h2 class="list-name">Cheers運営局</h2>
