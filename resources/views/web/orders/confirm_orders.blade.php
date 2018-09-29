@@ -1,4 +1,4 @@
-@section('title', 'キャスト予約')
+@section('title', '予約内容のご確認')
 @section('screen.id', 'gl3')
 @section('screen.class', 'ge3')
 @extends('layouts.web')

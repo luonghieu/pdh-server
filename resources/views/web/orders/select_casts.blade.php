@@ -1,4 +1,4 @@
-@section('title', 'キャスト予約')
+@section('title', 'キャストを指名しますか?')
 @section('screen.class', 'ge2-3')
 @extends('layouts.web')
 @section('web.extra_css')
