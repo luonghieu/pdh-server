@@ -291,10 +291,6 @@
   border-radius: 15px;
 }
 
-#order-history-controller main {
-  padding-top: 30px;
-}
-
 .big-title {
   text-align: center;
   padding-bottom: 15px;
@@ -809,7 +805,6 @@
 }
 
 .text-ellipsis {
-  width: 40%;
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -819,6 +814,22 @@
 
 #order-history-controller .point-fix {
   text-decoration: underline;
+}
+
+#gf2 .text-nickname {
+  max-width: 35%;
+}
+
+#gl3 .text-nickname {
+  max-width: 25%;
+}
+
+#go1 .text-nickname {
+  max-width: 50%;
+}
+
+.ge2-3 .text-nickname {
+  max-width: 50%;
 }
 
 #chat #gg2 .msg-input .msg-input-text input[type="text"] {
@@ -831,4 +842,8 @@
 
 #chat #gg2 .msg-input .msg-input-text input[type="text"] {
   height: 35px;
+}
+
+#chat #gg2 .msg-wrap .text .text-wrapper .msg-system a {
+  color: #3FC3BF;
 }

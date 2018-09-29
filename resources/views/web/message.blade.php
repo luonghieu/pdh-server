@@ -138,5 +138,7 @@
         $(this).next().slideToggle();
       });
     });
+
+    $(document).scrollTop($(document).height());
 </script>
 @endsection
