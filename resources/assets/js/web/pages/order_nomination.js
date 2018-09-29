@@ -349,7 +349,7 @@ $(document).ready(function(){
       updateLocalStorageValue('order_params', updateMonth);
 
       var updateDate = {
-          current_date: date,
+          current_date: day,
         };
 
       updateLocalStorageValue('order_params', updateDate);
