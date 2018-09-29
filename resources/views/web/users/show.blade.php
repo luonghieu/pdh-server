@@ -118,3 +118,8 @@
   <div class="btn-l"><a href="{{ route('guest.orders.nominate',['id' => $cast['id'] ]) }}">指名予約する</a></div>
 </div>
 @endsection
+@section('web.script')
+<script>
+localStorage.clear();
+</script>
+@stop
