@@ -847,3 +847,7 @@
 #chat #gg2 .msg-wrap .text .text-wrapper .msg-system a {
   color: #3FC3BF;
 }
+
+.css-mypage.pb {
+  padding-bottom: 0.8rem;
+}
