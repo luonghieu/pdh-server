@@ -150,6 +150,7 @@ $(document).ready(function() {
       console.log(error);
     });
   }
+
   window.addEventListener('scroll', function(e) {
     if(!$(".next-page").attr("data-url")) {
       return false;
@@ -191,4 +192,19 @@ $(document).ready(function() {
       console.log(error);
     });
   });
+});
+
+$('.msg-system').each(function(index, val) {
+  var content = $(this).text();
+  var text2 = 'コチラ';
+  var n = content.search(text2);
+  if(n >= 0) {
+    var text1 = content.substring(0, n).replace(/\n/g, "<br />");
+    var text3 = content.substring(n+text2.length, content.length).replace(/\n/g, "<br />");
+    var orderId = $(this).data('id');
+    var result = text2.link('/history/'+ orderId);
+    $(this).html(text1 + result + text3);
+  } else {
+    $(this).html(content.replace(/\n/g, "<br />"));
+  }
 });

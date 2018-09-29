@@ -48,6 +48,7 @@ $(document).ready(function() {
 });
 
 let roomLoading = false;
+
 $(window).scroll(function() {
     if($(document).height() - ($(window).scrollTop() + $(window).height()) <= 10  ) {
       var nextpage = $(".next-page:last").attr("data-url");
