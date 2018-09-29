@@ -1,6 +1,5 @@
 $(document).ready(function(){
   //checkbox
-  // localStorage.clear();
   $(".checked-order").on("change",function(event){
     if ($(this).is(':checked')) {
       var time = $("input:radio[name='time_join_nomination']:checked").val();
