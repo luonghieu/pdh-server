@@ -63,7 +63,7 @@ $(document).ready(function() {
     }
   });
 
-  $("#send-message").click(function() {
+  $("#send-message").click(function(event) {
     $(this).prop('disabled', true);
 
     if($.trim($("#content").val())) {
@@ -76,6 +76,8 @@ $(document).ready(function() {
     } else {
       return false;
     }
+
+    event.preventDefault();
   });
 
   $("#content").click(function(event) {
