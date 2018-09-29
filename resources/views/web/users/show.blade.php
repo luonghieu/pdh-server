@@ -45,7 +45,7 @@
                 break;
 
             default:
-                $height = $cast['height'] . 'cm';
+                $height = (!$cast['height']) ? '' : $cast['height'] . 'cm';
                 break;
         }
       @endphp
@@ -53,8 +53,11 @@
         <ul class="portlet-content__list">
           <li class="portlet-content__item">
             <p class="portlet-content__text--list">身長</p>
-
-            <p class="portlet-content__value"><span>{{ $height or '未設定' }}</span></p>
+            @if (!$height)
+            <p class="portlet-content__text--list">未設定</p>
+            @else
+            <p class="portlet-content__value"><span>{{ $height }}</span></p>
+            @endif
           </li>
           <li class="portlet-content__item">
             <p class="portlet-content__text--list">体型</p>
