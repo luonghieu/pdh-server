@@ -36,7 +36,7 @@
       <h2><span class="mitei msg-head-ttl">日程未定</span> {{ (Auth::user()->type == App\Enums\UserType::GUEST) ? 'ゲストに予約リクエストしよう！' : 'ゲストにメッセージを送ってみよう！' }}</h2>
     </div>
     @endif
-    @if ($messages['order']['status'] == App\Enums\OrderStatus::DONE && $messages['order']['type'] != App\Enums\OrderType::NOMINATION)
+    @if ($messages['order']['status'] == App\Enums\OrderStatus::DONE && count($messages['room']['users']) > 2)
     <div class="msg-head">
       <h2><span class="mitei msg-head-ttl">完了</span> このチャットは終了から24時間使用できます</h2>
     </div>
