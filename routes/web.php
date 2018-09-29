@@ -16,35 +16,37 @@ Route::group(['middleware' => 'auth'], function () {
         Route::get('edit', ['as' => 'edit', 'uses' => 'ProfileController@edit']);
     });
 
-    Route::group(['prefix' => 'cast', 'as' => 'cast.'], function () {
-        Route::get('/{id}', ['as' => 'show', 'uses' => 'UserController@show'])->where('id', '[0-9]+');
-    });
+    Route::group(['middleware' => 'check_info'], function () {
+        Route::group(['prefix' => 'cast', 'as' => 'cast.'], function () {
+            Route::get('/{id}', ['as' => 'show', 'uses' => 'UserController@show'])->where('id', '[0-9]+');
+        });
 
-    Route::group(['prefix' => 'purchase', 'as' => 'purchase.'], function () {
-        Route::get('/', ['as' => 'index', 'uses' => 'PointController@index']);
-    });
+        Route::group(['prefix' => 'purchase', 'as' => 'purchase.'], function () {
+            Route::get('/', ['as' => 'index', 'uses' => 'PointController@index']);
+        });
 
-    Route::group(['prefix' => 'message', 'as' => 'message.'], function () {
-        Route::get('/', ['as' => 'index', 'uses' => 'RoomController@index']);
+        Route::group(['prefix' => 'message', 'as' => 'message.'], function () {
+            Route::get('/', ['as' => 'index', 'uses' => 'RoomController@index']);
 
-        Route::get('{room}', ['as' => 'messages', 'uses' => 'MessageController@message'])->where('room', '[0-9]+');
-    });
+            Route::get('{room}', ['as' => 'messages', 'uses' => 'MessageController@message'])->where('room', '[0-9]+');
+        });
 
-    Route::group(['prefix' => 'evaluation', 'as' => 'evaluation.'], function () {
-        Route::get('/', ['as' => 'index', 'uses' => 'RatingController@index']);
-    });
+        Route::group(['prefix' => 'evaluation', 'as' => 'evaluation.'], function () {
+            Route::get('/', ['as' => 'index', 'uses' => 'RatingController@index']);
+        });
 
-    Route::group(['prefix' => 'history', 'as' => 'history.'], function () {
-        Route::get('/{orderId}', ['as' => 'show', 'uses' => 'OrderController@history']);
-    });
+        Route::group(['prefix' => 'history', 'as' => 'history.'], function () {
+            Route::get('/{orderId}', ['as' => 'show', 'uses' => 'OrderController@history']);
+        });
 
-    Route::group(['middleware' => ['guest'], 'prefix' => 'credit_card', 'as' => 'credit_card.'], function () {
-        Route::get('/', ['as' => 'index', 'uses' => 'CardController@index']);
-        Route::get('edit', ['as' => 'update', 'uses' => 'CardController@update']);
-    });
+        Route::group(['middleware' => ['guest'], 'prefix' => 'credit_card', 'as' => 'credit_card.'], function () {
+            Route::get('/', ['as' => 'index', 'uses' => 'CardController@index']);
+            Route::get('edit', ['as' => 'update', 'uses' => 'CardController@update']);
+        });
 
-    Route::group(['prefix' => 'point_settement', 'as' => 'point_settement.'], function () {
-        Route::post('/{orderId}', ['as' => 'create', 'uses' => 'OrderController@pointSettlement']);
+        Route::group(['prefix' => 'point_settement', 'as' => 'point_settement.'], function () {
+            Route::post('/{orderId}', ['as' => 'create', 'uses' => 'OrderController@pointSettlement']);
+        });
     });
 });
 
@@ -56,7 +58,7 @@ Route::get('/login/line', 'Auth\LineController@login')->name('auth.line');
 Route::get('/login/line/callback', 'Auth\LineController@handleCallBack');
 Route::post('/line/webhook', 'Auth\LineController@webhook');
 
-Route::group(['middleware' => ['auth', 'guest'], 'as' => 'guest.'], function () {
+Route::group(['middleware' => ['auth', 'guest', 'check_info'], 'as' => 'guest.'], function () {
     Route::group(['as' => 'orders.'], function () {
         Route::get('/reserve', ['as' => 'reserve', 'uses' => 'OrderController@index']);
         Route::get('/call', ['as' => 'call', 'uses' => 'OrderController@call']);
@@ -76,6 +78,6 @@ Route::group(['middleware' => ['auth', 'guest'], 'as' => 'guest.'], function () 
     });
 });
 
-Route::group(['middleware' => ['auth', 'guest']], function () {
+Route::group(['middleware' => ['auth', 'guest', 'check_info']], function () {
     Route::get('/history', ['as' => 'points.history', 'uses' => 'PointController@history']);
 });
