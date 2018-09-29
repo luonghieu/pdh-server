@@ -82,9 +82,9 @@ class ReceiptController extends ApiController
             $receipt->save();
 
             $im = new Imagick($receipt->file);
-            $im->setImageFormat('png');
+            $im->setImageFormat('jpg');
 
-            $fileName = 'receipts/' . Uuid::generate()->string . '.png';
+            $fileName = 'receipts/' . Uuid::generate()->string . '.jpg';
             \Storage::put($fileName, $im->__toString(), 'public');
 
             $receipt->img_file = $fileName;

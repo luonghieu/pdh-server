@@ -114,7 +114,7 @@
   </div>
 </div>
 <div class="cast-call-btn">
-  <a href="{{ route('message.index') }}"><img src="{{ asset('assets/web/images/common/msg2.svg') }}"></a>
+  <a href="{{ route('message.messages', $cast['room_id']) }}"><img src="{{ asset('assets/web/images/common/msg2.svg') }}"></a>
   <div class="btn-l"><a href="{{ route('guest.orders.nominate',['id' => $cast['id'] ]) }}">指名予約する</a></div>
 </div>
 @endsection
