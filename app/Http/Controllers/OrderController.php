@@ -186,6 +186,9 @@ class OrderController extends Controller
         }
 
         if ('other_duration' == $duration) {
+            if ($request->sl_duration < 0) {
+                return redirect()->back();
+            }
             $input['other_duration'] = $duration;
 
             $duration = $request->sl_duration;
@@ -622,7 +625,6 @@ class OrderController extends Controller
     public function nominate(Request $request)
     {
         $id = $request->id;
-
         $user = Auth::user();
         $token = JWTAuth::fromUser($user);
 
@@ -657,14 +659,14 @@ class OrderController extends Controller
 
     public function createNominate(Request $request)
     {
-        if (!isset($request->nomination_area)) {
-            return redirect()->route('guest.orders.nominate');
-        }
-
         $area = $request->nomination_area;
         $otherArea = $request->other_area_nomination;
-        if (!$area && !$otherArea) {
-            return redirect()->route('web.index');
+        if (!isset($area)) {
+            return redirect()->back();
+        }
+
+        if ('その他' == $area && !$otherArea) {
+            return redirect()->back();
         }
 
         if ('その他' == $area && $otherArea) {
@@ -672,33 +674,33 @@ class OrderController extends Controller
         }
 
         if (!$request->time_join_nomination) {
-            return redirect()->route('web.index');
+            return redirect()->back();
         }
 
         $now = Carbon::now();
         if ('other_time' == $request->time_join_nomination) {
-            if ($request->sl_month < 10) {
-                $month = '0' . $request->sl_month;
+            if ($request->sl_month_nomination < 10) {
+                $month = '0' . $request->sl_month_nomination;
             } else {
-                $month = $request->sl_month;
+                $month = $request->sl_month_nomination;
             }
 
-            if ($request->sl_date < 10) {
-                $date = '0' . $request->sl_date;
+            if ($request->sl_date_nomination < 10) {
+                $date = '0' . $request->sl_date_nomination;
             } else {
-                $date = $request->sl_date;
+                $date = $request->sl_date_nomination;
             }
 
-            if ($request->sl_hour < 10) {
-                $hour = '0' . $request->sl_hour;
+            if ($request->sl_hour_nomination < 10) {
+                $hour = '0' . $request->sl_hour_nomination;
             } else {
-                $hour = $request->sl_hour;
+                $hour = $request->sl_hour_nomination;
             }
 
-            if ($request->sl_minute < 10) {
-                $minute = '0' . $request->sl_minute;
+            if ($request->sl_minute_nomination < 10) {
+                $minute = '0' . $request->sl_minute_nomination;
             } else {
-                $minute = $request->sl_minute;
+                $minute = $request->sl_minute_nomination;
             }
 
             $date = $now->year . '-' . $month . '-' . $date;
@@ -712,13 +714,19 @@ class OrderController extends Controller
 
         $classId = $request->class_id;
 
+        //duration
         $duration = $request->time_set_nomination;
-        if (4 == $duration) {
-            $duration = $request->time_set_nomination;
+
+        if (!$duration || ('other_time_set' != $duration && $duration <= 0)) {
+            return redirect()->back();
         }
 
-        if (!$duration || $duration <= 0) {
-            return redirect()->route('web.index');
+        if ('other_time_set' == $duration) {
+            if ($request->sl_duration < 0) {
+                return redirect()->back();
+            }
+
+            $duration = $request->sl_duration_nominition;
         }
 
         $client = new Client();
@@ -764,11 +772,18 @@ class OrderController extends Controller
                 'type' => OrderType::NOMINATION,
                 'nominee_ids' => $request->cast_id,
             ]), $option);
+
+            $order = json_decode(($order->getBody())->getContents(), JSON_NUMERIC_CHECK);
+            $order = $order['data'];
+
+            return redirect()->route('message.messages', ['room' => $order['room_id']]);
         } catch (\Exception $e) {
             LogService::writeErrorLog($e);
-            abort(500);
-        }
+            $statusCode = $e->getResponse()->getStatusCode();
 
-        return redirect()->route('web.index');
+            $request->session()->flash('status_code', $statusCode);
+
+            return redirect()->back();
+        }
     }
 }

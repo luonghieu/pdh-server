@@ -33,30 +33,30 @@
             </label>
           </div>
           <div class="form-grpup"><!-- フォーム内容 -->
+            <label class="button button--green area">
+              <input class="input-area" type="radio" name="nomination_area" value="六本木">六本木</label>
+            <label class="button button--green area">
+              <input class="input-area" type="radio" name="nomination_area" value="恵比寿">恵比寿</label>
+            <label class="button button--green area">
+              <input class="input-area" type="radio" name="nomination_area" value="西麻布">西麻布</label>
             <label class="button button--green area ">
-              <input type="radio" name="nomination_area" value="六本木">六本木</label>
+              <input class="input-area" type="radio" name="nomination_area" value="渋谷">渋谷</label>
             <label class="button button--green area ">
-              <input type="radio" name="nomination_area" value="恵比寿" >恵比寿</label>
+              <input class="input-area" type="radio" name="nomination_area" value="赤坂">赤坂</label>
             <label class="button button--green area ">
-              <input type="radio" name="nomination_area" value="西麻布">西麻布</label>
+              <input class="input-area" type="radio" name="nomination_area" value="銀座">銀座</label>
             <label class="button button--green area ">
-              <input type="radio" name="nomination_area" value="渋谷">渋谷</label>
+              <input class="input-area" type="radio" name="nomination_area" value="中目黒">中目黒</label>
+            <label class="button button--green area" >
+              <input class="input-area" type="radio" name="nomination_area" value="新橋">新橋</label>
             <label class="button button--green area ">
-              <input type="radio" name="nomination_area" value="赤坂">赤坂</label>
+              <input class="input-area" type="radio" name="nomination_area" value="池袋">池袋</label>
             <label class="button button--green area ">
-              <input type="radio" name="nomination_area" value="銀座">銀座</label>
-            <label class="button button--green area ">
-              <input type="radio" name="nomination_area" value="中目黒">中目黒</label>
-            <label class="button button--green area " >
-              <input type="radio" name="nomination_area" value="新橋">新橋</label>
-            <label class="button button--green area ">
-              <input type="radio" name="nomination_area" value="池袋">池袋</label>
-            <label class="button button--green area ">
-              <input type="radio" name="nomination_area" value="新宿">新宿</label>
-            <label id="area_input" class="button button--green area">
-              <input type="radio" name="nomination_area" value="その他">その他</label>
-            <label class="area-input"><span>希望エリア</span>
-              <input type="text" placeholder="入力してください" name="other_area_nomination">
+              <input class="input-area" type="radio" name="nomination_area" value="新宿">新宿</label>
+            <label id="area_input" class="button button--green area ">
+              <input class="input-area" type="radio" name="nomination_area" value="その他">その他</label>
+            <label class="area-input area-nomination"><span>希望エリア</span>
+              <input type="text" id="other_area_nomination" placeholder="入力してください" name="other_area_nomination" value="">
            </label>
           </div>
         </div>
@@ -67,29 +67,29 @@
           </div>
           <div class="form-grpup"><!-- フォーム内容 -->
             <label class="button button--green date ">
-              <input type="radio" name="time_join_nomination" value="20">
+              <input class="input-time-join" type="radio" name="time_join_nomination" value="20">
               20分後
             </label>
-            <label class="button button--green date ">
-              <input type="radio" name="time_join_nomination" value="30">
+            <label class="button button--green date">
+              <input class="input-time-join" type="radio" name="time_join_nomination" value="30">
               30分後
             </label>
-            <label class="button button--green date ">
-              <input type="radio" name="time_join_nomination" value="60">
+            <label class="button button--green date">
+              <input class="input-time-join" type="radio" name="time_join_nomination" value="60">
               60分後
             </label>
-            <label class="button button--green date">
-              <input type="radio" name="time_join_nomination" value="90" >
+            <label class="button button--green date ">
+              <input class="input-time-join" type="radio" name="time_join_nomination" value="90" >
               90分後
             </label>
             <label id="date_input" class="button button--green date ">
-              <input type="radio" name="time_join_nomination" value="other_time">それ以外</label>
-            <label class="date-input">
+              <input class="input-time-join" type="radio" name="time_join_nomination" value="other_time" >それ以外</label>
+            <label class="date-input date-input-nomination">
               <span>希望日時</span>
               <p class="date-input__text">
-                <span class='sp-date'></span>
-                <span class='sp-month'></span>
-                <span class="sp-time"></span>
+                <span class='sp-month month-nomination'></span>
+                <span class='sp-date date-nomination'></span>
+                <span class="sp-time time-nomination"></span>
               </p>
             </label>
         </div>
@@ -99,33 +99,33 @@
             <h2>キャストとを呼ぶ時間</h2>
           </div>
           <div class="form-grpup"><!-- フォーム内容 -->
-            <label class="button button--green time ">
-              <input type="radio" name="time_set_nomination" value="1">
+            <label class="button button--green time">
+              <input class="input-duration" type="radio" name="time_set_nomination" value="1">
               1時間
             </label>
-            <label class="button button--green time">
-              <input type="radio" name="time_set_nomination" value="2">
+            <label class="button button--green time ">
+              <input class="input-duration" type="radio" name="time_set_nomination" value="2">
               2時間
             </label>
-            <label class="button button--green time ">
-              <input type="radio" name="time_set_nomination" value="3">
+            <label class="button button--green time">
+              <input class="input-duration" type="radio" name="time_set_nomination" value="3">
               3時間
             </label>
             <label id="time-input" class="button button--green time">
-              <input type="radio" name="time_set_nomination" value="4">
+              <input class="input-duration" type="radio" name="time_set_nomination" value="other_time_set">
               4時間以上
             </label>
-            <label class="time-input">
+            <label class="time-input time-input-nomination">
               <span>呼ぶ時間</span>
               <div class="selectbox">
-                <select class="select-duration" name="sl_duration">
-                  <option value="4">4時間</option>
-                  <option value="5">5時間</option>
-                  <option value="6">6時間</option>
-                  <option value="7">7時間</option>
-                  <option value="8">8時間</option>
-                  <option value="9">9時間</option>
-                  <option value="10">10時間</option>
+                <select class="select-duration" name="sl_duration_nominition">
+                  <option value="4" >4時間</option>
+                  <option value="5" >5時間</option>
+                  <option value="6" >6時間</option>
+                  <option value="7" >7時間</option>
+                  <option value="8" >8時間</option>
+                  <option value="9" >9時間</option>
+                  <option value="10" >10時間</option>
                 </select>
                 <i></i>
               </div>
@@ -153,26 +153,26 @@
         <div class="overlay">
           <div class="date-select">
           <div class="date-select__content">
-         <select class="select-month" name="sl_month">
+         <select class="select-month" name="sl_month_nomination">
           @foreach(range(1, 12) as $month)
            <option value="{{ $month }}" {{ \Carbon\Carbon::now()->format('m') == $month ? 'selected' : '' }}>{{ $month }}月</option>
           @endforeach
          </select>
-         <select class="select-date" name="sl_date">
+         <select class="select-date" name="sl_date_nomination">
             @foreach(getDay() as $key => $val)
              <option value="{{ $key }}" {{ \Carbon\Carbon::now()->format('d') == $key ? 'selected' : '' }}>
              {{ $val }}
              </option>
             @endforeach
          </select>
-         <select class="select-hour" name="sl_hour">
+         <select class="select-hour" name="sl_hour_nomination">
           @foreach(range(00, 23) as $hour)
            <option value="{{ $hour }}" {{ \Carbon\Carbon::now()->format('H') == $hour ? 'selected' : '' }}>
                 {{ $hour<10 ? '0'.$hour : $hour }}時
           </option>
           @endforeach
          </select>
-         <select class="select-minute" name="sl_minute">
+         <select class="select-minute" name="sl_minute_nomination">
            @foreach(range(00, 59) as $minute)
            <option value="{{ $minute }}" {{ \Carbon\Carbon::now()->format('i') == $minute ? 'selected' : '' }}>
                 {{ $minute<10 ? '0'.$minute : $minute }}分
@@ -192,6 +192,11 @@
   <section class="button-box">
     <label for="orders-nominate" class="lb-orders-nominate"></label>
   </section>
+  @if((Session::has('status_code')))
+  <section class="button-box">
+    <label for="{{ Session::get('status_code') }}" class="status-code-nomination"></label>
+  </section>
+  @endif
   @if($user->card)
   <section class="button-box">
       <label for="md-success-card" class="sm-form"></label>
@@ -238,6 +243,37 @@
       ただいまキャストの調整中です
       予約状況はホーム画面の予約一覧をご確認ください
       @endslot
+    @endmodal
+  @endif
+
+  @if((Session::has('status_code')))
+    @modal(['triggerId' => Session::get('status_code'), 'triggerClass' =>''])
+      @slot('title')
+      @endslot
+
+      @if(Session::get('status_code') ==400)
+        @slot('content')
+        開始時間は現在以降の時間を指定してください
+        @endslot
+      @endif
+
+      @if(Session::get('status_code') ==409)
+        @slot('content')
+        すでに予約があります
+        @endslot
+      @endif
+
+      @if(Session::get('status_code') ==422)
+        @slot('content')
+        この操作は実行できません
+        @endslot
+      @endif
+
+      @if(Session::get('status_code') ==500)
+        @slot('content')
+        サーバーエラーが発生しました
+        @endslot
+      @endif
     @endmodal
   @endif
 

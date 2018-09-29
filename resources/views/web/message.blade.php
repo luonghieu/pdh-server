@@ -142,3 +142,8 @@
     $(document).scrollTop($(document).height());
 </script>
 @endsection
+@section('web.script')
+<script>
+localStorage.clear();
+</script>
+@stop

@@ -351,7 +351,9 @@ $(document).ready(function(){
     }
   })
 
-  if($("label").hasClass("status-code")){
-    $('.status-code').click();
+  if($("label").hasClass("status-code-nomination")){
+    $('.status-code-nomination').click();
   }
+
+  $('.checked-order').prop('checked',false);
 });

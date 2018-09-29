@@ -10,7 +10,7 @@ $(document).ready(function(){
       var otherArea = $("input:text[name='other_area_nomination']").val();
 
       if((!area || (area=='その他' && !otherArea)) || !time ||
-       (!duration || duration<1) || (time=='other_time' && !date)) {
+       (!duration || (duration<1 && 'other_time_set' != duration)) || (time=='other_time' && !date)) {
 
         $('#confirm-orders-nomination').addClass("disable");
         $(this).prop('checked', false);
@@ -30,11 +30,32 @@ $(document).ready(function(){
     }
   });
 
+  //textArea
+  $("input:text[name='other_area_nomination']").on('change', function(e) {
+    localStorage.setItem("text_area", $(this).val());
+  });
+
+  //area
+  var area = $("input:radio[name='nomination_area']");
+  area.on("change",function(){
+    var areaNomination = $("input:radio[name='nomination_area']:checked").val();
+    localStorage.setItem("select_area", areaNomination);
+  })
+
+  //
+
   //duration
   var timeSet = $("input:radio[name='time_set_nomination']");
   timeSet.on("change",function(){
     var time = $("input:radio[name='time_join_nomination']:checked").val();
+
     var duration = $("input:radio[name='time_set_nomination']:checked").val();
+    localStorage.setItem("current_duration", duration);
+
+    if('other_time_set' == duration) {
+      duration = $('.select-duration option:selected').val();
+    }
+
     var date = $('.sp-date').text();
     var cancel=$("input:checkbox[name='confrim_order_nomination']:checked").length;
 
@@ -43,7 +64,7 @@ $(document).ready(function(){
 
     cost = parseInt(cost).toLocaleString(undefined,{ minimumFractionDigits: 0 });
 
-    $('.reservation-total__text').text('内訳：'+cost+ '(キャストP/30分)✖'+(duration*6)/3+'時間');
+    $('.reservation-total__text').text('内訳：'+cost+ '(キャストP/30分)✖'+(duration)+'時間');
 
     if(time){
       var currentDate = new Date();
@@ -102,8 +123,8 @@ $(document).ready(function(){
           }
           var date = year+'-'+month+'-'+day;
           var time = hour+':'+minute;
-
       }
+
       $castId = $('.cast-id').val();
       var params = {
         date : date,
@@ -113,12 +134,13 @@ $(document).ready(function(){
         total_cast :1,
         nominee_ids : $castId
       };
-    console.log(params);
+
       window.axios.post('/api/v1/orders/price',params)
         .then(function(response) {
           totalPoint = response.data['data'];
           totalPoint = parseInt(totalPoint).toLocaleString(undefined,{ minimumFractionDigits: 0 });
           $('.total-point').text(totalPoint +'P~');
+          localStorage.setItem("current_total_point", totalPoint);
         }).catch(function(error) {
           console.log(error);
           if (error.response.status == 401) {
@@ -128,15 +150,17 @@ $(document).ready(function(){
       } else {
         totalPoint = parseInt(totalPoint).toLocaleString(undefined,{ minimumFractionDigits: 0 });
         $('.total-point').text(totalPoint +'P~');
+        localStorage.setItem("current_total_point", totalPoint);
       }
   })
 
   $('.select-duration').on("change",function(){
     var time = $("input:radio[name='time_join_nomination']:checked").val();
     var duration = $('.select-duration option:selected').val();
+    localStorage.setItem("select_duration", duration);
+
     var cost = $('.cost-order').val();
     var totalPoint=cost*(duration*6)/3;
-
     if(time) {
       var currentDate = new Date();
       var year = currentDate.getFullYear();
@@ -212,6 +236,7 @@ $(document).ready(function(){
           totalPoint = response.data['data']
           totalPoint = parseInt(totalPoint).toLocaleString(undefined,{ minimumFractionDigits: 0 });
           $('.total-point').text(totalPoint +'P~');
+          localStorage.setItem("current_total_point", totalPoint);
         }).catch(function(error) {
           console.log(error);
           if (error.response.status == 401) {
@@ -221,26 +246,24 @@ $(document).ready(function(){
       } else {
         totalPoint = parseInt(totalPoint).toLocaleString(undefined,{ minimumFractionDigits: 0 });
         $('.total-point').text(totalPoint +'P~');
+        localStorage.setItem("current_total_point", totalPoint);
       }
 
 
     cost = parseInt(cost).toLocaleString(undefined,{ minimumFractionDigits: 0 });
 
-    $('.reservation-total__text').text('内訳：'+cost+ '(キャストP/30分)✖'+(duration*6)/3+'時間')
+    $('.reservation-total__text').text('内訳：'+cost+ '(キャストP/30分)✖'+(duration)+'時間')
   })
 
   $('.choose-time').on("click",function(){
     if ($("input:radio[name='time_set_nomination']:checked").length) {
-      var selectDuration = $('.select-duration option:selected').val();
-      var checkedDuration = $("input:radio[name='time_set_nomination']:checked").val();
+      var duration = $("input:radio[name='time_set_nomination']:checked").val();
+      if('other_time_set' == duration) {
+        duration = $('.select-duration option:selected').val();
+      }
+
       var time = $("input:radio[name='time_join_nomination']:checked").val();
       var cost = $('.cost-order').val();
-
-      duration = selectDuration;
-
-      if(checkedDuration) {
-        duration = checkedDuration;
-      }
 
       var currentDate = new Date();
       var year = currentDate.getFullYear();
@@ -267,9 +290,14 @@ $(document).ready(function(){
         if(minute<10) {
           minute = '0'+minute;
         }
+      localStorage.setItem("current_date", day);
+      localStorage.setItem("current_month", month);
 
-        var date = year+'-'+month+'-'+day;
-        var time = hour+':'+minute;
+      localStorage.setItem("current_hour", hour);
+      localStorage.setItem("current_minute", minute);
+
+      var date = year+'-'+month+'-'+day;
+      var time = hour+':'+minute;
       } else{
           utc = currentDate.getTime() + (currentDate.getTimezoneOffset() * 60000);
           nd = new Date(utc + (3600000*9));
@@ -296,9 +324,13 @@ $(document).ready(function(){
           if(minute<10) {
             minute = '0'+minute;
           }
+
+          localStorage.setItem("current_date", day);
+          localStorage.setItem("current_month", month);
+
           var date = year+'-'+month+'-'+day;
           var time = hour+':'+minute;
-
+          localStorage.setItem("current_time", time);
       }
 
       $castId = $('.cast-id').val();
@@ -317,6 +349,7 @@ $(document).ready(function(){
           totalPoint = response.data['data'];
           totalPoint = parseInt(totalPoint).toLocaleString(undefined,{ minimumFractionDigits: 0 });
           $('.total-point').text(totalPoint +'P~');
+          localStorage.setItem("current_total_point", totalPoint);
         }).catch(function(error) {
           console.log(error);
           if (error.response.status == 401) {
@@ -328,17 +361,14 @@ $(document).ready(function(){
 
   $("input:radio[name='time_join_nomination']").on("change",function(){
     if ($("input:radio[name='time_set_nomination']:checked").length) {
-      var selectDuration = $('.select-duration option:selected').val();
-      var checkedDuration = $("input:radio[name='time_set_nomination']:checked").val();
-      var time = $("input:radio[name='time_join_nomination']:checked").val();
-      var cost = $('.cost-order').val();
-
-      duration = selectDuration;
-
-      if(checkedDuration) {
-        duration = checkedDuration;
+      var duration = $("input:radio[name='time_set_nomination']:checked").val();
+      if('other_time_set' == duration) {
+        duration = $('.select-duration option:selected').val();
       }
 
+      var time = $("input:radio[name='time_join_nomination']:checked").val();
+      var cost = $('.cost-order').val();
+      localStorage.setItem("current_time_set", time);
       var currentDate = new Date();
       var year = currentDate.getFullYear();
       if ((time=='other_time')) {
@@ -414,6 +444,7 @@ $(document).ready(function(){
           totalPoint = response.data['data'];
           totalPoint = parseInt(totalPoint).toLocaleString(undefined,{ minimumFractionDigits: 0 });
           $('.total-point').text(totalPoint +'P~');
+          localStorage.setItem("current_total_point", totalPoint);
         }).catch(function(error) {
           console.log(error);
           if (error.response.status == 401) {
@@ -423,17 +454,132 @@ $(document).ready(function(){
     }
   })
 
-$('#confirm-orders-nomination').on('click',function(){
+  $('#confirm-orders-nomination').on('click',function(){
     $('.lb-orders-nominate').click();
   });
 
-$('.cf-orders-nominate').on('click',function(){
-    if($('#md-require-card').length){
-      $('#md-require-card').click();
-    }else {
-      $('#create-nomination-form').submit();
+  $('.cf-orders-nominate').on('click',function(){
+      if($('#md-require-card').length){
+        $('#md-require-card').click();
+      }else {
+        $('#create-nomination-form').submit();
+      }
+  });
+
+
+
+  if(localStorage.getItem("current_total_point")){
+      $('.total-point').text(localStorage.getItem("current_total_point") +'P~');
+  }
+
+  //area
+  if(localStorage.getItem("select_area")){
+
+   if('その他'== localStorage.getItem("select_area")){
+      $('.area-nomination').css('display', 'flex')
+      $("input:text[name='other_area_nomination']").val(localStorage.getItem("text_area"));
     }
-});
-});
 
+    const inputArea = $(".input-area");
+    $.each(inputArea,function(index,val){
+      if (val.value == localStorage.getItem("select_area")) {
+        $(this).prop('checked', true);
+        $(this).parent().addClass('active');
+      }
+    })
+  }
 
+  //duration
+  var cost = $('.cost-order').val();
+  if(localStorage.getItem("current_duration")){
+      if('other_time_set' == localStorage.getItem("current_duration")) {
+        var chooseDuration = localStorage.getItem("select_duration");
+        $('.time-input-nomination').css('display','flex');
+      } else {
+        var chooseDuration = localStorage.getItem("current_duration");
+      }
+
+      $('.reservation-total__text').text('内訳：'+cost+ '(キャストP/30分)✖'+chooseDuration+'時間');
+
+      const inputDuration = $(".input-duration");
+
+      $.each(inputDuration,function(index,val){
+        if (val.value == localStorage.getItem("current_duration")) {
+          $(this).prop('checked', true);
+          $(this).parent().addClass('active');
+        }
+      })
+
+      if(localStorage.getItem("select_duration")) {
+        const inputDuration = $('select[name=sl_duration_nominition] option');
+        $.each(inputDuration,function(index,val){
+          if(val.value == localStorage.getItem("select_duration")) {
+            $(this).prop('selected',true);
+          }
+        })
+      }
+  }
+
+//current_time_set
+
+if(localStorage.getItem("current_time_set")){
+  if('other_time'== localStorage.getItem("current_time_set")){
+    $('.date-input-nomination').css('display', 'flex')
+
+   const inputMonth = $('select[name=sl_month_nomination] option');
+    $.each(inputMonth,function(index,val){
+      if(val.value == localStorage.getItem("current_month")) {
+        $(this).prop('selected',true);
+      }
+    })
+
+    if(localStorage.getItem("current_month")){
+        $('.month-nomination').text(localStorage.getItem("current_month") +'月');
+    }
+
+    const inputDate = $('select[name=sl_date_nomination] option');
+    $.each(inputDate,function(index,val){
+      if(val.value == localStorage.getItem("current_date")) {
+        $(this).prop('selected',true);
+      }
+    })
+
+    if(localStorage.getItem("current_date")){
+      $('.date-nomination').text(localStorage.getItem("current_date") +'日');
+    }
+
+    const inputHour = $('select[name=sl_hour_nomination] option');
+    $.each(inputHour,function(index,val){
+      if(val.value == localStorage.getItem("current_hour")) {
+        $(this).prop('selected',true);
+      }
+    })
+
+    const inputMinute = $('select[name=sl_minute_nomination] option');
+    $.each(inputMinute,function(index,val){
+      if(val.value == localStorage.getItem("current_minute")) {
+        $(this).prop('selected',true);
+      }
+    })
+
+    if(localStorage.getItem("current_hour")) {
+    var currentTime =localStorage.getItem("current_hour") + ":" + localStorage.getItem("current_minute");
+    }
+
+    $('.time-nomination').text(currentTime);
+  }
+
+  const inputTimeSet = $(".input-time-join");
+  $.each(inputTimeSet,function(index,val){
+    if (val.value == localStorage.getItem("current_time_set")) {
+      $(this).prop('checked', true);
+      $(this).parent().addClass('active');
+    }
+  })
+}
+
+  if($("label").hasClass("status-code")){
+    $('.status-code').click();
+  }
+
+})
