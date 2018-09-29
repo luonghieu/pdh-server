@@ -92,7 +92,7 @@
                 break;
 
             default:
-                $height = $profile['height'] . 'cm';
+                $height = (!$profile['height']) ? '' : $profile['height'] . 'cm';
                 break;
         }
         @endphp
