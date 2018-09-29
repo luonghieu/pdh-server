@@ -516,9 +516,9 @@ class OrderController extends Controller
             return redirect()->route('guest.orders.get_confirm');
         }
 
-        $request->session()->forget('data');
+        $request->session()->flash('order_done', 'done');
 
-        return redirect()->route('web.index');
+        return redirect()->route('guest.orders.get_confirm');
     }
 
     public function history(Request $request, $orderId)

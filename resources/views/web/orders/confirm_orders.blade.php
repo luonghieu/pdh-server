@@ -90,17 +90,20 @@
   <section class="button-box">
     <label for="orders" class="lb-orders"></label>
   </section>
+  @if((Session::has('order_done')))
+    <section class="button-box">
+      <label for="{{ Session::get('order_done') }}" class="order-done"></label>
+    </section>
+  <form action="{{ route('web.index') }}" method="GET" id="redirect-index">
+  </form>
+  @endif
+
   @if((Session::has('statusCode')))
   <section class="button-box">
     <label for="{{ Session::get('statusCode') }}" class="status-code"></label>
   </section>
   @endif
-  @if($user->card)
-  <section class="button-box">
-      <label for="md-success-card" class="sm-form"></label>
-  </section>
-
-  @else
+  @if(!$user->card)
   <form action="{{ route('credit_card.index') }}" method="GET" class="register-card">
     <section class="button-box">
       <label for="md-require-card" class="lable-register-card"></label>
@@ -133,8 +136,10 @@
       ※キャストとマッチングするにはお支払い情報の登録が必要です
       @endslot
     @endmodal
-  @else
-    @modal(['triggerId' => 'md-success-card', 'triggerClass' =>'sm-form'])
+  @endif
+
+  @if((Session::has('order_done')))
+    @modal(['triggerId' => Session::get('order_done'), 'triggerClass' =>'modal-redirect'])
       @slot('title')
         予約が完了しました
       @endslot

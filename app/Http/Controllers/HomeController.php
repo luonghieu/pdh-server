@@ -2,18 +2,22 @@
 
 namespace App\Http\Controllers;
 
-use App\Cast;
-use App\Order;
-use App\Http\Controllers\Controller;
 use App\Enums\OrderStatus;
+use App\Http\Controllers\Controller;
+use App\Order;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Session;
 use Tymon\JWTAuth\Facades\JWTAuth;
 
 class HomeController extends Controller
 {
     public function index(Request $request)
     {
+        if ($request->session()->has('data')) {
+            $request->session()->forget('data');
+        }
+
         if (Auth::check()) {
             $token = '';
             $token = JWTAuth::fromUser(Auth::user());
