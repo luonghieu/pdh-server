@@ -15,7 +15,7 @@ class OrderObserver
     public function created(Order $order)
     {
         if (OrderType::NOMINATED_CALL == $order->type || OrderType::CALL == $order->type) {
-            if ($order->user != ProviderType::LINE) {
+            if ($order->user->provider != ProviderType::LINE) {
                 $order->user->notify(new CreateNominatedOrdersForGuest($order));
             }
         }

@@ -36,7 +36,7 @@
       <h2><span class="mitei msg-head-ttl">日程未定</span> {{ (Auth::user()->type == App\Enums\UserType::GUEST) ? 'ゲストに予約リクエストしよう！' : 'ゲストにメッセージを送ってみよう！' }}</h2>
     </div>
     @endif
-    @if ($messages['order']['status'] == App\Enums\OrderStatus::DONE && $messages['order']['type'] != App\Enums\OrderType::NOMINATION)
+    @if ($messages['order']['status'] == App\Enums\OrderStatus::DONE && count($messages['room']['users']) > 2)
     <div class="msg-head">
       <h2><span class="mitei msg-head-ttl">完了</span> このチャットは終了から24時間使用できます</h2>
     </div>
@@ -65,6 +65,7 @@
               <ul class="detail d-top">
                 <li class="d-top-place">{{ $messages['order']['address'] }}</li>
                 <li class="d-top-time">{{ $messages['order']['duration'] }}時間({{ $messages['order']['cast_class']['cost'] }}P/30分)</li>
+                <li class="d-top-users">{{ $countName }}名</li>
               </ul>
             </dt>
             <dt>
@@ -144,6 +145,8 @@
 @endsection
 @section('web.script')
 <script>
-localStorage.clear();
+  if(localStorage.getItem("order_params")){
+    localStorage.removeItem("order_params");
+  }
 </script>
 @stop

@@ -73,11 +73,9 @@ class LineController extends Controller
                     ['body' => $body]
                 );
                 return $response;
-
             } else {
-                $message = 'メッセージありがとうございます♪'
-                    . PHP_EOL . '申し訳ございませんが、このアカウントでは個別のご返信ができません。'
-                    . PHP_EOL . PHP_EOL . 'お手数ですが、サービスのお問い合わせやご予約などに関するお問い合わせは、サイト内のメッセージからCheers運営局宛にご連絡ください。';
+                $message = '申し訳ございませんが、このアカウントでは個別の返信ができません。'
+                    . PHP_EOL . PHP_EOL . 'サービスや予約などに関するお問い合わせは、下記からCheers運営局宛にご連絡ください。';
                 $page = env('LINE_LIFF_REDIRECT_PAGE') . '?page=message';
 
                 $body = [
