@@ -1,5 +1,20 @@
 $(document).ready(function(){
   //checkbox
+  // localStorage.clear();
+
+  function updateLocalStorageValue(key, data) {
+    var oldData = JSON.parse(localStorage.getItem(key));
+    var newData;
+
+    if (oldData) {
+      newData = Object.assign({}, oldData, data);
+    } else {
+      newData = data;
+    }
+
+    localStorage.setItem(key, JSON.stringify(newData));
+  }
+
   $(".checked-order").on("change",function(event){
     if ($(this).is(':checked')) {
       var time = $("input:radio[name='time_join_nomination']:checked").val();
@@ -32,17 +47,23 @@ $(document).ready(function(){
 
   //textArea
   $("input:text[name='other_area_nomination']").on('change', function(e) {
-    localStorage.setItem("text_area", $(this).val());
+    var params = {
+      text_area: $(this).val(),
+    };
+    updateLocalStorageValue('order_params', params);
   });
 
   //area
   var area = $("input:radio[name='nomination_area']");
   area.on("change",function(){
     var areaNomination = $("input:radio[name='nomination_area']:checked").val();
-    localStorage.setItem("select_area", areaNomination);
-  })
 
-  //
+    var params = {
+      select_area: areaNomination,
+    };
+
+    updateLocalStorageValue('order_params', params);
+  })
 
   //duration
   var timeSet = $("input:radio[name='time_set_nomination']");
@@ -50,7 +71,12 @@ $(document).ready(function(){
     var time = $("input:radio[name='time_join_nomination']:checked").val();
 
     var duration = $("input:radio[name='time_set_nomination']:checked").val();
-    localStorage.setItem("current_duration", duration);
+
+    var params = {
+      current_duration: duration,
+    };
+
+    updateLocalStorageValue('order_params', params);
 
     if('other_time_set' == duration) {
       duration = $('.select-duration option:selected').val();
@@ -140,7 +166,12 @@ $(document).ready(function(){
           totalPoint = response.data['data'];
           totalPoint = parseInt(totalPoint).toLocaleString(undefined,{ minimumFractionDigits: 0 });
           $('.total-point').text(totalPoint +'P~');
-          localStorage.setItem("current_total_point", totalPoint);
+
+          var params = {
+            current_total_point: totalPoint,
+          };
+
+          updateLocalStorageValue('order_params', params);
         }).catch(function(error) {
           console.log(error);
           if (error.response.status == 401) {
@@ -150,14 +181,24 @@ $(document).ready(function(){
       } else {
         totalPoint = parseInt(totalPoint).toLocaleString(undefined,{ minimumFractionDigits: 0 });
         $('.total-point').text(totalPoint +'P~');
-        localStorage.setItem("current_total_point", totalPoint);
+
+        var params = {
+            current_total_point: totalPoint,
+          };
+
+        updateLocalStorageValue('order_params', params);
       }
   })
 
   $('.select-duration').on("change",function(){
     var time = $("input:radio[name='time_join_nomination']:checked").val();
     var duration = $('.select-duration option:selected').val();
-    localStorage.setItem("select_duration", duration);
+
+    var params = {
+        select_duration: duration,
+      };
+
+    updateLocalStorageValue('order_params', params);
 
     var cost = $('.cost-order').val();
     var totalPoint=cost*(duration*6)/3;
@@ -236,7 +277,12 @@ $(document).ready(function(){
           totalPoint = response.data['data']
           totalPoint = parseInt(totalPoint).toLocaleString(undefined,{ minimumFractionDigits: 0 });
           $('.total-point').text(totalPoint +'P~');
-          localStorage.setItem("current_total_point", totalPoint);
+
+          var params = {
+              current_total_point: totalPoint,
+            };
+
+          updateLocalStorageValue('order_params', params);
         }).catch(function(error) {
           console.log(error);
           if (error.response.status == 401) {
@@ -246,7 +292,12 @@ $(document).ready(function(){
       } else {
         totalPoint = parseInt(totalPoint).toLocaleString(undefined,{ minimumFractionDigits: 0 });
         $('.total-point').text(totalPoint +'P~');
-        localStorage.setItem("current_total_point", totalPoint);
+
+        var params = {
+            current_total_point: totalPoint,
+          };
+
+        updateLocalStorageValue('order_params', params);
       }
 
 
@@ -290,11 +341,30 @@ $(document).ready(function(){
         if(minute<10) {
           minute = '0'+minute;
         }
-      localStorage.setItem("current_date", day);
-      localStorage.setItem("current_month", month);
 
-      localStorage.setItem("current_hour", hour);
-      localStorage.setItem("current_minute", minute);
+      var updateMonth = {
+          current_month: month,
+        };
+
+      updateLocalStorageValue('order_params', updateMonth);
+
+      var updateDate = {
+          current_date: date,
+        };
+
+      updateLocalStorageValue('order_params', updateDate);
+
+      var updateHour = {
+          current_hour: hour,
+        };
+
+      updateLocalStorageValue('order_params', updateHour);
+
+      var updateMinute = {
+          current_minute: minute,
+        };
+
+      updateLocalStorageValue('order_params', updateMinute);
 
       var date = year+'-'+month+'-'+day;
       var time = hour+':'+minute;
@@ -325,12 +395,26 @@ $(document).ready(function(){
             minute = '0'+minute;
           }
 
-          localStorage.setItem("current_date", day);
-          localStorage.setItem("current_month", month);
+          var updateDate = {
+            current_date: day,
+          };
+
+          updateLocalStorageValue('order_params', updateDate);
+
+          var updateMonth = {
+            current_month: month,
+          };
+
+          updateLocalStorageValue('order_params', updateMonth);
 
           var date = year+'-'+month+'-'+day;
           var time = hour+':'+minute;
-          localStorage.setItem("current_time", time);
+
+          var updateTime = {
+            current_time: time,
+          };
+
+          updateLocalStorageValue('order_params', updateTime);
       }
 
       $castId = $('.cast-id').val();
@@ -349,7 +433,12 @@ $(document).ready(function(){
           totalPoint = response.data['data'];
           totalPoint = parseInt(totalPoint).toLocaleString(undefined,{ minimumFractionDigits: 0 });
           $('.total-point').text(totalPoint +'P~');
-          localStorage.setItem("current_total_point", totalPoint);
+
+          var params = {
+            current_total_point: totalPoint,
+          };
+
+          updateLocalStorageValue('order_params', params);
         }).catch(function(error) {
           console.log(error);
           if (error.response.status == 401) {
@@ -360,15 +449,21 @@ $(document).ready(function(){
   })
 
   $("input:radio[name='time_join_nomination']").on("change",function(){
+      var time = $("input:radio[name='time_join_nomination']:checked").val();
+      var updateTime = {
+            current_time_set: time,
+          };
+
+      updateLocalStorageValue('order_params', updateTime);
+
     if ($("input:radio[name='time_set_nomination']:checked").length) {
       var duration = $("input:radio[name='time_set_nomination']:checked").val();
       if('other_time_set' == duration) {
         duration = $('.select-duration option:selected').val();
       }
 
-      var time = $("input:radio[name='time_join_nomination']:checked").val();
       var cost = $('.cost-order').val();
-      localStorage.setItem("current_time_set", time);
+
       var currentDate = new Date();
       var year = currentDate.getFullYear();
       if ((time=='other_time')) {
@@ -444,7 +539,12 @@ $(document).ready(function(){
           totalPoint = response.data['data'];
           totalPoint = parseInt(totalPoint).toLocaleString(undefined,{ minimumFractionDigits: 0 });
           $('.total-point').text(totalPoint +'P~');
-          localStorage.setItem("current_total_point", totalPoint);
+
+          var params = {
+            current_total_point: totalPoint,
+          };
+
+          updateLocalStorageValue('order_params', params);
         }).catch(function(error) {
           console.log(error);
           if (error.response.status == 401) {
@@ -466,37 +566,39 @@ $(document).ready(function(){
       }
   });
 
-
-
-  if(localStorage.getItem("current_total_point")){
-      $('.total-point').text(localStorage.getItem("current_total_point") +'P~');
+  if(localStorage.getItem("order_params")){
+    var orderParams = JSON.parse(localStorage.getItem("order_params"));
   }
 
-  //area
-  if(localStorage.getItem("select_area")){
-
-   if('その他'== localStorage.getItem("select_area")){
-      $('.area-nomination').css('display', 'flex')
-      $("input:text[name='other_area_nomination']").val(localStorage.getItem("text_area"));
+  if(orderParams){
+    if(orderParams.current_total_point){
+        $('.total-point').text(orderParams.current_total_point +'P~');
     }
 
-    const inputArea = $(".input-area");
-    $.each(inputArea,function(index,val){
-      if (val.value == localStorage.getItem("select_area")) {
-        $(this).prop('checked', true);
-        $(this).parent().addClass('active');
+      //area
+    if(orderParams.select_area){
+     if('その他'== orderParams.select_area){
+        $('.area-nomination').css('display', 'flex')
+        $("input:text[name='other_area_nomination']").val(orderParams.text_area);
       }
-    })
-  }
 
-  //duration
-  var cost = $('.cost-order').val();
-  if(localStorage.getItem("current_duration")){
-      if('other_time_set' == localStorage.getItem("current_duration")) {
-        var chooseDuration = localStorage.getItem("select_duration");
+      const inputArea = $(".input-area");
+      $.each(inputArea,function(index,val){
+        if (val.value == orderParams.select_area) {
+          $(this).prop('checked', true);
+          $(this).parent().addClass('active');
+        }
+      })
+    }
+
+      //duration
+    var cost = $('.cost-order').val();
+    if(orderParams.current_duration){
+      if('other_time_set' == orderParams.current_duration) {
+        var chooseDuration = orderParams.select_duration;
         $('.time-input-nomination').css('display','flex');
       } else {
-        var chooseDuration = localStorage.getItem("current_duration");
+        var chooseDuration = orderParams.current_duration;
       }
 
       $('.reservation-total__text').text('内訳：'+cost+ '(キャストP/30分)✖'+chooseDuration+'時間');
@@ -504,79 +606,79 @@ $(document).ready(function(){
       const inputDuration = $(".input-duration");
 
       $.each(inputDuration,function(index,val){
-        if (val.value == localStorage.getItem("current_duration")) {
+        if (val.value == orderParams.current_duration) {
           $(this).prop('checked', true);
           $(this).parent().addClass('active');
         }
       })
 
-      if(localStorage.getItem("select_duration")) {
+      if(orderParams.select_duration) {
         const inputDuration = $('select[name=sl_duration_nominition] option');
         $.each(inputDuration,function(index,val){
-          if(val.value == localStorage.getItem("select_duration")) {
+          if(val.value == orderParams.select_duration) {
             $(this).prop('selected',true);
           }
         })
       }
+    }
+
+    //current_time_set
+
+    if(orderParams.current_time_set){
+      if('other_time'== orderParams.current_time_set){
+        $('.date-input-nomination').css('display', 'flex')
+
+        if(orderParams.current_month){
+         const inputMonth = $('select[name=sl_month_nomination] option');
+          $.each(inputMonth,function(index,val){
+            if(val.value == orderParams.current_month) {
+              $(this).prop('selected',true);
+            }
+          })
+
+          $('.month-nomination').text(orderParams.current_month +'月');
+        }
+
+        if(orderParams.current_date){
+          const inputDate = $('select[name=sl_date_nomination] option');
+          $.each(inputDate,function(index,val){
+            if(val.value == orderParams.current_date) {
+              $(this).prop('selected',true);
+            }
+          })
+          $('.date-nomination').text(orderParams.current_date +'日');
+        }
+
+        if(orderParams.current_hour) {
+          const inputHour = $('select[name=sl_hour_nomination] option');
+          $.each(inputHour,function(index,val){
+            if(val.value == orderParams.current_hour) {
+              $(this).prop('selected',true);
+            }
+          })
+
+          const inputMinute = $('select[name=sl_minute_nomination] option');
+          $.each(inputMinute,function(index,val){
+            if(val.value == orderParams.current_minute) {
+              $(this).prop('selected',true);
+            }
+          })
+
+          var currentTime =orderParams.current_hour + ":" + orderParams.current_minute;
+        }
+
+        $('.time-nomination').text(currentTime);
+      }
+
+      const inputTimeSet = $(".input-time-join");
+      $.each(inputTimeSet,function(index,val){
+        if (val.value == orderParams.current_time_set) {
+          $(this).prop('checked', true);
+          $(this).parent().addClass('active');
+        }
+      })
+    }
   }
-
-//current_time_set
-
-if(localStorage.getItem("current_time_set")){
-  if('other_time'== localStorage.getItem("current_time_set")){
-    $('.date-input-nomination').css('display', 'flex')
-
-   const inputMonth = $('select[name=sl_month_nomination] option');
-    $.each(inputMonth,function(index,val){
-      if(val.value == localStorage.getItem("current_month")) {
-        $(this).prop('selected',true);
-      }
-    })
-
-    if(localStorage.getItem("current_month")){
-        $('.month-nomination').text(localStorage.getItem("current_month") +'月');
-    }
-
-    const inputDate = $('select[name=sl_date_nomination] option');
-    $.each(inputDate,function(index,val){
-      if(val.value == localStorage.getItem("current_date")) {
-        $(this).prop('selected',true);
-      }
-    })
-
-    if(localStorage.getItem("current_date")){
-      $('.date-nomination').text(localStorage.getItem("current_date") +'日');
-    }
-
-    const inputHour = $('select[name=sl_hour_nomination] option');
-    $.each(inputHour,function(index,val){
-      if(val.value == localStorage.getItem("current_hour")) {
-        $(this).prop('selected',true);
-      }
-    })
-
-    const inputMinute = $('select[name=sl_minute_nomination] option');
-    $.each(inputMinute,function(index,val){
-      if(val.value == localStorage.getItem("current_minute")) {
-        $(this).prop('selected',true);
-      }
-    })
-
-    if(localStorage.getItem("current_hour")) {
-    var currentTime =localStorage.getItem("current_hour") + ":" + localStorage.getItem("current_minute");
-    }
-
-    $('.time-nomination').text(currentTime);
-  }
-
-  const inputTimeSet = $(".input-time-join");
-  $.each(inputTimeSet,function(index,val){
-    if (val.value == localStorage.getItem("current_time_set")) {
-      $(this).prop('checked', true);
-      $(this).parent().addClass('active');
-    }
-  })
-}
 
   if($("label").hasClass("status-code")){
     $('.status-code').click();
