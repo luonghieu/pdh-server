@@ -342,29 +342,14 @@ $(document).ready(function(){
           minute = '0'+minute;
         }
 
-      var updateMonth = {
+      var updateOtherTime = {
           current_month: month,
-        };
-
-      updateLocalStorageValue('order_params', updateMonth);
-
-      var updateDate = {
           current_date: day,
-        };
-
-      updateLocalStorageValue('order_params', updateDate);
-
-      var updateHour = {
           current_hour: hour,
-        };
-
-      updateLocalStorageValue('order_params', updateHour);
-
-      var updateMinute = {
           current_minute: minute,
         };
 
-      updateLocalStorageValue('order_params', updateMinute);
+      updateLocalStorageValue('order_params', updateOtherTime);
 
       var date = year+'-'+month+'-'+day;
       var time = hour+':'+minute;
@@ -395,26 +380,16 @@ $(document).ready(function(){
             minute = '0'+minute;
           }
 
-          var updateDate = {
-            current_date: day,
-          };
-
-          updateLocalStorageValue('order_params', updateDate);
-
-          var updateMonth = {
-            current_month: month,
-          };
-
-          updateLocalStorageValue('order_params', updateMonth);
-
           var date = year+'-'+month+'-'+day;
           var time = hour+':'+minute;
 
-          var updateTime = {
+          var updateSelectedDate = {
+            current_date: day,
+            current_month: month,
             current_time: time,
           };
 
-          updateLocalStorageValue('order_params', updateTime);
+          updateLocalStorageValue('order_params', updateSelectedDate);
       }
 
       $castId = $('.cast-id').val();
