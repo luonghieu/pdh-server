@@ -45,7 +45,7 @@
             @if (in_array($element['type'], [App\Enums\MessageType::MESSAGE, App\Enums\MessageType::THANKFUL]))
             <div class="text">
               <div class="text-wrapper">
-                <p id="message_{{ $element['id'] }}">{{ $element['message'] }}</p>
+                <p>{!! nl2br($element['message']) !!}</p>
               </div>
             </div>
             @endif
