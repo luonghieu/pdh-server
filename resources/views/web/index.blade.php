@@ -55,7 +55,7 @@
         <div class="date-left">
           <span>{{ Carbon\Carbon::parse($order->date)->format('m月d日') }} ({{ dayOfWeek()[Carbon\Carbon::parse($order->date)->dayOfWeek] }})</span>
           <span>{{ $order->address }} {{ \Carbon\Carbon::parse($order->start_time)->format('H:i') }}〜</span>
-          <ul>
+          <ul class="css-mypage pb">
             @if(count($order->tags))
               @foreach($order->tags as $tag)
                 <li>#{{ $tag->name }}</li>
