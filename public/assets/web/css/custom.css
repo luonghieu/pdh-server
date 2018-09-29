@@ -817,19 +817,27 @@
 }
 
 #gf2 .text-nickname {
-  max-width: 35%;
+  max-width: 50%;
 }
 
 #gl3 .text-nickname {
-  max-width: 25%;
+  max-width: 50%;
+}
+
+#gl3 .text-address {
+  max-width: 80%;
 }
 
 #go1 .text-nickname {
   max-width: 50%;
 }
 
+#go1 .cast-profile .text-center {
+  text-align: center;
+}
+
 .ge2-3 .text-nickname {
-  max-width: 50%;
+  max-width: 90%;
 }
 
 #chat #gg2 .msg-input .msg-input-text input[type="text"] {
