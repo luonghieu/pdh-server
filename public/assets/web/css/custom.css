@@ -857,6 +857,42 @@
   display: inline-block;
 }
 
+#chat #gg2 .tgl .d-top .d-top-place {
+  width: 85px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+#chat #gg2 .tgl .d-top .d-top-time {
+  width: 170px;
+  margin-left: -25px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+#chat #gg2 .tgl .d-top .d-top-users {
+  width: 70px;
+  position: absolute;
+  right: 15px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+#chat #gg2 .tgl .d-top .d-top-users:before {
+  content: "";
+  display: inline-block;
+  width: 1.64em;
+  height: 1.36em;
+  background: url(../images/gg2/cast.png) no-repeat bottom;
+  background-size: contain;
+  vertical-align: text-bottom;
+  margin-right: 0.36em;
+}
+
 .css-mypage.pb {
   padding-bottom: 0.8rem;
 }
+
