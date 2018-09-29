@@ -144,6 +144,8 @@
 @endsection
 @section('web.script')
 <script>
-localStorage.clear();
+  if(localStorage.getItem("order_params")){
+    localStorage.removeItem("order_params");
+  }
 </script>
 @stop
