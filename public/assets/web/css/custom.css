@@ -854,6 +854,7 @@
 
 #chat #gg2 .msg-wrap .text .text-wrapper .msg-system a {
   color: #3FC3BF;
+  display: inline-block;
 }
 
 .css-mypage.pb {
