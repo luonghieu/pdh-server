@@ -1,6 +1,4 @@
 $(document).ready(function() {
-  $(document).scrollTop($(document).height());
-
   var roomId = $("#room-id").val();
   var orderId = $("#order-id").val();
   var formData = new FormData();
