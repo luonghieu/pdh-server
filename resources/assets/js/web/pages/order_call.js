@@ -164,16 +164,23 @@ $(document).ready(function(){
   });
 
   $('.sb-form-orders').on('click',function(){
-
     if($('#md-require-card').length){
       $('#md-require-card').click();
     }else {
-      $('#md-success-card').click();
+      $('#add-orders').submit();
     }
   });
 
-  $('.sm-form').on('click',function(){
-   $('#add-orders').submit();
+  if($("label").hasClass("order-done")){
+    $('.order-done').click();
+  }
+
+  $('.modal-redirect').on('click',function(){
+   $('#redirect-index').submit();
+  });
+
+  $('.order-done').on('click',function(){
+   $('.register-card').submit();
   });
 
   $('.lable-register-card').on('click',function(){
@@ -351,8 +358,8 @@ $(document).ready(function(){
     }
   })
 
-  if($("label").hasClass("status-code-nomination")){
-    $('.status-code-nomination').click();
+  if($("label").hasClass("status-code")){
+    $('.status-code').click();
   }
 
   $('.checked-order').prop('checked',false);
