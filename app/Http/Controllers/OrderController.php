@@ -645,47 +645,11 @@ class OrderController extends Controller
             return redirect()->route('web.index');
         }
 
-        $areaNomination = null;
-        if (isset(Session::get('data')['area_nomination'])) {
-            $areaNomination = Session::get('data')['area_nomination'];
-        }
-
-        $currentOtherArea = null;
-        if (isset(Session::get('data')['other_area_nomination'])) {
-            $currentOtherArea = Session::get('data')['other_area_nomination'];
-        }
-
-        $currentTime = null;
-        if (isset(Session::get('data')['time_nomination'])) {
-            $currentTime = Session::get('data')['time_nomination'];
-        }
-
-        $timeDetail = null;
-        if (isset(Session::get('data')['time_detail_nomination'])) {
-            $timeDetail = Session::get('data')['time_detail_nomination'];
-        }
-
-        $currentDuration = null;
-        if (isset(Session::get('data')['duration_nomination'])) {
-            $currentDuration = Session::get('data')['duration_nomination'];
-        }
-
-        $currentOtherDuration = null;
-        if (isset(Session::get('data')['other_duration_nomination'])) {
-            $currentOtherDuration = Session::get('data')['other_duration_nomination'];
-        }
-
-        $currentPoint = null;
-        if (isset(Session::get('data')['temp_point_nomination'])) {
-            $currentOtherDuration = Session::get('data')['temp_point_nomination'];
-        }
-
-        return view('web.orders.nomination', compact('cast', 'user', 'currentArea', 'currentOtherArea', 'currentTime', 'timeDetail', 'currentDuration', 'currentOtherDuration', 'currentPoint'));
+        return view('web.orders.nomination', compact('cast', 'user'));
     }
 
     public function createNominate(Request $request)
     {
-        $input = [];
         $area = $request->nomination_area;
         $otherArea = $request->other_area_nomination;
         if (!isset($area)) {
@@ -697,9 +661,7 @@ class OrderController extends Controller
         }
 
         if ('その他' == $area && $otherArea) {
-            $input['other_area_nomination'] = $otherArea;
-        } else {
-            $input['area_nomination'] = $area;
+            $area = $otherArea;
         }
 
         if (!$request->time_join_nomination) {
@@ -708,47 +670,34 @@ class OrderController extends Controller
 
         $now = Carbon::now();
         if ('other_time' == $request->time_join_nomination) {
-            $timeDetail = [];
-            if ($request->sl_month < 10) {
-                $month = '0' . $request->sl_month;
+            if ($request->sl_month_nomination < 10) {
+                $month = '0' . $request->sl_month_nomination;
             } else {
-                $month = $request->sl_month;
+                $month = $request->sl_month_nomination;
             }
 
-            $timeDetail['month_nomination'] = $month;
-
-            if ($request->sl_date < 10) {
-                $date = '0' . $request->sl_date;
+            if ($request->sl_date_nomination < 10) {
+                $date = '0' . $request->sl_date_nomination;
             } else {
-                $date = $request->sl_date;
+                $date = $request->sl_date_nomination;
             }
 
-            $timeDetail['date_nomination'] = $date;
-
-            if ($request->sl_hour < 10) {
-                $hour = '0' . $request->sl_hour;
+            if ($request->sl_hour_nomination < 10) {
+                $hour = '0' . $request->sl_hour_nomination;
             } else {
-                $hour = $request->sl_hour;
+                $hour = $request->sl_hour_nomination;
             }
 
-            if ($request->sl_minute < 10) {
-                $minute = '0' . $request->sl_minute;
+            if ($request->sl_minute_nomination < 10) {
+                $minute = '0' . $request->sl_minute_nomination;
             } else {
-                $minute = $request->sl_minute;
+                $minute = $request->sl_minute_nomination;
             }
-
-            $timeDetail['hour_nomination'] = $hour;
-
-            $timeDetail['minute_nomination'] = $minute;
-
-            $input['time_detail_nomination'] = $timeDetail;
 
             $date = $now->year . '-' . $month . '-' . $date;
             $time = $hour . ':' . $minute;
         } else {
             $now->addMinutes($request->time_join_nomination);
-
-            $input['time_nomination'] = $request->time_join_nomination;
 
             $date = $now->format('Y-m-d');
             $time = $now->format('H:i');
@@ -768,12 +717,8 @@ class OrderController extends Controller
                 return redirect()->back();
             }
 
-            $input['other_duration_nomination'] = $request->sl_duration;
-
-            $duration = $request->sl_duration;
+            $duration = $request->sl_duration_nominition;
         }
-
-        $input['duration_nomination'] = $duration;
 
         $client = new Client();
         $user = Auth::user();
@@ -805,11 +750,6 @@ class OrderController extends Controller
 
         $tempPoint = $tempPoint['data'];
 
-        $input['area_nomination'] = $area;
-        $input['temp_point_nomination'] = $tempPoint;
-        $input['duration_nomination'] = $duration;
-        dd($input);
-        Session::put('data', $input);
         try {
             $order = $client->post(route('orders.create', [
                 'prefecture_id' => 13,
@@ -823,6 +763,11 @@ class OrderController extends Controller
                 'type' => OrderType::NOMINATION,
                 'nominee_ids' => $request->cast_id,
             ]), $option);
+
+            $order = json_decode(($order->getBody())->getContents(), JSON_NUMERIC_CHECK);
+            $order = $order['data'];
+
+            return redirect()->route('message.messages', ['room' => $order['room_id']]);
         } catch (\Exception $e) {
             LogService::writeErrorLog($e);
             $statusCode = $e->getResponse()->getStatusCode();
@@ -831,7 +776,5 @@ class OrderController extends Controller
 
             return redirect()->back();
         }
-
-        return redirect()->route('web.index');
     }
 }
