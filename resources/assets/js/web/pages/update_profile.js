@@ -1,7 +1,7 @@
 $(document).ready(function() {
   var maxYear = $('#date-of-birth').attr('max');
 
-  $('#date-of-birth').on('change', function() {
+  $("#date-of-birth").on("change", function() {
     var today = (new Date()) / 1000;
     var date = (new Date($(this).val())) / 1000;
 
@@ -9,29 +9,13 @@ $(document).ready(function() {
     var age = Math.floor(range);
 
     $('#age').html(age + '歳 ');
-  });
 
-  $('#date-display').on('click', function() {
-    $('input[type="date"]').trigger('click');
-  });
-
-  $('#date-of-birth').on('change', function() {
-    date = new Date($('#date-of-birth').val());
-
-    var year = date.getFullYear();
-    var month = date.getMonth() + 1;
-    var day = date.getDate();
-
-    if (month < 10) {
-      month = '0' + month;
-    }
-
-    if (day < 10) {
-      day = '0' + day;
-    }
-
-    $('#date-display').val(year + '年' + month + '月' + day + '日');
-  });
+    this.setAttribute(
+      "data-date",
+      moment(this.value, "YYYY-MM-DD")
+      .format( this.getAttribute("data-date-format") )
+    )
+  }).trigger("change");
 
   $('.hidden').hide();
 
@@ -57,6 +41,7 @@ $(document).ready(function() {
     messages: {
       date_of_birth: {
         required: "生年月日は、必ず指定してください。",
+        max: '年齢は20歳以上で入力してください。',
       },
       nickname: {
         required: "ニックネームは、必ず指定してください。",

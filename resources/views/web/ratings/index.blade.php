@@ -42,7 +42,7 @@
     <div class="cast-profile">
         <section class="profile-photo">
             <div class="profile-photo_top"><img src="{{ $castUnrate->avatars->first()->thumbnail }}" alt=""></div>
-            <h2 class="text-center">
+            <h2 class="text-display">
               <b class="text-ellipsis text-nickname">{{ $castUnrate->nickname }}</b>
               <b>{{ '(' . \Carbon\Carbon::parse($castUnrate->date_of_birth)->age . ')'}}</b>
             </h2>
