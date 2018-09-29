@@ -1,4 +1,4 @@
-@section('title', 'キャスト予約')
+@section('title', '今日はどんな気分?(5つまで)')
 @section('screen.id', 'ge2-1-x')
 @section('screen.class', 'ge2-1-b')
 @extends('layouts.web')
