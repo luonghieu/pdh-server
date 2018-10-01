@@ -140,7 +140,7 @@
       });
     });
 
-    $(document).scrollTop($(document).height());
+    $(document).scrollTop($('#gg2').height());
 </script>
 @endsection
 @section('web.script')
