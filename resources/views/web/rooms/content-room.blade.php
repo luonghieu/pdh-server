@@ -83,3 +83,20 @@
     </a>
   </section>
 @endforeach
+
+@section('web.script')
+<script>
+$(function() {  
+  var $textarea = $('#textarea');
+  var lineHeight = parseInt($textarea.css('lineHeight'));
+  $textarea.height(20);//init
+  $textarea.css("lineHeight","20px");//init
+
+  $textarea.on('input', function(e) {
+    var lines = ($(this).val() + '\n').match(/\n/g).length;
+    $(this).height(lineHeight * lines);
+    $textarea.css("lineHeight","1.2");//init
+  });
+});
+</script>
+@endsection
