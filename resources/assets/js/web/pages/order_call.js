@@ -37,7 +37,22 @@ $(document).ready(function(){
     var currentDate = new Date();
     var year = currentDate.getFullYear();
 
-    var selectDate = new Date(year +'-' +month+'-'+date +' ' +hour +':' +minute);
+    var app = {
+      isAppleDevice : function() {
+        if (navigator.userAgent.match(/(iPhone|iPod|iPad)/) != null) {
+          return true;
+        }
+
+        return false;
+      }
+    };
+
+    if (app.isAppleDevice()) {
+      var selectDate = new Date(month +'/' +date+'/'+year +' ' +hour +':' +minute);
+    } else {
+      var selectDate = new Date(year +'-' +month+'-'+date +' ' +hour +':' +minute);
+    }
+
 
     var add_minutes =  function (dt, minutes) {
         return new Date(dt.getTime() + minutes*60000);

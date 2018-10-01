@@ -178,10 +178,17 @@
   <div class="overlay">
     <div class="date-select ct-date-select">
       <div class="date-select__content">
+          @php
+            $now = \Carbon\Carbon::now()->addMinutes(20);
+            $currentMonth = $now->format('m');
+            $currentDate = $now->format('d');
+            $currentHour = $now->format('H');
+            $currentMinute = $now->format('i');
+          @endphp
          <select class="select-month" name="sl_month">
           @foreach(range(1, 12) as $month)
            <option value="{{ $month }}"
-           {{ (isset($timeDetail) && $timeDetail['month'] ==$month ) ? 'selected' : \Carbon\Carbon::now()->format('m') == $month ? 'selected' : '' }}>
+           {{ (isset($timeDetail) && $timeDetail['month'] ==$month ) ? 'selected' : $currentMonth == $month ? 'selected' : '' }}>
            {{ $month }}月
        </option>
           @endforeach
@@ -189,7 +196,7 @@
          <select class="select-date" name="sl_date">
             @foreach(getDay() as $key => $val)
              <option value="{{ $key }}"
-              {{ (isset($timeDetail) && $timeDetail['date'] ==$key ) ? 'selected' : \Carbon\Carbon::now()->format('d') == $key ? 'selected' : '' }}
+              {{ (isset($timeDetail) && $timeDetail['date'] ==$key ) ? 'selected' : $currentDate == $key ? 'selected' : '' }}
               >
 
              {{ $val }}
@@ -198,14 +205,14 @@
          </select>
          <select class="select-hour" name="sl_hour">
           @foreach(range(00, 23) as $hour)
-           <option value="{{ $hour }}" {{ (isset($timeDetail) && $timeDetail['hour'] ==$hour ) ? 'selected' : \Carbon\Carbon::now()->format('H') == $hour ? 'selected' : '' }}>
+           <option value="{{ $hour }}" {{ (isset($timeDetail) && $timeDetail['hour'] ==$hour ) ? 'selected' : $currentHour == $hour ? 'selected' : '' }}>
                 {{ $hour<10 ? '0'.$hour : $hour }}時
           </option>
           @endforeach
          </select>
          <select class="select-minute" name="sl_minute">
            @foreach(range(00, 59) as $minute)
-           <option value="{{ $minute }}" {{ (isset($timeDetail) && $timeDetail['minute'] ==$minute ) ? 'selected' : \Carbon\Carbon::now()->format('i') == $minute ? 'selected' : '' }}>
+           <option value="{{ $minute }}" {{ (isset($timeDetail) && $timeDetail['minute'] ==$minute ) ? 'selected' : $currentMinute == $minute ? 'selected' : '' }}>
                 {{ $minute<10 ? '0'.$minute : $minute }}分
           </option>
           @endforeach

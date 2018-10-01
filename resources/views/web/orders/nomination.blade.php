@@ -153,27 +153,34 @@
         <div class="overlay">
           <div class="date-select ct-date-select">
           <div class="date-select__content">
+          @php
+            $now = \Carbon\Carbon::now()->addMinutes(20);
+            $currentMonth = $now->format('m');
+            $currentDate = $now->format('d');
+            $currentHour = $now->format('H');
+            $currentMinute = $now->format('i');
+          @endphp
          <select class="select-month" name="sl_month_nomination">
           @foreach(range(1, 12) as $month)
-           <option value="{{ $month }}" {{ \Carbon\Carbon::now()->format('m') == $month ? 'selected' : '' }}>{{ $month }}月</option>
+           <option value="{{ $month }}" {{ $currentMonth == $month ? 'selected' : '' }}>{{ $month }}月</option>
           @endforeach
          </select>
          <select class="select-date" name="sl_date_nomination">
             @foreach(getDay() as $key => $val)
-             <option value="{{ $key }}" {{ \Carbon\Carbon::now()->format('d') == $key ? 'selected' : '' }}>{{ $val }}</option
+             <option value="{{ $key }}" {{ $currentDate == $key ? 'selected' : '' }}>{{ $val }}</option
               >
             @endforeach
          </select>
          <select class="select-hour" name="sl_hour_nomination">
           @foreach(range(00, 23) as $hour)
-           <option value="{{ $hour }}" {{ \Carbon\Carbon::now()->format('H') == $hour ? 'selected' : '' }}>
+           <option value="{{ $hour }}" {{ $currentHour == $hour ? 'selected' : '' }}>
                 {{ $hour<10 ? '0'.$hour : $hour }}時
           </option>
           @endforeach
          </select>
          <select class="select-minute" name="sl_minute_nomination">
            @foreach(range(00, 59) as $minute)
-           <option value="{{ $minute }}" {{ \Carbon\Carbon::now()->format('i') == $minute ? 'selected' : '' }}>
+           <option value="{{ $minute }}" {{ $currentMinute == $minute ? 'selected' : '' }}>
                 {{ $minute<10 ? '0'.$minute : $minute }}分
           </option>
           @endforeach
