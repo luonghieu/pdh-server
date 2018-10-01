@@ -21,7 +21,6 @@
       }
 
       $countName = count($messages['room']['users']);
-
     @endphp
     <div class="title-name">
       <span class="name-member">{{ $listName }}</span>
@@ -65,7 +64,9 @@
               <ul class="detail d-top">
                 <li class="d-top-place">{{ $messages['order']['address'] }}</li>
                 <li class="d-top-time">{{ $messages['order']['duration'] }}時間({{ $messages['order']['cast_class']['cost'] }}P/30分)</li>
-                <li class="d-top-users">{{ $countName }}名</li>
+                @if ($countName > 2)
+                  <li class="d-top-users">{{ $countName - 1 }}名</li>
+                @endif
               </ul>
             </dt>
             <dt>
