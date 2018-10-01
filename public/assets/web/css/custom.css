@@ -117,6 +117,7 @@
   height: 20px;
   color: white;
   border: none;
+  background-color: white;
 }
 
 #gm1 input[type='date']:before {
@@ -127,7 +128,9 @@
   color: black;
 }
 
-#gm1 input[type='date']::-webkit-datetime-edit, input::-webkit-inner-spin-button, input::-webkit-clear-button {
+#gm1 input[type='date']::-webkit-datetime-edit,
+#gm1 input::-webkit-inner-spin-button,
+#gm1 input::-webkit-clear-button {
   display: none;
 }
 
@@ -137,6 +140,11 @@
   right: 0;
   color: black;
   opacity: 1;
+}
+
+#gm1 #age {
+  font-size: 14px;
+  color: black;
 }
 
 #mm-0 .init-image-radius {
