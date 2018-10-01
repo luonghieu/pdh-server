@@ -176,7 +176,7 @@
     </div>
   </div>
   <div class="overlay">
-    <div class="date-select">
+    <div class="date-select ct-date-select">
       <div class="date-select__content">
          <select class="select-month" name="sl_month">
           @foreach(range(1, 12) as $month)

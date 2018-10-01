@@ -151,7 +151,7 @@
         </div>
         <button type="button" class="form_footer ct-button disable" name='orders_nomination' id="confirm-orders-nomination" disabled="disabled">予約リクエストを確定する</button>
         <div class="overlay">
-          <div class="date-select">
+          <div class="date-select ct-date-select">
           <div class="date-select__content">
          <select class="select-month" name="sl_month_nomination">
           @foreach(range(1, 12) as $month)
@@ -160,9 +160,8 @@
          </select>
          <select class="select-date" name="sl_date_nomination">
             @foreach(getDay() as $key => $val)
-             <option value="{{ $key }}" {{ \Carbon\Carbon::now()->format('d') == $key ? 'selected' : '' }}>
-             {{ $val }}
-             </option>
+             <option value="{{ $key }}" {{ \Carbon\Carbon::now()->format('d') == $key ? 'selected' : '' }}>{{ $val }}</option
+              >
             @endforeach
          </select>
          <select class="select-hour" name="sl_hour_nomination">
