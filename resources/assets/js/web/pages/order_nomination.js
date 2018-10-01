@@ -55,6 +55,16 @@ $(document).ready(function(){
   area.on("change",function(){
     var areaNomination = $("input:radio[name='nomination_area']:checked").val();
 
+    if('その他'== areaNomination){
+      if(localStorage.getItem("order_params")){
+        var orderParams = JSON.parse(localStorage.getItem("order_params"));
+      }
+
+      if(orderParams.text_area){
+        $("input:text[name='other_area_nomination']").val(orderParams.text_area);
+      }
+    }
+
     var params = {
       select_area: areaNomination,
     };
