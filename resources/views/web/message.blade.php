@@ -63,7 +63,18 @@
             <dt>
               <ul class="detail d-top">
                 <li class="d-top-place">{{ $messages['order']['address'] }}</li>
-                <li class="d-top-time">{{ $messages['order']['duration'] }}時間({{ $messages['order']['cast_class']['cost'] }}P/30分)</li>
+                @if ($messages['order']['type'] == App\Enums\OrderType::NOMINATION && $messages['room']['users'] > 2)
+                <li class="d-top-time">{{ $messages['order']['duration'] }}時間({{ number_format($messages['order']['cast_class']['cost']) }}P/30分)</li>
+                @else
+                  @php
+                    foreach ($messages['room']['users'] as $user) {
+                      if ($user['id'] != Auth::user()->id) {
+                         $point = $user['cost'];
+                      }
+                    }
+                  @endphp
+                  <li class="d-top-time">{{ $messages['order']['duration'] }}時間({{ number_format($point) }}P/30分)</li>
+                @endif
                 @if ($countName > 2)
                   <li class="d-top-users">{{ $countName - 1 }}名</li>
                 @endif
