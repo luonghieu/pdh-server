@@ -14,7 +14,7 @@
     <a href="{{ \URL::previous() }}"><img src="/assets/webview/images/back.png" alt=""></a>
   </div>
   <div class="title-name">
-    <span>メッセージ一覧</span>
+    <span></span>
   </div>
   <div class="btn-register header-item">
     <a id="btn-create">完了</a>
