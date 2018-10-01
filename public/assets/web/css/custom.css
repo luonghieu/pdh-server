@@ -823,7 +823,8 @@
 }
 
 #gf2 .text-nickname {
-  max-width: 50%;
+  max-width: 52%;
+  padding: 5px 0;
 }
 
 #gl3 .text-nickname {
