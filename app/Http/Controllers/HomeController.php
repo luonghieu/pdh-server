@@ -8,10 +8,16 @@ use App\Order;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Session;
+use File;
 use Tymon\JWTAuth\Facades\JWTAuth;
 
 class HomeController extends Controller
 {
+    public function ld()
+    {
+        return view('web.ld');
+    }
+
     public function index(Request $request)
     {
         if ($request->session()->has('data')) {

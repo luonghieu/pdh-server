@@ -50,7 +50,7 @@ Route::group(['middleware' => 'auth'], function () {
     });
 });
 
-Route::get('/', 'HomeController@login');
+Route::get('/', 'HomeController@ld');
 Route::get('/redirect', 'RedirectController@index');
 Route::get('/login', 'HomeController@login')->name('web.login');
 Route::get('/mypage', 'HomeController@index')->name('web.index');
