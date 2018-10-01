@@ -48,34 +48,35 @@ class PointSettlement implements ShouldQueue
         try {
             \DB::beginTransaction();
 
-            $this->order->settle();
-            $this->order->paymentRequests()->update(['status' => PaymentRequestStatus::CLOSED]);
+            if ($this->order->settle()) {
+                $this->order->paymentRequests()->update(['status' => PaymentRequestStatus::CLOSED]);
 
-            $this->order->payment_status = OrderPaymentStatus::PAYMENT_FINISHED;
-            $this->order->paid_at = $now;
-            $this->order->update();
+                $this->order->payment_status = OrderPaymentStatus::PAYMENT_FINISHED;
+                $this->order->paid_at = $now;
+                $this->order->update();
 
-            $adminId = User::where('type', UserType::ADMIN)->first()->id;
+                $adminId = User::where('type', UserType::ADMIN)->first()->id;
 
-            $order = $this->order->load('paymentRequests');
+                $order = $this->order->load('paymentRequests');
 
-            $paymentRequests = $order->paymentRequests;
+                $paymentRequests = $order->paymentRequests;
 
-            $receiveAdmin = 0;
-            $castPercent = config('common.cast_percent');
+                $receiveAdmin = 0;
+                $castPercent = config('common.cast_percent');
 
-            foreach ($paymentRequests as $paymentRequest) {
-                $receiveCast = $paymentRequest->total_point * $castPercent;
-                $receiveAdmin += $paymentRequest->total_point * (1 - $castPercent);
+                foreach ($paymentRequests as $paymentRequest) {
+                    $receiveCast = $paymentRequest->total_point * $castPercent;
+                    $receiveAdmin += $paymentRequest->total_point * (1 - $castPercent);
 
-                $this->createTransfer($order, $paymentRequest, $receiveCast);
+                    $this->createTransfer($order, $paymentRequest, $receiveCast);
 
-                // receive cast
-                $this->createPoint($receiveCast, $paymentRequest->cast_id, $order);
+                    // receive cast
+                    $this->createPoint($receiveCast, $paymentRequest->cast_id, $order);
+                }
+
+                // receive admin
+                $this->createPoint($receiveAdmin, $adminId, $order);
             }
-
-            // receive admin
-            $this->createPoint($receiveAdmin, $adminId, $order);
 
             \DB::commit();
         } catch (\Exception $e) {
