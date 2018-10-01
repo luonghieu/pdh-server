@@ -558,7 +558,6 @@ class OrderController extends Controller
         try {
             DB::beginTransaction();
             if (!$order->settle()) {
-                DB::commit();
                 return response()->json(['success' => false], 500);
             }
 
