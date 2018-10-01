@@ -2,8 +2,7 @@
 @section('screen.class', 'ge2-1-a-3')
 @extends('layouts.web')
 @section('web.content')
-  <p class="cancel_title">予約確定後のキャンセルはキャンセル規定に
-    基づいたキャンセル料が発生致します</p>
+  <p class="cancel_title">予約確定後のキャンセルはキャンセル規定に基づいたキャンセル料が発生致します</p>
   <p class="cancel_txt">予約確定後は、日時変更もキャンセル対象です。<br>
     日時変更をする場合はキャンセル手続き後、新たに予約を
     行ってください。</p>
