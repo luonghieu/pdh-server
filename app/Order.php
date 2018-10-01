@@ -7,6 +7,7 @@ use App\Enums\CastOrderType;
 use App\Enums\OrderStatus;
 use App\Enums\OrderType;
 use App\Enums\PointType;
+use App\Enums\ProviderType;
 use App\Enums\RoomType;
 use App\Jobs\CancelOrder;
 use App\Jobs\ProcessOrder;
@@ -552,9 +553,13 @@ class Order extends Model
         if ($user->point < $this->total_point) {
             $subPoint = $this->total_point - $user->point;
 
-            $autoChargePoint = config('common.autocharge_point');
+            if ($user->provider == ProviderType::LINE) {
+                $pointAmount = $subPoint;
+            } else {
+                $autoChargePoint = config('common.autocharge_point');
 
-            $pointAmount = ceil($subPoint / $autoChargePoint) * $autoChargePoint;
+                $pointAmount = ceil($subPoint / $autoChargePoint) * $autoChargePoint;
+            }
 
             $point = $user->autoCharge($pointAmount);
 
