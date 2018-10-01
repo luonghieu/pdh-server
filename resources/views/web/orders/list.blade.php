@@ -10,17 +10,20 @@
    <div class="list_item">
      <div class="item_up">
        <ul class="item_left">
-         <li class="time-text">
-         {{ Carbon\Carbon::parse($order['date'])->format('m月d日') }} ({{ dayOfWeek()[Carbon\Carbon::parse($order['date'])->dayOfWeek] }})
-         </li>
-         <li class="time-text">{{ $order['address'] }} {{ Carbon\Carbon::parse($order['start_time'])->format('H:i') }}〜</li>
-         @if(count($order['tags']))
-         <li class="tag-text">
-         @foreach($order['tags'] as $tag)
-         #{{ $tag['name'] }}
-         @endforeach
-         </li>
-         @endif
+        <li class="time-text">
+          {{ Carbon\Carbon::parse($order['date'])->format('m月d日') }} ({{ dayOfWeek()[Carbon\Carbon::parse($order['date'])->dayOfWeek] }})
+        </li>
+        <li class="time-text display-flex">
+          <span class="text-ellipsis">{{ $order['address'] }}</span>
+          <span>{{ Carbon\Carbon::parse($order['start_time'])->format('H:i') }}〜</span>
+        </li>
+        @if(count($order['tags']))
+          <li class="tag-text">
+            @foreach($order['tags'] as $tag)
+            #{{ $tag['name'] }}
+            @endforeach
+          </li>
+        @endif
        </ul>
        <ul class="item_right">
          <li class=""><span class="icon1 icon-size-w11">{{ $order['duration'] }}時間</span></li>

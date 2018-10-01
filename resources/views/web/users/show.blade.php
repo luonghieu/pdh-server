@@ -18,10 +18,10 @@
     <section class="cast-info">
       <ul class="cast-info__list">
         <li class="cast-info__item text-ellipsis text-nickname">{{ $cast['nickname'] }}</li>
-        <li class="cast-info__item"><b>{{ (!$cast['age']) ? '' : ($cast['age'] . "歳") }}</b></li>
+        <li class="cast-info__item"><b class="text-bold">{{ (!$cast['age']) ? '' : ($cast['age'] . "歳") }}</b></li>
         <li class="cast-info__item--level">{{ (!$cast['class']) ? '未設定' : $cast['class'] }}</li>
       </ul>
-      <p class="cast-info__signature">{{ $cast['job'] }} | {{ $cast['intro'] }}</p>
+      <p class="cast-info__signature">{{ $cast['job'] }}{{ (!$cast['job'] || !$cast['intro']) ? '' : ' | '}}{{ $cast['intro'] }}</p>
       <p class="cast-info__price">30分あたりの料金<span>{{ $cast['cost'] ? number_format($cast['cost']) : '未設定' }}P</span></p>
     </section>
 
