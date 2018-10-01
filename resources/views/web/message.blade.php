@@ -63,7 +63,7 @@
             <dt>
               <ul class="detail d-top">
                 <li class="d-top-place">{{ $messages['order']['address'] }}</li>
-                @if ($messages['order']['type'] == App\Enums\OrderType::NOMINATION && $messages['room']['users'] > 2)
+                @if ($messages['order']['type'] != App\Enums\OrderType::NOMINATION)
                 <li class="d-top-time">{{ $messages['order']['duration'] }}時間({{ number_format($messages['order']['cast_class']['cost']) }}P/30分)</li>
                 @else
                   @php
