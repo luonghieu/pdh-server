@@ -848,6 +848,7 @@
 
 #gl3 .text-nickname {
   max-width: 50%;
+  padding: 5px 0;
 }
 
 #gl3 .text-address {
@@ -922,10 +923,33 @@
   padding-bottom: 0.8rem;
 }
 
-.text-display {
+#go1 .text-display {
   display: flex;
+  justify-content: center;
+}
+
+#go1 .text-display .text-bold {
+  color: #222222;
+  font-weight: bold;
 }
 
 .ct-date-select select {
   background-image: none;
+}
+
+#gn-1 .time-text.display-flex {
+  display: flex;
+}
+
+#gf2 .text-bold {
+  font-weight: bold;
+}
+
+.ct-date-select select {
+  background-image: none;
+}
+
+#gl3 .text-bold {
+  color: #222222;
+  font-weight: bold;
 }
