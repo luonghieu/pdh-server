@@ -30,7 +30,7 @@
         <h2 class="portlet-header__title">自己紹介</h2>
       </div>
       <div class="portlet-content">
-        <p class="portlet-content__text">{{ (!$cast['intro']) ? '' : $cast['intro'] }}</p>
+        <p class="portlet-content__text">{{ (!$cast['description']) ? '' : $cast['description'] }}</p>
       </div>
     </section>
 
