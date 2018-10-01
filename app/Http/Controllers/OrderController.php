@@ -323,6 +323,11 @@ class OrderController extends Controller
         return view('web.orders.attention');
     }
 
+    public function nominateAttention()
+    {
+        return view('web.orders.nominate_attention');
+    }
+
     public function getConfirm(Request $request)
     {
         $data = Session::get('data');
