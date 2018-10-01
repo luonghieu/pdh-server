@@ -71,7 +71,7 @@
           switch ($point['type']) {
               case \App\Enums\PointType::EVICT:
                   if ($point['point'] >= 0) {
-                    $pointView = abs($point['point']);
+                    $pointView = - ($point['point']);
                   } else {
                     $pointView = $point['point'];
                   }
