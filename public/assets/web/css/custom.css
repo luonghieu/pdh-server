@@ -34,6 +34,7 @@
   text-overflow: ellipsis;
   white-space: nowrap;
   width: 225px;
+  height: 18px;
 }
 
 #gg2 .msg-head {
