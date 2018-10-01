@@ -557,7 +557,11 @@ class OrderController extends Controller
         }
         try {
             DB::beginTransaction();
-            $order->settle();
+            if (!$order->settle()) {
+                DB::commit();
+                return response()->json(['success' => false], 500);
+            }
+
             $order->paymentRequests()->update(['status' => PaymentRequestStatus::CLOSED]);
 
             $order->payment_status = OrderPaymentStatus::PAYMENT_FINISHED;
