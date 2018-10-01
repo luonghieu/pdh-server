@@ -925,3 +925,7 @@
 .text-display {
   display: flex;
 }
+
+.ct-date-select select {
+  background-image: none;
+}

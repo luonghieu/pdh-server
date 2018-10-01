@@ -1,7 +1,4 @@
 $(document).ready(function(){
-  //checkbox
-  // localStorage.clear();
-
   function updateLocalStorageValue(key, data) {
     var oldData = JSON.parse(localStorage.getItem(key));
     var newData;
@@ -57,6 +54,16 @@ $(document).ready(function(){
   var area = $("input:radio[name='nomination_area']");
   area.on("change",function(){
     var areaNomination = $("input:radio[name='nomination_area']:checked").val();
+
+    if('その他'== areaNomination){
+      if(localStorage.getItem("order_params")){
+        var orderParams = JSON.parse(localStorage.getItem("order_params"));
+      }
+
+      if(orderParams.text_area){
+        $("input:text[name='other_area_nomination']").val(orderParams.text_area);
+      }
+    }
 
     var params = {
       select_area: areaNomination,
@@ -300,21 +307,14 @@ $(document).ready(function(){
         updateLocalStorageValue('order_params', params);
       }
 
-
     cost = parseInt(cost).toLocaleString(undefined,{ minimumFractionDigits: 0 });
 
     $('.reservation-total__text').text('内訳：'+cost+ '(キャストP/30分)✖'+(duration)+'時間')
   })
 
   $('.choose-time').on("click",function(){
-    if ($("input:radio[name='time_set_nomination']:checked").length) {
-      var duration = $("input:radio[name='time_set_nomination']:checked").val();
-      if('other_time_set' == duration) {
-        duration = $('.select-duration option:selected').val();
-      }
-
-      var time = $("input:radio[name='time_join_nomination']:checked").val();
-      var cost = $('.cost-order').val();
+    var cost = $('.cost-order').val();
+    var time = $("input:radio[name='time_join_nomination']:checked").val();
 
       var currentDate = new Date();
       var year = currentDate.getFullYear();
@@ -354,42 +354,49 @@ $(document).ready(function(){
       var date = year+'-'+month+'-'+day;
       var time = hour+':'+minute;
       } else{
-          utc = currentDate.getTime() + (currentDate.getTimezoneOffset() * 60000);
-          nd = new Date(utc + (3600000*9));
+        utc = currentDate.getTime() + (currentDate.getTimezoneOffset() * 60000);
+        nd = new Date(utc + (3600000*9));
 
-          var add_minutes =  function (dt, minutes) {
-            return new Date(dt.getTime() + minutes*60000);
-          }
-          var selectDate = add_minutes(nd,time);
-          var day = selectDate.getDate();
-          if(day<10) {
-            day = '0'+day;
-          }
+        var add_minutes =  function (dt, minutes) {
+          return new Date(dt.getTime() + minutes*60000);
+        }
+        var selectDate = add_minutes(nd,time);
+        var day = selectDate.getDate();
+        if(day<10) {
+          day = '0'+day;
+        }
 
-          var month = selectDate.getMonth() +1;
-          if(month<10) {
-            month = '0'+month;
-          }
-          var hour = selectDate.getHours();
-          if(hour<10) {
-            hour = '0'+hour;
-          }
+        var month = selectDate.getMonth() +1;
+        if(month<10) {
+          month = '0'+month;
+        }
+        var hour = selectDate.getHours();
+        if(hour<10) {
+          hour = '0'+hour;
+        }
 
-          var minute = selectDate.getMinutes();
-          if(minute<10) {
-            minute = '0'+minute;
-          }
+        var minute = selectDate.getMinutes();
+        if(minute<10) {
+          minute = '0'+minute;
+        }
 
-          var date = year+'-'+month+'-'+day;
-          var time = hour+':'+minute;
+        var date = year+'-'+month+'-'+day;
+        var time = hour+':'+minute;
 
-          var updateSelectedDate = {
-            current_date: day,
-            current_month: month,
-            current_time: time,
-          };
+        var updateSelectedDate = {
+          current_date: day,
+          current_month: month,
+          current_time: time,
+        };
 
-          updateLocalStorageValue('order_params', updateSelectedDate);
+        updateLocalStorageValue('order_params', updateSelectedDate);
+    }
+
+    if ($("input:radio[name='time_set_nomination']:checked").length) {
+      var duration = $("input:radio[name='time_set_nomination']:checked").val();
+
+      if('other_time_set' == duration) {
+        duration = $('.select-duration option:selected').val();
       }
 
       $castId = $('.cast-id').val();
@@ -423,16 +430,69 @@ $(document).ready(function(){
     }
   })
 
+//timejoin
   $("input:radio[name='time_join_nomination']").on("change",function(){
-      var time = $("input:radio[name='time_join_nomination']:checked").val();
-      var updateTime = {
-            current_time_set: time,
-          };
+    var time = $("input:radio[name='time_join_nomination']:checked").val();
+    var duration = $("input:radio[name='time_set_nomination']:checked").val();
 
-      updateLocalStorageValue('order_params', updateTime);
+    var updateTime = {
+          current_time_set: time,
+        };
+
+    updateLocalStorageValue('order_params', updateTime);
+
+    if('other_time' == time) {
+      if(localStorage.getItem("order_params")){
+          var orderParams = JSON.parse(localStorage.getItem("order_params"));
+        }
+
+      if(orderParams){
+        if('other_time'== orderParams.current_time_set){
+          if(orderParams.current_month){
+           const inputMonth = $('select[name=sl_month_nomination] option');
+            $.each(inputMonth,function(index,val){
+              if(val.value == orderParams.current_month) {
+                $(this).prop('selected',true);
+              }
+            })
+
+            $('.month-nomination').text(orderParams.current_month +'月');
+          }
+
+          if(orderParams.current_date){
+            const inputDate = $('select[name=sl_date_nomination] option');
+            $.each(inputDate,function(index,val){
+              if(val.value == orderParams.current_date) {
+                $(this).prop('selected',true);
+              }
+            })
+            $('.date-nomination').text(orderParams.current_date +'日');
+          }
+
+          if(orderParams.current_hour) {
+            const inputHour = $('select[name=sl_hour_nomination] option');
+            $.each(inputHour,function(index,val){
+              if(val.value == orderParams.current_hour) {
+                $(this).prop('selected',true);
+              }
+            })
+
+            const inputMinute = $('select[name=sl_minute_nomination] option');
+            $.each(inputMinute,function(index,val){
+              if(val.value == orderParams.current_minute) {
+                $(this).prop('selected',true);
+              }
+            })
+
+            var currentTime =orderParams.current_hour + ":" + orderParams.current_minute;
+          }
+
+          $('.time-nomination').text(currentTime);
+        }
+      }
+    }
 
     if ($("input:radio[name='time_set_nomination']:checked").length) {
-      var duration = $("input:radio[name='time_set_nomination']:checked").val();
       if('other_time_set' == duration) {
         duration = $('.select-duration option:selected').val();
       }
@@ -598,7 +658,6 @@ $(document).ready(function(){
     }
 
     //current_time_set
-
     if(orderParams.current_time_set){
       if('other_time'== orderParams.current_time_set){
         $('.date-input-nomination').css('display', 'flex')
