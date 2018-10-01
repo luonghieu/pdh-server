@@ -11,5 +11,8 @@ $('#buypoint-confirm').on('click', function() {
     }).catch(err => {
         $('#buypoint-alert-content').html(err.response.data.error);
         $('#buypoint-alert-label').trigger('click');
+        setTimeout(() => {
+            window.location.href = '/credit_card';
+        }, 2000);
     });
 });
