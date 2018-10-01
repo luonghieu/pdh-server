@@ -25,7 +25,6 @@
     </div>
 </div>
 
-@if(!$user->card)
 <div class="modal_wrap">
     <input id="popup-require-card" type="checkbox">
     <div class="modal_overlay">
@@ -41,7 +40,6 @@
         </div>
     </div>
 </div>
-@endif
 
 <div class="modal_wrap">
     <input id="buypoint-alert" type="checkbox">

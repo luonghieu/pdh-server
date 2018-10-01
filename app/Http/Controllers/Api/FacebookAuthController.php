@@ -39,7 +39,8 @@ class FacebookAuthController extends ApiController
                 ])->stateless()
                 ->userFromToken($token);
 
-            $user = $this->findOrCreate($fbResponse->user);
+            $avatar = $fbResponse->avatar;
+            $user = $this->findOrCreate($fbResponse->user, $avatar);
 
             if (!$user->status) {
                 return $this->respondErrorMessage(trans('messages.login_forbidden'), 403);
@@ -57,7 +58,7 @@ class FacebookAuthController extends ApiController
         }
     }
 
-    protected function findOrCreate($fbResponse)
+    protected function findOrCreate($fbResponse, $avatar)
     {
         $user = User::where('facebook_id', $fbResponse['id'])->first();
 
@@ -76,11 +77,13 @@ class FacebookAuthController extends ApiController
 
             $user = User::create($data);
 
-            $user->avatars()->create([
-                'path' => $fbResponse['picture']['data']['url'],
-                'thumbnail' => $fbResponse['picture']['data']['url'],
-                'is_default' => true
-            ]);
+            if ($avatar) {
+                $user->avatars()->create([
+                    'path' => "$avatar&height=400&width=400",
+                    'thumbnail' => "$avatar&height=400&width=400",
+                    'is_default' => true
+                ]);
+            }
 
             $user->notify(new CreateGuest());
 

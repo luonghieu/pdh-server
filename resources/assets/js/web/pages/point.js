@@ -9,10 +9,6 @@ $('#buypoint-confirm').on('click', function() {
         $('#buypoint-alert-content').html('ポイント購入完了しました！');
         $('#buypoint-alert-label').trigger('click');
     }).catch(err => {
-        $('#buypoint-alert-content').html(err.response.data.error);
-        $('#buypoint-alert-label').trigger('click');
-        setTimeout(() => {
-            window.location.href = '/credit_card';
-        }, 2000);
+        $('#popup-require-card').trigger('click');
     });
 });
