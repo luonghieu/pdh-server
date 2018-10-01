@@ -108,6 +108,12 @@ main{
   z-index: 99;
 }
 
+
+_::-webkit-full-page-media, _:future, :root .cast_block input:checked ~ .icon::before {
+  width: calc(100% - 5px);
+  height: calc(100% - 5px);
+}
+
 .cast_block input:checked ~ .icon::after {
   position: absolute;
   top: 0;
