@@ -3336,7 +3336,7 @@ h3 {
         color: white; }
     #gTop .gTop-atcl {
       -ms-flex-preferred-size: 90%;
-      flex-basis: 100%;
+      flex-basis: 85%;
       padding: 0 16px 0 32px;
       margin-top: 45px;
      }
@@ -3379,6 +3379,12 @@ h3 {
           height: 32px; }
           #gTop .gTop-atcl .gTop-sns a:nth-child(2) {
             margin-right: 0; }
+      #gTop .gTop-atcl .g_btn {
+        margin: 0;
+      }
+      #gTop .gTop-atcl .g_btn a {
+        font-size: 1em;
+      }
     #gTop .gtop-box {
       padding-top: 0; }
     #gTop .gTop-phone-02 {
@@ -3755,13 +3761,19 @@ h3 {
       font-size: 1.5em; }
 .dp_soon{
     margin: 0 auto 30px;
-    width: 294px;
+    max-width: 294px;
     height: 75px;
     display: block;
 }
 .dp_soon img {
     width: 100%;
     height: auto;
+}
+@media (max-width: 768px) {
+  .dp_soon {
+    margin: 0 auto 10px;
+    max-width: 294px;
+  }
 }
 
 /*.g_footer {
