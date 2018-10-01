@@ -27,7 +27,7 @@ $('#request-update-point-btn').on('click', function(e) {
         $('#alert-payment-label').trigger('click');
         
         setTimeout(() => {
-            window.location.href = '/';
+            window.location.href = '/mypage';
         }, 2000);
     }).catch(err => {
         $('#request-update-point').trigger('click');
@@ -44,7 +44,7 @@ $('#payment-form').on('submit', function (e) {
         $('#alert-payment-content').html(message);
         $('#alert-payment-label').trigger('click');
         setTimeout(() => {
-            window.location.href = '/';
+            window.location.href = '/mypage';
         }, 2000);
     }).catch(err => {
         $('#payment-failed').trigger('click');
