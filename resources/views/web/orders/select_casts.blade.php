@@ -17,7 +17,7 @@
           <input type="checkbox" name="casts[]" value="{{ $cast['id'] }}" {{ (isset($currentCasts) && in_array($cast['id'], $currentCasts) ) ? 'checked="checked"' : '' }} id="{{ $cast['id'] }}" class="select-casts">
           <div class="icon">
             <p>
-              @if($cast['avatars'])
+              @if (@getimagesize($cast['avatars']))
               <img src="{{ $cast['avatars'][0]['thumbnail'] }}" alt="">
               @else
               <img src="{{ asset('assets/web/images/ge1/user_icon.svg') }}" alt="">

@@ -49,7 +49,7 @@
   <div class="cast-profile">
     <section class="profile-photo">
       <div class="profile-photo__top">
-        @if ($profile['avatars'] && $profile['avatars'][0]['thumbnail'])
+        @if ($profile['avatars'] && @getimagesize($profile['avatars'][0]['thumbnail']))
           <img class="init-image-radius" src="{{ $profile['avatars'][0]['thumbnail'] }}" alt="">
         @else
         <img src="{{ asset('assets/web/images/ge1/user_icon.svg') }}" alt="">
