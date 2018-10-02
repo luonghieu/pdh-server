@@ -132,8 +132,8 @@
             </label>
           </div>
         </div>
-        
-        <div class="reservation-attention"><a href="#">予約前の注意事項</a></div>
+
+        <div class="reservation-attention"><a href="{{ route('guest.orders.nominate_step2') }}">予約前の注意事項</a></div>
 
         <div class="reservation-total">
           <div class="reservation-total__content">

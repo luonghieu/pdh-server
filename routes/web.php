@@ -75,6 +75,7 @@ Route::group(['middleware' => ['auth', 'guest', 'check_info'], 'as' => 'guest.']
         Route::post('/call/add', ['as' => 'add', 'uses' => 'OrderController@add']);
         Route::get('/nominate', ['as' => 'nominate', 'uses' => 'OrderController@nominate']);
         Route::post('/nominate', ['as' => 'post_nominate', 'uses' => 'OrderController@createNominate']);
+        Route::get('/nominate/step2', ['as' => 'nominate_step2', 'uses' => 'OrderController@nominateAttention']);
     });
 });
 
