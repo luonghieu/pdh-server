@@ -6,20 +6,39 @@
 <div class="cast-call">
   <section class="cast-photo">
     <div class="slider cast-photo__show">
-      @foreach ($cast['avatars'] as $avatar)
-        @if ($avatar['thumbnail'])
-        <img src="{{ $avatar['thumbnail'] }}" alt="">
-        @endif
-      @endforeach
+      @if($cast['avatars'])
+        @foreach ($cast['avatars'] as $avatar)
+          @if ($avatar['thumbnail'])
+          <img src="{{ $avatar['thumbnail'] }}" alt="">
+          @else
+          <img src="{{ asset('assets/web/images/ge1/user_icon.svg') }}" alt="">
+          @endif
+        @endforeach
+      @else
+          <img  class='image-default' src="{{ asset('assets/web/images/ge1/user_icon.svg') }}" alt="">
+      @endif
     </div>
   </section>
-
   <div class="cast-set">
     <section class="cast-info">
       <ul class="cast-info__list">
         <li class="cast-info__item text-ellipsis text-nickname">{{ $cast['nickname'] }}</li>
         <li class="cast-info__item"><b class="text-bold">{{ (!$cast['age']) ? '' : ($cast['age'] . "歳") }}</b></li>
-        <li class="cast-info__item--level">{{ (!$cast['class']) ? '未設定' : $cast['class'] }}</li>
+        @php
+          $class = '';
+          switch ($cast['class_id']) {
+              case 1:
+                  $class = 'bronz';
+                  break;
+              case 2:
+                  $class = 'platinum';
+                  break;
+              case 3:
+                  $class = 'daiamond';
+                  break;
+          }
+        @endphp
+        <li class="{{ $class }}">{{ (!$cast['class']) ? '未設定' : $cast['class'] }}</li>
       </ul>
       <p class="cast-info__signature">{{ $cast['job'] }}{{ (!$cast['job'] || !$cast['intro']) ? '' : ' | '}}{{ $cast['intro'] }}</p>
       <p class="cast-info__price">30分あたりの料金<span class="text-bold">{{ $cast['cost'] ? number_format($cast['cost']) : '未設定' }}P</span></p>

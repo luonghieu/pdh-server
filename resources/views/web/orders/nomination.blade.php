@@ -7,12 +7,30 @@
   {{ csrf_field() }}
   <div class="cast-selected">
         <div class="cast-selected__photo">
+          @if($cast['avatars'])
           <img src="{{ $cast['avatars'][0]['thumbnail'] }}" alt="">
+          @else
+          <img src="{{ asset('assets/web/images/ge1/user_icon.svg') }}" alt="">
+          @endif
         </div>
         <div class="cast-selected__content">
           <p class="cast-selected__name">{{ $cast['nickname'] }}</p>
           <div class="cast-selected__bottom">
-            <p class="cast-selected__signature">{{ $cast['class'] }}</p>
+            @php
+              $class = '';
+              switch ($cast['class_id']) {
+                  case 1:
+                      $class = 'bronz-class';
+                      break;
+                  case 2:
+                      $class = 'platinum-class';
+                      break;
+                  case 3:
+                      $class = 'daiamond-class';
+                      break;
+              }
+            @endphp
+            <p class="cast-class {{ $class }}">{{ $cast['class'] }}</p>
             <input type="hidden" name="class_id" value="{{ $cast['class_id'] }}">
             <p class="cast-selected__price">30分あたりの料金<span>{{ number_format($cast['cost']) .'P' }}</span></p>
           </div>
