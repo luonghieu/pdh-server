@@ -34,10 +34,8 @@
                 </button>
             </div>
             <!-- line-register -->
-
-            <p class="usage-contract">Cheersに登録するにあたって、<a href="#">利用規約</a>に同意することとします。</p>
+            <p class="usage-contract">Cheersに登録するにあたって、<a href="{{ url('/service/law') }}">利用規約</a>に同意することとします。</p>
             <!-- usage-contract -->
-
         </div>
     </div>
 @endsection
