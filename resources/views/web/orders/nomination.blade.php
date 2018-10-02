@@ -96,7 +96,7 @@
         </div>
         <div class="reservation-item">
           <div class="caption"><!-- 見出し用div -->
-            <h2>キャストとを呼ぶ時間</h2>
+            <h2>キャストを呼ぶ時間</h2>
           </div>
           <div class="form-grpup"><!-- フォーム内容 -->
             <label class="button button--green time">
@@ -132,8 +132,8 @@
             </label>
           </div>
         </div>
-        
-        <div class="reservation-attention"><a href="#">予約前の注意事項</a></div>
+
+        <div class="reservation-attention"><a href="{{ route('guest.orders.nominate_step2') }}">予約前の注意事項</a></div>
 
         <div class="reservation-total">
           <div class="reservation-total__content">

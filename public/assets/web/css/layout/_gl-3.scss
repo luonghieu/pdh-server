@@ -87,7 +87,13 @@ $img-path-gl3:"../../images/gl3/";
     }
     &__thumbnail{
       width: 60px;
-      height: auto;
+      height: 60px;
+      img{
+        width:100%;
+        height:100%;
+        object-fit:cover;
+        border-radius:10px;
+      }
     }
     &__name{
       width: auto;

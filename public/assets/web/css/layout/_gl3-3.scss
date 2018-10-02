@@ -17,7 +17,6 @@ main{
   padding: 0 8px;
   box-sizing: border-box;
 }
-
 .details-header{
   width: 100%;
   height: auto;
@@ -89,8 +88,14 @@ main{
     justify-content: flex-start;
   }
   &__thumbnail{
-    width: 60px;
-    height: auto;
+      width: 60px;
+      height: 60px;
+      img{
+        width:100%;
+        height:100%;
+        object-fit:cover;
+        border-radius:10px;
+      }
   }
   &__name{
     width: auto;

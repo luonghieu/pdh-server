@@ -33,7 +33,7 @@
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
-  width: 225px;
+  width: 210px;
   height: 18px;
 }
 
@@ -898,6 +898,10 @@
   background-size: contain;
   vertical-align: text-bottom;
   margin-right: 0.36em;
+}
+
+#chat #gg2 .msg-wrap {
+  max-width: 95%;
 }
 
 .css-mypage.pb {

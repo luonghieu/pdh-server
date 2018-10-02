@@ -323,6 +323,11 @@ class OrderController extends Controller
         return view('web.orders.attention');
     }
 
+    public function nominateAttention()
+    {
+        return view('web.orders.nominate_attention');
+    }
+
     public function getConfirm(Request $request)
     {
         $data = Session::get('data');
@@ -557,7 +562,10 @@ class OrderController extends Controller
         }
         try {
             DB::beginTransaction();
-            $order->settle();
+            if (!$order->settle()) {
+                return response()->json(['success' => false], 500);
+            }
+
             $order->paymentRequests()->update(['status' => PaymentRequestStatus::CLOSED]);
 
             $order->payment_status = OrderPaymentStatus::PAYMENT_FINISHED;
