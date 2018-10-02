@@ -119,7 +119,7 @@
 
 @section('web.content')
 @if ($order->status == \App\Enums\OrderStatus::CANCELED)
-    <?php $orderStartTime = \Carbon\Carbon::parse($order->start_time) ?>
+    <?php $orderStartTime = \Carbon\Carbon::parse($order->date . ' ' . $order->start_time) ?>
     <?php $orderEndTime = $orderStartTime->copy()->addMinutes($order->duration * 60) ?>
 @else
     <?php $orderStartTime = \Carbon\Carbon::parse($order->actual_started_at) ?>
