@@ -1,25 +1,27 @@
 .ge2-1-b{
+  padding-top:65px!important;
   .cast-selected{
     width: 100%;
     height: auto;
     padding: 0 15px;
     box-sizing: border-box;
-    margin-top: 20px;
     margin-bottom: 20px;
     display: flex;
     align-items: center;
     justify-content:flex-start;
     &__photo{
       width: 60px;
-      height: auto;
+      height: 60px;
       img{
         width: 100%;
-        height: auto;
+        height: 100%!important;
+        object-fit:cover;
+        border-radius:10px;
       }
     }
     &__content{
       margin-left: 6px;
-      width: 100%;
+      width: calc(100% - 60px);
     }
     &__name{
       font-size: 14px;
@@ -61,6 +63,28 @@
         font-weight: bold;
       }
     }
+  }
+  .reservation-attention{
+    width: 100%;
+    height: auto;
+    margin-bottom:8px;
+    padding: 0 8px;
+    box-sizing: border-box;    
+    a{
+      color:#00c3c3;
+      font-size:12px;
+      text-align:right;
+      &:before{
+        content:"";
+        display:inline-block;
+        width:1.5em;
+        height:1.5em;
+        background:url("../images/common/info.svg") no-repeat center center;
+        background-size:contain;
+        vertical-align:text-bottom;
+      }    
+    }
+
   }
 
   .reservation-total{

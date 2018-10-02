@@ -71,7 +71,7 @@
           switch ($point['type']) {
               case \App\Enums\PointType::EVICT:
                   if ($point['point'] >= 0) {
-                    $pointView = abs($point['point']);
+                    $pointView = - ($point['point']);
                   } else {
                     $pointView = $point['point'];
                   }
@@ -105,7 +105,7 @@
         <div class="item_left">
           <span class="item_date">
             {{ \Carbon\Carbon::parse($point['created_at'])->format('m月d日') }} ({{ dayOfWeek()[Carbon\Carbon::parse($point['created_at'])->dayOfWeek] }})
-            {{ \Carbon\Carbon::parse($point['created_at'])->format('H:i') }}〜
+            {{ \Carbon\Carbon::parse($point['created_at'])->format('H:i') }}
           </span>
           <span class="item_status">{{ $type }}</span>
           <span class="item_point {{ ($pointView >= 0) ? "point-plus" : "init-point-minus" }}">

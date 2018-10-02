@@ -4,9 +4,6 @@
 @extends('layouts.web')
 @section('web.content')
   <div class="title">
-    <div class="btn-back">
-      <a href="{{ route('message.index') }}"><img src="/assets/webview/images/back.png" alt=""></a>
-    </div>
     @php
       if ($room->type != \App\Enums\RoomType::SYSTEM) {
         $listName = [];
@@ -21,21 +18,21 @@
       }
 
       $countName = count($messages['room']['users']);
-
     @endphp
     <div class="title-name">
       @if ($countName > 2)
       <span class="name-member">{{ $listName }}</span>
       <span class="sum-name">({{ $countName }})</span>
       @else
-      @php
-        foreach ($messages['room']['users'] as $user) {
-          if ($user['id'] != Auth::user()->id) {
-            $age = $user['age'];
+        @php
+          foreach ($messages['room']['users'] as $user) {
+            if ($user['id'] != Auth::user()->id) {
+              $age = $user['age'];
+            }
           }
-        }
-      @endphp
-      <span class="name-member">{{ $listName }} ({{ $age }})</span>
+        @endphp
+        <span class="name-member">{{ $listName }}</span>
+        <span class="sum-name">({{ $age }})</span>
       @endif
     </div>
   </div>
@@ -73,8 +70,21 @@
             <dt>
               <ul class="detail d-top">
                 <li class="d-top-place">{{ $messages['order']['address'] }}</li>
-                <li class="d-top-time">{{ $messages['order']['duration'] }}時間({{ $messages['order']['cast_class']['cost'] }}P/30分)</li>
-                <li class="d-top-users">{{ $countName }}名</li>
+                @if ($messages['order']['type'] != App\Enums\OrderType::NOMINATION)
+                <li class="d-top-time">{{ $messages['order']['duration'] }}時間({{ number_format($messages['order']['cast_class']['cost']) }}P/30分)</li>
+                @else
+                  @php
+                    foreach ($messages['room']['users'] as $user) {
+                      if ($user['id'] != Auth::user()->id) {
+                         $point = $user['cost'];
+                      }
+                    }
+                  @endphp
+                  <li class="d-top-time">{{ $messages['order']['duration'] }}時間({{ number_format($point) }}P/30分)</li>
+                @endif
+                @if ($countName > 2)
+                  <li class="d-top-users">{{ $countName - 1 }}名</li>
+                @endif
               </ul>
             </dt>
             <dt>

@@ -167,8 +167,8 @@
           <li class="portlet-content__item">
             <p class="portlet-content__text--list">年収</p>
             <label class="time-input">
-              <div class="selectbox" data-field="salary">
-                <select dir="rtl" id="salary" name="salary">
+              <div class="selectbox" data-field="salary_id">
+                <select dir="rtl" id="salary-id" name="salary_id">
                   <option value="" class="hidden">未設定</option>
                   @foreach ($glossaries['salaries'] as $salary)
                     @php

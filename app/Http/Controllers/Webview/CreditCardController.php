@@ -119,7 +119,7 @@ class CreditCardController extends Controller
 
         $param = $card->id;
 
-        $client = new Client();
+        $client = new Client(['base_uri' => config('common.api_url')]);
         $option = [
             'headers' => ['Authorization' => 'Bearer ' . $accessToken],
             'form_params' => ['token' => $param],

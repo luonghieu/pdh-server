@@ -3,9 +3,6 @@
 @extends('layouts.web')
 @section('web.content')
 <div class="title">
-  <div class="btn-back">
-    <a href="{{ \URL::previous() }}"><img src="/assets/webview/images/back.png" alt=""></a>
-  </div>
   <div class="title-name"></div>
   <div class="btn-register header-item">
     <a id="btn-create">登録</a>

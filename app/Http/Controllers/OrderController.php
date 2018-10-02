@@ -29,7 +29,7 @@ class OrderController extends Controller
 {
     public function index(Request $request)
     {
-        $client = new Client();
+        $client = new Client(['base_uri' => config('common.api_url')]);
         $user = Auth::user();
 
         $accessToken = JWTAuth::fromUser($user);
@@ -220,7 +220,7 @@ class OrderController extends Controller
             return redirect()->route('guest.orders.call');
         }
 
-        $client = new Client();
+        $client = new Client(['base_uri' => config('common.api_url')]);
 
         try {
             $desires = $client->get(route('tags', ['type' => TagType::DESIRE]));
@@ -286,7 +286,7 @@ class OrderController extends Controller
 
         $data = Session::get('data');
 
-        $client = new Client();
+        $client = new Client(['base_uri' => config('common.api_url')]);
         $user = Auth::user();
 
         $accessToken = JWTAuth::fromUser($user);
@@ -321,6 +321,11 @@ class OrderController extends Controller
     public function attention(Request $request)
     {
         return view('web.orders.attention');
+    }
+
+    public function nominateAttention()
+    {
+        return view('web.orders.nominate_attention');
     }
 
     public function getConfirm(Request $request)
@@ -374,7 +379,7 @@ class OrderController extends Controller
             $startTime = Carbon::parse($timeOrder)->format('H:i');
         }
 
-        $client = new Client();
+        $client = new Client(['base_uri' => config('common.api_url')]);
         $user = Auth::user();
 
         $accessToken = JWTAuth::fromUser($user);
@@ -482,7 +487,7 @@ class OrderController extends Controller
             $tags = '';
         }
 
-        $client = new Client();
+        $client = new Client(['base_uri' => config('common.api_url')]);
         $user = Auth::user();
 
         $accessToken = JWTAuth::fromUser($user);
@@ -557,7 +562,11 @@ class OrderController extends Controller
         }
         try {
             DB::beginTransaction();
-            $order->settle();
+            if (!$order->settle()) {
+                DB::commit();
+                return response()->json(['success' => false], 500);
+            }
+
             $order->paymentRequests()->update(['status' => PaymentRequestStatus::CLOSED]);
 
             $order->payment_status = OrderPaymentStatus::PAYMENT_FINISHED;
@@ -629,8 +638,8 @@ class OrderController extends Controller
         $token = JWTAuth::fromUser($user);
 
         $authorization = empty($token) ?: 'Bearer ' . $token;
-
         $client = new Client([
+            'base_uri' => config('common.api_url'),
             'http_errors' => false,
             'debug' => false,
             'headers' => [
@@ -729,7 +738,7 @@ class OrderController extends Controller
             $duration = $request->sl_duration_nominition;
         }
 
-        $client = new Client();
+        $client = new Client(['base_uri' => config('common.api_url')]);
         $user = Auth::user();
 
         $accessToken = JWTAuth::fromUser($user);

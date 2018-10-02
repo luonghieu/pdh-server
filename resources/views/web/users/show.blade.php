@@ -22,7 +22,7 @@
         <li class="cast-info__item--level">{{ (!$cast['class']) ? '未設定' : $cast['class'] }}</li>
       </ul>
       <p class="cast-info__signature">{{ $cast['job'] }}{{ (!$cast['job'] || !$cast['intro']) ? '' : ' | '}}{{ $cast['intro'] }}</p>
-      <p class="cast-info__price">30分あたりの料金<span>{{ $cast['cost'] ? number_format($cast['cost']) : '未設定' }}P</span></p>
+      <p class="cast-info__price">30分あたりの料金<span class="text-bold">{{ $cast['cost'] ? number_format($cast['cost']) : '未設定' }}P</span></p>
     </section>
 
     <section class="portlet">

@@ -21,7 +21,7 @@ $(document).ready(function() {
           <div class="msg-left-text">
             <div class="text">
               <div class="text-wrapper">
-                <p>`+message+`</p>
+                <p>`+message.replace(/\n/g, "<br />")+`</p>
               </div>
             </div>
             <div class="time"><p>`+time+`</p></div>
@@ -51,7 +51,7 @@ $(document).ready(function() {
       if(e.message.type == 1 && e.message.system_type == 2) {
         $("#message-box").append(`
           <div class="msg-alert">
-            <h3><span>`+time+`</span><br>`+message+`</h3>
+            <h3><span>`+time+`</span><br>`+message.replace(/\n/g, "<br />")+`</h3>
           </div>
        `);
       }
@@ -64,6 +64,7 @@ $(document).ready(function() {
   });
 
   $("#send-message").click(function(event) {
+    $('#content').focus();
 
     $(this).prop('disabled', true);
 
@@ -120,7 +121,7 @@ $(document).ready(function() {
           <div class="msg-right-text">
             <div class="text">
               <div class="text-wrapper">
-                <p>`+message+`</p>
+                <p>`+message.replace(/\n/g, "<br />")+`</p>
               </div>
             </div>
             <div class="time"><p>`+time+`</p></div>
@@ -210,5 +211,16 @@ $('.msg-system').each(function(index, val) {
     $(this).html(newText.replace(/\n/g, "<br />"));
   } else {
     $(this).html(content.replace(/\n/g, "<br />"));
+  }
+});
+
+jQuery(document).ready(function($) {
+  if (window.history && window.history.pushState) {
+    window.history.pushState(null, null, null);
+
+    $(window).on('popstate', function() {
+      window.location.reload();
+      window.location.href = "/message";
+    });
   }
 });

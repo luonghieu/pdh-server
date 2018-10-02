@@ -22,6 +22,7 @@ class ProfileController extends Controller
 
         $authorization = empty($token) ?: 'Bearer ' . $token;
         $client = new Client([
+            'base_uri' => config('common.api_url'),
             'http_errors' => false,
             'debug' => false,
             'headers' => [

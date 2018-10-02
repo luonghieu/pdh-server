@@ -96,7 +96,7 @@
         </div>
         <div class="reservation-item">
           <div class="caption"><!-- 見出し用div -->
-            <h2>キャストとを呼ぶ時間</h2>
+            <h2>キャストを呼ぶ時間</h2>
           </div>
           <div class="form-grpup"><!-- フォーム内容 -->
             <label class="button button--green time">
@@ -133,6 +133,8 @@
           </div>
         </div>
 
+        <div class="reservation-attention"><a href="{{ route('guest.orders.nominate_step2') }}">予約前の注意事項</a></div>
+
         <div class="reservation-total">
           <div class="reservation-total__content">
             <div class="reservation-total__sum">合計<span class="total-point">0P~</span></div>
@@ -153,27 +155,34 @@
         <div class="overlay">
           <div class="date-select ct-date-select">
           <div class="date-select__content">
+          @php
+            $now = \Carbon\Carbon::now()->addMinutes(20);
+            $currentMonth = $now->format('m');
+            $currentDate = $now->format('d');
+            $currentHour = $now->format('H');
+            $currentMinute = $now->format('i');
+          @endphp
          <select class="select-month" name="sl_month_nomination">
           @foreach(range(1, 12) as $month)
-           <option value="{{ $month }}" {{ \Carbon\Carbon::now()->format('m') == $month ? 'selected' : '' }}>{{ $month }}月</option>
+           <option value="{{ $month }}" {{ $currentMonth == $month ? 'selected' : '' }}>{{ $month }}月</option>
           @endforeach
          </select>
          <select class="select-date" name="sl_date_nomination">
             @foreach(getDay() as $key => $val)
-             <option value="{{ $key }}" {{ \Carbon\Carbon::now()->format('d') == $key ? 'selected' : '' }}>{{ $val }}</option
+             <option value="{{ $key }}" {{ $currentDate == $key ? 'selected' : '' }}>{{ $val }}</option
               >
             @endforeach
          </select>
          <select class="select-hour" name="sl_hour_nomination">
           @foreach(range(00, 23) as $hour)
-           <option value="{{ $hour }}" {{ \Carbon\Carbon::now()->format('H') == $hour ? 'selected' : '' }}>
+           <option value="{{ $hour }}" {{ $currentHour == $hour ? 'selected' : '' }}>
                 {{ $hour<10 ? '0'.$hour : $hour }}時
           </option>
           @endforeach
          </select>
          <select class="select-minute" name="sl_minute_nomination">
            @foreach(range(00, 59) as $minute)
-           <option value="{{ $minute }}" {{ \Carbon\Carbon::now()->format('i') == $minute ? 'selected' : '' }}>
+           <option value="{{ $minute }}" {{ $currentMinute == $minute ? 'selected' : '' }}>
                 {{ $minute<10 ? '0'.$minute : $minute }}分
           </option>
           @endforeach
