@@ -7,8 +7,8 @@
     if (\Session::has('backUrl')) {
       $backUrl = \Session::get('backUrl')[0];
     } else {
-      if (Session::pull('order_history')) {
-          $backUrl = \URL::previous();
+      if ($orderId = Session::pull('order_history')) {
+          $backUrl = \URL::route('history.show', ['orderId' => $orderId]);
       }
 
       $backUrl = \URL::previous();
