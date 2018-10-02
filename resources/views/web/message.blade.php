@@ -4,9 +4,6 @@
 @extends('layouts.web')
 @section('web.content')
   <div class="title">
-    <div class="btn-back">
-      <a href="{{ route('message.index') }}"><img src="/assets/webview/images/back.png" alt=""></a>
-    </div>
     @php
       if ($room->type != \App\Enums\RoomType::SYSTEM) {
         $listName = [];
