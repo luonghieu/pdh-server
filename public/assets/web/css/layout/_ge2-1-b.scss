@@ -11,15 +11,17 @@
     justify-content:flex-start;
     &__photo{
       width: 60px;
-      height: auto;
+      height: 60px;
       img{
         width: 100%;
-        height: auto;
+        height: 100%!important;
+        object-fit:cover;
+        border-radius:10px;
       }
     }
     &__content{
       margin-left: 6px;
-      width: 100%;
+      width: calc(100% - 60px);
     }
     &__name{
       font-size: 14px;
