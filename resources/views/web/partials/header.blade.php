@@ -18,24 +18,24 @@
       <li><a href="{{ route('credit_card.index') }}"><i><img src="{{ asset('assets/web/images/common/card.svg') }}"></i>クレジットカード情報</a></li>
       <li><span><i><img src="{{ asset('assets/web/images/common/help.svg') }}"></i>ヘルプ</span>
         <ul>
-          <li><a href="{{ url('/service/quest_qa') }}">よくある質問</a></li>
-          <li><a href="{{ url('/service/terms') }}">利用規約</a></li>
-          <li><a href="{{ url('/service/privacy_policy') }}">プライバシーポリシー</a></li>
-          <li><a href="{{ url('/service/law') }}">特定商取引法に基づく表記について</a></li>
+          <li><a href="{{ url('/service/guest_qa') }}">よくある質問</a></li>
+          <li><a href="{{ url('/service/law') }}">利用規約</a></li>
+          <li><a href="{{ url('/service/policy') }}">プライバシーポリシー</a></li>
+          <li><a href="{{ url('/service/sct_law') }}">特定商取引法に基づく表記について</a></li>
           <li><a href="{{ url('/service/howto') }}">ご利用方法</a></li>
-          <li><a href="{{ url('/service/inquiry') }}">お問い合わせ</a></li>
+          <li><a href="{{ url('/service/contact') }}">お問い合わせ</a></li>
           <li><a href="{{ route('web.logout') }}">ログアウト</a></li>
         </ul>
       </li>
       @else
       <li><span><i><img src="{{ asset('assets/web/images/common/help.svg') }}"></i>ヘルプ</span>
         <ul>
-          <li><a href="{{ url('/service/quest_qa') }}">よくある質問</a></li>
-          <li><a href="{{ url('/service/terms') }}">利用規約</a></li>
-          <li><a href="{{ url('/service/privacy_policy') }}">プライバシーポリシー</a></li>
-          <li><a href="{{ url('/service/law') }}">特定商取引法に基づく表記について</a></li>
+          <li><a href="{{ url('/service/guest_qa') }}">よくある質問</a></li>
+          <li><a href="{{ url('/service/law') }}">利用規約</a></li>
+          <li><a href="{{ url('/service/policy') }}">プライバシーポリシー</a></li>
+          <li><a href="{{ url('/service/sct_law') }}">特定商取引法に基づく表記について</a></li>
           <li><a href="{{ url('/service/howto') }}">ご利用方法</a></li>
-          <li><a href="{{ url('/service/inquiry') }}">お問い合わせ</a></li>
+          <li><a href="{{ url('/service/contact') }}">お問い合わせ</a></li>
         </ul>
       </li>
     @endif
