@@ -76,7 +76,7 @@ class PointSettlement implements ShouldQueue
                 // receive admin
                 $this->createPoint($receiveAdmin, $adminId, $order);
             } else {
-                $this->order->user->notify(new AutoChargeFailed());
+                $this->order->user->notify(new AutoChargeFailed($this->order));
             }
 
             \DB::commit();

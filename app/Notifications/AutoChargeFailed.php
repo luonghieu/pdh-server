@@ -11,14 +11,16 @@ class AutoChargeFailed extends Notification implements ShouldQueue
 {
     use Queueable;
 
+    public $order;
+
     /**
      * Create a new notification instance.
      *
-     * @return void
+     * @param $order
      */
-    public function __construct()
+    public function __construct($order)
     {
-        //
+        $this->order = $order;
     }
 
     /**
@@ -62,7 +64,7 @@ class AutoChargeFailed extends Notification implements ShouldQueue
             . PHP_EOL . 'クレジットカードにエラーが発生したため、自動決済に失敗しました。'
             . PHP_EOL . 'カード情報を更新してください。';
 
-        $page = env('LINE_LIFF_REDIRECT_PAGE') . '?page=credit_card';
+        $page = env('LINE_LIFF_REDIRECT_PAGE') . '?page=credit_card&order_id=' . $this->order->id;
 
         return [
             [

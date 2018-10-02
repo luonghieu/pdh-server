@@ -27,7 +27,8 @@ class RedirectController extends Controller
             case 'message':
                 return \Redirect::to(route('message.index'));
             case 'credit_card':
-                return \Redirect::to(route('credit_card.index'));
+                \Session::put('order_history', $request->order_id);
+                return \Redirect::to(route('credit_card.update'));
             default:
                 return \Redirect::to(route('web.index'));
         }
