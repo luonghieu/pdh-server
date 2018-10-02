@@ -5,17 +5,30 @@ namespace App\Http\Controllers\Api;
 use App\BodyType;
 use App\Enums\CohabitantType;
 use App\Enums\DrinkVolumeType;
+use App\Enums\OrderPaymentStatus;
+use App\Enums\ProviderType;
 use App\Enums\SiblingsType;
 use App\Enums\SmokingType;
 use App\Enums\UserGender;
 use App\Job;
+use App\Order;
 use App\Prefecture;
 use App\Salary;
+use Carbon\Carbon;
 
 class GlossaryController extends ApiController
 {
     public function glossary()
     {
+        $now = Carbon::now();
+        $lineOrders = Order::where('payment_status', OrderPaymentStatus::REQUESTING)
+            ->where('payment_requested_at', '<=', $now->subHours(3))
+            ->whereHas('user', function($q) {
+                $q->where('provider', ProviderType::LINE);
+            })
+            ->get();
+
+        dd($lineOrders);
         $drinkVolumes = [];
         $smokings = [];
         $siblings = [];

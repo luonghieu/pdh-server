@@ -6,7 +6,7 @@ use App\Enums\OrderPaymentStatus;
 use App\Enums\PaymentRequestStatus;
 use App\Enums\PointType;
 use App\Enums\UserType;
-use App\Jobs\PointSettlement;
+use App\Notifications\AutoChargeFailed;
 use App\Order;
 use App\Point;
 use App\Services\LogService;
@@ -19,7 +19,6 @@ use Illuminate\Foundation\Bus\Dispatchable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Queue\SerializesModels;
 use Illuminate\Support\Carbon;
-use Illuminate\Support\Facades\DB;
 
 class PointSettlement implements ShouldQueue
 {
@@ -76,6 +75,8 @@ class PointSettlement implements ShouldQueue
 
                 // receive admin
                 $this->createPoint($receiveAdmin, $adminId, $order);
+            } else {
+                $this->order->user->notify(new AutoChargeFailed());
             }
 
             \DB::commit();
