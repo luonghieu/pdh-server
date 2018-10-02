@@ -129,7 +129,7 @@
         <input type="file" style="display: none" name="image-camera" accept="image/*" id="image-camera" capture="camera">
       </label>
       <div class="msg-input-text">
-        <input type="text" id="content" name="content" placeholder="入力してください" class="content-message">
+        <textarea type="text" id="content" name="content" placeholder="入力してください" class="content-message"></textarea>
       </div>
       <label class="msg-input-pic">
         <img src="/assets/web/images/gg2/send.svg">
@@ -160,6 +160,20 @@
     });
 
     $(document).scrollTop($('#gg2').height());
+
+  // For changing the size of the text area
+  $(function() {
+    var $textarea = $('#textarea');
+    var lineHeight = parseInt($textarea.css("lineHeight"));
+    $textarea.height(20);
+    $textarea.css("lineHeight","20px");
+    $textarea.on('input', function(evt) {
+      var lines = ($(this).val() + '\n').match(/\n/g).length;
+      $(this).height(lineHeight * lines);
+      $textarea.css("lineHeight","1.2");
+    });
+
+  });
 </script>
 @endsection
 @section('web.script')
