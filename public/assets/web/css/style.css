@@ -4595,6 +4595,10 @@ header {
         border-color: #30ccc1; }
     #gf2 .cast-photo__thumbnails li + li {
       margin-left: 8px; }
+  #gf2 .cast-photo .slick-dots .slick-active img {
+    height: 100%;
+    -o-object-fit: cover;
+    object-fit: cover; }
 
 #gf2 .staytus {
   position: absolute;
@@ -4803,16 +4807,10 @@ header {
   display: flex;
   -webkit-box-pack: justify;
   -ms-flex-pack: justify;
-  justify-content: space-between; }
-  #gf2 .cast-call-btn button {
-    background-color: transparent;
-    border: none;
-    cursor: pointer;
-    outline: none;
-    padding: 0;
-    -webkit-appearance: none;
-    -moz-appearance: none;
-    appearance: none; }
+  justify-content: space-between;
+  -webkit-box-align: center;
+  -ms-flex-align: center;
+  align-items: center; }
   #gf2 .cast-call-btn .btn-l {
     margin-right: 0; }
 
