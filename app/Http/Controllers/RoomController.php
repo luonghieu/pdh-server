@@ -11,7 +11,7 @@ class RoomController extends Controller
     public function index()
     {
         $accessToken = JWTAuth::fromUser(Auth::user());
-        $client = new Client();
+        $client = new Client(['base_uri' => config('common.api_url')]);
         $option = [
             'headers' => ['Authorization' => 'Bearer ' . $accessToken],
             'form_params' => [],

@@ -17,7 +17,7 @@ class MessageController extends Controller
     public function message(Room $room)
     {
         $accessToken = JWTAuth::fromUser(Auth::user());
-        $client = new Client();
+        $client = new Client(['base_uri' => config('common.api_url')]);
         $option = [
             'headers' => ['Authorization' => 'Bearer ' . $accessToken],
             'form_params' => [],
