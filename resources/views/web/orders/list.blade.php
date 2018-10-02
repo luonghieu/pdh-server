@@ -1,4 +1,4 @@
-@section('title', 'Cheers')
+@section('title', '予約一覧')
 @section('screen.class', 'gn-1')
 
 @extends('layouts.web')
