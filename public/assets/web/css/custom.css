@@ -973,5 +973,9 @@
   background-image: -webkit-linear-gradient(57deg, #776363 0%, #c7b1b1 100%);
   background-image: -o-linear-gradient(57deg, #776363 0%, #c7b1b1 100%);
   background-image: linear-gradient(33deg, #776363 0%, #c7b1b1 100%);
+}
 
+#order-history-controller .order-cancel-header {
+  text-align: center;
+  color: red;
 }

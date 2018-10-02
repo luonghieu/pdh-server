@@ -9,6 +9,8 @@
       @foreach ($cast['avatars'] as $avatar)
         @if ($avatar['thumbnail'])
         <img src="{{ $avatar['thumbnail'] }}" alt="">
+        @else
+        <img src="{{ asset('assets/web/images/ge1/user_icon.svg') }}" alt="">
         @endif
       @endforeach
     </div>

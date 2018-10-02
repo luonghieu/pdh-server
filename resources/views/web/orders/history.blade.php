@@ -150,6 +150,9 @@
     @foreach($casts as $cast)
         <section class="details-list" id="cast-{{ $cast->id }}">
             <div class="details-list__line"><p></p></div>
+            @if ($order->status == \App\Enums\OrderStatus::CANCELED)
+                <h3 class="order-cancel-header">※キャンセル料が発生します</h3>
+            @endif
             <div class="details-list__header">
                 <div class="details-list__thumbnail">
                     <a href="{{ route('cast.show', ['id' => $cast->id]) }}">
@@ -164,28 +167,44 @@
                 <ul class="details-info-list">
                     <li class="details-info-list__itme">
                         <p class="details-info-list__text">{{ '合流' . $order->duration * 60 . '分' }}</p>
-                        <p class="details-info-list__marks">{{ number_format($cast->cast_order->order_point) .
-                         'P'
-                         }}</p>
+                        <p class="details-info-list__marks">
+                            @if ($order->status == \App\Enums\OrderStatus::CANCELED)
+                                {{ number_format($cast->cast_order->temp_point) .'P' }}
+                            @else
+                                {{ number_format($cast->cast_order->order_point) .'P' }}
+                            @endif
+                            </p>
+
+
                     </li>
                     <li class="details-info-list__itme">
                         <p class="details-info-list__text">{{ '延長' . $cast->cast_order->extra_time . '分' }}</p>
-                        <p class="details-info-list__marks">{{ number_format($cast->cast_order->extra_point) .
+                        <p class="details-info-list__marks">{{ number_format(($cast->cast_order->extra_point) ?
+                        $cast->cast_order->extra_point : 0) .
                          'P'
                         }}</p>
                     </li>
                     <li class="details-info-list__itme">
                         <p class="details-info-list__text">指名料</p>
-                        <p class="details-info-list__marks">{{ number_format($cast->cast_order->fee_point) . 'P'
+                        <p class="details-info-list__marks">{{ number_format(($cast->cast_order->fee_point) ?
+                        $cast->cast_order->fee_point : 0) . 'P'
                         }}</p>
                     </li>
                     <li class="details-info-list__itme">
                         <p class="details-info-list__text">深夜手当</p>
-                        <p class="details-info-list__marks">{{ number_format
-                        ($cast->cast_order->allowance_point) .
+                        <p class="details-info-list__marks">{{ number_format(($cast->cast_order->allowance_point) ?
+                        $cast->cast_order->allowance_point : 0) .
                          'P'
                         }}</p>
                     </li>
+                    @if ($order->status == \App\Enums\OrderStatus::CANCELED)
+                        <li class="details-info-list__itme">
+                            <p class="details-info-list__text">{{ "キャンセル料($order->cancel_fee_percent%)" }}</p>
+                            <p class="details-info-list__marks">{{ number_format($cast->cast_order->temp_point *
+                            $order->cancel_fee_percent / 100
+                            ) . 'P' }}</p>
+                        </li>
+                    @endif
                 </ul>
                 <ul class="">
                     <li class="details-info-list__itme">
