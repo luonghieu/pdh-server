@@ -135,9 +135,9 @@
                 <p>
                     <span class="details-header__date">{{ $orderStartTime->format('Y年m月d日') }}</span>
                     @if ($order->status == \App\Enums\OrderStatus::CANCELED)
-                        <span class="details-header__time">{{ $orderStartTime->format('H:i') . '~' }}</span>
-                    @else
                         <span class="details-header__time">{{ $orderStartTime->format('H:i') . '~' . $orderEndTime->format('H:i') }}</span>
+                    @else
+                        <span class="details-header__time">{{ $orderStartTime->format('H:i') . '~' }}</span>
                     @endif
             </li>
             <li><i><img src="{{ asset('assets/web/images/common/map.svg') }}"></i>
@@ -169,7 +169,7 @@
                         <p class="details-info-list__text">{{ '合流' . $order->duration * 60 . '分' }}</p>
                         <p class="details-info-list__marks">
                             @if ($order->status == \App\Enums\OrderStatus::CANCELED)
-                                {{ number_format($cast->cast_order->temp_point) .'P' }}
+                                0P
                             @else
                                 {{ number_format($cast->cast_order->order_point) .'P' }}
                             @endif
@@ -212,7 +212,7 @@
                         <p class="details-info-list__marks--subtotal point-fix-mt">
                             <?php $castTotalPoint = $cast->cast_order->total_point ?
                                 $cast->cast_order->total_point :
-                                $cast->cast_order->temp_point ?>
+                                ($cast->cast_order->temp_point * $order->cancel_fee_percent / 100) ?>
                             <?php $orderTotalPoint += $castTotalPoint; ?>
                             {{ number_format($castTotalPoint) . 'P' }}
                         </p>
