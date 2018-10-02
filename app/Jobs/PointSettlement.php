@@ -77,8 +77,11 @@ class PointSettlement implements ShouldQueue
                 // receive admin
                 $this->createPoint($receiveAdmin, $adminId, $order);
             } else {
-                if ($this->order->user->provider == ProviderType::LINE) {
+                $user = $this->order->user;
+                if ($user->provider == ProviderType::LINE && !$user->card->send_warning) {
                     $this->order->user->notify(new AutoChargeFailed($this->order));
+                    $user->card->send_warning = true;
+                    $user->card->save();
                 }
             }
 
