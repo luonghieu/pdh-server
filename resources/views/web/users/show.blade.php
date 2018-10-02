@@ -8,14 +8,14 @@
     <div class="slider cast-photo__show">
       @if($cast['avatars'])
         @foreach ($cast['avatars'] as $avatar)
-          @if ($avatar['thumbnail'])
+          @if (@getimagesize($avatar['thumbnail']))
           <img src="{{ $avatar['thumbnail'] }}" alt="">
           @else
           <img src="{{ asset('assets/web/images/ge1/user_icon.svg') }}" alt="">
           @endif
         @endforeach
       @else
-          <img  class='image-default' src="{{ asset('assets/web/images/ge1/user_icon.svg') }}" alt="">
+        <img class="image-default" src="{{ asset('assets/web/images/ge1/user_icon.svg') }}" alt="">
       @endif
     </div>
   </section>
