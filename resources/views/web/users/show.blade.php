@@ -6,13 +6,17 @@
 <div class="cast-call">
   <section class="cast-photo">
     <div class="slider cast-photo__show">
-      @foreach ($cast['avatars'] as $avatar)
-        @if ($avatar['thumbnail'])
-        <img src="{{ $avatar['thumbnail'] }}" alt="">
-        @else
-        <img src="{{ asset('assets/web/images/ge1/user_icon.svg') }}" alt="">
-        @endif
-      @endforeach
+      @if($cast['avatars'])
+        @foreach ($cast['avatars'] as $avatar)
+          @if ($avatar['thumbnail'])
+          <img src="{{ $avatar['thumbnail'] }}" alt="">
+          @else
+          <img src="{{ asset('assets/web/images/ge1/user_icon.svg') }}" alt="">
+          @endif
+        @endforeach
+      @else
+          <img  class='image-default' src="{{ asset('assets/web/images/ge1/user_icon.svg') }}" alt="">
+      @endif
     </div>
   </section>
   <div class="cast-set">
