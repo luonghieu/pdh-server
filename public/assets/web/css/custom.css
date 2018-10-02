@@ -938,3 +938,7 @@
   color: #222222;
   font-weight: bold;
 }
+#order-history-controller .order-cancel-header {
+  text-align: center;
+  color: red;
+}
