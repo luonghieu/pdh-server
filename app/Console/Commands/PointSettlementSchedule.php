@@ -6,7 +6,6 @@ use App\Enums\OrderPaymentStatus;
 use App\Enums\ProviderType;
 use App\Jobs\PointSettlement;
 use App\Order;
-use App\Services\LogService;
 use Carbon\Carbon;
 use Illuminate\Console\Command;
 
@@ -66,5 +65,6 @@ class PointSettlementSchedule extends Command
         foreach ($lineOrders as $order) {
             PointSettlement::dispatchNow($order);
         }
+
     }
 }

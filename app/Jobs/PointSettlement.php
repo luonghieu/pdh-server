@@ -5,6 +5,7 @@ namespace App\Jobs;
 use App\Enums\OrderPaymentStatus;
 use App\Enums\PaymentRequestStatus;
 use App\Enums\PointType;
+use App\Enums\ProviderType;
 use App\Enums\UserType;
 use App\Notifications\AutoChargeFailed;
 use App\Order;
@@ -76,7 +77,9 @@ class PointSettlement implements ShouldQueue
                 // receive admin
                 $this->createPoint($receiveAdmin, $adminId, $order);
             } else {
-                $this->order->user->notify(new AutoChargeFailed($this->order));
+                if ($this->order->user->provider == ProviderType::LINE) {
+                    $this->order->user->notify(new AutoChargeFailed($this->order));
+                }
             }
 
             \DB::commit();
