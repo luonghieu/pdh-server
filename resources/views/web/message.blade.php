@@ -20,9 +20,19 @@
       $countName = count($messages['room']['users']);
     @endphp
     <div class="title-name">
-      <span class="name-member">{{ $listName }}</span>
       @if ($countName > 2)
+      <span class="name-member">{{ $listName }}</span>
       <span class="sum-name">({{ $countName }})</span>
+      @else
+        @php
+          foreach ($messages['room']['users'] as $user) {
+            if ($user['id'] != Auth::user()->id) {
+              $age = $user['age'];
+            }
+          }
+        @endphp
+        <span class="name-member">{{ $listName }}</span>
+        <span class="sum-name">({{ $age }})</span>
       @endif
     </div>
   </div>
