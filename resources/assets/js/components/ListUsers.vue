@@ -19,7 +19,7 @@
                                 <div class="chat_people">
                                     <div class="chat_img" v-if=userDetail.avatars><img
                                             class="img_avatar"
-                                            :src="userDetail.avatars[0].thumbnail">
+                                            :src="userDetail.avatars[0] ? userDetail.avatars[0].thumbnail : ''">
                                     </div>
                                     <div class="chat_ib">
                                         <h5 class="chat_id fa fa-id-badge"> {{userDetail.id}}</h5>
@@ -40,7 +40,7 @@
                                 <div class="chat_people">
                                     <div class="chat_img" v-if=userDetail.avatars><img
                                             class="img_avatar"
-                                            :src="userDetail.avatars[0].thumbnail">
+                                            :src="userDetail.avatars[0] ? userDetail.avatars[0].thumbnail : ''">
                                     </div>
                                     <div class="chat_ib">
                                         <h5 class="chat_id fa fa-id-badge"> {{userDetail.id}}</h5>

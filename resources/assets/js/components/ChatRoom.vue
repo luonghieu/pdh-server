@@ -117,7 +117,7 @@ export default {
     },
 
     getMessagesInRoom(id) {
-      window.axios.get("../../api/v1/rooms/" + id).then(response => {
+      window.axios.get("/api/v1/rooms/" + id).then(response => {
         this.list_messageData = [];
         this.list_messages = [];
         const room = response.data.data.data;
@@ -175,7 +175,7 @@ export default {
 
     getRoom() {
       this.unreadMessage = [];
-      window.axios.get("../../api/v1/rooms/admin/get_users").then(response => {
+      window.axios.get("/api/v1/rooms/admin/get_users").then(response => {
         const rooms = response.data.data;
         this.users = rooms;
         this.users.forEach(items => {
@@ -223,7 +223,7 @@ export default {
       }
 
       window.axios
-        .post("../../api/v1/rooms/" + Id + "/messages", data, config)
+        .post("/api/v1/rooms/" + Id + "/messages", data, config)
         .then(response => {
           this.list_messages.push(response.data.data);
           this.message = "";
