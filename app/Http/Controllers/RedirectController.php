@@ -26,6 +26,9 @@ class RedirectController extends Controller
                 return \Redirect::to(route('evaluation.index', ['order_id' => $request->order_id]));
             case 'message':
                 return \Redirect::to(route('message.index'));
+            case 'credit_card':
+                \Session::put('order_history', $request->order_id);
+                return \Redirect::to(route('credit_card.update'));
             default:
                 return \Redirect::to(route('web.index'));
         }
