@@ -151,6 +151,7 @@ class CompletedPayment extends Notification
             . PHP_EOL . PHP_EOL . 'マイページの「ポイント履歴」から領収書の発行が可能です。'
             . PHP_EOL . PHP_EOL . $guestNickname . '様のまたのご利用をお待ちしております♪';
 
+
         return [
             [
                 'type' => 'text',
