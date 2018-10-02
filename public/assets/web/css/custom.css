@@ -941,4 +941,5 @@
 #order-history-controller .order-cancel-header {
   text-align: center;
   color: red;
+  font-size: 15px;
 }
