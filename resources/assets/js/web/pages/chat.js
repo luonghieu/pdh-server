@@ -21,7 +21,7 @@ $(document).ready(function() {
           <div class="msg-left-text">
             <div class="text">
               <div class="text-wrapper">
-                <p>`+message+`</p>
+                <p>`+message.replace(/\n/g, "<br />")+`</p>
               </div>
             </div>
             <div class="time"><p>`+time+`</p></div>
@@ -51,7 +51,7 @@ $(document).ready(function() {
       if(e.message.type == 1 && e.message.system_type == 2) {
         $("#message-box").append(`
           <div class="msg-alert">
-            <h3><span>`+time+`</span><br>`+message+`</h3>
+            <h3><span>`+time+`</span><br>`+message.replace(/\n/g, "<br />")+`</h3>
           </div>
        `);
       }
@@ -121,7 +121,7 @@ $(document).ready(function() {
           <div class="msg-right-text">
             <div class="text">
               <div class="text-wrapper">
-                <p>`+message+`</p>
+                <p>`+message.replace(/\n/g, "<br />")+`</p>
               </div>
             </div>
             <div class="time"><p>`+time+`</p></div>
