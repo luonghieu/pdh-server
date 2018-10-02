@@ -215,7 +215,7 @@ $('.msg-system').each(function(index, val) {
 });
 
 jQuery(document).ready(function($) {
-  if (window.history && window.history.pushState) {
+  if (window.history && window.history.pushState && $('#rooms').length) {
     window.history.pushState(null, null, null);
 
     $(window).on('popstate', function() {
