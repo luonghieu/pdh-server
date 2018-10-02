@@ -136,6 +136,10 @@ _::-webkit-full-page-media, _:future, :root .cast_block input:checked ~ .icon::b
   text-align: center;
 }
 
+.form_footer button{
+  display: block;
+}
+
 .form_footer a {
   font-size: 18px;
   line-height: 60px;

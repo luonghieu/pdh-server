@@ -3,6 +3,7 @@
 img{
   width: 100%;
   height: auto;
+  object-fit:cover;
 }
 
 main{
@@ -26,6 +27,9 @@ main{
   justify-content: center;
   flex-direction: column;
   flex-wrap: wrap;
+  img{
+    object-fit:cover;
+  }
   &__top{
     width: 33.240997%;
     min-width: 120px;

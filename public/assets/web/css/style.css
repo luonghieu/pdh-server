@@ -4595,7 +4595,7 @@ header {
         border-color: #30ccc1; }
     #gf2 .cast-photo__thumbnails li + li {
       margin-left: 8px; }
-  #gf2 .cast-photo .slick-dots .slick-active img {
+  #gf2 .cast-photo .slick-dots li img {
     height: 100%;
     -o-object-fit: cover;
     object-fit: cover; }
@@ -4673,7 +4673,7 @@ header {
     -webkit-box-pack: start;
     -ms-flex-pack: start;
     justify-content: flex-start;
-    padding: 0 3px 0 15px;
+    padding: 0 3px 0 0;
     -webkit-box-sizing: border-box;
     box-sizing: border-box;
     margin-top: 4px;
@@ -5225,6 +5225,7 @@ header {
   #gg2 .msg-input .msg-input-text {
     width: 66%; }
     #gg2 .msg-input .msg-input-text textarea {
+      line-height: 1;
       width: 100%;
       max-height: 200px;
       padding: 0.57em;
@@ -5748,7 +5749,9 @@ header {
 
 #gm1 img {
   width: 100%;
-  height: auto; }
+  height: auto;
+  -o-object-fit: cover;
+  object-fit: cover; }
 
 #gm1 main {
   max-width: 750px;
@@ -5780,6 +5783,9 @@ header {
   flex-direction: column;
   -ms-flex-wrap: wrap;
   flex-wrap: wrap; }
+  #gm1 .profile-photo img {
+    -o-object-fit: cover;
+    object-fit: cover; }
   #gm1 .profile-photo__top {
     width: 33.240997%;
     min-width: 120px;
