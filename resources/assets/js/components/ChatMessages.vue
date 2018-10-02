@@ -166,7 +166,7 @@ export default {
       this.confirmModal = false;
       this.$delete(this.listMessage, this.selectedMessage);
       window.axios
-        .delete("../../api/v1/messages/" + this.message_id)
+        .delete("/api/v1/messages/" + this.message_id)
         .then(response => {});
       this.selectedMessage = null;
       this.isScroll = false;
@@ -183,7 +183,7 @@ export default {
       this.$emit("interface", this.realtime_id);
 
       window.axios
-        .get(`../../api/v1/rooms/${Id}?paginate=${15}&page=${pageCm + 1}`)
+        .get(`/api/v1/rooms/${Id}?paginate=${15}&page=${pageCm + 1}`)
         .then(getMessage => {
           const room = getMessage.data.data.data;
           let currentDate = new Date(
