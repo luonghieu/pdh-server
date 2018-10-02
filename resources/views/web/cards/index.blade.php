@@ -3,9 +3,6 @@
 @extends('layouts.web')
 @section('web.content')
 <div class="title">
-  <div class="btn-back">
-    <a href="{{ \URL::previous() }}"><img src="/assets/webview/images/back.png" alt=""></a>
-  </div>
   <div class="title-name"></div>
   <div class="btn-register header-item">
     <a href="{{ route('credit_card.update') }}" class="btn-redirect-edit">編集</a>
