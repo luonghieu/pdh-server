@@ -114,17 +114,17 @@
 
 #gm1 input[type='date'] {
   position: relative;
-  width: 7.5rem;
+  width: 8rem;
   height: 20px;
-  color: #ffffff00;
+  color: white;
   border: none;
-  background-color: #ffffff00;
+  background-color: white;
   font-size: 14px;
 }
 
 #gm1 input[type='date']:before {
   position: absolute;
-  left: 3px;
+  right: 12px;
   content: attr(data-date);
   display: inline-block;
   color: black;

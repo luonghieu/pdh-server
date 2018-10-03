@@ -23,27 +23,12 @@
       </div>
     </div>
 </div>
-
-<div class="modal_wrap">
-  <input id="trigger3" type="checkbox">
-    <div class="modal_overlay">
-      <label for="trigger3" class="modal_trigger"></label>
-      <div class="modal_content modal_content-btn3">
-        <div class="content-in" id="profile-message">
-          <h2></h2>
-        </div>
-      </div>
-    </div>
-</div>
 @endsection
 @section('web.content')
 <input type="hidden" id="name" value="{{ $profile['nickname'] }}" />
 <input type="hidden" id="day" value="{{ $profile['date_of_birth'] }}" />
 <input type="hidden" id="img" value="{{ count($profile['avatars']) }}" />
 
-<section class="button-box" hidden="">
-  <label for="trigger3" class="open_button button-settlement" id="profile-popup"></label>
-</section>
 <form id="update-profile" action="#" method="GET" enctype="multipart/form-data">
   {{ csrf_field() }}
   <div class="cast-profile">

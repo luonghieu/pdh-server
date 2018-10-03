@@ -2,6 +2,19 @@
 @section('screen.id', 'gm1')
 
 @extends('layouts.web')
+@section('web.extra')
+<div class="modal_wrap">
+  <input id="trigger3" type="checkbox">
+    <div class="modal_overlay">
+      <label for="trigger3" class="modal_trigger" id="profile-popup"></label>
+      <div class="modal_content modal_content-btn3">
+        <div class="content-in" id="profile-message">
+          <h2></h2>
+        </div>
+      </div>
+    </div>
+</div>
+@endsection
 @section('web.content')
 <div class="cast-profile">
   <section class="profile-photo">
@@ -31,7 +44,11 @@
       <h2 class="portlet-header__title">ひとこと</h2>
     </div>
     <div class="portlet-content">
-      <p class="portlet-content__text">{{ (!$profile['intro']) ? 'ひとこと設定されていません' : $profile['intro'] }}</p>
+      @if (!$profile['intro'])
+      <p class="portlet-header__title">ひとこと設定されていません</p>
+      @else
+      <p class="portlet-content__text">{{ $profile['intro'] }}</p>
+      @endif
     </div>
   </section>
   <!-- profile-word -->
@@ -41,7 +58,11 @@
       <h2 class="portlet-header__title">自己紹介</h2>
     </div>
     <div class="portlet-content">
-      <p class="portlet-content__text">{{ (!$profile['description']) ? '自己紹介設定されていません' : $profile['description'] }}</p>
+      @if (!$profile['description'])
+      <p class="portlet-header__title">自己紹介設定されていません</p>
+      @else
+      <p class="portlet-content__text">{{ $profile['description'] }}</p>
+      @endif
     </div>
   </section>
   <!-- profile-introduction -->
@@ -151,4 +172,19 @@
 
   <div class="btn-l"><a href="{{ route('profile.edit') }}">修正</a></div>
 </div>
+@endsection
+
+@section('web.script')
+<script>
+    $(function () {
+      var popup_profile = window.sessionStorage.getItem('popup_profile');
+
+      if (popup_profile) {
+        $('#profile-popup').trigger('click');
+        $('#profile-message h2').html(popup_profile);
+
+        window.sessionStorage.removeItem('popup_profile');
+      }
+    })
+  </script>
 @endsection
