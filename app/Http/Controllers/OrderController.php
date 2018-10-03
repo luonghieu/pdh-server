@@ -307,6 +307,7 @@ class OrderController extends Controller
         $casts = json_decode(($casts->getBody())->getContents(), JSON_NUMERIC_CHECK);
 
         $casts = $casts['data'];
+
         $currentCasts = null;
         if (isset(Session::get('data')['casts'])) {
             $currentCasts = Session::get('data')['casts'];
