@@ -1,4 +1,5 @@
 $(document).ready(function() {
+  $("#search-box").val(null);
   var userId = $('#auth').val();
 
   window.Echo.private('user.'+userId)
