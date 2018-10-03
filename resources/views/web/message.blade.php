@@ -163,7 +163,9 @@
       });
     });
 
-    $(document).scrollTop($('#gg2').height());
+    var image = $('.pic p img').on('load', function(event) {
+      $(document).scrollTop($('#gg2').height());
+    });
 
   // For changing the size of the text area
   $(function() {
