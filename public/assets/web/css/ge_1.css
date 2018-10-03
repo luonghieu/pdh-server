@@ -25,6 +25,10 @@
   overflow: hidden;
 }
 
+.user-icon img{
+  object-fit: cover;
+}
+
 .edit-button {
   position: absolute;
   bottom: -33px;
