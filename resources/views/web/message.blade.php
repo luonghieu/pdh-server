@@ -27,12 +27,16 @@
         @php
           foreach ($messages['room']['users'] as $user) {
             if ($user['id'] != Auth::user()->id) {
-              $age = $user['age'];
+              if($user['type'] == App\Enums\UserType::ADMIN) {
+                $age = '';
+              } else {
+                $age = '('.$user['age'].')';
+              }
             }
           }
         @endphp
         <span class="name-member">{{ $listName }}</span>
-        <span class="sum-name">({{ $age }})</span>
+        <span class="sum-name">{{ $age }}</span>
       @endif
     </div>
   </div>
