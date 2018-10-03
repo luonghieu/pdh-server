@@ -210,9 +210,7 @@
                     <li class="details-info-list__itme">
                         <p class="details-info-list__text--subtotal">小計</p>
                         <p class="details-info-list__marks--subtotal point-fix-mt">
-                            <?php $castTotalPoint = $cast->cast_order->total_point ?
-$cast->cast_order->total_point :
-($cast->cast_order->temp_point * $order->cancel_fee_percent / 100)?>
+                            <?php $castTotalPoint = $cast->cast_order->total_point ? $cast->cast_order->total_point : ($cast->cast_order->temp_point * $order->cancel_fee_percent / 100)?>
                             <?php $orderTotalPoint += $castTotalPoint;?>
                             {{ number_format($castTotalPoint) . 'P' }}
                         </p>
