@@ -1,4 +1,5 @@
 $(document).ready(function() {
+  $("#search-box").val(null);
   var userId = $('#auth').val();
 
   window.Echo.private('user.'+userId)
@@ -20,6 +21,11 @@ $(document).ready(function() {
     unreadCount = unreadCount + 1;
 
     $('#room_' + roomId).data('unread', unreadCount);
+
+    if (unreadCount > 99) {
+      unreadCount = '99+';
+    }
+
     $('#room_' + roomId).text(unreadCount);
     $('#latest-message_' + roomId).text(message);
   });

@@ -849,15 +849,15 @@
   max-width: 90%;
 }
 
-#chat #gg2 .msg-input .msg-input-text input[type="text"] {
-  font-size: 13px;
+#chat #gg2 .msg-input .msg-input-text textarea {
+  font-size: 14px;
 }
 
-#chat #gg2 .msg-input .msg-input-text input[type="text"]::placeholder {
-  font-size: 13px;
+#chat #gg2 .msg-input .msg-input-text textarea::placeholder {
+  font-size: 14px;
 }
 
-#chat #gg2 .msg-input .msg-input-text input[type="text"] {
+#chat #gg2 .msg-input .msg-input-text textarea {
   height: 35px;
 }
 
