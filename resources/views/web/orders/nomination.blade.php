@@ -14,7 +14,7 @@
           @endif
         </div>
         <div class="cast-selected__content">
-          <p class="cast-selected__name">{{ $cast['nickname'] }}</p>
+          <p class="cast-selected__name cast-name">{{ $cast['nickname'] }}</p>
           <div class="cast-selected__bottom">
             @php
               $class = '';
@@ -32,7 +32,7 @@
             @endphp
             <p class="cast-class {{ $class }}">{{ $cast['class'] }}</p>
             <input type="hidden" name="class_id" value="{{ $cast['class_id'] }}">
-            <p class="cast-selected__price">30分あたりの料金<span>{{ number_format($cast['cost']) .'P' }}</span></p>
+            <p class="cast-selected__price price-show">30分あたりの料金<span>{{ number_format($cast['cost']) .'P' }}</span></p>
           </div>
         </div>
       </div>
@@ -156,7 +156,7 @@
         <div class="reservation-total">
           <div class="reservation-total__content">
             <div class="reservation-total__sum">合計<span class="total-point">0P~</span></div>
-            <p class="reservation-total__text">内訳：{{ number_format($cast['cost']) .'P' }}(キャストP/30分)✖0時間</p>
+            <p class="reservation-total__text">内訳：{{ number_format($cast['cost']) }}(キャストP/30分)✖0時間</p>
           </div>
 
         </div>
