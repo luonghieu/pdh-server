@@ -28,6 +28,7 @@ $(document).ready(function() {
           </div>
         </div>
         `);
+        $(document).scrollTop($('#chat #page').height());
       }
 
       if(e.message.type == 3) {
@@ -46,6 +47,9 @@ $(document).ready(function() {
           </div>
         </div>
         `);
+        var image = $('.pic p img').on('load', function(event) {
+          $(document).scrollTop($('#chat #page').height());
+        });
       }
 
       if(e.message.type == 1 && e.message.system_type == 2) {
@@ -54,11 +58,8 @@ $(document).ready(function() {
             <h3><span>`+time+`</span><br>`+message.replace(/\n/g, "<br />")+`</h3>
           </div>
        `);
+        $(document).scrollTop($('#chat #page').height());
       }
-
-      var image = $('.pic p img').on('load', function(event) {
-        $(document).scrollTop($('#gg2').height());
-      });
     });
 
   $('#send-message, #content').keydown(function(event) {
@@ -133,6 +134,7 @@ $(document).ready(function() {
           </div>
         </div>
         `);
+        $(document).scrollTop($('#chat #page').height());
       }
       if(response.data.data.type == 3) {
         $("#message-box").append(`
@@ -150,13 +152,13 @@ $(document).ready(function() {
           </div>
         </div>
         `);
+        var image = $('.pic p img').on('load', function(event) {
+          $(document).scrollTop($('#chat #page').height());
+        });
       }
       $("#content").val(null);
       $("#image-camera").val(null);
       $("#image").val(null);
-      var image = $('.pic p img').on('load', function(event) {
-        $(document).scrollTop($('#gg2').height());
-      });
     })
     .catch(function (error) {
       console.log(error);
