@@ -636,6 +636,8 @@ $(document).ready(function(){
         var chooseDuration = orderParams.current_duration;
       }
 
+      cost = parseInt(cost).toLocaleString(undefined,{ minimumFractionDigits: 0 });
+
       $('.reservation-total__text').text('内訳：'+cost+ '(キャストP/30分)✖'+chooseDuration+'時間');
 
       const inputDuration = $(".input-duration");
