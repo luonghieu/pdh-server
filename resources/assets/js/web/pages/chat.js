@@ -66,6 +66,7 @@ $(document).ready(function() {
   });
 
   $("#send-message").click(function(event) {
+
     $('#content').focus();
 
     $(this).prop('disabled', true);
