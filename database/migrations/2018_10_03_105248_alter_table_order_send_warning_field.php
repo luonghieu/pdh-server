@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class AlterTableCardSendWarningField extends Migration
+class AlterTableOrderSendWarningField extends Migration
 {
     /**
      * Run the migrations.
@@ -13,8 +13,8 @@ class AlterTableCardSendWarningField extends Migration
      */
     public function up()
     {
-        Schema::table('cards', function (Blueprint $table) {
-            $table->boolean('send_warning')->after('is_default')->nullable();
+        Schema::table('orders', function (Blueprint $table) {
+            $table->boolean('send_warning')->after('canceled_at')->nullable();
         });
     }
 
@@ -25,7 +25,7 @@ class AlterTableCardSendWarningField extends Migration
      */
     public function down()
     {
-        Schema::table('cards', function (Blueprint $table) {
+        Schema::table('orders', function (Blueprint $table) {
             $table->dropColumn('send_warning');
         });
     }
