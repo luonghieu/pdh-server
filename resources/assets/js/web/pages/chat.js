@@ -55,6 +55,8 @@ $(document).ready(function() {
           </div>
        `);
       }
+
+      $(document).scrollTop($('#gg2').height());
     });
 
   $('#send-message, #content').keydown(function(event) {
@@ -149,6 +151,7 @@ $(document).ready(function() {
       $("#content").val(null);
       $("#image-camera").val(null);
       $("#image").val(null);
+      $(document).scrollTop($('#gg2').height());
     })
     .catch(function (error) {
       console.log(error);
