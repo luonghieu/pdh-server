@@ -1,4 +1,4 @@
-@section('title', '予約確定前注意出項')
+@section('title', '予定確定前注意事項')
 @section('screen.class', '')
 @extends('layouts.web')
 @section('web.extra_css')

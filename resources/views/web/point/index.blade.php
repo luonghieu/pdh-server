@@ -1,4 +1,4 @@
-@section('title', 'Cheers Buy Point')
+@section('title', 'ポイント購入')
 @section('controller.id', 'index-point-controller')
 @section('screen.id', 'gl4')
 @extends('layouts.web')
