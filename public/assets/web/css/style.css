@@ -3639,6 +3639,9 @@ main {
   color: #505050;
   margin-bottom: 0.38em; }
 
+.modal5 .p1 {
+  margin-bottom: 70px; }
+
 .modal5 .btn-s a {
   padding: 0.83em 0;
   width: 100%; }
@@ -3661,19 +3664,27 @@ main {
 
 .modal5 .modal_content-btn5 {
   border-radius: 12px;
-  padding: 1.88em 0.94em; }
+  padding: 1.88em 0.94em;
+  min-height: 300px; }
 
 .modal5 .close_button-box {
   display: -webkit-box;
   display: -ms-flexbox;
   display: flex;
-  margin-top: 1.81em;
+  margin-top: 70px;
   -webkit-box-pack: justify;
   -ms-flex-pack: justify;
   justify-content: space-between;
   -webkit-box-align: center;
   -ms-flex-align: center;
   align-items: center; }
+
+.m5-text-potiton-1,
+.m5-text-potiton-2 {
+  position: fixed; }
+
+.m5-text-potiton-1 {
+  top: 100px; }
 
 .modal_content-btn5 input {
   display: initial;
@@ -3683,7 +3694,7 @@ main {
   border-radius: 0;
   outline: none;
   background: #FAFAFA;
-  width: 100%; }
+  width: 93%; }
 
 .select-box {
   background-color: #fff;

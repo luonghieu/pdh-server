@@ -13,14 +13,14 @@
         <div class="text-box">
           <h2>領収書を発行する</h2>
           <div>
-            <p>宛名(任意)</p>
+            <p class="p1">宛名(任意)</p>
             <label data-field="name" id="name-error" class="error help-block" for="name"></label>
-            <input type="text" id="name" name="name" placeholder="例：株式会社チアーズ">
+            <input class="m5-text-potiton-1" type="text" id="name" name="name" placeholder="例：株式会社チアーズ">
           </div>
           <div>
-            <p>但し書き(任意)</p>
+            <p class="p2">但し書き(任意)</p>
             <label data-field="content" id="content-error" class="error help-block" for="content"></label>
-            <input type="text" id="content" name="content" placeholder="例：飲食代">
+            <input class="m5-text-potiton-2" type="text" id="content" name="content" placeholder="例：飲食代">
             <input type="hidden" name="point_id" value="" />
           </div>
         </div>

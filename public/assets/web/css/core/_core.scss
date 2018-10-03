@@ -590,6 +590,9 @@ main{
     color:#505050;
     margin-bottom:round-decimal(6 / 16 + 0em);
   }
+  .p1 {
+    margin-bottom: 70px;
+  }
   .btn-s a{
     padding: 0.83em 0;
     width:100%;
@@ -614,14 +617,23 @@ main{
   .modal_content-btn5{
     border-radius:12px;
     padding:round-decimal(30 / 16 + 0em) round-decimal(15 / 16 + 0em);
+    min-height: 300px;
   } 
   .close_button-box{
     display:flex;
-    margin-top:round-decimal(29 / 16 + 0em);
+    margin-top:70px;
     justify-content:space-between;
     align-items: center;
   }  
 }
+.m5-text-potiton-1,
+.m5-text-potiton-2 {
+  position: fixed;
+}
+.m5-text-potiton-1 {
+  top:100px;
+}
+
 .modal_content-btn5 input{
     display:initial;
     margin-bottom:round-decimal(21 / 16 + 0em);
@@ -630,7 +642,7 @@ main{
     border-radius: 0;
     outline: none;
     background: #FAFAFA; 
-    width:100%; 
+    width:93%; 
 }
 
 .select-box {
