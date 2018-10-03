@@ -7,10 +7,10 @@
   {{ csrf_field() }}
   <div class="cast-selected">
         <div class="cast-selected__photo">
-          @if (@getimagesize($cast['avatars']))
+          @if (@getimagesize($cast['avatars'][0]['thumbnail']))
           <img src="{{ $cast['avatars'][0]['thumbnail'] }}" alt="">
           @else
-          <img src="{{ asset('assets/web/images/ge1/user_icon.svg') }}" alt="">
+          <img src="{{ asset('assets/web/images/gm1/ic_default_avatar@3x.png') }}" alt="">
           @endif
         </div>
         <div class="cast-selected__content">
