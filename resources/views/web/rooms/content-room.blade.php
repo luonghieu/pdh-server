@@ -49,7 +49,7 @@
             @endif
           </div>
             <div id="balloon_{{ $room->id }}" @if($room->unread_count > 0) class="notyfi-msg"@else class="balloon"@endif>
-              <span data-unread="{{ $room->unread_count }}" id="room_{{ $room->id }}" >{{ $room->unread_count }}</span>
+              <span data-unread="{{ $room->unread_count }}" id="room_{{ $room->id }}" >{{ ($room->unread_count > 99) ? '99+' : $room->unread_count }}</span>
             </div>
           <div class="msg-msg">
             @if ($room->type == App\Enums\RoomType::SYSTEM)
@@ -86,7 +86,7 @@
 
 @section('web.script')
 <script>
-$(function() {  
+$(function() {
   var $textarea = $('#textarea');
   var lineHeight = parseInt($textarea.css('lineHeight'));
   $textarea.height(20);//init
