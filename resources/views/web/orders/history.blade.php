@@ -1,4 +1,4 @@
-@section('title', 'Order History')
+@section('title', '予約詳細')
 @section('controller.id', 'order-history-controller')
 @section('screen.id', 'gl3')
 @extends('layouts.web')
@@ -119,14 +119,14 @@
 
 @section('web.content')
 @if ($order->status == \App\Enums\OrderStatus::CANCELED)
-    <?php $orderStartTime = \Carbon\Carbon::parse($order->date . ' ' . $order->start_time) ?>
-    <?php $orderEndTime = $orderStartTime->copy()->addMinutes($order->duration * 60) ?>
+    <?php $orderStartTime = \Carbon\Carbon::parse($order->date . ' ' . $order->start_time)?>
+    <?php $orderEndTime = $orderStartTime->copy()->addMinutes($order->duration * 60)?>
 @else
-    <?php $orderStartTime = \Carbon\Carbon::parse($order->actual_started_at) ?>
-    <?php $orderEndTime = \Carbon\Carbon::parse($order->actual_ended_at) ?>
+    <?php $orderStartTime = \Carbon\Carbon::parse($order->actual_started_at)?>
+    <?php $orderEndTime = \Carbon\Carbon::parse($order->actual_ended_at)?>
 @endif
 
-<?php $casts = $order->casts; ?>
+<?php $casts = $order->casts;?>
     <div class="settlement-confirm">
     <section class="details-header">
         <div class="details-header__title">予約詳細</div>
@@ -146,7 +146,7 @@
                 <p>{{ $order->total_cast . '名' }}</p></li>
         </ul>
     </section>
-    <?php $orderTotalPoint = 0; ?>
+    <?php $orderTotalPoint = 0;?>
     @foreach($casts as $cast)
         <section class="details-list" id="cast-{{ $cast->id }}">
             <div class="details-list__line"><p></p></div>
@@ -211,9 +211,9 @@
                         <p class="details-info-list__text--subtotal">小計</p>
                         <p class="details-info-list__marks--subtotal point-fix-mt">
                             <?php $castTotalPoint = $cast->cast_order->total_point ?
-                                $cast->cast_order->total_point :
-                                ($cast->cast_order->temp_point * $order->cancel_fee_percent / 100) ?>
-                            <?php $orderTotalPoint += $castTotalPoint; ?>
+$cast->cast_order->total_point :
+($cast->cast_order->temp_point * $order->cancel_fee_percent / 100)?>
+                            <?php $orderTotalPoint += $castTotalPoint;?>
                             {{ number_format($castTotalPoint) . 'P' }}
                         </p>
                     </li>

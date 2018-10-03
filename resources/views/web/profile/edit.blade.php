@@ -1,4 +1,4 @@
-@section('title', 'プロフィール_編集')
+@section('title', 'プロフィール編集')
 @section('screen.id', 'gm1')
 @section('screen.class', 'gm1-edit')
 
