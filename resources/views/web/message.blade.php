@@ -135,9 +135,9 @@
       <div class="msg-input-text">
         <textarea type="text" id="content" name="content" placeholder="入力してください" class="content-message"></textarea>
       </div>
-      <label class="msg-input-pic">
+      <label class="msg-input-pic" id="send-message">
         <img src="/assets/web/images/gg2/send.svg">
-        <input type="button" id="send-message" style="display: none">
+        <input type="button" style="display: none">
       </label>
     </form>
   </div>

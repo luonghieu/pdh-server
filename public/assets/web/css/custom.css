@@ -1004,3 +1004,7 @@
   -ms-transform: translateY(-50%) translateX(0) rotate(135deg);
   transform: translateY(-50%) translateX(0) rotate(135deg);
 }
+
+#chat .msg-input-pic {
+  padding: 10px 5px 0 5px;
+}
