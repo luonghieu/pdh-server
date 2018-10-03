@@ -20,7 +20,7 @@
               @if (@getimagesize($cast['avatars'][0]['thumbnail']))
               <img src="{{ $cast['avatars'][0]['thumbnail'] }}" alt="">
               @else
-              <img src="{{ asset('assets/web/gm1/ic_default_avatar@3x.png') }}" alt="">
+              <img src="{{ asset('assets/web/images/gm1/ic_default_avatar@3x.png') }}" alt="">
               @endif
             </p>
           </div>

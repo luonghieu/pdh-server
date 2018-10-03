@@ -35,7 +35,13 @@
        <hr class="border-blue">
        <ul class="face-img">
         @foreach($order['casts'] as $cast)
-         <li class="reserve-image"><img src="{{ $cast['avatars'][0]['thumbnail'] }}" alt="顔の写真"></li>
+          <li class="reserve-image">
+            @if (@getimagesize($cast['avatars'][0]['thumbnail']))
+            <img src="{{ $cast['avatars'][0]['thumbnail'] }}" alt="顔の写真">
+            @else
+            <img src="{{ asset('assets/web/images/gm1/ic_default_avatar@3x.png') }}" alt="顔の写真">
+            @endif
+          </li>
         @endforeach
        </ul>
      </div>
