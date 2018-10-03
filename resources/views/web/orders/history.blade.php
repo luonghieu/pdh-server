@@ -137,7 +137,8 @@
                     @if ($order->status == \App\Enums\OrderStatus::CANCELED)
                         <span class="details-header__time">{{ $orderStartTime->format('H:i') . '~' . $orderEndTime->format('H:i') }}</span>
                     @else
-                        <span class="details-header__time">{{ $orderStartTime->format('H:i') . '~' }}</span>
+                        <span class="details-header__time">{{ $orderStartTime->format('H:i') . '~' .
+                        $orderEndTime->format('H:i') }}</span>
                     @endif
             </li>
             <li><i><img src="{{ asset('assets/web/images/common/map.svg') }}"></i>
