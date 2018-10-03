@@ -52,13 +52,13 @@
         @if ($profile['avatars'] && @getimagesize($profile['avatars'][0]['thumbnail']))
           <img class="init-image-radius" src="{{ $profile['avatars'][0]['thumbnail'] }}" alt="">
         @else
-        <img src="{{ asset('assets/web/images/ge1/user_icon.svg') }}" alt="">
+        <img src="{{ asset('assets/web/images/gm1/ic_default_avatar@3x.png') }}" alt="">
         @endif
       </div>
       <div class="profile-photo__list">
         <ul>
           @foreach ($profile['avatars'] as $avatar)
-            @if ($avatar['thumbnail'])
+            @if (@getimagesize($avatar['thumbnail']))
             <div class="css-img">
               <label for="trigger4" class="open_button button-settlement js-img" id="{{ $avatar['id'] }}">
                 <img type="file" id="valid" src="{{ $avatar['thumbnail'] }}" alt="">

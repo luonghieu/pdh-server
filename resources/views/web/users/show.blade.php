@@ -11,11 +11,11 @@
           @if (@getimagesize($avatar['thumbnail']))
           <img src="{{ $avatar['thumbnail'] }}" alt="">
           @else
-          <img src="{{ asset('assets/web/images/ge1/user_icon.svg') }}" alt="">
+          <img src="{{ asset('assets/web/images/gm1/ic_default_avatar@3x.png') }}" alt="">
           @endif
         @endforeach
       @else
-        <img class="image-default" src="{{ asset('assets/web/images/ge1/user_icon.svg') }}" alt="">
+        <img class="image-default" src="{{ asset('assets/web/images/gm1/ic_default_avatar@3x.png') }}" alt="">
       @endif
     </div>
   </section>

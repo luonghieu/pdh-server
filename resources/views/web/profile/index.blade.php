@@ -17,6 +17,8 @@
         @foreach ($profile['avatars'] as $avatar)
           @if (@getimagesize($avatar['thumbnail']))
           <li class="css-img"><img src="{{ $avatar['thumbnail'] }}" alt=""></li>
+          @else
+          <li class="css-img"><img src="{{ asset('assets/web/images/gm1/ic_default_avatar@3x.png') }}" alt=""></li>
           @endif
         @endforeach
       </ul>
