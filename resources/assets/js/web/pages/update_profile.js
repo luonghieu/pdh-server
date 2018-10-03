@@ -98,17 +98,12 @@ $(document).ready(function() {
 
       window.axios.post('/api/v1/auth/update', params)
         .then(function(response) {
-          $('#profile-popup').trigger('click');
-          $('#profile-message h2').html('情報の更新に成功しました。');
-
-          if (!name || !day || !img) {
-            setTimeout(() => {
-              window.location.href = '/mypage';
-            }, 1500);
+          if (!name || !day) {
+            window.sessionStorage.setItem('popup_mypage', '情報の更新に成功しました。');
+            window.location.href = '/mypage';
           } else {
-            setTimeout(() => {
-              window.location.href = '/profile';
-            }, 1500);
+            window.sessionStorage.setItem('popup_profile', '情報の更新に成功しました。')
+            window.location.href = '/profile';
           }
         })
         .catch(function(error) {

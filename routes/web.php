@@ -12,7 +12,7 @@ Route::group(['namespace' => 'Webview', 'prefix' => 'webview', 'as' => 'webview.
 Route::group(['middleware' => 'auth'], function () {
     Route::get('/logout', 'HomeController@logout')->name('web.logout');
     Route::group(['prefix' => 'profile', 'as' => 'profile.'], function () {
-        Route::get('/', ['as' => 'index', 'uses' => 'ProfileController@index']);
+        Route::get('/', ['as' => 'index', 'uses' => 'ProfileController@index'])->middleware('check_info');
         Route::get('edit', ['as' => 'edit', 'uses' => 'ProfileController@edit']);
     });
 

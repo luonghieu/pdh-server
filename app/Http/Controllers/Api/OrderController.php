@@ -66,6 +66,15 @@ class OrderController extends ApiController
             return $this->respondErrorMessage(trans('messages.time_invalid'), 400);
         }
 
+        if (!$user->cards->first()) {
+            return $this->respondErrorMessage(trans('messages.card_not_exist'), 404);
+        }
+
+        $maxTime = $end_time->addHours(10);
+        if ($maxTime->month > $user->card->exp_month && $maxTime->year == $user->card->exp_year || $maxTime->year > $user->card->exp_year) {
+            return $this->respondErrorMessage(trans('messages.card_expired'), 406);
+        }
+
         $orders = $user->orders()
             ->whereIn('status', [OrderStatus::OPEN, OrderStatus::ACTIVE, OrderStatus::PROCESSING])
             ->where(function ($query) use ($start_time, $end_time) {
@@ -98,10 +107,6 @@ class OrderController extends ApiController
 
         if ($orders->count() > 0 || $listCastMatching > 0) {
             return $this->respondErrorMessage(trans('messages.order_same_time'), 409);
-        }
-
-        if (!$user->cards->first()) {
-            return $this->respondErrorMessage(trans('messages.card_not_exist'), 404);
         }
 
         $input['end_time'] = $end_time->format('H:i');

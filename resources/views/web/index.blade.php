@@ -19,6 +19,18 @@
       </div>
     </div>
   </div>
+
+  <div class="modal_wrap">
+    <input id="trigger3" type="checkbox">
+      <div class="modal_overlay">
+        <label for="trigger3" class="modal_trigger" id="profile-popup"></label>
+        <div class="modal_content modal_content-btn3">
+          <div class="content-in" id="profile-message">
+            <h2></h2>
+          </div>
+        </div>
+      </div>
+  </div>
 @endsection
 @section('web.content')
   @if (!Auth::check())
@@ -71,7 +83,15 @@
       </div>
       <ul class="casts">
         @foreach($order->casts as $cast)
-          <li><div class="top-image"><img src="{{ $cast->avatars->first()->thumbnail }}" alt=""></div></li>
+          <li>
+            <div class="top-image">
+              @if (@getimagesize($cast->avatars->first()->thumbnail))
+              <img src="{{ $cast->avatars->first()->thumbnail }}" alt="">
+              @else
+              <img src="{{ asset('assets/web/images/gm1/ic_default_avatar@3x.png') }}" alt="">
+              @endif
+            </div>
+          </li>
         @endforeach
       </ul>
       <div class="btn-m cast-message">
@@ -98,4 +118,16 @@
       });
     </script>
   @endif
+  <script>
+    $(function () {
+      var popup_mypage = window.sessionStorage.getItem('popup_mypage');
+
+      if (popup_mypage) {
+        $('#profile-popup').trigger('click');
+        $('#profile-message h2').html(popup_mypage);
+
+        window.sessionStorage.removeItem('popup_mypage');
+      }
+    })
+  </script>
 @endsection
