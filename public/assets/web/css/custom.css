@@ -29,6 +29,10 @@
   background-size: contain;
 }
 
+#rooms #gg .msg-box .msg-box-img li {
+  background: none;
+}
+
 .list-name {
   overflow: hidden;
   text-overflow: ellipsis;
