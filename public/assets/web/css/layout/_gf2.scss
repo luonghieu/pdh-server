@@ -229,11 +229,25 @@ img{
 .cast-call-btn{
     padding: 7px 15px 20 15px;
     display:flex;
-    justify-content:space-between;
+    justify-content:flex-end;
     align-items:center;
+    &>a{
+      max-width:70px;
+    }
     .btn-l{
       margin-right:0;
+      margin-left:20px;
+      a{
+        min-width:200px;
+        padding-left:0;
+        padding-right:0;
+
+      }
     }
+}
+
+.slick-track img {
+    object-fit:cover;
 }
 
 

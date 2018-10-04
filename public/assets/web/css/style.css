@@ -4452,6 +4452,7 @@ header {
       width: calc(100% - 60px); }
     .ge2-1-b .cast-selected__name {
       font-size: 14px;
+      font-weight: 600;
       line-height: 1;
       margin-bottom: 10px; }
     .ge2-1-b .cast-selected__bottom {
@@ -4816,14 +4817,25 @@ header {
   display: -webkit-box;
   display: -ms-flexbox;
   display: flex;
-  -webkit-box-pack: justify;
-  -ms-flex-pack: justify;
-  justify-content: space-between;
+  -webkit-box-pack: end;
+  -ms-flex-pack: end;
+  justify-content: flex-end;
   -webkit-box-align: center;
   -ms-flex-align: center;
   align-items: center; }
+  #gf2 .cast-call-btn > a {
+    max-width: 70px; }
   #gf2 .cast-call-btn .btn-l {
-    margin-right: 0; }
+    margin-right: 0;
+    margin-left: 20px; }
+    #gf2 .cast-call-btn .btn-l a {
+      min-width: 200px;
+      padding-left: 0;
+      padding-right: 0; }
+
+#gf2 .slick-track img {
+  -o-object-fit: cover;
+  object-fit: cover; }
 
 #gg-1-1 .msg-mail {
   color: #999999;
@@ -5099,7 +5111,9 @@ header {
     #gg2 .msg-wrap figure img {
       border-radius: 50%;
       width: 40px;
-      height: 40px; }
+      height: 40px;
+      -o-object-fit: cover;
+      object-fit: cover; }
   #gg2 .msg-wrap .text {
     font-size: 15px;
     margin: 0;
