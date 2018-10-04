@@ -39,7 +39,7 @@
         @else
         <div class="{{ $className }} msg-wrap" id="msg-left">
           <figure>
-            <a href="javascript:void(1);"><img src="{{ $element['user']['avatars'] ? $element['user']['avatars'][0]['path']:'' }}"  alt="" title="" class="alignnone size-full wp-image-515" /></a>
+            <a href="javascript:void(1);"><img src="{{ ($element['user']['avatars'] && @getimagesize($element['user']['avatars'][0]['path'])) ? $element['user']['avatars'][0]['path'] :'/assets/web/images/gm1/ic_default_avatar@3x.png' }}"  alt="" title="" class="alignnone size-full wp-image-515" /></a>
           </figure>
           <div class="{{ $className }}-text">
             @if (in_array($element['type'], [App\Enums\MessageType::MESSAGE, App\Enums\MessageType::THANKFUL]))

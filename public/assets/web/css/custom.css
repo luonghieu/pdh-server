@@ -310,8 +310,60 @@
   font-size: 16px;
 }
 
-#message-box {
-  margin-top: 100px;
+#chat .msg {
+  margin-bottom: 0;
+  margin-top: 90px;
+}
+
+#chat #message-box {
+  height: 622px;
+  overflow: auto;
+}
+
+#message-box::-webkit-scrollbar {
+  width: 0px;
+}
+
+#message-box::-webkit-scrollbar-track-piece {
+  background-color: transparent;
+  -webkit-border-radius: 6px;
+}
+
+/*iphoneX*/
+@media only screen
+and (max-device-width : 375px)
+and (device-height : 812px)
+and (-webkit-device-pixel-ratio : 3) {
+  #chat #message-box {
+    height: 622px;
+  }
+}
+
+/*iphone678*/
+@media only screen
+and (max-device-width : 375px)
+and (device-height : 667px) {
+  #chat #message-box {
+    height: 476px;
+  }
+}
+
+/*iphone6+7+8+*/
+@media only screen
+and (max-device-width : 414px)
+and (device-height : 736px) {
+  #chat #message-box {
+    height: 545px;
+  }
+}
+
+/*iphone5*/
+@media only screen
+and (max-device-width : 320px)
+and (device-height : 568px) {
+  #chat #message-box {
+    height: 378px;
+  }
 }
 
 #gg .msg-input {
@@ -753,7 +805,7 @@
 }
 
 #chat footer {
-  visibility: hidden;
+  display: none;
 }
 
 .casts .top-image img {
