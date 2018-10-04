@@ -47,4 +47,39 @@ class PointController extends Controller
 
         return view('web.point.index', compact('user'));
     }
+
+    public function loadMore()
+    {
+        try {
+            $user = Auth::user();
+            $token = JWTAuth::fromUser($user);
+
+            $authorization = empty($token) ?: 'Bearer ' . $token;
+            $client = new Client([
+                'base_uri' => config('common.api_url'),
+                'http_errors' => false,
+                'debug' => false,
+                'headers' => [
+                    'Accept' => 'application/json',
+                    'Authorization' => $authorization,
+                    'Content-Type' => 'application/json',
+                ],
+            ]);
+            $apiRequest = $client->request('GET', request()->next_page);
+
+            $result = $apiRequest->getBody();
+            $contents = $result->getContents();
+            $contents = json_decode($contents, JSON_NUMERIC_CHECK);
+
+            $points = $contents['data'];
+
+            return [
+                'next_page' => $points['next_page_url'],
+                'view' => view('web.points.list_point', compact('points'))->render(),
+            ];
+        } catch (\Exception $e) {
+            LogService::writeErrorLog($e);
+            abort(500);
+        }
+    }
 }

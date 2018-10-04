@@ -81,4 +81,5 @@ Route::group(['middleware' => ['auth', 'guest', 'check_info'], 'as' => 'guest.']
 
 Route::group(['middleware' => ['auth', 'guest', 'check_info']], function () {
     Route::get('/history', ['as' => 'points.history', 'uses' => 'PointController@history']);
+    Route::get('/point_history/more', ['as' => 'points.history.more', 'uses' => 'PointController@loadMore']);
 });
