@@ -26,7 +26,7 @@ class PointController extends Controller
                     'Content-Type' => 'application/json',
                 ],
             ]);
-            $apiRequest = $client->request('GET', route('points.points'));
+            $apiRequest = $client->request('GET', '/api/v1/points');
 
             $result = $apiRequest->getBody();
             $contents = $result->getContents();
