@@ -1016,3 +1016,7 @@
 #chat .msg-input-pic {
   padding: 3% 3% 0 3%;
 }
+
+#chat .text-wrapper {
+  word-break: break-all;
+}
