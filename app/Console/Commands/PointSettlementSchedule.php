@@ -45,7 +45,7 @@ class PointSettlementSchedule extends Command
         $now = Carbon::now();
 
         $orders = Order::where('payment_status', OrderPaymentStatus::REQUESTING)
-            ->where('payment_requested_at', '<=', $now->subHours(24))
+            ->where('payment_requested_at', '<=', $now->copy()->subHours(24))
             ->whereHas('user', function($q) {
                 $q->where('provider', '<>', ProviderType::LINE)
                     ->orWhere('provider', null);
@@ -56,7 +56,7 @@ class PointSettlementSchedule extends Command
         }
 
         $lineOrders = Order::where('payment_status', OrderPaymentStatus::REQUESTING)
-            ->where('payment_requested_at', '<=', $now->subHours(3))
+            ->where('payment_requested_at', '<=', $now->copy()->subHours(3))
             ->whereHas('user', function($q) {
                 $q->where('provider', ProviderType::LINE);
             })
