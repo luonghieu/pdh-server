@@ -173,7 +173,7 @@
 
   // For changing the size of the text area
   $(function() {
-    var $textarea = $('#textarea');
+    var $textarea = $('#content');
     var lineHeight = parseInt($textarea.css("lineHeight"));
     $textarea.height(20);
     $textarea.css("lineHeight","20px");
