@@ -280,8 +280,8 @@
     @endmodal
   @endif
 
-  @if(($code = Session::pull('status_code')) && 406 == $code)
-    @modal(['triggerId' => $code, 'button' =>'クレジットカード情報を更新する', 'triggerClass' =>'lable-register-card'])
+  @if((Session::has('status_code')) && 406 == Session::get('status_code'))
+    @modal(['triggerId' => Session::get('status_code'), 'button' =>'クレジットカード情報を更新する', 'triggerClass' =>'lable-register-card'])
       @slot('title')
       @endslot
 
