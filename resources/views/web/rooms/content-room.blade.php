@@ -22,7 +22,7 @@
         break;
     }
   @endphp
-  <section class="msg">
+  <section class="msg" id="msg_{{ $room->id }}" data-id="{{ $room->id }}">
     <a href="{{ route('message.messages', ['room' => $room->id]) }}">
       <div class="msg-box">
         <ul class="msg-box-img msg-img{{ $sumImg }}">
