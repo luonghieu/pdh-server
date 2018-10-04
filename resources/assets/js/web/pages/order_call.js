@@ -182,7 +182,11 @@ $(document).ready(function(){
     if($('#md-require-card').length){
       $('#md-require-card').click();
     }else {
-      $('#add-orders').submit();
+      if($('.is-expired').length){
+          $('.is-expired').click();
+        }else {
+        $('#add-orders').submit();
+      }
     }
   });
 
@@ -192,10 +196,6 @@ $(document).ready(function(){
 
   $('.modal-redirect').on('click',function(){
    $('#redirect-index').submit();
-  });
-
-  $('.order-done').on('click',function(){
-   $('.register-card').submit();
   });
 
   $('.lable-register-card').on('click',function(){

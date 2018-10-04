@@ -58,7 +58,13 @@
                 <p>{{ count($data['obj_casts']) }}</p>
                 <ul class="details-list-box__pic">
                   @foreach($data['obj_casts'] as $casts)
-                  <li><img src="{{ $casts->avatars[0]->thumbnail }}"></li>
+                  <li>
+                    @if (@getimagesize($casts->avatars[0]->thumbnail))
+                      <img src="{{ $casts->avatars[0]->thumbnail }}">
+                    @else
+                      <img src="{{ asset('assets/web/images/gm1/ic_default_avatar@3x.png') }}" alt="">
+                    @endif
+                  </li>
                   @endforeach
                 </ul>
             </div>
@@ -99,18 +105,25 @@
   @endif
 
   @if((Session::has('statusCode')))
-  <section class="button-box">
-    <label for="{{ Session::get('statusCode') }}" class="status-code"></label>
-  </section>
+    <section class="button-box">
+      <label for="{{ Session::get('statusCode') }}" class="status-code"></label>
+    </section>
   @endif
   @if(!$user->card)
-  <form action="{{ route('credit_card.index') }}" method="GET" class="register-card">
-    <section class="button-box">
-      <label for="md-require-card" class="lable-register-card"></label>
-    </section>
-  </form>
+    <form action="{{ route('credit_card.index') }}" method="GET" class="register-card">
+      <section class="button-box">
+        <label for="md-require-card" class="lable-register-card"></label>
+      </section>
+    </form>
+  @else
+    @if($user->card->isExpired)
+      <form action="{{ route('credit_card.index') }}" method="GET" class="register-card">
+        <section class="button-box">
+          <label for="is-expired" class="is-expired"></label>
+        </section>
+      </form>
+    @endif
   @endif
-
 @endif
 @endsection
 
@@ -136,6 +149,17 @@
       ※キャストとマッチングするにはお支払い情報の登録が必要です
       @endslot
     @endmodal
+  @else
+    @if($user->card->isExpired)
+      @modal(['triggerId' => 'is-expired', 'button' =>'クレジットカード情報を更新する', 'triggerClass' =>'lable-register-card'])
+        @slot('title')
+        @endslot
+
+        @slot('content')
+        予約日までにクレジットカードの <br> 有効期限が切れます <br><br> 予約を完了するには <br> カード情報を更新してください
+        @endslot
+      @endmodal
+    @endif
   @endif
 
   @if((Session::has('order_done')))
@@ -150,7 +174,6 @@
       @endslot
     @endmodal
   @endif
-
   @if((Session::has('statusCode')))
     @modal(['triggerId' => Session::get('statusCode'), 'triggerClass' =>''])
       @slot('title')

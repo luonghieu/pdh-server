@@ -219,14 +219,22 @@
     <label for="orders-nominate" class="lb-orders-nominate"></label>
   </section>
   @if((Session::has('status_code')))
-  <section class="button-box">
-    <label for="{{ Session::get('status_code') }}" class="status-code-nomination"></label>
-  </section>
+    <section class="button-box">
+      <label for="{{ Session::get('status_code') }}" class="status-code-nomination"></label>
+    </section>
   @endif
   @if($user->card)
-  <section class="button-box">
-      <label for="md-success-card" class="sm-form"></label>
-  </section>
+    @if($user->card->isExpired)
+      <form action="{{ route('credit_card.index') }}" method="GET" class="register-card">
+        <section class="button-box">
+          <label for="card-is-expired" class="card-is-expired"></label>
+        </section>
+      </form>
+    @else
+      <section class="button-box">
+          <label for="md-success-card" class="sm-form"></label>
+      </section>
+    @endif
   @else
   <form action="{{ route('credit_card.index') }}" method="GET" class="register-card">
     <section class="button-box">
@@ -260,16 +268,27 @@
       @endslot
     @endmodal
   @else
-    @modal(['triggerId' => 'md-success-card', 'triggerClass' =>'sm-form'])
-      @slot('title')
-        予約が完了しました
-      @endslot
+    @if($user->card->isExpired)
+      @modal(['triggerId' => 'card-is-expired', 'button' =>'クレジットカード情報を更新する', 'triggerClass' =>'lable-register-card'])
+        @slot('title')
+        @endslot
 
-      @slot('content')
-      ただいまキャストの調整中です
-      予約状況はホーム画面の予約一覧をご確認ください
-      @endslot
-    @endmodal
+        @slot('content')
+        予約日までにクレジットカードの <br> 有効期限が切れます <br> 予約を完了するには <br> カード情報を更新してください
+        @endslot
+      @endmodal
+    @else
+      @modal(['triggerId' => 'md-success-card', 'triggerClass' =>'sm-form'])
+        @slot('title')
+          予約が完了しました
+        @endslot
+
+        @slot('content')
+        ただいまキャストの調整中です
+        予約状況はホーム画面の予約一覧をご確認ください
+        @endslot
+      @endmodal
+    @endif
   @endif
 
   @if((Session::has('status_code')))

@@ -597,7 +597,11 @@ $(document).ready(function(){
       if($('#md-require-card').length){
         $('#md-require-card').click();
       }else {
+        if($('.card-is-expired').length){
+          $('.card-is-expired').click();
+        }else {
         $('#create-nomination-form').submit();
+        }
       }
   });
 
