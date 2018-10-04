@@ -564,7 +564,7 @@ class Order extends Model
             $point = $user->autoCharge($pointAmount);
 
             if (!$point) {
-                return false;
+                throw new \Exception('Auto charge failed');
             }
         }
 

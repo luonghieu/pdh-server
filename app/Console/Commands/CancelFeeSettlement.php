@@ -58,7 +58,7 @@ class CancelFeeSettlement extends Command
             ->whereNull('payment_status')
             ->where('canceled_at', '<=', $now->subHours(24))
             ->where('cancel_fee_percent', '>', 0)
-            ->whereHas('user', function($q) {
+            ->whereHas('user', function ($q) {
                 $q->where('provider', '<>', ProviderType::LINE)
                     ->orWhere('provider', null);
             })
@@ -79,26 +79,21 @@ class CancelFeeSettlement extends Command
             ->whereNull('payment_status')
             ->where('canceled_at', '<=', $now->subHours(3))
             ->where('cancel_fee_percent', '>', 0)
-            ->whereHas('user', function($q) {
+            ->whereHas('user', function ($q) {
                 $q->where('provider', ProviderType::LINE);
             })
             ->get();
 
         foreach ($lineOrders as $order) {
-            try {
-                \DB::beginTransaction();
-                $this->processPayment($order, $now);
-                \DB::commit();
-            } catch (\Exception $e) {
-                \DB::rollBack();
-                LogService::writeErrorLog($e);
-            }
+            $this->processPayment($order, $now);
         }
     }
 
     public function processPayment($order, $time)
     {
-        if ($order->settle()) {
+        try {
+            \DB::beginTransaction();
+            $order->settle();
             foreach ($order->canceledCasts as $cast) {
                 $paymentRequest = new PaymentRequest;
                 $paymentRequest->cast_id = $cast->id;
@@ -141,13 +136,18 @@ class CancelFeeSettlement extends Command
 
             // receive admin
             $this->createPoint($receiveAdmin, $adminId, $order);
-        } else {
-            $user = $order->user;
-            if ($user->provider == ProviderType::LINE && !$order->send_warning) {
-                $order->user->notify(new AutoChargeFailed($order));
-                $order->send_warning = true;
-                $order->save();
+            \DB::commit();
+        } catch (\Exception $e) {
+            \DB::rollBack();
+            if ($e->getMessage() == 'Auto charge failed') {
+                $user = $order->user;
+                if ($user->provider == ProviderType::LINE && !$order->send_warning) {
+                    $order->user->notify(new AutoChargeFailed($order));
+                    $order->send_warning = true;
+                    $order->save();
+                }
             }
+            LogService::writeErrorLog($e);
         }
     }
 
