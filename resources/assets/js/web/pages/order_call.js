@@ -182,11 +182,7 @@ $(document).ready(function(){
     if($('#md-require-card').length){
       $('#md-require-card').click();
     }else {
-      if($('.is-expired').length){
-          $('.is-expired').click();
-        }else {
         $('#add-orders').submit();
-      }
     }
   });
 
