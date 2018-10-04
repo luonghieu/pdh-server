@@ -22,7 +22,7 @@
           <li><a href="{{ url('/service/law') }}">利用規約</a></li>
           <li><a href="{{ url('/service/policy') }}">プライバシーポリシー</a></li>
           <li><a href="{{ url('/service/sct_law') }}">特定商取引法に基づく表記について</a></li>
-          <li><a href="{{ url('/service/howto') }}">ご利用方法</a></li>
+          <li><a href="{{ url('/service/guest_ht') }}">ご利用方法</a></li>
           <li><a href="{{ url('/service/contact') }}">お問い合わせ</a></li>
           <li><a href="{{ route('web.logout') }}">ログアウト</a></li>
         </ul>
@@ -34,7 +34,7 @@
           <li><a href="{{ url('/service/law') }}">利用規約</a></li>
           <li><a href="{{ url('/service/policy') }}">プライバシーポリシー</a></li>
           <li><a href="{{ url('/service/sct_law') }}">特定商取引法に基づく表記について</a></li>
-          <li><a href="{{ url('/service/howto') }}">ご利用方法</a></li>
+          <li><a href="{{ url('/service/guest_ht') }}">ご利用方法</a></li>
           <li><a href="{{ url('/service/contact') }}">お問い合わせ</a></li>
         </ul>
       </li>
