@@ -20,10 +20,10 @@
   <!-- Google Tag Manager -->
   <script>
     (function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
-new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
-j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
-'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
-})(window,document,'script','dataLayer','GTM-NKVKVFK');
+  new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+  j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+  'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+  })(window,document,'script','dataLayer','GTM-NKVKVFK');
   </script>
   <!-- End Google Tag Manager -->
   <meta name='robots' content='index,follow' />
@@ -51,7 +51,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
 <body class="home blog">
   <!-- Google Tag Manager (noscript) -->
   <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-NKVKVFK"
-	height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+  height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
   <!-- End Google Tag Manager (noscript) -->
 
   <header id="gTop">
@@ -83,7 +83,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
         </div>
         <!--開発環境-->
         <div class="g_btn">
-          <a href="https://line.me/R/ti/p/%40gjg7848r" target="_blank" class="btn_color site size_md">LINE@で友達追加</a>
+          <a href="https://line.me/R/ti/p/%40eof2116g" target="_blank" class="btn_color site size_md">事前登録はこちら</a>
         </div>
         <!--本番環境
 			<div class="g_btn">
@@ -199,7 +199,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
             </div>
             <!--開発環境-->
             <div class="g_btn">
-              <a href="https://line.me/R/ti/p/%40gjg7848r" target="_blank" class="btn_color site size_md">LINE@で友達追加</a>
+              <a href="https://line.me/R/ti/p/%40eof2116g" target="_blank" class="btn_color site size_md">事前登録はこちら</a>
             </div>
             <!--本番環境
 					<div class="g_btn">
@@ -297,8 +297,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
                 <h3>キャストのレベルが高い！</h3>
                 <p class="voice-atcl-name">医者　K.Kさん<br>45歳</p>
                 <p>キャストのレベルも高く、その日のシチュエーションや気分に合わせて集まってくれるので毎回どんな子がくるのか楽しみです。高いお酒を頼む必要もなく、アプリで好きなところに呼べるので<span class="g-pcOnly">キャバクラやラウンジに行く時のようなハードルや堅苦しさがないため</span>すっかりリピーターです
-                  (笑)
-                </p>
+                  (笑)</p>
               </div>
             </div>
           </li>
@@ -335,7 +334,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
             </div>
             <!--開発環境-->
             <div class="g_btn">
-              <a href="https://line.me/R/ti/p/%40gjg7848r" target="_blank" class="btn_color site size_md">LINE@で友達追加</a>
+              <a href="https://line.me/R/ti/p/%40eof2116g" target="_blank" class="btn_color site size_md">事前登録はこちら</a>
             </div>
             <!--本番環境
 					<div class="g_btn">
