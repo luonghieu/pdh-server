@@ -58,7 +58,13 @@
                 <p>{{ count($data['obj_casts']) }}</p>
                 <ul class="details-list-box__pic">
                   @foreach($data['obj_casts'] as $casts)
-                  <li><img src="{{ $casts->avatars[0]->thumbnail }}"></li>
+                  <li>
+                    @if (@getimagesize($casts->avatars[0]->thumbnail))
+                      <img src="{{ $casts->avatars[0]->thumbnail }}">
+                    @else
+                      <img src="{{ asset('assets/web/images/gm1/ic_default_avatar@3x.png') }}" alt="">
+                    @endif
+                  </li>
                   @endforeach
                 </ul>
             </div>
@@ -99,9 +105,17 @@
   @endif
 
   @if((Session::has('statusCode')))
-  <section class="button-box">
-    <label for="{{ Session::get('statusCode') }}" class="status-code"></label>
-  </section>
+    @if(406 == Session::get('statusCode'))
+      <form action="{{ route('credit_card.index') }}" method="GET" class="register-card">
+        <section class="button-box">
+          <label for="{{ Session::get('statusCode') }}" class="status-code"></label>
+        </section>
+      </form>
+    @else
+      <section class="button-box">
+        <label for="{{ Session::get('statusCode') }}" class="status-code"></label>
+      </section>
+    @endif
   @endif
   @if(!$user->card)
   <form action="{{ route('credit_card.index') }}" method="GET" class="register-card">
@@ -150,36 +164,46 @@
       @endslot
     @endmodal
   @endif
-
-  @if((Session::has('statusCode')))
-    @modal(['triggerId' => Session::get('statusCode'), 'triggerClass' =>''])
+  @if((Session::has('statusCode')) && 406 == Session::get('statusCode'))
+    @modal(['triggerId' => Session::get('statusCode'), 'button' =>'クレジットカード情報を更新する', 'triggerClass' =>'lable-register-card'])
       @slot('title')
       @endslot
 
-      @if(Session::get('statusCode') ==400)
-        @slot('content')
-        開始時間は現在以降の時間を指定してください
-        @endslot
-      @endif
-
-      @if(Session::get('statusCode') ==409)
-        @slot('content')
-        すでに予約があります
-        @endslot
-      @endif
-
-      @if(Session::get('statusCode') ==422)
-        @slot('content')
-        この操作は実行できません
-        @endslot
-      @endif
-
-      @if(Session::get('statusCode') ==500)
-        @slot('content')
-        サーバーエラーが発生しました
-        @endslot
-      @endif
+      @slot('content')
+      予約日までにクレジットカードの <br> 有効期限が切れます <br><br> 予約を完了するには <br> カード情報を更新してください
+      @endslot
     @endmodal
+  @else
+    @if((Session::has('statusCode')))
+      @modal(['triggerId' => Session::get('statusCode'), 'triggerClass' =>''])
+        @slot('title')
+        @endslot
+
+        @if(Session::get('statusCode') ==400)
+          @slot('content')
+          開始時間は現在以降の時間を指定してください
+          @endslot
+        @endif
+
+        @if(Session::get('statusCode') ==409)
+          @slot('content')
+          すでに予約があります
+          @endslot
+        @endif
+
+        @if(Session::get('statusCode') ==422)
+          @slot('content')
+          この操作は実行できません
+          @endslot
+        @endif
+
+        @if(Session::get('statusCode') ==500)
+          @slot('content')
+          サーバーエラーが発生しました
+          @endslot
+        @endif
+      @endmodal
+    @endif
   @endif
 @endsection
 
@@ -202,5 +226,11 @@
         }
       });
     });
+
+    window.addEventListener("beforeunload", function(event) {
+      var backLink = window.location.href;
+      localStorage.setItem('back_link', backLink);
+    });
+
   </script>
 @endsection

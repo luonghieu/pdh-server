@@ -219,9 +219,17 @@
     <label for="orders-nominate" class="lb-orders-nominate"></label>
   </section>
   @if((Session::has('status_code')))
-  <section class="button-box">
-    <label for="{{ Session::get('status_code') }}" class="status-code-nomination"></label>
-  </section>
+    @if(406 == Session::get('status_code'))
+      <form action="{{ route('credit_card.index') }}" method="GET" class="register-card">
+        <section class="button-box">
+          <label for="{{ Session::get('status_code') }}" class="status-code-nomination"></label>
+        </section>
+      </form>
+    @else
+      <section class="button-box">
+        <label for="{{ Session::get('status_code') }}" class="status-code-nomination"></label>
+      </section>
+    @endif
   @endif
   @if($user->card)
   <section class="button-box">
@@ -272,35 +280,53 @@
     @endmodal
   @endif
 
-  @if((Session::has('status_code')))
-    @modal(['triggerId' => Session::get('status_code'), 'triggerClass' =>''])
+  @if((Session::has('status_code')) && 406 == Session::get('status_code'))
+    @modal(['triggerId' => Session::get('status_code'), 'button' =>'クレジットカード情報を更新する', 'triggerClass' =>'lable-register-card'])
       @slot('title')
       @endslot
 
-      @if(Session::get('status_code') ==400)
-        @slot('content')
-        開始時間は現在以降の時間を指定してください
-        @endslot
-      @endif
-
-      @if(Session::get('status_code') ==409)
-        @slot('content')
-        すでに予約があります
-        @endslot
-      @endif
-
-      @if(Session::get('status_code') ==422)
-        @slot('content')
-        この操作は実行できません
-        @endslot
-      @endif
-
-      @if(Session::get('status_code') ==500)
-        @slot('content')
-        サーバーエラーが発生しました
-        @endslot
-      @endif
+      @slot('content')
+      予約日までにクレジットカードの <br> 有効期限が切れます <br><br> 予約を完了するには <br> カード情報を更新してください
+      @endslot
     @endmodal
+  @else
+    @if((Session::has('status_code')))
+      @modal(['triggerId' => Session::get('status_code'), 'triggerClass' =>''])
+        @slot('title')
+        @endslot
+
+        @if(Session::get('status_code') ==400)
+          @slot('content')
+          開始時間は現在以降の時間を指定してください
+          @endslot
+        @endif
+
+        @if(Session::get('status_code') ==409)
+          @slot('content')
+          すでに予約があります
+          @endslot
+        @endif
+
+        @if(Session::get('status_code') ==422)
+          @slot('content')
+          この操作は実行できません
+          @endslot
+        @endif
+
+        @if(Session::get('status_code') ==500)
+          @slot('content')
+          サーバーエラーが発生しました
+          @endslot
+        @endif
+      @endmodal
+    @endif
   @endif
 
 @endsection
+
+<script>
+  window.addEventListener("beforeunload", function(event) {
+      var backLink = window.location.href;
+      localStorage.setItem('back_link', backLink);
+  });
+</script>

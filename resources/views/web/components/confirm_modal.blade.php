@@ -4,8 +4,8 @@
     <label for="trigger2" class="modal_trigger"></label>
     <div class="modal_content modal_content-btn2">
       <div class="text-box">
-        <h2>{{ $title }}</h2>
-        <p>{{ $content }}</p>
+        <h2>{{ $title or '' }}</h2>
+        <p>{{ $content or '' }}</p>
       </div>
       <div class="close_button-box">
         <div class="close_button-block">

@@ -194,10 +194,6 @@ $(document).ready(function(){
    $('#redirect-index').submit();
   });
 
-  $('.order-done').on('click',function(){
-   $('.register-card').submit();
-  });
-
   $('.lable-register-card').on('click',function(){
    $('.register-card').submit();
   });
