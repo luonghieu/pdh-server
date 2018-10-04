@@ -9,3 +9,9 @@ $(function(){
 });
 
 });
+
+$(function(){
+	var $img = $(".slick-track img");
+	var imgWidth = $img.width();
+	$img.css('height', imgWidth);
+});
