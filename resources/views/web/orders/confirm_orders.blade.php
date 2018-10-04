@@ -105,25 +105,26 @@
   @endif
 
   @if((Session::has('statusCode')))
-    <section class="button-box">
-      <label for="{{ Session::get('statusCode') }}" class="status-code"></label>
-    </section>
-  @endif
-  @if(!$user->card)
-    <form action="{{ route('credit_card.index') }}" method="GET" class="register-card">
-      <section class="button-box">
-        <label for="md-require-card" class="lable-register-card"></label>
-      </section>
-    </form>
-  @else
-    @if($user->card->isExpired)
+    @if(406 == Session::get('statusCode'))
       <form action="{{ route('credit_card.index') }}" method="GET" class="register-card">
         <section class="button-box">
-          <label for="is-expired" class="is-expired"></label>
+          <label for="{{ Session::get('statusCode') }}" class="status-code"></label>
         </section>
       </form>
+    @else
+      <section class="button-box">
+        <label for="{{ Session::get('statusCode') }}" class="status-code"></label>
+      </section>
     @endif
   @endif
+  @if(!$user->card)
+  <form action="{{ route('credit_card.index') }}" method="GET" class="register-card">
+    <section class="button-box">
+      <label for="md-require-card" class="lable-register-card"></label>
+    </section>
+  </form>
+  @endif
+
 @endif
 @endsection
 
@@ -149,17 +150,6 @@
       ※キャストとマッチングするにはお支払い情報の登録が必要です
       @endslot
     @endmodal
-  @else
-    @if($user->card->isExpired)
-      @modal(['triggerId' => 'is-expired', 'button' =>'クレジットカード情報を更新する', 'triggerClass' =>'lable-register-card'])
-        @slot('title')
-        @endslot
-
-        @slot('content')
-        予約日までにクレジットカードの <br> 有効期限が切れます <br><br> 予約を完了するには <br> カード情報を更新してください
-        @endslot
-      @endmodal
-    @endif
   @endif
 
   @if((Session::has('order_done')))
@@ -174,35 +164,46 @@
       @endslot
     @endmodal
   @endif
-  @if((Session::has('statusCode')))
-    @modal(['triggerId' => Session::get('statusCode'), 'triggerClass' =>''])
+  @if((Session::has('statusCode')) && 406 == Session::get('statusCode'))
+    @modal(['triggerId' => Session::get('statusCode'), 'button' =>'クレジットカード情報を更新する', 'triggerClass' =>'lable-register-card'])
       @slot('title')
       @endslot
 
-      @if(Session::get('statusCode') ==400)
-        @slot('content')
-        開始時間は現在以降の時間を指定してください
-        @endslot
-      @endif
-
-      @if(Session::get('statusCode') ==409)
-        @slot('content')
-        すでに予約があります
-        @endslot
-      @endif
-
-      @if(Session::get('statusCode') ==422)
-        @slot('content')
-        この操作は実行できません
-        @endslot
-      @endif
-
-      @if(Session::get('statusCode') ==500)
-        @slot('content')
-        サーバーエラーが発生しました
-        @endslot
-      @endif
+      @slot('content')
+      予約日までにクレジットカードの <br> 有効期限が切れます <br><br> 予約を完了するには <br> カード情報を更新してください
+      @endslot
     @endmodal
+  @else
+    @if((Session::has('statusCode')))
+      @modal(['triggerId' => Session::get('statusCode'), 'triggerClass' =>''])
+        @slot('title')
+        @endslot
+
+        @if(Session::get('statusCode') ==400)
+          @slot('content')
+          開始時間は現在以降の時間を指定してください
+          @endslot
+        @endif
+
+        @if(Session::get('statusCode') ==409)
+          @slot('content')
+          すでに予約があります
+          @endslot
+        @endif
+
+        @if(Session::get('statusCode') ==422)
+          @slot('content')
+          この操作は実行できません
+          @endslot
+        @endif
+
+        @if(Session::get('statusCode') ==500)
+          @slot('content')
+          サーバーエラーが発生しました
+          @endslot
+        @endif
+      @endmodal
+    @endif
   @endif
 @endsection
 
@@ -225,5 +226,11 @@
         }
       });
     });
+
+    window.addEventListener("beforeunload", function(event) {
+      var backLink = window.location.href;
+      localStorage.setItem('back_link', backLink);
+    });
+
   </script>
 @endsection
