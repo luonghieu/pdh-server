@@ -177,8 +177,6 @@ class User extends Authenticatable implements JWTSubject
     public function buyPoint($amount, $auto = false)
     {
         try {
-            \DB::beginTransaction();
-
             $point = new Point;
             $point->point = $amount;
             $point->user_id = $this->id;
@@ -207,11 +205,8 @@ class User extends Authenticatable implements JWTSubject
             $this->point = $this->point + $amount;
             $this->save();
 
-            \DB::commit();
-
             return $point;
         } catch (\Exception $e) {
-            \DB::rollBack();
             LogService::writeErrorLog($e);
 
             return false;
