@@ -43,9 +43,9 @@ class ProfileController extends Controller
     public function edit()
     {
         try {
-            $glossaries = $this->getApi(route('glossaries'))['data'];
+            $glossaries = $this->getApi('/api/v1/glossaries')['data'];
 
-            $contents = $this->getApi(route('auth.me'));
+            $contents = $this->getApi('/api/v1/auth/me');
             $profile = $contents['data'];
 
             return view('web.profile.edit', compact('profile', 'glossaries'));
@@ -58,7 +58,7 @@ class ProfileController extends Controller
     public function index()
     {
         try {
-            $contents = $this->getApi(route('auth.me'));
+            $contents = $this->getApi('/api/v1/auth/me');
             $profile = $contents['data'];
 
             return view('web.profile.index', compact('profile'));

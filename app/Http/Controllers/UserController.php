@@ -27,7 +27,7 @@ class UserController extends Controller
                     'Content-Type' => 'application/json',
                 ],
             ]);
-            $apiRequest = $client->get(route('users.show', $id));
+            $apiRequest = $client->get('/api/v1/users/' . $id);
 
             $result = $apiRequest->getBody();
             $contents = $result->getContents();
