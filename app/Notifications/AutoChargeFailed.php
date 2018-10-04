@@ -2,6 +2,7 @@
 
 namespace App\Notifications;
 
+use App\Enums\UserType;
 use Illuminate\Bus\Queueable;
 use Illuminate\Notifications\Notification;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -31,7 +32,7 @@ class AutoChargeFailed extends Notification implements ShouldQueue
      */
     public function via($notifiable)
     {
-        return [LineBotNotificationChannel::class];
+        return [CustomDatabaseChannel::class, LineBotNotificationChannel::class];
     }
 
     /**
@@ -52,8 +53,11 @@ class AutoChargeFailed extends Notification implements ShouldQueue
      */
     public function toArray($notifiable)
     {
+        $content = '決済が未完了です';
+
         return [
-            //
+            'content' => $content,
+            'send_from' => UserType::ADMIN,
         ];
     }
 
