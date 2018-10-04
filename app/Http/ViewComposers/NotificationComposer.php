@@ -23,7 +23,11 @@ class NotificationComposer
     public function __construct()
     {
         // Dependencies automatically resolved by service container...
-        $this->notifications = Notification::whereIn('type', ['App\Notifications\CreatedReport', 'App\Notifications\PaymentRequestUpdate'])
+        $this->notifications = Notification::whereIn('type', [
+            'App\Notifications\CreatedReport',
+            'App\Notifications\PaymentRequestUpdate',
+            'App\Notifications\AutoChargeFailed'
+        ])
             ->whereNull('read_at')->get();
     }
 
