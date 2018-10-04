@@ -2,8 +2,7 @@ $(document).ready(function() {
   $("#search-box").val(null);
   var userId = $('#auth').val();
 
-  window.Echo.private('user.'+userId)
-  .listen('MessageCreated', (e) => {
+  window.Echo.private('user.'+userId).listen('MessageCreated', (e) => {
     var roomId = e.message.room_id;
     var message = '';
 
@@ -28,6 +27,21 @@ $(document).ready(function() {
 
     $('#room_' + roomId).text(unreadCount);
     $('#latest-message_' + roomId).text(message);
+
+    var count = 0;
+    $('.msg').each(function(index, val) {
+      var id = $(this).data('id');
+      if (id == roomId) {
+        count++;
+      }
+    });
+
+    if (count > 0) {
+      $('#list-room').prepend($('#msg_'+roomId));
+    } else {
+      window.location.reload();
+    }
+
   });
 
   $('.search-box').keydown(function(event) {
