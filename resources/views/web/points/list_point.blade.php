@@ -44,7 +44,10 @@
         {{ number_format($pointView) }}P
       </span>
     </div>
-    @if (($pointView <= 0) && ($point['type'] != \App\Enums\PointType::EVICT))
+    @if ($point['type'] == \App\Enums\PointType::EVICT)
+      <div class="item_right">
+      </div>
+    @elseif ($pointView <= 0)
       <div class="item_right">
         <div class=""><a href="{{ route('history.show', $point['order_id']) }}"><img src="{{ asset('assets/web/images/gl2-1/arrow.svg') }}" alt=">"></a></div>
       </div>
