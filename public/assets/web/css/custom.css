@@ -310,13 +310,16 @@
   font-size: 16px;
 }
 
+#chat #gg2 .msg {
+  margin: 1.42em 0.83em 0 5em;
+}
+
 #chat .msg {
-  margin-bottom: 0;
   margin-top: 90px;
+  padding-bottom: 50px;
 }
 
 #chat #message-box {
-  height: 622px;
   overflow: auto;
 }
 
@@ -327,43 +330,6 @@
 #message-box::-webkit-scrollbar-track-piece {
   background-color: transparent;
   -webkit-border-radius: 6px;
-}
-
-/*iphoneX*/
-@media only screen
-and (max-device-width : 375px)
-and (device-height : 812px)
-and (-webkit-device-pixel-ratio : 3) {
-  #chat #message-box {
-    height: 622px;
-  }
-}
-
-/*iphone678*/
-@media only screen
-and (max-device-width : 375px)
-and (device-height : 667px) {
-  #chat #message-box {
-    height: 476px;
-  }
-}
-
-/*iphone6+7+8+*/
-@media only screen
-and (max-device-width : 414px)
-and (device-height : 736px) {
-  #chat #message-box {
-    height: 545px;
-  }
-}
-
-/*iphone5*/
-@media only screen
-and (max-device-width : 320px)
-and (device-height : 568px) {
-  #chat #message-box {
-    height: 378px;
-  }
 }
 
 #gg .msg-input {

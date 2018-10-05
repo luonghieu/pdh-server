@@ -94,6 +94,10 @@ $(document).ready(function() {
     $("#send-message").prop('disabled', false);
   });
 
+  $("#content").on('keydown', function(){
+    $("#send-message").prop('disabled', false);
+  });
+
   $("#image-camera").change(function(event) {
     var filesCamera = $('#image-camera').prop('files');
     if(filesCamera.length > 0){
