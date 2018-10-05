@@ -1,4 +1,16 @@
 $(document).ready(function() {
+  function isValidImage(url, callback) {
+    var image = new Image();
+    image.src = url;
+    image.onload = function () {
+      callback(true);
+    };
+
+    image.onerror = function () {
+      callback(false);
+    };
+  }
+
   var roomId = $("#room-id").val();
   var orderId = $("#order-id").val();
   var formData = new FormData();
@@ -12,54 +24,63 @@ $(document).ready(function() {
       var result = pattern.exec(createdAt);
       var time = result[1]+':'+result[2];
       var avatar = e.message.user.avatars[0]['path'];
-      if(e.message.type == 2 || (e.message.type == 1 && e.message.system_type == 1) || e.message.type == 4) {
-        $("#message-box").append(`
-          <div class="msg-left msg-wrap">
-          <figure>
-            <a href=""><img src="`+avatar+`"  alt="" title="" class="alignnone size-full wp-image-515" /></a>
-          </figure>
-          <div class="msg-left-text">
-            <div class="text">
-              <div class="text-wrapper">
-                <p>`+message.replace(/\n/g, "<br />")+`</p>
+
+      isValidImage(avatar, function (isValid) {
+        if (isValid) {
+          avatar = avatar;
+        } else {
+          avatar = '/assets/web/images/gm1/ic_default_avatar@3x.png'
+        }
+
+        if(e.message.type == 2 || (e.message.type == 1 && e.message.system_type == 1) || e.message.type == 4) {
+          $("#message-box").append(`
+            <div class="msg-left msg-wrap">
+            <figure>
+              <a href=""><img src="`+avatar+`"  alt="" title="" class="alignnone size-full wp-image-515" /></a>
+            </figure>
+            <div class="msg-left-text">
+              <div class="text">
+                <div class="text-wrapper">
+                  <p>`+message.replace(/\n/g, "<br />")+`</p>
+                </div>
               </div>
+              <div class="time"><p>`+time+`</p></div>
             </div>
-            <div class="time"><p>`+time+`</p></div>
           </div>
-        </div>
-        `);
-      }
+          `);
+        }
 
-      if(e.message.type == 3) {
-        $("#message-box").append(`
-          <div class="msg-left msg-wrap">
-          <figure>
-           <a href=""><img src="`+avatar+`"  alt="" title="" class="alignnone size-full wp-image-515" /></a>
-          </figure>
-          <div class="msg-left-text">
-            <div class="pic">
-              <p>
-                <img src="`+e.message.image+`"  alt="" title="" class="">
-              </p>
-           </div>
-            <div class="time"><p>`+time+`</p></div>
+        if(e.message.type == 3) {
+          $("#message-box").append(`
+            <div class="msg-left msg-wrap">
+            <figure>
+             <a href=""><img src="`+avatar+`"  alt="" title="" class="alignnone size-full wp-image-515" /></a>
+            </figure>
+            <div class="msg-left-text">
+              <div class="pic">
+                <p>
+                  <img src="`+e.message.image+`"  alt="" title="" class="">
+                </p>
+             </div>
+              <div class="time"><p>`+time+`</p></div>
+            </div>
           </div>
-        </div>
-        `);
-        $('.pic p img').promise().done(function(){
-           $('img').load(function(){
-             $(document).scrollTop($('#message-box')[0].scrollHeight);
-           });
-        });
-      }
+          `);
+          $('.pic p img').promise().done(function(){
+             $('img').load(function(){
+               $(document).scrollTop($('#message-box')[0].scrollHeight);
+             });
+          });
+        }
 
-      if(e.message.type == 1 && e.message.system_type == 2) {
-        $("#message-box").append(`
-          <div class="msg-alert">
-            <h3><span>`+time+`</span><br>`+message.replace(/\n/g, "<br />")+`</h3>
-          </div>
-       `);
-      }
+        if(e.message.type == 1 && e.message.system_type == 2) {
+          $("#message-box").append(`
+            <div class="msg-alert">
+              <h3><span>`+time+`</span><br>`+message.replace(/\n/g, "<br />")+`</h3>
+            </div>
+         `);
+        }
+      });
 
       $(document).scrollTop($('#message-box')[0].scrollHeight);
     });
@@ -123,48 +144,56 @@ $(document).ready(function() {
     axios.post(`/api/v1/rooms/${roomId}/messages`, formData)
     .then(function (response) {
       var avatar = response.data.data.user.avatars[0]['path'];
-      if(response.data.data.type == 2) {
-        var message = response.data.data.message;
-        $("#message-box").append(`
-          <div class="msg-right msg-wrap">
-          <figure>
-            <a href=""><img src="`+avatar+`"  alt="" title="" class="alignnone size-full wp-image-515" /></a>
-          </figure>
-          <div class="msg-right-text">
-            <div class="text">
-              <div class="text-wrapper">
-                <p>`+message.replace(/\n/g, "<br />")+`</p>
+      isValidImage(avatar, function (isValid) {
+        if (isValid) {
+          avatar = avatar;
+        } else {
+          avatar = '/assets/web/images/gm1/ic_default_avatar@3x.png'
+        }
+
+        if(response.data.data.type == 2) {
+          var message = response.data.data.message;
+          $("#message-box").append(`
+            <div class="msg-right msg-wrap">
+            <figure>
+              <a href=""><img src="`+avatar+`"  alt="" title="" class="alignnone size-full wp-image-515" /></a>
+            </figure>
+            <div class="msg-right-text">
+              <div class="text">
+                <div class="text-wrapper">
+                  <p>`+message.replace(/\n/g, "<br />")+`</p>
+                </div>
               </div>
+              <div class="time"><p>`+time+`</p></div>
             </div>
-            <div class="time"><p>`+time+`</p></div>
           </div>
-        </div>
-        `);
-      }
+          `);
+        }
 
-      if(response.data.data.type == 3) {
-        $("#message-box").append(`
-          <div class="msg-right msg-wrap">
-          <figure>
-            <a href=""><img src="`+avatar+`"  alt="" title="" class="alignnone size-full wp-image-515" /></a>
-          </figure>
-          <div class="msg-right-text">
-            <div class="pic">
-              <p>
-              <img src="`+response.data.data.image+`"  alt="" title="" class="">
-              </p>
+        if(response.data.data.type == 3) {
+          $("#message-box").append(`
+            <div class="msg-right msg-wrap">
+            <figure>
+              <a href=""><img src="`+avatar+`"  alt="" title="" class="alignnone size-full wp-image-515" /></a>
+            </figure>
+            <div class="msg-right-text">
+              <div class="pic">
+                <p>
+                <img src="`+response.data.data.image+`"  alt="" title="" class="">
+                </p>
+              </div>
+              <div class="time"><p>`+time+`</p></div>
             </div>
-            <div class="time"><p>`+time+`</p></div>
           </div>
-        </div>
-        `);
+          `);
 
-        $('.pic p img').promise().done(function(){
-           $('img').load(function(){
-             $(document).scrollTop($('#message-box')[0].scrollHeight);
-           });
-        });
-      }
+          $('.pic p img').promise().done(function(){
+             $('img').load(function(){
+               $(document).scrollTop($('#message-box')[0].scrollHeight);
+             });
+          });
+        }
+      });
 
       $('body').on('load', '.pic p img', function(){
         $(document).scrollTop($('#message-box')[0].scrollHeight);
