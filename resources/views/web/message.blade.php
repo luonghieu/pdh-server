@@ -164,11 +164,11 @@
 
     if ($('.pic p img').length > 0) {
        $('.pic p img').load(function(){
-         $('#message-box').scrollTop($('#message-box')[0].scrollHeight);
+         $(document).scrollTop($('#message-box')[0].scrollHeight);
        });
     }
 
-    $('#message-box').scrollTop($('#message-box')[0].scrollHeight);
+    $(document).scrollTop($('#message-box')[0].scrollHeight);
   });
 
   // For changing the size of the text area
