@@ -31,13 +31,15 @@ class HomeController extends Controller
             $order = Order::with('casts')
                 ->where('user_id', Auth::user()->id)
                 ->where('status', OrderStatus::PROCESSING)
-                ->orderBy('created_at')->first();
+                ->orderBy('date')
+                ->orderBy('start_time')->first();
 
             if (!$order) {
                 $order = Order::with('casts')
                     ->where('user_id', Auth::user()->id)
                     ->whereIn('status', [OrderStatus::OPEN, OrderStatus::ACTIVE])
-                    ->orderBy('created_at')->first();
+                    ->orderBy('date')
+                    ->orderBy('start_time')->first();
             }
 
             return view('web.index', compact('token', 'order'));
