@@ -12,22 +12,8 @@
     <div class="">
       <div class="form-grpup"><!-- フォーム内容 -->
         @if(count($casts['data']))
-        @foreach($casts['data'] as $cast)
-        <div class="cast_block" id="cb-casts">
-          <input type="checkbox" name="casts[]" value="{{ $cast['id'] }}" {{ (isset($currentCasts) && in_array($cast['id'], $currentCasts) ) ? 'checked="checked"' : '' }} id="{{ $cast['id'] }}" class="select-casts">
-          <div class="icon">
-            <p>
-              @if (@getimagesize($cast['avatars'][0]['thumbnail']))
-              <img src="{{ $cast['avatars'][0]['thumbnail'] }}" alt="">
-              @else
-              <img src="{{ asset('assets/web/images/gm1/ic_default_avatar@3x.png') }}" alt="">
-              @endif
-            </p>
-          </div>
-          <span class="sp-name-cast text-ellipsis text-nickname">{{ $cast['nickname'] .'('. $cast['age'] .')' }}</span>
-          <label for="{{ $cast['id'] }}" class="label-select-casts">指名する</label>
-        </div>
-        @endforeach
+          @include('web.orders.load_more_list_casts', compact('casts'))
+          <input type="hidden" id="next_page" value="{{ $casts['next_page_url'] }}">
         @endif
       </div>
       @if(isset($castNumbers))
@@ -36,4 +22,31 @@
     </div>
     <button type="submit" class="form_footer ct-button" id="sb-select-casts">次に進む(3/4)</button>
   </form>
+@endsection
+
+@section('web.script')
+  <script>
+    $(function () {
+      var requesting = false;
+      var currentPage = 1;
+      $(document).on('scroll', function () {
+        if ($(window).scrollTop() + $(window).height() == $(document).height() && requesting == false) {
+          var url = $('#next_page').val();
+          if (url) {
+            requesting = true;
+            window.axios.get('/step3/load_more', {
+              params: { next_page: url },
+            }).then(function (res) {
+              res = res.data;
+              $('#next_page').val(res.next_page || '');
+              $('#next_page').before(res.view);
+              requesting = false;
+            }).catch(function () {
+              requesting = false;
+            });
+          }
+        }
+      });
+    });
+  </script>
 @endsection

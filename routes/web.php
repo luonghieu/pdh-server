@@ -77,6 +77,7 @@ Route::group(['middleware' => ['auth', 'guest', 'check_info'], 'as' => 'guest.']
         Route::post('/nominate', ['as' => 'post_nominate', 'uses' => 'OrderController@createNominate']);
         Route::get('/nominate/step2', ['as' => 'nominate_step2', 'uses' => 'OrderController@nominateAttention']);
         Route::get('/orders/load_more', ['as' => 'orders_load_more', 'uses' => 'OrderController@loadMoreListOrder']);
+        Route::get('/step3/load_more', ['as' => 'step3_load_more', 'uses' => 'OrderController@loadMoreListCast']);
     });
 });
 

@@ -5,10 +5,11 @@ $(document).ready(function(){
       window.axios.post('/api/v1/orders/' + id+'/cancel')
       .then(function(response) {
         $( ".lb-modal-cancel").click();
-        $('.md-cancel-order').on('click', function (e) {
-          window.location.reload();
-        });
       });
     });
+  });
+
+  $('.md-cancel-order').on('click', function (e) {
+    window.location.reload();
   });
 });

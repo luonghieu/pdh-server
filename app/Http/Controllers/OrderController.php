@@ -823,4 +823,41 @@ class OrderController extends Controller
             abort(500);
         }
     }
+
+    public function loadMoreListCast(Request $request)
+    {
+        try {
+            $user = Auth::user();
+            $token = JWTAuth::fromUser($user);
+
+            $authorization = empty($token) ?: 'Bearer ' . $token;
+            $client = new Client([
+                'base_uri' => config('common.api_url'),
+                'http_errors' => false,
+                'debug' => false,
+                'headers' => [
+                    'Accept' => 'application/json',
+                    'Authorization' => $authorization,
+                    'Content-Type' => 'application/json',
+                ],
+            ]);
+            $casts = $client->request('GET', request()->next_page);
+
+            $casts = json_decode(($casts->getBody())->getContents(), JSON_NUMERIC_CHECK);
+            $casts = $casts['data'];
+
+            $currentCasts = null;
+            if (isset(Session::get('data')['casts'])) {
+                $currentCasts = Session::get('data')['casts'];
+            }
+
+            return [
+                'next_page' => $casts['next_page_url'],
+                'view' => view('web.orders.load_more_list_casts', compact('casts', 'currentCasts'))->render(),
+            ];
+        } catch (\Exception $e) {
+            LogService::writeErrorLog($e);
+            abort(500);
+        }
+    }
 }
