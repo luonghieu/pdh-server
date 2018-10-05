@@ -28,7 +28,6 @@ $(document).ready(function() {
           </div>
         </div>
         `);
-        $(document).scrollTop($('#chat #page').height());
       }
 
       if(e.message.type == 3) {
@@ -47,8 +46,10 @@ $(document).ready(function() {
           </div>
         </div>
         `);
-        var image = $('.pic p img').on('load', function(event) {
-          $(document).scrollTop($('#chat #page').height());
+        $('.pic p img').promise().done(function(){
+           $('img').load(function(){
+             $('#message-box').scrollTop($('#message-box')[0].scrollHeight);
+           });
         });
       }
 
@@ -58,8 +59,9 @@ $(document).ready(function() {
             <h3><span>`+time+`</span><br>`+message.replace(/\n/g, "<br />")+`</h3>
           </div>
        `);
-        $(document).scrollTop($('#chat #page').height());
       }
+
+      $('#message-box').scrollTop($('#message-box')[0].scrollHeight);
     });
 
   $('#send-message, #content').keydown(function(event) {
@@ -134,8 +136,8 @@ $(document).ready(function() {
           </div>
         </div>
         `);
-        $(document).scrollTop($('#chat #page').height());
       }
+
       if(response.data.data.type == 3) {
         $("#message-box").append(`
           <div class="msg-right msg-wrap">
@@ -152,10 +154,19 @@ $(document).ready(function() {
           </div>
         </div>
         `);
-        var image = $('.pic p img').on('load', function(event) {
-          $(document).scrollTop($('#chat #page').height());
+
+        $('.pic p img').promise().done(function(){
+           $('img').load(function(){
+             $('#message-box').scrollTop($('#message-box')[0].scrollHeight);
+           });
         });
       }
+
+      $('body').on('load', '.pic p img', function(){
+        $('#message-box').scrollTop($('#message-box')[0].scrollHeight);
+      });
+      $('#message-box').scrollTop($('#message-box')[0].scrollHeight);
+
       $("#content").val(null);
       $("#image-camera").val(null);
       $("#image").val(null);
@@ -165,7 +176,7 @@ $(document).ready(function() {
     });
   }
 
-  window.addEventListener('scroll', function(e) {
+  $('#message-box').on('scroll', function(e) {
     if(!$(".next-page").attr("data-url")) {
       return false;
     }

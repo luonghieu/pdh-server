@@ -156,20 +156,20 @@
 @endsection
 @section('web.extra_js')
 <script>
-    $(function(){
-      $('.tgl > dl > dt',).click(function(){
-        $(this).toggleClass("active");
-        $(this).next().slideToggle();
-      });
+  $(function() {
+    $('.tgl > dl > dt',).click(function(){
+      $(this).toggleClass("active");
+      $(this).next().slideToggle();
     });
 
     if ($('.pic p img').length > 0) {
-      var image = $('.pic p img').on('load', function(event) {
-        $(document).scrollTop($('#chat #page').height());
-      });
-    } else {
-      $(document).scrollTop($('#chat #page').height());
+       $('.pic p img').load(function(){
+         $('#message-box').scrollTop($('#message-box')[0].scrollHeight);
+       });
     }
+
+    $('#message-box').scrollTop($('#message-box')[0].scrollHeight);
+  });
 
   // For changing the size of the text area
   $(function() {
