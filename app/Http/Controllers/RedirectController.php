@@ -19,7 +19,17 @@ class RedirectController extends Controller
                 return \Redirect::to(route('message.messages', ['room' => $request->room_id]));
             case 'evaluation':
                 $order = Order::find($request->order_id);
-                if ($order->payment_status == OrderPaymentStatus::PAYMENT_FINISHED) {
+                $casts = $order->casts;
+
+                $rated = true;
+                foreach ($casts as $cast) {
+                    if (!$cast->pivot->guest_rated) {
+                        $rated = false;
+                        break;
+                    }
+                }
+
+                if ($order->payment_status == OrderPaymentStatus::PAYMENT_FINISHED && $rated) {
                     return \Redirect::to(route('history.show', ['orderId' => $request->order_id]));
                 }
 
