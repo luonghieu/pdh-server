@@ -68,7 +68,7 @@ $(document).ready(function() {
           `);
           $('.pic p img').promise().done(function(){
              $('img').load(function(){
-               $(document).scrollTop($('#message-box')[0].scrollHeight);
+               $('body').animate({ scrollTop: 20000000 }, "slow");
              });
           });
         }
@@ -82,7 +82,7 @@ $(document).ready(function() {
         }
       });
 
-      $(document).scrollTop($('#message-box')[0].scrollHeight);
+       $('body').animate({ scrollTop: 20000000 }, "slow");
     });
 
   $('#send-message, #content').keydown(function(event) {
@@ -189,16 +189,16 @@ $(document).ready(function() {
 
           $('.pic p img').promise().done(function(){
              $('img').load(function(){
-               $(document).scrollTop($('#message-box')[0].scrollHeight);
+               $('body').animate({ scrollTop: 20000000 }, "slow");
              });
           });
         }
       });
 
       $('body').on('load', '.pic p img', function(){
-        $(document).scrollTop($('#message-box')[0].scrollHeight);
+         $('body').animate({ scrollTop: 20000000 }, "slow");
       });
-      $(document).scrollTop($('#message-box')[0].scrollHeight);
+       $('body').animate({ scrollTop: 20000000 }, "slow");
 
       $("#content").val(null);
       $("#image-camera").val(null);
