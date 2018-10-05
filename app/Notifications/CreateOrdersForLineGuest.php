@@ -65,7 +65,7 @@ class CreateOrdersForLineGuest extends Notification implements ShouldQueue
     public function lineBotPushData($notifiable)
     {
         $startTime = Carbon::parse($this->order->date . ' ' . $this->order->start_time);
-        $endTime = Carbon::parse($this->order->date . ' ' . $this->order->end_time);
+        $endTime = $startTime->copy()->addMinutes($this->order->duration * 60);
 
         $roomMessage = 'Cheersをご利用いただきありがとうございます！'
             . PHP_EOL . 'キャストのご予約を承りました。'
