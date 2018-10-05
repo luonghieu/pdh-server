@@ -131,7 +131,7 @@ $(document).ready(function(){
     }
   });
 
-  $('body').on("change", ".cast_block .select-casts", function(event){
+  $('#list-cast-order').on("change", ".cast_block .select-casts", function(event){
     var castNumbers = $(".cast-numbers").val();
     if($('.select-casts:checked').length > castNumbers) {
       $(this).attr('checked',false);

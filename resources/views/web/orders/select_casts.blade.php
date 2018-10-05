@@ -10,7 +10,7 @@
   <form action="{{ route('guest.orders.post_step3') }}" method="POST" class="create-call-form" id="" name="select_casts_form">
     {{ csrf_field() }}
     <div class="">
-      <div class="form-grpup"><!-- フォーム内容 -->
+      <div class="form-grpup" id="list-cast-order"><!-- フォーム内容 -->
         @if(count($casts['data']))
           @include('web.orders.load_more_list_casts', compact('casts'))
           <input type="hidden" id="next_page" value="{{ $casts['next_page_url'] }}">
@@ -28,7 +28,6 @@
   <script>
     $(function () {
       var requesting = false;
-      var currentPage = 1;
       $(document).on('scroll', function () {
         if ($(window).scrollTop() + $(window).height() == $(document).height() && requesting == false) {
           var url = $('#next_page').val();
