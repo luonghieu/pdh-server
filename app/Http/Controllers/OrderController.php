@@ -791,4 +791,36 @@ class OrderController extends Controller
             return redirect()->back();
         }
     }
+
+    public function loadMoreListOrder(Request $request)
+    {
+        try {
+            $user = Auth::user();
+            $token = JWTAuth::fromUser($user);
+
+            $authorization = empty($token) ?: 'Bearer ' . $token;
+            $client = new Client([
+                'base_uri' => config('common.api_url'),
+                'http_errors' => false,
+                'debug' => false,
+                'headers' => [
+                    'Accept' => 'application/json',
+                    'Authorization' => $authorization,
+                    'Content-Type' => 'application/json',
+                ],
+            ]);
+            $orders = $client->request('GET', request()->next_page);
+
+            $orders = json_decode(($orders->getBody())->getContents(), JSON_NUMERIC_CHECK);
+            $orders = $orders['data'];
+
+            return [
+                'next_page' => $orders['next_page_url'],
+                'view' => view('web.orders.load_more_list_orders', compact('orders'))->render(),
+            ];
+        } catch (\Exception $e) {
+            LogService::writeErrorLog($e);
+            abort(500);
+        }
+    }
 }
