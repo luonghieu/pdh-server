@@ -36,12 +36,12 @@
     </div>
 @endsection
 @section('web.content')
-    <?php $orderStartTime = \Carbon\Carbon::parse($order->start_time) ?>
-    <?php $orderEndTime = $orderStartTime->copy()->addMinutes($order->duration * 60) ?>
+    <?php $orderStartTime = \Carbon\Carbon::parse($order->start_time)?>
+    <?php $orderEndTime = $orderStartTime->copy()->addMinutes($order->duration * 60)?>
     <h1 class="big-title">キャスト評価</h1>
     <div class="cast-profile">
         <section class="profile-photo">
-            <div class="profile-photo_top"><img src="{{ $castUnrate->avatars->first()->thumbnail }}" alt=""></div>
+            <div class="profile-photo_top"><img src="{{ ($castUnrate->avatars->first() && @getimagesize($castUnrate->avatars->first()->thumbnail)) ? $castUnrate->avatars->first()->thumbnail :'/assets/web/images/gm1/ic_default_avatar@3x.png' }}" alt=""></div>
             <h2 class="text-display">
               <b class="text-ellipsis text-nickname">{{ $castUnrate->nickname }}</b>
               <b class="text-bold">{{ '(' . \Carbon\Carbon::parse($castUnrate->date_of_birth)->age . ')'}}</b>
