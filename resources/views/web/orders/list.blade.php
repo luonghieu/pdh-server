@@ -44,7 +44,7 @@
         var url = $('#next_page').val();
         if (url) {
           requesting = true;
-          window.axios.get(<?php echo env('APP_URL') . '/orders/load_more' ?>, {
+          window.axios.get("<?php echo env('APP_URL') . '/orders/load_more' ?>", {
             params: { next_page: url },
           }).then(function (res) {
             res = res.data;
