@@ -590,14 +590,13 @@ class Order extends Model
         foreach ($points as $value) {
             if (0 == $subPoint) {
                 break;
-            } elseif ($value->point > $subPoint && $subPoint > 0) {
-                $value->balance = $value->point - $subPoint;
+            } elseif ($value->balance > $subPoint && $subPoint > 0) {
+                $value->balance = $value->balance - $subPoint;
                 $value->update();
 
-                $subPoint = 0;
                 break;
-            } elseif ($value->point <= $subPoint) {
-                $subPoint -= $value->point;
+            } elseif ($value->balance <= $subPoint) {
+                $subPoint -= $value->balance;
 
                 $value->balance = 0;
                 $value->update();
