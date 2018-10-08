@@ -271,7 +271,12 @@ class OrderController extends Controller
         }
 
         $data = Session::get('data');
-        $data['casts'] = $request->casts;
+
+        if (isset($request->casts)) {
+            $data['casts'] = $request->casts;
+        } else {
+            $data['casts'] = null;
+        }
 
         Session::put('data', $data);
 

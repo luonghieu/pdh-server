@@ -175,7 +175,7 @@
     @endmodal
   @else
     @if((Session::has('statusCode')))
-      @modal(['triggerId' => Session::get('statusCode'), 'triggerClass' =>''])
+      @modal(['triggerId' => Session::get('statusCode'), 'triggerClass' =>'error-code'])
         @slot('title')
         @endslot
 
