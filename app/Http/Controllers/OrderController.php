@@ -459,7 +459,7 @@ class OrderController extends Controller
             $startTime = Carbon::parse($timeOrder)->format('H:i');
         }
 
-        if ($data['casts']) {
+        if (isset($data['casts'])) {
             if (count($data['casts']) == $data['cast_numbers']) {
                 $type = OrderType::NOMINATED_CALL;
             } else {
