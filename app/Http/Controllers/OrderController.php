@@ -357,7 +357,7 @@ class OrderController extends Controller
 
         $tags = Tag::whereIn('id', array_merge($desires, $situations))->get();
 
-        if ($data['casts']) {
+        if (isset($data['casts'])) {
             $casts = Cast::whereIn('id', $data['casts'])->get();
 
             if (count($data['casts']) == $data['cast_numbers']) {
