@@ -99,10 +99,10 @@ $(document).ready(function() {
       window.axios.post('/api/v1/auth/update', params)
         .then(function(response) {
           if (!name || !day) {
-            window.sessionStorage.setItem('popup_mypage', '情報の更新に成功しました。');
+            window.sessionStorage.setItem('popup_mypage', 'プロフィール登録が完了しました');
             window.location.href = '/mypage';
           } else {
-            window.sessionStorage.setItem('popup_profile', '情報の更新に成功しました。')
+            window.sessionStorage.setItem('popup_profile', 'プロフィール登録が完了しました')
             window.location.href = '/profile';
           }
         })
