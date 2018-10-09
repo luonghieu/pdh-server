@@ -272,10 +272,14 @@ class OrderController extends Controller
 
         $data = Session::get('data');
 
-        if (isset($request->casts)) {
-            $data['casts'] = $request->casts;
+        if (isset($request->cast_ids)) {
+            $data['casts'] = explode(",", $request->cast_ids);
         } else {
-            $data['casts'] = null;
+            if (isset($request->casts)) {
+                $data['casts'] = $request->casts;
+            } else {
+                $data['casts'] = null;
+            }
         }
 
         Session::put('data', $data);
@@ -320,7 +324,13 @@ class OrderController extends Controller
 
         $castNumbers = $data['cast_numbers'];
 
-        return view('web.orders.select_casts', compact('casts', 'currentCasts', 'castNumbers'));
+        if (isset($data['casts'])) {
+            $castIds = implode(',', $data['casts']);
+        } else {
+            $castIds = null;
+        }
+
+        return view('web.orders.select_casts', compact('casts', 'currentCasts', 'castNumbers', 'castIds'));
     }
 
     public function attention(Request $request)
