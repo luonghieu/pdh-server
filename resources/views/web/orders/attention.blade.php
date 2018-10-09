@@ -47,7 +47,9 @@
       window.history.pushState(null, null, null);
 
       window.onpopstate = function(event) {
-       window.location.replace(backLink);
+       setTimeout(function(){
+        document.location.href = backLink;
+      },250);
        localStorage.removeItem("select_cast");
       }
     }
