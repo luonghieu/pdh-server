@@ -52,10 +52,10 @@
       });
     });
 
-  window.addEventListener("beforeunload", function(event) {
-    var selectCast = window.location.href;
-    localStorage.setItem('select_cast', selectCast);
-  });
+    window.addEventListener("beforeunload", function(event) {
+      var selectCast = document.location.href;
+      localStorage.setItem('select_cast', selectCast);
+    });
 
   </script>
 @endsection
