@@ -133,17 +133,49 @@ $(document).ready(function(){
 
   $('#list-cast-order').on("change", ".cast_block .select-casts", function(event){
     var castNumbers = $(".cast-numbers").val();
-    if($('.select-casts:checked').length > castNumbers) {
-      $(this).attr('checked',false);
-    }else {
+    var castIds = $(".cast-ids").val();
+    var id = $(this).val();
 
-      var id = $(this).val();
-      if ($(this).is(':checked')) {
-        $(this).attr('checked',true);
-        $('.label-select-casts[for='+  id  +']').text('指名中');
-      } else {
+    if(castIds) {
+      castIds = castIds.split(',');
+
+      if(castIds.length == castNumbers) {
+        if(castIds.indexOf(id) > -1) {
+          castIds.splice(castIds.indexOf(id), 1);
+          $(".cast-ids").val(castIds.toString());
+        }
+
         $(this).attr('checked',false);
-        $('.label-select-casts[for='+  id  +']').text('指名する');
+      }else {
+
+        if ($(this).is(':checked')) {
+          $(this).attr('checked',true);
+          castIds.push(id);
+          $('.label-select-casts[for='+  id  +']').text('指名中');
+        } else {
+          if(castIds.indexOf(id) > -1) {
+            castIds.splice(castIds.indexOf(id), 1);
+          }
+
+          $(this).attr('checked',false);
+          $('.label-select-casts[for='+  id  +']').text('指名する');
+        }
+
+        $(".cast-ids").val(castIds.toString());
+      }
+    }else {
+      if($('.select-casts:checked').length > castNumbers) {
+        $(this).attr('checked',false);
+      }else {
+
+        var id = $(this).val();
+        if ($(this).is(':checked')) {
+          $(this).attr('checked',true);
+          $('.label-select-casts[for='+  id  +']').text('指名中');
+        } else {
+          $(this).attr('checked',false);
+          $('.label-select-casts[for='+  id  +']').text('指名する');
+        }
       }
     }
   });

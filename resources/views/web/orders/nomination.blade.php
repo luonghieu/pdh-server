@@ -36,7 +36,6 @@
           </div>
         </div>
       </div>
-      <form>
         <div class="reservation-item">
           <div class="caption"><!-- 見出し用div -->
             <h2>キャストを呼ぶ場所</h2>
