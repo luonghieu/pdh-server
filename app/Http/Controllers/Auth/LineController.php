@@ -112,7 +112,8 @@ class LineController extends Controller
         return $response;
     }
 
-    public function handleCallBack(Request $request) {
+    public function handleCallBack(Request $request)
+    {
 
         try {
             if (isset($request->friendship_status_changed) && $request->friendship_status_changed == 'false') {
