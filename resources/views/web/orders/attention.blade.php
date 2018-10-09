@@ -40,6 +40,7 @@
   </form>
 @endsection
 
+@section('web.script')
 <script>
   if(localStorage.getItem("select_cast")){
     var backLink = localStorage.getItem("select_cast");
@@ -47,11 +48,12 @@
       window.history.pushState(null, null, null);
 
       window.onpopstate = function(event) {
-       setTimeout(function(){
-        document.location.href = backLink;
-      },250);
+        setTimeout(function() {
+          document.location.href = backLink;
+        },250);
        localStorage.removeItem("select_cast");
       }
     }
   }
 </script>
+@endsection
