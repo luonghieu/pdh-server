@@ -190,20 +190,28 @@
 
     $(document).scrollTop($('#message-box')[0].scrollHeight);
   });
+</script>
+<script>
+  var ta = document.getElementById("content");
+  ta.style.lineHeight = 1.2;//init
+  ta.style.height = "30px";//init
 
-  // For changing the size of the text area
-  $(function() {
-    var $textarea = $('#content');
-    var lineHeight = parseInt($textarea.css("lineHeight"));
-    $textarea.height(20);
-    $textarea.css("lineHeight","20px");
-    $textarea.on('input', function(evt) {
-      var lines = ($(this).val() + '\n').match(/\n/g).length;
-      $(this).height(lineHeight * lines);
-      $textarea.css("lineHeight","1.2");
-    });
-
-  });
+  ta.addEventListener("input",function(evt){
+      if(evt.target.scrollHeight > evt.target.offsetHeight){   
+          evt.target.style.height = evt.target.scrollHeight + "px";
+      }else{
+          var height,lineHeight;
+          while (true){
+              height = Number(evt.target.style.height.split("px")[0]);
+              lineHeight = Number(evt.target.style.lineHeight.split("px")[0]);
+              evt.target.style.height = height - lineHeight + "px"; 
+              if(evt.target.scrollHeight > evt.target.offsetHeight){
+                  evt.target.style.height = evt.target.scrollHeight + "px";
+                  break;
+              }
+          }
+      }
+  });  
 </script>
 @endsection
 @section('web.script')
