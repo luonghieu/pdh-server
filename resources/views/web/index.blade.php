@@ -40,7 +40,7 @@
   @endif
 
 
-  @if (isset(request()->first_time) && !request()->first_time)
+  @if (isset(request()->first_time) && request()->first_time)
     <a href="javascript:void(0)" class="gtm-hidden-btn" id="first-time-login" name="button1" onclick="dataLayer.push({'event': 'login_complete'});"></a>
     <script>
       setTimeout(() => {
