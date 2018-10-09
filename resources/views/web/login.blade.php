@@ -28,8 +28,8 @@
             <!-- service-list -->
 
             <div class="line-button">
-                <button type="button" name="" class="line-button line-button__login" onclick="window.location.href
-                        = '{{ action('Auth\LineController@login') }}'">
+                <button type="button" name="" class="line-button line-button__login" onclick="dataLayer.push
+                        ({'event': 'line_resistration'}); window.location.href = '{{ action('Auth\LineController@login') }}'">
                     <img src="{{ asset('assets/web/images/line/line-button__login.png') }}" alt="">
                 </button>
             </div>

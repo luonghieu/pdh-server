@@ -3,6 +3,8 @@
 @section('screen.class', 'ge3')
 @extends('layouts.web')
 @section('web.content')
+  <a href="javascript:void(0)" id="confirm-order-submit" class="gtm-hidden-btn" onclick="dataLayer.push({'event':
+  'callbooking_complete'});"></a>
   @if(session()->has('data'))
   @php
   $data = Session::get('data');
@@ -15,7 +17,8 @@
           <div class="details-list-box">
             <ul class="details-header__list">
               <li><i><img src="{{ asset('assets/web/images/common/map.svg') }}"></i><p class="word18">{{ $data['area'] or $data['other_area'] }}</p></li>
-              <li><i><img src="{{ asset('assets/web/images/common/clock.svg') }}"></i>
+              <li><i><img src="{{ asset('assets/web/imag\\ おめでとうございます！マッチングが確定しました🎊//
+es/common/clock.svg') }}"></i>
                 <p>
                 {{ isset($data['time']) ? $data['time'].'分後' : Carbon\Carbon::parse($data['otherTime'])->format('Y年m月d日') }}
                 {{ (isset($data['time_detail'])) ? $data['time_detail']['hour'].':'.$data['time_detail']['minute'] : ''}}

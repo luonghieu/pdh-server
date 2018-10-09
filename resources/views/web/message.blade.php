@@ -3,6 +3,13 @@
 @section('controller.id', 'chat')
 @extends('layouts.web')
 @section('web.content')
+  @if (isset(request()->matching_completed) && request()->matching_completed)
+    <a href="javascript:void(0)" id="matching-completed" class="gtm-hidden-btn" onclick="dataLayer.push
+    ({'event': 'matching_complete'});"></a>
+    <script>
+      document.getElementById('matching-complete').click();
+    </script>
+  @endif
   <div class="title">
     @php
       if ($room->type != \App\Enums\RoomType::SYSTEM) {

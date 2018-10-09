@@ -43,6 +43,7 @@ $('#payment-form').on('submit', function (e) {
         const message = helper.getResponseMessage(response.data.message);
         $('#alert-payment-content').html(message);
         $('#alert-payment-label').trigger('click');
+        document.getElementById('payment-completed-gtm').click();
         setTimeout(() => {
             window.location.href = '/mypage';
         }, 2000);
