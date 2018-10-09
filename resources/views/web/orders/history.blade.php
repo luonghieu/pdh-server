@@ -158,7 +158,8 @@
             <div class="details-list__header">
                 <div class="details-list__thumbnail">
                     <a href="{{ route('cast.show', ['id' => $cast->id]) }}">
-                        <img src="{{ $cast->avatars[0]->thumbnail }}" alt="Avatar">
+                        <img src="{{ @getimagesize($cast->avatars[0]->thumbnail) ? $cast->avatars[0]->thumbnail : '/assets/web/images/gm1/ic_default_avatar@3x.png' }}"
+                             alt="Avatar">
                     </a>
                 </div>
                 <p class="details-list__name text-ellipsis text-nickname">{{ $cast->nickname }}</p>
