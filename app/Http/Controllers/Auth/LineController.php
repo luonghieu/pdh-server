@@ -113,7 +113,7 @@ class LineController extends Controller
     }
 
     public function handleCallBack(Request $request) {
-        $firstTime = null;
+
         try {
             if (isset($request->friendship_status_changed) && $request->friendship_status_changed == 'false') {
                 $redirectUri = env('LINE_REDIRECT_URI');
