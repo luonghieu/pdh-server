@@ -3,8 +3,10 @@
 @section('screen.class', 'ge2-1-b')
 @extends('layouts.web')
 @section('web.content')
-    <a href="javascript:void(0)" id="confirm-order-nomination-submit" class="gtm-hidden-btn" onclick="dataLayer.push
-    ({'event': 'nominationbooking_complete'});"></a>
+    <a href="javascript:void(0)" id="confirm-order-nomination-submit" class="gtm-hidden-btn" onclick="dataLayer.push({
+        'userId': '<?php echo Auth::user()->id; ?>',
+        'event': 'nominationbooking_complete'
+    });"></a>
 <form action="{{ route('guest.orders.post_nominate') }}" method="POST" class="create-call-form" id="create-nomination-form">
   {{ csrf_field() }}
   <div class="cast-selected">
