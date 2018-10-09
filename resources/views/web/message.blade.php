@@ -4,8 +4,10 @@
 @extends('layouts.web')
 @section('web.content')
   @if (isset(request()->matching_completed) && request()->matching_completed)
-    <a href="javascript:void(0)" id="matching-completed" class="gtm-hidden-btn" onclick="dataLayer.push
-    ({'event': 'matching_complete'});"></a>
+    <a href="javascript:void(0)" id="matching-completed" class="gtm-hidden-btn" onclick="dataLayer.push({
+      'userId': '<?php echo Auth::user()->id; ?>',
+      'event': 'matching_complete'
+    });"></a>
     <script>
         const matchingCompleted = localStorage.getItem('matching_completed');
         const orders = (matchingCompleted) ? matchingCompleted.split(',') : [];

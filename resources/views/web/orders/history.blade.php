@@ -118,7 +118,10 @@
 @endsection
 
 @section('web.content')
-<a href="javascript:void(0)" id="payment-completed-gtm" class="gtm-hidden-btn" onclick="dataLayer.push({'event': 'payment_complete'});"></a>
+<a href="javascript:void(0)" id="payment-completed-gtm" class="gtm-hidden-btn" onclick="dataLayer.push({
+    'userId': '<?php echo Auth::user()->id; ?>',
+    'event': 'payment_complete'
+});"></a>
 @if ($order->status == \App\Enums\OrderStatus::CANCELED)
     <?php $orderStartTime = \Carbon\Carbon::parse($order->date . ' ' . $order->start_time)?>
     <?php $orderEndTime = $orderStartTime->copy()->addMinutes($order->duration * 60)?>
