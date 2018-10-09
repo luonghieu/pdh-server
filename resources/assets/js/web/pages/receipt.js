@@ -46,7 +46,7 @@ $(document).ready(function() {
               $('#trigger2').trigger('click');
 
               var btn = '#point-' + response.data.data.point_id + '-btn';
-              var label = '<label for="trigger2" class="btn-bg js-receipt" img-file="' + img_file +'">領収書を発行</label>'
+              var label = '<label for="trigger2" class="btn-bg js-receipt" img-file="' + img_file +'">領収書を再発行</label>'
               $(btn).html(label);
               $('#name').val('');
               $('#content').val('');
