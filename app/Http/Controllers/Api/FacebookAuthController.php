@@ -40,6 +40,14 @@ class FacebookAuthController extends ApiController
                 ->userFromToken($token);
 
             $avatar = $fbResponse->avatar;
+            $pos = strpos($avatar, 'asid=');
+
+            if ($pos !== false) {
+                $asid = explode('&', substr($avatar, $pos))[0];
+                $asid = substr($asid, 5);
+                $avatar = env('FACEBOOK_GRAP_API_URL') . '/' . $asid . '/picture?type=normal&height=400&width=400';
+            }
+
             $user = $this->findOrCreate($fbResponse->user, $avatar);
 
             if (!$user->status) {
