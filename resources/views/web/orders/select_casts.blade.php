@@ -30,7 +30,7 @@
 
 @section('web.script')
   <script>
-    $(function () {
+    window.onpageshow = function () {
       var requesting = false;
       $(document).on('scroll', function () {
         if ($(window).scrollTop() + $(window).height() == $(document).height() && requesting == false) {
@@ -50,7 +50,7 @@
           }
         }
       });
-    });
+    };
 
     window.addEventListener("beforeunload", function(event) {
       var selectCast = document.location.href;
