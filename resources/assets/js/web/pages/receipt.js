@@ -1,6 +1,7 @@
 $(document).ready(function() {
-  $('.js-point').on('click', function() {
-    var point_id = $(this).attr('point-id');
+  var point_id = null;
+  $('.popup-create-receipt').on('click', function() {
+    point_id = $(this).attr('point-id');
 
     $('#form-receipt').submit(function(e) {
         e.preventDefault();
@@ -36,17 +37,17 @@ $(document).ready(function() {
 
           window.axios.post('/api/v1/receipts', params)
             .then(function(response) {
-              const img_file = response.data.data.img_file;
+              var img_file = response.data.data.img_file;
 
               $('#img-pdf').attr('src', img_file);
               $('#img-download').attr('href', img_file);
               $('#send-mail').attr('img-file', img_file);
 
-              $('#trigger5').trigger('click');
-              $('#trigger2').trigger('click');
+              $('#popup-create-receipt').trigger('click');
+              $('#popup-receipt').trigger('click');
 
               var btn = '#point-' + response.data.data.point_id + '-btn';
-              var label = '<label for="trigger2" class="btn-bg js-receipt" img-file="' + img_file +'">領収書を再発行</label>'
+              var label = '<label for="popup-receipt" class="btn-bg popup-receipt" img-file="' + img_file +'">領収書を再発行</label>'
               $(btn).html(label);
               $('#name').val('');
               $('#content').val('');
@@ -68,15 +69,16 @@ $(document).ready(function() {
       });
   });
 
-  $('.js-receipt').on('click', function() {
+  $('body').on('click', '.popup-receipt', function() {
     var img_file = $(this).attr('img-file');
 
     $('#img-pdf').attr('src', img_file);
     $('#img-download').attr('href', img_file);
+    $('#send-mail').attr('img-file', img_file);
   });
 
   $('#send-mail').on('click', function() {
-    img_file = $(this).attr('img-file') ? $(this).attr('img-file') : $('.js-receipt').attr('img-file');
+    img_file = $(this).attr('img-file') ? $(this).attr('img-file') : $('.popup-receipt').attr('img-file');
 
     window.location = 'mailto:?body=' + img_file;
   });

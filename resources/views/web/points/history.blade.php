@@ -3,12 +3,12 @@
 
 @extends('layouts.web')
 @section('web.extra')
-<form action="#" method="post" id="form-receipt">
+<form action="#" method="get" id="form-receipt">
   {{ csrf_field() }}
   <div class="modal_wrap modal5">
-    <input id="trigger5" type="checkbox">
+    <input id="popup-create-receipt" type="checkbox">
     <div class="modal_overlay">
-      <label for="trigger5" class="modal_trigger"></label>
+      <label for="popup-create-receipt" class="modal_trigger"></label>
       <div class="modal_content modal_content-btn5">
         <div class="text-box">
           <h2>領収書を発行する</h2>
@@ -26,10 +26,10 @@
         </div>
         <div class="close_button-box">
           <div class="close_button-block left">
-            <label for="trigger5" class="btn4">キャンセル</label>
+            <label for="popup-create-receipt" class="btn4">キャンセル</label>
           </div>
           <div class="close_button-block">
-            <button type="submit" for="trigger5" class="btn btn-bg bd-none">発行する</button>
+            <button type="submit" for="popup-create-receipt" class="btn btn-bg bd-none">発行する</button>
           </div>
         </div>
       </div>
@@ -38,9 +38,9 @@
 </form>
 <div class="modal_wrap">
   <a href="" id='mailto'></a>
-  <input id="trigger2" type="checkbox">
+  <input id="popup-receipt" type="checkbox">
     <div class="modal_overlay">
-      <label for="trigger2" class="modal_trigger"></label>
+      <label for="popup-receipt" class="modal_trigger"></label>
       <div class="modal_content modal_content-btn2">
         <img id="img-pdf" name="pdf" alt="">
         <div class="mb-10">
@@ -64,7 +64,7 @@
   </div>
 </div>
 @else
-  <label for="trigger2" class="open_button button-settlement"></label>
+  <label for="popup-receipt" class="open_button button-settlement"></label>
   <div class="list_wrap">
     @include('web.points.list_point', compact('points'))
     <input type="hidden" id="next_page" value="{{ $points['next_page_url'] }}">
