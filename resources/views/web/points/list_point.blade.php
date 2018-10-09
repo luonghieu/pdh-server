@@ -54,9 +54,9 @@
     @else
       <div class="item_right" id="point-{{ $point['id'] }}-btn">
         @if (!$point['receipt'])
-          <label for="trigger5" class="btn-bg js-point" point-id="{{ $point['id'] }}">領収書を発行</label>
+          <label for="popup-create-receipt" class="btn-bg popup-create-receipt" point-id="{{ $point['id'] }}">領収書を発行</label>
         @else
-          <label for="trigger2" class="btn-bg js-receipt" point-id="{{ $point['id'] }}" img-file="{{ $point['receipt']['img_file'] }}">領収書を再発行</label>
+          <label for="popup-receipt" class="btn-bg popup-receipt" point-id="{{ $point['id'] }}" img-file="{{ $point['receipt']['img_file'] }}">領収書を再発行</label>
         @endif
       </div>
     @endif
