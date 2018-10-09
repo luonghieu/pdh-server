@@ -37,7 +37,7 @@
 
 @section('web.script')
 <script>
-  window.onpageshow = function () {
+  $(function () {
     var requesting = false;
     $(document).on('scroll', function () {
       if ($(window).scrollTop() + $(window).height() == $(document).height() && requesting == false) {
@@ -57,6 +57,6 @@
         }
       }
     });
-  };
+  });
 </script>
 @endsection
