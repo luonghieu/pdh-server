@@ -182,6 +182,7 @@ $(document).ready(function(){
     if($('#md-require-card').length){
       $('#md-require-card').click();
     }else {
+      document.getElementById('confirm-order-submit').click();
       $('#add-orders').submit();
     }
   });

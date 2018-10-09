@@ -3,6 +3,8 @@
 @section('screen.class', 'ge3')
 @extends('layouts.web')
 @section('web.content')
+  <a href="javascript:void(0)" id="confirm-order-submit" class="gtm-hidden-btn" onclick="dataLayer.push({'event':
+  'callbooking_complete'});"></a>
   @if(session()->has('data'))
   @php
   $data = Session::get('data');

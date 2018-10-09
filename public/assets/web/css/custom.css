@@ -1038,3 +1038,8 @@
 #chat .text-wrapper {
   word-break: break-all;
 }
+.gtm-hidden-btn {
+  position: absolute;
+  color: transparent;
+  left: 9999999px;
+}

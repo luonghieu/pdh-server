@@ -113,6 +113,7 @@ class LineController extends Controller
     }
 
     public function handleCallBack(Request $request) {
+
         try {
             if (isset($request->friendship_status_changed) && $request->friendship_status_changed == 'false') {
                 $redirectUri = env('LINE_REDIRECT_URI');
@@ -143,7 +144,8 @@ class LineController extends Controller
                     $lineResponse = Socialite::driver('line')->user();
                 }
 
-                $user = $this->findOrCreate($lineResponse);
+                $userData = $this->findOrCreate($lineResponse);
+                $user = $userData['user'];
                 Auth::login($user);
             } else {
                 \Session::flash('error', trans('messages.login_line_failed'));
@@ -153,8 +155,9 @@ class LineController extends Controller
             \Session::flash('error', trans('messages.login_line_failed'));
         }
 
+        $firstTime = $userData['first_time'];
 
-        return redirect()->route('web.index');
+        return redirect()->route('web.index', ['first_time' => $firstTime]);
     }
 
     protected function findOrCreate($lineResponse)
@@ -191,7 +194,7 @@ class LineController extends Controller
 
             $user->notify(new CreateGuest());
 
-            return $user;
+            return ['user' => $user, 'first_time' => true];
         }
 
         if (!$user->line_id) {
@@ -199,6 +202,6 @@ class LineController extends Controller
             $user->save();
         }
 
-        return $user;
+        return ['user' => $user, 'first_time' => false];
     }
 }

@@ -597,6 +597,7 @@ $(document).ready(function(){
       if($('#md-require-card').length){
         $('#md-require-card').click();
       }else {
+        document.getElementById('confirm-order-nomination-submit').click();
         $('#create-nomination-form').submit();
       }
   });

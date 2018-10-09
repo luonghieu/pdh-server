@@ -3,6 +3,26 @@
 @section('controller.id', 'chat')
 @extends('layouts.web')
 @section('web.content')
+  @if (isset(request()->matching_completed) && request()->matching_completed)
+    <a href="javascript:void(0)" id="matching-completed" class="gtm-hidden-btn" onclick="dataLayer.push
+    ({'event': 'matching_complete'});"></a>
+    <script>
+        const matchingCompleted = localStorage.getItem('matching_completed');
+        const orders = (matchingCompleted) ? matchingCompleted.split(',') : [];
+        const currentOrder = '<?php echo request()->order_id ?>';
+        if (!orders.length) {
+            orders.push(currentOrder);
+            document.getElementById('matching-completed').click();
+            localStorage.setItem('matching_completed', orders);
+        } else {
+            if (!orders.includes(currentOrder)) {
+                orders.push(currentOrder);
+                document.getElementById('matching-completed').click();
+                localStorage.setItem('matching_completed', orders);
+            }
+        }
+    </script>
+  @endif
   <div class="title">
     @php
       if ($room->type != \App\Enums\RoomType::SYSTEM) {

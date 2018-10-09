@@ -38,6 +38,18 @@
       <img src="{{ asset('images/btn_login_base.png') }}" alt="">
     </a>
   @endif
+
+
+  @if (isset(request()->first_time) && request()->first_time)
+    <a href="javascript:void(0)" class="gtm-hidden-btn" id="first-time-login" name="button1" onclick="dataLayer.push({'event': 'login_complete'});"></a>
+    <script>
+      setTimeout(() => {
+          document.getElementById('first-time-login').click();
+      }, 500)
+    </script>
+  @endif
+
+
   <section class="button-box" style="display: none;">
     <label for="trigger" class="open_button button-settlement"></label>
   </section>
