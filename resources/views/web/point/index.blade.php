@@ -28,7 +28,7 @@
 <div class="modal_wrap">
     <input id="popup-require-card" type="checkbox">
     <div class="modal_overlay">
-        <label for="popup-require-card" class="modal_trigger"></label>
+        <label for="popup-require-card" class="modal_trigger" id="popup-require-card-label"></label>
         <div class="modal_content modal_content-btn1">
             <div class="text-box">
                 <h2>※キャストとマッチングするには

@@ -15,7 +15,7 @@ $('#buypoint-confirm').on('click', function() {
             }
         }, 5000);
     }).catch(err => {
-        $('#popup-require-card').trigger('click');
+        $('#popup-require-card-label').trigger('click');
     });
 });
 $('#buypoint-alert-label').on('click', function() {
