@@ -39,3 +39,17 @@
     <button type="submit" class="form_footer ct-button">次に進む(4/4)</button>
   </form>
 @endsection
+
+<script>
+  if(localStorage.getItem("select_cast")){
+    var backLink = localStorage.getItem("select_cast");
+    if (window.history && window.history.pushState) {
+      window.history.pushState(null, null, null);
+
+      window.onpopstate = function(event) {
+       window.location.replace(backLink);
+       localStorage.removeItem("select_cast");
+      }
+    }
+  }
+</script>

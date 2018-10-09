@@ -143,6 +143,7 @@ $(document).ready(function(){
         if(castIds.indexOf(id) > -1) {
           castIds.splice(castIds.indexOf(id), 1);
           $(".cast-ids").val(castIds.toString());
+          $('.label-select-casts[for='+  id  +']').text('指名する');
         }
 
         $(this).attr('checked',false);
