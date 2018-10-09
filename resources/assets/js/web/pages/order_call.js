@@ -1,4 +1,28 @@
 $(document).ready(function(){
+
+  if($("#ge2-1-x input:radio[name='area']:checked").length){
+    $("#ge2-1-x input:radio[name='area']:checked").parent().addClass("active");
+  }
+
+  if($("#ge2-1-x input:radio[name='cast_class']:checked").length){
+    $("#ge2-1-x input:radio[name='cast_class']:checked").parent().addClass("active");
+  }
+
+  if($("#ge2-1-x input:radio[name='time_set']:checked").length){
+    $("#ge2-1-x input:radio[name='time_set']:checked").parent().addClass("active");
+  }
+
+  if($("#ge2-1-x input:radio[name='time_join']:checked").length){
+    $("#ge2-1-x input:radio[name='time_join']:checked").parent().addClass("active");
+  }
+
+  if($("#ge2-1-x .form-grpup .checkbox-tags input:checkbox[name='desires[]']:checked").length){
+    const checkedTag = $("#ge2-1-x .form-grpup .checkbox-tags input:checkbox[name='desires[]']:checked");
+    $.each(checkedTag,function(index,val){
+      $(this).parent().addClass('active');
+    })
+  }
+
   $('.select-month').on('change', function (e) {
     var month = $(this).val();
     window.axios.post('/get_day', {month})
