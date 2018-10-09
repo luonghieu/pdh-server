@@ -123,7 +123,8 @@ class CastAcceptNominationOrders extends Notification implements ShouldQueue
             . PHP_EOL . '合流予定時間：' . $startTime->format('Y/m/d H:i') . '～'
             . PHP_EOL . PHP_EOL .'ゲストの方はキャストに来て欲しい場所の詳細をお伝えください。';
 
-        $page = env('LINE_LIFF_REDIRECT_PAGE') . '?page=room&room_id=' . $this->order->room->id;
+        $page = env('LINE_LIFF_REDIRECT_PAGE') . '?page=room&room_id=' . $this->order->room->id . '&order_id=' .
+            $this->order->id;
 
         return [
             [

@@ -17,7 +17,7 @@ class RedirectController extends Controller
                 return \Redirect::to(route('guest.orders.call'));
             case 'room':
                 return \Redirect::to(route('message.messages', ['room' => $request->room_id, 'matching_completed' =>
-                    true]));
+                    true, 'order_id' => $request->order_id]));
             case 'evaluation':
                 $order = Order::find($request->order_id);
                 $casts = $order->casts;
