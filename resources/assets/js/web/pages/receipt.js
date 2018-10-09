@@ -1,6 +1,6 @@
 $(document).ready(function() {
   var point_id = null;
-  $('.popup-create-receipt').on('click', function() {
+  $('body').on('click', '.popup-create-receipt', function() {
     point_id = $(this).attr('point-id');
 
     $('#form-receipt').submit(function(e) {
