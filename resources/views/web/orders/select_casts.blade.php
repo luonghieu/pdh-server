@@ -30,7 +30,7 @@
 
 @section('web.script')
   <script>
-    window.onpageshow = function () {
+    $(function () {
       var requesting = false;
       $(document).on('scroll', function () {
         if ($(window).scrollTop() + $(window).height() == $(document).height() && requesting == false) {
@@ -50,11 +50,6 @@
           }
         }
       });
-    };
-
-    window.addEventListener("beforeunload", function(event) {
-      var selectCast = document.location.href;
-      localStorage.setItem('select_cast', selectCast);
     });
 
   </script>

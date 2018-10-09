@@ -149,9 +149,5 @@
       localStorage.removeItem("back_link");
     }
 
-    if(localStorage.getItem("select_cast")){
-      localStorage.removeItem("select_cast");
-    }
-
   </script>
 @endsection
