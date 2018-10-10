@@ -1,5 +1,4 @@
 $(document).ready(function(){
-
   if($("#ge2-1-x input:radio[name='area']:checked").length){
     $("#ge2-1-x input:radio[name='area']:checked").parent().addClass("active");
   }
@@ -17,8 +16,15 @@ $(document).ready(function(){
   }
 
   if($("#ge2-1-x .form-grpup .checkbox-tags input:checkbox[name='desires[]']:checked").length){
-    const checkedTag = $("#ge2-1-x .form-grpup .checkbox-tags input:checkbox[name='desires[]']:checked");
-    $.each(checkedTag,function(index,val){
+    const checkedDesires = $("#ge2-1-x .form-grpup .checkbox-tags input:checkbox[name='desires[]']:checked");
+    $.each(checkedDesires,function(index,val){
+      $(this).parent().addClass('active');
+    })
+  }
+
+  if($("#ge2-1-x .form-grpup .checkbox-tags input:checkbox[name='situations[]']:checked").length){
+    const checkedSituations = $("#ge2-1-x .form-grpup .checkbox-tags input:checkbox[name='situations[]']:checked");
+    $.each(checkedSituations,function(index,val){
       $(this).parent().addClass('active');
     })
   }
@@ -140,18 +146,19 @@ $(document).ready(function(){
   });
 
   $(".form-grpup .checkbox-tags").on("change",function(event){
-    if ($(this).hasClass("active")) {
-      $(this).children().attr('checked',false);
-    } else {
-      $(this).children().attr('checked',true);
-    }
-
     var activeSum = $(".active").length;
 
-    if(activeSum >= 5 && !$(this).hasClass("active")){
+    if ($(this).hasClass("active")) {
       $(this).children().attr('checked',false);
-    }else{
-      $(this).toggleClass("active");
+      $(this).removeClass('active');
+    } else {
+      if(activeSum >= 5) {
+        $(this).children().attr('checked',false);
+        $(this).removeClass('active');
+      } else {
+        $(this).children().attr('checked',true);
+        $(this).addClass('active');
+      }
     }
   });
 
@@ -269,6 +276,9 @@ $(document).ready(function(){
 
   var buttonGreen = $(".button--green.area");
   buttonGreen.on("change",function(){
+    $("#ge2-1-x input:radio[name='area']").parent().removeClass("active");
+    $("#ge2-1-x input:radio[name='area']:checked").parent().addClass("active");
+
     var area = $("input:radio[name='area']:checked").val();
     var otherArea = $("input:text[name='other_area']").val();
     var time = $("input:radio[name='time_join']:checked").val();
@@ -289,6 +299,9 @@ $(document).ready(function(){
 
   var dateButton = $(".button--green.date");
     dateButton.on("change",function(){
+    $("#ge2-1-x input:radio[name='time_join']").parent().removeClass("active");
+    $("#ge2-1-x input:radio[name='time_join']:checked").parent().addClass("active");
+
     var area = $("input:radio[name='area']:checked").val();
     var otherArea = $("input:text[name='other_area']").val();
     var castClass = $("input:radio[name='cast_class']:checked").val();
@@ -330,6 +343,9 @@ $(document).ready(function(){
   //duration
   var timeButton = $(".button--green.time");
   timeButton.on("change",function(){
+    $("#ge2-1-x input:radio[name='time_set']").parent().removeClass("active");
+    $("#ge2-1-x input:radio[name='time_set']:checked").parent().addClass("active");
+
     var area = $("input:radio[name='area']:checked").val();
     var otherArea = $("input:text[name='other_area']").val();
     var castClass = $("input:radio[name='cast_class']:checked").val();
