@@ -21,8 +21,8 @@
        <li class=""><span class="icon1 icon-size-w11">{{ $order['duration'] }}時間</span></li>
        <li class="">
         <span class="icon2 icon-size-w17">
-         {{ $order['is_nominated'] ? number_format($order['nominee_point']) : number_format($order['call_point']) }}P〜
-         </span>
+         {{ number_format($order['temp_point']) }}P〜
+        </span>
        </li>
        <li class=""><span class="icon3 icon-size-w15">{{ $order['total_cast'] }}名</span></li>
      </ul>
