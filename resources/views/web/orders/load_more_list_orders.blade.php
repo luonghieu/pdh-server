@@ -22,7 +22,7 @@
        <li class="">
         <span class="icon2 icon-size-w17">
          {{ number_format($order['temp_point']) }}P〜
-         </span>
+        </span>
        </li>
        <li class=""><span class="icon3 icon-size-w15">{{ $order['total_cast'] }}名</span></li>
      </ul>
