@@ -157,7 +157,11 @@ class LineController extends Controller
 
         $firstTime = $userData['first_time'];
 
-        return redirect()->route('web.index', ['first_time' => $firstTime]);
+        if ($firstTime) {
+            return redirect()->route('web.index', ['first_time' => $firstTime]);
+        }
+
+        return redirect()->route('web.index');
     }
 
     protected function findOrCreate($lineResponse)
