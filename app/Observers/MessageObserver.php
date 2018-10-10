@@ -23,10 +23,10 @@ class MessageObserver
 
             if (RoomType::DIRECT == $room->type) {
                 if (!$room->checkBlocked($room->owner_id == $room->users[0]->id ? $room->users[1]->id : $room->users[0]->id)) {
-                    \Notification::send($users, new MessageCreated($message));
+                    \Notification::send($users, new MessageCreated($message->id));
                 }
             } else {
-                \Notification::send($users, new MessageCreated($message));
+                \Notification::send($users, new MessageCreated($message->id));
             }
         }
 
