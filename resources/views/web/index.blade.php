@@ -73,7 +73,7 @@
     @endif
   </div>
   <a href="{{ route('guest.orders.call') }}" class="cast-call">今すぐキャストを呼ぶ<span>最短20分で合流!</span></a>
-  @if ($order)
+  @if ($order->resource)
   <div class="booking">
     <h2>現在の予約</h2>
     <div class="booking-block">
