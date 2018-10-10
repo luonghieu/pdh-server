@@ -16,12 +16,12 @@ class OrderObserver
     {
         if (OrderType::NOMINATED_CALL == $order->type || OrderType::CALL == $order->type) {
             if ($order->user->provider != ProviderType::LINE) {
-                $order->user->notify(new CreateNominatedOrdersForGuest($order));
+                $order->user->notify(new CreateNominatedOrdersForGuest($order->id));
             }
         }
 
         if ($order->user->provider == ProviderType::LINE) {
-            $order->user->notify(new CreateOrdersForLineGuest($order));
+            $order->user->notify(new CreateOrdersForLineGuest($order->id));
         }
     }
 

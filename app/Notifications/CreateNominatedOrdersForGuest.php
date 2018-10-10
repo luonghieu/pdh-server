@@ -2,15 +2,16 @@
 
 namespace App\Notifications;
 
+use App\Order;
+use Carbon\Carbon;
+use App\Enums\RoomType;
+use App\Enums\UserType;
 use App\Enums\MessageType;
 use App\Enums\ProviderType;
-use App\Enums\RoomType;
-use App\Enums\SystemMessageType;
-use App\Enums\UserType;
-use Carbon\Carbon;
 use Illuminate\Bus\Queueable;
-use Illuminate\Contracts\Queue\ShouldQueue;
+use App\Enums\SystemMessageType;
 use Illuminate\Notifications\Notification;
+use Illuminate\Contracts\Queue\ShouldQueue;
 
 class CreateNominatedOrdersForGuest extends Notification implements ShouldQueue
 {
@@ -23,8 +24,10 @@ class CreateNominatedOrdersForGuest extends Notification implements ShouldQueue
      *
      * @param $order
      */
-    public function __construct($order)
+    public function __construct($orderId)
     {
+        $order = Order::findOrFail($orderId);
+
         $this->order = $order;
     }
 
