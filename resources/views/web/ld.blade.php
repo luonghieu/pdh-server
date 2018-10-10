@@ -83,7 +83,8 @@
         </div>
         <!--開発環境-->
         <div class="g_btn">
-          <a href="https://line.me/R/ti/p/%40eof2116g" target="_blank" class="btn_color site size_md">事前登録はこちら</a>
+          <a href="{{ 'https://line.me/R/ti/p/%40' . env('LINE_ID') }}" target="_blank" class="btn_color site
+          size_md">事前登録はこちら</a>
         </div>
         <!--本番環境
 			<div class="g_btn">
@@ -199,7 +200,8 @@
             </div>
             <!--開発環境-->
             <div class="g_btn">
-              <a href="https://line.me/R/ti/p/%40eof2116g" target="_blank" class="btn_color site size_md">事前登録はこちら</a>
+              <a href="{{ 'https://line.me/R/ti/p/%40' . env('LINE_ID') }}" target="_blank" class="btn_color site
+              size_md">事前登録はこちら</a>
             </div>
             <!--本番環境
 					<div class="g_btn">
@@ -334,7 +336,8 @@
             </div>
             <!--開発環境-->
             <div class="g_btn">
-              <a href="https://line.me/R/ti/p/%40eof2116g" target="_blank" class="btn_color site size_md">事前登録はこちら</a>
+              <a href="{{ 'https://line.me/R/ti/p/%40' . env('LINE_ID') }}" target="_blank" class="btn_color site
+              size_md">事前登録はこちら</a>
             </div>
             <!--本番環境
 					<div class="g_btn">
