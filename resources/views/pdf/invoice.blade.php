@@ -21,7 +21,7 @@
         }
     </style>
 </head>
-<body>
+<body style="background: white !important;">
 <div class="container" style="padding: 1em;">
     <div class="header">
         <div class="lef" style="float: left; padding: 10px; border-bottom: 1px solid black">

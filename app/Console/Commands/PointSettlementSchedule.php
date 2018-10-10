@@ -3,6 +3,7 @@
 namespace App\Console\Commands;
 
 use App\Enums\OrderPaymentStatus;
+use App\Enums\ProviderType;
 use App\Jobs\PointSettlement;
 use App\Order;
 use Carbon\Carbon;
@@ -44,10 +45,26 @@ class PointSettlementSchedule extends Command
         $now = Carbon::now();
 
         $orders = Order::where('payment_status', OrderPaymentStatus::REQUESTING)
-            ->where('payment_requested_at', '<=', $now->subHours(24))
+            ->where('payment_requested_at', '<=', $now->copy()->subHours(24))
+            ->whereHas('user', function($q) {
+                $q->where('provider', '<>', ProviderType::LINE)
+                    ->orWhere('provider', null);
+            })
             ->get();
         foreach ($orders as $order) {
             PointSettlement::dispatchNow($order);
         }
+
+        $lineOrders = Order::where('payment_status', OrderPaymentStatus::REQUESTING)
+            ->where('payment_requested_at', '<=', $now->copy()->subHours(3))
+            ->whereHas('user', function($q) {
+                $q->where('provider', ProviderType::LINE);
+            })
+            ->get();
+
+        foreach ($lineOrders as $order) {
+            PointSettlement::dispatchNow($order);
+        }
+
     }
 }

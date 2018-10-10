@@ -31,4 +31,17 @@ class Receipt extends Model
 
         return Storage::url($value);
     }
+
+    public function getImgFileAttribute($value)
+    {
+        if (empty($value)) {
+            return '';
+        }
+
+        if (strpos($value, 'https') !== false) {
+            return $value;
+        }
+
+        return Storage::url($value);
+    }
 }

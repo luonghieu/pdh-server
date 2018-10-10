@@ -3,6 +3,7 @@
 namespace App\Notifications;
 
 use App\Enums\MessageType;
+use App\Enums\ProviderType;
 use App\Enums\RoomType;
 use App\Enums\SystemMessageType;
 use App\Enums\UserType;
@@ -35,7 +36,11 @@ class CompletedPayment extends Notification
      */
     public function via($notifiable)
     {
-        return [PushNotificationChannel::class];
+        if ($notifiable->provider == ProviderType::LINE) {
+            return [LineBotNotificationChannel::class];
+        } else {
+            return [PushNotificationChannel::class];
+        }
     }
 
     /**
@@ -72,22 +77,17 @@ class CompletedPayment extends Notification
             . PHP_EOL . PHP_EOL . 'マイページの「ポイント履歴」から領収書の発行が可能です。'
             . PHP_EOL . PHP_EOL . $guestNickname . 'のまたのご利用をお待ちしております♪';
 
-        try {
-            $room = $notifiable->rooms()
-                ->where('rooms.type', RoomType::SYSTEM)
-                ->where('rooms.is_active', true)->first();
-            $roomMessage = $room->messages()->create([
-                'user_id' => 1,
-                'type' => MessageType::SYSTEM,
-                'message' => $content,
-                'system_type' => SystemMessageType::NORMAL,
-                'order_id' => $this->order->id,
-            ]);
-            $roomMessage->recipients()->attach($notifiable->id, ['room_id' => $room->id]);
-        } catch (\Exception $e) {
-            LogService::writeErrorLog('Room not found. User ID: '. $notifiable->id);
-            LogService::writeErrorLog($e);
-        }
+        $room = $notifiable->rooms()
+            ->where('rooms.type', RoomType::SYSTEM)
+            ->where('rooms.is_active', true)->first();
+        $roomMessage = $room->messages()->create([
+            'user_id' => 1,
+            'type' => MessageType::SYSTEM,
+            'message' => $content,
+            'system_type' => SystemMessageType::NORMAL,
+            'order_id' => $this->order->id,
+        ]);
+        $roomMessage->recipients()->attach($notifiable->id, ['room_id' => $room->id]);
 
         $pushId = 'g_16';
         $namedUser = 'user_' . $notifiable->id;
@@ -119,6 +119,44 @@ class CompletedPayment extends Notification
                     ],
                 ]
             ],
+        ];
+    }
+
+    public function lineBotPushData($notifiable)
+    {
+        $orderStartDate = Carbon::parse($this->order->date . ' ' . $this->order->start_time);
+        $orderEndDate = Carbon::parse($this->order->actual_ended_at);
+        $guestNickname = $this->order->user->nickname ? $this->order->user->nickname . '様' : 'お客様';
+        $content = 'Cheersをご利用いただきありがとうございました♪'
+            . PHP_EOL . $orderStartDate->format('Y/m/d H:i') . '~' . $orderEndDate->format('H:i') . 'のご利用ポイント、' .
+            $this->order->total_point . 'Pointのご清算が完了いたしました。'
+            . PHP_EOL . PHP_EOL . 'マイページの「ポイント履歴」から領収書の発行が可能です。'
+            . PHP_EOL . PHP_EOL . $guestNickname . 'のまたのご利用をお待ちしております♪';
+        $room = $notifiable->rooms()
+            ->where('rooms.type', RoomType::SYSTEM)
+            ->where('rooms.is_active', true)->first();
+        $roomMessage = $room->messages()->create([
+            'user_id' => 1,
+            'type' => MessageType::SYSTEM,
+            'message' => $content,
+            'system_type' => SystemMessageType::NORMAL,
+            'order_id' => $this->order->id,
+        ]);
+        $roomMessage->recipients()->attach($notifiable->id, ['room_id' => $room->id]);
+
+        $content = 'Cheersをご利用いただきありがとうございました♪'
+            . PHP_EOL . $orderStartDate->format('Y/m/d H:i') . '~' . $orderEndDate->format('H:i') . 'のご利用ポイント、' .
+            number_format($this->order->total_point) . 'Point'
+            . PHP_EOL . 'のご清算が完了いたしました。'
+            . PHP_EOL . PHP_EOL . 'マイページの「ポイント履歴」から領収書の発行が可能です。'
+            . PHP_EOL . PHP_EOL . $guestNickname . 'のまたのご利用をお待ちしております♪';
+
+
+        return [
+            [
+                'type' => 'text',
+                'text' => $content,
+            ]
         ];
     }
 }

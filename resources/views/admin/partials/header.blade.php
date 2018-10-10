@@ -29,11 +29,13 @@
   <div class="smallstat">
     @foreach ($notifications as $notification)
      <span class="value">
-      @if ($notification->type == 'App\Notifications\PaymentRequestUpdate')
-      <a href="#" onclick="makeRead('{{$notification->id}}')" >{{ $notification->content }}</a>
+      @if ($notification->type == \App\Notifications\PaymentRequestUpdate::class)
+         <a href="#" onclick="makeRead('{{$notification->id}}')" >{{ $notification->content }}</a>
+      @elseif ($notification->type == \App\Notifications\AutoChargeFailed::class)
+         <a href="{{ route('admin.orders.index', ['notification_id' => $notification->id]) }}">{{ $notification->content }}</a>
       @else
-      <a href="{{ route('admin.reports.index', ['notification_id' => $notification->id]) }}">{{ $notification->content }}</a>
-      @endif
+         <a href="{{ route('admin.reports.index', ['notification_id' => $notification->id]) }}">{{ $notification->content }}</a>
+     @endif
     </span>
     @endforeach
   </div>

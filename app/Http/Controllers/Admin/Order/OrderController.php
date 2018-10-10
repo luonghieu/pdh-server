@@ -8,6 +8,7 @@ use App\Enums\OrderType;
 use App\Enums\PaymentRequestStatus;
 use App\Http\Controllers\Controller;
 use App\Jobs\PointSettlement;
+use App\Notification;
 use App\Order;
 use App\PaymentRequest;
 use App\Services\LogService;
@@ -28,6 +29,21 @@ class OrderController extends Controller
             OrderStatus::ACTIVE,
             OrderStatus::OPEN,
         ];
+
+        if ($request->has('notification_id')) {
+            $notification = Notification::find($request->notification_id);
+            if (null == $notification->read_at) {
+                $now = Carbon::now();
+                try {
+                    $notification->read_at = $now;
+                    $notification->save();
+                } catch (\Exception $e) {
+                    LogService::writeErrorLog($e);
+
+                    return $this->respondServerError();
+                }
+            }
+        }
 
         $keyword = $request->search;
         $orderBy = $request->only('user_id', 'id', 'type', 'address',

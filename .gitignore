@@ -1,6 +1,6 @@
 /node_modules
 /public/hot
-/public/js/app.js
+/public/js/
 /public/storage
 /public/mix-manifest.json
 /public/bundle
@@ -16,4 +16,4 @@ yarn-error.log
 .env
 deploy
 .DS_Store
-package-lock.json
+laravel-echo-server.json

@@ -128,9 +128,9 @@ class ValidateOrder implements ShouldQueue
             . PHP_EOL . PHP_EOL . '- ご予約内容 - '
             . PHP_EOL . '場所：' . $this->order->address
             . PHP_EOL . '合流予定時間：' . $startTime->format('H:i') . '～'
-                . PHP_EOL . PHP_EOL . 'ゲストの方はキャストに来て欲しい場所の詳細をお伝えください。'
-                . PHP_EOL . '尚、ご不明点がある場合は運営までお問い合わせください。'
-                . PHP_EOL . PHP_EOL . 'それでは素敵な時間をお楽しみください♪';
+            . PHP_EOL . PHP_EOL . 'ゲストの方はキャストに来て欲しい場所の詳細をお伝えください。'
+            . PHP_EOL . '尚、ご不明点がある場合は運営までお問い合わせください。'
+            . PHP_EOL . PHP_EOL . 'それでは素敵な時間をお楽しみください♪';
 
             $roomMessage = $room->messages()->create([
                 'user_id' => 1,

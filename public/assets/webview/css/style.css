@@ -322,6 +322,11 @@ header .btn-register {
   color: #ff6090 !important;
 }
 
+.hidden-text {
+  display: none;
+}
+
+
 @media (min-width: 768px) {
   .number input{
     padding-top: 25px;

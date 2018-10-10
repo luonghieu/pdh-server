@@ -54,8 +54,9 @@ class CreditCardController extends Controller
 
         $numberCardVisa = preg_match("/^4[0-9]{12}(?:[0-9]{3})?$/", $request->number_card);
         $numberMasterCard = preg_match("/^5[1-5][0-9]{14}$/", $request->number_card);
-
         $numberAmericanExpress = preg_match("/^3[47][0-9]{13,14}$/", $request->number_card);
+        $numberDinnersClub = preg_match("/^3(?:0[0-5]|[68][0-9])[0-9]{11}$/", $request->number_card);
+        $numberJcb = preg_match("/^(?:2131|1800|35\\d{3})\\d{11}$/", $request->number_card);
 
         if ($validator->fails()) {
             return response()->json(['success' => false, 'error' => trans('messages.action_not_performed')]);
@@ -67,7 +68,7 @@ class CreditCardController extends Controller
             return response()->json(['success' => false, 'error' => trans('messages.action_not_performed')]);
         }
 
-        if ($numberCardVisa || $numberMasterCard || $numberAmericanExpress) {
+        if ($numberCardVisa || $numberMasterCard || $numberAmericanExpress || $numberDinnersClub || $numberJcb) {
             $input = request()->only([
                 'number_card',
                 'month',
@@ -118,7 +119,7 @@ class CreditCardController extends Controller
 
         $param = $card->id;
 
-        $client = new Client();
+        $client = new Client(['base_uri' => config('common.api_url')]);
         $option = [
             'headers' => ['Authorization' => 'Bearer ' . $accessToken],
             'form_params' => ['token' => $param],

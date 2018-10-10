@@ -24,6 +24,7 @@ class ReceiptResource extends Resource
             'name' => $this->name,
             'content' => $this->content,
             'file' => $this->file,
+            'img_file' => $this->img_file,
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at
         ]);

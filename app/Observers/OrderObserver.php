@@ -4,8 +4,10 @@ namespace App\Observers;
 
 use App\Enums\OrderPaymentStatus;
 use App\Enums\OrderType;
+use App\Enums\ProviderType;
 use App\Notifications\CompletedPayment;
 use App\Notifications\CreateNominatedOrdersForGuest;
+use App\Notifications\CreateOrdersForLineGuest;
 use App\Order;
 
 class OrderObserver
@@ -13,7 +15,13 @@ class OrderObserver
     public function created(Order $order)
     {
         if (OrderType::NOMINATED_CALL == $order->type || OrderType::CALL == $order->type) {
-            $order->user->notify(new CreateNominatedOrdersForGuest($order));
+            if ($order->user->provider != ProviderType::LINE) {
+                $order->user->notify(new CreateNominatedOrdersForGuest($order));
+            }
+        }
+
+        if ($order->user->provider == ProviderType::LINE) {
+            $order->user->notify(new CreateOrdersForLineGuest($order));
         }
     }
 

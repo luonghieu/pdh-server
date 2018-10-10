@@ -54,8 +54,8 @@ class CastController extends ApiController
             ->whereDoesntHave('blockers', function ($query) use ($user) {
                 $query->where('user_id', $user->id);
             })->whereDoesntHave('blocks', function ($q) use ($user) {
-                $q->where('blocked_id', $user->id);
-            })->active()
+            $q->where('blocked_id', $user->id);
+        })->active()
             ->groupBy('users.id')
             ->orderByDesc('co.created_at')
             ->select('users.*')

@@ -3,6 +3,7 @@
 namespace App\Notifications;
 
 use App\Enums\MessageType;
+use App\Enums\ProviderType;
 use App\Enums\RoomType;
 use App\Enums\SystemMessageType;
 use App\Enums\UserType;
@@ -22,8 +23,7 @@ class CancelOrderFromCast extends Notification implements ShouldQueue
      *
      * @param $order
      */
-    public function __construct($order)
-    {
+    public function __construct($order){
         $this->order = $order;
     }
 
@@ -35,7 +35,11 @@ class CancelOrderFromCast extends Notification implements ShouldQueue
      */
     public function via($notifiable)
     {
-        return [PushNotificationChannel::class];
+        if ($notifiable->provider == ProviderType::LINE) {
+            return [LineBotNotificationChannel::class];
+        } else {
+            return [PushNotificationChannel::class];
+        }
     }
 
     /**
@@ -121,6 +125,30 @@ class CancelOrderFromCast extends Notification implements ShouldQueue
                     ],
                 ]
             ],
+        ];
+    }
+
+    public function lineBotPushData($notifiable)
+    {
+        $room = $this->order->room;
+        $message = '予約がキャンセルされました。';
+        $roomMessage = $room->messages()->create([
+            'user_id' => 1,
+            'type' => MessageType::SYSTEM,
+            'message' => $message,
+            'system_type' => SystemMessageType::NOTIFY
+        ]);
+        $roomMessage->recipients()->attach($notifiable->id, ['room_id' => $room->id]);
+
+        $content = 'キャストが予約をキャンセルしたため、開催予定の飲み会は中止となります。'
+            . PHP_EOL . '大変申し訳ございません。'
+            . PHP_EOL . '再度予約し直す場合は、お手数ですが、もう一度「今すぐキャストを呼ぶ」ボタンをタップして、予約を行ってください。';
+
+        return [
+            [
+                'type' => 'text',
+                'text' => $content
+            ]
         ];
     }
 }

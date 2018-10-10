@@ -3,6 +3,7 @@
 namespace App\Notifications;
 
 use App\Enums\MessageType;
+use App\Enums\ProviderType;
 use App\Enums\SystemMessageType;
 use App\Enums\UserType;
 use App\Traits\DirectRoom;
@@ -38,7 +39,11 @@ class CastDenyOrders extends Notification implements ShouldQueue
      */
     public function via($notifiable)
     {
-        return [CustomDatabaseChannel::class, PushNotificationChannel::class];
+        if ($notifiable->provider == ProviderType::LINE) {
+            return [CustomDatabaseChannel::class, LineBotNotificationChannel::class];
+        } else {
+            return [CustomDatabaseChannel::class, PushNotificationChannel::class];
+        }
     }
 
     /**
@@ -112,6 +117,33 @@ class CastDenyOrders extends Notification implements ShouldQueue
                     ],
                 ]
             ],
+        ];
+    }
+
+    public function lineBotPushData($notifiable)
+    {
+        $content = '残念ながらマッチングが成立しませんでした😭'
+            . PHP_EOL . 'お手数ですが、キャストクラスを変更して再度コールをし直してください。';
+
+        $page = env('LINE_LIFF_REDIRECT_PAGE') . '?page=call';
+
+        return [
+            [
+                'type' => 'template',
+                'altText' => $content,
+                'text' => $content,
+                'template' => [
+                    'type' => 'buttons',
+                    'text' => $content,
+                    'actions' => [
+                        [
+                            'type' => 'uri',
+                            'label' => '今すぐキャストを呼ぶ ',
+                            'uri' => "line://app/$page"
+                        ]
+                    ]
+                ]
+            ]
         ];
     }
 }

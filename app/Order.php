@@ -7,6 +7,7 @@ use App\Enums\CastOrderType;
 use App\Enums\OrderStatus;
 use App\Enums\OrderType;
 use App\Enums\PointType;
+use App\Enums\ProviderType;
 use App\Enums\RoomType;
 use App\Jobs\CancelOrder;
 use App\Jobs\ProcessOrder;
@@ -58,7 +59,7 @@ class Order extends Model
             ->whereNull('cast_order.deleted_at')
             ->withPivot('order_time', 'extra_time', 'order_point', 'extra_point', 'allowance_point', 'fee_point',
                 'total_point', 'type', 'started_at', 'stopped_at', 'status', 'accepted_at', 'canceled_at', 'guest_rated',
-                'cast_rated', 'is_thanked', 'temp_point', 'cost')
+                'cast_rated', 'is_thanked', 'temp_point', 'cost', 'id')
             ->withTimestamps();
     }
 
@@ -552,14 +553,18 @@ class Order extends Model
         if ($user->point < $this->total_point) {
             $subPoint = $this->total_point - $user->point;
 
-            $autoChargePoint = config('common.autocharge_point');
+            if ($user->provider == ProviderType::LINE) {
+                $pointAmount = $subPoint;
+            } else {
+                $autoChargePoint = config('common.autocharge_point');
 
-            $pointAmount = ceil($subPoint / $autoChargePoint) * $autoChargePoint;
+                $pointAmount = ceil($subPoint / $autoChargePoint) * $autoChargePoint;
+            }
 
             $point = $user->autoCharge($pointAmount);
 
             if (!$point) {
-                return false;
+                throw new \Exception('Auto charge failed');
             }
         }
 
@@ -584,14 +589,14 @@ class Order extends Model
 
         foreach ($points as $value) {
             if (0 == $subPoint) {
-                return true;
-            } elseif ($value->point > $subPoint && $subPoint > 0) {
-                $value->balance = $value->point - $subPoint;
+                break;
+            } elseif ($value->balance > $subPoint && $subPoint > 0) {
+                $value->balance = $value->balance - $subPoint;
                 $value->update();
 
-                $subPoint = 0;
-            } elseif ($value->point <= $subPoint) {
-                $subPoint -= $value->point;
+                break;
+            } elseif ($value->balance <= $subPoint) {
+                $subPoint -= $value->balance;
 
                 $value->balance = 0;
                 $value->update();

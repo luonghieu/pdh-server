@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use App\Enums\MessageType;
+use App\Enums\ProviderType;
 use App\Enums\Status;
 use App\Enums\UserGender;
 use App\Enums\UserType;
@@ -38,7 +39,16 @@ class FacebookAuthController extends ApiController
                 ])->stateless()
                 ->userFromToken($token);
 
-            $user = $this->findOrCreate($fbResponse->user);
+            $avatar = $fbResponse->avatar;
+            $pos = strpos($avatar, 'asid=');
+
+            if ($pos !== false) {
+                $asid = explode('&', substr($avatar, $pos))[0];
+                $asid = substr($asid, 5);
+                $avatar = env('FACEBOOK_GRAP_API_URL') . '/' . $asid . '/picture?type=normal&height=400&width=400';
+            }
+
+            $user = $this->findOrCreate($fbResponse->user, $avatar);
 
             if (!$user->status) {
                 return $this->respondErrorMessage(trans('messages.login_forbidden'), 403);
@@ -56,29 +66,32 @@ class FacebookAuthController extends ApiController
         }
     }
 
-    protected function findOrCreate($fbResponse)
+    protected function findOrCreate($fbResponse, $avatar)
     {
         $user = User::where('facebook_id', $fbResponse['id'])->first();
 
         if (!$user) {
             $data = [
-                'email' => (isset($fbResponse['email'])) ? $fbResponse['email'] : '',
+                'email' => (isset($fbResponse['email'])) ? $fbResponse['email'] : null,
                 'fullname' => $fbResponse['name'],
                 'nickname' => (isset($fbResponse['first_name'])) ? $fbResponse['first_name'] : '',
                 'facebook_id' => $fbResponse['id'],
                 'date_of_birth' => (isset($fbResponse['birthday'])) ? Carbon::parse($fbResponse['birthday']) : null,
                 'gender' => (isset($fbResponse['gender'])) ? ($fbResponse['gender'] == 'male') ? UserGender::MALE : UserGender::FEMALE : null,
                 'type' => UserType::GUEST,
-                'status' => Status::ACTIVE
+                'status' => Status::ACTIVE,
+                'provider' => ProviderType::FACEBOOK
             ];
 
             $user = User::create($data);
 
-            $user->avatars()->create([
-                'path' => $fbResponse['picture']['data']['url'],
-                'thumbnail' => $fbResponse['picture']['data']['url'],
-                'is_default' => true
-            ]);
+            if ($avatar) {
+                $user->avatars()->create([
+                    'path' => "$avatar&height=400&width=400",
+                    'thumbnail' => "$avatar&height=400&width=400",
+                    'is_default' => true
+                ]);
+            }
 
             $user->notify(new CreateGuest());
 

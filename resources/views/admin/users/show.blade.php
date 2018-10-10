@@ -16,7 +16,7 @@
           <div class="col-lg-12">
             <div class="list-avatar">
               @foreach ($user->avatars as $avatar)
-                <img src="{{ $avatar->path }}" alt="avatar">
+                <img src="{{ @getimagesize($avatar->path) ? $avatar->path :'/assets/web/images/gm1/ic_default_avatar@3x.png' }}" alt="avatar">
               @endforeach
             </div>
           </div>

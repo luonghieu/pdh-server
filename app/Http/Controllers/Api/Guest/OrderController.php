@@ -12,10 +12,16 @@ class OrderController extends ApiController
 {
     public function index(Request $request)
     {
+        if ($request->status) {
+            $listStatuses = explode(",", trim($request->status, ","));
+        } else {
+            $listStatuses = [OrderStatus::OPEN, OrderStatus::ACTIVE, OrderStatus::PROCESSING];
+        }
+
         $user = $this->guard()->user();
-        $orders = Order::whereIn('status', [OrderStatus::OPEN, OrderStatus::ACTIVE, OrderStatus::PROCESSING])
+        $orders = Order::whereIn('status', $listStatuses)
             ->where('user_id', $user->id)
-            ->with(['user', 'casts', 'nominees'])
+            ->with(['user', 'casts', 'nominees', 'tags'])
             ->latest()
             ->paginate($request->per_page);
 
