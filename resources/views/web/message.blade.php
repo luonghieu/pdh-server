@@ -100,13 +100,11 @@
                 <li class="d-top-time">{{ $messages['order']['duration'] }}時間({{ number_format($messages['order']['cast_class']['cost']) }}P/30分)</li>
                 @else
                   @php
-                    foreach ($messages['room']['users'] as $user) {
-                      if ($user['id'] != Auth::user()->id) {
-                         $point = $user['cost'];
-                      }
+                    if (isset($messages['order']['casts'][0])) {
+                      $cost = $messages['order']['casts'][0]['cast_order']['cost'];
                     }
                   @endphp
-                  <li class="d-top-time">{{ $messages['order']['duration'] }}時間({{ number_format($point) }}P/30分)</li>
+                  <li class="d-top-time">{{ $messages['order']['duration'] }}時間({{ number_format($cost) }}P/30分)</li>
                 @endif
                 @if ($countName > 2)
                   <li class="d-top-users">{{ $countName - 1 }}名</li>
