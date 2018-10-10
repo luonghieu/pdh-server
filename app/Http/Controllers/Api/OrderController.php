@@ -70,7 +70,7 @@ class OrderController extends ApiController
             return $this->respondErrorMessage(trans('messages.card_not_exist'), 404);
         }
 
-        $maxTime = $end_time->addHours(10);
+        $maxTime = $end_time->copy()->addHours(10);
         if ($maxTime->month > $user->card->exp_month && $maxTime->year == $user->card->exp_year || $maxTime->year > $user->card->exp_year) {
             return $this->respondErrorMessage(trans('messages.card_expired'), 406);
         }
