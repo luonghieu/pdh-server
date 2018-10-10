@@ -115,7 +115,17 @@
             </dt>
             <dt>
               <ul class="detail d-btm">
-                <li class="d-btm-money"><p>予定料金：<span>{{ number_format($messages['order']['temp_point']) }}P〜</span></p></li>
+                @php
+                  $tempPoint = 0;
+                  if($messages['order']['type'] == App\Enums\OrderType::CALL) {
+                    foreach ($messages['order']['casts'] as $cast) {
+                      $tempPoint += $cast['cast_order']['temp_point'];
+                    }
+                  } else {
+                    $tempPoint = $messages['order']['temp_point'];
+                  }
+                @endphp
+                <li class="d-btm-money"><p>予定料金：<span>{{ number_format($tempPoint) }}P〜</span></p></li>
                 @if ($messages['order']['status'] == App\Enums\OrderStatus::ACTIVE)
                 <li class="d-btm-cancel">
                   <section class="button-box">
@@ -199,21 +209,21 @@
   ta.style.height = "30px";//init
 
   ta.addEventListener("input",function(evt){
-      if(evt.target.scrollHeight > evt.target.offsetHeight){   
+      if(evt.target.scrollHeight > evt.target.offsetHeight){
           evt.target.style.height = evt.target.scrollHeight + "px";
       }else{
           var height,lineHeight;
           while (true){
               height = Number(evt.target.style.height.split("px")[0]);
               lineHeight = Number(evt.target.style.lineHeight.split("px")[0]);
-              evt.target.style.height = height - lineHeight + "px"; 
+              evt.target.style.height = height - lineHeight + "px";
               if(evt.target.scrollHeight > evt.target.offsetHeight){
                   evt.target.style.height = evt.target.scrollHeight + "px";
                   break;
               }
           }
       }
-  });  
+  });
 </script>
 @endsection
 @section('web.script')
