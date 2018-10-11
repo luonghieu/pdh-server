@@ -260,7 +260,13 @@ $(document).ready(function(){
   });
 
   $('.lable-register-card').on('click',function(){
-   $('.register-card').submit();
+    $('.register-card').submit();
+  });
+
+  $('.expired-card').on('click',function(){
+    var backLink = window.location.href;
+    localStorage.setItem('back_link', backLink);
+    $('.form-expired-card').submit();
   });
 
   var area = $("input:radio[name='area']:checked").val();
