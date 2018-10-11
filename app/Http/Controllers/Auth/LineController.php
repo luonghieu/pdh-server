@@ -155,7 +155,11 @@ class LineController extends Controller
             \Session::flash('error', trans('messages.login_line_failed'));
         }
 
-        $firstTime = $userData['first_time'];
+        if (isset($userData)) {
+            $firstTime = $userData['first_time'];
+        } else {
+            $firstTime = false;
+        }
 
         if ($firstTime) {
             return redirect()->route('web.index', ['first_time' => $firstTime]);
