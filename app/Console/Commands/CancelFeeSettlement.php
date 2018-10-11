@@ -65,24 +65,15 @@ class CancelFeeSettlement extends Command
             ->get();
 
         foreach ($orders as $order) {
-            try {
-                \DB::beginTransaction();
-                $this->processPayment($order, $now);
-                \DB::commit();
-            } catch (\Exception $e) {
-                \DB::rollBack();
-                LogService::writeErrorLog($e);
-            }
+            $this->processPayment($order, $now);
         }
 
         $lineOrders = Order::where('status', OrderStatus::CANCELED)
             ->whereNull('payment_status')
             ->where('canceled_at', '<=', $now->copy()->subHours(3))
-            ->where('cancel_fee_percent', '>', 0)
-            ->whereHas('user', function ($q) {
+            ->where('cancel_fee_percent', '>', 0)->whereHas('user', function ($q) {
                 $q->where('provider', ProviderType::LINE);
-            })
-            ->get();
+            })->get();
 
         foreach ($lineOrders as $order) {
             $this->processPayment($order, $now);
