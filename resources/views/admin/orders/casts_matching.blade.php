@@ -76,7 +76,14 @@
               </tr>
               <tr>
                 <th>実績合計ポイント</th>
-                <td>{{ number_format($cast->pivot->total_point) }}P</td>
+                <td>
+                  @if ($order->status == App\Enums\OrderStatus::PROCESSING)
+                  {{ count($cast->pivot) > 0 ? number_format($cast->pivot->temp_point).'P' : '0P' }}
+                  @endif
+                  @if ($order->status >= App\Enums\OrderStatus::DONE)
+                  {{ number_format($cast->pivot->total_point) }}P
+                  @endif
+                </td>
               </tr>
             </table>
           </div>
