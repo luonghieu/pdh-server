@@ -184,8 +184,12 @@
                 <tr>
                   <th>ポイント決済</th>
                   <td>
-                  @if ($order->payment_status == App\Enums\OrderPaymentStatus::PAYMENT_FINISHED)
-                  正常に完了しました
+                  @if (in_array($order->payment_status, [App\Enums\OrderPaymentStatus::PAYMENT_FINISHED, App\Enums\OrderPaymentStatus::CANCEL_FEE_PAYMENT_FINISHED]))
+                    @if ($order->payment_status == App\Enums\OrderPaymentStatus::PAYMENT_FINISHED)
+                    通常の決済が正常に完了しました
+                    @else
+                    キャンセル料の決済が正常に完了しました
+                    @endif
                   @else
                   エラー
                   @endif
