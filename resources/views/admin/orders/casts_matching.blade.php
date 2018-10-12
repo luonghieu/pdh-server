@@ -46,7 +46,7 @@
                 <th>合流時刻</th>
                 <td class="wrap-status">
                   {{ $cast->pivot->started_at ? Carbon\Carbon::parse($cast->pivot->started_at)->format('Y/m/d H:i'): '' }}
-                  @if (!in_array($order->payment_status, [App\Enums\OrderPaymentStatus::PAYMENT_FINISHED, App\Enums\OrderPaymentStatus::CANCEL_FEE_PAYMENT_FINISHED]))
+                  @if (($order->status == App\Enums\OrderStatus::DONE && (in_array($order->payment_status, [null, App\Enums\OrderPaymentStatus::WAITING, App\Enums\OrderPaymentStatus::REQUESTING, App\Enums\OrderPaymentStatus::EDIT_REQUESTING, App\Enums\OrderPaymentStatus::PAYMENT_FAILED]))) || ($order->status == App\Enums\OrderStatus::PROCESSING))
                   <button class="change-time start-time" data-toggle="modal" data-target="#start-time-{{ $cast->id }}">合流時刻を修正する</button>
                   @endif
                 </td>
@@ -56,7 +56,7 @@
                 <td class="wrap-status">
                   @if($cast->pivot->stopped_at)
                     {{ Carbon\Carbon::parse($cast->pivot->stopped_at)->format('Y/m/d H:i') }}
-                    @if (!in_array($order->payment_status, [App\Enums\OrderPaymentStatus::PAYMENT_FINISHED, App\Enums\OrderPaymentStatus::CANCEL_FEE_PAYMENT_FINISHED]))
+                    @if ($order->status == App\Enums\OrderStatus::DONE && (in_array($order->payment_status, [null, App\Enums\OrderPaymentStatus::WAITING, App\Enums\OrderPaymentStatus::REQUESTING, App\Enums\OrderPaymentStatus::EDIT_REQUESTING, App\Enums\OrderPaymentStatus::PAYMENT_FAILED])))
                     <button class="change-time stopped-time" data-toggle="modal" data-target="#stopped-time-{{ $cast->id }}">解散時刻を修正する</button>
                     @endif
                   @endif
