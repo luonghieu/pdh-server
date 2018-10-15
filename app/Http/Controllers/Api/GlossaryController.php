@@ -63,6 +63,8 @@ class GlossaryController extends ApiController
 
         $data['jobs'] = Job::all(['id', 'name'])->toArray();
 
+        $data['order_options'] = config('common.order_options');
+
         return $this->respondWithData($data);
     }
 }
