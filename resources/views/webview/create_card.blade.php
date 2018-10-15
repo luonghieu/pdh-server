@@ -35,8 +35,7 @@
       <span class="left">カード番号</span>
       <div class="right number">
         <span id="error">カード番号を正しく入力してください</span>
-        <input type="tel" pattern="[0-9]*" name="number_card" id="number-card" onkeyup="creditValidate()" onkeydown="return numberCardLength(event)">
-        <span id="number-card-display">0000 0000 0000 0000</span>
+        <input type="tel" pattern="[0-9]*" name="number_card" id="number-card" onkeyup="creditValidate()" placeholder="0000 0000 0000 0000">
       </div>
     </div>
     <div class="clear"></div>
@@ -69,5 +68,7 @@
   </div>
   <script src="/assets/webview/js/script.js"></script>
   <script src="/assets/webview/js/create_card.js"></script>
+  <script src="/assets/webview/js/lib/cleave.min.js"></script>
+  <script src="/assets/webview/js/lib/cleave_phone_jp.js"></script>
 </body>
 </html>
