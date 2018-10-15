@@ -87,12 +87,12 @@
             <h2>キャストとの合流時間</h2>
           </div>
           <div class="form-grpup"><!-- フォーム内容 -->
-            <label class="button button--green date ">
-              <input class="input-time-join" type="radio" name="time_join_nomination" value="20">
+            <label class="button button--green date inactive">
+              <input class="input-time-join" type="radio" name="time_join_nomination" value="20" disabled>
               20分後
             </label>
-            <label class="button button--green date">
-              <input class="input-time-join" type="radio" name="time_join_nomination" value="30">
+            <label class="button button--green date inactive">
+              <input class="input-time-join" type="radio" name="time_join_nomination" value="30" disabled>
               30分後
             </label>
             <label class="button button--green date">
