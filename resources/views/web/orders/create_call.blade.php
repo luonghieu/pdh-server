@@ -63,12 +63,12 @@
       <h2>キャストとの合流時間</h2>
     </div>
     <div class="form-grpup"><!-- フォーム内容 -->
-      <label class="button button--green date {{ (isset($currentTime) && $currentTime == '20') ? 'active' : '' }}">
-        <input type="radio" name="time_join" value="20" {{ (isset($currentTime) && $currentTime == 20) ? 'checked="checked"' : '' }}>
+      <label class="button button--green date inactive">
+        <input type="radio" name="time_join" value="20" disabled>
         20分後
       </label>
-      <label class="button button--green date {{ (isset($currentTime) && $currentTime == '30') ? 'active' : '' }} ">
-        <input type="radio" name="time_join" value="30" {{ (isset($currentTime) && $currentTime == 30) ? 'checked="checked"' : '' }}>
+      <label class="button button--green date inactive">
+        <input type="radio" name="time_join" value="30" disabled>
         30分後
       </label>
       <label class="button button--green date {{ (isset($currentTime) && $currentTime == '60') ? 'active' : '' }} ">

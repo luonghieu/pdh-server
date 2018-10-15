@@ -1042,3 +1042,9 @@
   color: transparent;
   left: 9999999px;
 }
+
+#ge2-1-x .button--green.inactive {
+  background-color: #CCCCCC;
+  color: #ffffff;
+  border-color: #CCCCCC;
+}
