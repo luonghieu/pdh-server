@@ -482,7 +482,6 @@
   position: absolute;
   font-size: 15px;
   right: 10px;
-  background-color: transparent !important;
   caret-color: #ff6090;
   color: transparent;
   width: 200px;
@@ -610,6 +609,16 @@
 .number-true {
   color: #303030 !important;
 }
+
+.number-false{
+  color: #ff6090 !important;
+}
+
+.number input::placeholder{
+  color: #c8c8c8;
+  padding-top: 35px;
+}
+
 
 #gl1 .number input::placeholder {
   color: #c8c8c8;

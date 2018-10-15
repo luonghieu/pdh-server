@@ -2,7 +2,7 @@ $(document).ready(function(){
   var backUrl = $("#back-url").val();
 
   $('#btn-create').on('click', function (e) {
-    var numberCard = $("#number-card").val();
+    var numberCard = $("#number-card").val().replace(/\s/g, '');
     var month = $("#month").val();
     var year = $("#year").val();
     var cardCvv = $("#card-cvv").val();
