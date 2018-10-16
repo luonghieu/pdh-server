@@ -179,7 +179,7 @@
     <div class="date-select ct-date-select">
       <div class="date-select__content">
           @php
-            $now = \Carbon\Carbon::now()->addMinutes(20);
+            $now = \Carbon\Carbon::now()->addMinutes(60);
             $currentMonth = $now->format('m');
             $currentDate = $now->format('d');
             $currentHour = $now->format('H');
