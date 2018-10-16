@@ -380,6 +380,13 @@ $(document).ready(function(){
       $("button[type='submit'][name='sb_create']").removeClass('disable');
       $("button[type='submit'][name='sb_create']").prop('disabled', false);
     }
+
+    if('other_duration' == duration) {
+      $("#ge2-1-x label.time-input").css({"display": "flex"});
+    } else {
+      $("#ge2-1-x label.time-input").css({"display": "none"});
+    }
+
   })
 
   var castClass = $("input:radio[name='cast_class']");
