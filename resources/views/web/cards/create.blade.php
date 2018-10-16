@@ -3,6 +3,17 @@
 @extends('layouts.web')
 @section('web.content')
 <div class="title">
+  @php
+    if (\Session::has('backUrl')) {
+      $backUrl = \Session::get('backUrl');
+    } else {
+      if ($orderId = Session::pull('order_history')) {
+          $backUrl = \URL::route('history.show', ['orderId' => $orderId]);
+      }
+
+      $backUrl = \URL::previous();
+    }
+  @endphp
   <div class="title-name"></div>
   <div class="btn-register header-item">
     <a id="btn-create">登録</a>
@@ -23,7 +34,7 @@
     <span class="left">カード番号</span>
     <div class="right number">
       <span id="error">カード番号を正しく入力してください</span>
-      <input type="hidden" value="{{ \URL::previous() }}" id="back-url">
+      <input type="hidden" value="{{ $backUrl }}" id="back-url">
       <input type="tel" pattern="[0-9]*" name="number_card" id="number-card" value="" onkeyup="creditValidate()" placeholder="0000 0000 0000 0000">
     </div>
   </div>

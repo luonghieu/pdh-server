@@ -17,8 +17,16 @@ class CardController extends Controller
             $request->session()->forget('backUrl');
         }
 
+        $backUrl = \URL::previous();
+        $urlCreateOrder = route('guest.orders.get_confirm');
+        $urlPoint = route('purchase.index');
+
+        if (!in_array($backUrl, [$urlCreateOrder, $urlPoint])) {
+            $backUrl = route('credit_card.index');
+        }
+        $request->session()->put('backUrl', $backUrl);
+
         if ($card) {
-            $request->session()->push('backUrl', \URL::previous());
             return view('web.cards.index', compact('card'));
         } else {
             return view('web.cards.create');
