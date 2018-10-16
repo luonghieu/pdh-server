@@ -2,7 +2,10 @@
 <html lang="ja" class="no-js">
 <head>
   <meta charset="UTF-8">
+  <title>ギャラ飲みマッチングアプリ「Cheers」〜いつもの飲み会にちょっとした刺激を。〜</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+  <meta name="keyword" content="ギャラ飲み,アプリ,マッチング">
+  <meta name="description" content="業界初！いつでもどこでも最短20分でキャストに会えるギャラ飲みマッチングアプリ。大学生からモデルまで様々なジャンルのキャストが駆けつけ、飲み会を盛り上げてくれます。">
   <link rel="profile" href="http://gmpg.org/xfn/11">
   <link rel="stylesheet" href="{{ asset('/ld/css/common.css') }}">
   <link rel="stylesheet" href="{{ asset('/ld/css/guest.css') }}">
