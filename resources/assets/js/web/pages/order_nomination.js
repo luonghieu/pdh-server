@@ -102,7 +102,7 @@ $(document).ready(function(){
     if(time){
       var currentDate = new Date();
       var year = currentDate.getFullYear();
-      if ((time=='other_time')) {
+      if (((time == 'other_time') && (time >= 60))) {
         var month = $('.select-month').val();
 
         if(month<10) {
@@ -136,6 +136,11 @@ $(document).ready(function(){
             return new Date(dt.getTime() + minutes*60000);
           }
           var selectDate = add_minutes(nd,time);
+
+          if (add_minutes(nd, 60) > selectDate) {
+            selectDate = add_minutes(nd, 60);
+          }
+
           var day = selectDate.getDate();
           if(day<10) {
             day = '0'+day;
@@ -212,7 +217,7 @@ $(document).ready(function(){
     if(time) {
       var currentDate = new Date();
       var year = currentDate.getFullYear();
-      if ((time=='other_time')) {
+      if (((time == 'other_time') && (time >= 60))) {
         var month = $('.select-month').val();
 
         if(month<10) {
@@ -246,6 +251,11 @@ $(document).ready(function(){
             return new Date(dt.getTime() + minutes*60000);
           }
           var selectDate = add_minutes(nd,time);
+
+          if (add_minutes(nd, 60) > selectDate) {
+            selectDate = add_minutes(nd, 60);
+          }
+
           var day = selectDate.getDate();
           if(day<10) {
             day = '0'+day;
@@ -318,7 +328,7 @@ $(document).ready(function(){
 
       var currentDate = new Date();
       var year = currentDate.getFullYear();
-      if ((time=='other_time')) {
+      if (((time == 'other_time') && (time >= 60))) {
         var month = $('.select-month').val();
 
         if(month<10) {
@@ -361,6 +371,11 @@ $(document).ready(function(){
           return new Date(dt.getTime() + minutes*60000);
         }
         var selectDate = add_minutes(nd,time);
+
+        if (add_minutes(nd, 60) > selectDate) {
+          selectDate = add_minutes(nd, 60);
+        }
+
         var day = selectDate.getDate();
         if(day<10) {
           day = '0'+day;
@@ -441,7 +456,7 @@ $(document).ready(function(){
 
     updateLocalStorageValue('order_params', updateTime);
 
-    if('other_time' == time) {
+    if(('other_time' == time) && (time >= 60)) {
       if(localStorage.getItem("order_params")){
           var orderParams = JSON.parse(localStorage.getItem("order_params"));
         }
@@ -501,7 +516,7 @@ $(document).ready(function(){
 
       var currentDate = new Date();
       var year = currentDate.getFullYear();
-      if ((time=='other_time')) {
+      if (((time == 'other_time') && (time >= 60))) {
         var month = $('.select-month').val();
 
         if(month<10) {
@@ -535,27 +550,31 @@ $(document).ready(function(){
             return new Date(dt.getTime() + minutes*60000);
           }
           var selectDate = add_minutes(nd,time);
-          var day = selectDate.getDate();
-          if(day<10) {
-            day = '0'+day;
-          }
 
-          var month = selectDate.getMonth() +1;
-          if(month<10) {
-            month = '0'+month;
-          }
-          var hour = selectDate.getHours();
-          if(hour<10) {
-            hour = '0'+hour;
-          }
+          if (add_minutes(nd, 60) > selectDate) {
+            selectDate = add_minutes(nd, 60);
 
-          var minute = selectDate.getMinutes();
-          if(minute<10) {
-            minute = '0'+minute;
-          }
-          var date = year+'-'+month+'-'+day;
-          var time = hour+':'+minute;
+            var day = selectDate.getDate();
+            if(day<10) {
+              day = '0'+day;
+            }
 
+            var month = selectDate.getMonth() +1;
+            if(month<10) {
+              month = '0'+month;
+            }
+            var hour = selectDate.getHours();
+            if(hour<10) {
+              hour = '0'+hour;
+            }
+
+            var minute = selectDate.getMinutes();
+            if(minute<10) {
+              minute = '0'+minute;
+            }
+            var date = year+'-'+month+'-'+day;
+            var time = hour+':'+minute;
+          }
       }
 
       $castId = $('.cast-id').val();
