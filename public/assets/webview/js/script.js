@@ -1,5 +1,15 @@
+$(document).ready(function() {
+  $('#number-card').click(function(event) {
+    var str = this.value;
+    if(str.search("下4桁") == 0) {
+      this.value = '';
+    }
+  });
+});
+
 var flag = false;
 var flag_color = false;
+
 function creditValidate()
 {
   var numberCard = new Cleave('#number-card', {
