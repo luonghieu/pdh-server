@@ -49,3 +49,15 @@
     @endslot
   @endmodal
 @endsection
+
+@section('web.script')
+<script>
+  if (window.history && window.history.pushState) {
+    window.history.pushState(null, null, null);
+
+    window.onpopstate = function(event) {
+     window.location.replace("<?php echo env('APP_URL') . '/call' ?>");
+    }
+  }
+</script>
+@endsection

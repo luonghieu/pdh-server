@@ -301,12 +301,6 @@ $(document).ready(function(){
       $("button[type='submit'][name='sb_create']").removeClass('disable');
       $("button[type='submit'][name='sb_create']").prop('disabled', false);
     }
-
-    if('その他' == area) {
-      $("#ge2-1-x label.area-input").css({"display": "flex"});
-    } else {
-      $("#ge2-1-x label.area-input").css({"display": "none"});
-    }
   });
 
   var dateButton = $(".button--green.date");
@@ -329,12 +323,6 @@ $(document).ready(function(){
     } else {
       $("button[type='submit'][name='sb_create']").removeClass('disable');
       $("button[type='submit'][name='sb_create']").prop('disabled', false);
-    }
-
-    if('other_time' == time) {
-      $("#ge2-1-x label.date-input").css({"display": "flex"});
-    } else {
-      $("#ge2-1-x label.date-input").css({"display": "none"});
     }
   })
 
@@ -379,12 +367,6 @@ $(document).ready(function(){
     } else {
       $("button[type='submit'][name='sb_create']").removeClass('disable');
       $("button[type='submit'][name='sb_create']").prop('disabled', false);
-    }
-
-    if('other_duration' == duration) {
-      $("#ge2-1-x label.time-input").css({"display": "flex"});
-    } else {
-      $("#ge2-1-x label.time-input").css({"display": "none"});
     }
 
   })
