@@ -5,7 +5,7 @@
 <div class="title">
   @php
     if (\Session::has('backUrl')) {
-      $backUrl = \Session::get('backUrl')[0];
+      $backUrl = \Session::get('backUrl');
     } else {
       if ($orderId = Session::pull('order_history')) {
           $backUrl = \URL::route('history.show', ['orderId' => $orderId]);
