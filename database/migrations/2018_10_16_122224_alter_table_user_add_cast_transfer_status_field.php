@@ -16,7 +16,6 @@ class AlterTableUserAddCastTransferStatusField extends Migration
         Schema::table('users', function (Blueprint $table) {
             $table->tinyInteger('cast_transfer_status')->after('type')->nullable();
             $table->string('line_qr')->after('line_id')->nullable();
-            $table->string('phone')->after('password')->nullable();
         });
     }
 
@@ -30,7 +29,6 @@ class AlterTableUserAddCastTransferStatusField extends Migration
         Schema::table('users', function (Blueprint $table) {
             $table->dropColumn('cast_transfer_status');
             $table->dropColumn('line_qr');
-            $table->dropColumn('phone');
         });
     }
 }

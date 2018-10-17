@@ -9,7 +9,6 @@ final class UserType extends Enum
     const GUEST = 1;
     const CAST = 2;
     const ADMIN = 3;
-    const TEMP_CAST = 4;
 
     /**
      * Get the description for an enum value
