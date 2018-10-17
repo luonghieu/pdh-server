@@ -117,6 +117,16 @@ $routes = [
             ],
         ],
     ],
+
+    'notifications_schedule' => [
+        [
+            'name' => 'admin.notification_schedules.index',
+            'value' => 'お知らせ管理',
+            'url' => route('admin.notification_schedules.index', ['type' => \App\Enums\NotificationScheduleType::ALL]),
+            'submenu' => [
+            ],
+        ],
+    ],
 ];
 @endphp
 
