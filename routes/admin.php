@@ -17,6 +17,10 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.'], function () {
         Route::post('{user}/change_prefecture', ['as' => 'change_prefecture', 'uses' => 'UserController@changePrefecture'])->where('user', '[0-9]+');
     });
 
+    Route::group(['namespace' => 'RequestTransfer', 'prefix' => 'request_transfer', 'as' => 'request_transfer.', 'middleware' => 'is_admin'], function () {
+        Route::get('/', ['as' => 'index', 'uses' => 'RequestTransferController@index']);
+    });
+
     Route::group(['namespace' => 'Cast', 'prefix' => 'casts', 'as' => 'casts.', 'middleware' => 'is_admin'], function () {
         Route::get('/', ['as' => 'index', 'uses' => 'CastController@index']);
         Route::get('{user}/register', ['as' => 'register', 'uses' => 'CastController@registerCast']);

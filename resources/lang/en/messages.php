@@ -59,5 +59,6 @@ return [
     'results_not_found' => 'The results were not found',
     'login_line_failed' => 'Login by Line failed.',
     'payment_completed' => 'Payment completed.',
-    'card_expired' => 'Card expired'
+    'card_expired' => 'Card expired',
+    'request_transfer_cast_succeed' => 'Request transfer to cast succeed',
 ];

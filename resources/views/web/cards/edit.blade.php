@@ -69,6 +69,5 @@
 @endsection
 @section('web.extra_js')
 <script src="/assets/webview/js/script.js"></script>
-<script src="/assets/webview/js/lib/cleave.min.js"></script>
-<script src="/assets/webview/js/lib/cleave_phone_jp.js"></script>
+<script src="/assets/webview/js/lib/payment.js"></script>
 @endsection

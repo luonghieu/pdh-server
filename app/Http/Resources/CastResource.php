@@ -2,6 +2,7 @@
 
 namespace App\Http\Resources;
 
+use App\Enums\CastTransferStatus;
 use App\Enums\CohabitantType;
 use App\Enums\DrinkVolumeType;
 use App\Enums\SiblingsType;
@@ -81,6 +82,8 @@ class CastResource extends Resource
             'cast_order' => $this->whenPivotLoaded('cast_order', function () {
                 return CastOrderResource::make($this->pivot);
             }),
+            'cast_transfer_status' => ($this->cast_transfer_status) ? $this->cast_transfer_status : CastTransferStatus::OFFICIAL,
+            'line_qr' => $this->line_qr,
         ]);
     }
 }

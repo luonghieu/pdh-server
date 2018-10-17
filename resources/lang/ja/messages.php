@@ -59,5 +59,6 @@ return [
     'results_not_found' => '結果が見つかりません',
     'login_line_failed' => 'ログインに失敗しました',
     'payment_completed' => '決済が完了しました',
-    'card_expired' => '予約日までにクレジットカードの' . PHP_EOL . '有効期限が切れます' . PHP_EOL . '予約を完了するには' . PHP_EOL . 'カード情報を更新してください'
+    'card_expired' => '予約日までにクレジットカードの' . PHP_EOL . '有効期限が切れます' . PHP_EOL . '予約を完了するには' . PHP_EOL . 'カード情報を更新してください',
+    'request_transfer_cast_succeed' => '申し込みが完了しました',
 ];

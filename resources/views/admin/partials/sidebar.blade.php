@@ -13,6 +13,15 @@ $routes = [
         ],
     ],
 
+    'request_transfer' => [
+        [
+            'name' => 'admin.request_transfer.index',
+            'value' => 'キャスト新規申請',
+            'url' => route('admin.request_transfer.index'),
+            'submenu' => [],
+        ],
+    ],
+
     'cast' => [
         [
             'name' => 'admin.casts.index',
