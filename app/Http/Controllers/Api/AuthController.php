@@ -8,6 +8,8 @@ use App\Http\Resources\GuestResource;
 use App\Rules\CheckHeight;
 use App\Services\LogService;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
+use Webpatser\Uuid\Uuid;
 
 class AuthController extends ApiController
 {
@@ -90,8 +92,10 @@ class AuthController extends ApiController
             'smoking_type' => 'numeric|between:0,3',
             'siblings_type' => 'numeric|between:0,3',
             'cohabitant_type' => 'numeric|between:0,4',
+            'front_id_image' => 'image|mimes:jpeg,png,jpg,gif,svg|max:5120|required_with:back_id_image',
+            'back_id_image' => 'image|mimes:jpeg,png,jpg,gif,svg|max:5120|required_with:front_id_image',
+            'line_qr' => 'image|mimes:jpeg,png,jpg,gif,svg|max:5120',
         ];
-
         $validator = validator(request()->all(), $rules);
 
         if ($validator->fails()) {
@@ -120,6 +124,27 @@ class AuthController extends ApiController
         ]);
 
         try {
+            if ($request->file('front_id_image') && $request->file('back_id_image')) {
+                $frontImage = request()->file('front_id_image');
+                $frontImageName = Uuid::generate()->string . '.' . strtolower($frontImage->getClientOriginalExtension());
+                Storage::put($frontImageName, file_get_contents($frontImage), 'public');
+
+                $backImage = request()->file('back_id_image');
+                $backImageName = Uuid::generate()->string . '.' . strtolower($backImage->getClientOriginalExtension());
+                Storage::put($backImageName, file_get_contents($backImage), 'public');
+
+                $input['front_id_image'] = $frontImageName;
+                $input['back_id_image'] = $backImageName;
+            }
+
+            if ($request->file('line_qr')) {
+                $lineImage = request()->file('line_qr');
+                $lineImageName = Uuid::generate()->string . '.' . strtolower($lineImage->getClientOriginalExtension());
+                Storage::put($lineImageName, file_get_contents($lineImage), 'public');
+
+                $input['line_qr'] = $lineImageName;
+            }
+
             $user->update($input);
         } catch (\Exception $e) {
             LogService::writeErrorLog($e);
