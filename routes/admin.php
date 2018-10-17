@@ -82,4 +82,8 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.'], function () {
     Route::group(['prefix' => 'notifications', 'as' => 'notifications.', 'middleware' => 'is_admin'], function () {
         Route::post('/make_read', ['as' => 'make_read', 'uses' => 'NotificationController@makeAsRead']);
     });
+
+    Route::group(['namespace' => 'NotificationSchedule', 'prefix' => 'notification_schedules', 'as' => 'notification_schedules.', 'middleware' => 'is_admin'], function () {
+        Route::get('/', ['as' => 'index', 'uses' => 'NotificationScheduleController@getNotificationScheduleList']);
+    });
 });
