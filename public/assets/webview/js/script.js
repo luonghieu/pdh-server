@@ -12,9 +12,8 @@ var flag_color = false;
 
 function creditValidate()
 {
-  var numberCard = new Cleave('#number-card', {
-    creditCard: true,
-  });
+  number = document.querySelector('#number-card');
+  Payment.formatCardNumber(number, 16);
 
   var str = document.getElementById("number-card").value;
   var visa = '^4[0-9]{12}(?:[0-9]{3})?$';
@@ -83,11 +82,9 @@ function addColor()
 
 function numberCvvLength(event)
 {
-  new Cleave('#card-cvv', {
-    numeral: true,
-    numeralDecimalMark: '',
-    delimiter: '',
-  });
+  cardCvv = document.querySelector('#card-cvv');
+  Payment.formatCardNumber(cardCvv);
+
   var str = document.getElementById("card-cvv").value;
   var strlen = str.length;
   var keyCode = event.keyCode;
