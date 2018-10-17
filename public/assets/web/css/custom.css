@@ -568,6 +568,10 @@
   padding-left: 15px;
 }
 
+.btn-date-select {
+  display: unset !important;
+}
+
 .date-select select {
   height: 21px;
   font-family: NotoSansCJKjp;
