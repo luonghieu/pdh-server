@@ -29,7 +29,6 @@ Route::group(['prefix' => 'v1'], function () {
 
     Route::group(['middleware' => ['auth:api'], 'prefix' => 'guests', 'as' => 'guests.'], function () {
         Route::get('/', ['as' => 'index', 'uses' => 'GuestController@index']);
-        Route::post('/request_transfer', ['as' => 'request_transfer', 'uses' => 'Guest\GuestController@requestTransfer'])->middleware('guest');
     });
 
     Route::group(['middleware' => ['auth:api']], function () {
@@ -65,6 +64,7 @@ Route::group(['prefix' => 'v1'], function () {
 
     Route::group(['middleware' => ['auth:api', 'guest'], 'prefix' => 'guest', 'as' => 'guest.'], function () {
         Route::get('/cast_histories', ['as' => 'cast_histories', 'uses' => 'Guest\GuestController@castHistories']);
+        Route::post('/request_transfer', ['as' => 'request_transfer', 'uses' => 'Guest\GuestController@requestTransfer']);
 
         Route::group(['prefix' => 'orders'], function () {
             Route::get('/', ['as' => 'index', 'uses' => 'Guest\OrderController@index']);
