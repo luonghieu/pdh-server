@@ -2,13 +2,64 @@
 
 namespace App\Http\Controllers\Admin\NotificationSchedule;
 
+use App\Enums\NotificationScheduleStatus;
 use App\Http\Controllers\Controller;
 use App\NotificationSchedule;
+use App\Services\LogService;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 
 class NotificationScheduleController extends Controller
 {
+    public function create()
+    {
+        $type = request()->type;
+
+        $notificationScheduleStatus = [
+            NotificationScheduleStatus::SAVE => '保存',
+            NotificationScheduleStatus::PUBLISH => '公開',
+            NotificationScheduleStatus::UNPUBLISH => '非公開',
+        ];
+
+        return view('admin.notification_schedules.create', compact('notificationScheduleStatus', 'type'));
+    }
+
+    public function store(Request $request)
+    {
+        try {
+            $rules = [
+                'send_date' => 'required|date',
+                'title' => 'required|string',
+                'content' => 'required',
+                'type' => 'required|numeric',
+                'status' => 'required|numeric|regex:/^[1-3]+$/',
+            ];
+
+            $validator = validator($request->all(), $rules);
+
+            if ($validator->fails()) {
+                return back()->withErrors($validator->errors());
+            }
+
+            $notificationSchedule = new NotificationSchedule;
+
+            $input = [
+                'send_date' => \Carbon\Carbon::parse($request->send_date),
+                'title' => $request->title,
+                'content' => $request->content,
+                'type' => $request->type,
+                'status' => $request->status,
+            ];
+
+            $notificationSchedule->create($input);
+
+            return redirect('admin/notification_schedules?type=' . $request->type);
+        } catch (\Exception $e) {
+            LogService::writeErrorLog($e);
+            return back();
+        }
+    }
+
     public function getNotificationScheduleList(Request $request)
     {
         $type = $request->type;
