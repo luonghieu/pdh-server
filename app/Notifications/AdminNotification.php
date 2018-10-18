@@ -33,9 +33,9 @@ class AdminNotification extends Notification implements ShouldQueue
     public function via($notifiable)
     {
         if (ProviderType::LINE == $notifiable->provider) {
-            return [LineBotNotificationChannel::class];
+            return [CustomDatabaseChannel::class, LineBotNotificationChannel::class];
         } else {
-            return [PushNotificationChannel::class];
+            return [CustomDatabaseChannel::class, PushNotificationChannel::class];
         }
     }
 
@@ -48,6 +48,17 @@ class AdminNotification extends Notification implements ShouldQueue
     public function toMail($notifiable)
     {
         //
+    }
+
+    public function toArray($notifiable)
+    {
+        $content = $this->schedule->content;
+        $send_from = UserType::ADMIN;
+
+        return [
+            'content' => $content,
+            'send_from' => $send_from,
+        ];
     }
 
     public function pushData($notifiable)
