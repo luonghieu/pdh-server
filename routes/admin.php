@@ -19,6 +19,8 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.'], function () {
 
     Route::group(['namespace' => 'RequestTransfer', 'prefix' => 'request_transfer', 'as' => 'request_transfer.', 'middleware' => 'is_admin'], function () {
         Route::get('/', ['as' => 'index', 'uses' => 'RequestTransferController@index']);
+        Route::get('{cast}', ['as' => 'show', 'uses' => 'RequestTransferController@show'])->where('cast', '[0-9]+');
+        Route::put('{cast}', ['as' => 'update', 'uses' => 'RequestTransferController@update'])->where('cast', '[0-9]+');
     });
 
     Route::group(['namespace' => 'Cast', 'prefix' => 'casts', 'as' => 'casts.', 'middleware' => 'is_admin'], function () {
