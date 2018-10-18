@@ -87,7 +87,7 @@ class GuestController extends ApiController
             'nickname' => 'max:20|required',
             'date_of_birth' => 'date|before:today|required',
             'job_id' => 'numeric|exists:jobs,id|required',
-            'line_qr' => 'image|mimes:jpeg,png,jpg,gif,svg|required',
+            'line_qr' => 'image|mimes:jpeg,png,jpg,gif,svg|max:5120',
             'images' => 'array|required|min:2|max:2',
             'images.*' => 'image|mimes:jpeg,png,jpg,gif,svg|max:5120'
         ];
@@ -106,10 +106,12 @@ class GuestController extends ApiController
             $user->date_of_birth = Carbon::parse($request->date_of_birth);
             $user->job_id = $request->job_id;
 
-            $lineImage = request()->file('line_qr');
-            $lineImageName = Uuid::generate()->string . '.' . strtolower($lineImage->getClientOriginalExtension());
-            Storage::put($lineImageName, file_get_contents($lineImage), 'public');
-            $user->line_qr = $lineImageName;
+            $lineImage = $request->file('line_qr');
+            if ($lineImage) {
+                $lineImageName = Uuid::generate()->string . '.' . strtolower($lineImage->getClientOriginalExtension());
+                Storage::put($lineImageName, file_get_contents($lineImage), 'public');
+                $user->line_qr = $lineImageName;
+            }
 
             $images = $request->file('images');
             foreach ($images as $image) {

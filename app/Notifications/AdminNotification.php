@@ -53,6 +53,8 @@ class AdminNotification extends Notification implements ShouldQueue
     public function pushData($notifiable)
     {
         $content = $this->schedule->content;
+        $content = removeHtmlTags($content);
+
         $namedUser = 'user_' . $notifiable->id;
         $send_from = UserType::ADMIN;
 
@@ -82,6 +84,7 @@ class AdminNotification extends Notification implements ShouldQueue
     public function lineBotPushData($notifiable)
     {
         $content = $this->schedule->content;
+        $content = removeHtmlTags($content);
 
         return [
             [

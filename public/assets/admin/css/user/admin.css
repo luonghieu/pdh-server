@@ -1388,3 +1388,35 @@ tbody td {
     right: 90px;
   }
 }
+
+.init-inline-flex {
+  display: inline-flex;
+}
+
+.init-m-auto {
+  margin: auto;
+}
+
+.init-mt {
+  margin-top: 1rem;
+}
+
+.init-m {
+  margin-top: 2rem;
+  float: right;
+}
+
+.btn-register {
+  background-color: #67c2ef;
+  padding: 10px;
+  border-radius: 5%;
+  cursor: pointer;
+  border: 0;
+  color: #fff;
+}
+
+.error {
+  color: red;
+  margin-bottom: 1rem;
+  float: right;
+}

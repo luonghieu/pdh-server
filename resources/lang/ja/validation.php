@@ -192,5 +192,9 @@ return [
         'type' => '口座種別',
         'bank_name' => '銀行名',
         'holder_name' => '口座名義',
+        'send_date' => '投稿日時',
+        'title' => 'タイトル',
+        'content' => '内容',
+        'status' => '状況',
     ],
 ];

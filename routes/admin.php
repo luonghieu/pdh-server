@@ -88,6 +88,8 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.'], function () {
     });
 
     Route::group(['namespace' => 'NotificationSchedule', 'prefix' => 'notification_schedules', 'as' => 'notification_schedules.', 'middleware' => 'is_admin'], function () {
+        Route::get('/create', ['as' => 'create', 'uses' => 'NotificationScheduleController@create']);
+        Route::post('/', ['as' => 'store', 'uses' => 'NotificationScheduleController@store']);
         Route::get('/', ['as' => 'index', 'uses' => 'NotificationScheduleController@getNotificationScheduleList']);
     });
 });
