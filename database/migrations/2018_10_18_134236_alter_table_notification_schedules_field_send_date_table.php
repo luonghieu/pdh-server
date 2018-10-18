@@ -14,7 +14,7 @@ class AlterTableNotificationSchedulesFieldSendDateTable extends Migration
     public function up()
     {
         Schema::table('notification_schedules', function (Blueprint $table) {
-            $table->dateTime('send_date')->change();
+            $table->dateTime('send_date')->nullable()->change();
         });
     }
 
