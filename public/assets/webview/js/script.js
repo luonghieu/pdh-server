@@ -5,6 +5,12 @@ $(document).ready(function() {
       this.value = '';
     }
   });
+
+  number = document.querySelector('#number-card');
+  Payment.formatCardNumber(number, 16);
+
+  cardCvv = document.querySelector('#card-cvv');
+  Payment.formatCardNumber(cardCvv);
 });
 
 var flag = false;
@@ -12,9 +18,6 @@ var flag_color = false;
 
 function creditValidate()
 {
-  number = document.querySelector('#number-card');
-  Payment.formatCardNumber(number, 16);
-
   var str = document.getElementById("number-card").value;
   var visa = '^4[0-9]{12}(?:[0-9]{3})?$';
   var mastercard = '^5[1-5][0-9]{14}$';
@@ -82,9 +85,6 @@ function addColor()
 
 function numberCvvLength(event)
 {
-  cardCvv = document.querySelector('#card-cvv');
-  Payment.formatCardNumber(cardCvv);
-
   var str = document.getElementById("card-cvv").value;
   var strlen = str.length;
   var keyCode = event.keyCode;
