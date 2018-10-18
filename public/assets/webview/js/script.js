@@ -5,6 +5,13 @@ $(document).ready(function() {
       this.value = '';
     }
   });
+
+  $('#number-card').on('keydown', function(event){
+    if (event.code == 'Equal') {
+        console.log(event.key);
+        // event.preventDefault();
+    }
+  });
 });
 
 var flag = false;
