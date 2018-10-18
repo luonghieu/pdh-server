@@ -61,4 +61,5 @@ return [
     'payment_completed' => '決済が完了しました',
     'card_expired' => '予約日までにクレジットカードの' . PHP_EOL . '有効期限が切れます' . PHP_EOL . '予約を完了するには' . PHP_EOL . 'カード情報を更新してください',
     'request_transfer_cast_succeed' => '申し込みが完了しました',
+    'transfer_to_cast_succeed' => 'Cheersへようこそ！' . PHP_EOL . '本登録が完了しました',
 ];
