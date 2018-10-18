@@ -52,12 +52,10 @@ class AdminNotification extends Notification implements ShouldQueue
 
     public function toArray($notifiable)
     {
-        $title = $this->schedule->title;
         $content = $this->schedule->content;
         $send_from = UserType::ADMIN;
 
         return [
-            'title' => $title,
             'content' => $content,
             'send_from' => $send_from,
         ];
