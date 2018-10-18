@@ -37,6 +37,10 @@
             </div>
           </form>
         </div>
+        <div class="clearfix"></div>
+        <div class="panel-body">
+          <a href="{{ route('admin.notification_schedules.create') }}?type={{ $type }}" class="btn-register">新規作成</a>
+        </div>
         <div class="panel-body">
           @include('admin.partials.notification')
           <table class="table table-striped table-bordered bootstrap-datatable">
