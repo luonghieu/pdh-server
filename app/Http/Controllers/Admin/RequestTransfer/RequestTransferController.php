@@ -5,6 +5,8 @@ namespace App\Http\Controllers\Admin\RequestTransfer;
 use App\Cast;
 use App\Enums\CastTransferStatus;
 use App\Http\Controllers\Controller;
+use App\Notifications\RequestTransferNotify;
+use App\Services\LogService;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 
@@ -56,6 +58,34 @@ class RequestTransferController extends Controller
 
         $casts = $casts->paginate($request->limit ?: 10);
 
-        return view('admin.request_transfer.cast_submit', compact('casts'));
+        return view('admin.request_transfer.index', compact('casts'));
+    }
+
+    public function show(Cast $cast)
+    {
+        return view('admin.request_transfer.show', compact('cast'));
+    }
+
+    public function update(Cast $cast, Request $request)
+    {
+        try {
+            if ($request->has('transfer_request_status')) {
+                $cast->cast_transfer_status = $request->transfer_request_status;
+                $cast->save();
+
+                $cast->notify(new RequestTransferNotify());
+
+                if (CastTransferStatus::APPROVED == $request->transfer_request_status) {
+                    return redirect(route('admin.casts.index'));
+                } else {
+                    return redirect(route('admin.request_transfer.index', ['transfer_type' => CastTransferStatus::DENIED]));
+                }
+            }
+        } catch (\Exception $e) {
+            LogService::writeErrorLog($e);
+            $request->session()->flash('err', trans('messages.server_error'));
+
+            return redirect(route('admin.request_transfer.show', ['cast' => $cast->id]));
+        }
     }
 }

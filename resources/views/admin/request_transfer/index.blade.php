@@ -91,7 +91,7 @@
                   <td>{{ $cast->age }}</td>
                   <td>{{ $cast->job ? $cast->job->name : ""}}</td>
                   <td>{{ Carbon\Carbon::parse($cast->request_transfer_date)->format('Y/m/d H:i') }}</td>
-                  <td><a href="" class="btn btn-detail">詳細</a></td>
+                  <td><a href="{{ route('admin.request_transfer.show', ['cast' => $cast->id]) }}" class="btn btn-detail">詳細</a></td>
                 </tr>
                 @endforeach
               @endif

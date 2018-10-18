@@ -1191,6 +1191,20 @@ tbody td {
   width: 250px;
 }
 
+.change-type-transfer {
+  position: relative;
+  text-align: center;
+}
+
+.change-type-transfer button {
+  position: absolute;
+  right: 15px;
+}
+
+.change-type-transfer label {
+  margin: 0 50px;
+}
+
 @media (max-width: 767px) {
   .navbar {
     background: #20a8d817;
