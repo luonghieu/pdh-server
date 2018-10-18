@@ -43,6 +43,7 @@
                   <div class="init-m">
                     <label class="css-m-auto">ステータスを変更: </label>
                     <select name="status">
+                      <option value="">全て</option>
                       @foreach($notificationScheduleStatus as $key => $value)
                         <option value="{{ $key }}">{{ $value }}</option>
                       @endforeach

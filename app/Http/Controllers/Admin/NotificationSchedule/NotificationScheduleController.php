@@ -16,7 +16,6 @@ class NotificationScheduleController extends Controller
         $type = request()->type;
 
         $notificationScheduleStatus = [
-            0 => '全て', // all
             NotificationScheduleStatus::SAVE => '保存',
             NotificationScheduleStatus::PUBLISH => '公開',
             NotificationScheduleStatus::UNPUBLISH => '非公開',
@@ -57,7 +56,7 @@ class NotificationScheduleController extends Controller
             return redirect('admin/notification_schedules?type=' . $request->type);
         } catch (\Exception $e) {
             LogService::writeErrorLog($e);
-            return false;
+            return back();
         }
     }
 
