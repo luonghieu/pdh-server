@@ -66,7 +66,7 @@
                   <td>{{ Carbon\Carbon::parse($notificationSchedule->send_date)->format('Y/m/d H:i') }}</td>
                   <td>{{ \App\Enums\NotificationScheduleStatus::getDescription($notificationSchedule->status) }}</td>
                   <td>
-                    <a href="" class="btn-detail">詳細</a>
+                    <a href="{{ route('admin.notification_schedules.edit', $notificationSchedule->id) }}?type={{ $type }}" class="btn-detail">詳細</a>
                   </td>
                 </tr>
                 @endforeach

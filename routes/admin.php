@@ -92,6 +92,9 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.'], function () {
     Route::group(['namespace' => 'NotificationSchedule', 'prefix' => 'notification_schedules', 'as' => 'notification_schedules.', 'middleware' => 'is_admin'], function () {
         Route::get('/create', ['as' => 'create', 'uses' => 'NotificationScheduleController@create']);
         Route::post('/', ['as' => 'store', 'uses' => 'NotificationScheduleController@store']);
+        Route::get('/{notification_schedule}/edit', ['as' => 'edit', 'uses' => 'NotificationScheduleController@edit'])->where('notification_schedules', '[0-9]+');
+        Route::put('/{notification_schedule}', ['as' => 'update', 'uses' => 'NotificationScheduleController@update'])->where('notification_schedules', '[0-9]+');
+        Route::delete('/{notification_schedule}', ['as' => 'delete', 'uses' => 'NotificationScheduleController@delete'])->where('notification_schedules', '[0-9]+');
         Route::get('/', ['as' => 'index', 'uses' => 'NotificationScheduleController@getNotificationScheduleList']);
     });
 });

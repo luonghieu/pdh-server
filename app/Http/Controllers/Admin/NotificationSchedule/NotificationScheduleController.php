@@ -44,7 +44,7 @@ class NotificationScheduleController extends Controller
             $notificationSchedule = new NotificationSchedule;
 
             $input = [
-                'send_date' => \Carbon\Carbon::parse($request->send_date),
+                'send_date' => Carbon::parse($request->send_date),
                 'title' => $request->title,
                 'content' => $request->content,
                 'type' => $request->type,
@@ -58,6 +58,69 @@ class NotificationScheduleController extends Controller
             LogService::writeErrorLog($e);
             return back();
         }
+    }
+
+    public function edit($id)
+    {
+        $type = request()->type;
+
+        $notificationScheduleStatus = [
+            NotificationScheduleStatus::SAVE => '保存',
+            NotificationScheduleStatus::PUBLISH => '公開',
+            NotificationScheduleStatus::UNPUBLISH => '非公開',
+        ];
+
+        $notificationSchedule = NotificationSchedule::findOrFail($id);
+
+        return view('admin.notification_schedules.edit', compact(
+            'notificationSchedule',
+            'notificationScheduleStatus',
+            'type')
+        );
+    }
+
+    public function update(Request $request, $id)
+    {
+        try {
+            $rules = [
+                'send_date' => 'required|date',
+                'title' => 'required|string',
+                'content' => 'required',
+                'type' => 'required|numeric',
+                'status' => 'required|numeric|regex:/^[1-3]+$/',
+            ];
+
+            $validator = validator($request->all(), $rules);
+
+            if ($validator->fails()) {
+                return back()->withErrors($validator->errors());
+            }
+
+            $notificationSchedule = NotificationSchedule::findOrFail($id);
+
+            $input = [
+                'send_date' => Carbon::parse($request->send_date),
+                'title' => $request->title,
+                'content' => $request->content,
+                'type' => $request->type,
+                'status' => $request->status,
+            ];
+
+            $notificationSchedule->update($input);
+
+            return redirect('admin/notification_schedules?type=' . $request->type);
+        } catch (\Exception $e) {
+            LogService::writeErrorLog($e);
+            return back();
+        }
+    }
+
+    public function delete($id)
+    {
+        $notificationSchedule = NotificationSchedule::findOrFail($id);
+        $notificationSchedule->delete();
+
+        return redirect('admin/notification_schedules?type=' . request()->type);
     }
 
     public function getNotificationScheduleList(Request $request)

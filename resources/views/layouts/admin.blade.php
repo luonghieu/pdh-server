@@ -13,6 +13,7 @@
     <link rel="shortcut icon" href="/assets/admin/img/logo/icon.png">
     <!-- Bootstrap core CSS -->
     <link href="/assets/admin/css/bootstrap.min.css" rel="stylesheet">
+    <link href="/assets/admin/css/bootstrap-datetimepicker.min.css" rel="stylesheet">
     <!-- page css files -->
     <link href="/assets/admin/css/font-awesome.min.css" rel="stylesheet">
     <link href="/assets/admin/css/jquery-ui.min.css" rel="stylesheet">
@@ -46,6 +47,7 @@
     </script>
     <!--<![endif]-->
     <script src="/assets/admin/js/jquery-migrate-1.2.1.min.js"></script>
+    <script src="/assets/web/js/moment.min.js"></script>
     <script src="/assets/admin/js/bootstrap.min.js"></script>
     <!-- page scripts -->
     <script src="/assets/admin/js/jquery-ui.min.js"></script>
@@ -64,10 +66,16 @@
     <script src="/assets/admin/js/pages/table.js"></script>
     <script src="/assets/admin/js/jquery.cleditor.min.js"></script>
     <script src="/assets/admin/js/bootstrap-datepicker.min.js"></script>
+    <script src="/assets/admin/js/bootstrap-datetimepicker.min.js"></script>
     <script src="/assets/admin/js/form-elements.js"></script>
     <script src="/assets/admin/js/rotate-photo.js"></script>
     <script src="/assets/admin/js/exif.js"></script>
     <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.10.16/js/jquery.dataTables.js"></script>
+    <script type="text/javascript">
+      $(function() {
+        $('#datetimepicker').datetimepicker();
+      });
+    </script>
     @yield('admin.js')
   </body>
 </html>

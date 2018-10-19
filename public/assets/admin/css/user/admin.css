@@ -1434,3 +1434,29 @@ tbody td {
   margin-bottom: 1rem;
   float: right;
 }
+
+.p-0 {
+  padding: 0;
+}
+
+.init-glyphicon {
+  color: #4b4f57;
+}
+
+.init-pull-left {
+  float: left;
+  margin-top: -34px;
+}
+
+.btn-update {
+  background-color: #67c2ef;
+  padding: 6px 14px;
+  border-radius: 5%;
+  cursor: pointer;
+  border: 0;
+  color: #fff;
+}
+
+.init-border {
+  border: 1px solid #a49c9c;
+}
