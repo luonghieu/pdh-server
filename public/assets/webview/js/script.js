@@ -8,9 +8,6 @@ $(document).ready(function() {
 
   number = document.querySelector('#number-card');
   Payment.formatCardNumber(number, 16);
-
-  cardCvv = document.querySelector('#card-cvv');
-  Payment.formatCardNumber(cardCvv);
 });
 
 var flag = false;
