@@ -19,6 +19,24 @@ var flag_color = false;
 function creditValidate()
 {
   var str = document.getElementById("number-card").value;
+
+  function valid(str) {
+    var count = 0;
+    ['(', ')', '.', '+', '-', ',', ';', 'N', '/'].forEach(function (sample) {
+        if(str.indexOf(sample) >= 0) {
+          count++;
+          return count;
+        }
+
+    });
+    return count;
+  }
+
+  if (valid(str) > 0) {
+    str = str.slice(0, str.length - 1);
+    $('#number-card').val(str);
+  }
+
   var visa = '^4[0-9]{12}(?:[0-9]{3})?$';
   var mastercard = '^5[1-5][0-9]{14}$';
   var americanExpress = '^3[47][0-9]{13,14}$';
