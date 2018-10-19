@@ -8,17 +8,32 @@ $(document).ready(function() {
 
   number = document.querySelector('#number-card');
   Payment.formatCardNumber(number, 16);
-
-  cardCvv = document.querySelector('#card-cvv');
-  Payment.formatCardNumber(cardCvv);
 });
 
 var flag = false;
 var flag_color = false;
 
+function valid(str) {
+  var count = 0;
+  ['(', ')', '.', '+', '-', ',', ';', 'N', '/'].forEach(function (sample) {
+      if(str.indexOf(sample) >= 0) {
+        count++;
+        return count;
+      }
+
+  });
+  return count;
+}
+
 function creditValidate()
 {
   var str = document.getElementById("number-card").value;
+
+  if (valid(str) > 0) {
+    str = str.slice(0, str.length - 1);
+    $('#number-card').val(str);
+  }
+
   var visa = '^4[0-9]{12}(?:[0-9]{3})?$';
   var mastercard = '^5[1-5][0-9]{14}$';
   var americanExpress = '^3[47][0-9]{13,14}$';
@@ -60,9 +75,15 @@ function creditValidate()
 function addColor()
 {
   var str = document.getElementById("card-cvv").value;
+
+  if (valid(str) > 0) {
+    str = str.slice(0, str.length - 1);
+    $('#card-cvv').val(str);
+  }
+
   var strlen = str.length;
   var parsed = Number.parseInt(str);
-  if (((strlen == 3 || strlen == 4) && !Number.isNaN(parsed)) || str === "" ) {
+  if (((strlen == 3 || strlen == 4) && !Number.isNaN(parsed))) {
     var element1 = document.getElementById("card-cvv");
     element1.classList.remove("card-cvv-color");
     var element2 = document.getElementById("card-cvv");
