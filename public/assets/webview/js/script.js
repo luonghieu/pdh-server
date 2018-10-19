@@ -16,21 +16,21 @@ $(document).ready(function() {
 var flag = false;
 var flag_color = false;
 
+function valid(str) {
+  var count = 0;
+  ['(', ')', '.', '+', '-', ',', ';', 'N', '/'].forEach(function (sample) {
+      if(str.indexOf(sample) >= 0) {
+        count++;
+        return count;
+      }
+
+  });
+  return count;
+}
+
 function creditValidate()
 {
   var str = document.getElementById("number-card").value;
-
-  function valid(str) {
-    var count = 0;
-    ['(', ')', '.', '+', '-', ',', ';', 'N', '/'].forEach(function (sample) {
-        if(str.indexOf(sample) >= 0) {
-          count++;
-          return count;
-        }
-
-    });
-    return count;
-  }
 
   if (valid(str) > 0) {
     str = str.slice(0, str.length - 1);
@@ -78,6 +78,12 @@ function creditValidate()
 function addColor()
 {
   var str = document.getElementById("card-cvv").value;
+
+  if (valid(str) > 0) {
+    str = str.slice(0, str.length - 1);
+    $('#card-cvv').val(str);
+  }
+
   var strlen = str.length;
   var parsed = Number.parseInt(str);
   if (((strlen == 3 || strlen == 4) && !Number.isNaN(parsed)) || str === "" ) {
