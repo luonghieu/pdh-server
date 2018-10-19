@@ -13,12 +13,15 @@
         @include('admin.partials.notification')
         <div class="clearfix"></div>
         <div class="panel-body">
-          <div class="col-lg-12">
+          <div class="col-lg-6 wrap-qr-code">
             <div class="list-avatar">
               @foreach ($user->avatars as $avatar)
                 <img src="{{ @getimagesize($avatar->path) ? $avatar->path :'/assets/web/images/gm1/ic_default_avatar@3x.png' }}" alt="avatar">
               @endforeach
             </div>
+            @if ($user->is_cast)
+              <button type="button" data-toggle="modal" data-target="#btn-qr-code" class="btn-detail">QRコードを表示する</button>
+            @endif
           </div>
           <div class="clearfix"></div>
           <div class="info-table col-lg-6">
@@ -245,6 +248,19 @@
                   {{ method_field('PUT') }}
                   <button type="submit" class="btn btn-accept">はい</button>
                 </form>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="modal fade" id="btn-qr-code" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+          <div class="modal-dialog" role="document">
+            <div class="modal-content">
+              <div class="modal-body">
+                @if ($user->line_qr)
+                <img src="{{ $user->line_qr}}" alt="">
+                @else
+                <p>QRコードが登録されていません</p>
+                @endif
               </div>
             </div>
           </div>
