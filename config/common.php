@@ -14,22 +14,26 @@ return [
             [
                 'id' => 1,
                 'name' => '20分後',
-                'is_active' => 0
+                'value' => '20',
+                'is_active' => 0,
             ],
             [
                 'id' => 2,
                 'name' => '30分後',
-                'is_active' => 0
+                'value' => '30',
+                'is_active' => 0,
             ],
             [
                 'id' => 3,
                 'name' => '60分後',
-                'is_active' => 1
+                'value' => '60',
+                'is_active' => 1,
             ],
             [
                 'id' => 4,
                 'name' => '90分後',
-                'is_active' => 1
+                'value' => '90',
+                'is_active' => 1,
             ],
         ],
         'max_casts' => 4,
@@ -38,20 +42,23 @@ return [
                 'id' => 1,
                 'name' => 'ブロンズ',
                 'cost' => 2500,
-                'is_active' => 1
+                'is_active' => 1,
+                'url_image' => 'assets/web/images/ge2-1-a/grade-icon_003.png',
             ],
             [
                 'id' => 2,
                 'name' => 'プラチナ',
                 'cost' => 5000,
-                'is_active' => 0
+                'is_active' => 0,
+                'url_image' => 'assets/web/images/ge2-1-a/grade-icon_002.png',
             ],
             [
                 'id' => 3,
                 'name' => 'ダイヤモンド',
                 'cost' => 12500,
-                'is_active' => 0
-            ]
-        ]
-    ]
+                'is_active' => 0,
+                'url_image' => 'assets/web/images/ge2-1-a/grade-icon_001.png',
+            ],
+        ],
+    ],
 ];

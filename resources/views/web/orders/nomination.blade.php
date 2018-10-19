@@ -87,22 +87,14 @@
             <h2>キャストとの合流時間</h2>
           </div>
           <div class="form-grpup"><!-- フォーム内容 -->
-            <label class="button button--green date inactive">
-              <input class="input-time-join" type="radio" name="time_join_nomination" value="20" disabled>
-              20分後
-            </label>
-            <label class="button button--green date inactive">
-              <input class="input-time-join" type="radio" name="time_join_nomination" value="30" disabled>
-              30分後
-            </label>
-            <label class="button button--green date">
-              <input class="input-time-join" type="radio" name="time_join_nomination" value="60">
-              60分後
-            </label>
-            <label class="button button--green date ">
-              <input class="input-time-join" type="radio" name="time_join_nomination" value="90" >
-              90分後
-            </label>
+            @if(isset($orderOptions['call_time']))
+              @foreach($orderOptions['call_time'] as $callTime)
+              <label class="button button--green date {{ !$callTime['is_active'] ? 'inactive' : '' }}">
+                <input class="input-time-join" type="radio" name="time_join_nomination" value="{{ $callTime['value'] }}" {{ !$callTime['is_active'] ? 'disabled' : '' }}>
+                {{ $callTime['name'] }}
+              </label>
+              @endforeach
+            @endif
             <label id="date_input" class="button button--green date ">
               <input class="input-time-join" type="radio" name="time_join_nomination" value="other_time" >それ以外</label>
             <label class="date-input date-input-nomination">

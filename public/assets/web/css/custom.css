@@ -754,6 +754,23 @@
   padding-top: 15px;
 }
 
+.class_disabled {
+  position: relative;
+}
+
+.sp-disabled {
+  margin: 8px !important;
+}
+
+.class_disabled span{
+  position: absolute;
+  top: 8px;
+  transform: rotate(-16deg);
+  color: #222222;
+  font-weight: bold;
+  font-size: 12px;
+}
+
 @media screen and (max-width: 360px) {
   .css-img {
     width: 4.5rem;
