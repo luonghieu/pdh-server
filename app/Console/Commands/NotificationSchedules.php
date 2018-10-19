@@ -48,13 +48,11 @@ class NotificationSchedules extends Command
     {
         $now = Carbon::now()->format('Y-m-d H:i');
 
-        $notificationSchedules = NotificationSchedule::where('status', NotificationScheduleStatus::SAVE)
+        $notificationSchedules = NotificationSchedule::where('status', NotificationScheduleStatus::PUBLISH)
             ->where(\DB::raw('DATE_FORMAT(send_date, "%Y-%m-%d %H:%i") '), $now);
         try {
             foreach ($notificationSchedules->cursor() as $notificationSchedule) {
                 $this->sendPush($notificationSchedule);
-
-                $notificationSchedule->update(['status' => NotificationScheduleStatus::PUBLISH]);
             }
         } catch (\Exception $e) {
             LogService::writeErrorLog($e);
