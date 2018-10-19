@@ -83,7 +83,7 @@ function addColor()
 
   var strlen = str.length;
   var parsed = Number.parseInt(str);
-  if (((strlen == 3 || strlen == 4) && !Number.isNaN(parsed)) || str === "" ) {
+  if (((strlen == 3 || strlen == 4) && !Number.isNaN(parsed))) {
     var element1 = document.getElementById("card-cvv");
     element1.classList.remove("card-cvv-color");
     var element2 = document.getElementById("card-cvv");
