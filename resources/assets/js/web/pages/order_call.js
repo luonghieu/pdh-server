@@ -392,9 +392,14 @@ $(document).ready(function(){
   })
 
   var checkNumber = parseInt( $(".cast-number__value input").val());
+  var maxCasts = parseInt( $("#max_casts").val());
+
+  if(!maxCasts) {
+    maxCasts =10;
+  }
 
   if (checkNumber>1) {
-    if (checkNumber==10) {
+    if (checkNumber==maxCasts) {
       $(".cast-number__button-plus").prop('disabled', false);
       $(".cast-number__button-plus").css({"border": "1.5px #cccccc solid"});
       $(".cast-number__button-plus").addClass('active');
@@ -414,12 +419,12 @@ $(document).ready(function(){
       $(".cast-number__button-minus").prop('disabled', false);
     }
 
-    if(number_val==9){
+    if(number_val==(maxCasts-1)){
       $(this).css({"border": "1.5px #cccccc solid"});
       $(this).addClass('active');
     }
 
-    if(number_val>=10) {
+    if(number_val>=maxCasts) {
       $(this).attr("disabled", "disabled");
     }else {
       number_val = number_val + 1;
