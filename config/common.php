@@ -31,6 +31,27 @@ return [
                 'name' => '90分後',
                 'is_active' => 1
             ],
+        ],
+        'max_casts' => 4,
+        'cast_classes' => [
+            [
+                'id' => 1,
+                'name' => 'ブロンズ',
+                'cost' => 2500,
+                'is_active' => 1
+            ],
+            [
+                'id' => 2,
+                'name' => 'プラチナ',
+                'cost' => 5000,
+                'is_active' => 0
+            ],
+            [
+                'id' => 3,
+                'name' => 'ダイヤモンド',
+                'cost' => 12500,
+                'is_active' => 0
+            ]
         ]
     ]
 ];
