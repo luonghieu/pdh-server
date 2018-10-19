@@ -28,7 +28,7 @@ class NotificationScheduleController extends Controller
     {
         try {
             $rules = [
-                'send_date' => 'required|date',
+                'send_date' => 'required|date|after_or_equal:now',
                 'title' => 'required|string',
                 'content' => 'required',
                 'type' => 'required|numeric',
@@ -83,7 +83,7 @@ class NotificationScheduleController extends Controller
     {
         try {
             $rules = [
-                'send_date' => 'required|date',
+                'send_date' => 'required|date|after_or_equal:now',
                 'title' => 'required|string',
                 'content' => 'required',
                 'type' => 'required|numeric',
