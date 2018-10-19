@@ -10,7 +10,7 @@
   <link rel="stylesheet" href="{{ asset('assets/web/css/style.css') }}">
   <link rel="stylesheet" href="{{ asset('assets/web/css/plugin/slick/slick-theme.css') }}">
   <link rel="stylesheet" href="{{ asset('assets/web/css/plugin/slick/slick.css') }}">
-  <link rel="stylesheet" href="{{ asset('assets/web/css/custom.css') }}">
+  <link rel="stylesheet" href="{{ asset('assets/web/css/custom.css?v=1') }}">
   @yield('web.extra_css')
   <script>
       (function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
