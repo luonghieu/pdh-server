@@ -82,16 +82,12 @@
           <p>\　今すぐ無料会員登録　/</p>
           <!-- <a href="#"><img src="{{ asset('/ld/images/guest/app_stor.png') }}" alt="Apple Store"></a> -->
           <!--a href="#"><img src="{{ asset('/ld/images/guest/ggl_stor_soon.png') }}" alt="Google Store"></a-->
-          <div class="dp_soon">
-            <a href="https://play.google.com/store/apps/details?id=com.cheers.style">
-              <img src="{{ asset('/ld/images/guest/ggl_stor.png') }}" alt="Google Store">
-            </a>
-          </div>
+          <div class="dp_soon"><img src="{{ asset('/ld/images/guest/ggl_stor_soon.png') }}" alt="Google Store"></div>
         </div>
         <!--開発環境-->
         <div class="g_btn">
           <a href="{{ 'https://line.me/R/ti/p/%40' . env('LINE_ID') }}" target="_blank" class="btn_color site
-          size_md">LINEではじめる</a>
+          size_md">事前登録はこちら</a>
         </div>
         <!--本番環境
 			<div class="g_btn">
@@ -208,7 +204,7 @@
             <!--開発環境-->
             <div class="g_btn">
               <a href="{{ 'https://line.me/R/ti/p/%40' . env('LINE_ID') }}" target="_blank" class="btn_color site
-              size_md">LINEではじめる</a>
+              size_md">事前登録はこちら</a>
             </div>
             <!--本番環境
 					<div class="g_btn">
@@ -344,7 +340,7 @@
             <!--開発環境-->
             <div class="g_btn">
               <a href="{{ 'https://line.me/R/ti/p/%40' . env('LINE_ID') }}" target="_blank" class="btn_color site
-              size_md">LINEではじめる</a>
+              size_md">事前登録はこちら</a>
             </div>
             <!--本番環境
 					<div class="g_btn">
