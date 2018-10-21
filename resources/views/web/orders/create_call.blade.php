@@ -156,7 +156,7 @@
         @foreach($orderOptions['cast_classes'] as $castClass)
         <label>
           <img src="{{ asset($castClass['url_image']) }}" alt="">
-          <span class="cast_class {{ $castClass['id']!=3 ? 'sp-disabled' : '' }}" > {{ $castClass['id']!=3 ? html_entity_decode('&nbsp;&nbsp;&nbsp;') : '' }} {{ $castClass['name'] }}</span>
+          <span class="cast_class" id="cast_class" >{{ $castClass['name'] }}</span>
           <span class="cast_price">{{ number_format($castClass['cost']) }}P/30分</span>
           @if(!$castClass['is_active'])
             <div class="class_disabled">

@@ -31,7 +31,7 @@ $(document).ready(function(){
 
   $('.select-month').on('change', function (e) {
     var month = $(this).val();
-    window.axios.post('/get_day', {month})
+    window.axios.post(url + '/get_day', {month})
       .then(function(response) {
         var html = '';
         Object.keys(response.data).forEach(function (key) {

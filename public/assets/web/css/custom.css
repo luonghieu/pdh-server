@@ -758,10 +758,6 @@
   position: relative;
 }
 
-.sp-disabled {
-  margin: 10px !important;
-}
-
 .class_disabled span{
   position: absolute;
   top: 8px;
@@ -769,6 +765,10 @@
   color: #222222;
   font-weight: bold;
   font-size: 12px;
+}
+
+#ge2-1-x .grade-list #cast_class {
+  width: 100px;
 }
 
 @media screen and (max-width: 360px) {
