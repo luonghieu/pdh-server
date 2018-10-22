@@ -2,12 +2,11 @@
 
 namespace App\Http\Controllers\Api;
 
-use App\Enums\MessageType;
+use App\Enums\DeviceType;
 use App\Enums\ProviderType;
 use App\Enums\Status;
 use App\Enums\UserGender;
 use App\Enums\UserType;
-use App\Guest;
 use App\Notifications\CreateGuest;
 use App\Services\LogService;
 use App\User;
@@ -22,6 +21,7 @@ class FacebookAuthController extends ApiController
     {
         $validator = validator($request->all(), [
             'access_token' => 'required',
+            'device_type' => 'integer|min:1|max:3',
         ]);
 
         if ($validator->fails()) {
@@ -48,7 +48,7 @@ class FacebookAuthController extends ApiController
                 $avatar = env('FACEBOOK_GRAP_API_URL') . '/' . $asid . '/picture?type=normal&height=400&width=400';
             }
 
-            $user = $this->findOrCreate($fbResponse->user, $avatar);
+            $user = $this->findOrCreate($fbResponse->user, $avatar, $request->device_type);
 
             if (!$user->status) {
                 return $this->respondErrorMessage(trans('messages.login_forbidden'), 403);
@@ -66,7 +66,7 @@ class FacebookAuthController extends ApiController
         }
     }
 
-    protected function findOrCreate($fbResponse, $avatar)
+    protected function findOrCreate($fbResponse, $avatar, $deviceType = null)
     {
         $user = User::where('facebook_id', $fbResponse['id'])->first();
 
@@ -80,7 +80,8 @@ class FacebookAuthController extends ApiController
                 'gender' => (isset($fbResponse['gender'])) ? ($fbResponse['gender'] == 'male') ? UserGender::MALE : UserGender::FEMALE : null,
                 'type' => UserType::GUEST,
                 'status' => Status::ACTIVE,
-                'provider' => ProviderType::FACEBOOK
+                'provider' => ProviderType::FACEBOOK,
+                'device_type' => ($deviceType) ? $deviceType : DeviceType::WEB
             ];
 
             $user = User::create($data);
