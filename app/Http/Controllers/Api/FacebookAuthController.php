@@ -48,7 +48,7 @@ class FacebookAuthController extends ApiController
                 $avatar = env('FACEBOOK_GRAP_API_URL') . '/' . $asid . '/picture?type=normal&height=400&width=400';
             }
 
-            $user = $this->findOrCreate($fbResponse->user, $avatar, $request->type, $request->device_type);
+            $user = $this->findOrCreate($fbResponse->user, $avatar, $request->device_type);
 
             if (!$user->status) {
                 return $this->respondErrorMessage(trans('messages.login_forbidden'), 403);
@@ -66,7 +66,7 @@ class FacebookAuthController extends ApiController
         }
     }
 
-    protected function findOrCreate($fbResponse, $avatar, $type, $device_type)
+    protected function findOrCreate($fbResponse, $avatar, $device_type)
     {
         $user = User::where('facebook_id', $fbResponse['id'])->first();
 
