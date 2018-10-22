@@ -66,7 +66,7 @@ class FacebookAuthController extends ApiController
         }
     }
 
-    protected function findOrCreate($fbResponse, $avatar, $device_type)
+    protected function findOrCreate($fbResponse, $avatar, $deviceType = null)
     {
         $user = User::where('facebook_id', $fbResponse['id'])->first();
 
@@ -81,7 +81,7 @@ class FacebookAuthController extends ApiController
                 'type' => UserType::GUEST,
                 'status' => Status::ACTIVE,
                 'provider' => ProviderType::FACEBOOK,
-                'device_type' => ($device_type) ? $device_type : DeviceType::WEB
+                'device_type' => ($deviceType) ? $deviceType : DeviceType::WEB
             ];
 
             $user = User::create($data);
