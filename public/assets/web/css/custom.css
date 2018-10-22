@@ -760,11 +760,12 @@
 
 .class_disabled span{
   position: absolute;
-  top: 8px;
+  top: 6px;
   transform: rotate(-16deg);
   color: #222222;
   font-weight: bold;
   font-size: 12px;
+  left: 6px;
 }
 
 #ge2-1-x .grade-list #cast_class {
