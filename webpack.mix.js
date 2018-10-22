@@ -15,8 +15,12 @@ mix.styles([
     'public/assets/admin/css/login/login.css',
     'public/assets/admin/css/user/admin.css',
     'public/assets/admin/css/chatroom/chatroom.css',
-    'public/assets/web/css/custom.css',
 ], 'public/bundle/css/all.css').version();
+
+mix.styles([
+  'public/assets/admin/css/style.css',
+  'public/assets/web/css/custom.css',
+  ],'public/bundle/css/web.css').version();
 
 mix.js("resources/assets/js/app.js", "public/js").version();
 mix.js("resources/assets/js/web.js", "public/js").version();
