@@ -279,7 +279,6 @@ class OrderController extends ApiController
     {
         $month = $request->month;
         $now = Carbon::now();
-        $number = cal_days_in_month(CAL_GREGORIAN, $month, $now->year);
 
         $data['month'] = $month;
 
