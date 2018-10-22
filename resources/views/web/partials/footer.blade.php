@@ -13,7 +13,6 @@
             ]
         });
     });
-    var url = "<?php echo env('APP_URL'); ?>";
 </script>
 <script src="{{ asset('assets/web/js/common.js') }}"></script>
 <script src="{{ asset('assets/web/js/slick/slick.min.js') }}"></script>

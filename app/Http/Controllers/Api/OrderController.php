@@ -274,4 +274,15 @@ class OrderController extends ApiController
 
         return $this->respondWithData($orderPoint + $orderFee + $allowancePoint);
     }
+
+    public function getDayOfMonth(Request $request)
+    {
+        $month = $request->month;
+        $now = Carbon::now();
+        $number = cal_days_in_month(CAL_GREGORIAN, $month, $now->year);
+
+        $data['month'] = $month;
+
+        return getDay($data);
+    }
 }
