@@ -278,8 +278,6 @@ class OrderController extends ApiController
     public function getDayOfMonth(Request $request)
     {
         $month = $request->month;
-        $now = Carbon::now();
-
         $data['month'] = $month;
 
         return getDay($data);
