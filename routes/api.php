@@ -10,6 +10,7 @@ Route::group(['prefix' => 'v1'], function () {
     Route::get('body_types', ['as' => 'body_types', 'uses' => 'BodyTypeController@index']);
     Route::get('tags', ['as' => 'tags', 'uses' => 'TagController@index']);
     Route::get('glossaries', ['as' => 'glossaries', 'uses' => 'GlossaryController@glossary']);
+    Route::post('/get_day', ['as' => 'get_day', 'uses' => 'OrderController@getDayOfMonth']);
 
     Route::group(['prefix' => 'auth', 'as' => 'auth.'], function () {
         Route::post('login', ['as' => 'login', 'uses' => 'AuthController@login']);
