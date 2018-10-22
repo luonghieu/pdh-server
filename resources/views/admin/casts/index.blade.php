@@ -45,7 +45,13 @@
                 <th>年齢</th>
                 <th>会員区分</th>
                 <th>ステータス</th>
-                <th>オンライン</th>
+                <th class="sorting{{ (request()->last_active_at) ? '_' . request()->last_active_at: '' }}">
+                  <a href="{{ route('admin.casts.index',
+                    ['page' => request()->page,
+                     'last_active_at' => (request()->last_active_at == 'asc') ? 'desc' : 'asc',
+                     ]) }}">オンライン
+                   </a>
+                </th>
                 <th>本日出勤</th>
                 <th>キャスト登録日時</th>
                 <th></th>
@@ -65,7 +71,7 @@
                   <td>{{ $cast->age }}</td>
                   <td>{{ App\Enums\UserType::getDescription($cast->type) }}</td>
                   <td>{{ App\Enums\Status::getDescription($cast->status) }}</td>
-                  <td>{{ latestOnlineStatus($cast->last_active_at) }}</td>
+                  <td>{{ $cast->last_active }}</td>
                   <td>{{ App\Enums\WorkingType::getDescription($cast->working_today) }}</td>
                   <td>{{ Carbon\Carbon::parse($cast->created_at)->format('Y/m/d H:i') }}</td>
                   <td><a href="{{ route('admin.users.show', ['user' => $cast->id]) }}" class="btn-detail">詳細</a></td>
