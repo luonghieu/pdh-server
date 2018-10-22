@@ -57,6 +57,13 @@
                      ]) }}">ステータス
                    </a>
                 </th>
+                <th class="sorting{{ (request()->last_active_at) ? '_' . request()->last_active_at: '' }}">
+                  <a href="{{ route('admin.users.index',
+                    ['page' => request()->page,
+                     'last_active_at' => (request()->last_active_at == 'asc') ? 'desc' : 'asc',
+                     ]) }}">オンライン
+                   </a>
+                </th>
                 <th>登録日時</th>
                 <th></th>
               </tr>
@@ -75,6 +82,7 @@
                   <td>{{ $user->age }}</td>
                   <td>{{ App\Enums\UserType::getDescription($user->type) }}</td>
                   <td>{{ App\Enums\Status::getDescription($user->status) }}</td>
+                  <td>{{ $user->last_active }}</td>
                   <td>{{ Carbon\Carbon::parse($user->created_at)->format('Y/m/d H:i') }}</td>
                   <td><a href="{{ route('admin.users.show', ['user' => $user->id]) }}" class="btn-detail">詳細</a></td>
                 </tr>
