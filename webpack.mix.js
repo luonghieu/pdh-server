@@ -18,10 +18,11 @@ mix.styles([
 ], 'public/bundle/css/all.css').version();
 
 mix.styles([
-  'public/assets/web/css/style.css',
-  'public/assets/web/css/custom.css',
-  ],'public/bundle/css/web.css').version();
+'public/assets/web/css/style.css',
+'public/assets/web/css/custom.css',
+], 'public/assets/web/css/web.css').version();
 
 mix.js("resources/assets/js/app.js", "public/js").version();
 mix.js("resources/assets/js/web.js", "public/js").version();
+
 
