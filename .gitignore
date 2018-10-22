@@ -17,3 +17,4 @@ yarn-error.log
 deploy
 .DS_Store
 laravel-echo-server.json
+public/assets/web/css/web.css
