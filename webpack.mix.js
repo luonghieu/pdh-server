@@ -18,7 +18,7 @@ mix.styles([
 ], 'public/bundle/css/all.css').version();
 
 mix.styles([
-  'public/assets/admin/css/style.css',
+  'public/assets/web/css/style.css',
   'public/assets/web/css/custom.css',
   ],'public/bundle/css/web.css').version();
 
