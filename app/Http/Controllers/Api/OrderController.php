@@ -274,4 +274,12 @@ class OrderController extends ApiController
 
         return $this->respondWithData($orderPoint + $orderFee + $allowancePoint);
     }
+
+    public function getDayOfMonth(Request $request)
+    {
+        $month = $request->month;
+        $data['month'] = $month;
+
+        return getDay($data);
+    }
 }

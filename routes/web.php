@@ -62,7 +62,6 @@ Route::group(['middleware' => ['auth', 'guest', 'check_info'], 'as' => 'guest.']
     Route::group(['as' => 'orders.'], function () {
         Route::get('/reserve', ['as' => 'reserve', 'uses' => 'OrderController@index']);
         Route::get('/call', ['as' => 'call', 'uses' => 'OrderController@call']);
-        Route::post('/get_day', ['as' => 'get_day', 'uses' => 'OrderController@getDayOfMonth']);
         Route::post('/call', ['as' => 'post_call', 'uses' => 'OrderController@getParams']);
         Route::get('/call/step2', ['as' => 'get_step2', 'uses' => 'OrderController@selectTags']);
         Route::post('/call/step2', ['as' => 'post_step2', 'uses' => 'OrderController@getTags']);
