@@ -9,7 +9,6 @@ use App\Guest;
 use App\NotificationSchedule;
 use App\Notifications\AdminNotification;
 use App\Services\LogService;
-use App\User;
 use Carbon\Carbon;
 use Illuminate\Console\Command;
 
@@ -46,6 +45,7 @@ class NotificationSchedules extends Command
      */
     public function handle()
     {
+
         $now = Carbon::now()->format('Y-m-d H:i');
 
         $notificationSchedules = NotificationSchedule::where('status', NotificationScheduleStatus::PUBLISH)
@@ -62,9 +62,11 @@ class NotificationSchedules extends Command
     private function sendPush($notificationSchedule)
     {
         if (NotificationScheduleType::ALL == $notificationSchedule->type) {
-            $users = User::all();
+            $guests = Guest::all();
+            \Notification::send($guests, new AdminNotification($notificationSchedule));
 
-            \Notification::send($users, new AdminNotification($notificationSchedule));
+            $casts = Cast::all();
+            \Notification::send($casts, new AdminNotification($notificationSchedule));
         } elseif (NotificationScheduleType::GUEST == $notificationSchedule->type) {
             $guests = Guest::all();
 
