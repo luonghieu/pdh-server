@@ -148,6 +148,11 @@ class AuthController extends ApiController
                 $input['line_qr'] = $lineImageName;
             }
 
+            if ($input['line_id']) {
+                $input['line_friend_id'] = $input['line_id'];
+                unset($input['line_id']);
+            }
+
             $user->update($input);
         } catch (\Exception $e) {
             LogService::writeErrorLog($e);
