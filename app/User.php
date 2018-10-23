@@ -2,17 +2,17 @@
 
 namespace App;
 
-use Carbon\Carbon;
-use App\Enums\UserType;
-use App\Enums\PointType;
 use App\Enums\PaymentStatus;
+use App\Enums\PointType;
+use App\Enums\UserType;
 use App\Services\LogService;
+use Carbon\Carbon;
+use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Storage;
 use Tymon\JWTAuth\Contracts\JWTSubject;
-use Illuminate\Notifications\Notifiable;
-use Illuminate\Foundation\Auth\User as Authenticatable;
 
 class User extends Authenticatable implements JWTSubject
 {
@@ -119,11 +119,6 @@ class User extends Authenticatable implements JWTSubject
     public function getBlocked($id)
     {
         return $this->blockers->contains($id) || $this->blocks->contains($id) ? 1 : 0;
-    }
-
-    public function getLastActiveAtAttribute($value)
-    {
-        return Cache::get('last_active_at_' . $this->id);
     }
 
     public function getLastActiveAttribute()
