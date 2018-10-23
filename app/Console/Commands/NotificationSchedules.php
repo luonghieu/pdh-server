@@ -5,10 +5,12 @@ namespace App\Console\Commands;
 use App\Cast;
 use App\Enums\NotificationScheduleStatus;
 use App\Enums\NotificationScheduleType;
+use App\Enums\UserType;
 use App\Guest;
 use App\NotificationSchedule;
 use App\Notifications\AdminNotification;
 use App\Services\LogService;
+use App\User;
 use Carbon\Carbon;
 use Illuminate\Console\Command;
 
@@ -62,13 +64,13 @@ class NotificationSchedules extends Command
     private function sendPush($notificationSchedule)
     {
         if (NotificationScheduleType::ALL == $notificationSchedule->type) {
-            $guests = Guest::all();
+            $guests = User::where('type', UserType::GUEST)->get();
             \Notification::send($guests, new AdminNotification($notificationSchedule));
 
             $casts = Cast::all();
             \Notification::send($casts, new AdminNotification($notificationSchedule));
         } elseif (NotificationScheduleType::GUEST == $notificationSchedule->type) {
-            $guests = Guest::all();
+            $guests = User::where('type', UserType::GUEST)->get();
 
             \Notification::send($guests, new AdminNotification($notificationSchedule));
         } else {
