@@ -211,6 +211,18 @@
   padding-top: 15px;
 }
 
+#gl2-1 span.amount {
+  color: #222222;
+}
+
+#gl2-1 div.list-payment {
+    padding: 1.5em 1.33em !important;
+}
+
+#list-payment {
+  margin-top: 0px !important;
+}
+
 .create-call-form .ct-button {
   display: -webkit-box;
   display: -ms-flexbox;
