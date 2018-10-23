@@ -85,6 +85,8 @@ if (!function_exists('removeHtmlTags')) {
     function removeHtmlTags($content)
     {
         $content = str_replace("<br />", PHP_EOL, $content);
+        $content = str_replace("&nbsp", " ", $content);
+
         return strip_tags($content);
     }
 }
