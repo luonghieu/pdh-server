@@ -332,7 +332,8 @@
                         <td>
                           <div class="form-group">
                             <div class="col-sm-5 col-sm-offset-1">
-                              <input type="text" name="line" id="" placeholder="LINE IDを入力してください"  value="{{ ($user->line_id) ? $user->line_id : old('line') }}" required >
+                              <input type="text" name="line" id="" placeholder="LINE IDを入力してください"  value="{{
+                              ($user->line_friend_id) ? $user->line_friend_id : old('line') }}" required >
                             </div>
                           </div>
                           @if ($errors->has('line'))

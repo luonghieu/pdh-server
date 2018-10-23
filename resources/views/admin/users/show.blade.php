@@ -98,7 +98,7 @@
               </tr>
               <tr>
                 <th>LINE ID</th>
-                <td>{{ $user->line_id }}</td>
+                <td>{{ $user->line_friend_id }}</td>
               </tr>
               @endif
               <tr>
