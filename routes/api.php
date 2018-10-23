@@ -17,7 +17,7 @@ Route::group(['prefix' => 'v1'], function () {
         Route::post('refresh', ['as' => 'refresh', 'uses' => 'AuthController@refresh']);
         Route::get('logout', ['as' => 'logout', 'uses' => 'AuthController@logout']);
         Route::post('facebook', ['as' => 'login_facebook', 'uses' => 'FacebookAuthController@login']);
-        Route::post('line', ['as' => 'login_linek', 'uses' => 'LineAuthController@login']);
+        Route::post('line', ['as' => 'login_line', 'uses' => 'LineAuthController@login']);
 
         Route::group(['middleware' => ['auth:api']], function () {
             Route::get('me', ['as' => 'me', 'uses' => 'AuthController@me']);
