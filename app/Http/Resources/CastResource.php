@@ -31,7 +31,6 @@ class CastResource extends Resource
             'id' => $this->id,
             'facebook_id' => $this->facebook_id,
             'line_id' => $this->line_id,
-            'line_friend_id' => $this->line_friend_id,
             'email' => $this->email,
             'nickname' => $this->nickname,
             'fullname' => $this->fullname,

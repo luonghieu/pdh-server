@@ -184,7 +184,7 @@ class LineController extends Controller
                 'email' => (isset($lineResponse->email)) ? $lineResponse->email : null,
                 'fullname' => $lineResponse->name,
                 'nickname' => ($lineResponse->nickname) ? $lineResponse->nickname : $lineResponse->name,
-                'line_id' => $lineResponse->id,
+                'line_user_id' => $lineResponse->id,
                 'type' => UserType::GUEST,
                 'status' => Status::ACTIVE,
                 'provider' => ProviderType::LINE,

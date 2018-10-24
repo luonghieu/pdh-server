@@ -2,10 +2,10 @@
 
 namespace App\Console\Commands;
 
-use App\Cast;
+use App\User;
 use Illuminate\Console\Command;
 
-class SwitchLineIdToLineFriendId extends Command
+class SwitchLineIdToLineUserdId extends Command
 {
     /**
      * The name and signature of the console command.
@@ -19,7 +19,7 @@ class SwitchLineIdToLineFriendId extends Command
      *
      * @var string
      */
-    protected $description = 'Switch line_id to line_friend_id';
+    protected $description = 'Switch line_id to line_user_id';
 
     /**
      * Create a new command instance.
@@ -38,12 +38,12 @@ class SwitchLineIdToLineFriendId extends Command
      */
     public function handle()
     {
-        $casts = Cast::where('line_id', '<>', null)->get();
+        $users = User::where('line_id', '<>', null)->get();
 
-        foreach ($casts as $cast) {
-            $lineId = $cast->line_id;
+        foreach ($users as $user) {
+            $lineId = $user->line_id;
 
-            $cast->update(['line_friend_id' => $lineId]);
+            $user->update(['line_user_id' => $lineId]);
         }
     }
 }
