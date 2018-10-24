@@ -2,6 +2,7 @@
 
 namespace App\Notifications;
 
+use App\Enums\CastTransferStatus;
 use App\Enums\MessageType;
 use App\Enums\ProviderType;
 use App\Enums\RoomType;
@@ -80,7 +81,11 @@ class RequestTransferNotify extends Notification implements ShouldQueue
 
         $namedUser = 'user_' . $notifiable->id;
         $send_from = UserType::ADMIN;
-        $pushId = 'c_16';
+        if ($notifiable->cast_transfer_status == CastTransferStatus::APPROVED) {
+            $pushId = 'c_16';
+        } else {
+            $pushId = 'c_17';
+        }
 
         return [
             'audienceOptions' => ['named_user' => $namedUser],
