@@ -52,14 +52,14 @@ class LineAuthController extends ApiController
 
     protected function findOrCreate($lineResponse, $deviceType = null)
     {
-        $user = User::where('line_id', $lineResponse->id)->first();
+        $user = User::where('line_user_id', $lineResponse->id)->first();
 
         if (!$user) {
             $data = [
                 'email' => (isset($lineResponse->email)) ? $lineResponse->email : null,
                 'fullname' => $lineResponse->name,
                 'nickname' => ($lineResponse->nickname) ? $lineResponse->nickname : $lineResponse->name,
-                'line_id' => $lineResponse->id,
+                'line_user_id' => $lineResponse->id,
                 'type' => UserType::GUEST,
                 'status' => Status::ACTIVE,
                 'provider' => ProviderType::LINE,
