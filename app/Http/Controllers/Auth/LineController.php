@@ -177,7 +177,7 @@ class LineController extends Controller
             $user = $user->where('email', $email);
         }
 
-        $user = $user->orWhere('line_id', $lineResponse->id)->first();
+        $user = $user->orWhere('line_user_id', $lineResponse->id)->first();
 
         if (!$user) {
             $data = [
