@@ -7,10 +7,9 @@
   <meta name="description" content="">
   <meta name="csrf-token" content="{{ csrf_token() }}">
   <link rel="stylesheet" href="{{ asset('assets/web/css/plugin/mmenu/jquery.mmenu.all.css') }}" />
-  <link rel="stylesheet" href="{{ asset('assets/web/css/style.css') }}">
   <link rel="stylesheet" href="{{ asset('assets/web/css/plugin/slick/slick-theme.css') }}">
   <link rel="stylesheet" href="{{ asset('assets/web/css/plugin/slick/slick.css') }}">
-  <link rel="stylesheet" href="{{ asset('assets/web/css/custom.css?v=1.1') }}">
+  <link href="{{ mix('assets/web/css/web.css') }}" rel="stylesheet">
   @yield('web.extra_css')
   <script>
       (function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
