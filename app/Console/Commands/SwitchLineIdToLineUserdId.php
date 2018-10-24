@@ -2,7 +2,7 @@
 
 namespace App\Console\Commands;
 
-use App\User;
+use App\Guest;
 use Illuminate\Console\Command;
 
 class SwitchLineIdToLineUserdId extends Command
@@ -38,7 +38,7 @@ class SwitchLineIdToLineUserdId extends Command
      */
     public function handle()
     {
-        $users = User::where('line_id', '<>', null)->get();
+        $users = Guest::where('line_id', '<>', null)->get();
 
         foreach ($users as $user) {
             $lineId = $user->line_id;
