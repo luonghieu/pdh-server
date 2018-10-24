@@ -133,8 +133,15 @@
   </div>
 </div>
 <div class="cast-call-btn">
-  <a href="{{ route('message.messages', $cast['room_id']) }}"><img src="{{ asset('assets/web/images/common/msg2.svg') }}"></a>
-  <div class="btn-l"><a href="{{ route('guest.orders.nominate',['id' => $cast['id'] ]) }}">指名予約する</a></div>
+  <a id="favorite-cast-detail" data-user-id="{{ $cast['id'] }}" data-is-favorited="{{ $cast['is_favorited'] }}">
+    @if ($cast['is_favorited'])
+    <img id="like" src="{{ asset('assets/web/images/common/like.svg') }}"><span class="text-color">イイネ済</span>
+    @else
+    <img src="{{ asset('assets/web/images/common/unlike.svg') }}"><span class="text-color">イイネ</span>
+    @endif
+  </a>
+  <a class="btn-l" href="{{ route('message.messages', $cast['room_id']) }}"><img src="{{ asset('assets/web/images/common/msg2.svg') }}"></a>
+  <div class="btn-l init-width"><a href="{{ route('guest.orders.nominate',['id' => $cast['id'] ]) }}">指名予約する</a></div>
 </div>
 @endsection
 @section('web.script')
