@@ -3,6 +3,7 @@
 namespace App\Notifications;
 
 use App\Enums\CastTransferStatus;
+use App\Enums\DeviceType;
 use App\Enums\MessageType;
 use App\Enums\ProviderType;
 use App\Enums\RoomType;
@@ -34,8 +35,16 @@ class RequestTransferNotify extends Notification implements ShouldQueue
      */
     public function via($notifiable)
     {
-        if (ProviderType::LINE == $notifiable->provider) {
-            return [LineBotNotificationChannel::class];
+        if ($notifiable->provider == ProviderType::LINE) {
+            if ($notifiable->type == UserType::CAST && $notifiable->device_type == null) {
+                return [PushNotificationChannel::class];
+            }
+
+            if ($notifiable->device_type == DeviceType::WEB) {
+                return [LineBotNotificationChannel::class];
+            } else {
+                return [PushNotificationChannel::class];
+            }
         } else {
             return [PushNotificationChannel::class];
         }
