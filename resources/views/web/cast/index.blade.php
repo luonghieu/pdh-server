@@ -106,7 +106,7 @@
   </div>
 
   @confirm(['triggerId' => 'lb-update-cost', 'triggerCancel' =>'', 'buttonLeft' =>'いいえ',
-   'buttonRight' =>'登録する','triggerSuccess' =>'cf-update-cost'])
+   'buttonRight' =>'登録する','triggerSuccess' =>'right cf-update-cost'])
 
     @slot('title')
       30分あたりのポイントを変更しますか？

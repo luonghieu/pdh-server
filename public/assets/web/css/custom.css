@@ -3,6 +3,18 @@
   src: url("../../webview/css/fonts/noto-regular.ttf");
 }
 
+.left{
+  float: left;
+}
+
+.right {
+  float: right;
+}
+
+.clear {
+  clear: both;
+}
+
 .gn-1 .list_wrap .list_item .btn_wrap .btn-cancel {
   text-align: center;
 }
@@ -1370,3 +1382,245 @@ div.user-data span.total-point{
   text-align: center;
 }
 
+#ci7 .title {
+  position: fixed;
+  background-color: #fff;
+  width: 100%;
+  z-index: 1;
+  text-align: center;
+  height: 50px;
+  border-bottom: 1px solid #E4E4E4;
+}
+
+#ci7 .title-name {
+  display: inline-block;
+  font-family: NotoSansCJKjp;
+  font-size: 15px;
+  font-weight: bold;
+  font-style: normal;
+  font-stretch: normal;
+  line-height: normal;
+  letter-spacing: normal;
+  text-align: center;
+  color: #30ccc3;
+  margin-top: 14px;
+}
+
+#ci7 .btn-register {
+  display: inline-block;
+  width: 37px;
+  height: 27px;
+  font-family: NotoSansCJKjp;
+  font-size: 15px;
+  font-weight: normal;
+  font-style: normal;
+  font-stretch: normal;
+  line-height: normal;
+  letter-spacing: normal;
+  position: absolute;
+  bottom: 12px;
+  right: 18px;
+}
+
+.border-bottom {
+  border-bottom: solid 1px rgba(139, 131, 131, 0.2);
+  margin: 0 8px;
+}
+
+#ci7 .content {
+  margin: 78px 7px 0 8px;
+}
+
+#ci7 .content form{
+  margin-top: 10px;
+}
+
+#ci7 .content form .row{
+  height: 49px;
+  position: relative;
+}
+
+#ci7 .label-title {
+  height: 37px;
+  background-color: #f3f2f2;
+  margin: 0 8px;
+}
+
+#ci7 .label-title p {
+  width: 251px;
+  height: 13px;
+  font-family: NotoSansCJKjp;
+  font-size: 13px;
+  font-weight: normal;
+  font-style: normal;
+  font-stretch: normal;
+  line-height: normal;
+  letter-spacing: 0.9px;
+  color: #505050;
+  padding-top: 9px;
+  padding-left: 11px;
+}
+
+#ci7 span.left {
+  height: 15px;
+  font-family: NotoSansCJKjp;
+  font-size: 15px;
+  font-weight: normal;
+  font-style: normal;
+  font-stretch: normal;
+  line-height: normal;
+  letter-spacing: -0.3px;
+  text-align: left;
+  color: #30ccc3;
+  padding-top: 18px;
+}
+
+#ci7 .right a {
+  position: absolute;
+  right: 0;
+  bottom: 10px;
+  font-family: NotoSansCJKjp;
+  font-size: 15px;
+  font-weight: normal;
+  font-style: normal;
+  font-stretch: normal;
+  line-height: normal;
+  letter-spacing: -0.3px;
+  text-align: right;
+  color: #c8c8c8;
+  background: none;
+  border: none;
+}
+
+#ci7 .right select {
+  height: 21px;
+  font-family: NotoSansCJKjp;
+  font-size: 14px;
+  font-weight: normal;
+  font-style: normal;
+  font-stretch: normal;
+  line-height: normal;
+  letter-spacing: -0.3px;
+  text-align: right;
+  color: #303030;
+  background: none;
+  border: none;
+  outline: none;
+  -webkit-appearance: none;
+  width: 45px;
+  background-image: url(../../webview/images/IC_down.png);
+  background-repeat: no-repeat, repeat;
+  background-position: 30px 11px;
+  position: absolute;
+  right: 0;
+  bottom: 10px;
+}
+
+#ci7 .right input {
+  border: none;
+  width: 180px;
+  outline: none;
+  position: absolute;
+  right: 0;
+  bottom: 9px;
+  text-align: right;
+  background:none;
+  font-size: 15px;
+}
+
+#ci7 .right input::placeholder {
+  color: #c8c8c8;
+  font-size: 15px;
+}
+
+#ci7 .right .first-option {
+  height: 21px;
+  font-family: NotoSansCJKjp;
+  font-size: 14px;
+  font-weight: normal;
+  font-style: normal;
+  font-stretch: normal;
+  line-height: normal;
+  letter-spacing: -0.3px;
+  text-align: right;
+  color: #c8c8c8;
+  background: none;
+  border: none;
+  outline: none;
+  -webkit-appearance: none;
+  width: 129px;
+  position: absolute;
+  right: 15px;
+  bottom: 7px;
+}
+
+#ci7 #btn-create-bank-info {
+  width: 32px;
+  height: 24px;
+  font-family: NotoSansCJKjp;
+  font-size: 16px;
+  font-weight: normal;
+  font-style: normal;
+  font-stretch: normal;
+  line-height: normal;
+  letter-spacing: normal;
+  text-align: center;
+  color: #cccccc;
+  padding-top: 2px;
+}
+
+#ci7 .result-bank-name input{
+  caret-color: #30ccc3;
+}
+
+#ci7 .result-bank-name span.result {
+  color: #303030;
+}
+
+#ci7 .result-bank-name img {
+  width: 25px;
+  position: absolute;
+  right: 5px;
+  bottom: 15px;
+}
+
+#ci7 .value-true-color {
+  color: #303030 !important;
+}
+
+#ci7 .account-type {
+  margin-top: 30px;
+}
+
+#ci7 .account-type label{
+  background-color: #fff;
+  position: absolute;
+  right: 16px;
+  bottom: 10px;
+  color: #c8c8c8;
+  z-index: 1;
+}
+
+#ci7 .account-holder {
+  margin-top: 30px;
+}
+
+#ci7 .btn-update-bank {
+  color: #30ccc3;
+}
+
+#btn-update-bank-info {
+  color: #ccc;
+}
+
+#create_bank_accounts footer, #edit_bank_accounts footer, #select_bank_name footer, #select_branch_bank footer{
+  display: none;
+}
+
+.hidden-label {
+  display: none;
+}
+
+.btn-create-bank-info-color {
+  color: #30ccc3 !important;
+}
