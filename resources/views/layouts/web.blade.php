@@ -30,9 +30,11 @@
                   height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
   @yield('web.extra')
   <div id="page">
-    @include('web.partials.header')
-
-    <main id="@yield('screen.id')" class="@yield('screen.class')">
+    @if(App\Enums\UserType::GUEST == Auth::user()->type)
+      @include('web.partials.header')
+    @endif
+    <main id="@yield('screen.id')" class="@yield('screen.class')
+    {{ App\Enums\UserType::CAST == Auth::user()->type ? 'main-cast' : '' }} ">
       @yield('web.content')
     </main>
 

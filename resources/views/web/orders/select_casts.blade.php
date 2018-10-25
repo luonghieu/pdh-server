@@ -11,9 +11,11 @@
     {{ csrf_field() }}
     <div class="">
       <div class="form-grpup" id="list-cast-order"><!-- フォーム内容 -->
-        @if(count($casts['data']))
-          @include('web.orders.load_more_list_casts', compact('casts'))
-          <input type="hidden" id="next_page" value="{{ $casts['next_page_url'] }}">
+        @if(isset($casts['data']))
+          @if(count($casts['data']))
+            @include('web.orders.load_more_list_casts', compact('casts'))
+            <input type="hidden" id="next_page" value="{{ $casts['next_page_url'] }}">
+          @endif
         @endif
       </div>
       @if(isset($castNumbers))
