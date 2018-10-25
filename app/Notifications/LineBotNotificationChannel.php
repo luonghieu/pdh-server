@@ -14,6 +14,6 @@ class LineBotNotificationChannel
 
         $data = $notification->lineBotPushData($notifiable);
 
-        return $lineBot->push($notifiable->line_id, $data);
+        return $lineBot->push($notifiable->line_user_id, $data);
     }
 }

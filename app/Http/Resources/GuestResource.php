@@ -76,6 +76,7 @@ class GuestResource extends Resource
             'rating_score' => $this->rating_score,
             'room_id' => $this->room_id,
             'card' => CardResource::make($this->whenLoaded('card')),
+            'line_qr' => $this->line_qr,
         ]);
     }
 }

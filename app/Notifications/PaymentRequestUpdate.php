@@ -13,10 +13,11 @@ class PaymentRequestUpdate extends Notification
     use Queueable;
 
     protected $order;
+
     /**
      * Create a new notification instance.
      *
-     * @return void
+     * @param Order $order
      */
     public function __construct(Order $order)
     {

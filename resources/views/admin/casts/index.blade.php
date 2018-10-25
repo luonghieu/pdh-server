@@ -71,7 +71,11 @@
                   <td>{{ $cast->age }}</td>
                   <td>{{ App\Enums\UserType::getDescription($cast->type) }}</td>
                   <td>{{ App\Enums\Status::getDescription($cast->status) }}</td>
+                  @if ($cast->is_online == true)
+                  <td>オンライン中</td>
+                  @else
                   <td>{{ $cast->last_active }}</td>
+                  @endif
                   <td>{{ App\Enums\WorkingType::getDescription($cast->working_today) }}</td>
                   <td>{{ Carbon\Carbon::parse($cast->created_at)->format('Y/m/d H:i') }}</td>
                   <td><a href="{{ route('admin.users.show', ['user' => $cast->id]) }}" class="btn-detail">詳細</a></td>

@@ -2,6 +2,7 @@
 
 namespace App\Notifications;
 
+use App\Enums\DeviceType;
 use App\Enums\MessageType;
 use App\Enums\ProviderType;
 use App\Enums\SystemMessageType;
@@ -40,7 +41,19 @@ class CastDenyOrders extends Notification implements ShouldQueue
     public function via($notifiable)
     {
         if ($notifiable->provider == ProviderType::LINE) {
-            return [CustomDatabaseChannel::class, LineBotNotificationChannel::class];
+            if ($notifiable->type == UserType::GUEST && $notifiable->device_type == null) {
+                return [CustomDatabaseChannel::class, LineBotNotificationChannel::class];
+            }
+
+            if ($notifiable->type == UserType::CAST && $notifiable->device_type == null) {
+                return [CustomDatabaseChannel::class, PushNotificationChannel::class];
+            }
+
+            if ($notifiable->device_type == DeviceType::WEB) {
+                return [CustomDatabaseChannel::class, LineBotNotificationChannel::class];
+            } else {
+                return [CustomDatabaseChannel::class, PushNotificationChannel::class];
+            }
         } else {
             return [CustomDatabaseChannel::class, PushNotificationChannel::class];
         }

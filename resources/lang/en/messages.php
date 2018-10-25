@@ -61,4 +61,5 @@ return [
     'payment_completed' => 'Payment completed.',
     'card_expired' => 'Card expired',
     'request_transfer_cast_succeed' => 'Request transfer to cast succeed',
+    'line_invalid_token' => 'Line invalid token',
 ];

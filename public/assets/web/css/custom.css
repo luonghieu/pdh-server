@@ -83,12 +83,6 @@
   font-size: 14px;
 }
 
-@media (max-width: 320px) {
-  .gn-1 .list_wrap .list_item .btn_wrap .btn-cancel {
-    text-align: center;
-  }
-}
-
 #login-controller .wrapper {
   background: url('../images/line/login-bg.jpg') center center no-repeat;
   background-size:cover;
@@ -1090,4 +1084,264 @@
   background-color: #CCCCCC;
   color: #ffffff;
   border-color: #CCCCCC;
+}
+
+/*CAST*/
+
+div.point-transfer {
+  border-radius: 10px;
+  width: 80%;
+  height: 55px;
+  border: 1px dashed #30ccc3;
+  background-image: none;
+}
+
+div.point-transfer span {
+  display: inline-block;
+}
+
+div.point-transfer img {
+  display: inline-block;
+  width: 20px;
+  height: 20px;
+  object-fit: contain;
+  margin-left: 27px;
+}
+
+div.point-transfer span.point-show {
+  font-size: 26px;
+  font-weight: 100;
+  color: #222222;
+  margin-right: 30px;
+  float: right;
+}
+
+div.point-transfer div.point-title {
+  display: inline-block;
+  float: left;
+}
+
+div.point-transfer div.point-title span {
+  font-size: 13px;
+  width: 101px;
+  height: 19px;
+  font-weight: bold;
+  font-style: normal;
+  font-stretch: normal;
+  line-height: normal;
+  letter-spacing: 1.3px;
+  color: #30ccc3;
+  position: relative;
+  top: -4px;
+}
+
+.btn-circle {
+  width: 95% !important;
+  padding-top: 24px !important;
+}
+
+.m-rounded-circle {
+  position: relative;
+}
+
+.m-rounded-circle img{
+  width: 34px;
+  height: 34px;
+  object-fit: contain;
+  position: absolute;
+  top: 18px;
+  left: 38px;
+}
+
+.m-rounded-circle div{
+  position: absolute;
+  top: 14px;
+  left: 26px;
+}
+
+.m-rounded-circle div.ct-circle {
+  left: 11px;
+}
+
+div.user-data span.total-point-title {
+  display: inline-block;
+  font-size: 14px;
+  text-align: center;
+  position: absolute;
+  top: 30px;
+  width: 124px;
+  left: -3px;
+  height: 20px;
+  font-weight: normal;
+  font-style: normal;
+  font-stretch: normal;
+  line-height: normal;
+  letter-spacing: 1.4px;
+  color: #ffffff;
+}
+
+div.user-data span.total-point{
+  position: absolute;
+  bottom: 94px;
+  font-size: 40px;
+  width: 190px;
+  text-align: center;
+  left: -36px;
+  height: 40px;
+  font-weight: normal;
+  font-style: normal;
+  font-stretch: normal;
+  line-height: normal;
+  letter-spacing: 1.2px;
+  color: #ffffff;
+}
+
+.rounded-circle {
+  width: 110px;
+  height: 110px;
+  border: 1px solid #00D2BA;
+  border-radius: 50%;
+  margin: 0 auto;
+  background-image: linear-gradient(151deg, #42e4b2, #00c3c3);
+  color: #FFF;
+}
+
+.m-auto {
+  margin: 45% auto;
+  font-size: 15px;
+  font-weight: 100;
+}
+
+.m-0 {
+  margin: 0 auto;
+}
+
+.display-flex {
+  display: flex;
+  margin: 0 auto;
+  flex-direction: row;
+  justify-content: space-between;
+}
+
+.text-center {
+  text-align: center;
+}
+
+#btn-circle {
+  background-image: none;
+}
+
+#custom-point {
+  background-image: none;
+  margin-top: 14px;
+  width: 96%;
+}
+
+#custom-point div.expiration-date div.select-point {
+  float: right;
+  padding-top: 15px;
+  padding-right: 0px;
+}
+
+#custom-point div.expiration-date {
+  margin: 30px 0px;
+  height: 50px;
+
+}
+
+#custom-point div.expiration-date span.left {
+  float: left;
+  margin-left: 9px;
+  color: #a0a0a0;
+}
+
+#custom-point div.expiration-date div.select-point select{
+  background-image: none;
+  background-position: 48px 9px;
+}
+
+#custom-point div.expiration-date div.select-point select:first-child {
+    padding-left : 0px;
+}
+
+#change-point {
+  width: 21%;
+  height: 30px;
+  border-radius: 19px;
+  background-image: linear-gradient(-162deg, #42E4B2 0%, #00C3C3 100%);
+  display: block;
+  text-align: center;
+  margin: 20px auto;
+  padding: 4px;
+  line-height: 30px;
+  position: relative;
+  left: 31%;
+  color: white;
+}
+
+.main-cast {
+  padding-top: 0px;
+}
+
+#top-header-cast {
+  height: 183px;
+  background-image: linear-gradient(327deg, #42e4b2, #00c3c3);
+}
+
+#cast-icon img{
+  border-radius: 100%;
+  height: 100%;
+}
+
+@media (max-width: 320px) {
+  .gn-1 .list_wrap .list_item .btn_wrap .btn-cancel {
+    text-align: center;
+  }
+
+  div.point-transfer img {
+    width: 15px;
+    height: 15px;
+  }
+
+  div.point-transfer span.point-show {
+    font-size: 22px;
+  }
+
+  div.point-transfer div.point-title span {
+    font-size: 10px;
+    width: 85px;
+  }
+
+  .m-rounded-circle {
+    width: 95px;
+    height: 95px;
+  }
+
+  .m-rounded-circle img {
+    left: 32px;
+  }
+
+  .m-rounded-circle div {
+    left: 23px;
+    font-size: 13px;
+  }
+
+  .m-rounded-circle div.ct-circle {
+    left: 10px;
+  }
+
+}
+
+#gf2 .text-color {
+  color: #30CCC3;
+  font-weight: bold;
+}
+
+#gf2 .cast-call-btn #like {
+  width: 75%;
+  margin: 0 auto 0.2rem;
+}
+
+#gf2 .cast-call-btn .btn-l.init-width a {
+  min-width: 160px;
 }
