@@ -6,6 +6,7 @@ use App\Enums\MessageType;
 use App\Enums\RoomType;
 use App\Events\MessageCreated as BroadcastMessage;
 use App\Message;
+use App\Notifications\DirectMessageNotifyToLine;
 use App\Notifications\MessageCreated;
 
 class MessageObserver
@@ -13,17 +14,21 @@ class MessageObserver
     public function created(Message $message)
     {
         $room = $message->room;
-
         if (MessageType::SYSTEM == $message->type) {
             broadcast(new BroadcastMessage($message));
         }
-
         if (MessageType::SYSTEM != $message->type) {
             $users = $room->users->except([$message->user_id]);
 
             if (RoomType::DIRECT == $room->type) {
-                if (!$room->checkBlocked($room->owner_id == $room->users[0]->id ? $room->users[1]->id : $room->users[0]->id)) {
+                $otherId = $room->owner_id == $room->users[0]->id ? $room->users[1]->id : $room->users[0]->id;
+                if (!$room->checkBlocked($otherId)) {
                     \Notification::send($users, new MessageCreated($message->id));
+
+                    $other = $users->first();
+                    if ($other->line_user_id != null) {
+                        $other->notify(new DirectMessageNotifyToLine($message->id));
+                    }
                 }
             } else {
                 \Notification::send($users, new MessageCreated($message->id));
