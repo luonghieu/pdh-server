@@ -3,13 +3,13 @@
 namespace App\Http\Controllers;
 
 use App\Enums\OrderStatus;
+use App\Enums\UserType;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\OrderResource;
 use App\Order;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Session;
-use File;
 use Tymon\JWTAuth\Facades\JWTAuth;
 
 class HomeController extends Controller
@@ -26,28 +26,35 @@ class HomeController extends Controller
         }
 
         if (Auth::check()) {
+            $user = Auth::user();
             $token = '';
-            $token = JWTAuth::fromUser(Auth::user());
+            $token = JWTAuth::fromUser($user);
 
-            $order = Order::with('casts')
-                ->where('user_id', Auth::user()->id)
-                ->where('status', OrderStatus::PROCESSING)
-                ->with(['user', 'casts', 'nominees', 'tags'])
-                ->orderBy('date')
-                ->orderBy('start_time')->first();
-
-            if (!$order) {
+            if (UserType::GUEST == $user->type) {
                 $order = Order::with('casts')
                     ->where('user_id', Auth::user()->id)
-                    ->whereIn('status', [OrderStatus::OPEN, OrderStatus::ACTIVE])
+                    ->where('status', OrderStatus::PROCESSING)
                     ->with(['user', 'casts', 'nominees', 'tags'])
                     ->orderBy('date')
                     ->orderBy('start_time')->first();
+
+                if (!$order) {
+                    $order = Order::with('casts')
+                        ->where('user_id', Auth::user()->id)
+                        ->whereIn('status', [OrderStatus::OPEN, OrderStatus::ACTIVE])
+                        ->with(['user', 'casts', 'nominees', 'tags'])
+                        ->orderBy('date')
+                        ->orderBy('start_time')->first();
+                }
+
+                $order = OrderResource::make($order);
+
+                return view('web.index', compact('token', 'order'));
             }
 
-            $order = OrderResource::make($order);
-
-            return view('web.index', compact('token', 'order'));
+            if (UserType::CAST == $user->type) {
+                return view('web.cast.index', compact('token', 'user'));
+            }
         }
 
         return redirect()->route('web.login');
