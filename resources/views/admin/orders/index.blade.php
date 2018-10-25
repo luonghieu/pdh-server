@@ -121,7 +121,9 @@
                 @foreach ($orders as $key => $order)
                 <tr>
                   <td class="select-checkbox">
+                    @if (!$order->deleted_at)
                     <input type="checkbox" class="verify-checkboxs" value="{{ $order->id }}">
+                    @endif
                   </td>
                   <td>{{ $orders->firstItem() + $key }}</td>
                   <td><a href="{{ route('admin.users.show', ['user' => $order->user->id]) }}">{{ $order->user ? $order->user->id : '' }}</a></td>
