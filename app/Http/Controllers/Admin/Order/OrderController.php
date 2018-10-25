@@ -123,8 +123,14 @@ class OrderController extends Controller
         return view('admin.orders.nominees', compact('casts', 'order'));
     }
 
-    public function candidates(Order $order)
+    public function candidates($order)
     {
+        $order = Order::withTrashed()->find($order);
+
+        if (empty($order)) {
+            abort(404);
+        }
+
         $casts = $order->candidates()->paginate();
 
         return view('admin.orders.candidates', compact('casts', 'order'));
@@ -149,8 +155,14 @@ class OrderController extends Controller
         return view('admin.orders.order_call', compact('order'));
     }
 
-    public function castsMatching(Order $order)
+    public function castsMatching($order)
     {
+        $order = Order::withTrashed()->find($order);
+
+        if (empty($order)) {
+            abort(404);
+        }
+
         $casts = $order->casts;
 
         return view('admin.orders.casts_matching', compact('casts', 'order'));
