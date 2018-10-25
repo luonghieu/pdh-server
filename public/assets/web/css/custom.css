@@ -1079,3 +1079,17 @@
   color: #ffffff;
   border-color: #CCCCCC;
 }
+
+#gf2 .text-color {
+  color: #30CCC3;
+  font-weight: bold;
+}
+
+#gf2 .cast-call-btn #like {
+  width: 75%;
+  margin: 0 auto 0.2rem;
+}
+
+#gf2 .cast-call-btn .btn-l.init-width a {
+  min-width: 160px;
+}
