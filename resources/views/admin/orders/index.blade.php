@@ -38,7 +38,7 @@
           </form>
         </div>
         <div class="btn-delete-order">
-          <button data-toggle="modal" data-target="#deleteOrder">チェックした予約を削除する</button>
+          <button data-toggle="modal" data-target="#deleteOrder">チェックした予約を無効する</button>
         </div>
         <div class="panel-body">
           @include('admin.partials.notification')
@@ -121,7 +121,9 @@
                 @foreach ($orders as $key => $order)
                 <tr>
                   <td class="select-checkbox">
+                    @if (!$order->deleted_at)
                     <input type="checkbox" class="verify-checkboxs" value="{{ $order->id }}">
+                    @endif
                   </td>
                   <td>{{ $orders->firstItem() + $key }}</td>
                   <td><a href="{{ route('admin.users.show', ['user' => $order->user->id]) }}">{{ $order->user ? $order->user->id : '' }}</a></td>
@@ -197,7 +199,7 @@
           <div class="modal-dialog" role="document">
             <div class="modal-content">
               <div class="modal-body">
-                <p>チェックした予約を削除しますか？</p>
+                <p>チェックした予約を無効しますか？</p>
               </div>
               <form action="{{ route('admin.orders.delete') }}" method="POST">
                 {{ csrf_field() }}
