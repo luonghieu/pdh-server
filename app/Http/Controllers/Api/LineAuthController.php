@@ -53,7 +53,6 @@ class LineAuthController extends ApiController
     protected function findOrCreate($lineResponse, $deviceType = null)
     {
         $user = User::where('line_user_id', $lineResponse->id)->first();
-
         if (!$user) {
             $data = [
                 'email' => (isset($lineResponse->email)) ? $lineResponse->email : null,
@@ -63,7 +62,7 @@ class LineAuthController extends ApiController
                 'type' => UserType::GUEST,
                 'status' => Status::ACTIVE,
                 'provider' => ProviderType::LINE,
-                'device_type' => ($deviceType) ? $deviceType : DeviceType::WEB
+                'device_type' => ($deviceType) ? $deviceType : DeviceType::WEB,
             ];
 
             $user = User::create($data);

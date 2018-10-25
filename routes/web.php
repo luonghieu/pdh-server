@@ -47,6 +47,15 @@ Route::group(['middleware' => 'auth'], function () {
         Route::group(['prefix' => 'point_settement', 'as' => 'point_settement.'], function () {
             Route::post('/{orderId}', ['as' => 'create', 'uses' => 'OrderController@pointSettlement']);
         });
+
+        Route::group(['prefix' => 'bank_account', 'as' => 'bank_account.'], function () {
+            Route::get('/', ['as' => 'index', 'uses' => 'BankAccountController@index']);
+            Route::get('/bank_name', ['as' => 'search_bank_name', 'uses' => 'BankAccountController@searchBankName']);
+            Route::get('/bank_name/edit', ['as' => 'edit', 'uses' => 'BankAccountController@edit']);
+            Route::post('/bank_name', ['as' => 'bank_name', 'uses' => 'BankAccountController@bankName']);
+            Route::get('/branch_bank_name', ['as' => 'search_branch_bank_name', 'uses' => 'BankAccountController@searchBranchBankName']);
+            Route::post('/branch_bank_name', ['as' => 'branch_bank_name', 'uses' => 'BankAccountController@branchBankName']);
+        });
     });
 });
 
