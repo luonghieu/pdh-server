@@ -1,5 +1,8 @@
 @section('title', '振込履歴')
 @section('controller.id', 'gl2-1')
+@if (empty($payments['data']))
+@section('controller.class', 'list-payment-casts')
+@endif
 @section('screen.id', 'gl4')
 @extends('layouts.web')
 @section('web.extra')
