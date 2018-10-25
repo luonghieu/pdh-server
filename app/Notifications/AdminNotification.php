@@ -2,6 +2,7 @@
 
 namespace App\Notifications;
 
+use App\Enums\DeviceType;
 use App\Enums\ProviderType;
 use App\Enums\UserType;
 use Illuminate\Bus\Queueable;
@@ -32,8 +33,20 @@ class AdminNotification extends Notification implements ShouldQueue
      */
     public function via($notifiable)
     {
-        if (ProviderType::LINE == $notifiable->provider) {
-            return [CustomDatabaseChannel::class, LineBotNotificationChannel::class];
+        if ($notifiable->provider == ProviderType::LINE) {
+            if ($notifiable->type == UserType::GUEST && $notifiable->device_type == null) {
+                return [CustomDatabaseChannel::class, LineBotNotificationChannel::class];
+            }
+
+            if ($notifiable->type == UserType::CAST && $notifiable->device_type == null) {
+                return [CustomDatabaseChannel::class, PushNotificationChannel::class];
+            }
+
+            if ($notifiable->device_type == DeviceType::WEB) {
+                return [CustomDatabaseChannel::class, LineBotNotificationChannel::class];
+            } else {
+                return [CustomDatabaseChannel::class, PushNotificationChannel::class];
+            }
         } else {
             return [CustomDatabaseChannel::class, PushNotificationChannel::class];
         }
