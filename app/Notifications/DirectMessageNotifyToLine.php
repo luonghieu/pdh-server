@@ -54,7 +54,7 @@ class DirectMessageNotifyToLine extends Notification implements ShouldQueue
                     'actions' => [
                         [
                             'type' => 'uri',
-                            'label' => '今すぐキャストを呼ぶ ',
+                            'label' => 'Show Room ',
                             'uri' => "line://app/$page"
                         ]
                     ]
