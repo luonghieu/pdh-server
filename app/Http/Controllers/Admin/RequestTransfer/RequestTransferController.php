@@ -71,6 +71,7 @@ class RequestTransferController extends Controller
         try {
             if ($request->has('transfer_request_status')) {
                 $cast->cast_transfer_status = $request->transfer_request_status;
+                $cast->class_id = 1;
                 $cast->save();
 
                 $cast->notify(new RequestTransferNotify());
