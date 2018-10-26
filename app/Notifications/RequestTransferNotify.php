@@ -91,9 +91,9 @@ class RequestTransferNotify extends Notification implements ShouldQueue
         $namedUser = 'user_' . $notifiable->id;
         $send_from = UserType::ADMIN;
         if ($notifiable->cast_transfer_status == CastTransferStatus::APPROVED) {
-            $pushId = 'c_16';
-        } else {
             $pushId = 'c_17';
+        } else {
+            $pushId = 'c_18';
         }
 
         return [
