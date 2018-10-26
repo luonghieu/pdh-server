@@ -47,6 +47,10 @@ class OrderController extends ApiController
             return $this->respondWithValidationError($validator->errors()->messages());
         }
 
+        if (!$user->status) {
+            return $this->respondErrorMessage(trans('messages.freezing_account'), 403);
+        }
+
         $input = $request->only([
             'prefecture_id',
             'address',

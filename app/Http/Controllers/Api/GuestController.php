@@ -21,8 +21,12 @@ class GuestController extends ApiController
             return $this->respondWithValidationError($validator->errors()->messages());
         }
 
-        $guests = Guest::orderBy('last_active_at', 'DESC');
         $user = $this->guard()->user();
+        if (!$user->status) {
+            return $this->respondErrorMessage(trans('messages.freezing_account'), 403);
+        }
+
+        $guests = Guest::orderBy('last_active_at', 'DESC');
 
         if ($request->favorited) {
             $guests->whereHas('favoriters', function ($query) use ($user) {
