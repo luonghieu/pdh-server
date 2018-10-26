@@ -31,7 +31,7 @@ class CastController extends ApiController
             'body_type_id',
         ]);
 
-        $casts = Cast::query();
+        $casts = Cast::orderBy('last_active_at', 'DESC');
         $user = $this->guard()->user();
 
         foreach ($params as $key => $value) {
