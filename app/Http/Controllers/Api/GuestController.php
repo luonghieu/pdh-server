@@ -23,7 +23,7 @@ class GuestController extends ApiController
 
         $user = $this->guard()->user();
         if (!$user->status) {
-            return $this->respondErrorMessage(trans('messages.login_forbidden'), 403);
+            return $this->respondErrorMessage(trans('messages.freezing_account'), 403);
         }
 
         $guests = Guest::orderBy('last_active_at', 'DESC');

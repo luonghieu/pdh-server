@@ -28,7 +28,7 @@ class RoomController extends ApiController
 
         $user = $this->guard()->user();
         if (!$user->status) {
-            return $this->respondErrorMessage(trans('messages.login_forbidden'), 403);
+            return $this->respondErrorMessage(trans('messages.freezing_account'), 403);
         }
 
         $rooms = Room::active()->whereHas('users', function ($query) use ($user) {
@@ -77,7 +77,7 @@ class RoomController extends ApiController
 
         $user = $this->guard()->user();
         if (!$user->status) {
-            return $this->respondErrorMessage(trans('messages.login_forbidden'), 403);
+            return $this->respondErrorMessage(trans('messages.freezing_account'), 403);
         }
 
         $userId = $request->user_id;

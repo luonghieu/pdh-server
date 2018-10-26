@@ -187,7 +187,7 @@ class OrderController extends ApiController
 
         $user = $this->guard()->user();
         if (!$user->status) {
-            return $this->respondErrorMessage(trans('messages.login_forbidden'), 403);
+            return $this->respondErrorMessage(trans('messages.freezing_account'), 403);
         }
 
         if (!$this->validTimeOrder($user, $order)) {
@@ -228,7 +228,7 @@ class OrderController extends ApiController
 
         $user = $this->guard()->user();
         if (!$user->status) {
-            return $this->respondErrorMessage(trans('messages.login_forbidden'), 403);
+            return $this->respondErrorMessage(trans('messages.freezing_account'), 403);
         }
 
         if (!$this->validTimeOrder($user, $order)) {
@@ -258,7 +258,7 @@ class OrderController extends ApiController
 
         $user = $this->guard()->user();
         if (!$user->status) {
-            return $this->respondErrorMessage(trans('messages.login_forbidden'), 403);
+            return $this->respondErrorMessage(trans('messages.freezing_account'), 403);
         }
 
         $castExists = $order->casts()->where('user_id', $user->id)->whereNull('started_at')->first();
@@ -290,7 +290,7 @@ class OrderController extends ApiController
 
         $user = $this->guard()->user();
         if (!$user->status) {
-            return $this->respondErrorMessage(trans('messages.login_forbidden'), 403);
+            return $this->respondErrorMessage(trans('messages.freezing_account'), 403);
         }
 
         $castExists = $order->casts()
@@ -338,7 +338,7 @@ class OrderController extends ApiController
 
         $user = $this->guard()->user();
         if (!$user->status) {
-            return $this->respondErrorMessage(trans('messages.login_forbidden'), 403);
+            return $this->respondErrorMessage(trans('messages.freezing_account'), 403);
         }
 
         $castExists = $order->whereHas('castOrder', function ($query) use ($user) {
@@ -411,7 +411,7 @@ class OrderController extends ApiController
         ];
         $user = $this->guard()->user();
         if (!$user->status) {
-            return $this->respondErrorMessage(trans('messages.login_forbidden'), 403);
+            return $this->respondErrorMessage(trans('messages.freezing_account'), 403);
         }
 
         $castExists = $order->castOrder()->where('cast_order.user_id', $user->id)

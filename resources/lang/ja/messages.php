@@ -13,7 +13,7 @@ return [
     'cast_not_found' => 'キャストが見つかれません',
     'block_success' => 'ブロック済',
     'unblock_success' => 'ブロック解除',
-    'login_forbidden' => 'アカウントが凍結されています',
+    'freezing_account' => 'アカウントが凍結されています',
     'report_success' => '通報しました',
     'avatar_not_found' => 'プロフィール写真が存在しません',
     'set_avatar_default_success' => 'メイン画像を変更しました',
