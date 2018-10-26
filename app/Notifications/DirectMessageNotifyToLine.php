@@ -40,7 +40,7 @@ class DirectMessageNotifyToLine extends Notification implements ShouldQueue
     {
         $user = $this->message->user;
         $room = $this->message->room;
-        $content = $user->nickname . 'さんから新着メッセージがあります。確認してみましょう';
+        $content = $user->nickname . 'さんから新着メッセージが届きました。';
         $page = env('LINE_LIFF_REDIRECT_PAGE') . '?page=room&room_id=' . $room->id;
 
         return [
@@ -54,7 +54,7 @@ class DirectMessageNotifyToLine extends Notification implements ShouldQueue
                     'actions' => [
                         [
                             'type' => 'uri',
-                            'label' => 'Show Room ',
+                            'label' => 'メッセージを確認する',
                             'uri' => "line://app/$page"
                         ]
                     ]
