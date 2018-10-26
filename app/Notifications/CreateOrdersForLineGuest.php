@@ -134,7 +134,12 @@ class CreateOrdersForLineGuest extends Notification implements ShouldQueue
 
     public function rocketChatPushData($notifiable)
     {
-        $link = route('admin.orders.call', ['order' => $this->order->id]);
+        if ($this->order->type == OrderType::NOMINATION) {
+            $link = route('admin.orders.nominees', ['order' => $this->order->id]);
+        } else {
+            $link = route('admin.orders.call', ['order' => $this->order->id]);
+        }
+
         return [
             'text' => "売上申請の修正依頼がありました。[Link]($link)"
         ];
