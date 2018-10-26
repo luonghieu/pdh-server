@@ -253,7 +253,8 @@
   @endconfirm
 
   @if(!$user->card)
-    @modal(['triggerId' => 'md-require-card', 'triggerClass' =>'lable-register-card'])
+    @modal(['triggerId' => 'md-require-card', 'triggerClass' =>'lable-register-card','button' =>'クレジットカードを登録する
+'])
       @slot('title')
         クレジットカードを 登録してください
       @endslot
