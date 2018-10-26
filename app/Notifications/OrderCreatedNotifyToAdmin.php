@@ -12,7 +12,7 @@ class OrderCreatedNotifyToAdmin extends Notification implements ShouldQueue
 {
     use Queueable;
 
-    public $order;
+    public $orderId;
 
     /**
      * Create a new notification instance.
@@ -21,9 +21,7 @@ class OrderCreatedNotifyToAdmin extends Notification implements ShouldQueue
      */
     public function __construct($orderId)
     {
-        $order = Order::findOrFail($orderId);
-
-        $this->order = $order;
+        $this->orderId = $orderId;
     }
 
     /**
@@ -40,9 +38,9 @@ class OrderCreatedNotifyToAdmin extends Notification implements ShouldQueue
     public function rocketChatPushData($notifiable)
     {
         if ($this->order->type == OrderType::NOMINATION) {
-            $link = route('admin.orders.nominees', ['order' => $this->order->id]);
+            $link = route('admin.orders.nominees', ['order' => $this->orderId]);
         } else {
-            $link = route('admin.orders.call', ['order' => $this->order->id]);
+            $link = route('admin.orders.call', ['order' => $this->orderId]);
         }
 
         return [
