@@ -31,8 +31,8 @@
         <label for="popup-require-card" class="modal_trigger" id="popup-require-card-label"></label>
         <div class="modal_content modal_content-btn1">
             <div class="text-box">
-                <h2>クレジットカードを 登録<br>してください</h2>
-                <p>※キャストと合流するまで 料金は<br>発生しません</p>
+                <h2>※キャストと合流するまで <br>料金は発生しません</h2>
+                <p>クレジットカードを <br>登録してください</p>
             </div>
             <a class="close_button" href="{{ route('credit_card.index') }}">クレジットカードを登録する</a>
         </div>
