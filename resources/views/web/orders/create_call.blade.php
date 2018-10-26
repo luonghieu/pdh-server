@@ -65,8 +65,8 @@
     <div class="form-grpup"><!-- フォーム内容 -->
       @if(isset($orderOptions['call_time']))
         @foreach($orderOptions['call_time'] as $callTime)
-        <label class="button button--green date {{ (isset($currentTime) && $currentTime == $callTime['value'] ) ? 'active' : '' }} {{ !$callTime['is_active'] ? 'inactive' : '' }}">
-          <input type="radio" name="time_join" value="{{ $callTime['value'] }}" {{ (isset($currentTime) && $currentTime == $callTime['value']) ? 'checked="checked"' : '' }} {{ !$callTime['is_active'] ? 'disabled' : '' }}>
+        <label class="button button--green date {{ $callTime['value'] ==60 ? 'active' : '' }} {{ (isset($currentTime) && $currentTime == $callTime['value'] ) ? 'active' : '' }} {{ !$callTime['is_active'] ? 'inactive' : '' }}">
+          <input type="radio" name="time_join" value="{{ $callTime['value'] }}" {{ (isset($currentTime) && $currentTime == $callTime['value']) ? 'checked="checked"' : '' }} {{ !$callTime['is_active'] ? 'disabled' : '' }} {{ $callTime['value'] ==60 ? 'checked' : '' }}>
           {{ $callTime['name'] }}
         </label>
         @endforeach
@@ -164,7 +164,9 @@
               <span>近日open予定！</span>
             </div>
           @else
-          <input type="radio" name="cast_class" class="grade-radio" value="{{ $castClass['id'] }}" {{ (isset($currentCastClass) && $currentCastClass == $castClass['id']) ? 'checked="checked"' : '' }} >
+          <input type="radio" name="cast_class" class="grade-radio" value="{{ $castClass['id'] }}" {{ (isset($currentCastClass) && $currentCastClass == $castClass['id']) ? 'checked="checked"' : '' }}
+          {{ (isset($currentCastClass) && $currentCastClass == $castClass['id']) ? 'checked="checked"' : '' }}
+           {{ 1==$castClass['id'] ? 'checked' : '' }} >
           @endif
 
         </label>

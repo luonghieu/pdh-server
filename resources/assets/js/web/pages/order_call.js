@@ -275,7 +275,7 @@ $(document).ready(function(){
   var castClass = $("input:radio[name='cast_class']:checked").val();
   var duration = $("input:radio[name='time_set']:checked").val();
 
-   if((area || (area=='その他' && otherArea)) || time || castClass || duration) {
+   if((area || (area=='その他' && otherArea)) && time && castClass && duration) {
     $("button[type='submit'][name='sb_create']").removeClass('disable');
     $("button[type='submit'][name='sb_create']").prop('disabled', false);
   }
