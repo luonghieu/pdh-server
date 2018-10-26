@@ -9,6 +9,9 @@ class WorkingTodayController extends ApiController
     public function update()
     {
         $user = User::find($this->guard()->user()->id);
+        if (!$user->status) {
+            return $this->respondErrorMessage(trans('messages.login_forbidden'), 403);
+        }
 
         $user->working_today = !$user->working_today;
         $user->update();

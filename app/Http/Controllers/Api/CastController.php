@@ -31,8 +31,12 @@ class CastController extends ApiController
             'body_type_id',
         ]);
 
-        $casts = Cast::orderBy('last_active_at', 'DESC');
         $user = $this->guard()->user();
+        if (!$user->status) {
+            return $this->respondErrorMessage(trans('messages.login_forbidden'), 403);
+        }
+
+        $casts = Cast::orderBy('last_active_at', 'DESC');
 
         foreach ($params as $key => $value) {
             $casts->where($key, $value);

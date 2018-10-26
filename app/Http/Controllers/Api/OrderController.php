@@ -47,6 +47,10 @@ class OrderController extends ApiController
             return $this->respondWithValidationError($validator->errors()->messages());
         }
 
+        if (!$user->status) {
+            return $this->respondErrorMessage(trans('messages.login_forbidden'), 403);
+        }
+
         $input = $request->only([
             'prefecture_id',
             'address',

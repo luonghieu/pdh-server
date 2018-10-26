@@ -34,10 +34,6 @@ class LineAuthController extends ApiController
                 ->userFromToken($token);
             $user = $this->findOrCreate($line, $request->device_type);
 
-            if (!$user->status) {
-                return $this->respondErrorMessage(trans('messages.login_forbidden'), 403);
-            }
-
             $token = JWTAuth::fromUser($user);
 
             return $this->respondWithData($this->respondWithToken($token, $user)->getData());
