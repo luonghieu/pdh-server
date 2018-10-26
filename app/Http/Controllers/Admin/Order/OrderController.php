@@ -116,8 +116,14 @@ class OrderController extends Controller
         return redirect(route('admin.orders.index'));
     }
 
-    public function nominees(Order $order)
+    public function nominees($order)
     {
+        $order = Order::withTrashed()->find($order);
+
+        if (empty($order)) {
+            abort(404);
+        }
+
         $casts = $order->nominees()->paginate();
 
         return view('admin.orders.nominees', compact('casts', 'order'));
