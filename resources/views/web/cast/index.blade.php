@@ -17,7 +17,7 @@
   <div class="top-header" id="top-header-cast">
     <div class="user-data">
       <span class="total-point-title">あなたの売上合計</span>
-      <span class="total-point">{{number_format($user->total_point) }}P</span>
+      <span class="total-point-cast">{{ number_format($user->total_point) }}P</span>
       <div class="user-icon init-image-radius" id="cast-icon">
         @if (Auth::user()->avatars && !empty($user->avatars->first()->thumbnail))
           <img src="{{ $user->avatars->first()->thumbnail }}" alt="">
@@ -61,7 +61,7 @@
       <div class="m-circle ">
         <a href="<?php echo env('APP_URL') . '/service/cast_qa' ?>">
           <div class="rounded-circle m-rounded-circle">
-            <img src="{{ asset('assets/web/images/cast/ic_question_white.svg') }}">
+            <img src="{{ asset('assets/web/images/cast/ic_question_white.png') }}">
             <div class="text-center m-auto ct-circle">よくある質問</div>
           </div>
         </a>
