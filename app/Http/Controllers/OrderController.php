@@ -97,18 +97,28 @@ class OrderController extends Controller
             $timeDetail = Session::get('data')['time_detail'];
         }
 
-        return view('web.orders.create_call', compact('currentArea', 'currentTime', 'currentDuration', 'currentCastNumbers', 'currentCastClass', 'timeDetail', 'currentOtherArea', 'currentOtherDuration'));
-    }
+        $client = new Client(['base_uri' => config('common.api_url')]);
+        $user = Auth::user();
 
-    public function getDayOfMonth(Request $request)
-    {
-        $month = $request->month;
-        $now = Carbon::now();
-        $number = cal_days_in_month(CAL_GREGORIAN, $month, $now->year);
+        $accessToken = JWTAuth::fromUser($user);
 
-        $data['month'] = $month;
+        $option = [
+            'headers' => ['Authorization' => 'Bearer ' . $accessToken],
+            'form_params' => [],
+            'allow_redirects' => false,
+        ];
 
-        return getDay($data);
+        try {
+            $orderOptions = $client->get(route('glossaries'), $option);
+        } catch (\Exception $e) {
+            LogService::writeErrorLog($e);
+            abort(500);
+        }
+
+        $orderOptions = json_decode(($orderOptions->getBody())->getContents(), JSON_NUMERIC_CHECK);
+        $orderOptions = $orderOptions['data']['order_options'];
+
+        return view('web.orders.create_call', compact('currentArea', 'currentTime', 'currentDuration', 'currentCastNumbers', 'currentCastClass', 'timeDetail', 'currentOtherArea', 'currentOtherDuration', 'orderOptions'));
     }
 
     public function getParams(Request $request)
@@ -173,7 +183,7 @@ class OrderController extends Controller
         } else {
             $timeJoin = $request->time_join;
             if (!$timeJoin) {
-                $timeJoin = 20;
+                $timeJoin = 60;
             }
 
             $input['time'] = $timeJoin;
@@ -674,7 +684,28 @@ class OrderController extends Controller
             return redirect()->route('web.index');
         }
 
-        return view('web.orders.nomination', compact('cast', 'user'));
+        $client = new Client(['base_uri' => config('common.api_url')]);
+        $user = Auth::user();
+
+        $accessToken = JWTAuth::fromUser($user);
+
+        $option = [
+            'headers' => ['Authorization' => 'Bearer ' . $accessToken],
+            'form_params' => [],
+            'allow_redirects' => false,
+        ];
+
+        try {
+            $orderOptions = $client->get(route('glossaries'), $option);
+        } catch (\Exception $e) {
+            LogService::writeErrorLog($e);
+            abort(500);
+        }
+
+        $orderOptions = json_decode(($orderOptions->getBody())->getContents(), JSON_NUMERIC_CHECK);
+        $orderOptions = $orderOptions['data']['order_options'];
+
+        return view('web.orders.nomination', compact('cast', 'user', 'orderOptions'));
     }
 
     public function createNominate(Request $request)

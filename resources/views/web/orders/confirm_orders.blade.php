@@ -110,7 +110,7 @@
 
   @if((Session::has('statusCode')))
     @if(406 == Session::get('statusCode'))
-      <form action="{{ route('credit_card.index') }}" method="GET" class="register-card">
+      <form action="{{ route('credit_card.index') }}" method="GET" class="form-expired-card">
         <section class="button-box">
           <label for="{{ Session::get('statusCode') }}" class="status-code"></label>
         </section>
@@ -169,7 +169,7 @@
     @endmodal
   @endif
   @if((Session::has('statusCode')) && 406 == Session::get('statusCode'))
-    @modal(['triggerId' => Session::get('statusCode'), 'button' =>'クレジットカード情報を更新する', 'triggerClass' =>'lable-register-card'])
+    @modal(['triggerId' => Session::get('statusCode'), 'button' =>'クレジットカード情報を更新する', 'triggerClass' =>'expired-card'])
       @slot('title')
       @endslot
 
@@ -230,11 +230,5 @@
         }
       });
     });
-
-    window.addEventListener("beforeunload", function(event) {
-      var backLink = window.location.href;
-      localStorage.setItem('back_link', backLink);
-    });
-
   </script>
 @endsection

@@ -23,8 +23,10 @@ class CreateOrdersForLineGuest extends Notification implements ShouldQueue
      *
      * @param Order $order
      */
-    public function __construct(Order $order)
+    public function __construct($orderId)
     {
+        $order = Order::findOrFail($orderId);
+
         $this->order = $order;
     }
 

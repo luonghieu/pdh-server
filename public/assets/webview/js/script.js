@@ -1,83 +1,68 @@
-function numberCardLength(event)
-{
-  var str = document.getElementById("number-card").value;
-  var strlen = str.length;
-  var keyCode = event.keyCode;
-  if(keyCode == 8 || keyCode == 46 || keyCode == 37 || keyCode == 39) {
-    return true;
-  }
+$(document).ready(function() {
+  $('#number-card').click(function(event) {
+    var str = this.value;
+    if(str.search("下4桁") == 0) {
+      this.value = '';
+    }
+  });
 
-  if (((keyCode >= 96 && keyCode <=105 ) || (keyCode >= 48 && keyCode <=57 )) && strlen < 16 && keyCode != 69)
-  {
-    return true;
-  } else {
-    return false;
-  }
-}
-
-function numberCvvLength(event)
-{
-  var str = document.getElementById("card-cvv").value;
-  var strlen = str.length;
-  var keyCode = event.keyCode;
-  if(keyCode == 8 || keyCode == 46 || keyCode == 37 || keyCode == 39) {
-    return true;
-  }
-
-  if (((keyCode >= 96 && keyCode <=105 ) || (keyCode >= 48 && keyCode <=57 )) && strlen < 4 && keyCode != 69)
-  {
-    return true;
-  } else {
-    return false;
-  }
-}
+  number = document.querySelector('#number-card');
+  Payment.formatCardNumber(number, 16);
+});
 
 var flag = false;
 var flag_color = false;
+
+function valid(str) {
+  var count = 0;
+  ['(', ')', '.', '+', '-', ',', ';', 'N', '/'].forEach(function (sample) {
+      if(str.indexOf(sample) >= 0) {
+        count++;
+        return count;
+      }
+
+  });
+  return count;
+}
+
 function creditValidate()
 {
   var str = document.getElementById("number-card").value;
+
+  if (valid(str) > 0) {
+    str = str.slice(0, str.length - 1);
+    $('#number-card').val(str);
+  }
+
   var visa = '^4[0-9]{12}(?:[0-9]{3})?$';
   var mastercard = '^5[1-5][0-9]{14}$';
   var americanExpress = '^3[47][0-9]{13,14}$';
   var dinnersClub = '^3(?:0[0-5]|[68][0-9])[0-9]{11}$';
   var jcb = '^(?:2131|1800|35\\d{3})\\d{11}$';
+  str = str.replace(/\s/g, '');
 
   if(str.match(visa) || str.match(mastercard) || str.match(americanExpress) || str.match(dinnersClub) || str.match(jcb)) {
     var element = document.getElementById("error");
     element.classList.remove("error");
-    var element2 = document.getElementById("number-card-display");
+    var element1 = document.getElementById("number-card");
+    element1.classList.remove("number-false");
+    var element2 = document.getElementById("number-card");
     element2.classList.add("number-true");
-    var element3 = document.getElementById("number-card");
-    element3.classList.add("color-caret");
     flag = true;
   } else {
-    var element = document.getElementById("number-card-display");
-    element.classList.remove("number-true");
-    var element2 = document.getElementById("number-card");
-    element2.classList.remove("color-caret");
     var element1 = document.getElementById("error");
     element1.classList.add("error");
+    var element3 = document.getElementById("number-card");
+    element3.classList.add("number-false");
+    var element = document.getElementById("number-card");
+    element.classList.remove("number-true");
     flag = false;
-  }
-  var changeString = "";
-  var count = 3;
-  for (var i = 0; i < str.length; i++) {
-    changeString+=str.charAt(i);
-    if(i == count) {
-      changeString+=" ";
-      count+=4;
-    }
   }
 
   if (str === ""){
-    document.getElementById("number-card-display").innerHTML = '0000 0000 0000 0000';
-    document.getElementById("number-card-display").classList.remove('number-true');
-    document.getElementById("number-card-display").classList.add('color-placeholder');
-  } else {
-    document.getElementById("number-card-display").innerHTML = changeString;
-    document.getElementById("number-card-display").classList.remove('color-placeholder');
-    document.getElementById("number-card-display").classList.add('color');
+    document.getElementById("error").classList.remove('error');
+    document.getElementById("number-card").classList.remove('number-true');
+    document.getElementById("number-card").classList.add('color-placeholder');
   }
 
   if(flag && flag_color){
@@ -87,14 +72,18 @@ function creditValidate()
   }
 }
 
-
-
 function addColor()
 {
   var str = document.getElementById("card-cvv").value;
+
+  if (valid(str) > 0) {
+    str = str.slice(0, str.length - 1);
+    $('#card-cvv').val(str);
+  }
+
   var strlen = str.length;
   var parsed = Number.parseInt(str);
-  if (((strlen == 3 || strlen == 4) && !Number.isNaN(parsed)) || str === "" ) {
+  if (((strlen == 3 || strlen == 4) && !Number.isNaN(parsed))) {
     var element1 = document.getElementById("card-cvv");
     element1.classList.remove("card-cvv-color");
     var element2 = document.getElementById("card-cvv");
@@ -112,5 +101,22 @@ function addColor()
     $('#btn-create').css('color', "#ff6090");
   }else{
     $('#btn-create').css('color', "#cccccc");
+  }
+}
+
+function numberCvvLength(event)
+{
+  var str = document.getElementById("card-cvv").value;
+  var strlen = str.length;
+  var keyCode = event.keyCode;
+  if(keyCode == 8 || keyCode == 46 || keyCode == 37 || keyCode == 39) {
+    return true;
+  }
+
+  if (((keyCode >= 96 && keyCode <=105 ) || (keyCode >= 48 && keyCode <=57 )) && strlen < 4 && keyCode != 69)
+  {
+    return true;
+  } else {
+    return false;
   }
 }

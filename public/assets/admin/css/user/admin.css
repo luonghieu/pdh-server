@@ -203,7 +203,7 @@ td {
 }
 .list-avatar img {
   width: 140px;
-  margin: 1%;
+  margin: 0.5%;
 }
 
 .title-avatar .images {
@@ -1191,6 +1191,38 @@ tbody td {
   width: 250px;
 }
 
+.change-type-transfer {
+  position: relative;
+  text-align: center;
+}
+
+.change-type-transfer button {
+  position: absolute;
+  right: 15px;
+}
+
+.change-type-transfer label {
+  margin: 0 50px;
+}
+
+.wrap-qr-code {
+  position: relative;
+}
+
+.wrap-qr-code button {
+  position: absolute;
+  right: 2%;
+  bottom: 0;
+}
+
+#btn-qr-code {
+  margin-top: 15%;
+}
+
+#btn-qr-code img {
+  width: 300px;
+}
+
 @media (max-width: 767px) {
   .navbar {
     background: #20a8d817;
@@ -1387,4 +1419,62 @@ tbody td {
     top: 95px;
     right: 90px;
   }
+}
+
+.init-inline-flex {
+  display: inline-flex;
+}
+
+.init-m-auto {
+  margin: auto;
+}
+
+.init-mt {
+  margin-top: 1rem;
+}
+
+.init-m {
+  margin-top: 2rem;
+  float: right;
+}
+
+.btn-register {
+  background-color: #67c2ef;
+  padding: 10px;
+  border-radius: 5%;
+  cursor: pointer;
+  border: 0;
+  color: #fff;
+}
+
+.error {
+  color: red;
+  margin-bottom: 1rem;
+  float: right;
+}
+
+.p-0 {
+  padding: 0;
+}
+
+.init-glyphicon {
+  color: #4b4f57;
+}
+
+.init-pull-left {
+  float: left;
+  margin-top: -34px;
+}
+
+.btn-update {
+  background-color: #67c2ef;
+  padding: 6px 14px;
+  border-radius: 5%;
+  cursor: pointer;
+  border: 0;
+  color: #fff;
+}
+
+.init-border {
+  border: 1px solid #a49c9c;
 }

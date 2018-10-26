@@ -5,7 +5,7 @@
 <div class="title">
   @php
     if (\Session::has('backUrl')) {
-      $backUrl = \Session::get('backUrl')[0];
+      $backUrl = \Session::get('backUrl');
     } else {
       if ($orderId = Session::pull('order_history')) {
           $backUrl = \URL::route('history.show', ['orderId' => $orderId]);
@@ -35,8 +35,7 @@
     <div class="right number">
       <span id="error">カード番号を正しく入力してください</span>
       <input type="hidden" value="{{ $backUrl }}" id="back-url">
-      <input type="tel" pattern="[0-9]*" name="number_card" id="number-card" onkeyup="creditValidate()" onkeydown="return numberCardLength(event)">
-      <span id="number-card-display" class="old-card">下4桁{{ $card->last4 }}</span>
+      <input type="tel" pattern="[0-9]*" name="number_card" id="number-card" onkeyup="creditValidate()" placeholder="0000 0000 0000 0000" class="old-card" value="下4桁{{ $card->last4 }}">
     </div>
   </div>
   <div class="clear"></div>
@@ -70,4 +69,5 @@
 @endsection
 @section('web.extra_js')
 <script src="/assets/webview/js/script.js"></script>
+<script src="/assets/webview/js/lib/payment.js"></script>
 @endsection

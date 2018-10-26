@@ -10,6 +10,7 @@ Route::group(['prefix' => 'v1'], function () {
     Route::get('body_types', ['as' => 'body_types', 'uses' => 'BodyTypeController@index']);
     Route::get('tags', ['as' => 'tags', 'uses' => 'TagController@index']);
     Route::get('glossaries', ['as' => 'glossaries', 'uses' => 'GlossaryController@glossary']);
+    Route::post('/get_day', ['as' => 'get_day', 'uses' => 'OrderController@getDayOfMonth']);
 
     Route::group(['prefix' => 'auth', 'as' => 'auth.'], function () {
         Route::post('login', ['as' => 'login', 'uses' => 'AuthController@login']);
@@ -64,6 +65,7 @@ Route::group(['prefix' => 'v1'], function () {
 
     Route::group(['middleware' => ['auth:api', 'guest'], 'prefix' => 'guest', 'as' => 'guest.'], function () {
         Route::get('/cast_histories', ['as' => 'cast_histories', 'uses' => 'Guest\GuestController@castHistories']);
+        Route::post('/request_transfer', ['as' => 'request_transfer', 'uses' => 'Guest\GuestController@requestTransfer']);
 
         Route::group(['prefix' => 'orders'], function () {
             Route::get('/', ['as' => 'index', 'uses' => 'Guest\OrderController@index']);
@@ -78,6 +80,7 @@ Route::group(['prefix' => 'v1'], function () {
         Route::get('/payment_requests', ['as' => 'get_payment_history', 'uses' => 'Cast\PaymentRequestController@getPaymentHistory']);
         Route::delete('/order/{id}', ['as' => 'index', 'uses' => 'Cast\OrderController@delete']);
         Route::get('/payments', ['as' => 'payments', 'uses' => 'Cast\PaymentController@payments']);
+        Route::patch('/confirm_transfer', ['as' => 'confirm_transfer', 'uses' => 'Cast\CastController@confirmTransfer']);
 
         Route::group(['prefix' => 'bank_accounts', 'as' => 'bank_accounts.'], function () {
             Route::post('/{id}', ['as' => 'update', 'uses' => 'Cast\BankAccountController@update']);

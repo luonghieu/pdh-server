@@ -482,7 +482,6 @@
   position: absolute;
   font-size: 15px;
   right: 10px;
-  background-color: transparent !important;
   caret-color: #ff6090;
   color: transparent;
   width: 200px;
@@ -569,6 +568,10 @@
   padding-left: 15px;
 }
 
+.btn-date-select {
+  display: unset !important;
+}
+
 .date-select select {
   height: 21px;
   font-family: NotoSansCJKjp;
@@ -610,6 +613,16 @@
 .number-true {
   color: #303030 !important;
 }
+
+.number-false{
+  color: #ff6090 !important;
+}
+
+.number input::placeholder{
+  color: #c8c8c8;
+  padding-top: 35px;
+}
+
 
 #gl1 .number input::placeholder {
   color: #c8c8c8;
@@ -739,6 +752,24 @@
 
 #index-rating-controller .cast-profile {
   padding-top: 15px;
+}
+
+.class_disabled {
+  position: relative;
+}
+
+.class_disabled span{
+  position: absolute;
+  top: 6px;
+  transform: rotate(-16deg);
+  color: #222222;
+  font-weight: bold;
+  font-size: 12px;
+  left: 6px;
+}
+
+#ge2-1-x .grade-list #cast_class {
+  width: 100px;
 }
 
 @media screen and (max-width: 360px) {
@@ -1041,4 +1072,10 @@
   position: absolute;
   color: transparent;
   left: 9999999px;
+}
+
+#ge2-1-x .button--green.inactive {
+  background-color: #CCCCCC;
+  color: #ffffff;
+  border-color: #CCCCCC;
 }

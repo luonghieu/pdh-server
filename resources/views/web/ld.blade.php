@@ -2,7 +2,10 @@
 <html lang="ja" class="no-js">
 <head>
   <meta charset="UTF-8">
+  <title>ギャラ飲みマッチングアプリ「Cheers」〜いつもの飲み会にちょっとした刺激を。〜</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+  <meta name="keyword" content="ギャラ飲み,アプリ,マッチング">
+  <meta name="description" content="業界初！いつでもどこでも最短20分でキャストに会えるギャラ飲みマッチングアプリ。大学生からモデルまで様々なジャンルのキャストが駆けつけ、飲み会を盛り上げてくれます。">
   <link rel="profile" href="http://gmpg.org/xfn/11">
   <link rel="stylesheet" href="{{ asset('/ld/css/common.css') }}">
   <link rel="stylesheet" href="{{ asset('/ld/css/guest.css') }}">
@@ -79,12 +82,16 @@
           <p>\　今すぐ無料会員登録　/</p>
           <!-- <a href="#"><img src="{{ asset('/ld/images/guest/app_stor.png') }}" alt="Apple Store"></a> -->
           <!--a href="#"><img src="{{ asset('/ld/images/guest/ggl_stor_soon.png') }}" alt="Google Store"></a-->
-          <div class="dp_soon"><img src="{{ asset('/ld/images/guest/ggl_stor_soon.png') }}" alt="Google Store"></div>
+          <div class="dp_soon">
+            <a href="https://play.google.com/store/apps/details?id=com.cheers.style">
+              <img src="{{ asset('/ld/images/guest/ggl_stor.png') }}" alt="Google Store">
+            </a>
+          </div>
         </div>
         <!--開発環境-->
         <div class="g_btn">
           <a href="{{ 'https://line.me/R/ti/p/%40' . env('LINE_ID') }}" target="_blank" class="btn_color site
-          size_md">事前登録はこちら</a>
+          size_md">LINEではじめる</a>
         </div>
         <!--本番環境
 			<div class="g_btn">
@@ -201,7 +208,7 @@
             <!--開発環境-->
             <div class="g_btn">
               <a href="{{ 'https://line.me/R/ti/p/%40' . env('LINE_ID') }}" target="_blank" class="btn_color site
-              size_md">事前登録はこちら</a>
+              size_md">LINEではじめる</a>
             </div>
             <!--本番環境
 					<div class="g_btn">
@@ -337,7 +344,7 @@
             <!--開発環境-->
             <div class="g_btn">
               <a href="{{ 'https://line.me/R/ti/p/%40' . env('LINE_ID') }}" target="_blank" class="btn_color site
-              size_md">事前登録はこちら</a>
+              size_md">LINEではじめる</a>
             </div>
             <!--本番環境
 					<div class="g_btn">

@@ -13,6 +13,15 @@ $routes = [
         ],
     ],
 
+    'request_transfer' => [
+        [
+            'name' => 'admin.request_transfer.index',
+            'value' => 'キャスト新規申請',
+            'url' => route('admin.request_transfer.index'),
+            'submenu' => [],
+        ],
+    ],
+
     'cast' => [
         [
             'name' => 'admin.casts.index',
@@ -105,6 +114,18 @@ $routes = [
                 'admin.points.index',
                 'admin.points.transaction_history',
                 'admin.points.point_users',
+            ],
+        ],
+    ],
+
+    'notifications_schedule' => [
+        [
+            'name' => 'admin.notification_schedules.index',
+            'value' => 'お知らせ管理',
+            'url' => route('admin.notification_schedules.index', ['type' => \App\Enums\NotificationScheduleType::ALL]),
+            'submenu' => [
+              'admin.notification_schedules.create',
+              'admin.notification_schedules.edit',
             ],
         ],
     ],

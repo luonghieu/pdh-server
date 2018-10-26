@@ -31,7 +31,7 @@ $(document).ready(function(){
 
   $('.select-month').on('change', function (e) {
     var month = $(this).val();
-    window.axios.post('/get_day', {month})
+    window.axios.post('/api/v1/get_day', {month})
       .then(function(response) {
         var html = '';
         Object.keys(response.data).forEach(function (key) {
@@ -91,8 +91,8 @@ $(document).ready(function(){
     utc = currentDate.getTime() + (currentDate.getTimezoneOffset() * 60000);
     nd = new Date(utc + (3600000*9));
 
-    if(add_minutes(nd,20) > selectDate) {
-      selectDate = add_minutes(nd,20);
+    if(add_minutes(nd,60) > selectDate) {
+      selectDate = add_minutes(nd,60);
       date = selectDate.getDate();
       month = selectDate.getMonth() +1;
 
@@ -260,7 +260,13 @@ $(document).ready(function(){
   });
 
   $('.lable-register-card').on('click',function(){
-   $('.register-card').submit();
+    $('.register-card').submit();
+  });
+
+  $('.expired-card').on('click',function(){
+    var backLink = window.location.href;
+    localStorage.setItem('back_link', backLink);
+    $('.form-expired-card').submit();
   });
 
   var area = $("input:radio[name='area']:checked").val();
@@ -362,6 +368,7 @@ $(document).ready(function(){
       $("button[type='submit'][name='sb_create']").removeClass('disable');
       $("button[type='submit'][name='sb_create']").prop('disabled', false);
     }
+
   })
 
   var castClass = $("input:radio[name='cast_class']");
@@ -385,9 +392,14 @@ $(document).ready(function(){
   })
 
   var checkNumber = parseInt( $(".cast-number__value input").val());
+  var maxCasts = parseInt( $("#max_casts").val());
+
+  if(!maxCasts) {
+    maxCasts =10;
+  }
 
   if (checkNumber>1) {
-    if (checkNumber==10) {
+    if (checkNumber==maxCasts) {
       $(".cast-number__button-plus").prop('disabled', false);
       $(".cast-number__button-plus").css({"border": "1.5px #cccccc solid"});
       $(".cast-number__button-plus").addClass('active');
@@ -407,12 +419,12 @@ $(document).ready(function(){
       $(".cast-number__button-minus").prop('disabled', false);
     }
 
-    if(number_val==9){
+    if(number_val==(maxCasts-1)){
       $(this).css({"border": "1.5px #cccccc solid"});
       $(this).addClass('active');
     }
 
-    if(number_val>=10) {
+    if(number_val>=maxCasts) {
       $(this).attr("disabled", "disabled");
     }else {
       number_val = number_val + 1;

@@ -17,6 +17,12 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.'], function () {
         Route::post('{user}/change_prefecture', ['as' => 'change_prefecture', 'uses' => 'UserController@changePrefecture'])->where('user', '[0-9]+');
     });
 
+    Route::group(['namespace' => 'RequestTransfer', 'prefix' => 'request_transfer', 'as' => 'request_transfer.', 'middleware' => 'is_admin'], function () {
+        Route::get('/', ['as' => 'index', 'uses' => 'RequestTransferController@index']);
+        Route::get('{cast}', ['as' => 'show', 'uses' => 'RequestTransferController@show'])->where('cast', '[0-9]+');
+        Route::put('{cast}', ['as' => 'update', 'uses' => 'RequestTransferController@update'])->where('cast', '[0-9]+');
+    });
+
     Route::group(['namespace' => 'Cast', 'prefix' => 'casts', 'as' => 'casts.', 'middleware' => 'is_admin'], function () {
         Route::get('/', ['as' => 'index', 'uses' => 'CastController@index']);
         Route::get('{user}/register', ['as' => 'register', 'uses' => 'CastController@registerCast']);
@@ -81,5 +87,14 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.'], function () {
 
     Route::group(['prefix' => 'notifications', 'as' => 'notifications.', 'middleware' => 'is_admin'], function () {
         Route::post('/make_read', ['as' => 'make_read', 'uses' => 'NotificationController@makeAsRead']);
+    });
+
+    Route::group(['namespace' => 'NotificationSchedule', 'prefix' => 'notification_schedules', 'as' => 'notification_schedules.', 'middleware' => 'is_admin'], function () {
+        Route::get('/create', ['as' => 'create', 'uses' => 'NotificationScheduleController@create']);
+        Route::post('/', ['as' => 'store', 'uses' => 'NotificationScheduleController@store']);
+        Route::get('/{notification_schedule}/edit', ['as' => 'edit', 'uses' => 'NotificationScheduleController@edit'])->where('notification_schedules', '[0-9]+');
+        Route::put('/{notification_schedule}', ['as' => 'update', 'uses' => 'NotificationScheduleController@update'])->where('notification_schedules', '[0-9]+');
+        Route::delete('/{notification_schedule}', ['as' => 'delete', 'uses' => 'NotificationScheduleController@delete'])->where('notification_schedules', '[0-9]+');
+        Route::get('/', ['as' => 'index', 'uses' => 'NotificationScheduleController@getNotificationScheduleList']);
     });
 });

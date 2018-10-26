@@ -2,9 +2,10 @@
 
 namespace App\Notifications;
 
-use App\Enums\MessageType;
-use App\Enums\UserType;
 use App\User;
+use App\Message;
+use App\Enums\UserType;
+use App\Enums\MessageType;
 use Illuminate\Bus\Queueable;
 use Illuminate\Notifications\Notification;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -21,8 +22,10 @@ class MessageCreated extends Notification implements ShouldQueue
      *
      * @param $message
      */
-    public function __construct($message)
+    public function __construct($messageId)
     {
+        $message = Message::findOrFail($messageId);
+
         $this->message = $message;
     }
 

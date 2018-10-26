@@ -102,7 +102,7 @@ $(document).ready(function(){
     if(time){
       var currentDate = new Date();
       var year = currentDate.getFullYear();
-      if ((time=='other_time')) {
+      if ((time == 'other_time')) {
         var month = $('.select-month').val();
 
         if(month<10) {
@@ -135,7 +135,13 @@ $(document).ready(function(){
           var add_minutes =  function (dt, minutes) {
             return new Date(dt.getTime() + minutes*60000);
           }
+
           var selectDate = add_minutes(nd,time);
+
+          if (add_minutes(nd, 60) > selectDate) {
+            selectDate = add_minutes(nd, 60);
+          }
+
           var day = selectDate.getDate();
           if(day<10) {
             day = '0'+day;
@@ -212,7 +218,7 @@ $(document).ready(function(){
     if(time) {
       var currentDate = new Date();
       var year = currentDate.getFullYear();
-      if ((time=='other_time')) {
+      if (time == 'other_time') {
         var month = $('.select-month').val();
 
         if(month<10) {
@@ -246,6 +252,11 @@ $(document).ready(function(){
             return new Date(dt.getTime() + minutes*60000);
           }
           var selectDate = add_minutes(nd,time);
+
+          if (add_minutes(nd, 60) > selectDate) {
+            selectDate = add_minutes(nd, 60);
+          }
+
           var day = selectDate.getDate();
           if(day<10) {
             day = '0'+day;
@@ -318,7 +329,7 @@ $(document).ready(function(){
 
       var currentDate = new Date();
       var year = currentDate.getFullYear();
-      if ((time=='other_time')) {
+      if ((time == 'other_time')) {
         var month = $('.select-month').val();
 
         if(month<10) {
@@ -360,7 +371,13 @@ $(document).ready(function(){
         var add_minutes =  function (dt, minutes) {
           return new Date(dt.getTime() + minutes*60000);
         }
+
         var selectDate = add_minutes(nd,time);
+
+        if (add_minutes(nd, 60) > selectDate) {
+          selectDate = add_minutes(nd, 60);
+        }
+
         var day = selectDate.getDate();
         if(day<10) {
           day = '0'+day;
@@ -443,8 +460,8 @@ $(document).ready(function(){
 
     if('other_time' == time) {
       if(localStorage.getItem("order_params")){
-          var orderParams = JSON.parse(localStorage.getItem("order_params"));
-        }
+        var orderParams = JSON.parse(localStorage.getItem("order_params"));
+      }
 
       if(orderParams){
         if('other_time'== orderParams.current_time_set){
@@ -501,7 +518,7 @@ $(document).ready(function(){
 
       var currentDate = new Date();
       var year = currentDate.getFullYear();
-      if ((time=='other_time')) {
+      if (time == 'other_time') {
         var month = $('.select-month').val();
 
         if(month<10) {
@@ -535,6 +552,11 @@ $(document).ready(function(){
             return new Date(dt.getTime() + minutes*60000);
           }
           var selectDate = add_minutes(nd,time);
+
+          if (add_minutes(nd, 60) > selectDate) {
+            selectDate = add_minutes(nd, 60);
+          }
+
           var day = selectDate.getDate();
           if(day<10) {
             day = '0'+day;
@@ -553,9 +575,9 @@ $(document).ready(function(){
           if(minute<10) {
             minute = '0'+minute;
           }
+
           var date = year+'-'+month+'-'+day;
           var time = hour+':'+minute;
-
       }
 
       $castId = $('.cast-id').val();

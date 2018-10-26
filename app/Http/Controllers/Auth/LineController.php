@@ -155,9 +155,17 @@ class LineController extends Controller
             \Session::flash('error', trans('messages.login_line_failed'));
         }
 
-        $firstTime = $userData['first_time'];
+        if (isset($userData)) {
+            $firstTime = $userData['first_time'];
+        } else {
+            $firstTime = false;
+        }
 
-        return redirect()->route('web.index', ['first_time' => $firstTime]);
+        if ($firstTime) {
+            return redirect()->route('web.index', ['first_time' => $firstTime]);
+        }
+
+        return redirect()->route('web.index');
     }
 
     protected function findOrCreate($lineResponse)
@@ -169,14 +177,14 @@ class LineController extends Controller
             $user = $user->where('email', $email);
         }
 
-        $user = $user->orWhere('line_id', $lineResponse->id)->first();
+        $user = $user->orWhere('line_user_id', $lineResponse->id)->first();
 
         if (!$user) {
             $data = [
                 'email' => (isset($lineResponse->email)) ? $lineResponse->email : null,
                 'fullname' => $lineResponse->name,
                 'nickname' => ($lineResponse->nickname) ? $lineResponse->nickname : $lineResponse->name,
-                'line_id' => $lineResponse->id,
+                'line_user_id' => $lineResponse->id,
                 'type' => UserType::GUEST,
                 'status' => Status::ACTIVE,
                 'provider' => ProviderType::LINE,

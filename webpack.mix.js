@@ -17,6 +17,12 @@ mix.styles([
     'public/assets/admin/css/chatroom/chatroom.css',
 ], 'public/bundle/css/all.css').version();
 
-mix.js("resources/assets/js/app.js", "public/js");
-mix.js("resources/assets/js/web.js", "public/js");
+mix.styles([
+'public/assets/web/css/style.css',
+'public/assets/web/css/custom.css',
+], 'public/assets/web/css/web.css').version();
+
+mix.js("resources/assets/js/app.js", "public/js").version();
+mix.js("resources/assets/js/web.js", "public/js").version();
+
 

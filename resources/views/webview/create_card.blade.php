@@ -20,7 +20,7 @@
       </div>
   </header>
   <div class="image-main">
-    <img src="/assets/webview/images/ic_credit_cards@2x.png" alt="">
+    <img src="/assets/web/images/card/allCard.png" alt="">
   </div>
   <div class="notify">
     <span></span>
@@ -35,8 +35,7 @@
       <span class="left">カード番号</span>
       <div class="right number">
         <span id="error">カード番号を正しく入力してください</span>
-        <input type="text" pattern="[0-9]*" name="number_card" id="number-card" onkeyup="creditValidate()" onkeydown="return numberCardLength(event)">
-        <span id="number-card-display">0000 0000 0000 0000</span>
+        <input type="tel" pattern="[0-9]*" name="number_card" id="number-card" onkeyup="creditValidate()" placeholder="0000 0000 0000 0000">
       </div>
     </div>
     <div class="clear"></div>
@@ -63,11 +62,12 @@
     </div>
     <div class="security-code border-bottom">
       <img src="/assets/webview/images/ic_card_cvv.png" alt="" class="left">
-      <input type="text" pattern="[0-9]*" placeholder="3桁または4桁の数字" class="right" name="card_cvv" onkeyup="addColor()" onkeydown="return numberCvvLength(event)" id="card-cvv">
+      <input type="tel" pattern="[0-9]*" placeholder="3桁または4桁の数字" class="right" name="card_cvv" onkeyup="addColor()" onkeydown="return numberCvvLength(event)" id="card-cvv">
     </div>
     </form>
   </div>
   <script src="/assets/webview/js/script.js"></script>
   <script src="/assets/webview/js/create_card.js"></script>
+  <script src="/assets/webview/js/lib/payment.js"></script>
 </body>
 </html>

@@ -80,3 +80,11 @@ if (!function_exists('dayOfWeek')) {
         return ['日', '月', '火', '水', '木', '金', '土'];
     }
 }
+
+if (!function_exists('removeHtmlTags')) {
+    function removeHtmlTags($content)
+    {
+        $content = str_replace("<br />", PHP_EOL, $content);
+        return strip_tags($content);
+    }
+}

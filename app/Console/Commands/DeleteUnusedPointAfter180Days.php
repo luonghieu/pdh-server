@@ -45,7 +45,7 @@ class DeleteUnusedPointAfter180Days extends Command
     {
         $dateTime = Carbon::now()->subDays(180)->format('Y-m-d H');
         $points = Point::whereIn('type', [PointType::BUY, PointType::AUTO_CHARGE])
-            ->whereDate(\DB::raw('DATE_FORMAT(created_at, "%Y-%m-%d %H") '), '<=', $dateTime)
+            ->where(\DB::raw('DATE_FORMAT(created_at, "%Y-%m-%d %H") '), '<=', $dateTime)
             ->where('balance', '>', 0);
 
         try {

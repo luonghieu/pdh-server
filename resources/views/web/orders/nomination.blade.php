@@ -87,22 +87,14 @@
             <h2>キャストとの合流時間</h2>
           </div>
           <div class="form-grpup"><!-- フォーム内容 -->
-            <label class="button button--green date ">
-              <input class="input-time-join" type="radio" name="time_join_nomination" value="20">
-              20分後
-            </label>
-            <label class="button button--green date">
-              <input class="input-time-join" type="radio" name="time_join_nomination" value="30">
-              30分後
-            </label>
-            <label class="button button--green date">
-              <input class="input-time-join" type="radio" name="time_join_nomination" value="60">
-              60分後
-            </label>
-            <label class="button button--green date ">
-              <input class="input-time-join" type="radio" name="time_join_nomination" value="90" >
-              90分後
-            </label>
+            @if(isset($orderOptions['call_time']))
+              @foreach($orderOptions['call_time'] as $callTime)
+              <label class="button button--green date {{ !$callTime['is_active'] ? 'inactive' : '' }}">
+                <input class="input-time-join" type="radio" name="time_join_nomination" value="{{ $callTime['value'] }}" {{ !$callTime['is_active'] ? 'disabled' : '' }}>
+                {{ $callTime['name'] }}
+              </label>
+              @endforeach
+            @endif
             <label id="date_input" class="button button--green date ">
               <input class="input-time-join" type="radio" name="time_join_nomination" value="other_time" >それ以外</label>
             <label class="date-input date-input-nomination">
@@ -177,7 +169,7 @@
           <div class="date-select ct-date-select">
           <div class="date-select__content">
           @php
-            $now = \Carbon\Carbon::now()->addMinutes(20);
+            $now = \Carbon\Carbon::now()->addMinutes(60);
             $currentMonth = $now->format('m');
             $currentDate = $now->format('d');
             $currentHour = $now->format('H');
@@ -210,8 +202,8 @@
          </select>
       </div>
       <div class="date-select__footer">
-        <button class="date-select__cancel" type="button">キャンセル</button>
-        <button class="date-select__ok choose-time" type="button">完了</button>
+        <button class="date-select__cancel btn-date-select" type="button">キャンセル</button>
+        <button class="date-select__ok choose-time btn-date-select" type="button">完了</button>
       </div>
     </div>
     </div>
@@ -223,7 +215,7 @@
   </section>
   @if((Session::has('status_code')))
     @if(406 == Session::get('status_code'))
-      <form action="{{ route('credit_card.index') }}" method="GET" class="register-card">
+      <form action="{{ route('credit_card.index') }}" method="GET" class="form-expired-card">
         <section class="button-box">
           <label for="{{ Session::get('status_code') }}" class="status-code-nomination"></label>
         </section>
@@ -284,7 +276,7 @@
   @endif
 
   @if((Session::has('status_code')) && 406 == Session::get('status_code'))
-    @modal(['triggerId' => Session::get('status_code'), 'button' =>'クレジットカード情報を更新する', 'triggerClass' =>'lable-register-card'])
+    @modal(['triggerId' => Session::get('status_code'), 'button' =>'クレジットカード情報を更新する', 'triggerClass' =>'expired-card'])
       @slot('title')
       @endslot
 
@@ -326,10 +318,3 @@
   @endif
 
 @endsection
-
-<script>
-  window.addEventListener("beforeunload", function(event) {
-      var backLink = window.location.href;
-      localStorage.setItem('back_link', backLink);
-  });
-</script>

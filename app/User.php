@@ -9,6 +9,7 @@ use App\Enums\PaymentStatus;
 use App\Services\LogService;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Storage;
 use Tymon\JWTAuth\Contracts\JWTSubject;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -162,6 +163,19 @@ class User extends Authenticatable implements JWTSubject
         }
 
         return $room->id;
+    }
+
+    public function getLineQrAttribute($value)
+    {
+        if (empty($value)) {
+            return '';
+        }
+
+        if (strpos($value, 'https') !== false) {
+            return $value;
+        }
+
+        return Storage::url($value);
     }
 
     public function isFavoritedUser($userId)

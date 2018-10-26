@@ -154,13 +154,8 @@ header .btn-register {
   position: absolute;
   top: -2px;
   right: 12px;
-  color: transparent !important;
   z-index: 1;
   caret-color: #ff6090;
-}
-
-.color-caret {
-  caret-color: #000 !important;
 }
 
 #number-card-display {
@@ -182,8 +177,13 @@ header .btn-register {
 .color-placeholder {
   color: #c8c8c8!important;
 }
+
 .number-true{
   color: #303030 !important;
+}
+
+.number-false{
+  color: #ff6090 !important;
 }
 
 .number input::placeholder{

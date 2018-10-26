@@ -18,7 +18,7 @@
       </div>
   </header>
   <div class="image-main">
-    <img src="/assets/webview/images/ic_credit_cards@2x.png" alt="">
+    <img src="/assets/web/images/card/allCard.png" alt="">
   </div>
   @if(Session::has('err'))
   <div class="error">
@@ -33,18 +33,17 @@
       <span class="left">カード番号</span>
       <div class="right number">
         <span id="error">カード番号を正しく入力してください</span>
-        <input type="number" name="number_card" id="number-card" readonly>
-        <span id="number-card-display" class="color-show-page">下4桁{{ $card->last4 }}</span>
+          <span id="number-card-display" class="color-show-page">下4桁{{ $card->last4 }}</span>
       </div>
     </div>
     <div class="clear"></div>
     <div class="expiration-date border-bottom">
       <span class="left">有効期限</span>
       <div class="date-select right">
-        <select name="month" class="color-show-page" disabled>
-          <option  value="{{ $card->exp_month }}">{{ $card->exp_month }}月</option>
+        <select name="month" id="month" disabled>
+          <option value="{{ $card->exp_month }}">{{ $card->exp_month }}月</option>
         </select>
-        <select name="year" class="color-show-page" disabled>
+        <select name="year" id="year" disabled>
           <option value="{{ $card->exp_year }}">{{ $card->exp_year }}年</option>
         </select>
       </div>
@@ -54,7 +53,7 @@
     </div>
     <div class="security-code border-bottom">
       <img src="/assets/webview/images/ic_card_cvv.png" alt="" class="left">
-      <input type="password" placeholder="3桁または4桁の数字" class="right color-show-page" name="card_cvv" value="0000" id="card-cvv" readonly>
+      <input type="text" pattern="[0-9]*" placeholder="3桁または4桁の数字" class="right number-true" name="card_cvv" id="card-cvv" value="***" disabled>
     </div>
   </div>
 </body>
