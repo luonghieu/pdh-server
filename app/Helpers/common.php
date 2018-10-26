@@ -31,6 +31,10 @@ if (!function_exists('getUserHeight')) {
 if (!function_exists('latestOnlineStatus')) {
     function latestOnlineStatus($previousTime)
     {
+        if (null === $previousTime) {
+            return '';
+        }
+
         Carbon\Carbon::setLocale('ja');
         $now = Carbon\Carbon::now();
         $previousTime = Carbon\Carbon::parse($previousTime);
