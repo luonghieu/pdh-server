@@ -26,24 +26,30 @@
       </div>
       <div class="clear"></div>
       @if (isset($listResult))
-        @foreach ($listResult as $result)
-        @php
-          if(\Session::has('backUrl')) {
-            $url = 'bank_account.edit';
-          } else {
-            $url = 'bank_account.index';
-          }
-        @endphp
-        <a href="{{ route($url, ['bank_name' => $result->name, 'bank_code' => $result->code, 'branch_name' => $infoBank?$infoBank['branch_name']:'', 'branch_code' => $infoBank?$infoBank['branch_code']:'']) }}">
-          <div class="border-bottom row">
-            <span class="left result">{{ $result->name }}</span>
-            @if (Auth::user()->bankAccount && Auth::user()->bankAccount->bank_name == $result->name)
-            <img src="/assets/web/images/ci7/ic_check_green@3x.png" alt="">
-            @endif
-          </div>
-          <div class="clear"></div>
-        </a>
-        @endforeach
+        @if ($listResult->first())
+          @foreach ($listResult as $result)
+          @php
+            if(\Session::has('backUrl')) {
+              $url = 'bank_account.edit';
+            } else {
+              $url = 'bank_account.index';
+            }
+          @endphp
+          <a href="{{ route($url, ['bank_name' => $result->name, 'bank_code' => $result->code, 'branch_name' => $infoBank?$infoBank['branch_name']:'', 'branch_code' => $infoBank?$infoBank['branch_code']:'']) }}">
+            <div class="border-bottom row">
+              <span class="left result">{{ $result->name }}</span>
+              @if (Auth::user()->bankAccount && Auth::user()->bankAccount->bank_name == $result->name)
+              <img src="/assets/web/images/ci7/ic_check_green@3x.png" alt="">
+              @endif
+            </div>
+            <div class="clear"></div>
+          </a>
+          @endforeach
+        @else
+        <div class="notify-no-result">
+          <p>データが見つかりません。</p>
+        </div>
+        @endif
       @endif
     </div>
   </form>
