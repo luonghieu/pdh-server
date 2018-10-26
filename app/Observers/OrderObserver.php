@@ -19,7 +19,9 @@ class OrderObserver
             if ($order->user->provider != ProviderType::LINE) {
                 $order->user->notify(new CreateNominatedOrdersForGuest($order->id));
             }
-        } else {
+        }
+
+        if (OrderType::NOMINATION == $order->type) {
             if ($order->user->provider != ProviderType::LINE) {
                 $order->user->notify(new CreateNominationOrderForGuest($order->id));
             }
