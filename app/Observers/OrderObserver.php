@@ -7,6 +7,7 @@ use App\Enums\OrderType;
 use App\Enums\ProviderType;
 use App\Notifications\CompletedPayment;
 use App\Notifications\CreateNominatedOrdersForGuest;
+use App\Notifications\CreateNominationOrderForGuest;
 use App\Notifications\CreateOrdersForLineGuest;
 use App\Order;
 
@@ -17,6 +18,10 @@ class OrderObserver
         if (OrderType::NOMINATED_CALL == $order->type || OrderType::CALL == $order->type) {
             if ($order->user->provider != ProviderType::LINE) {
                 $order->user->notify(new CreateNominatedOrdersForGuest($order->id));
+            }
+        } else {
+            if ($order->user->provider != ProviderType::LINE) {
+                $order->user->notify(new CreateNominationOrderForGuest($order->id));
             }
         }
 

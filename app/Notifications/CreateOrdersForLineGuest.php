@@ -38,11 +38,7 @@ class CreateOrdersForLineGuest extends Notification implements ShouldQueue
      */
     public function via($notifiable)
     {
-        if ($this->order->type != OrderType::NOMINATION) {
-            return [LineBotNotificationChannel::class, RocketChatNotificationChannel::class];
-        }
-
-        return [LineBotNotificationChannel::class];
+        return [LineBotNotificationChannel::class, RocketChatNotificationChannel::class];
     }
 
     /**
