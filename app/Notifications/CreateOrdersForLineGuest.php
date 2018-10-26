@@ -38,7 +38,7 @@ class CreateOrdersForLineGuest extends Notification implements ShouldQueue
      */
     public function via($notifiable)
     {
-        return [LineBotNotificationChannel::class, RocketChatNotificationChannel::class];
+        return [LineBotNotificationChannel::class];
     }
 
     /**
@@ -129,19 +129,6 @@ class CreateOrdersForLineGuest extends Notification implements ShouldQueue
                 'type' => 'text',
                 'text' => $content
             ]
-        ];
-    }
-
-    public function rocketChatPushData($notifiable)
-    {
-        if ($this->order->type == OrderType::NOMINATION) {
-            $link = route('admin.orders.nominees', ['order' => $this->order->id]);
-        } else {
-            $link = route('admin.orders.call', ['order' => $this->order->id]);
-        }
-
-        return [
-            'text' => "売上申請の修正依頼がありました。[Link]($link)"
         ];
     }
 }
