@@ -32,7 +32,7 @@ class AutoChargeFailed extends Notification implements ShouldQueue
      */
     public function via($notifiable)
     {
-        return [CustomDatabaseChannel::class, LineBotNotificationChannel::class];
+        return [CustomDatabaseChannel::class, LineBotNotificationChannel::class, RocketChatNotificationChannel::class];
     }
 
     /**
@@ -87,6 +87,14 @@ class AutoChargeFailed extends Notification implements ShouldQueue
                     ]
                 ]
             ]
+        ];
+    }
+
+    public function rocketChatPushData($notifiable)
+    {
+        $link = route('admin.reports.index');
+        return [
+            'text' => "通報がありました。[Link]($link)"
         ];
     }
 }

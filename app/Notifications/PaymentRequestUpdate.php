@@ -2,6 +2,7 @@
 
 namespace App\Notifications;
 
+use App\Enums\RoomType;
 use App\Enums\UserType;
 use App\Order;
 use Illuminate\Bus\Queueable;
@@ -31,18 +32,7 @@ class PaymentRequestUpdate extends Notification
      */
     public function via($notifiable)
     {
-        return [CustomDatabaseChannel::class];
-    }
-
-    /**
-     * Get the mail representation of the notification.
-     *
-     * @param  mixed  $notifiable
-     * @return \Illuminate\Notifications\Messages\MailMessage
-     */
-    public function toMail($notifiable)
-    {
-        return;
+        return [CustomDatabaseChannel::class, RocketChatNotificationChannel::class];
     }
 
     /**
@@ -58,6 +48,15 @@ class PaymentRequestUpdate extends Notification
         return [
             'content' => $message,
             'send_from' => UserType::ADMIN,
+        ];
+    }
+
+    public function rocketChatPushData($notifiable)
+    {
+        $systemRoom = $this->order->user->rooms()->where('type', RoomType::SYSTEM)->first();
+        $link = route('admin.chat.index', ['room' => $systemRoom->id]);
+        return [
+            'text' => "運営者チャットにメッセージが届きました。[Link]($link)"
         ];
     }
 }

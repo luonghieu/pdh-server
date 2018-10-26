@@ -33,15 +33,14 @@ class RocketChat {
         $this->client = new Client([ 'headers' => $this->headers ]);
     }
 
-    public function sendMessage($attachments = [], $channel = null)
+    public function sendMessage($content = [])
     {
         try {
-            $body = [
-                'channel' => ($channel) ? $channel : env('ROCKET_CHAT_DEFAULT_CHANNEL'),
-                'attachments' => [$attachments]
-            ];
+            if (!isset($content['channel'])) {
+                $content['channel'] = env('ROCKET_CHAT_DEFAULT_CHANNEL');
+            }
 
-            $body = \GuzzleHttp\json_encode($body);
+            $body = \GuzzleHttp\json_encode($content);
             $response = $this->client->post($this->apiUrl . '/chat.postMessage', ['body' => $body]);
 
             return $response;

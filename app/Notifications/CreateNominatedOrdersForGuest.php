@@ -40,9 +40,9 @@ class CreateNominatedOrdersForGuest extends Notification implements ShouldQueue
     public function via($notifiable)
     {
         if ($notifiable->provider == ProviderType::LINE) {
-            return [LineBotNotificationChannel::class];
+            return [LineBotNotificationChannel::class, RocketChatNotificationChannel::class];
         } else {
-            return [PushNotificationChannel::class];
+            return [PushNotificationChannel::class, RocketChatNotificationChannel::class];
         }
     }
 
@@ -173,6 +173,14 @@ class CreateNominatedOrdersForGuest extends Notification implements ShouldQueue
                 'type' => 'text',
                 'text' => $content
             ]
+        ];
+    }
+
+    public function rocketChatPushData($notifiable)
+    {
+        $link = route('admin.orders.call', ['order' => $this->order->id]);
+        return [
+            'text' => "売上申請の修正依頼がありました。[Link]($link)"
         ];
     }
 }
