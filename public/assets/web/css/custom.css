@@ -217,6 +217,29 @@
   padding-top: 15px;
 }
 
+#gl2-1 span.amount {
+  color: #222222;
+  font-size: 16px;
+}
+
+#gl2-1 div.list-payment {
+  padding: 20px 26px !important;
+}
+
+#gl2-1 div.list-payment .item_left span{
+  color: #999999;
+}
+
+#list-payment {
+  margin-top: 0px !important;
+}
+
+#gl2-1 div#list-payment div.point-empty span {
+  display: block;
+  margin-top: 10px;
+  color: #999999;
+}
+
 .create-call-form .ct-button {
   display: -webkit-box;
   display: -ms-flexbox;
@@ -1344,6 +1367,19 @@ div.user-data span.total-point{
 
 #gf2 .cast-call-btn .btn-l.init-width a {
   min-width: 160px;
+}
+
+.list-payment-casts {
+  height: auto;
+}
+
+.list-payment-casts footer{
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  padding: 1rem;
+  text-align: center;
 }
 
 #ci7 .title {
