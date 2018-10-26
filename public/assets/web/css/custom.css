@@ -1348,3 +1348,9 @@
 .btn-create-bank-info-color {
   color: #30ccc3 !important;
 }
+
+.notify-no-result {
+  text-align: center;
+  font-size: 15px;
+  margin-top: 200px;
+}
