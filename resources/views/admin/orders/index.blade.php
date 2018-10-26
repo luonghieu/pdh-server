@@ -38,7 +38,7 @@
           </form>
         </div>
         <div class="btn-delete-order">
-          <button data-toggle="modal" data-target="#deleteOrder">チェックした予約を削除する</button>
+          <button data-toggle="modal" data-target="#deleteOrder">チェックした予約を無効する</button>
         </div>
         <div class="panel-body">
           @include('admin.partials.notification')
@@ -199,7 +199,7 @@
           <div class="modal-dialog" role="document">
             <div class="modal-content">
               <div class="modal-body">
-                <p>チェックした予約を削除しますか？</p>
+                <p>チェックした予約を無効しますか？</p>
               </div>
               <form action="{{ route('admin.orders.delete') }}" method="POST">
                 {{ csrf_field() }}
