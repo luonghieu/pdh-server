@@ -21,7 +21,7 @@ class GuestController extends ApiController
             return $this->respondWithValidationError($validator->errors()->messages());
         }
 
-        $guests = Guest::query();
+        $guests = Guest::orderBy('last_active_at', 'DESC');
         $user = $this->guard()->user();
 
         if ($request->favorited) {
