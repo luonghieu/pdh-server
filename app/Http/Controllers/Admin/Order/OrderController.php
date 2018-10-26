@@ -49,7 +49,7 @@ class OrderController extends Controller
         $orderBy = $request->only('user_id', 'id', 'type', 'address',
             'created_at', 'date', 'start_time', 'status');
 
-        $orders = Order::with('user');
+        $orders = Order::with('user')->withTrashed();
 
         if ($request->has('from_date') && !empty($request->from_date)) {
             $fromDate = Carbon::parse($request->from_date)->startOfDay();
@@ -116,22 +116,40 @@ class OrderController extends Controller
         return redirect(route('admin.orders.index'));
     }
 
-    public function nominees(Order $order)
+    public function nominees($order)
     {
+        $order = Order::withTrashed()->find($order);
+
+        if (empty($order)) {
+            abort(404);
+        }
+
         $casts = $order->nominees()->paginate();
 
         return view('admin.orders.nominees', compact('casts', 'order'));
     }
 
-    public function candidates(Order $order)
+    public function candidates($order)
     {
+        $order = Order::withTrashed()->find($order);
+
+        if (empty($order)) {
+            abort(404);
+        }
+
         $casts = $order->candidates()->paginate();
 
         return view('admin.orders.candidates', compact('casts', 'order'));
     }
 
-    public function orderCall(Request $request, Order $order)
+    public function orderCall(Request $request, $order)
     {
+        $order = Order::withTrashed()->find($order);
+
+        if (empty($order)) {
+            abort(404);
+        }
+
         if (OrderType::NOMINATION == $order->type) {
             $request->session()->flash('msg', trans('messages.order_not_found'));
 
@@ -143,8 +161,14 @@ class OrderController extends Controller
         return view('admin.orders.order_call', compact('order'));
     }
 
-    public function castsMatching(Order $order)
+    public function castsMatching($order)
     {
+        $order = Order::withTrashed()->find($order);
+
+        if (empty($order)) {
+            abort(404);
+        }
+
         $casts = $order->casts;
 
         return view('admin.orders.casts_matching', compact('casts', 'order'));
@@ -187,8 +211,14 @@ class OrderController extends Controller
         return redirect(route('admin.orders.casts_matching', compact('casts', 'order')));
     }
 
-    public function orderNominee(Request $request, Order $order)
+    public function orderNominee(Request $request, $order)
     {
+        $order = Order::withTrashed()->find($order);
+
+        if (empty($order)) {
+            abort(404);
+        }
+
         if (OrderType::NOMINATION != $order->type) {
             $request->session()->flash('msg', trans('messages.order_not_found'));
 

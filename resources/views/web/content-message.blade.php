@@ -39,7 +39,11 @@
         @else
         <div class="{{ $className }} msg-wrap" id="msg-left">
           <figure>
+            @if ($element['user']['type'] == App\Enums\UserType::CAST)
+            <a href="{{ route('cast.show', $element['user_id']) }}"><img src="{{ ($element['user']['avatars'] && @getimagesize($element['user']['avatars'][0]['path'])) ? $element['user']['avatars'][0]['path'] :'/assets/web/images/gm1/ic_default_avatar@3x.png' }}"  alt="" title="" class="alignnone size-full wp-image-515" /></a>
+            @else
             <a href="javascript:void(1);"><img src="{{ ($element['user']['avatars'] && @getimagesize($element['user']['avatars'][0]['path'])) ? $element['user']['avatars'][0]['path'] :'/assets/web/images/gm1/ic_default_avatar@3x.png' }}"  alt="" title="" class="alignnone size-full wp-image-515" /></a>
+            @endif
           </figure>
           <div class="{{ $className }}-text">
             @if (in_array($element['type'], [App\Enums\MessageType::MESSAGE, App\Enums\MessageType::THANKFUL]))

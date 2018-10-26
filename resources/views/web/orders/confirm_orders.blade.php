@@ -134,7 +134,7 @@
 
 @section('web.extra')
   @confirm(['triggerId' => 'orders', 'triggerCancel' =>'', 'buttonLeft' =>'キャンセル',
-   'buttonRight' =>'確定する','triggerSuccess' =>'sb-form-orders'])
+   'buttonRight' =>'確定する','triggerSuccess' =>'right sb-form-orders'])
 
     @slot('title')
       予約を確定しますか？
@@ -147,11 +147,11 @@
     @modal(['triggerId' => 'md-require-card', 'triggerClass' =>'lable-register-card','button' =>'クレジットカードを登録する
 '])
       @slot('title')
-        クレジットカードを登録してキャストとマッチングしよう！
+        クレジットカードを <br>登録してください
       @endslot
 
       @slot('content')
-      ※キャストとマッチングするにはお支払い情報の登録が必要です
+      ※キャストと合流するまで <br>料金は発生しません
       @endslot
     @endmodal
   @endif

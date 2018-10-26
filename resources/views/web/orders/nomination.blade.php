@@ -89,8 +89,8 @@
           <div class="form-grpup"><!-- フォーム内容 -->
             @if(isset($orderOptions['call_time']))
               @foreach($orderOptions['call_time'] as $callTime)
-              <label class="button button--green date {{ !$callTime['is_active'] ? 'inactive' : '' }}">
-                <input class="input-time-join" type="radio" name="time_join_nomination" value="{{ $callTime['value'] }}" {{ !$callTime['is_active'] ? 'disabled' : '' }}>
+              <label class="button button--green date {{ $callTime['value'] ==60 ? 'active' : '' }} {{ !$callTime['is_active'] ? 'inactive' : '' }}">
+                <input class="input-time-join" type="radio" name="time_join_nomination" value="{{ $callTime['value'] }}" {{ !$callTime['is_active'] ? 'disabled' : '' }} {{ $callTime['value'] ==60 ? 'checked' : '' }} >
                 {{ $callTime['name'] }}
               </label>
               @endforeach
@@ -242,7 +242,7 @@
 
 @section('web.extra')
   @confirm(['triggerId' => 'orders-nominate', 'triggerCancel' =>'', 'buttonLeft' =>'キャンセル',
-   'buttonRight' =>'確定する','triggerSuccess' =>'cf-orders-nominate'])
+   'buttonRight' =>'確定する','triggerSuccess' =>'right cf-orders-nominate'])
 
     @slot('title')
       予約を確定しますか？
@@ -253,13 +253,14 @@
   @endconfirm
 
   @if(!$user->card)
-    @modal(['triggerId' => 'md-require-card', 'triggerClass' =>'lable-register-card'])
+    @modal(['triggerId' => 'md-require-card', 'triggerClass' =>'lable-register-card','button' =>'クレジットカードを登録する
+'])
       @slot('title')
-        クレジットカードを登録してキャストとマッチングしよう！
+        クレジットカードを <br>登録してください
       @endslot
 
       @slot('content')
-      ※キャストとマッチングするにはお支払い情報の登録が必要です
+      ※キャストと合流するまで <br>料金は発生しません
       @endslot
     @endmodal
   @else
