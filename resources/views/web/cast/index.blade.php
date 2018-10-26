@@ -51,7 +51,7 @@
         </a>
       </div>
       <div class="m-circle ">
-        <a href="">
+        <a href="{{ route('cast.payments') }}">
           <div class="rounded-circle m-rounded-circle">
             <img src="{{ asset('assets/web/images/cast/ic_point_white.svg') }}">
             <div class="text-center m-auto">振込履歴</div>
