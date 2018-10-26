@@ -1203,13 +1203,13 @@ div.user-data span.total-point-title {
   color: #ffffff;
 }
 
-div.user-data span.total-point{
+div.user-data span.total-point-cast{
   position: absolute;
   bottom: 94px;
   font-size: 40px;
   width: 190px;
   text-align: center;
-  left: -36px;
+  left: -41px;
   height: 40px;
   font-weight: normal;
   font-style: normal;
