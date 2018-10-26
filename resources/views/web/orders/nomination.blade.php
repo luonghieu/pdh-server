@@ -256,11 +256,11 @@
     @modal(['triggerId' => 'md-require-card', 'triggerClass' =>'lable-register-card','button' =>'クレジットカードを登録する
 '])
       @slot('title')
-        クレジットカードを 登録してください
+        クレジットカードを 登録<br>してください
       @endslot
 
       @slot('content')
-      ※キャストと合流するまで 料金は発生しません
+      ※キャストと合流するまで 料金は<br>発生しません
       @endslot
     @endmodal
   @else
