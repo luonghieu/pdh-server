@@ -7,7 +7,7 @@ $(document).ready(function() {
     window.axios.post('/api/v1/favorites/' + id)
       .then(function(response) {
         if (is_favorited == '0') {
-          $('#favorite-cast-detail').html(`<img id="like" src="/assets/web/images/common/like.svg"><span class="text-color">イイネ済</span>`)
+          $('#favorite-cast-detail').html(`<img src="/assets/web/images/common/like.svg"><span class="text-color">イイネ済</span>`)
         } else {
           $('#favorite-cast-detail').html(`<img src="/assets/web/images/common/unlike.svg"><span class="text-color">イイネ</span>`)
         }

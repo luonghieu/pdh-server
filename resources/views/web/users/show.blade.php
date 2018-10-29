@@ -133,15 +133,18 @@
   </div>
 </div>
 <div class="cast-call-btn">
-  <a id="favorite-cast-detail" data-user-id="{{ $cast['id'] }}" data-is-favorited="{{ $cast['is_favorited'] }}">
+  <a class="heart" id="favorite-cast-detail" data-user-id="{{ $cast['id'] }}" data-is-favorited="{{ $cast['is_favorited'] }}">
     @if ($cast['is_favorited'])
-    <img id="like" src="{{ asset('assets/web/images/common/like.svg') }}"><span class="text-color">イイネ済</span>
+    <img src="{{ asset('assets/web/images/common/like.svg') }}"><span class="text-color">イイネ済</span>
     @else
     <img src="{{ asset('assets/web/images/common/unlike.svg') }}"><span class="text-color">イイネ</span>
     @endif
   </a>
-  <a class="btn-l" href="{{ route('message.messages', $cast['room_id']) }}"><img src="{{ asset('assets/web/images/common/msg2.svg') }}"></a>
-  <div class="btn-l init-width"><a href="{{ route('guest.orders.nominate',['id' => $cast['id'] ]) }}">指名予約する</a></div>
+  <a class="msg" href="{{ route('message.messages', $cast['room_id']) }}">
+    <img src="{{ asset('assets/web/images/common/msg2.svg') }}">
+    <span class="text-color">メッセージ</span>
+  </a>
+  <div class="btn-m"><a href="{{ route('guest.orders.nominate',['id' => $cast['id'] ]) }}">指名予約する</a></div>
 </div>
 @endsection
 @section('web.script')
