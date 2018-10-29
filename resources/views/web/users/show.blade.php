@@ -140,7 +140,7 @@
     <img src="{{ asset('assets/web/images/common/unlike.svg') }}"><span class="text-color">イイネ</span>
     @endif
   </a>
-  <a class="msg" href="{{ route('message.messages', $cast['room_id']) }}">
+  <a class="msg" id="create-room" data-user-id="{{ $cast['id'] }}">
     <img src="{{ asset('assets/web/images/common/msg2.svg') }}">
     <span class="text-color">メッセージ</span>
   </a>

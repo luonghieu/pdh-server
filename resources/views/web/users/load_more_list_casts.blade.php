@@ -22,19 +22,19 @@
       <img src="{{ asset('assets/web/images/gm1/ic_default_avatar@3x.png') }}" alt="">
       @endif
 
-      <span class="{{ $class }}">{{ $cast['class'] }}</span>
+      <span class="{{ $class }} text-bold">{{ $cast['class'] }}</span>
       @if ($cast['working_today'])
-        <span class="today">今日OK</span>
+        <span class="today text-bold">今日OK</span>
       @endif
     </div>
     <div class="profile">
       <p class="top">
         <i class="{{ $cast['is_online'] ? 'online' : 'offline' }}"></i>
-        <span class="job">{{ $cast['job'] }}</span>
-        <span class="age">{{ $cast['age'] }}歳</span>
+        <span class="job text-bold">{{ $cast['job'] }}</span>
+        <span class="age text-bold">{{ $cast['age'] }}歳</span>
       </p>
       <p class="message">{{ $cast['intro'] }}</p>
-      <p class="point"><span>{{ number_format($cast['cost']) }}P</span>/30分</p>
+      <p class="point"><span class="text-bold">{{ number_format($cast['cost']) }}P</span>/30分</p>
     </div>
   </a>
 @endforeach
