@@ -15,7 +15,7 @@ class CastController extends ApiController
             return $this->respondErrorMessage(trans('messages.action_not_performed'), 422);
         }
 
-        $cast->cast_transfer_status = null;
+        $cast->cast_transfer_status = CastTransferStatus::OFFICIAL;
         $cast->save();
 
         return $this->respondWithNoData(trans('messages.transfer_to_cast_succeed'));

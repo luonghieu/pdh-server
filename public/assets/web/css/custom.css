@@ -1683,3 +1683,7 @@ div.user-data span.total-point-cast{
 #gf4 .age-first {
   left: 100px;
 }
+
+.text-bold {
+  font-weight: bold;
+}

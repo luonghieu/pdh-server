@@ -1,4 +1,4 @@
-@section('title', '絞り込み検索')
+@section('title', '絞込み検索')
 @section('screen.id', 'gf3')
 @extends('layouts.web')
 @section('web.extra_css')
@@ -7,11 +7,11 @@
 @endsection
 @section('web.content')
   <div class="page-header">
-    <a href="{{ route('casts.list_casts') }}" class="prev"><i><img src="{{ asset('assets/web/images/common/prev.svg') }}" alt=""></i></a>
-    <h1>絞り込み検索</h1>
+    <a href="{{ route('cast.list_casts') }}" class="prev"><i><img src="{{ asset('assets/web/images/common/prev.svg') }}" alt=""></i></a>
+    <h1 class="text-bold">絞込み検索</h1>
   </div>
 
-  <form action="{{ route('casts.list_casts') }}" method="get">
+  <form action="{{ route('cast.list_casts') }}" method="get">
     <div class="cast-search">
       <section class="search">
         <div class="search-header">
