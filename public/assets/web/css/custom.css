@@ -1652,3 +1652,7 @@ div.user-data span.total-point-cast{
   font-size: 15px;
   margin-top: 200px;
 }
+
+.text-bold {
+  font-weight: bold;
+}
