@@ -53,7 +53,7 @@ Route::group(['middleware' => 'auth'], function () {
             Route::post('/branch_bank_name', ['as' => 'branch_bank_name', 'uses' => 'BankAccountController@branchBankName']);
         });
 
-        Route::get('cast_rankings', ['as' => 'index', 'uses' => 'CastRankingController@index']);
+        Route::get('/cast/rank', ['as' => 'cast_rank', 'uses' => 'CastRankingController@index']);
     });
 });
 
