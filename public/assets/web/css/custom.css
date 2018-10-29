@@ -1358,15 +1358,7 @@ div.user-data span.total-point-cast{
 #gf2 .text-color {
   color: #30CCC3;
   font-weight: bold;
-}
-
-#gf2 .cast-call-btn #like {
-  width: 75%;
-  margin: 0 auto 0.2rem;
-}
-
-#gf2 .cast-call-btn .btn-l.init-width a {
-  min-width: 160px;
+  font-size: 0.8rem;
 }
 
 .list-payment-casts {
@@ -1623,6 +1615,36 @@ div.user-data span.total-point-cast{
 
 .btn-create-bank-info-color {
   color: #30ccc3 !important;
+}
+
+#gf1 .cast-items .profile .top .offline {
+  border-radius: 10px;
+  background-color: #989595;
+}
+
+#gf1 .thumbnail.init-thumbnail img {
+  max-height: calc(50vw - 10px);
+}
+
+#gf3 .selectbox select.init-select {
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  background-color: white;
+  margin-right: 0.5rem;
+  border: none;
+}
+
+#gf3 .selectbox i.init-ml-2 {
+  margin-left: 0.5rem;
+}
+
+#gf3 .form_footer button.init-color {
+  font-size: 18px;
+  line-height: 60px;
+  color: #fff;
+  background-image: linear-gradient(-162deg, #42E4B2 0%, #00C3C3 100%);
+  text-decoration: none;
+  border: none;
 }
 
 .notify-no-result {
