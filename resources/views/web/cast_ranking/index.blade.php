@@ -8,28 +8,50 @@
 <div class="page-header">
   <h1>キャストランキング</h1>
 </div>
-
+@if ($castRankings->first())
 <div class="cast-rank">
+  @if ($castRankings->count() >= 1)
   <div class="first-place">
     <a href="{{ route('cast.show', ['id' => $castRankings[0]->id]) }}">
       <figure><img src="{{ $castRankings[0]->avatars && @getimagesize($castRankings[0]->avatars[0]->path) ? $castRankings[0]->avatars[0]->path: '/assets/web/images/gm1/ic_default_avatar@3x.png' }}"></figure>
-      <figcaption><span>♥♥{{ $castRankings[0]->nickname }}♥♥</span><span>({{ $castRankings[0]->age }})</span></figcaption>
+      <figcaption>
+        <div class="nickname-cast-rank">
+          <span>{{ $castRankings[0]->nickname }}</span>
+        </div>
+        <span class="age-first">({{ $castRankings[0]->age }})</span>
+      </figcaption>
     </a>
   </div>
+  @endif
   <div class="second_third">
+    @if ($castRankings->count() >= 2)
     <div class="second">
       <a href="{{ route('cast.show', ['id' => $castRankings[1]->id]) }}">
         <figure><img src="{{ $castRankings[1]->avatars && @getimagesize($castRankings[1]->avatars[0]->path) ? $castRankings[1]->avatars[0]->path: '/assets/web/images/gm1/ic_default_avatar@3x.png' }}"></figure>
-        <figcaption><span>♥♥{{ $castRankings[1]->nickname }}♥♥</span><span>({{ $castRankings[1]->age }})</span></figcaption>
+        <figcaption>
+          <div class="nickname-cast-rank">
+            <span>{{ $castRankings[1]->nickname }}</span>
+          </div>
+          <span>({{ $castRankings[1]->age }})</span>
+        </figcaption>
       </a>
     </div>
+    @endif
+    @if ($castRankings->count() >= 3)
     <div class="third">
       <a href="{{ route('cast.show', ['id' => $castRankings[2]->id]) }}">
         <figure><img src="{{ $castRankings[2]->avatars && @getimagesize($castRankings[2]->avatars[0]->path) ? $castRankings[2]->avatars[0]->path: '/assets/web/images/gm1/ic_default_avatar@3x.png' }}"></figure>
-        <figcaption><span>♥♥{{ $castRankings[2]->nickname }}♥♥</span><span>({{ $castRankings[2]->age }})</span></figcaption>
+        <figcaption>
+          <div class="nickname-cast-rank">
+            <span>{{ $castRankings[2]->nickname }}</span>
+          </div>
+          <span>({{ $castRankings[2]->age }})</span>
+        </figcaption>
       </a>
     </div>
+    @endif
   </div>
+  @if ($castRankings->count() >= 4)
   <ul class="later">
     @foreach ($castRankings as $key => $cast_ranking)
       @if ($key >= 3)
@@ -44,5 +66,7 @@
       @endif
     @endforeach
   </ul>
+  @endif
 </div>
+@endif
 @endsection
