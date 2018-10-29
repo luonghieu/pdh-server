@@ -5,18 +5,18 @@
   <link rel="stylesheet" href="{{ asset('assets/web/css/gf_1.css') }}">
 @endsection
 @section('web.content')
-  <form id="search" method="GET" action="{{ route('casts.favorite') }}">
+  <form id="search" method="GET" action="{{ route('cast.favorite') }}">
     @foreach (request()->all() as $key => $value)
     <input type="hidden" name="{{ $key }}" value="{{ $value }}">
     @endforeach
   </form>
   <div class="page-header">
-    <a href="{{ route('casts.search') }}" class="search"><i><img src="{{ asset('assets/web/images/common/search.svg') }}" alt=""></i></a>
+    <a href="{{ route('cast.search') }}" class="search"><i><img src="{{ asset('assets/web/images/common/search.svg') }}" alt=""></i></a>
     <div class="header-right__menu">
-      <a href="{{ route('casts.favorite') }}" class="heart" id="heart_off"><i><img src="{{ asset('assets/web/images/common/unlike.svg') }}" alt=""></i></a>
-      <a href="#" class="crown"><i><img src="{{ asset('assets/web/images/common/crown.svg') }}" alt=""></i></a>
+      <a href="{{ route('cast.favorite') }}" class="heart" id="heart_off"><i><img src="{{ asset('assets/web/images/common/unlike.svg') }}" alt=""></i></a>
+      <a href="{{ route('cast_rank') }}" class="crown"><i><img src="{{ asset('assets/web/images/common/crown.svg') }}" alt=""></i></a>
     </div>
-    <h1>キャスト一覧</h1>
+    <h1 class="text-bold">キャスト一覧</h1>
   </div>
 
   @if (!$casts['data'])
@@ -51,7 +51,7 @@
 
         if (url) {
           requesting = true;
-          window.axios.get("<?php echo env('APP_URL')  . '/casts/list/more' ?>", {
+          window.axios.get("<?php echo env('APP_URL')  . '/cast/list/more' ?>", {
             params: { next_page: url },
           }).then(function (res) {
             res = res.data;
