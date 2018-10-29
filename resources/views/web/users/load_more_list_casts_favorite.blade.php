@@ -21,19 +21,19 @@
       <img src="{{ asset('assets/web/images/gm1/ic_default_avatar@3x.png') }}" alt="">
       @endif
 
-      <span class="{{ $class }}">{{ $favorite['class'] }}</span>
+      <span class="{{ $class }} text-bold">{{ $favorite['class'] }}</span>
       @if ($favorite['working_today'])
-        <span class="today">今日OK</span>
+        <span class="today text-bold">今日OK</span>
       @endif
     </div>
     <div class="profile">
       <p class="top">
         <i class="{{ $favorite['is_online'] ? 'online' : 'offline' }}"></i>
-        <span class="job">{{ $favorite['job'] }}</span>
-        <span class="age">{{ $favorite['age'] }}歳</span>
+        <span class="job text-bold">{{ $favorite['job'] }}</span>
+        <span class="age text-bold">{{ $favorite['age'] }}歳</span>
       </p>
       <p class="message">{{ $favorite['intro'] }}</p>
-      <p class="point"><span>{{ number_format($favorite['cost']) }}P</span>/30分</p>
+      <p class="point"><span class="text-bold">{{ number_format($favorite['cost']) }}P</span>/30分</p>
     </div>
   </a>
 @endforeach

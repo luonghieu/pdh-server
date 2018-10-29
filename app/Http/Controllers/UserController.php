@@ -61,17 +61,27 @@ class UserController extends Controller
     public function loadMoreListCasts(Request $request)
     {
         try {
-            $params = [
-                'next_page' => $request->next_page,
-            ];
-            if ($request->all()) {
-                !$request->prefecture_id ?: $params['prefecture_id'] = $request->prefecture_id;
-                !$request->class_id ?: $params['class_id'] = $request->class_id;
-                !$request->point ?: $params['min_point'] = explode(',', $request->point)[0];
-                !$request->point ?: $params['max_point'] = explode(',', $request->point)[1];
-            }
+            $user = Auth::user();
+            $token = JWTAuth::fromUser($user);
 
-            $contents = $this->getApi('/api/v1/casts', $params);
+            $authorization = empty($token) ?: 'Bearer ' . $token;
+            $client = new Client([
+                'base_uri' => config('common.api_url'),
+                'http_errors' => false,
+                'debug' => false,
+                'headers' => [
+                    'Accept' => 'application/json',
+                    'Authorization' => $authorization,
+                    'Content-Type' => 'application/json',
+                ],
+            ]);
+
+            $apiRequest = $client->request('GET', $request->next_page);
+
+            $result = $apiRequest->getBody();
+            $contents = $result->getContents();
+            $contents = json_decode($contents, JSON_NUMERIC_CHECK);
+
             $casts = $contents['data'];
 
             return [
@@ -110,17 +120,27 @@ class UserController extends Controller
     public function loadMoreListCastsFavorite(Request $request)
     {
         try {
-            $params = [
-                'favorited' => 1,
-            ];
-            if ($request->all()) {
-                !$request->prefecture_id ?: $params['prefecture_id'] = $request->prefecture_id;
-                !$request->point ?: ($params['min_point'] = explode(',', $request->point)[0]);
-                !$request->point ?: $params['max_point'] = explode(',', $request->point)[1];
-                !$request->class_id ?: $params['class_id'] = $request->class_id;
-            }
+            $user = Auth::user();
+            $token = JWTAuth::fromUser($user);
 
-            $contents = $this->getApi('/api/v1/casts', $params);
+            $authorization = empty($token) ?: 'Bearer ' . $token;
+            $client = new Client([
+                'base_uri' => config('common.api_url'),
+                'http_errors' => false,
+                'debug' => false,
+                'headers' => [
+                    'Accept' => 'application/json',
+                    'Authorization' => $authorization,
+                    'Content-Type' => 'application/json',
+                ],
+            ]);
+
+            $apiRequest = $client->request('GET', $request->next_page);
+
+            $result = $apiRequest->getBody();
+            $contents = $result->getContents();
+            $contents = json_decode($contents, JSON_NUMERIC_CHECK);
+
             $favorites = $contents['data'];
 
             return [
