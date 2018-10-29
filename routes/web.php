@@ -56,6 +56,8 @@ Route::group(['middleware' => 'auth'], function () {
             Route::get('/branch_bank_name', ['as' => 'search_branch_bank_name', 'uses' => 'BankAccountController@searchBranchBankName']);
             Route::post('/branch_bank_name', ['as' => 'branch_bank_name', 'uses' => 'BankAccountController@branchBankName']);
         });
+
+        Route::get('/cast/rank', ['as' => 'cast_rank', 'uses' => 'CastRankingController@index']);
     });
 });
 
