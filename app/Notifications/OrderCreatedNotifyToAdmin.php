@@ -41,7 +41,7 @@ class OrderCreatedNotifyToAdmin extends Notification implements ShouldQueue
     public function rocketChatPushData($notifiable)
     {
         if ($this->order->type == OrderType::NOMINATION) {
-            $link = route('admin.orders.nominees', ['order' => $this->order->id]);
+            $link = route('admin.orders.order_nominee', ['order' => $this->order->id]);
         } else {
             $link = route('admin.orders.call', ['order' => $this->order->id]);
         }
