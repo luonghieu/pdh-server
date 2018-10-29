@@ -1079,3 +1079,547 @@
   color: #ffffff;
   border-color: #CCCCCC;
 }
+
+/*CAST*/
+
+div.point-transfer {
+  border-radius: 10px;
+  width: 80%;
+  height: 55px;
+  border: 1px dashed #30ccc3;
+  background-image: none;
+}
+
+div.point-transfer span {
+  display: inline-block;
+}
+
+div.point-transfer img {
+  display: inline-block;
+  width: 20px;
+  height: 20px;
+  object-fit: contain;
+  margin-left: 27px;
+}
+
+div.point-transfer span.point-show {
+  font-size: 26px;
+  font-weight: 100;
+  color: #222222;
+  margin-right: 30px;
+  float: right;
+}
+
+div.point-transfer div.point-title {
+  display: inline-block;
+  float: left;
+}
+
+div.point-transfer div.point-title span {
+  font-size: 13px;
+  width: 101px;
+  height: 19px;
+  font-weight: bold;
+  font-style: normal;
+  font-stretch: normal;
+  line-height: normal;
+  letter-spacing: 1.3px;
+  color: #30ccc3;
+  position: relative;
+  top: -4px;
+}
+
+.btn-circle {
+  width: 95% !important;
+  padding-top: 24px !important;
+}
+
+.m-rounded-circle {
+  position: relative;
+}
+
+.m-rounded-circle img{
+  width: 34px;
+  height: 34px;
+  object-fit: contain;
+  position: absolute;
+  top: 18px;
+  left: 38px;
+}
+
+.m-rounded-circle div{
+  position: absolute;
+  top: 14px;
+  left: 26px;
+}
+
+.m-rounded-circle div.ct-circle {
+  left: 11px;
+}
+
+div.user-data span.total-point-title {
+  display: inline-block;
+  font-size: 14px;
+  text-align: center;
+  position: absolute;
+  top: 30px;
+  width: 124px;
+  left: -3px;
+  height: 20px;
+  font-weight: normal;
+  font-style: normal;
+  font-stretch: normal;
+  line-height: normal;
+  letter-spacing: 1.4px;
+  color: #ffffff;
+}
+
+div.user-data span.total-point-cast{
+  position: absolute;
+  bottom: 94px;
+  font-size: 40px;
+  width: 190px;
+  text-align: center;
+  left: -41px;
+  height: 40px;
+  font-weight: normal;
+  font-style: normal;
+  font-stretch: normal;
+  line-height: normal;
+  letter-spacing: 1.2px;
+  color: #ffffff;
+}
+
+.rounded-circle {
+  width: 110px;
+  height: 110px;
+  border: 1px solid #00D2BA;
+  border-radius: 50%;
+  margin: 0 auto;
+  background-image: linear-gradient(151deg, #42e4b2, #00c3c3);
+  color: #FFF;
+}
+
+.m-auto {
+  margin: 45% auto;
+  font-size: 15px;
+  font-weight: 100;
+}
+
+.m-0 {
+  margin: 0 auto;
+}
+
+.display-flex {
+  display: flex;
+  margin: 0 auto;
+  flex-direction: row;
+  justify-content: space-between;
+}
+
+.text-center {
+  text-align: center;
+}
+
+#btn-circle {
+  background-image: none;
+}
+
+#custom-point {
+  background-image: none;
+  margin-top: 14px;
+  width: 96%;
+}
+
+#custom-point div.expiration-date div.select-point {
+  float: right;
+  padding-top: 15px;
+  padding-right: 0px;
+}
+
+#custom-point div.expiration-date {
+  margin: 30px 0px;
+  height: 50px;
+
+}
+
+#custom-point div.expiration-date span.left {
+  float: left;
+  margin-left: 9px;
+  color: #a0a0a0;
+}
+
+#custom-point div.expiration-date div.select-point select{
+  background-image: none;
+  background-position: 48px 9px;
+}
+
+#custom-point div.expiration-date div.select-point select:first-child {
+    padding-left : 0px;
+}
+
+#change-point {
+  width: 21%;
+  height: 30px;
+  border-radius: 19px;
+  background-image: linear-gradient(-162deg, #42E4B2 0%, #00C3C3 100%);
+  display: block;
+  text-align: center;
+  margin: 20px auto;
+  padding: 4px;
+  line-height: 30px;
+  position: relative;
+  left: 31%;
+  color: white;
+}
+
+.main-cast {
+  padding-top: 0px;
+}
+
+#top-header-cast {
+  height: 183px;
+  background-image: linear-gradient(327deg, #42e4b2, #00c3c3);
+}
+
+#cast-icon img{
+  border-radius: 100%;
+  height: 100%;
+}
+
+@media (max-width: 320px) {
+  .gn-1 .list_wrap .list_item .btn_wrap .btn-cancel {
+    text-align: center;
+  }
+
+  div.point-transfer img {
+    width: 15px;
+    height: 15px;
+  }
+
+  div.point-transfer span.point-show {
+    font-size: 22px;
+  }
+
+  div.point-transfer div.point-title span {
+    font-size: 10px;
+    width: 85px;
+  }
+
+  .m-rounded-circle {
+    width: 95px;
+    height: 95px;
+  }
+
+  .m-rounded-circle img {
+    left: 32px;
+  }
+
+  .m-rounded-circle div {
+    left: 23px;
+    font-size: 13px;
+  }
+
+  .m-rounded-circle div.ct-circle {
+    left: 10px;
+  }
+
+}
+
+#gf2 .text-color {
+  color: #30CCC3;
+  font-weight: bold;
+  font-size: 0.8rem;
+}
+
+.list-payment-casts {
+  height: auto;
+}
+
+.list-payment-casts footer{
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  padding: 1rem;
+  text-align: center;
+}
+
+#ci7 .title {
+  position: fixed;
+  background-color: #fff;
+  width: 100%;
+  z-index: 1;
+  text-align: center;
+  height: 50px;
+  border-bottom: 1px solid #E4E4E4;
+}
+
+#ci7 .title-name {
+  display: inline-block;
+  font-family: NotoSansCJKjp;
+  font-size: 15px;
+  font-weight: bold;
+  font-style: normal;
+  font-stretch: normal;
+  line-height: normal;
+  letter-spacing: normal;
+  text-align: center;
+  color: #30ccc3;
+  margin-top: 14px;
+}
+
+#ci7 .btn-register {
+  display: inline-block;
+  width: 37px;
+  height: 27px;
+  font-family: NotoSansCJKjp;
+  font-size: 15px;
+  font-weight: normal;
+  font-style: normal;
+  font-stretch: normal;
+  line-height: normal;
+  letter-spacing: normal;
+  position: absolute;
+  bottom: 12px;
+  right: 18px;
+}
+
+.border-bottom {
+  border-bottom: solid 1px rgba(139, 131, 131, 0.2);
+  margin: 0 8px;
+}
+
+#ci7 .content {
+  margin: 78px 7px 0 8px;
+}
+
+#ci7 .content form{
+  margin-top: 10px;
+}
+
+#ci7 .content form .row{
+  height: 49px;
+  position: relative;
+}
+
+#ci7 .label-title {
+  height: 37px;
+  background-color: #f3f2f2;
+  margin: 0 8px;
+}
+
+#ci7 .label-title p {
+  width: 251px;
+  height: 13px;
+  font-family: NotoSansCJKjp;
+  font-size: 13px;
+  font-weight: normal;
+  font-style: normal;
+  font-stretch: normal;
+  line-height: normal;
+  letter-spacing: 0.9px;
+  color: #505050;
+  padding-top: 9px;
+  padding-left: 11px;
+}
+
+#ci7 span.left {
+  height: 15px;
+  font-family: NotoSansCJKjp;
+  font-size: 15px;
+  font-weight: normal;
+  font-style: normal;
+  font-stretch: normal;
+  line-height: normal;
+  letter-spacing: -0.3px;
+  text-align: left;
+  color: #30ccc3;
+  padding-top: 18px;
+}
+
+#ci7 .right a {
+  position: absolute;
+  right: 0;
+  bottom: 10px;
+  font-family: NotoSansCJKjp;
+  font-size: 15px;
+  font-weight: normal;
+  font-style: normal;
+  font-stretch: normal;
+  line-height: normal;
+  letter-spacing: -0.3px;
+  text-align: right;
+  color: #c8c8c8;
+  background: none;
+  border: none;
+}
+
+#ci7 .right select {
+  height: 21px;
+  font-family: NotoSansCJKjp;
+  font-size: 14px;
+  font-weight: normal;
+  font-style: normal;
+  font-stretch: normal;
+  line-height: normal;
+  letter-spacing: -0.3px;
+  text-align: right;
+  color: #303030;
+  background: none;
+  border: none;
+  outline: none;
+  -webkit-appearance: none;
+  width: 45px;
+  background-image: url(../../webview/images/IC_down.png);
+  background-repeat: no-repeat, repeat;
+  background-position: 30px 11px;
+  position: absolute;
+  right: 0;
+  bottom: 10px;
+}
+
+#ci7 .right input {
+  border: none;
+  width: 180px;
+  outline: none;
+  position: absolute;
+  right: 0;
+  bottom: 9px;
+  text-align: right;
+  background:none;
+  font-size: 15px;
+}
+
+#ci7 .right input::placeholder {
+  color: #c8c8c8;
+  font-size: 15px;
+}
+
+#ci7 .right .first-option {
+  height: 21px;
+  font-family: NotoSansCJKjp;
+  font-size: 14px;
+  font-weight: normal;
+  font-style: normal;
+  font-stretch: normal;
+  line-height: normal;
+  letter-spacing: -0.3px;
+  text-align: right;
+  color: #c8c8c8;
+  background: none;
+  border: none;
+  outline: none;
+  -webkit-appearance: none;
+  width: 129px;
+  position: absolute;
+  right: 15px;
+  bottom: 7px;
+}
+
+#ci7 #btn-create-bank-info {
+  width: 32px;
+  height: 24px;
+  font-family: NotoSansCJKjp;
+  font-size: 16px;
+  font-weight: normal;
+  font-style: normal;
+  font-stretch: normal;
+  line-height: normal;
+  letter-spacing: normal;
+  text-align: center;
+  color: #cccccc;
+  padding-top: 2px;
+}
+
+#ci7 .result-bank-name input{
+  caret-color: #30ccc3;
+}
+
+#ci7 .result-bank-name span.result {
+  color: #303030;
+}
+
+#ci7 .result-bank-name img {
+  width: 25px;
+  position: absolute;
+  right: 5px;
+  bottom: 15px;
+}
+
+#ci7 .value-true-color {
+  color: #303030 !important;
+}
+
+#ci7 .account-type {
+  margin-top: 30px;
+}
+
+#ci7 .account-type label{
+  background-color: #fff;
+  position: absolute;
+  right: 16px;
+  bottom: 10px;
+  color: #c8c8c8;
+  z-index: 1;
+}
+
+#ci7 .account-holder {
+  margin-top: 30px;
+}
+
+#ci7 .btn-update-bank {
+  color: #30ccc3;
+}
+
+#btn-update-bank-info {
+  color: #ccc;
+}
+
+#create_bank_accounts footer, #edit_bank_accounts footer, #select_bank_name footer, #select_branch_bank footer{
+  display: none;
+}
+
+.hidden-label {
+  display: none;
+}
+
+.btn-create-bank-info-color {
+  color: #30ccc3 !important;
+}
+
+#gf1 .cast-items .profile .top .offline {
+  border-radius: 10px;
+  background-color: #989595;
+}
+
+#gf1 .thumbnail.init-thumbnail img {
+  max-height: calc(50vw - 10px);
+}
+
+#gf3 .selectbox select.init-select {
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  background-color: white;
+  margin-right: 0.5rem;
+  border: none;
+}
+
+#gf3 .selectbox i.init-ml-2 {
+  margin-left: 0.5rem;
+}
+
+#gf3 .form_footer button.init-color {
+  font-size: 18px;
+  line-height: 60px;
+  color: #fff;
+  background-image: linear-gradient(-162deg, #42E4B2 0%, #00C3C3 100%);
+  text-decoration: none;
+  border: none;
+}
+
+.notify-no-result {
+  text-align: center;
+  font-size: 15px;
+  margin-top: 200px;
+}
