@@ -43,7 +43,7 @@
   <div class="cast-call btn-circle" id="btn-circle">
     <div class="display-flex">
       <div class="m-circle ">
-        <a href="">
+        <a href="{{ route('bank_account.index') }}">
           <div class="rounded-circle m-rounded-circle">
             <img src="{{ asset('assets/web/images/cast/ic_pig_blue.svg') }}">
             <div class="text-center m-auto">振込口座</div>
