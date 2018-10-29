@@ -1652,3 +1652,34 @@ div.user-data span.total-point-cast{
   font-size: 15px;
   margin-top: 200px;
 }
+
+#gf4 .nickname-cast-rank {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+#gf4 .first-place .nickname-cast-rank {
+  width: 60%;
+  text-align: right;
+}
+
+#gf4 .second_third .nickname-cast-rank {
+  width: 60%;
+  text-align: right;
+}
+
+#gf4 .third .nickname-cast-rank {
+  width: 60%;
+  text-align: right;
+}
+
+#gf4 .cast-rank figcaption > span {
+  position: absolute;
+  bottom: 0;
+  right: 20px;
+}
+
+#gf4 .age-first {
+  left: 100px;
+}
