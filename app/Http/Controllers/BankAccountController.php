@@ -33,7 +33,7 @@ class BankAccountController extends Controller
     public function searchBankName(Request $request)
     {
         $backUrl = \URL::previous();
-        $urlEdit = route('bank_account.edit');
+        $urlEdit = route('cast_mypage.bank_account.edit');
 
         if ($backUrl == $urlEdit) {
             $request->session()->put('backUrl', $backUrl);
@@ -67,7 +67,7 @@ class BankAccountController extends Controller
     public function searchBranchBankName(Request $request)
     {
         $backUrl = \URL::previous();
-        $urlEdit = route('bank_account.edit');
+        $urlEdit = route('cast_mypage.bank_account.edit');
 
         if ($backUrl == $urlEdit) {
             $request->session()->put('backUrl', $backUrl);
