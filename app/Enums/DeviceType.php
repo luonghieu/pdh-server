@@ -6,7 +6,6 @@ use BenSampo\Enum\Enum;
 
 final class DeviceType extends Enum
 {
-    const ALL = 0;
     const IOS = 1;
     const ANDROID = 2;
     const WEB = 3;
@@ -19,8 +18,6 @@ final class DeviceType extends Enum
             return 'Android';
         } elseif (self::IOS == $value) {
             return 'IOS';
-        } elseif (self::ALL == $value) {
-            return '全て';
         }
 
         return parent::getDescription($value);
