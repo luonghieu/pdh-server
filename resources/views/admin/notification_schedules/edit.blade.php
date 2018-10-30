@@ -130,7 +130,7 @@
 </div>
 @endsection
 @section('admin.js')
-<script src="https://cdn.ckeditor.com/4.10.1/standard/ckeditor.js"></script>
+<script src="https://cdn.ckeditor.com/4.7.3/standard/ckeditor.js"></script>
 <script>
   CKEDITOR.replace('content');
 </script>

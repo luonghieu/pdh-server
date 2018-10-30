@@ -96,5 +96,6 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.'], function () {
         Route::put('/{notification_schedule}', ['as' => 'update', 'uses' => 'NotificationScheduleController@update'])->where('notification_schedules', '[0-9]+');
         Route::delete('/{notification_schedule}', ['as' => 'delete', 'uses' => 'NotificationScheduleController@delete'])->where('notification_schedules', '[0-9]+');
         Route::get('/', ['as' => 'index', 'uses' => 'NotificationScheduleController@getNotificationScheduleList']);
+        Route::post('/upload', ['as' => 'upload', 'uses' => 'UploadImageController@upload']);
     });
 });

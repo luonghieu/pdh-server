@@ -93,8 +93,9 @@
 </div>
 @endsection
 @section('admin.js')
-<script src="https://cdn.ckeditor.com/4.10.1/standard/ckeditor.js"></script>
+<script src="https://cdn.ckeditor.com/4.7.3/standard/ckeditor.js"></script>
 <script>
+  CKEDITOR.config.filebrowserImageUploadUrl = '{!! route('admin.notification_schedules.upload').'?_token=' . csrf_token() !!}';
   CKEDITOR.replace('content');
 </script>
 @stop
