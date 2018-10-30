@@ -4,6 +4,9 @@
 @extends('layouts.web')
 @section('web.content')
 <div class="title">
+  <div class="btn-back">
+    <a href="{{ route('web.index') }}" class="prev"><i><img src="/assets/web/images/common/prev.svg" alt=""></i></a>
+  </div>
   <div class="title-name">振込口座登録</div>
   <div class="btn-register header-item">
     <a id="btn-create-bank-info" class="btn-submit-bank" >完了</a>
