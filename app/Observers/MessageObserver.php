@@ -8,6 +8,8 @@ use App\Events\MessageCreated as BroadcastMessage;
 use App\Message;
 use App\Notifications\DirectMessageNotifyToLine;
 use App\Notifications\MessageCreated;
+use App\Notifications\MessageCreatedNotifyToAdmin;
+use App\User;
 
 class MessageObserver
 {
@@ -42,6 +44,11 @@ class MessageObserver
                     'room_id' => $message->room_id,
                 ])->whereNull('read_at')
                 ->update(['read_at' => now()]);
+        }
+
+        if (RoomType::SYSTEM == $room->type && $message->user_id != 1) {
+                $admin = User::find(1);
+                $admin->notify(new MessageCreatedNotifyToAdmin($room->id));
         }
     }
 }
