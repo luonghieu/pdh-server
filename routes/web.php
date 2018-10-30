@@ -63,6 +63,11 @@ Route::group(['middleware' => 'auth'], function () {
         });
 
         Route::get('/cast/rank', ['as' => 'cast_rank', 'uses' => 'CastRankingController@index']);
+
+        Route::group(['middleware' => 'auth', 'as' => 'cast.'], function () {
+            Route::get('/payments', ['as' => 'payments', 'uses' => 'PaymentController@history']);
+            Route::get('/payments/load_more', ['as' => 'payments_load_more', 'uses' => 'PaymentController@loadMore']);
+        });
     });
 });
 
@@ -73,6 +78,7 @@ Route::get('/mypage', 'HomeController@index')->name('web.index');
 Route::get('/login/line', 'Auth\LineController@login')->name('auth.line');
 Route::get('/login/line/callback', 'Auth\LineController@handleCallBack');
 Route::post('/line/webhook', 'Auth\LineController@webhook');
+Route::get('/cast_mypage', 'HomeController@castMypage')->name('web.cast_index');
 
 Route::group(['middleware' => ['auth', 'guest', 'check_info'], 'as' => 'guest.'], function () {
     Route::group(['as' => 'orders.'], function () {
@@ -99,9 +105,4 @@ Route::group(['middleware' => ['auth', 'guest', 'check_info'], 'as' => 'guest.']
 Route::group(['middleware' => ['auth', 'guest', 'check_info']], function () {
     Route::get('/history', ['as' => 'points.history', 'uses' => 'PointController@history']);
     Route::get('/point_history/more', ['as' => 'points.history.more', 'uses' => 'PointController@loadMore']);
-});
-
-Route::group(['middleware' => 'auth', 'as' => 'cast.'], function () {
-    Route::get('/payments', ['as' => 'payments', 'uses' => 'PaymentController@history']);
-    Route::get('/payments/load_more', ['as' => 'payments_load_more', 'uses' => 'PaymentController@loadMore']);
 });
