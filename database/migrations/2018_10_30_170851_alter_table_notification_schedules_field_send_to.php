@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class AlterTableNotificationSchedulesFieldDeviceType extends Migration
+class AlterTableNotificationSchedulesFieldSendTo extends Migration
 {
     /**
      * Run the migrations.
@@ -14,7 +14,7 @@ class AlterTableNotificationSchedulesFieldDeviceType extends Migration
     public function up()
     {
         Schema::table('notification_schedules', function (Blueprint $table) {
-            $table->tinyInteger('device_type')->after('type')->nullable();
+            $table->tinyInteger('send_to')->after('type')->nullable();
         });
     }
 
@@ -26,7 +26,7 @@ class AlterTableNotificationSchedulesFieldDeviceType extends Migration
     public function down()
     {
         Schema::table('notification_schedules', function (Blueprint $table) {
-            $table->dropColumn('device_type');
+            $table->dropColumn('send_to');
         });
     }
 }

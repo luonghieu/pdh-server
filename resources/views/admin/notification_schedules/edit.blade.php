@@ -72,11 +72,11 @@
                 <div class="col-sm-12 p-0">
                   <div class="init-m">
                     <label class="css-m-auto">送信先: </label>
-                    <select name="device_type">
-                      @foreach($notificationScheduleDeviceType as $key => $value)
+                    <select name="send_to">
+                      @foreach($notificationScheduleSendTo as $key => $value)
                         @php
                           $selected = '';
-                          if ($notificationSchedule->device_type == $key) {
+                          if ($notificationSchedule->send_to == $key) {
                             $selected = "selected='selected'";
                           }
                         @endphp

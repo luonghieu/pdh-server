@@ -4,7 +4,7 @@ namespace App\Enums;
 
 use BenSampo\Enum\Enum;
 
-final class NotificationScheduleDeviceType extends Enum
+final class NotificationScheduleSendTo extends Enum
 {
     const WEB = 1;
     const ANDROID = 2;

@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\Admin\NotificationSchedule;
 
 use App\Enums\DeviceType;
-use App\Enums\NotificationScheduleDeviceType;
+use App\Enums\NotificationScheduleSendTo;
 use App\Enums\NotificationScheduleStatus;
 use App\Http\Controllers\Controller;
 use App\NotificationSchedule;
@@ -18,10 +18,10 @@ class NotificationScheduleController extends Controller
         $type = request()->type;
 
         $notificationScheduleStatus = NotificationScheduleStatus::toSelectArray();
-        $notificationScheduleDeviceType = NotificationScheduleDeviceType::toSelectArray();
+        $notificationScheduleSendTo = NotificationScheduleSendTo::toSelectArray();
 
         return view('admin.notification_schedules.create', compact('notificationScheduleStatus', 'type',
-            'notificationScheduleDeviceType'));
+            'notificationScheduleSendTo'));
     }
 
     public function store(Request $request)
@@ -33,7 +33,7 @@ class NotificationScheduleController extends Controller
                 'content' => 'required',
                 'type' => 'required|numeric',
                 'status' => 'required|numeric|regex:/^[1-3]+$/',
-                'device_type' => 'required'
+                'send_to' => 'required'
             ];
 
             $validator = validator($request->all(), $rules);
@@ -50,7 +50,7 @@ class NotificationScheduleController extends Controller
                 'content' => $request->content,
                 'type' => $request->type,
                 'status' => $request->status,
-                'device_type' => $request->device_type
+                'send_to' => $request->send_to
             ];
 
             $notificationSchedule->create($input);
@@ -67,12 +67,12 @@ class NotificationScheduleController extends Controller
         $type = request()->type;
 
         $notificationScheduleStatus = NotificationScheduleStatus::toSelectArray();
-        $notificationScheduleDeviceType = NotificationScheduleDeviceType::toSelectArray();
+        $notificationScheduleSendTo = NotificationScheduleSendTo::toSelectArray();
 
         $notificationSchedule = NotificationSchedule::findOrFail($id);
 
         return view('admin.notification_schedules.edit', compact(
-            'notificationSchedule', 'notificationScheduleStatus', 'type', 'notificationScheduleDeviceType')
+            'notificationSchedule', 'notificationScheduleStatus', 'type', 'notificationScheduleSendTo')
         );
     }
 
@@ -85,7 +85,7 @@ class NotificationScheduleController extends Controller
                 'content' => 'required',
                 'type' => 'required|numeric',
                 'status' => 'required|numeric|regex:/^[1-3]+$/',
-                'device_type' => 'integer'
+                'send_to' => 'integer'
             ];
 
             $validator = validator($request->all(), $rules);
@@ -102,7 +102,7 @@ class NotificationScheduleController extends Controller
                 'content' => $request->content,
                 'type' => $request->type,
                 'status' => $request->status,
-                'device_type' => $request->device_type
+                'send_to' => $request->send_to
             ];
 
             $notificationSchedule->update($input);

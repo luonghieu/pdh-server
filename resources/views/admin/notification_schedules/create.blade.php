@@ -65,8 +65,8 @@
                 <div class="col-sm-12 p-0">
                   <div class="init-m">
                     <label class="css-m-auto">送信先: </label>
-                    <select name="device_type">
-                      @foreach($notificationScheduleDeviceType as $key => $value)
+                    <select name="send_to">
+                      @foreach($notificationScheduleSendTo as $key => $value)
                         <option value="{{ $key }}">{{ $value }}</option>
                       @endforeach
                     </select>
