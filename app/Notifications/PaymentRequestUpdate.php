@@ -56,7 +56,7 @@ class PaymentRequestUpdate extends Notification
         $systemRoom = $this->order->user->rooms()->where('type', RoomType::SYSTEM)->first();
         $link = route('admin.chat.index', ['room' => $systemRoom->id]);
         return [
-            'text' => "運営者チャットにメッセージが届きました。[Link]($link)"
+            'text' => "売上申請の修正依頼がありました。[Link]($link)"
         ];
     }
 }
