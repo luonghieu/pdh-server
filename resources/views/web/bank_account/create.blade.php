@@ -14,7 +14,7 @@
 </div>
 <div class="content">
   <div class="label-title">
-    <p>売上振込先口座を登録してください</p>
+    <p>売上金の振込先口座を登録してください</p>
   </div>
   <form action="#">
     <div class="bank-name border-bottom row">

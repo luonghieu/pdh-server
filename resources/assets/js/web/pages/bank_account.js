@@ -22,15 +22,19 @@ $(document).ready(function(){
   if(backUrl != referrer) {
     if(bankName && typeClass == 'hidden-label' && num && holderName) {
       $('.btn-submit-bank').addClass('btn-create-bank-info-color');
+      $('.btn-edit-bank').addClass('btn-create-bank-info-color');
+      $('.btn-edit-bank').addClass('btn-update-bank-info');
     } else {
       $('.btn-submit-bank').removeClass('btn-create-bank-info-color');
+      $('.btn-edit-bank').removeClass('btn-create-bank-info-color');
+      $('.btn-edit-bank').removeClass('btn-update-bank-info');
     }
   }
 
   $('#number').keyup(function(event) {
     function valid(str) {
       var count = 0;
-      ['(', ')', '.', '+', '-', ',', ';', 'N', '/'].forEach(function (sample) {
+      ['(', ')', '.', '+', '-', ',', ';', 'N', '/', '*', '#', ' '].forEach(function (sample) {
           if(str.indexOf(sample) >= 0) {
             count++;
             return count;
@@ -52,8 +56,12 @@ $(document).ready(function(){
 
     if(bankName && typeClass == 'hidden-label' && num && holderName) {
       $('.btn-submit-bank').addClass('btn-create-bank-info-color');
+      $('.btn-edit-bank').addClass('btn-create-bank-info-color');
+      $('.btn-edit-bank').addClass('btn-update-bank-info');
     } else {
       $('.btn-submit-bank').removeClass('btn-create-bank-info-color');
+      $('.btn-edit-bank').removeClass('btn-create-bank-info-color');
+      $('.btn-edit-bank').removeClass('btn-update-bank-info');
     }
   });
 
@@ -75,8 +83,12 @@ $(document).ready(function(){
 
     if(bankName && typeClass == 'hidden-label' && num && holderName) {
       $('.btn-submit-bank').addClass('btn-create-bank-info-color');
+      $('.btn-edit-bank').addClass('btn-create-bank-info-color');
+      $('.btn-edit-bank').addClass('btn-update-bank-info');
     } else {
       $('.btn-submit-bank').removeClass('btn-create-bank-info-color');
+      $('.btn-edit-bank').removeClass('btn-create-bank-info-color');
+      $('.btn-edit-bank').removeClass('btn-update-bank-info');
     }
   });
 
@@ -90,12 +102,22 @@ $(document).ready(function(){
 
     if(bankName && typeClass == 'hidden-label' && num && holderName) {
       $('.btn-submit-bank').addClass('btn-create-bank-info-color');
+      $('.btn-edit-bank').addClass('btn-create-bank-info-color');
+      $('.btn-edit-bank').addClass('btn-update-bank-info');
     } else {
       $('.btn-submit-bank').removeClass('btn-create-bank-info-color');
+      $('.btn-edit-bank').removeClass('btn-create-bank-info-color');
+      $('.btn-edit-bank').removeClass('btn-update-bank-info');
     }
   });
 
   $('#select-account-type').click(function(event) {
+    var type = $('#select-account-type').val();
+    if (type) {
+      $('#select-account-type').val(type);
+    } else {
+      $('#select-account-type').val(1);
+    }
     $('.account-type label').addClass('hidden-label');
   });
 
@@ -130,7 +152,7 @@ $(document).ready(function(){
     });
   });
 
-  $('#btn-update-bank-info').click(function(event) {
+  $('body').on('click', '.btn-update-bank-info', function(event) {
     localStorage.removeItem("number");
     localStorage.removeItem("holderName");
     localStorage.removeItem("type");

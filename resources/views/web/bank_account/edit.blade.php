@@ -9,12 +9,12 @@
   </div>
   <div class="title-name">振込口座登録</div>
   <div class="btn-register header-item">
-    <a id="btn-update-bank-info" class="btn-submit-bank" >完了</a>
+    <a class="btn-edit-bank" >完了</a>
   </div>
 </div>
 <div class="content">
   <div class="label-title">
-    <p>売上振込先口座を登録してください</p>
+    <p>売上金の振込先口座を登録してください</p>
   </div>
   <form action="#">
     @php

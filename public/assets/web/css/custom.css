@@ -1395,6 +1395,20 @@ div.user-data span.total-point-cast{
   bottom: 10px;
 }
 
+#bank_accounts #ci7 .account-number .right span {
+  font-size: 15px;
+  position: absolute;
+  right: 0;
+  bottom: 5px;
+}
+
+#bank_accounts #ci7 .account-holder .right span {
+  font-size: 15px;
+  position: absolute;
+  right: 0;
+  bottom: 5px;
+}
+
 #ci7 .title-name {
   display: inline-block;
   font-family: NotoSansCJKjp;
@@ -1521,7 +1535,7 @@ div.user-data span.total-point-cast{
 
 #ci7 .right input {
   border: none;
-  width: 180px;
+  width: 100%;
   outline: none;
   position: absolute;
   right: 0;
@@ -1602,6 +1616,7 @@ div.user-data span.total-point-cast{
   bottom: 10px;
   color: #c8c8c8;
   z-index: 1;
+  font-size: 15px;
 }
 
 #ci7 .account-holder {
@@ -1610,6 +1625,10 @@ div.user-data span.total-point-cast{
 
 #ci7 .btn-update-bank {
   color: #30ccc3;
+}
+
+.btn-edit-bank {
+  color: #ccc;
 }
 
 #btn-update-bank-info {
