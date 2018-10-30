@@ -27,7 +27,7 @@
   @else
   <div class="cast-list">
     @include('web.users.load_more_list_casts_favorite', compact('favorites'))
-    <input type="hidden" id="next_page_favorite" value="{{ $favorites['next_page_url'] }}">
+    <input type="hidden" id="next_page" value="{{ $favorites['next_page_url'] }}">
   </div> <!-- /list_wrap -->
   </div>
   @endif
