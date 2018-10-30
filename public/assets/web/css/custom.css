@@ -1725,3 +1725,65 @@ div.user-data span.total-point-cast{
   height: 180.1px;
   border-radius: 10px;
 }
+
+#gf2 .cast-photo .init-today {
+  position: absolute;
+  top: 21rem;
+  left: 0.5rem;
+  display: block;
+  width: 56px;
+  height: 24px;
+  border-radius: 25px;
+  font-size: 11px;
+  color: #FFFFFF;
+  line-height: 24px;
+  text-align: center;
+  letter-spacing: 0;
+  padding: 4px 5px;
+  background-image: linear-gradient(-33deg, #AF9292 0%, #5C4646 100%);
+  opacity: .9;
+}
+
+#gf2 .init-status {
+  position: absolute;
+  top: 21rem;
+  left: 5rem;
+  width: auto !important;
+  display: block;
+  width: 50px;
+  height: 24px;
+  border-radius: 25px;
+  font-size: 11px;
+  color: #FFFFFF;
+  line-height: 24px;
+  text-align: center;
+  letter-spacing: 0;
+  padding: 4px 10px;
+  background-color: rgba(197, 193, 193, 0.4);
+  opacity: .9;
+}
+
+#gf2 .init-status.init-last {
+  width: auto !important;
+  top: 21rem;
+  left: 0.5rem;
+}
+
+#gf2 .init-status .online {
+  border-radius: 10px;
+  background-color: #99DD33;
+}
+
+#gf2 .init-status .offline {
+  border-radius: 10px;
+  background-color: #cccc;
+}
+
+#gf2 .init-status i {
+  display: inline-block;
+  width: 10px;
+  height: 10px;
+  margin: 0 5px 0 0;
+}
+
+
