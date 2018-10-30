@@ -9,7 +9,7 @@
   </div>
   <div class="title-name">振込口座登録</div>
   <div class="btn-register header-item">
-    <a href="{{ route('bank_account.edit') }}" class="btn-update-bank">編集</a>
+    <a href="{{ route('cast_mypage.bank_account.edit') }}" class="btn-update-bank">編集</a>
   </div>
 </div>
 <div class="content">

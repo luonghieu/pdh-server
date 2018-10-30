@@ -145,7 +145,7 @@ $(document).ready(function(){
 
     axios.post(`/api/v1/cast/bank_accounts`, formData)
     .then(function (response) {
-      window.location = '/bank_account';
+      window.location = '/cast_mypage/bank_account';
     })
     .catch(function (error) {
       console.log(error);
@@ -177,7 +177,7 @@ $(document).ready(function(){
 
     axios.post(`/api/v1/cast/bank_accounts/${bankAccount}`, formData)
     .then(function (response) {
-      window.location = '/bank_account';
+      window.location = '/cast_mypage/bank_account';
     })
     .catch(function (error) {
       console.log(error);
