@@ -1407,6 +1407,10 @@ div.user-data span.total-point-cast{
   position: absolute;
   right: 0;
   bottom: 5px;
+  width: 75%;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
 }
 
 #ci7 .title-name {
@@ -1535,7 +1539,7 @@ div.user-data span.total-point-cast{
 
 #ci7 .right input {
   border: none;
-  width: 100%;
+  width: 75%;
   outline: none;
   position: absolute;
   right: 0;

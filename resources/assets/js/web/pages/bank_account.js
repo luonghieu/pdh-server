@@ -152,7 +152,7 @@ $(document).ready(function(){
     });
   });
 
-  $('body').on('click', '.btn-update-bank-info', function(event) {
+  $(document).on('click', '.btn-update-bank-info', function(event) {
     localStorage.removeItem("number");
     localStorage.removeItem("holderName");
     localStorage.removeItem("type");
