@@ -1624,8 +1624,18 @@ div.user-data span.total-point-cast{
   font-weight: bold;
 }
 
-#gf1 .cast-items .profile .message,
-#gf-1 .cast-items .profile .top span {
+#gf1 .cast-items .profile .top {
+  display: inline-flex;
+}
+
+#gf1 .cast-items .profile .top .job {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 58%;
+}
+
+#gf1 .cast-items .profile .message {
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
