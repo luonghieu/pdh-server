@@ -3,6 +3,10 @@
   src: url("../../webview/css/fonts/noto-regular.ttf");
 }
 
+title {
+  color: #30ccc3;
+}
+
 .left{
   float: left;
 }
@@ -1128,14 +1132,14 @@ div.point-transfer img {
   width: 20px;
   height: 20px;
   object-fit: contain;
-  margin-left: 27px;
+  margin-left: 22px;
 }
 
 div.point-transfer span.point-show {
   font-size: 26px;
   font-weight: 100;
   color: #222222;
-  margin-right: 30px;
+  margin-right: 24px;
   float: right;
 }
 
@@ -1316,7 +1320,7 @@ div.user-data span.total-point-cast{
   height: 100%;
 }
 
-@media (max-width: 320px) {
+@media (max-width: 360px) {
   .gn-1 .list_wrap .list_item .btn_wrap .btn-cancel {
     text-align: center;
   }
