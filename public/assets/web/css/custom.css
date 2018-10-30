@@ -1411,6 +1411,7 @@ div.user-data span.total-point-cast{
   overflow: hidden;
   white-space: nowrap;
   text-overflow: ellipsis;
+  text-align: right;
 }
 
 #ci7 .title-name {

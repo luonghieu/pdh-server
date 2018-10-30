@@ -9,7 +9,7 @@
   </div>
   <div class="title-name">振込口座登録</div>
   <div class="btn-register header-item">
-    <a class="btn-edit-bank" >完了</a>
+    <a class="btn-edit-bank" id="btn-update" >完了</a>
   </div>
 </div>
 <div class="content">
