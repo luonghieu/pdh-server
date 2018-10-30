@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Auth;
 
+use App\Enums\DeviceType;
 use App\Enums\ProviderType;
 use App\Enums\Status;
 use App\Enums\UserType;
@@ -188,6 +189,7 @@ class LineController extends Controller
                 'type' => UserType::GUEST,
                 'status' => Status::ACTIVE,
                 'provider' => ProviderType::LINE,
+                'device_type' => DeviceType::WEB
             ];
 
             $user = User::create($data);

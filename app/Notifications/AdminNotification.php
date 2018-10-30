@@ -2,7 +2,7 @@
 
 namespace App\Notifications;
 
-use App\Enums\DeviceType;
+use App\Enums\NotificationScheduleSendTo;
 use App\Enums\ProviderType;
 use App\Enums\UserType;
 use Illuminate\Bus\Queueable;
@@ -28,7 +28,7 @@ class AdminNotification extends Notification implements ShouldQueue
     /**
      * Get the notification's delivery channels.
      *
-     * @param  mixed  $notifiable
+     * @param  mixed $notifiable
      * @return array
      */
     public function via($notifiable)
@@ -42,11 +42,15 @@ class AdminNotification extends Notification implements ShouldQueue
                 return [CustomDatabaseChannel::class, PushNotificationChannel::class];
             }
 
-            if ($notifiable->device_type == DeviceType::WEB) {
-                return [CustomDatabaseChannel::class, LineBotNotificationChannel::class];
-            } else {
-                return [CustomDatabaseChannel::class, PushNotificationChannel::class];
+            if ($this->schedule->send_to == NotificationScheduleSendTo::ALL) {
+                return [CustomDatabaseChannel::class, LineBotNotificationChannel::class, PushNotificationChannel::class];
             }
+
+            if ($this->schedule->send_to == NotificationScheduleSendTo::WEB) {
+                return [CustomDatabaseChannel::class, LineBotNotificationChannel::class];
+            }
+
+            return [CustomDatabaseChannel::class, PushNotificationChannel::class];
         } else {
             return [CustomDatabaseChannel::class, PushNotificationChannel::class];
         }
@@ -65,10 +69,12 @@ class AdminNotification extends Notification implements ShouldQueue
 
     public function toArray($notifiable)
     {
-        $content = $this->schedule->content;
+        $schedule = $this->schedule;
+        $content = $schedule->content;
         $send_from = UserType::ADMIN;
 
         return [
+            'title' => $schedule->title,
             'content' => $content,
             'send_from' => $send_from,
         ];
@@ -76,13 +82,24 @@ class AdminNotification extends Notification implements ShouldQueue
 
     public function pushData($notifiable)
     {
-        $content = $this->schedule->content;
+        $schedule = $this->schedule;
+        $content = $schedule->content;
         $content = removeHtmlTags($content);
 
         $namedUser = 'user_' . $notifiable->id;
         $send_from = UserType::ADMIN;
 
+        $scheduleSendTo = $schedule->send_to;
+        if ($scheduleSendTo == NotificationScheduleSendTo::IOS) {
+            $devices = ['ios'];
+        } elseif ($scheduleSendTo == NotificationScheduleSendTo::ANDROID) {
+            $devices = ['android'];
+        } else {
+            $devices = ['android', 'ios'];
+        }
+
         return [
+            'devices' => $devices,
             'audienceOptions' => ['named_user' => $namedUser],
             'notificationOptions' => [
                 'alert' => $content,
@@ -108,13 +125,25 @@ class AdminNotification extends Notification implements ShouldQueue
     public function lineBotPushData($notifiable)
     {
         $content = $this->schedule->content;
+        $linkArray = linkExtractor($content);
         $content = removeHtmlTags($content);
-
-        return [
+        $pushData = [
             [
                 'type' => 'text',
                 'text' => $content,
-            ],
+            ]
         ];
+
+        if ($linkArray) {
+            foreach ($linkArray as $link) {
+                $pushData[] = [
+                    'type' => 'image',
+                    'originalContentUrl' => $link,
+                    'previewImageUrl' => $link
+                ];
+            }
+        }
+
+        return $pushData;
     }
 }

@@ -89,8 +89,20 @@ if (!function_exists('removeHtmlTags')) {
     function removeHtmlTags($content)
     {
         $content = str_replace("<br />", PHP_EOL, $content);
-        $content = str_replace("&nbsp", " ", $content);
+        $content = str_replace("&nbsp;", " ", $content);
 
         return strip_tags($content);
+    }
+}
+
+if (!function_exists('linkExtractor')) {
+    function linkExtractor($html){
+        $linkArray = [];
+        if(preg_match_all('/<img\s+.*?src=[\"\']?([^\"\' >]*)[\"\']?[^>]*>/i',$html,$matches,PREG_SET_ORDER)){
+            foreach($matches as $match){
+                array_push($linkArray, $match[1]);
+            }
+        }
+        return $linkArray;
     }
 }

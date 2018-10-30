@@ -69,6 +69,22 @@
                     </select>
                   </div>
                 </div>
+                <div class="col-sm-12 p-0">
+                  <div class="init-m">
+                    <label class="css-m-auto">送信先: </label>
+                    <select name="send_to">
+                      @foreach($notificationScheduleSendTo as $key => $value)
+                        @php
+                          $selected = '';
+                          if ($notificationSchedule->send_to == $key) {
+                            $selected = "selected='selected'";
+                          }
+                        @endphp
+                        <option value="{{ $key }}" {{ $selected }} >{{ $value }}</option>
+                      @endforeach
+                    </select>
+                  </div>
+                </div>
                 @if ($errors->has('status'))
                   <div class="error">
                     <span>{{ $errors->first('status') }}</span>
