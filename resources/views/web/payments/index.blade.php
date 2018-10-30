@@ -47,7 +47,7 @@
 
         if (url) {
           requesting = true;
-          window.axios.get("<?php echo env('APP_URL') . '/payments/load_more' ?>", {
+          window.axios.get("<?php echo env('APP_URL') . '/cast_mypage/transfer_history/load_more' ?>", {
             params: { next_page: url },
           }).then(function (res) {
             res = res.data;

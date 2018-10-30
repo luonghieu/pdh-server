@@ -53,7 +53,24 @@ class HomeController extends Controller
             }
 
             if (UserType::CAST == $user->type) {
+                return redirect()->route('web.cast_index');
+            }
+        }
+
+        return redirect()->route('web.login');
+    }
+
+    public function castMypage()
+    {
+        if (Auth::check()) {
+            $user = Auth::user();
+            $token = '';
+            $token = JWTAuth::fromUser($user);
+
+            if (UserType::CAST == $user->type) {
                 return view('web.cast.index', compact('token', 'user'));
+            } else {
+                return redirect()->route('web.login');
             }
         }
 
