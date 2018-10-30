@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers\Admin\NotificationSchedule;
 
-use App\Enums\DeviceType;
 use App\Enums\NotificationScheduleSendTo;
 use App\Enums\NotificationScheduleStatus;
 use App\Http\Controllers\Controller;
