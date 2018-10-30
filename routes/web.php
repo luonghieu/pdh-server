@@ -103,7 +103,7 @@ Route::group(['middleware' => ['auth', 'guest', 'check_info']], function () {
 });
 
 Route::group(['middleware' => ['auth', 'cast', 'check_info'], 'as' => 'cast.', 'prefix' => 'cast_mypage'], function () {
-    Route::group(['middleware' => 'auth'], function () {
+    Route::group([], function () {
         Route::get('/transfer_history', ['as' => 'transfer_history', 'uses' => 'PaymentController@history']);
         Route::get('/transfer_history/load_more', ['as' => 'transfer_history_load_more', 'uses' => 'PaymentController@loadMore']);
     });
