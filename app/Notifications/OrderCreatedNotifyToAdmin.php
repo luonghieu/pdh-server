@@ -47,7 +47,7 @@ class OrderCreatedNotifyToAdmin extends Notification implements ShouldQueue
         }
 
         return [
-            'text' => "売上申請の修正依頼がありました。[Link]($link)"
+            'text' => "新規の予約がありました。[Link]($link)"
         ];
     }
 }

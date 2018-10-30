@@ -39,7 +39,7 @@ class MessageCreatedNotifyToAdmin extends Notification implements ShouldQueue
     {
         $link = route('admin.chat.index', ['room' => $this->roomId]);
         return [
-            'text' => "新規の予約がありました。[Link]($link)"
+            'text' => "運営者チャットにメッセージが届きました。[Link]($link)"
         ];
     }
 }
