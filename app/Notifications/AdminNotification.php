@@ -42,11 +42,15 @@ class AdminNotification extends Notification implements ShouldQueue
                 return [CustomDatabaseChannel::class, PushNotificationChannel::class];
             }
 
-            if ($notifiable->device_type == DeviceType::WEB) {
-                return [CustomDatabaseChannel::class, LineBotNotificationChannel::class];
-            } else {
-                return [CustomDatabaseChannel::class, PushNotificationChannel::class];
+            if ($this->schedule->device_type == DeviceType::ALL) {
+                return [CustomDatabaseChannel::class, LineBotNotificationChannel::class, PushNotificationChannel::class];
             }
+
+            if ($this->schedule->device_type == DeviceType::WEB) {
+                return [CustomDatabaseChannel::class, LineBotNotificationChannel::class];
+            }
+
+            return [CustomDatabaseChannel::class, PushNotificationChannel::class];
         } else {
             return [CustomDatabaseChannel::class, PushNotificationChannel::class];
         }
@@ -65,10 +69,12 @@ class AdminNotification extends Notification implements ShouldQueue
 
     public function toArray($notifiable)
     {
-        $content = $this->schedule->content;
+        $schedule = $this->schedule;
+        $content = $schedule->content;
         $send_from = UserType::ADMIN;
 
         return [
+            'title' => $schedule->title,
             'content' => $content,
             'send_from' => $send_from,
         ];
@@ -76,13 +82,24 @@ class AdminNotification extends Notification implements ShouldQueue
 
     public function pushData($notifiable)
     {
-        $content = $this->schedule->content;
+        $schedule = $this->schedule;
+        $content = $schedule->content;
         $content = removeHtmlTags($content);
 
         $namedUser = 'user_' . $notifiable->id;
         $send_from = UserType::ADMIN;
 
+        $scheduleDeviceType = $schedule->device_type;
+        if ($scheduleDeviceType == DeviceType::IOS) {
+            $devices = ['ios'];
+        } elseif ($scheduleDeviceType == DeviceType::ANDROID) {
+            $devices = ['android'];
+        } else {
+            $devices = ['android', 'ios'];
+        }
+
         return [
+            'device' => $devices,
             'audienceOptions' => ['named_user' => $namedUser],
             'notificationOptions' => [
                 'alert' => $content,

@@ -105,6 +105,7 @@ class GuestController extends ApiController
             $user->nickname = $request->nickname;
             $user->date_of_birth = Carbon::parse($request->date_of_birth);
             $user->job_id = $request->job_id;
+            $user->prefecture_id = 13;
 
             $lineImage = $request->file('line_qr');
             if ($lineImage) {

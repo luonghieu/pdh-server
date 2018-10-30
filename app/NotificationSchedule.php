@@ -12,5 +12,6 @@ class NotificationSchedule extends Model
         'type',
         'send_date',
         'status',
+        'device_type'
     ];
 }

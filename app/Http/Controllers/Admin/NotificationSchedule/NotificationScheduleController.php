@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Admin\NotificationSchedule;
 
+use App\Enums\DeviceType;
 use App\Enums\NotificationScheduleStatus;
 use App\Http\Controllers\Controller;
 use App\NotificationSchedule;
@@ -15,13 +16,11 @@ class NotificationScheduleController extends Controller
     {
         $type = request()->type;
 
-        $notificationScheduleStatus = [
-            NotificationScheduleStatus::SAVE => '保存',
-            NotificationScheduleStatus::PUBLISH => '公開',
-            NotificationScheduleStatus::UNPUBLISH => '非公開',
-        ];
+        $notificationScheduleStatus = NotificationScheduleStatus::toSelectArray();
+        $notificationScheduleDeviceType = DeviceType::toSelectArray();
 
-        return view('admin.notification_schedules.create', compact('notificationScheduleStatus', 'type'));
+        return view('admin.notification_schedules.create', compact('notificationScheduleStatus', 'type',
+            'notificationScheduleDeviceType'));
     }
 
     public function store(Request $request)
@@ -33,6 +32,7 @@ class NotificationScheduleController extends Controller
                 'content' => 'required',
                 'type' => 'required|numeric',
                 'status' => 'required|numeric|regex:/^[1-3]+$/',
+                'device_type' => 'required'
             ];
 
             $validator = validator($request->all(), $rules);
@@ -49,6 +49,7 @@ class NotificationScheduleController extends Controller
                 'content' => $request->content,
                 'type' => $request->type,
                 'status' => $request->status,
+                'device_type' => $request->device_type
             ];
 
             $notificationSchedule->create($input);
@@ -64,18 +65,13 @@ class NotificationScheduleController extends Controller
     {
         $type = request()->type;
 
-        $notificationScheduleStatus = [
-            NotificationScheduleStatus::SAVE => '保存',
-            NotificationScheduleStatus::PUBLISH => '公開',
-            NotificationScheduleStatus::UNPUBLISH => '非公開',
-        ];
+        $notificationScheduleStatus = NotificationScheduleStatus::toSelectArray();
+        $notificationScheduleDeviceType = DeviceType::toSelectArray();
 
         $notificationSchedule = NotificationSchedule::findOrFail($id);
 
         return view('admin.notification_schedules.edit', compact(
-            'notificationSchedule',
-            'notificationScheduleStatus',
-            'type')
+            'notificationSchedule', 'notificationScheduleStatus', 'type', 'notificationScheduleDeviceType')
         );
     }
 
@@ -88,6 +84,7 @@ class NotificationScheduleController extends Controller
                 'content' => 'required',
                 'type' => 'required|numeric',
                 'status' => 'required|numeric|regex:/^[1-3]+$/',
+                'device_type' => 'integer'
             ];
 
             $validator = validator($request->all(), $rules);
@@ -104,6 +101,7 @@ class NotificationScheduleController extends Controller
                 'content' => $request->content,
                 'type' => $request->type,
                 'status' => $request->status,
+                'device_type' => $request->device_type
             ];
 
             $notificationSchedule->update($input);
