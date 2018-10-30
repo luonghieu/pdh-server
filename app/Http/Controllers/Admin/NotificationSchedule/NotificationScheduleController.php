@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin\NotificationSchedule;
 
 use App\Enums\DeviceType;
+use App\Enums\NotificationScheduleDeviceType;
 use App\Enums\NotificationScheduleStatus;
 use App\Http\Controllers\Controller;
 use App\NotificationSchedule;
@@ -17,7 +18,7 @@ class NotificationScheduleController extends Controller
         $type = request()->type;
 
         $notificationScheduleStatus = NotificationScheduleStatus::toSelectArray();
-        $notificationScheduleDeviceType = DeviceType::toSelectArray();
+        $notificationScheduleDeviceType = NotificationScheduleDeviceType::toSelectArray();
 
         return view('admin.notification_schedules.create', compact('notificationScheduleStatus', 'type',
             'notificationScheduleDeviceType'));
@@ -66,7 +67,7 @@ class NotificationScheduleController extends Controller
         $type = request()->type;
 
         $notificationScheduleStatus = NotificationScheduleStatus::toSelectArray();
-        $notificationScheduleDeviceType = DeviceType::toSelectArray();
+        $notificationScheduleDeviceType = NotificationScheduleDeviceType::toSelectArray();
 
         $notificationSchedule = NotificationSchedule::findOrFail($id);
 
