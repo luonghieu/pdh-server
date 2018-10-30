@@ -53,17 +53,6 @@ Route::group(['middleware' => 'auth'], function () {
             Route::post('/{orderId}', ['as' => 'create', 'uses' => 'OrderController@pointSettlement']);
         });
 
-        Route::group(['prefix' => 'cast_mypage', 'as' => 'cast_mypage.'], function () {
-            Route::group(['prefix' => 'bank_account', 'as' => 'bank_account.'], function () {
-                Route::get('/', ['as' => 'index', 'uses' => 'BankAccountController@index']);
-                Route::get('/edit/bank', ['as' => 'search_bank_name', 'uses' => 'BankAccountController@searchBankName']);
-                Route::get('/edit', ['as' => 'edit', 'uses' => 'BankAccountController@edit']);
-                Route::post('/edit/bank', ['as' => 'bank_name', 'uses' => 'BankAccountController@bankName']);
-                Route::get('/edit/branch', ['as' => 'search_branch_bank_name', 'uses' => 'BankAccountController@searchBranchBankName']);
-                Route::post('/edit/branch', ['as' => 'branch_bank_name', 'uses' => 'BankAccountController@branchBankName']);
-            });
-        });
-
         Route::get('/cast/rank', ['as' => 'cast_rank', 'uses' => 'CastRankingController@index']);
     });
 });
@@ -104,9 +93,20 @@ Route::group(['middleware' => ['auth', 'guest', 'check_info']], function () {
     Route::get('/point_history/more', ['as' => 'points.history.more', 'uses' => 'PointController@loadMore']);
 });
 
-Route::group(['middleware' => ['auth', 'cast', 'check_info'], 'as' => 'cast.', 'prefix' => 'cast_mypage'], function () {
-    Route::group(['prefix' => 'transfer_history'], function () {
+Route::group(['middleware' => ['auth', 'cast'], 'prefix' => 'cast_mypage'], function () {
+    Route::group(['prefix' => 'transfer_history', 'as' => 'cast.'], function () {
         Route::get('/', ['as' => 'transfer_history', 'uses' => 'PaymentController@history']);
         Route::get('/load_more', ['as' => 'transfer_history_load_more', 'uses' => 'PaymentController@loadMore']);
+    });
+
+    Route::group(['as' => 'cast_mypage.'], function () {
+        Route::group(['prefix' => 'bank_account', 'as' => 'bank_account.'], function () {
+            Route::get('/', ['as' => 'index', 'uses' => 'BankAccountController@index']);
+            Route::get('/edit/bank', ['as' => 'search_bank_name', 'uses' => 'BankAccountController@searchBankName']);
+            Route::get('/edit', ['as' => 'edit', 'uses' => 'BankAccountController@edit']);
+            Route::post('/edit/bank', ['as' => 'bank_name', 'uses' => 'BankAccountController@bankName']);
+            Route::get('/edit/branch', ['as' => 'search_branch_bank_name', 'uses' => 'BankAccountController@searchBranchBankName']);
+            Route::post('/edit/branch', ['as' => 'branch_bank_name', 'uses' => 'BankAccountController@branchBankName']);
+        });
     });
 });
