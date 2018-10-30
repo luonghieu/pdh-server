@@ -64,9 +64,9 @@ Route::group(['middleware' => 'auth'], function () {
 
         Route::get('/cast/rank', ['as' => 'cast_rank', 'uses' => 'CastRankingController@index']);
 
-        Route::group(['middleware' => 'auth', 'as' => 'cast.'], function () {
-            Route::get('/payments', ['as' => 'payments', 'uses' => 'PaymentController@history']);
-            Route::get('/payments/load_more', ['as' => 'payments_load_more', 'uses' => 'PaymentController@loadMore']);
+        Route::group(['middleware' => 'auth', 'as' => 'cast.', 'prefix' => 'cast_mypage'], function () {
+            Route::get('/transfer_history', ['as' => 'transfer_history', 'uses' => 'PaymentController@history']);
+            Route::get('/transfer_history/load_more', ['as' => 'transfer_history_load_more', 'uses' => 'PaymentController@loadMore']);
         });
     });
 });
