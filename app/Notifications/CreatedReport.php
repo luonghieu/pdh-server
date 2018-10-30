@@ -29,7 +29,7 @@ class CreatedReport extends Notification
      */
     public function via($notifiable)
     {
-        return [CustomDatabaseChannel::class];
+        return [CustomDatabaseChannel::class, RocketChatNotificationChannel::class];
     }
 
     /**
@@ -56,6 +56,14 @@ class CreatedReport extends Notification
         return [
             'content' => $message,
             'send_from' => UserType::ADMIN,
+        ];
+    }
+
+    public function rocketChatPushData($notifiable)
+    {
+        $link = route('admin.reports.index');
+        return [
+            'text' => "通報がありました。[Link]($link)"
         ];
     }
 }
