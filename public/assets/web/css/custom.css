@@ -1629,10 +1629,6 @@ div.user-data span.total-point-cast{
   background-color: #989595;
 }
 
-#gf1 .thumbnail.init-thumbnail img {
-  max-height: calc(50vw - 10px);
-}
-
 #gf3 .selectbox select.init-select {
   -webkit-appearance: none;
   -moz-appearance: none;
@@ -1693,4 +1689,16 @@ div.user-data span.total-point-cast{
 
 .text-bold {
   font-weight: bold;
+}
+
+#gf1 .cast-items .profile .message,
+#gf-1 .cast-items .profile .top span {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+#gf1 .thumbnail img {
+  height: 180.1px;
+  border-radius: 10px;
 }
