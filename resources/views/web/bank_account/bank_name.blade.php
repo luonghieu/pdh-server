@@ -4,6 +4,9 @@
 @extends('layouts.web')
 @section('web.content')
 <div class="title">
+  <div class="btn-back">
+    <a href="{{ URL::previous() }}" class="prev"><i><img src="/assets/web/images/common/prev.svg" alt=""></i></a>
+  </div>
   <div class="title-name">銀行名</div>
   <div class="btn-register header-item">
     <a id="btn-create"></a>

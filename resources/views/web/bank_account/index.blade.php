@@ -4,6 +4,9 @@
 @extends('layouts.web')
 @section('web.content')
 <div class="title">
+  <div class="btn-back">
+    <a href="{{ route('web.index') }}" class="prev"><i><img src="/assets/web/images/common/prev.svg" alt=""></i></a>
+  </div>
   <div class="title-name">振込口座登録</div>
   <div class="btn-register header-item">
     <a href="{{ route('bank_account.edit') }}" class="btn-update-bank">編集</a>
@@ -31,10 +34,7 @@
     <div class="account-type border-bottom row">
       <span class="left">口座種別</span>
       <div class="right">
-        <select name="type" id="select-account-type" class="value-true-color" disabled>
-          <option value="1" {{ $bankAccount->type=1?'selected':'' }}>普通</option>
-          <option value="2" {{ $bankAccount->type=2?'selected':'' }}{{ $bankAccount->type=1?'selected':'' }}{{ $bankAccount->type=1?'selected':'' }}>当座</option>
-        </select>
+        <span class="value-true-color" id="select-account-type">{{ $bankAccount->type == 1? '普通':'当座' }}</span>
       </div>
     </div>
     <div class="clear"></div>

@@ -1384,6 +1384,13 @@ div.user-data span.total-point-cast{
   border-bottom: 1px solid #E4E4E4;
 }
 
+#bank_accounts #ci7 .account-type .right span {
+  font-size: 15px;
+  position: absolute;
+  right: 0;
+  bottom: 10px;
+}
+
 #ci7 .title-name {
   display: inline-block;
   font-family: NotoSansCJKjp;
@@ -1502,7 +1509,7 @@ div.user-data span.total-point-cast{
   width: 45px;
   background-image: url(../../webview/images/IC_down.png);
   background-repeat: no-repeat, repeat;
-  background-position: 30px 11px;
+  background-position: 35px 11px;
   position: absolute;
   right: 0;
   bottom: 10px;
