@@ -150,6 +150,9 @@ class LineController extends Controller
                     \Session::flash('error', trans('messages.login_line_failed'));
                     return redirect()->route('web.index');
                 }
+
+                Auth::login($user);
+                return redirect()->route('web.index');
             }
 
             if (!isset($request->error)) {
