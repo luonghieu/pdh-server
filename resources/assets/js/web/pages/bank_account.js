@@ -144,7 +144,7 @@ $(document).ready(function(){
     });
   });
 
-  $(document).on('click', '#btn-update', function(event) {
+  $('#btn-update').click(function(event) {
     if ($('#btn-update').attr('class') == 'btn-edit-bank btn-create-bank-info-color') {
       localStorage.removeItem("number");
       localStorage.removeItem("holderName");
