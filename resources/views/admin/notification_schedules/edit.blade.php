@@ -130,8 +130,16 @@
 </div>
 @endsection
 @section('admin.js')
-<script src="https://cdn.ckeditor.com/4.7.3/standard/ckeditor.js"></script>
-<script>
-  CKEDITOR.replace('content');
-</script>
+    <script src="https://cdn.ckeditor.com/4.7.3/standard/ckeditor.js"></script>
+    <script>
+        CKEDITOR.plugins.addExternal( 'lineutils', '/assets/admin/js/ckeditor_plugin/lineutils/', 'plugin.js' );
+        CKEDITOR.plugins.addExternal( 'widgetselection', '/assets/admin/js/ckeditor_plugin/widgetselection/', 'plugin.js' );
+        CKEDITOR.plugins.addExternal( 'widget', '/assets/admin/js/ckeditor_plugin/widget/', 'plugin.js' );
+        CKEDITOR.plugins.addExternal( 'image2', '/assets/admin/js/ckeditor_plugin/image2/', 'plugin.js' );
+        CKEDITOR.plugins.addExternal( 'justify', '/assets/admin/js/ckeditor_plugin/justify/', 'plugin.js' );
+        CKEDITOR.config.filebrowserImageUploadUrl = '{!! route('admin.notification_schedules.upload').'?_token=' . csrf_token() !!}';
+        CKEDITOR.replace('content', {
+            extraPlugins: 'widget,widgetselection,lineutils,image2,justify'
+        });
+    </script>
 @stop
