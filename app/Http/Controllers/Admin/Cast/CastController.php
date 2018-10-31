@@ -234,7 +234,10 @@ class CastController extends Controller
             PointCorrectionType::CONSUMPTION => '消費ポイント',
         ];
 
-        $points = $user->points()->with('order')
+        $with['order'] = function ($query) {
+            return $query->withTrashed();
+        };
+        $points = $user->points()->with($with)
             ->whereIn('type', [PointType::RECEIVE, PointType::TRANSFER, PointType::ADJUSTED])
             ->where('status', Status::ACTIVE);
 
