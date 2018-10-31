@@ -270,6 +270,10 @@ td {
   width: 430px;
 }
 
+.long-text.break-all {
+  word-break: break-all;
+}
+
 tbody td {
   font-size: 14px;
 }
