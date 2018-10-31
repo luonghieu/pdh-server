@@ -62,7 +62,7 @@
                 @foreach ($notificationSchedules as $key => $notificationSchedule)
                 <tr>
                   <td>{{ $notificationSchedule->id }}</td>
-                  <td class="long-text" >{{ $notificationSchedule->title }}</td>
+                  <td class="long-text break-all" >{{ $notificationSchedule->title }}</td>
                   <td>{{ Carbon\Carbon::parse($notificationSchedule->send_date)->format('Y/m/d H:i') }}</td>
                   <td>{{ \App\Enums\NotificationScheduleStatus::getDescription($notificationSchedule->status) }}</td>
                   <td>
