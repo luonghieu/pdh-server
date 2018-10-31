@@ -71,7 +71,7 @@ class RequestTransferController extends Controller
     {
         try {
             if ($request->has('transfer_request_status')) {
-                $castClass = CastClass::find(1);
+                $castClass = CastClass::findOrFail(1);
 
                 $cast->cast_transfer_status = $request->transfer_request_status;
                 $cast->class_id = $castClass->id;
