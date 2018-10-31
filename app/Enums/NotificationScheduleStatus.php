@@ -12,7 +12,7 @@ final class NotificationScheduleStatus extends Enum
     public static function getDescription($value): string
     {
         if (self::PUBLISH == $value) {
-            return '保存';
+            return '公開';
         } elseif (self::UNPUBLISH == $value) {
             return '非公開';
         }
