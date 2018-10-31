@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Admin\RequestTransfer;
 
+use App\CastClass;
 use App\Enums\CastTransferStatus;
 use App\Http\Controllers\Controller;
 use App\Notifications\RequestTransferNotify;
@@ -70,8 +71,11 @@ class RequestTransferController extends Controller
     {
         try {
             if ($request->has('transfer_request_status')) {
+                $castClass = CastClass::find(1);
+
                 $cast->cast_transfer_status = $request->transfer_request_status;
-                $cast->class_id = 1;
+                $cast->class_id = $castClass->id;
+                $cast->cost = $castClass->cost;
                 $cast->save();
 
                 $cast->notify(new RequestTransferNotify());
