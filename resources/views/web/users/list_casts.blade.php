@@ -21,7 +21,7 @@
 
   @if (!$casts['data'])
   <div class="no-cast">
-    <figure><img src="{{ asset('assets/web/images/common/woman.svg') }}"></figure>
+    <figure><img src="{{ asset('assets/web/images/common/woman2.svg') }}"></figure>
     <figcaption>キャストが見つかりません</figcaption>
   </div>
   @else
