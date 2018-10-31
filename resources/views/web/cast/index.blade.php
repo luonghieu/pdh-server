@@ -32,18 +32,18 @@
   </div>
   <div class="cast-call point-transfer">
     <div class="point-title">
-      <img src="{{ asset('assets/web/images/cast/ic_p_blue.svg') }}">
-      <span class="point-title">
+      <img id="img-point" style="opacity: 0" src="{{ asset('assets/web/images/cast/ic_p_blue.svg') }}">
+      <span>
         未振込ポイント
       </span>
     </div>
-      <span class="point-show">{{number_format($user->point) }}P</span>
+      <span class="point-show" style="opacity: 0">{{number_format($user->point) }}P</span>
   </div>
   <div class="clear"></div>
   <div class="cast-call btn-circle" id="btn-circle">
     <div class="display-flex">
       <div class="m-circle ">
-        <a href="{{ route('bank_account.index') }}">
+        <a href="{{ route('cast_mypage.bank_account.index') }}">
           <div class="rounded-circle m-rounded-circle">
             <img src="{{ asset('assets/web/images/cast/ic_pig_blue.svg') }}">
             <div class="text-center m-auto">振込口座</div>
@@ -51,7 +51,7 @@
         </a>
       </div>
       <div class="m-circle ">
-        <a href="{{ route('cast.payments') }}">
+        <a href="{{ route('cast.transfer_history') }}">
           <div class="rounded-circle m-rounded-circle">
             <img src="{{ asset('assets/web/images/cast/ic_point_white.svg') }}">
             <div class="text-center m-auto">振込履歴</div>
@@ -116,3 +116,18 @@
     @endslot
   @endconfirm
 @endsection
+
+<script>
+  function responsivePoint () {
+    var widthPoint = $('.point-show').width();
+    if(100 <= widthPoint) {
+      $('#img-point').css({'margin-left' : '12px'});
+      $('.point-show').css({'margin' : '5px 9px 0 0', 'font-size' : '19px'});
+    }
+
+    $('#img-point').css('opacity',1);
+    $('.point-show').css('opacity',1);
+  }
+  window.onload = responsivePoint;
+</script>
+

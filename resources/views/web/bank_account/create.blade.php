@@ -14,7 +14,7 @@
 </div>
 <div class="content">
   <div class="label-title">
-    <p>売上振込先口座を登録してください</p>
+    <p>売上金の振込先口座を登録してください</p>
   </div>
   <form action="#">
     <div class="bank-name border-bottom row">
@@ -23,9 +23,9 @@
         @if (request()->bank_name)
         <input type="hidden" name="bank_name" value="{{ request()->bank_name }}">
         <input type="hidden" name="bank_code" id="bank-code" value="{{ request()->bank_code }}">
-        <a href="{{ route('bank_account.bank_name', ['bank_name' => request()->bank_name, 'bank_code' => request()->bank_code, 'branch_name' => request()->branch_name, 'branch_code' => request()->branch_code]) }}" class="value-true-color" id="bank-name">{{ request()->bank_name }}</a>
+        <a href="{{ route('cast_mypage.bank_account.bank_name', ['bank_name' => request()->bank_name, 'bank_code' => request()->bank_code, 'branch_name' => request()->branch_name, 'branch_code' => request()->branch_code]) }}" class="value-true-color" id="bank-name">{{ request()->bank_name }}</a>
         @else
-        <a href="{{ route('bank_account.bank_name') }}">銀行名を入力してください</a>
+        <a href="{{ route('cast_mypage.bank_account.bank_name') }}">銀行名を入力してください</a>
         @endif
       </div>
     </div>
@@ -36,9 +36,9 @@
         @if (request()->branch_name)
         <input type="hidden" name="branch_name" value="{{ request()->branch_name }}">
         <input type="hidden" name="branch_code" id="branch-code" value="{{ request()->branch_code }}">
-        <a href="{{ route('bank_account.branch_bank_name', ['bank_name' => request()->bank_name, 'bank_code' => request()->bank_code, 'branch_name' => request()->branch_name, 'branch_code' => request()->branch_code]) }}" class="value-true-color" id="branch-name">{{ request()->branch_name }}</a>
+        <a href="{{ route('cast_mypage.bank_account.branch_bank_name', ['bank_name' => request()->bank_name, 'bank_code' => request()->bank_code, 'branch_name' => request()->branch_name, 'branch_code' => request()->branch_code]) }}" class="value-true-color" id="branch-name">{{ request()->branch_name }}</a>
         @else
-        <a href="{{ route('bank_account.branch_bank_name', ['bank_name' => request()->bank_name, 'bank_code' => request()->bank_code, 'branch_name' => request()->branch_name, 'branch_code' => request()->branch_code]) }}">支店名を入力してください</a>
+        <a href="{{ route('cast_mypage.bank_account.branch_bank_name', ['bank_name' => request()->bank_name, 'bank_code' => request()->bank_code, 'branch_name' => request()->branch_name, 'branch_code' => request()->branch_code]) }}">支店名を入力してください</a>
         @endif
       </div>
     </div>

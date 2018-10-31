@@ -18,6 +18,17 @@
         <img class="image-default" src="{{ asset('assets/web/images/gm1/ic_default_avatar@3x.png') }}" alt="">
       @endif
     </div>
+    @if ($cast['working_today'])
+      <input type="hidden" id="working-today" value="{{ $cast['working_today'] }}">
+      <span class="init-today text-bold">今日OK</span>
+    @endif
+    @if (isset($cast['is_online']))
+      <input type="hidden" id="is-online" value="{{ $cast['is_online'] }}">
+      <span class="init-status text-bold">
+        <i class="{{ $cast['is_online'] ? 'online' : 'offline' }}"></i>
+        {{ $cast['is_online'] ? 'オンライン' : $cast['last_active'] }}
+      </span>
+    @endif
   </section>
   <div class="cast-set">
     <section class="cast-info">
@@ -26,22 +37,24 @@
         <li class="cast-info__item"><b class="text-bold">{{ (!$cast['age']) ? '' : ($cast['age'] . "歳") }}</b></li>
         @php
           $class = '';
-          switch ($cast['class_id']) {
-              case 1:
-                  $class = 'bronz';
-                  break;
-              case 2:
-                  $class = 'platinum';
-                  break;
-              case 3:
-                  $class = 'daiamond';
-                  break;
+          if (isset($cast['class_id'])) {
+            switch ($cast['class_id']) {
+                case 1:
+                    $class = 'bronz';
+                    break;
+                case 2:
+                    $class = 'platinum';
+                    break;
+                case 3:
+                    $class = 'daiamond';
+                    break;
+            }
           }
         @endphp
-        <li class="{{ $class }}">{{ (!$cast['class']) ? '未設定' : $cast['class'] }}</li>
+        <li class="{{ $class }}">{{ isset($cast['class']) ? $cast['class'] : '未設定' }}</li>
       </ul>
       <p class="cast-info__signature">{{ $cast['job'] }}{{ (!$cast['job'] || !$cast['intro']) ? '' : ' | '}}{{ $cast['intro'] }}</p>
-      <p class="cast-info__price">30分あたりの料金<span class="text-bold">{{ $cast['cost'] ? number_format($cast['cost']) : '未設定' }}P</span></p>
+      <p class="cast-info__price">30分あたりの料金<span class="text-bold">{{ isset($cast['cost']) ? number_format($cast['cost']) : '未設定' }}P</span></p>
     </section>
 
     <section class="portlet">
@@ -156,5 +169,16 @@
   if(localStorage.getItem("back_link")){
     localStorage.removeItem("back_link");
   }
+</script>
+
+<script>
+  $(function () {
+    workingToday = $('#working-today').val();
+    isOnline = $('#is-online').val();
+
+    if (!workingToday && isOnline) {
+      $('.init-status').addClass('init-last');
+    }
+  });
 </script>
 @stop

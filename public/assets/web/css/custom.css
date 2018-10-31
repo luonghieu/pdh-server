@@ -3,6 +3,10 @@
   src: url("../../webview/css/fonts/noto-regular.ttf");
 }
 
+title {
+  color: #30ccc3;
+}
+
 .left{
   float: left;
 }
@@ -223,7 +227,7 @@
 }
 
 #gl2-1 div.list-payment {
-  padding: 20px 26px !important;
+  padding: 5% 7% !important;
 }
 
 #gl2-1 div.list-payment .item_left span{
@@ -1128,14 +1132,14 @@ div.point-transfer img {
   width: 20px;
   height: 20px;
   object-fit: contain;
-  margin-left: 27px;
+  margin-left: 22px;
 }
 
 div.point-transfer span.point-show {
   font-size: 26px;
   font-weight: 100;
   color: #222222;
-  margin-right: 30px;
+  margin-right: 24px;
   float: right;
 }
 
@@ -1316,7 +1320,7 @@ div.user-data span.total-point-cast{
   height: 100%;
 }
 
-@media (max-width: 320px) {
+@media (max-width: 360px) {
   .gn-1 .list_wrap .list_item .btn_wrap .btn-cancel {
     text-align: center;
   }
@@ -1389,6 +1393,25 @@ div.user-data span.total-point-cast{
   position: absolute;
   right: 0;
   bottom: 10px;
+}
+
+#bank_accounts #ci7 .account-number .right span {
+  font-size: 15px;
+  position: absolute;
+  right: 0;
+  bottom: 5px;
+}
+
+#bank_accounts #ci7 .account-holder .right span {
+  font-size: 15px;
+  position: absolute;
+  right: 0;
+  bottom: 5px;
+  width: 75%;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  text-align: right;
 }
 
 #ci7 .title-name {
@@ -1517,7 +1540,7 @@ div.user-data span.total-point-cast{
 
 #ci7 .right input {
   border: none;
-  width: 180px;
+  width: 75%;
   outline: none;
   position: absolute;
   right: 0;
@@ -1598,6 +1621,7 @@ div.user-data span.total-point-cast{
   bottom: 10px;
   color: #c8c8c8;
   z-index: 1;
+  font-size: 15px;
 }
 
 #ci7 .account-holder {
@@ -1606,6 +1630,10 @@ div.user-data span.total-point-cast{
 
 #ci7 .btn-update-bank {
   color: #30ccc3;
+}
+
+.btn-edit-bank {
+  color: #ccc;
 }
 
 #btn-update-bank-info {
@@ -1627,10 +1655,6 @@ div.user-data span.total-point-cast{
 #gf1 .cast-items .profile .top .offline {
   border-radius: 10px;
   background-color: #989595;
-}
-
-#gf1 .thumbnail.init-thumbnail img {
-  max-height: calc(50vw - 10px);
 }
 
 #gf3 .selectbox select.init-select {
@@ -1694,3 +1718,87 @@ div.user-data span.total-point-cast{
 .text-bold {
   font-weight: bold;
 }
+
+#gf1 .cast-items .profile .top {
+  display: inline-flex;
+}
+
+#gf1 .cast-items .profile .top .job {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 58%;
+}
+
+#gf1 .cast-items .profile .message {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+#gf1 .thumbnail img {
+  height: 180.1px;
+  border-radius: 10px;
+}
+
+#gf2 .cast-photo .init-today {
+  position: absolute;
+  top: 73%;
+  left: 0.5rem;
+  display: block;
+  width: 56px;
+  height: 24px;
+  border-radius: 25px;
+  font-size: 11px;
+  color: #FFFFFF;
+  line-height: 24px;
+  text-align: center;
+  letter-spacing: 0;
+  padding: 4px 5px;
+  background: rgba(34,34,34,0.40);
+  opacity: .9;
+}
+
+#gf2 .init-status {
+  position: absolute;
+  top: 73%;
+  left: 5rem;
+  width: auto !important;
+  display: block;
+  width: 50px;
+  height: 24px;
+  border-radius: 25px;
+  font-size: 11px;
+  color: #FFFFFF;
+  line-height: 24px;
+  text-align: center;
+  letter-spacing: 0;
+  padding: 4px 10px;
+  background: rgba(34,34,34,0.40);
+  opacity: .9;
+}
+
+#gf2 .init-status.init-last {
+  width: auto !important;
+  top: 73%;
+  left: 0.5rem;
+}
+
+#gf2 .init-status .online {
+  border-radius: 10px;
+  background-color: #99DD33;
+}
+
+#gf2 .init-status .offline {
+  border-radius: 10px;
+  background-color: #cccc;
+}
+
+#gf2 .init-status i {
+  display: inline-block;
+  width: 10px;
+  height: 10px;
+  margin: 0 5px 0 0;
+}
+
+
