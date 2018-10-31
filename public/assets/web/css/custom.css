@@ -1806,4 +1806,9 @@ div.user-data span.total-point-cast{
   margin: 0 5px 0 0;
 }
 
-
+#gf2 .cast-call-btn {
+  background-color: white;
+  bottom: 0;
+  width: 92%;
+  position: fixed;
+}

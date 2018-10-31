@@ -182,3 +182,10 @@
   });
 </script>
 @stop
+@section('web.extra_css')
+<style>
+  footer {
+    height: 12%;
+  }
+</style>
+@stop
