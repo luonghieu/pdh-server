@@ -13,7 +13,7 @@
   </div>
 </div>
 <div class="content">
-  <form action="{{ route('bank_account.branch_bank_name') }}" method="POST">
+  <form action="{{ route('cast_mypage.bank_account.branch_bank_name') }}" method="POST">
     <input type="hidden" name="bank_name"  value="{{ request()->bank_name }}">
     <input type="hidden" name="bank_code"  value="{{ request()->bank_code }}">
     <input type="hidden" name="branch_name"  value="{{ request()->branch_name }}">
@@ -32,9 +32,9 @@
           @foreach ($listResult as $result)
           @php
             if(\Session::has('backUrl')) {
-              $url = 'bank_account.edit';
+              $url = 'cast_mypage.bank_account.edit';
             } else {
-              $url = 'bank_account.index';
+              $url = 'cast_mypage.bank_account.index';
             }
           @endphp
           <a href="{{ route($url, ['branch_name' => $result->name, 'branch_code' => $result->code, 'bank_name' => $infoBank?$infoBank['bank_name']:'', 'bank_code' => $infoBank?$infoBank['bank_code']:'']) }}">

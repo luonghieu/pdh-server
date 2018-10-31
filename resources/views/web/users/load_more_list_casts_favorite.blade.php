@@ -1,6 +1,6 @@
 @foreach ($favorites['data'] as $favorite)
   <a href="{{ route('cast.show', $favorite['id']) }}" class="cast-items">
-    <div class="thumbnail init-thumbnail">
+    <div class="thumbnail">
       @php
       $class = '';
       switch ($favorite['class_id']) {
@@ -32,7 +32,7 @@
         <span class="job text-bold">{{ $favorite['job'] }}</span>
         <span class="age text-bold">{{ $favorite['age'] }}歳</span>
       </p>
-      <p class="message">{{ $favorite['intro'] }}</p>
+      <p class="message">{{ $favorite['intro'] ? $favorite['intro'] : '...' }}</p>
       <p class="point"><span class="text-bold">{{ number_format($favorite['cost']) }}P</span>/30分</p>
     </div>
   </a>

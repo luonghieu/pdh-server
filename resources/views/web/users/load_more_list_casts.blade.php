@@ -1,6 +1,6 @@
 @foreach ($casts['data'] as $cast)
   <a href="{{ route('cast.show', $cast['id']) }}" class="cast-items">
-    <div class="thumbnail init-thumbnail">
+    <div class="thumbnail">
       @php
       $class = '';
       switch ($cast['class_id']) {
@@ -33,7 +33,7 @@
         <span class="job text-bold">{{ $cast['job'] }}</span>
         <span class="age text-bold">{{ $cast['age'] }}歳</span>
       </p>
-      <p class="message">{{ $cast['intro'] }}</p>
+      <p class="message">{{ $cast['intro'] ? $cast['intro'] : '...' }}</p>
       <p class="point"><span class="text-bold">{{ number_format($cast['cost']) }}P</span>/30分</p>
     </div>
   </a>

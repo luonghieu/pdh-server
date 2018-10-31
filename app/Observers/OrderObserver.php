@@ -8,7 +8,9 @@ use App\Enums\ProviderType;
 use App\Notifications\CompletedPayment;
 use App\Notifications\CreateNominatedOrdersForGuest;
 use App\Notifications\CreateOrdersForLineGuest;
+use App\Notifications\OrderCreatedNotifyToAdmin;
 use App\Order;
+use App\User;
 
 class OrderObserver
 {
@@ -23,6 +25,9 @@ class OrderObserver
         if ($order->user->provider == ProviderType::LINE) {
             $order->user->notify(new CreateOrdersForLineGuest($order->id));
         }
+
+        $admin = User::find(1);
+        $admin->notify(new OrderCreatedNotifyToAdmin($order->id));
     }
 
     public function updated(Order $order)

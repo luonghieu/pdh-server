@@ -5,20 +5,20 @@
 @section('web.content')
 <div class="title">
   <div class="btn-back">
-    <a href="{{ route('bank_account.index') }}" class="prev"><i><img src="/assets/web/images/common/prev.svg" alt=""></i></a>
+    <a href="{{ route('cast_mypage.bank_account.index') }}" class="prev"><i><img src="/assets/web/images/common/prev.svg" alt=""></i></a>
   </div>
   <div class="title-name">振込口座登録</div>
   <div class="btn-register header-item">
-    <a id="btn-update-bank-info" class="btn-submit-bank" >完了</a>
+    <a class="btn-edit-bank" id="btn-update" >完了</a>
   </div>
 </div>
 <div class="content">
   <div class="label-title">
-    <p>売上振込先口座を登録してください</p>
+    <p>売上金の振込先口座を登録してください</p>
   </div>
   <form action="#">
     @php
-      $url = route('bank_account.index');
+      $url = route('cast_mypage.bank_account.index');
     @endphp
     <input type="hidden" id="back-url" value="{{ $url }}">
     <div class="bank-name border-bottom row">
@@ -28,10 +28,10 @@
         @if (request()->bank_name)
         <input type="hidden" name="bank_name" value="{{ request()->bank_name }}">
         <input type="hidden" name="bank_code" id="bank-code" value="{{ request()->bank_code }}">
-        <a href="{{ route('bank_account.bank_name', ['bank_name' => request()->bank_name, 'bank_code' => request()->bank_code, 'branch_name' => request()->branch_name, 'branch_code' => request()->branch_code, 'type' => 'edit']) }}" class="value-true-color" id="bank-name">{{ request()->bank_name }}</a>
+        <a href="{{ route('cast_mypage.bank_account.bank_name', ['bank_name' => request()->bank_name, 'bank_code' => request()->bank_code, 'branch_name' => request()->branch_name, 'branch_code' => request()->branch_code, 'type' => 'edit']) }}" class="value-true-color" id="bank-name">{{ request()->bank_name }}</a>
         @else
         <input type="hidden" name="bank_code" id="bank-code" value="{{ $bankAccount->bank_code }}">
-        <a href="{{ route('bank_account.bank_name') }}" class="value-true-color" id="bank-name">{{ $bankAccount->bank_name }}</a>
+        <a href="{{ route('cast_mypage.bank_account.bank_name') }}" class="value-true-color" id="bank-name">{{ $bankAccount->bank_name }}</a>
         @endif
       </div>
     </div>
@@ -42,10 +42,10 @@
         @if (request()->branch_name)
         <input type="hidden" name="branch_name" value="{{ request()->branch_name }}">
         <input type="hidden" name="branch_code" id="branch-code" value="{{ request()->branch_code }}">
-        <a href="{{ route('bank_account.branch_bank_name', ['bank_name' => request()->bank_name, 'bank_code' => request()->bank_code, 'branch_name' => request()->branch_name, 'branch_code' => request()->branch_code, 'type' => 'edit']) }}" class="value-true-color" id="branch-name">{{ request()->branch_name }}</a>
+        <a href="{{ route('cast_mypage.bank_account.branch_bank_name', ['bank_name' => request()->bank_name, 'bank_code' => request()->bank_code, 'branch_name' => request()->branch_name, 'branch_code' => request()->branch_code, 'type' => 'edit']) }}" class="value-true-color" id="branch-name">{{ request()->branch_name }}</a>
         @else
         <input type="hidden" name="branch_code" id="branch-code" value="{{ $bankAccount->branch_code }}">
-        <a href="{{ route('bank_account.branch_bank_name', ['bank_name' => request()->bank_name, 'bank_code' => request()->bank_code, 'branch_name' => request()->branch_name, 'branch_code' => request()->branch_code]) }}" class="value-true-color" id="branch-name">{{ $bankAccount->branch_name }}</a>
+        <a href="{{ route('cast_mypage.bank_account.branch_bank_name', ['bank_name' => request()->bank_name, 'bank_code' => request()->bank_code, 'branch_name' => request()->branch_name, 'branch_code' => request()->branch_code]) }}" class="value-true-color" id="branch-name">{{ $bankAccount->branch_name }}</a>
         @endif
       </div>
     </div>
