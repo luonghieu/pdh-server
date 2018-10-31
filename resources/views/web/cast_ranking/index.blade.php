@@ -6,10 +6,10 @@
 @extends('layouts.web')
 @section('web.content')
 <div class="page-header">
-  <h1>キャストランキング</h1>
+  <h1 class="text-bold">キャストランキング</h1>
 </div>
 @if ($castRankings->first())
-<div class="cast-rank">
+<div class="cast-rank text-bold">
   @if ($castRankings->count() >= 1)
   <div class="first-place">
     <a href="{{ route('cast.show', ['id' => $castRankings[0]->id]) }}">
