@@ -7,7 +7,6 @@
 @endsection
 @section('web.content')
   <div class="page-header">
-    <a href="{{ route('cast.list_casts') }}" class="prev"><i><img src="{{ asset('assets/web/images/common/prev.svg') }}" alt=""></i></a>
     <h1 class="text-bold">絞込み検索</h1>
   </div>
 
