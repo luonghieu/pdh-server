@@ -40,8 +40,14 @@
           <a href="{{ route($url, ['branch_name' => $result->name, 'branch_code' => $result->code, 'bank_name' => $infoBank?$infoBank['bank_name']:'', 'bank_code' => $infoBank?$infoBank['bank_code']:'']) }}">
             <div class="border-bottom row">
               <span class="left result">{{ $result->name }}</span>
-              @if (Auth::user()->bankAccount && Auth::user()->bankAccount->branch_name == $result->name)
-              <img src="/assets/web/images/ci7/ic_check_green@3x.png" alt="">
+              @if (isset($infoBank) && !empty($infoBank['branch_code']))
+                @if ($infoBank['branch_code'] == $result->code)
+                  <img src="/assets/web/images/ci7/ic_check_green@3x.png" alt="">
+                @endif
+              @else
+                @if (Auth::user()->bankAccount && Auth::user()->bankAccount->branch_name == $result->name)
+                <img src="/assets/web/images/ci7/ic_check_green@3x.png" alt="">
+                @endif
               @endif
             </div>
             <div class="clear"></div>
