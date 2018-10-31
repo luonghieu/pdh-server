@@ -3,6 +3,22 @@
   src: url("../../webview/css/fonts/noto-regular.ttf");
 }
 
+title {
+  color: #30ccc3;
+}
+
+.left{
+  float: left;
+}
+
+.right {
+  float: right;
+}
+
+.clear {
+  clear: both;
+}
+
 .gn-1 .list_wrap .list_item .btn_wrap .btn-cancel {
   text-align: center;
 }
@@ -81,12 +97,6 @@
   margin-top: 5px;
   font-weight: bold;
   font-size: 14px;
-}
-
-@media (max-width: 320px) {
-  .gn-1 .list_wrap .list_item .btn_wrap .btn-cancel {
-    text-align: center;
-  }
 }
 
 #login-controller .wrapper {
@@ -209,6 +219,29 @@
 
 #index-point-controller .list_wrap {
   padding-top: 15px;
+}
+
+#gl2-1 span.amount {
+  color: #222222;
+  font-size: 16px;
+}
+
+#gl2-1 div.list-payment {
+  padding: 5% 7% !important;
+}
+
+#gl2-1 div.list-payment .item_left span{
+  color: #999999;
+}
+
+#list-payment {
+  margin-top: 0px !important;
+}
+
+#gl2-1 div#list-payment div.point-empty span {
+  display: block;
+  margin-top: 10px;
+  color: #999999;
 }
 
 .create-call-form .ct-button {
@@ -1099,14 +1132,14 @@ div.point-transfer img {
   width: 20px;
   height: 20px;
   object-fit: contain;
-  margin-left: 27px;
+  margin-left: 22px;
 }
 
 div.point-transfer span.point-show {
   font-size: 26px;
   font-weight: 100;
   color: #222222;
-  margin-right: 30px;
+  margin-right: 24px;
   float: right;
 }
 
@@ -1287,7 +1320,7 @@ div.user-data span.total-point-cast{
   height: 100%;
 }
 
-@media (max-width: 320px) {
+@media (max-width: 360px) {
   .gn-1 .list_wrap .list_item .btn_wrap .btn-cancel {
     text-align: center;
   }
@@ -1355,6 +1388,32 @@ div.user-data span.total-point-cast{
   border-bottom: 1px solid #E4E4E4;
 }
 
+#bank_accounts #ci7 .account-type .right span {
+  font-size: 15px;
+  position: absolute;
+  right: 0;
+  bottom: 10px;
+}
+
+#bank_accounts #ci7 .account-number .right span {
+  font-size: 15px;
+  position: absolute;
+  right: 0;
+  bottom: 5px;
+}
+
+#bank_accounts #ci7 .account-holder .right span {
+  font-size: 15px;
+  position: absolute;
+  right: 0;
+  bottom: 5px;
+  width: 75%;
+  overflow: hidden;
+  white-space: nowrap;
+  text-overflow: ellipsis;
+  text-align: right;
+}
+
 #ci7 .title-name {
   display: inline-block;
   font-family: NotoSansCJKjp;
@@ -1391,7 +1450,7 @@ div.user-data span.total-point-cast{
 }
 
 #ci7 .content {
-  margin: 78px 7px 0 8px;
+  padding: 60px 7px 0 8px;
 }
 
 #ci7 .content form{
@@ -1473,7 +1532,7 @@ div.user-data span.total-point-cast{
   width: 45px;
   background-image: url(../../webview/images/IC_down.png);
   background-repeat: no-repeat, repeat;
-  background-position: 30px 11px;
+  background-position: 35px 11px;
   position: absolute;
   right: 0;
   bottom: 10px;
@@ -1481,7 +1540,7 @@ div.user-data span.total-point-cast{
 
 #ci7 .right input {
   border: none;
-  width: 180px;
+  width: 75%;
   outline: none;
   position: absolute;
   right: 0;
@@ -1558,10 +1617,11 @@ div.user-data span.total-point-cast{
 #ci7 .account-type label{
   background-color: #fff;
   position: absolute;
-  right: 16px;
+  right: 20px;
   bottom: 10px;
   color: #c8c8c8;
   z-index: 1;
+  font-size: 15px;
 }
 
 #ci7 .account-holder {
@@ -1570,6 +1630,10 @@ div.user-data span.total-point-cast{
 
 #ci7 .btn-update-bank {
   color: #30ccc3;
+}
+
+.btn-edit-bank {
+  color: #ccc;
 }
 
 #btn-update-bank-info {
@@ -1620,6 +1684,37 @@ div.user-data span.total-point-cast{
   margin-top: 200px;
 }
 
+#gf4 .nickname-cast-rank {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+#gf4 .first-place .nickname-cast-rank {
+  width: 60%;
+  text-align: right;
+}
+
+#gf4 .second_third .nickname-cast-rank {
+  width: 60%;
+  text-align: right;
+}
+
+#gf4 .third .nickname-cast-rank {
+  width: 60%;
+  text-align: right;
+}
+
+#gf4 .cast-rank figcaption > span {
+  position: absolute;
+  bottom: 0;
+  right: 20px;
+}
+
+#gf4 .age-first {
+  left: 100px;
+}
+
 .text-bold {
   font-weight: bold;
 }
@@ -1648,7 +1743,7 @@ div.user-data span.total-point-cast{
 
 #gf2 .cast-photo .init-today {
   position: absolute;
-  top: 21rem;
+  top: 73%;
   left: 0.5rem;
   display: block;
   width: 56px;
@@ -1707,46 +1802,3 @@ div.user-data span.total-point-cast{
 }
 
 
-#gf4 .nickname-cast-rank {
-  overflow: hidden;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-
-#gf4 .first-place .nickname-cast-rank {
-  width: 60%;
-  text-align: right;
-}
-
-#gf4 .second_third .nickname-cast-rank {
-  width: 60%;
-  text-align: right;
-}
-
-#gf4 .third .nickname-cast-rank {
-  width: 60%;
-  text-align: right;
-}
-
-#gf4 .cast-rank figcaption > span {
-  position: absolute;
-  bottom: 0;
-  right: 20px;
-}
-
-#gf4 .age-first {
-  left: 100px;
-}
-#gf2 .text-color {
-  color: #30CCC3;
-  font-weight: bold;
-}
-
-#gf2 .cast-call-btn #like {
-  width: 75%;
-  margin: 0 auto 0.2rem;
-}
-
-#gf2 .cast-call-btn .btn-l.init-width a {
-  min-width: 160px;
-}
