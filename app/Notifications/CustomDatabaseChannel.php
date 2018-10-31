@@ -10,14 +10,18 @@ class CustomDatabaseChannel
     {
         $data = $notification->toArray($notifiable);
 
-        return $notifiable->routeNotificationFor('database')->create([
-            'id' => $notification->id,
-            'type' => get_class($notification),
-            'content' => $data['content'],
-            'data' => $data,
-            'read_at' => null,
-            'send_from' => $data['send_from'],
-        ]);
+        if (!empty($data)) {
+            return $notifiable->routeNotificationFor('database')->create([
+                'id' => $notification->id,
+                'type' => get_class($notification),
+                'content' => $data['content'],
+                'data' => $data,
+                'read_at' => null,
+                'send_from' => $data['send_from'],
+            ]);
+        }
+
+        return;
     }
 
 }
