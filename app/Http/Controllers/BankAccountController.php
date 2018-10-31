@@ -78,6 +78,12 @@ class BankAccountController extends Controller
     public function branchBankName(Request $request)
     {
         $branchName = $request->branch_name;
+        $bankCode = $request->bank_code;
+
+        if (empty($bankCode)) {
+            $bankCode = Auth::user()->bankAccount->bank_code;
+        }
+
         $infoBank = [
             'bank_code' => $request->bank_code,
             'bank_name' => $request->bank_name,
@@ -89,7 +95,7 @@ class BankAccountController extends Controller
             $listResult = collect();
         } else {
             $client = new \GuzzleHttp\Client();
-            $res = $client->request('GET', "https://bankcode-api.appspot.com/api/bank/JP/0001?name=$branchName");
+            $res = $client->request('GET', "https://bankcode-api.appspot.com/api/bank/JP/$bankCode?name=$branchName");
             $listResult = collect(json_decode($res->getBody()->getContents())->data);
         }
 
