@@ -109,12 +109,14 @@ class AdminNotification extends Notification implements ShouldQueue
                     'content-available' => true,
                     'extra' => [
                         'send_from' => $send_from,
+                        'push_id' => 'a_1'
                     ],
                 ],
                 'android' => [
                     'alert' => $content,
                     'extra' => [
                         'send_from' => $send_from,
+                        'push_id' => 'a_1'
                     ],
                 ],
             ],
