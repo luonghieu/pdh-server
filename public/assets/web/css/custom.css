@@ -1708,11 +1708,16 @@ div.user-data span.total-point-cast{
 #gf4 .cast-rank figcaption > span {
   position: absolute;
   bottom: 0;
-  right: 20px;
+  right: 15px;
 }
 
 #gf4 .age-first {
   left: 100px;
+}
+
+#gf4 .cast-rank .later li img {
+  height: 40px;
+  border-radius: 5px;
 }
 
 .text-bold {
