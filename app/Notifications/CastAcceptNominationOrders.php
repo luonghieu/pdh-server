@@ -154,7 +154,7 @@ class CastAcceptNominationOrders extends Notification implements ShouldQueue
                     'actions' => [
                         [
                             'type' => 'uri',
-                            'label' => '今すぐキャストを呼ぶ ',
+                            'label' => 'メッセージを確認する',
                             'uri' => "line://app/$page"
                         ]
                     ]

@@ -2,6 +2,7 @@
 
 namespace App\Notifications;
 
+use App\Enums\DeviceType;
 use App\Enums\NotificationScheduleSendTo;
 use App\Enums\ProviderType;
 use App\Enums\UserType;
@@ -56,28 +57,41 @@ class AdminNotification extends Notification implements ShouldQueue
         }
     }
 
-    /**
-     * Get the mail representation of the notification.
-     *
-     * @param  mixed $notifiable
-     * @return void
-     */
-    public function toMail($notifiable)
-    {
-        //
-    }
-
     public function toArray($notifiable)
     {
         $schedule = $this->schedule;
         $content = $schedule->content;
         $send_from = UserType::ADMIN;
+        $bool = false;
+        if (($notifiable->device_type == DeviceType::IOS && $this->schedule->send_to == NotificationScheduleSendTo::IOS)) {
+            $bool = true;
+        }
 
-        return [
-            'title' => $schedule->title,
-            'content' => $content,
-            'send_from' => $send_from,
-        ];
+        if (($notifiable->device_type == DeviceType::ANDROID && $this->schedule->send_to == NotificationScheduleSendTo::ANDROID)) {
+            $bool = true;
+        }
+
+        if (($notifiable->device_type == DeviceType::WEB && $this->schedule->send_to == NotificationScheduleSendTo::WEB)) {
+            $bool = true;
+        }
+
+        if ($notifiable->device_type == null) {
+            $bool = true;
+        }
+
+        if ($this->schedule->send_to == NotificationScheduleSendTo::ALL) {
+            $bool = true;
+        }
+
+        if ($bool) {
+            return [
+                'title' => $schedule->title,
+                'content' => $content,
+                'send_from' => $send_from,
+            ];
+        }
+
+        return [];
     }
 
     public function pushData($notifiable)
@@ -125,13 +139,30 @@ class AdminNotification extends Notification implements ShouldQueue
 
     public function lineBotPushData($notifiable)
     {
-        $content = $this->schedule->title;
+        $content = $this->schedule->content;
+        $linkArray = linkExtractor($content);
+        $content = removeHtmlTags($content);
+        if ($content) {
+            $pushData = [
+                [
+                    'type' => 'text',
+                    'text' => $content,
+                ]
+            ];
+        } else {
+            $pushData = [];
+        }
 
-        return [
-            [
-                'type' => 'text',
-                'text' => $content,
-            ]
-        ];
+        if ($linkArray) {
+            foreach ($linkArray as $link) {
+                $pushData[] = [
+                    'type' => 'image',
+                    'originalContentUrl' => $link,
+                    'previewImageUrl' => $link
+                ];
+            }
+        }
+
+        return $pushData;
     }
 }
