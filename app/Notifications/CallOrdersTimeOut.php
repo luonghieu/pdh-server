@@ -42,7 +42,7 @@ class CallOrdersTimeOut extends Notification implements ShouldQueue
     public function via($notifiable)
     {
         if ($this->order->type == OrderType::NOMINATION) {
-            return [CustomDatabaseChannel::class, PushNotificationChannel::class];
+            return [PushNotificationChannel::class];
         } else {
             if ($notifiable->provider == ProviderType::LINE) {
                 if ($notifiable->type == UserType::GUEST && $notifiable->device_type == null) {
@@ -82,23 +82,7 @@ class CallOrdersTimeOut extends Notification implements ShouldQueue
      */
     public function toArray($notifiable)
     {
-        $nominees = $this->order->nomineesWithTrashed->first();
-        $room = $this->createDirectRoom($this->order->user_id, $nominees->id);
-        $roomMesage = '提案がキャンセルされました。';
-        $roomMessage = $room->messages()->create([
-            'user_id' => 1,
-            'type' => MessageType::SYSTEM,
-            'message' => $roomMesage,
-            'system_type' => SystemMessageType::NOTIFY
-        ]);
-        $roomMessage->recipients()->attach($notifiable->id, ['room_id' => $room->id]);
-
-        $notifyMessage = '残念ながらマッチングが成立しませんでした（；；）';
-
-        return [
-            'content' => $notifyMessage,
-            'send_from' => UserType::ADMIN,
-        ];
+        return [];
     }
 
     public function pushData($notifiable)
@@ -130,6 +114,14 @@ class CallOrdersTimeOut extends Notification implements ShouldQueue
         } else {
             $nominees = $this->order->nomineesWithTrashed->first();
             $room = $this->createDirectRoom($this->order->user_id, $nominees->id);
+            $roomMesage = '提案がキャンセルされました。';
+            $roomMessage = $room->messages()->create([
+                'user_id' => 1,
+                'type' => MessageType::SYSTEM,
+                'message' => $roomMesage,
+                'system_type' => SystemMessageType::NOTIFY
+            ]);
+            $roomMessage->recipients()->attach($notifiable->id, ['room_id' => $room->id]);
         }
 
         $content = '残念ながらマッチングが成立しませんでした（；；）';
@@ -191,6 +183,17 @@ class CallOrdersTimeOut extends Notification implements ShouldQueue
                 'type' => MessageType::SYSTEM,
                 'message' => $message,
                 'system_type' => SystemMessageType::NORMAL
+            ]);
+            $roomMessage->recipients()->attach($notifiable->id, ['room_id' => $room->id]);
+        } else {
+            $nominees = $this->order->nomineesWithTrashed->first();
+            $room = $this->createDirectRoom($this->order->user_id, $nominees->id);
+            $roomMesage = '提案がキャンセルされました。';
+            $roomMessage = $room->messages()->create([
+                'user_id' => 1,
+                'type' => MessageType::SYSTEM,
+                'message' => $roomMesage,
+                'system_type' => SystemMessageType::NOTIFY
             ]);
             $roomMessage->recipients()->attach($notifiable->id, ['room_id' => $room->id]);
         }
