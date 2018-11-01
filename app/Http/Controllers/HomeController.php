@@ -7,6 +7,7 @@ use App\Enums\UserType;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\OrderResource;
 use App\Order;
+use GuzzleHttp\Client;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Session;
@@ -49,7 +50,18 @@ class HomeController extends Controller
 
                 $order = OrderResource::make($order);
 
-                return view('web.index', compact('token', 'order'));
+                $client = new Client(['base_uri' => config('common.api_url')]);
+                $option = [
+                    'headers' => ['Authorization' => 'Bearer ' . $token],
+                    'form_params' => [],
+                    'allow_redirects' => false,
+                ];
+
+                $response = $client->get(route('casts.index', ['working_today' => 1, 'device' => 3]), $option);
+                $getContents = json_decode($response->getBody()->getContents());
+                $casts = $getContents->data;
+
+                return view('web.index', compact('token', 'order', 'casts'));
             }
 
             if (UserType::CAST == $user->type) {
