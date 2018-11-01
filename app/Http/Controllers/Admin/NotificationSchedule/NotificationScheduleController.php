@@ -38,7 +38,7 @@ class NotificationScheduleController extends Controller
             $validator = validator($request->all(), $rules);
 
             if ($validator->fails()) {
-                return back()->withErrors($validator->errors());
+                return back()->withErrors($validator->errors())->withInput();
             }
 
             $notificationSchedule = new NotificationSchedule;
