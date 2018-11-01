@@ -1810,5 +1810,7 @@ div.user-data span.total-point-cast{
   background-color: white;
   bottom: 0;
   width: 92%;
+  height: 45px;
   position: fixed;
+  padding: 7px 15px;
 }
