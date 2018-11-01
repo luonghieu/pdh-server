@@ -94,7 +94,7 @@
               <img src="{{ asset('/ld/images/guest/ggl_stor.png') }}" alt="Google Store">
             </a>
           </div>
-          <span>※LINE版で登録された場合、会員情報をAndoroidへ引き継ぐことはできません</span>
+          <span>※LINE版で登録された場合、会員情報を<br>Andoroidへ引き継ぐことはできません</span>
 
 
         </div>
@@ -209,22 +209,22 @@
           <div class="ad-conts-atcl">
             <div class="ad-logo"><img src="{{ asset('/ld/images/guest/ad-logo.svg') }}" alt="Cheers"></div>
             <div class="ad-app">
-              <p>\　会員登録してキャストを呼ぶ　/</p>
+              <p>\ ダウンロードしてキャストを呼ぶ /</p>
               <!-- <a href="#v">
 							<img src="{{ asset('/ld/images/guest/app_stor.png') }}" alt="Apple Store">
 						</a> -->
               <!--a href="#v"><img src="{{ asset('/ld/images/guest/ggl_stor_soon.png') }}" alt="Google Store"></a-->
             </div>
-            <!--開発環境-->
-            <div class="g_btn">
-              <a href="{{ 'https://line.me/R/ti/p/%40' . env('LINE_ID') }}" target="_blank" class="btn_color site
-              size_md">LINEではじめる</a>
+            <div class="dp_soon">
+              <a href="{{ 'https://line.me/R/ti/p/%40' . env('LINE_ID') }}" target="_blank">
+                <img src="{{ asset('/ld/images/guest/line_start.png') }}" alt="LINEで始める">
+              </a>
             </div>
-            <!--本番環境
-					<div class="g_btn">
-						<a href="https://line.me/R/ti/p/%40guk2609l" target="_blank" class="btn_color site size_md">LINE@で友達追加</a>
-					</div>
-					-->
+            <div class="dp_soon dp_android">
+              <a href="https://play.google.com/store/apps/details?id=com.cheers.style">
+                <img src="{{ asset('/ld/images/guest/ggl_stor.png') }}" alt="Google Store">
+              </a>
+            </div>
           </div>
         </div>
       </div>
@@ -344,23 +344,22 @@
           <div class="ad-conts-atcl">
             <div class="ad-logo"><img src="{{ asset('/ld/images/guest/ad-logo.svg') }}" alt="Cheers"></div>
             <div class="ad-app">
-              <p>\　会員登録してキャストを呼ぶ　/</p>
+              <p>\ ダウンロードしてキャストを呼ぶ /</p>
               <!-- <a href="#v">
 							<img src="{{ asset('/ld/images/guest/app_stor.png') }}" alt="Apple Store">
 						</a> -->
-              <!--a href="#v">
-						<img src="{{ asset('/ld/images/guest/ggl_stor_soon.png') }}" alt="Google Store"></a-->
+              <!--a href="#v"><img src="{{ asset('/ld/images/guest/ggl_stor_soon.png') }}" alt="Google Store"></a-->
             </div>
-            <!--開発環境-->
-            <div class="g_btn">
-              <a href="{{ 'https://line.me/R/ti/p/%40' . env('LINE_ID') }}" target="_blank" class="btn_color site
-              size_md">LINEではじめる</a>
+            <div class="dp_soon">
+              <a href="{{ 'https://line.me/R/ti/p/%40' . env('LINE_ID') }}" target="_blank">
+                <img src="{{ asset('/ld/images/guest/line_start.png') }}" alt="LINEで始める">
+              </a>
             </div>
-            <!--本番環境
-					<div class="g_btn">
-						<a href="https://line.me/R/ti/p/%40guk2609l" target="_blank" class="btn_color site size_md">LINE@で友達追加</a>
-					</div>
-					-->
+            <div class="dp_soon dp_android">
+              <a href="https://play.google.com/store/apps/details?id=com.cheers.style">
+                <img src="{{ asset('/ld/images/guest/ggl_stor.png') }}" alt="Google Store">
+              </a>
+            </div>
           </div>
         </div>
       </div>

@@ -2826,9 +2826,9 @@ h3 {
       letter-spacing: 6px; }
     #gTop .gTop-atcl .gTop-app span {
       display: block;
-      width: 210px;
+      max-width: 210px;
       margin: 0 auto;
-      font-size: 11px;
+      font-size: 10px;
       font-weight: 400;
     }
     #gTop .gTop-atcl .gTop-app .android {
@@ -3342,28 +3342,25 @@ h3 {
     position: relative;
     background: url(../images/guest/top-bgSP.jpg) no-repeat top;
     background-size: cover;
-    padding-top: 0;
-    height: 508px; }
+    padding-top: 10px;
+    /* height: 508px; } */
+    height: 127vw; }
     #gTop .gTop-btn {
-      margin-top: 0;
+      width: 150px;
+      height: 30px;
+      line-height: 30px;
       font-size: 12px;
-      text-align: right;
-      letter-spacing: 1px;
-      background: transparent; }
-      #gTop .gTop-btn a {
-        color: white; }
+      text-align: center;
+      letter-spacing: 1px; }
     #gTop .gTop-atcl {
-      /* -ms-flex-preferred-size: 90%;
-      flex-basis: 85%; */
       width: 70vw;
-      /* padding: 0 16px 0 32px; */
-      padding: 0 10vw;
+      padding: 0 8vw 0 0;
       margin-top: 45px;
      }
       #gTop .gTop-atcl h1 {
         width: 100%;
         height: auto;
-        margin: 1em auto 3em; }
+        margin: 3vw auto 14vw; }
         #gTop .gTop-atcl h1 img {
           width: 100%;
           obeject-fit: contain; }
@@ -3375,9 +3372,9 @@ h3 {
       #gTop .gTop-atcl .gTop-app p {
         width: 100%;
         max-width: 200px;
-        margin: 0 auto 12px;
-        font-size: 14px;
-        letter-spacing: 2px; }
+        margin: 0 auto 6px;
+        font-size: 16px;
+        letter-spacing: .9vw; }
         #gTop .gTop-atcl .gTop-app p img {
           width: 100%;
           height: auto; }
@@ -3416,10 +3413,8 @@ h3 {
       padding-top: 0; }
     #gTop .gTop-phone-02 {
       position: absolute;
-      bottom: 0;
-      height: 450px; }
+      height: 110vw; }
       #gTop .gTop-phone-02 img {
-        max-width: 135px;
         height: 100%;
         -o-object-fit: contain;
         object-fit: contain; }
@@ -3618,8 +3613,7 @@ h3 {
           width: 100%;
           height: 100%; }
   #guest-ad .ad-conts-img2 {
-    width: 37%;
-    max-width: 157px;
+    width: 37vw;
     min-height: 280px;
     position: relative; }
     #guest-ad .ad-conts-img2 img {
@@ -3628,6 +3622,9 @@ h3 {
       left: 0;
       bottom: 0; } }
   @media screen and (max-width: 768px) and (max-width: 320px) {
+    #guest-ad .ad-conts {
+      padding-top: 0;
+    }
     #guest-ad .ad-conts-img2 {
       height: 215px; } }
 
@@ -3636,27 +3633,32 @@ h3 {
     margin: 0 auto; }
   #guest-ad .ad-conts .ad-conts-atcl {
     margin: auto;
-    padding: 24px 4px 0;
-    width: calc(100% - 170px); } }
-  @media screen and (max-width: 768px) and (max-width: 320px) {
-    #guest-ad .ad-conts .ad-conts-atcl {
-      width: calc(100% - 140px); } }
+    padding: 45px 0 0;
+    width: 55vw;
+  }
 
 @media screen and (max-width: 768px) {
     #guest-ad .ad-conts .ad-conts-atcl .ad-logo {
       width: 90%;
-      height: auto; }
+      height: auto;
+      margin: 0 auto 25px;}
       #guest-ad .ad-conts .ad-conts-atcl .ad-logo img {
         width: 100%; }
     #guest-ad .ad-conts .ad-conts-atcl .ad-app p {
-      margin-bottom: 10px;
+      margin-bottom: 8px;
       font-size: 10px; }
     #guest-ad .ad-conts .ad-conts-atcl .ad-app a {
       margin: 0 auto 2%;
       width: 70%;
       height: auto;}
       #guest-ad .ad-conts .ad-conts-atcl .ad-app a img {
-        width: 100%; } }
+        width: 100%; }
+    #guest-ad .ad-conts .ad-conts-atcl .dp_soon {
+      margin: 0 auto 8px;
+      width: 42vw;
+    }
+
+}
 
 @-webkit-keyframes fadeInLittleUp {
   from {
@@ -3802,7 +3804,21 @@ h3 {
 @media (max-width: 768px) {
   .dp_soon {
     margin: 0 auto 10px;
-    max-width: 294px;
+    /* max-width: 294px; */
+    height: auto;
+  }
+  #gTop .gTop-atcl .gTop-app .android {
+    letter-spacing: 0.2vw;
+    font-size: 13px;
+  }
+  #gTop .gTop-atcl .gTop-app a {
+    margin: 0 0 0 0;
+  }
+  .dp_android {
+      margin: 0 auto;
+  }
+  #gTop .gTop-atcl .gTop-app span {
+    font-size: 1vw;
   }
 }
 
