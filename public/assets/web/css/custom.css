@@ -1814,3 +1814,53 @@ div.user-data span.total-point-cast{
   position: fixed;
   padding: 7px 15px;
 }
+
+.ge2-1-b {
+padding-top: 65px !important;
+}
+
+.ge2-1-b .cast-selected {
+  margin-top: 0px;
+}
+
+.ge2-1-b .cast-selected__photo {
+  width: 60px;
+  height: 60px;
+}
+.ge2-1-b .cast-selected__photo img {
+  width: 100%;
+  height: 100% !important;
+  -o-object-fit: cover;
+  object-fit: cover;
+  border-radius: 10px;
+}
+.ge2-1-b .cast-selected__content {
+  margin-left: 6px;
+  width: calc(100% - 60px);
+}
+
+.ge2-1-b .reservation-attention {
+  width: 100%;
+  height: auto;
+  margin-bottom: 8px;
+  padding: 0 8px;
+  -webkit-box-sizing: border-box;
+  box-sizing: border-box;
+}
+
+.ge2-1-b .reservation-attention a {
+  color: #00C3C3;
+  font-size: 12px;
+  text-align: right;
+}
+
+.ge2-1-b .reservation-attention a:before {
+  content: "";
+  display: inline-block;
+  width: 1.5em;
+  height: 1.5em;
+  background: url("../images/common/info.svg") no-repeat center center;
+  background-size: contain;
+  vertical-align: text-bottom;
+  margin-right: 2px;
+}
