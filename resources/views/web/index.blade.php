@@ -1,4 +1,5 @@
 @section('title', 'Cheers')
+@section('controller.id', 'top')
 @extends('layouts.web')
 @section('web.extra_css')
 <link rel="stylesheet" href="{{ asset('assets/web/css/ge_1.css') }}">
@@ -116,6 +117,28 @@
     </div>
   </div>
   @endif
+  <div class="cast-list">
+    <div class="cast-head">
+      <h2>在籍中のキャスト</h2>
+      <a href="{{ route('cast.list_casts') }}"><img class="head-icon" src="/assets/web/images/common/arrow-right.svg" alt="arrow-right"></a>
+    </div>
+
+    <div class="cast-body">
+      @foreach ($casts as $cast)
+      <div class="cast-item">
+        <span class="tag">{{ $cast->class }}</span>
+        <img src="{{ ($cast->avatars && @getimagesize($cast->avatars[0]->thumbnail)) ? $cast->avatars[0]->thumbnail :'/assets/web/images/gm1/ic_default_avatar@3x.png' }}">
+        <div class="info">
+          <span class="tick {{ $cast->is_online == 1? 'tick-online':'tick-offline' }}"></span>
+          <span class="title-info">{{ $cast->job }}  {{ $cast->age }}歳</span>
+          <span class="description">{{ substr($cast->intro,0,30).'...' }}</span>
+        </div>
+      </div>
+      @endforeach
+
+      <a href="{{ route('cast.list_casts') }}" class="cast-item import"></a>
+    </div>
+  </div>
   @if($token)
     <script>
         window.localStorage.setItem('access_token', '{{ $token }}');

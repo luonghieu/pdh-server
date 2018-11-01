@@ -29,13 +29,20 @@ class CastController extends ApiController
             'class_id',
             'height',
             'body_type_id',
+            'device',
         ]);
 
         $casts = Cast::query();
         $user = $this->guard()->user();
+        if (!$user->status) {
+            return $this->respondErrorMessage(trans('messages.freezing_account'), 403);
+        }
 
+        $casts = Cast::query();
         foreach ($params as $key => $value) {
-            $casts->where($key, $value);
+            if ("working_today" != $key && !(3 == $request->device)) {
+                $casts->where($key, $value);
+            }
         }
 
         if ($request->favorited) {
@@ -57,10 +64,18 @@ class CastController extends ApiController
             $q->where('blocked_id', $user->id);
         })->active()
             ->groupBy('users.id')
+            ->orderBy('working_today', 'DESC')
+            ->orderBy('last_active_at', 'DESC')
             ->orderByDesc('co.created_at')
-            ->select('users.*')
-            ->paginate($request->per_page)
-            ->appends($request->query());
+            ->select('users.*');
+
+        if ($request->device) {
+            $casts = $casts->limit(10)->get();
+        } else {
+            $casts = $casts->select('users.*')
+                ->paginate($request->per_page)
+                ->appends($request->query());
+        }
 
         return $this->respondWithData(CastResource::collection($casts));
     }
