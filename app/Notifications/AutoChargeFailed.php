@@ -32,7 +32,7 @@ class AutoChargeFailed extends Notification implements ShouldQueue
      */
     public function via($notifiable)
     {
-        return [CustomDatabaseChannel::class, LineBotNotificationChannel::class];
+        return [LineBotNotificationChannel::class];
     }
 
     /**

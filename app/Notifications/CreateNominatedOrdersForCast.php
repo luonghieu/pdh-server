@@ -35,7 +35,7 @@ class CreateNominatedOrdersForCast extends Notification implements ShouldQueue
      */
     public function via($notifiable)
     {
-        return [CustomDatabaseChannel::class, PushNotificationChannel::class];
+        return [PushNotificationChannel::class];
     }
 
     /**
@@ -56,13 +56,7 @@ class CreateNominatedOrdersForCast extends Notification implements ShouldQueue
      */
     public function toArray($notifiable)
     {
-        $content = '指名予約が入りました。'
-            . PHP_EOL . '5分以内に承諾、キャンセルの処理を行ってください！';
-
-        return [
-            'content' => $content,
-            'send_from' => UserType::ADMIN,
-        ];
+        return [];
     }
 
     public function pushData($notifiable)
