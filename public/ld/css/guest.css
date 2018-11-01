@@ -2842,6 +2842,9 @@ h3 {
       #gTop .gTop-atcl .gTop-app a img {
         width: 100%;
         height: auto; }
+    #gTop .gTop-atcl .gTop-app .dp_android a {
+      margin: 0 auto;
+    }
     #gTop .gTop-atcl .gTop-sns {
       display: -webkit-box;
       display: -ms-flexbox;
@@ -3323,6 +3326,19 @@ h3 {
           width: 100%;
           height: auto; }
 
+      #guest-ad .ad-conts .ad-conts-atcl .dp_soon {
+        margin: 0 auto 8px;
+        width: 220px;
+      }
+
+      #guest-ad .ad-conts .ad-conts-atcl .dp_soon a {
+        width: 100%
+      }
+
+      #guest-ad .ad-conts .ad-conts-atcl .dp_soon a img{
+        width: 100%;
+      }
+
 .ad-02 {
   background: #031011 !important; }
 
@@ -3795,6 +3811,9 @@ h3 {
     display: block;
 }
 .dp_android {
+    margin: 0 auto;
+}
+.dp_android a {
     margin: 0 auto;
 }
 .dp_soon img {
