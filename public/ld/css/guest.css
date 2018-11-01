@@ -3385,6 +3385,9 @@ h3 {
         margin: 0 auto 10px;
         width: 100%;
         height: auto; }
+      #gTop .gTop-atcl .gTop-sns {
+        display: none;
+      }
       /* #gTop .gTop-atcl .gTop-sns {
         -webkit-box-orient: vertical;
         -webkit-box-direction: normal;
