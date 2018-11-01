@@ -2809,17 +2809,35 @@ h3 {
           object-fit: contain; }
   #gTop .gTop-atcl {
     margin-top: 30px; }
+    #gTop .gTop-atcl > p {
+      width: 350px;
+      margin: 0 auto; }
+    #gTop .gTop-atcl > p img {
+      margin: 0 auto; }
     #gTop .gTop-atcl h1 {
-      margin: 36px auto 40px; }
+      margin: 36px auto 40px;
+      text-align: center; }
+    #gTop .gTop-atcl h1 img {
+      width: 330px;
+      margin: 0 auto; }
     #gTop .gTop-atcl .gTop-app p {
       font-size: 18px;
       font-weight: 600;
-      letter-spacing: 6px;
-      margin-bottom: 16px; }
+      letter-spacing: 6px; }
+    #gTop .gTop-atcl .gTop-app span {
+      display: block;
+      width: 210px;
+      margin: 0 auto;
+      font-size: 11px;
+      font-weight: 400;
+    }
+    #gTop .gTop-atcl .gTop-app .android {
+      letter-spacing: 0;
+    }
     #gTop .gTop-atcl .gTop-app a {
       margin: 0 auto 30px;
-      width: 294px;
-      height: 75px;
+      width: 225px;
+      height: 70px;
       display: block; }
       #gTop .gTop-atcl .gTop-app a img {
         width: 100%;
@@ -3335,19 +3353,25 @@ h3 {
       #gTop .gTop-btn a {
         color: white; }
     #gTop .gTop-atcl {
-      -ms-flex-preferred-size: 90%;
-      flex-basis: 85%;
-      padding: 0 16px 0 32px;
+      /* -ms-flex-preferred-size: 90%;
+      flex-basis: 85%; */
+      width: 70vw;
+      /* padding: 0 16px 0 32px; */
+      padding: 0 10vw;
       margin-top: 45px;
      }
       #gTop .gTop-atcl h1 {
         width: 100%;
-        height: auto; }
+        height: auto;
+        margin: 1em auto 3em; }
         #gTop .gTop-atcl h1 img {
           width: 100%;
           obeject-fit: contain; }
+      #gTop .gTop-atcl > p {
+        width: 100%; }
       #gTop .gTop-atcl > p img {
         width: 100%; }
+
       #gTop .gTop-atcl .gTop-app p {
         width: 100%;
         max-width: 200px;
@@ -3361,7 +3385,7 @@ h3 {
         margin: 0 auto 10px;
         width: 100%;
         height: auto; }
-      #gTop .gTop-atcl .gTop-sns {
+      /* #gTop .gTop-atcl .gTop-sns {
         -webkit-box-orient: vertical;
         -webkit-box-direction: normal;
         -ms-flex-direction: column;
@@ -3378,7 +3402,7 @@ h3 {
           width: 32px;
           height: 32px; }
           #gTop .gTop-atcl .gTop-sns a:nth-child(2) {
-            margin-right: 0; }
+            margin-right: 0; } */
       #gTop .gTop-atcl .g_btn {
         margin: 0;
       }
@@ -3759,11 +3783,14 @@ h3 {
       font-size: 1.35em; }
     .g_btn a.size_lg {
       font-size: 1.5em; }
-.dp_soon{
-    margin: 0 auto 30px;
-    max-width: 294px;
-    height: 75px;
+.dp_soon {
+    margin: 0 auto 15px;
+    max-width: 225px;
+    height: 70px;
     display: block;
+}
+.dp_android {
+    margin: 0 auto;
 }
 .dp_soon img {
     width: 100%;
