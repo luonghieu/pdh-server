@@ -1889,3 +1889,13 @@ padding-top: 65px !important;
 #top .cast-list .cast-body img {
   height: 74%;
 }
+
+.display-time {
+  display: flex;
+  margin: 0 auto;
+  flex-direction: row;
+}
+
+.list-order-start-time {
+  margin-left: 10px;
+}
