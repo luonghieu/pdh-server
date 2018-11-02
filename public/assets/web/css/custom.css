@@ -1885,3 +1885,7 @@ padding-top: 65px !important;
   object-fit: cover;
   border-radius: 10px;
 }
+
+#top .cast-list .cast-body img {
+  height: 74%;
+}

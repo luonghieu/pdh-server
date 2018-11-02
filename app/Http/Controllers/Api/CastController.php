@@ -40,7 +40,7 @@ class CastController extends ApiController
 
         $casts = Cast::query();
         foreach ($params as $key => $value) {
-            if ("working_today" != $key && !(3 == $request->device)) {
+            if (!(3 == $request->device)) {
                 $casts->where($key, $value);
             }
         }
@@ -63,9 +63,12 @@ class CastController extends ApiController
             })->whereDoesntHave('blocks', function ($q) use ($user) {
             $q->where('blocked_id', $user->id);
         })->active()
-            ->groupBy('users.id')
-            ->orderBy('working_today', 'DESC')
-            ->orderBy('last_active_at', 'DESC')
+            ->groupBy('users.id');
+        if ($request->device) {
+            $casts = $casts->orderBy('working_today', 'DESC');
+        }
+
+        $casts = $casts->orderBy('last_active_at', 'DESC')
             ->orderByDesc('co.created_at')
             ->select('users.*');
 
