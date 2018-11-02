@@ -277,7 +277,6 @@
   font-family: Helvetica;
   font-size: 10px;
   color: #222222;
-  display: block;
 }
 
 .cast-item.import {
@@ -298,8 +297,9 @@
   top: calc(50% - 50px);
   bottom: 0;
   padding-top: 44px;
-  color: #D8D8D8;
+  color: #cec7c7;
   right: 35px;
+  font-weight: bold;
 }
 
 .cast-item.import::after {
