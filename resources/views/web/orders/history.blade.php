@@ -159,7 +159,7 @@
                 <h3 class="order-cancel-header">※キャンセル料が発生します</h3>
             @endif
             <div class="details-list__header">
-                <div class="details-list__thumbnail">
+                <div class="details-list__thumbnail init-height">
                     <a href="{{ route('cast.show', ['id' => $cast->id]) }}">
                         <img src="{{ @getimagesize($cast->avatars[0]->thumbnail) ? $cast->avatars[0]->thumbnail : '/assets/web/images/gm1/ic_default_avatar@3x.png' }}"
                              alt="Avatar">

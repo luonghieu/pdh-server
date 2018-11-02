@@ -1742,8 +1742,10 @@ div.user-data span.total-point-cast{
 }
 
 #gf1 .thumbnail img {
-  height: 180.1px;
+  height: 100%;
   border-radius: 10px;
+  -o-object-fit: cover;
+  object-fit: cover;
 }
 
 #gf2 .cast-photo .init-today {
@@ -1865,6 +1867,26 @@ padding-top: 65px !important;
   margin-right: 2px;
 }
 
+
 #top .cast-list .cast-body img {
   height: 74%;
+}
+
+#gf2 .slick-list .slick-track img,
+#gf2 .cast-photo .slick-dots li img {
+  height: 100%;
+  -o-object-fit: cover;
+  object-fit: cover;
+}
+
+#gl3 .details-list__thumbnail.init-height {
+  height: 60px;
+}
+
+#gl3 .details-list__thumbnail img {
+  width: 100%;
+  height: 100%;
+  -o-object-fit: cover;
+  object-fit: cover;
+  border-radius: 10px;
 }

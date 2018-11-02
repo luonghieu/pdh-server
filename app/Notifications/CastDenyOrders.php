@@ -42,20 +42,20 @@ class CastDenyOrders extends Notification implements ShouldQueue
     {
         if ($notifiable->provider == ProviderType::LINE) {
             if ($notifiable->type == UserType::GUEST && $notifiable->device_type == null) {
-                return [CustomDatabaseChannel::class, LineBotNotificationChannel::class];
+                return [LineBotNotificationChannel::class];
             }
 
             if ($notifiable->type == UserType::CAST && $notifiable->device_type == null) {
-                return [CustomDatabaseChannel::class, PushNotificationChannel::class];
+                return [PushNotificationChannel::class];
             }
 
             if ($notifiable->device_type == DeviceType::WEB) {
-                return [CustomDatabaseChannel::class, LineBotNotificationChannel::class];
+                return [LineBotNotificationChannel::class];
             } else {
-                return [CustomDatabaseChannel::class, PushNotificationChannel::class];
+                return [PushNotificationChannel::class];
             }
         } else {
-            return [CustomDatabaseChannel::class, PushNotificationChannel::class];
+            return [PushNotificationChannel::class];
         }
     }
 
@@ -77,6 +77,11 @@ class CastDenyOrders extends Notification implements ShouldQueue
      */
     public function toArray($notifiable)
     {
+        return [];
+    }
+
+    public function pushData($notifiable)
+    {
         $room = $this->createDirectRoom($this->order->user_id, $this->cast->id);
         $roomMesage = '提案がキャンセルされました。';
         $roomMessage = $room->messages()->create([
@@ -87,17 +92,6 @@ class CastDenyOrders extends Notification implements ShouldQueue
         ]);
         $roomMessage->recipients()->attach($notifiable->id, ['room_id' => $room->id]);
 
-        $notifyMessage = '残念ながらマッチングが成立しませんでした（；；）';
-
-        return [
-            'content' => $notifyMessage,
-            'send_from' => UserType::ADMIN,
-        ];
-    }
-
-    public function pushData($notifiable)
-    {
-        $room = $this->createDirectRoom($this->order->user_id, $this->cast->id);
         $content = '残念ながらマッチングが成立しませんでした（；；）';
 
         $namedUser = 'user_' . $notifiable->id;
@@ -135,6 +129,16 @@ class CastDenyOrders extends Notification implements ShouldQueue
 
     public function lineBotPushData($notifiable)
     {
+        $room = $this->createDirectRoom($this->order->user_id, $this->cast->id);
+        $roomMesage = '提案がキャンセルされました。';
+        $roomMessage = $room->messages()->create([
+            'user_id' => 1,
+            'type' => MessageType::SYSTEM,
+            'message' => $roomMesage,
+            'system_type' => SystemMessageType::NOTIFY
+        ]);
+        $roomMessage->recipients()->attach($notifiable->id, ['room_id' => $room->id]);
+
         $content = '残念ながらマッチングが成立しませんでした😭'
             . PHP_EOL . 'お手数ですが、キャストクラスを変更して再度コールをし直してください。';
 
