@@ -1885,3 +1885,13 @@ padding-top: 65px !important;
   object-fit: cover;
   border-radius: 10px;
 }
+
+.display-time {
+  display: flex;
+  margin: 0 auto;
+  flex-direction: row;
+}
+
+.list-order-start-time {
+  margin-left: 10px;
+}
