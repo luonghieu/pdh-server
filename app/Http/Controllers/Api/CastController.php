@@ -62,8 +62,13 @@ class CastController extends ApiController
             })->whereDoesntHave('blocks', function ($q) use ($user) {
             $q->where('blocked_id', $user->id);
         })->active()
-            ->groupBy('users.id')
-            ->orderBy('working_today', 'DESC')
+            ->groupBy('users.id');
+
+        if ($request->cast_new) {
+            $casts = $casts->orderByDesc('users.created_at');
+        }
+
+        $casts = $casts->orderBy('working_today', 'DESC')
             ->orderBy('last_active_at', 'DESC')
             ->orderByDesc('co.created_at')
             ->select('users.*');
