@@ -125,15 +125,17 @@
 
     <div class="cast-body">
       @foreach ($casts as $cast)
-      <div class="cast-item">
-        <span class="tag">{{ $cast->class }}</span>
-        <img src="{{ ($cast->avatars && @getimagesize($cast->avatars[0]->thumbnail)) ? $cast->avatars[0]->thumbnail :'/assets/web/images/gm1/ic_default_avatar@3x.png' }}">
-        <div class="info">
-          <span class="tick {{ $cast->is_online == 1? 'tick-online':'tick-offline' }}"></span>
-          <span class="title-info">{{ $cast->job }}  {{ $cast->age }}歳</span>
-          <span class="description">{{ substr($cast->intro,0,30).'...' }}</span>
+        <div class="cast-item">
+          <a href="{{ route('cast.show', ['id' => $cast->id]) }}">
+            <span class="tag">{{ $cast->class }}</span>
+            <img src="https://www.designyourway.net/blog/wp-content/uploads/2017/03/Anime-Wallpaper-Desktop-Background-50.jpg">
+            <div class="info">
+              <span class="tick {{ $cast->is_online == 1? 'tick-online':'tick-offline' }}"></span>
+              <span class="title-info">{{ str_limit($cast->job, 15) }}  {{ $cast->age }}歳</span>
+              <span class="description">{{ str_limit($cast->intro, 30) }}</span>
+            </div>
+          </a>
         </div>
-      </div>
       @endforeach
 
       <a href="{{ route('cast.list_casts') }}" class="cast-item import"></a>

@@ -1864,3 +1864,7 @@ padding-top: 65px !important;
   vertical-align: text-bottom;
   margin-right: 2px;
 }
+
+#top .cast-list .cast-body img {
+  height: 74%;
+}
