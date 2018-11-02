@@ -22,6 +22,8 @@ mix.styles([
 'public/assets/web/css/custom.css',
 ], 'public/assets/web/css/web.css').version();
 
+mix.styles('public/assets/web/css/ge_1.css', 'public/assets/web/css/pages/ge_1.css').version();
+
 mix.js("resources/assets/js/app.js", "public/js").version();
 mix.js("resources/assets/js/web.js", "public/js").version();
 
