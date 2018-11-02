@@ -127,12 +127,26 @@
       @foreach ($casts as $cast)
         <div class="cast-item">
           <a href="{{ route('cast.show', ['id' => $cast->id]) }}">
-            <span class="tag">{{ $cast->class }}</span>
+            @php
+              if($cast->class_id == 1) {
+                $class = 'cast-class_b';
+              }
+
+              if($cast->class_id == 2) {
+                $class = 'cast-class_p';
+              }
+
+              if($cast->class_id == 3) {
+                $class = 'cast-class_d';
+              }
+
+            @endphp
+            <span class="tag {{ $class }}">{{ $cast->class }}</span>
             <img src="{{ ($cast->avatars && @getimagesize($cast->avatars[0]->thumbnail)) ? $cast->avatars[0]->thumbnail :'/assets/web/images/gm1/ic_default_avatar@3x.png' }}">
             <div class="info">
               <span class="tick {{ $cast->is_online == 1? 'tick-online':'tick-offline' }}"></span>
               <span class="title-info">{{ str_limit($cast->job, 15) }}  {{ $cast->age }}歳</span>
-              <span class="description">{{ str_limit($cast->intro, 30) }}</span>
+              <span class="description">{{ $cast->intro }}</span>
             </div>
           </a>
         </div>
