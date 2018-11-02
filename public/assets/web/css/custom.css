@@ -1867,6 +1867,11 @@ padding-top: 65px !important;
   margin-right: 2px;
 }
 
+
+#top .cast-list .cast-body img {
+  height: 74%;
+}
+
 #gf2 .slick-list .slick-track img,
 #gf2 .cast-photo .slick-dots li img {
   height: 100%;
