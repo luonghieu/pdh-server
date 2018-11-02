@@ -270,8 +270,9 @@ td {
   width: 430px;
 }
 
-.long-text.break-all {
-  word-break: break-all;
+.long-text div.break-all {
+   word-wrap: break-word;
+   width: 430px;
 }
 
 tbody td {
