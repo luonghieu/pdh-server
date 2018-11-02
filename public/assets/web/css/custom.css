@@ -1898,6 +1898,9 @@ padding-top: 65px !important;
 
 #top .cast-list .cast-body img {
   height: 74%;
+  -o-object-fit: cover;
+  object-fit: cover;
+
 }
 
 #top .cast-item .tag {
