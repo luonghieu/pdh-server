@@ -392,6 +392,9 @@ class OrderController extends Controller
             $nomineeIds = '';
         }
 
+        $data['type'] = $type;
+        $data['nomineeIds'] = $nomineeIds;
+
         if (isset($data['otherTime'])) {
             $startDate = Carbon::parse($data['otherTime'])->format('Y-m-d');
             $startTime = Carbon::parse($data['otherTime'])->format('H:i');
@@ -479,18 +482,6 @@ class OrderController extends Controller
             $startTime = Carbon::parse($timeOrder)->format('H:i');
         }
 
-        if (isset($data['casts'])) {
-            if (count($data['casts']) == $data['cast_numbers']) {
-                $type = OrderType::NOMINATED_CALL;
-            } else {
-                $type = OrderType::HYBRID;
-            }
-            $nomineeIds = implode(',', $data['casts']);
-        } else {
-            $type = OrderType::CALL;
-            $nomineeIds = '';
-        }
-
         $desires = [];
         $situations = [];
 
@@ -529,12 +520,12 @@ class OrderController extends Controller
                 'address' => $area,
                 'class_id' => $data['cast_class'],
                 'duration' => $data['duration'],
-                'nominee_ids' => $nomineeIds,
+                'nominee_ids' => $data['nomineeIds'],
                 'date' => $startDate,
                 'start_time' => $startTime,
                 'total_cast' => $data['cast_numbers'],
                 'temp_point' => $data['temp_point'],
-                'type' => $type,
+                'type' => $data['type'],
                 'tags' => $tags,
             ]), $option);
         } catch (\Exception $e) {
