@@ -153,25 +153,15 @@
           @php
             rsort($orderOptions['cast_classes']);
           @endphp
-        @foreach($orderOptions['cast_classes'] as $castClass)
-        <label>
-          <img src="{{ asset($castClass['url_image']) }}" alt="">
-          <span class="cast_class" id="cast_class" >{{ $castClass['name'] }}</span>
-          <span class="cast_price">{{ number_format($castClass['cost']) }}P/30分</span>
-          @if(!$castClass['is_active'])
-            <div class="class_disabled">
-              <input type="radio" name="cast_class" class="grade-radio" value="{{ $castClass['id'] }}" disabled>
-              <span>近日open予定！</span>
-            </div>
-          @else
-          <input type="radio" name="cast_class" class="grade-radio" value="{{ $castClass['id'] }}" {{ (isset($currentCastClass) && $currentCastClass == $castClass['id']) ? 'checked="checked"' : '' }}
-          {{ (isset($currentCastClass) && $currentCastClass == $castClass['id']) ? 'checked="checked"' : '' }}
-           {{ 1==$castClass['id'] ? 'checked' : '' }} >
-          @endif
-
-        </label>
-
-        @endforeach
+          @foreach($orderOptions['cast_classes'] as $castClass)
+            <label>
+              <img src="{{ asset($castClass['url_image']) }}" alt="">
+              <span class="cast_class" id="cast_class" >{{ $castClass['name'] }}</span>
+              <span class="cast_price">{{ number_format($castClass['cost']) }}P/30分</span>
+              <input type="radio" name="cast_class" class="grade-radio" value="{{ $castClass['id'] }}" {{ (isset($currentCastClass) && $currentCastClass == $castClass['id']) ? 'checked="checked"' : '' }}
+               >
+            </label>
+          @endforeach
         @endif
       </div>
     </div>
