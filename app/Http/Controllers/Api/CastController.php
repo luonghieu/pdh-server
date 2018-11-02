@@ -25,7 +25,6 @@ class CastController extends ApiController
 
         $params = $request->only([
             'working_today',
-            'prefecture_id',
             'class_id',
             'height',
             'body_type_id',
