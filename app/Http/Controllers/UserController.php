@@ -40,7 +40,7 @@ class UserController extends Controller
     public function listCasts(Request $request)
     {
         try {
-            $params = ['cast_new' => 1];
+            $params = ['latest' => 1];
             if ($request->all()) {
                 !$request->prefecture_id ?: $params['prefecture_id'] = $request->prefecture_id;
                 !$request->class_id ?: $params['class_id'] = $request->class_id;
@@ -99,7 +99,7 @@ class UserController extends Controller
         try {
             $params = [
                 'favorited' => 1,
-                'cast_new' => 1,
+                'latest' => 1,
             ];
             if ($request->all()) {
                 !$request->prefecture_id ?: $params['prefecture_id'] = $request->prefecture_id;
