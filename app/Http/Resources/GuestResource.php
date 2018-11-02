@@ -77,6 +77,8 @@ class GuestResource extends Resource
             'room_id' => $this->room_id,
             'card' => CardResource::make($this->whenLoaded('card')),
             'line_qr' => $this->line_qr,
+            'post_code' => $this->post_code,
+            'address' => $this->address,
         ]);
     }
 }

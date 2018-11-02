@@ -62,4 +62,6 @@ return [
     'card_expired' => 'Card expired',
     'request_transfer_cast_succeed' => 'Request transfer to cast succeed',
     'line_invalid_token' => 'Line invalid token',
+    'postcode_invalid' => 'Post code invalid',
+    'postcode_not_support' => 'post code not support',
 ];

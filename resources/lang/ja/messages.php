@@ -63,4 +63,6 @@ return [
     'request_transfer_cast_succeed' => '申し込みが完了しました',
     'transfer_to_cast_succeed' => 'Cheersへようこそ！' . PHP_EOL . '本登録が完了しました',
     'line_invalid_token' => 'トークンは無効です',
+    'postcode_invalid' => '郵便番号は7文字で入力してください',
+    'postcode_not_support' => '入力した郵便番号はエリア対象外です',
 ];
