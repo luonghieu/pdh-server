@@ -1964,3 +1964,10 @@ padding-top: 65px !important;
 #top .info .title-info {
   font-weight: bold;
 }
+
+#top .wrap-description {
+  width: 90%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}

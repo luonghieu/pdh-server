@@ -146,7 +146,9 @@
             <div class="info">
               <span class="tick {{ $cast->is_online == 1? 'tick-online':'tick-offline' }}"></span>
               <span class="title-info">{{ str_limit($cast->job, 15) }}  {{ $cast->age }}歳</span>
-              <span class="description">{{ $cast->intro }}</span>
+              <div class="wrap-description">
+                <span class="description">{{ $cast->intro }}</span>
+              </div>
             </div>
           </a>
         </div>
