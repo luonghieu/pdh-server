@@ -2,7 +2,7 @@
 @section('controller.id', 'top')
 @extends('layouts.web')
 @section('web.extra_css')
-<link rel="stylesheet" href="{{ mix('assets/web/css/pages/ge_1.css') }}">
+<link rel="stylesheet" href="{{ mix('assets/web/css/ge_1.min.css') }}">
 @endsection
 @section('web.extra')
   <div class="modal_wrap">
