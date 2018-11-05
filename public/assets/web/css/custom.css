@@ -752,6 +752,7 @@ title {
   width: 4.5rem;
   height: 4.5rem;
   border-radius: 1rem;
+  object-fit: cover;
 }
 
 #gm1 .profile-photo__item--add-button {
@@ -2037,4 +2038,10 @@ padding-top: 65px !important;
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+}
+
+#top .init-diamond {
+  width: 100%;
+  display: inline-flex;
+  word-break: break-all;
 }

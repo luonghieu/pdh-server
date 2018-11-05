@@ -97,7 +97,7 @@
         </div>
         <ul class="date-right">
           <li><img src="{{ asset('assets/web/images/common/glass.svg') }}" alt=""><span>{{ $order->duration }}時間</span></li>
-          <li><img src="{{ asset('assets/web/images/common/diamond.svg') }}" alt="">
+          <li class="init-diamond"><img src="{{ asset('assets/web/images/common/diamond.svg') }}" alt="">
             <span>{{ number_format($order->temp_point) }}P〜</span>
           </li>
           <li><img src="{{ asset('assets/web/images/common/woman.svg') }}" alt=""><span>{{ $order->total_cast }}名</span></li>
