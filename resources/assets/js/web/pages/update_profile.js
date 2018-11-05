@@ -156,7 +156,7 @@ $(document).ready(function() {
 
       window.axios.post('/api/v1/auth/update', param)
         .then(function(response) {
-          window.sessionStorage.setItem('popup_mypage', 'プロフィール登録が完了しました');
+          window.sessionStorage.setItem('popup_mypage', '生年月日の登録が完了しました!');
           window.location.href = '/mypage';
         })
         .catch(function(error) {
