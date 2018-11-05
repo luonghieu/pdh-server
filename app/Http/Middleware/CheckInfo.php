@@ -18,7 +18,7 @@ class CheckInfo
     {
         $user = Auth::user();
 
-        if (empty($user->nickname) || empty($user->date_of_birth) || empty($user->avatars[0])) {
+        if (empty($user->date_of_birth)) {
             return redirect()->route('web.index');
         }
 
