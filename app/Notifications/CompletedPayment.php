@@ -68,7 +68,7 @@ class CompletedPayment extends Notification
 
     public function pushData($notifiable)
     {
-        $orderStartDate = Carbon::parse($this->order->date . ' ' . $this->order->start_time);
+        $orderStartDate = Carbon::parse($this->order->actual_started_at);
         $orderEndDate = Carbon::parse($this->order->actual_ended_at);
         $guestNickname = $this->order->user->nickname ? $this->order->user->nickname . '様' : 'お客様';
         $content = 'Cheersをご利用いただきありがとうございました♪'
@@ -124,7 +124,7 @@ class CompletedPayment extends Notification
 
     public function lineBotPushData($notifiable)
     {
-        $orderStartDate = Carbon::parse($this->order->date . ' ' . $this->order->start_time);
+        $orderStartDate = Carbon::parse($this->order->actual_started_at);
         $orderEndDate = Carbon::parse($this->order->actual_ended_at);
         $guestNickname = $this->order->user->nickname ? $this->order->user->nickname . '様' : 'お客様';
         $content = 'Cheersをご利用いただきありがとうございました♪'
