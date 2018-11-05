@@ -73,10 +73,22 @@
     <div class="expiration-date border-bottom">
       <span class="left" id="sp-text-point">30分あたりのポイント</span>
       <div class="date-select select-point">
+      @php
+        $arrCost = [];
+        for($i =500; $i<=15000; $i+=100) {
+          array_push($arrCost, $i);
+        }
+
+        if(!in_array($user->cost,$arrCost)) {
+          array_push($arrCost, $user->cost);
+        }
+
+        sort($arrCost);
+      @endphp
         <select name="point_cast" id="point-cast" disabled>
-          @for($i =500; $i<=15000; $i+=100)
-          <option value="{{ $i }}" {{ $user->cost == $i ? 'selected' : ''}}>{{number_format($i) }}</option>
-          @endfor
+          @foreach($arrCost as $cost)
+          <option value="{{ $cost }}" {{ $user->cost == $cost ? 'selected' : ''}}>{{number_format($cost) }}</option>
+          @endforeach
         </select>
       </div>
     </div>
