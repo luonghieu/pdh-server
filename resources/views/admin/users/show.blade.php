@@ -81,12 +81,12 @@
                 <td>
                   @php
                     $arrCost = [];
-                    for($i =15000; $i<=75000; $i+=5000) {
+                    for($i =0; $i<15000; $i+=100) {
                       array_push($arrCost, $i);
                     }
 
-                    if(!in_array($user->cost,$arrCost)) {
-                      array_push($arrCost, $user->cost);
+                    for($i =15000; $i<=75000; $i+=5000) {
+                      array_push($arrCost, $i);
                     }
 
                     sort($arrCost);
