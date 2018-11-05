@@ -81,7 +81,7 @@
                 <td>
                   @php
                     $arrCost = [];
-                    for($i =100; $i<15000; $i+=100) {
+                    for($i =0; $i<15000; $i+=100) {
                       array_push($arrCost, $i);
                     }
 
