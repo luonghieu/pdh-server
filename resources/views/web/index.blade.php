@@ -189,7 +189,10 @@
         $('#profile-popup').trigger('click');
         $('#profile-message h2').html(popup_mypage);
 
-        window.sessionStorage.removeItem('popup_mypage');
+        setTimeout(() => {
+          $('#profile-popup').trigger('click');
+          window.sessionStorage.removeItem('popup_mypage');
+        }, 3000);
       }
     })
 
