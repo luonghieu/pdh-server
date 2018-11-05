@@ -2,7 +2,7 @@
 @section('screen.id', 'gf1')
 @extends('layouts.web')
 @section('web.extra_css')
-  <link rel="stylesheet" href="{{ asset('assets/web/css/gf_1.css') }}">
+  <link rel="stylesheet" href="{{ mix('assets/web/css/gf_1.min.css') }}">
 @endsection
 @section('web.content')
   <form id="search" method="GET" action="{{ route('cast.list_casts') }}">
