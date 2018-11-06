@@ -684,6 +684,7 @@ $(document).ready(function(){
 
     //current_time_set
     if(orderParams.current_time_set){
+      $(".input-time-join").parent().removeClass('active');
       if('other_time'== orderParams.current_time_set){
         $('.date-input-nomination').css('display', 'flex')
 

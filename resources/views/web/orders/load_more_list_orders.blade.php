@@ -5,9 +5,9 @@
       <li class="time-text">
         {{ Carbon\Carbon::parse($order['date'])->format('m月d日') }} ({{ dayOfWeek()[Carbon\Carbon::parse($order['date'])->dayOfWeek] }})
       </li>
-      <li class="time-text display-flex">
+      <li class="time-text display-time">
         <span class="text-ellipsis">{{ $order['address'] }}</span>
-        <span>{{ Carbon\Carbon::parse($order['start_time'])->format('H:i') }}〜</span>
+        <span class="list-order-start-time">{{ Carbon\Carbon::parse($order['start_time'])->format('H:i') }}〜</span>
       </li>
       @if(count($order['tags']))
         <li class="tag-text">

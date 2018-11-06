@@ -16,7 +16,7 @@
                         <label for="rating-confirm-popup" class="close_button  left">キャンセル</label>
                     </div>
                     <div class="close_button-block" id="rating-confirm-btn">
-                        <label class="close_button">評価する</label>
+                        <label class="close_button right">評価する</label>
                     </div>
                 </div>
             </div>

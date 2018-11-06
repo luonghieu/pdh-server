@@ -15,7 +15,13 @@ class OrderController extends ApiController
         if ($request->status) {
             $listStatuses = explode(",", trim($request->status, ","));
         } else {
-            $listStatuses = [OrderStatus::OPEN, OrderStatus::ACTIVE, OrderStatus::PROCESSING];
+            $listStatuses = [
+                OrderStatus::OPEN,
+                OrderStatus::ACTIVE,
+                OrderStatus::PROCESSING,
+                OrderStatus::DENIED,
+                OrderStatus::CANCELED
+            ];
         }
 
         $user = $this->guard()->user();

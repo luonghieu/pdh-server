@@ -38,7 +38,7 @@ class CastController extends ApiController
 
         $casts = Cast::query();
         foreach ($params as $key => $value) {
-            if ("working_today" != $key && !(3 == $request->device)) {
+            if (!(3 == $request->device)) {
                 $casts->where($key, $value);
             }
         }
@@ -55,22 +55,27 @@ class CastController extends ApiController
             $casts->whereBetween('users.cost', [$min, $max]);
         }
 
-        $casts = $casts->leftJoin('cast_order as co', 'co.user_id', '=', 'users.id')
-            ->whereDoesntHave('blockers', function ($query) use ($user) {
-                $query->where('user_id', $user->id);
-            })->whereDoesntHave('blocks', function ($q) use ($user) {
+        $casts = $casts->whereDoesntHave('blockers', function ($query) use ($user) {
+            $query->where('user_id', $user->id);
+        })->whereDoesntHave('blocks', function ($q) use ($user) {
             $q->where('blocked_id', $user->id);
-        })->active()
-            ->groupBy('users.id')
-            ->orderBy('working_today', 'DESC')
-            ->orderBy('last_active_at', 'DESC')
-            ->orderByDesc('co.created_at')
-            ->select('users.*');
+        })->active();
 
         if ($request->device) {
-            $casts = $casts->limit(10)->get();
+            $casts = $casts->orderByDesc('working_today')
+                ->orderByDesc('created_at')
+                ->orderByDesc('last_active_at')
+                ->limit(10)->get();
+        } elseif ($request->latest) {
+            $casts = $casts->orderByDesc('users.created_at')
+                ->paginate($request->per_page)
+                ->appends($request->query());
         } else {
-            $casts = $casts->select('users.*')
+            $casts = $casts->leftJoin('cast_order as co', 'co.user_id', '=', 'users.id')
+                ->groupBy('users.id')
+                ->orderBy('last_active_at', 'DESC')
+                ->orderByDesc('co.created_at')
+                ->select('users.*')
                 ->paginate($request->per_page)
                 ->appends($request->query());
         }

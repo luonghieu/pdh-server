@@ -52,6 +52,7 @@
                       </select>
                       <button type="submit" class="btn-change-cast-class">変更する</button>
                     </form>
+                  </td>
                 </tr>
                 @if ($prefectures->count())
                 <tr>
@@ -66,6 +67,7 @@
                       </select>
                       <button type="submit" class="btn-change-cast-class">変更する</button>
                     </form>
+                  </td>
                 </tr>
                 @endif
               @endif
@@ -76,7 +78,29 @@
               @if ($user->is_cast)
               <tr>
                 <th>30分あたりのポイント</th>
-                <td>{{ number_format($user->cost) }}</td>
+                <td>
+                  @php
+                    $arrCost = [];
+                    for($i =0; $i<15000; $i+=100) {
+                      array_push($arrCost, $i);
+                    }
+
+                    for($i =15000; $i<=75000; $i+=5000) {
+                      array_push($arrCost, $i);
+                    }
+
+                    sort($arrCost);
+                  @endphp
+                  <form action="{{ route('admin.users.change_cost', ['user' => $user->id]) }}" class="form-cast-class" method="post">
+                    {{ csrf_field() }}
+                    <select class="cast-class" name="cast_cost">
+                      @foreach($arrCost as $cost)
+                        <option value="{{ $cost }}" {{ $user->cost == $cost ? 'selected' : ''}}>{{number_format($cost) }}</option>
+                      @endforeach
+                    </select>
+                    <button type="submit" class="btn-change-cast-class">変更する</button>
+                  </form>
+                </td>
               </tr>
               @endif
               <tr>
