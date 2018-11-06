@@ -26,7 +26,9 @@
       <input type="hidden" value="{{ $castIds }}" class="cast-ids" name="cast_ids">
       @endif
     </div>
-    <button type="submit" class="form_footer ct-button" id="sb-select-casts">次に進む(3/4)</button>
+    <button type="submit" class="form_footer ct-button" id="sb-select-casts">
+     {{ isset($currentCasts) ? '次に進む(3/4)' : '指名せずに進む(3/4)' }}
+  </button>
   </form>
 @endsection
 

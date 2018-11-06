@@ -2056,3 +2056,14 @@ padding-top: 65px !important;
   right: 0;
   position: unset;
 }
+
+.cast_block input:checked ~ .icon::before {
+  z-index: -1 !important;
+}
+
+.ge2-3 a.cast-detail {
+  width: calc(100% - 6px);
+  height: calc(100% - 6px);
+  border-radius: 12px;
+  border: solid 3px #00C3C3;
+}

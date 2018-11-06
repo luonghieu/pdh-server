@@ -317,7 +317,7 @@ class OrderController extends Controller
         ];
 
         try {
-            $casts = $client->get(route('casts.index', ['working_today' => 1, 'class_id' => $data['cast_class']]), $option);
+            $casts = $client->get(route('casts.index', ['class_id' => $data['cast_class']]), $option);
         } catch (\Exception $e) {
             LogService::writeErrorLog($e);
             abort(500);
