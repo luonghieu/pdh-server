@@ -95,6 +95,9 @@ class FacebookAuthController extends ApiController
             return $user;
         }
 
+        $user->device_type = ($deviceType) ? $deviceType : DeviceType::WEB;
+        $user->save();
+
         return $user;
     }
 }
