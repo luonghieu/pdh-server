@@ -23,7 +23,7 @@
                         <label for="request-update-point" class="close_button  left">いいえ</label>
                     </div>
                     <div class="close_button-block">
-                        <label class="close_button" id="request-update-point-btn">修正依頼する</label>
+                        <label class="close_button right" id="request-update-point-btn">修正依頼する</label>
                     </div>
                     <input type="hidden" id="request-update-cast-id">
                 </div>
@@ -50,7 +50,7 @@
                         <label for="request-buy-point" class="close_button  left">キャンセル</label>
                     </div>
                     <div class="close_button-block">
-                        <label class="close_button" id="request-buy-point-btn">決済を確定する</label>
+                        <label class="close_button right" id="request-buy-point-btn">決済を確定する</label>
                     </div>
                 </div>
             </div>
@@ -72,7 +72,7 @@
                         <label for="payment-confirm" class="close_button  left">いいえ</label>
                     </div>
                     <div class="close_button-block">
-                        <label class="close_button" id="payment-confirm-btn">はい</label>
+                        <label class="close_button right" id="payment-confirm-btn">はい</label>
                     </div>
                 </div>
             </div>
