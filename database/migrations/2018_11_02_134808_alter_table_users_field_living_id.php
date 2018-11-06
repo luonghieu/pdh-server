@@ -15,6 +15,7 @@ class AlterTableUsersFieldLivingId extends Migration
     {
         Schema::table('users', function (Blueprint $table) {
             $table->string('living_id')->after('prefecture_id')->nullable();
+            $table->string('fullname_kana')->after('fullname')->nullable();
         });
     }
 
@@ -26,7 +27,8 @@ class AlterTableUsersFieldLivingId extends Migration
     public function down()
     {
         Schema::table('users', function (Blueprint $table) {
-            $table->string('living_id')->after('prefecture_id')->nullable();
+            $table->dropColumn('living_id');
+            $table->dropColumn('fullname_kana');
         });
     }
 }

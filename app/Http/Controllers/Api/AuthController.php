@@ -95,6 +95,7 @@ class AuthController extends ApiController
             'front_id_image' => 'image|mimes:jpeg,png,jpg,gif,svg|max:5120',
             'back_id_image' => 'image|mimes:jpeg,png,jpg,gif,svg|max:5120',
             'line_qr' => 'image|mimes:jpeg,png,jpg,gif,svg|max:5120',
+            'fullname_kana' => 'string|regex:/^[ぁ-ん ]/u',
         ];
         $validator = validator(request()->all(), $rules);
 
@@ -121,6 +122,7 @@ class AuthController extends ApiController
             'siblings_type',
             'cohabitant_type',
             'line_id',
+            'fullname_kana'
         ]);
 
         try {
