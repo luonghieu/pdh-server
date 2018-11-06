@@ -91,6 +91,7 @@ class GuestController extends ApiController
             'images' => 'array|required|min:2|max:2',
             'images.*' => 'image|mimes:jpeg,png,jpg,gif,svg|max:5120',
             'living_id' => 'required|numeric|exists:prefectures,id',
+            'fullname_kana' => 'required|string|regex:/^[ぁ-ん ]/u',
         ];
 
         $validator = validator($request->all(), $rules);
@@ -131,6 +132,7 @@ class GuestController extends ApiController
             $user->cast_transfer_status = CastTransferStatus::PENDING;
             $user->request_transfer_date = Carbon::now();
             $user->living_id = $request->living_id;
+            $user->fullname_kana = $request->fullname_kana;
 
             $user->save();
             \DB::commit();
