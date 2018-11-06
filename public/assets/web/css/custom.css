@@ -987,10 +987,6 @@ title {
   max-width: 95%;
 }
 
-.css-mypage.pb {
-  padding-bottom: 0.8rem;
-}
-
 #go1 .text-display {
   display: flex;
   justify-content: center;
@@ -2044,4 +2040,19 @@ padding-top: 65px !important;
   width: 100%;
   display: inline-flex;
   word-break: break-all;
+}
+
+#top .booking-date {
+  width: 100%;
+}
+
+#top .date-left {
+  float: left;
+  max-width: 60%;
+}
+
+#top .booking-date .date-right {
+  float: right;
+  right: 0;
+  position: unset;
 }

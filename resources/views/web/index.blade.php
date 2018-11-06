@@ -87,7 +87,7 @@
         <div class="date-left">
           <span>{{ Carbon\Carbon::parse($order->date)->format('m月d日') }} ({{ dayOfWeek()[Carbon\Carbon::parse($order->date)->dayOfWeek] }})</span>
           <span>{{ $order->address }} {{ \Carbon\Carbon::parse($order->start_time)->format('H:i') }}〜</span>
-          <ul class="css-mypage pb">
+          <ul>
             @if(count($order->tags))
               @foreach($order->tags as $tag)
                 <li>#{{ $tag->name }}</li>
@@ -102,6 +102,7 @@
           </li>
           <li><img src="{{ asset('assets/web/images/common/woman.svg') }}" alt=""><span>{{ $order->total_cast }}名</span></li>
         </ul>
+        <div class="clear"></div>
       </div>
       <ul class="casts">
         @foreach($order->casts as $cast)
