@@ -79,6 +79,7 @@ class GuestResource extends Resource
             'line_qr' => $this->line_qr,
             'post_code' => $this->post_code,
             'address' => $this->address,
+            'fullname_kana' => $this->fullname_kana,
         ]);
     }
 }

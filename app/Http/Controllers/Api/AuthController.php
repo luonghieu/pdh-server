@@ -81,7 +81,7 @@ class AuthController extends ApiController
             'intro' => 'max:30',
             'description' => 'max:1000',
             'phone' => 'max:13',
-            'prefecture_id' => 'numeric|exists:prefectures,id',
+            'living_id' => 'numeric|exists:prefectures,id',
             'cost' => 'numeric',
             'salary_id' => 'numeric|exists:salaries,id',
             'height' => ['numeric', new CheckHeight],
@@ -95,6 +95,7 @@ class AuthController extends ApiController
             'front_id_image' => 'image|mimes:jpeg,png,jpg,gif,svg|max:5120',
             'back_id_image' => 'image|mimes:jpeg,png,jpg,gif,svg|max:5120',
             'line_qr' => 'image|mimes:jpeg,png,jpg,gif,svg|max:5120',
+            'fullname_kana' => 'string|regex:/^[ぁ-ん ]/u',
         ];
         $validator = validator(request()->all(), $rules);
 
@@ -125,7 +126,7 @@ class AuthController extends ApiController
             'description',
             'intro',
             'phone',
-            'prefecture_id',
+            'living_id',
             'cost',
             'salary_id',
             'height',
@@ -138,7 +139,8 @@ class AuthController extends ApiController
             'cohabitant_type',
             'line_id',
             'post_code',
-            'address'
+            'address',
+            'fullname_kana'
         ]);
 
         try {

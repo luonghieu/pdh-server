@@ -194,7 +194,7 @@
             <p class="portlet-content__text--list">居住地</p>
             <label class="time-input">
               <div class="selectbox">
-                <select dir="rtl" id="prefecture-id">
+                <select dir="rtl" id="living-id">
                   <option value="" class="hidden">未設定</option>
                   @foreach ($glossaries['prefectures'] as $prefecture)
                     @php
