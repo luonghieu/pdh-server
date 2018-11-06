@@ -43,11 +43,8 @@ class UpdateLivingId extends Command
         foreach ($users as $user) {
             if ($user->prefecture_id) {
                 $user->living_id = $user->prefecture_id;
-            } else {
-                $user->living_id = 13;
+                $user->save();
             }
-
-            $user->save();
         }
     }
 }
