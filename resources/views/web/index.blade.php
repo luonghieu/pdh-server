@@ -22,7 +22,7 @@
             </div>
             <label data-field="date_of_birth" id="date-of-birth-error" class="error help-block" for="date-of-birth"></label>
           </div>
-          <button type="submit" for="popup-date-of-birth" class="close_button">豊録する</button>
+          <button type="submit" for="popup-date-of-birth" class="close_button">登録する</button>
         </div>
       </div>
     </div>
