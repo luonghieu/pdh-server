@@ -120,4 +120,12 @@ class UserController extends Controller
 
         return redirect(route('admin.users.show', ['user' => $user->id]));
     }
+
+    public function changeRank(User $user, Request $request)
+    {
+        $user->rank = $request->cast_rank;
+        $user->save();
+
+        return redirect()->route('admin.users.show', ['user' => $user->id]);
+    }
 }

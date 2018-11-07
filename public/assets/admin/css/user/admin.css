@@ -89,6 +89,7 @@ td {
   background-color: #39afea;
   border-color: #39afea;
 }
+
 .title-logo {
   color: #3a4244;
   font-size: 30px;
@@ -1553,4 +1554,9 @@ tbody td {
 .mt-btn {
   margin-top: -40px;
   width: 95%
+}
+
+.cast-rank {
+  width: 150px !important;
+  border: 1px solid #A6A6A6 !important;
 }

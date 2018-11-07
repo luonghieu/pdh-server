@@ -116,6 +116,24 @@
                   </form>
                 </td>
               </tr>
+              <tr>
+                <th>キャスト一覧表示優先ランク</th>
+                <td>
+                  @php
+                    $arrRank = App\Enums\UserRank::toSelectArray();
+                    krsort($arrRank);
+                  @endphp
+                  <form action="{{ route('admin.users.change_rank', ['user' => $user->id]) }}" class="form-cast-class" method="post">
+                    {{ csrf_field() }}
+                    <select class="cast-class" name="cast_rank">
+                      @foreach($arrRank as $key => $rank)
+                        <option value="{{ $key }}" {{ $user->rank == $key ? 'selected' : ''}}>{{ $rank }}</option>
+                      @endforeach
+                    </select>
+                    <button type="submit" class="btn-change-cast-class">変更する</button>
+                  </form>
+                </td>
+              </tr>
               @endif
               <tr>
                 <th>性別</th>

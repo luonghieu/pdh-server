@@ -85,6 +85,9 @@ class CastResource extends Resource
             'cast_transfer_status' => ($this->cast_transfer_status) ? $this->cast_transfer_status : CastTransferStatus::OFFICIAL,
             'line_qr' => $this->line_qr,
             'front_id_image' => $this->front_id_image,
+            'post_code' => $this->post_code,
+            'address' => $this->address,
+            'rank' => $this->rank,
         ]);
     }
 }
