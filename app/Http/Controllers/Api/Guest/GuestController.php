@@ -91,7 +91,7 @@ class GuestController extends ApiController
             'images' => 'array|required|min:2|max:2',
             'images.*' => 'image|mimes:jpeg,png,jpg,gif,svg|max:5120',
             'prefecture_id' => 'required|numeric|exists:prefectures,id',
-            'fullname_kana' => 'string|regex:/^[ぁ-ん ]/u',
+            'fullname_kana' => 'required|string|regex:/^[ぁ-ん ]/u',
         ];
 
         $validator = validator($request->all(), $rules);
