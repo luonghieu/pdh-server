@@ -21,7 +21,7 @@ class AvatarController extends Controller
             return response()->json([
                 'status' => false,
                 'error' => [
-                    'image' => 'プロフィール写真は、最大10枚まで登録することができます'
+                    'image' => ['プロフィール写真は、最大10枚まで登録することができます'],
                 ],
             ], 400);
         }
