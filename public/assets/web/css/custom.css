@@ -1885,6 +1885,8 @@ padding-top: 65px !important;
 }
 
 #popup-top input[type='date'] {
+  -webkit-appearance: none;
+  display: inline-block;
   position: relative;
   width: 9rem;
   height: 20px;
