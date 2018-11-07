@@ -27,8 +27,14 @@
         <div class="clearfix"></div>
         <div class="panel-body">
           <div class="col-lg-6 wrap-qr-code">
-            <div class="list-avatar" id="list">
+            <div class="list-avatar">
+              <div class="include-avatar">
               @include('admin.users.content_image', ['avatars' => $user->avatars])
+              </div>
+              @if ($user->avatars->count() < 10)
+                <label class="img-default"><input type="file" name="image" id="upload-avatar" accept="image/*"></label>
+                <div class="error-message"></div>
+              @endif
             </div>
             <div class="clear"></div>
             @if ($user->is_cast)
@@ -346,6 +352,6 @@
 @endsection
 @section('admin.js')
   <input type="hidden" id="user_id" value="{{ $user->id }}" />
-  <input type="hidden" id="url" value="{{ route('admin.avatars.upload', $user->id) }}" />
+  <input type="hidden" id="url-upload" value="{{ route('admin.avatars.upload', $user->id) }}" />
   <script src="/assets/admin/js/pages/upload_image.js"></script>
 @stop
