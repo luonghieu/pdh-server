@@ -1503,7 +1503,7 @@ tbody td {
 }
 
 .list-avatar .img-default::before {
-  content: "直像を追加する";
+  content: "画像を追加する";
   position: absolute;
   color: #222222;
   top: calc(50% - 25px);
