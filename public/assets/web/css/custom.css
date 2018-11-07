@@ -522,6 +522,7 @@ title {
   outline: none;
   text-align: right;
   z-index: 1;
+  bottom: 0;
 }
 
 #gl1 #number-card-display {
