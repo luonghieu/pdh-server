@@ -28,13 +28,7 @@
         <div class="panel-body">
           <div class="col-lg-6 wrap-qr-code">
             <div class="list-avatar">
-              <div class="include-avatar">
               @include('admin.users.content_image', ['avatars' => $user->avatars])
-              </div>
-              @if ($user->avatars->count() < 10)
-                <label class="img-default"><input type="file" name="image" id="upload-avatar" accept="image/*"></label>
-                <div class="error-message"></div>
-              @endif
             </div>
             <div class="clear"></div>
             @if ($user->is_cast)
