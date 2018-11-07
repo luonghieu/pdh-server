@@ -4,7 +4,7 @@ $(document).ready(function(){
 
   userId = $('#user_id').val();
 
-  $('#upload-avatar').on('change', function (e) {
+  $('body').on('change', '#upload-avatar', function (e) {
     var files = this.files;
     var urlUpload = $('#url-upload').val();
 
@@ -29,13 +29,13 @@ $(document).ready(function(){
         }
       },
       success: function(result) {
-        $(".include-avatar").html(result.view);
+        $(".list-avatar").html(result.view);
       },
       error: function(xhr) {
         $('.error-message').empty();
         error = xhr.responseJSON.error.image;
         $('.error-message').addClass('float');
-        $('.error-message').append('<strong style="color: red;">${error[0]}</strong>');
+        $('.error-message').append('<strong style="color: red;">' + error[0] + '</strong>');
       }
     });
 
@@ -52,7 +52,7 @@ $(document).ready(function(){
     $('#popup-img').modal('show');
   });
 
-  $('#update-avatar').on('change', function (e) {
+  $('body').on('change', '#update-avatar', function (e) {
     var files = this.files;
 
     if (files.length === 0) {
@@ -79,7 +79,7 @@ $(document).ready(function(){
         $('#flash').hide();
         $('#popup-img').modal('hide');
         $('.message-alert').html('<div class="alert alert-success fade in" id="flash"><a href="#" class="close" data-dismiss="alert">&times;</a>' + result.message + '</div>');
-        $(".include-avatar").html(result.view);
+        $(".list-avatar").html(result.view);
       },
       error: function(xhr) {
         $('.popup-error-message').empty();
