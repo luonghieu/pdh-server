@@ -1962,12 +1962,6 @@ padding-top: 65px !important;
   cursor: pointer;
 }
 
-#popup-top .text-lable {
-  background: transparent url("../images/common/arrow.svg") no-repeat right center;
-  max-width: 50%;
-  margin: 0 auto 1em;
-}
-
 .display-time {
   display: flex;
   margin: 0 auto;
