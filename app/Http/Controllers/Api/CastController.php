@@ -69,8 +69,8 @@ class CastController extends ApiController
                 ->orderByDesc('last_active_at')
                 ->limit(10)->get();
         } elseif ($request->latest) {
-            $casts = $casts->orderByDesc('users.created_at')
-                ->orderBy('rank')
+            $casts = $casts->orderBy('rank')
+                ->orderByDesc('users.created_at')
                 ->paginate($request->per_page)
                 ->appends($request->query());
         } else {
