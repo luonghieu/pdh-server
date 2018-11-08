@@ -1726,6 +1726,8 @@ div.user-data span.total-point-cast{
 #gf4 .cast-rank .later li img {
   height: 40px;
   border-radius: 5px;
+  -o-object-fit: cover;
+  object-fit: cover;
 }
 
 #gf4 .second_third figure img {
