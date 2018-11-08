@@ -26,7 +26,7 @@
       </div>
     </div>
   </form>
-  <div class="modal_wrap">
+  <div class="modal_wrap" id="input_birthday_modal">
     <input id="trigger3" type="checkbox">
       <div class="modal_overlay">
         <label for="trigger3" class="modal_trigger" id="profile-popup"></label>
@@ -183,10 +183,10 @@
       if (popup_mypage) {
         $('#profile-popup').trigger('click');
         $('#profile-message h2').html(popup_mypage);
+        window.sessionStorage.removeItem('popup_mypage');
 
         setTimeout(() => {
-          $('#profile-popup').trigger('click');
-          window.sessionStorage.removeItem('popup_mypage');
+          $('#input_birthday_modal').css('display', 'none');
         }, 3000);
       }
     })
