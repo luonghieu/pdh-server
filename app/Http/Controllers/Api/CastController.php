@@ -63,16 +63,19 @@ class CastController extends ApiController
 
         if ($request->device) {
             $casts = $casts->orderByDesc('working_today')
+                ->orderBy('rank')
                 ->orderByDesc('created_at')
                 ->orderByDesc('last_active_at')
                 ->limit(10)->get();
         } elseif ($request->latest) {
             $casts = $casts->orderByDesc('users.created_at')
+                ->orderBy('rank')
                 ->paginate($request->per_page)
                 ->appends($request->query());
         } else {
             $casts = $casts->leftJoin('cast_order as co', 'co.user_id', '=', 'users.id')
                 ->groupBy('users.id')
+                ->orderBy('rank')
                 ->orderBy('last_active_at', 'DESC')
                 ->orderByDesc('co.created_at')
                 ->select('users.*')
