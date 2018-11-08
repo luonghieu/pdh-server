@@ -89,7 +89,9 @@ class GuestController extends ApiController
             'job_id' => 'numeric|exists:jobs,id|required',
             'line_qr' => 'image|mimes:jpeg,png,jpg,gif,svg|max:5120',
             'images' => 'array|required|min:2|max:2',
-            'images.*' => 'image|mimes:jpeg,png,jpg,gif,svg|max:5120'
+            'images.*' => 'image|mimes:jpeg,png,jpg,gif,svg|max:5120',
+            'prefecture_id' => 'required|numeric|exists:prefectures,id',
+            'fullname_kana' => 'required|string|regex:/^[ぁ-ん ]/u',
         ];
 
         $validator = validator($request->all(), $rules);
@@ -105,7 +107,8 @@ class GuestController extends ApiController
             $user->nickname = $request->nickname;
             $user->date_of_birth = Carbon::parse($request->date_of_birth);
             $user->job_id = $request->job_id;
-            $user->prefecture_id = 13;
+            $user->prefecture_id = $request->prefecture_id;
+            $user->fullname_kana = $request->fullname_kana;
 
             $lineImage = $request->file('line_qr');
             if ($lineImage) {

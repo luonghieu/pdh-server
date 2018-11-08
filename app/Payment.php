@@ -21,10 +21,16 @@ class Payment extends Model
     {
         if (PaymentStatus::OPEN == $this->status) {
             $this->load(['user']);
+            $user = $this->user;
+
+            // do not call Stripe if payment is suspended
+            if ($user->payment_suspended) {
+                return false;
+            }
 
             $request = [
                 'amount' => $this->amount,
-                'customer' => $this->user->stripe_id,
+                'customer' => $user->stripe_id,
                 'source' => $this->card->card_id,
                 'description' => "Charge user for buying point order id of {$this->point_id}",
             ];
@@ -46,12 +52,16 @@ class Payment extends Model
 
                 $this->createFailedPaymentRecord($this->id, 1, $error);
 
+                $user->suspendPayment();
+
                 LogService::writeErrorLog($e);
 
                 return false;
             } catch (\Exception $e) {
                 // Something else happened, completely unrelated to Stripe
                 LogService::writeErrorLog($e);
+
+                $user->suspendPayment();
 
                 return false;
             }

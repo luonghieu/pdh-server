@@ -19,6 +19,13 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.'], function () {
         Route::post('{user}/change_rank', ['as' => 'change_rank', 'uses' => 'UserController@changeRank'])->where('user', '[0-9]+');
     });
 
+    Route::group(['as' => 'avatars.', 'middleware' => 'is_admin'], function () {
+        Route::post('{user}/avatars', ['as' => 'upload', 'uses' => 'AvatarController@upload'])->where('user', '[0-9]+');
+        Route::post('{user}/avatars/{id}', ['as' => 'update', 'uses' => 'AvatarController@update']);
+        Route::patch('{user}/avatars/{id}', ['as' => 'set_avatar_default', 'uses' => 'AvatarController@setAvatarDefault']);
+        Route::delete('{user}/avatars/{id}', ['as' => 'delete', 'uses' => 'AvatarController@delete']);
+    });
+
     Route::group(['namespace' => 'RequestTransfer', 'prefix' => 'request_transfer', 'as' => 'request_transfer.', 'middleware' => 'is_admin'], function () {
         Route::get('/', ['as' => 'index', 'uses' => 'RequestTransferController@index']);
         Route::get('{cast}', ['as' => 'show', 'uses' => 'RequestTransferController@show'])->where('cast', '[0-9]+');

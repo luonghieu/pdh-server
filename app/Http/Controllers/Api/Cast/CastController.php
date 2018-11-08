@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api\Cast;
 
 use App\Enums\CastTransferStatus;
 use App\Http\Controllers\Api\ApiController;
+use App\Notifications\CreateCast;
 use Illuminate\Http\Request;
 
 class CastController extends ApiController
@@ -17,6 +18,7 @@ class CastController extends ApiController
 
         $cast->cast_transfer_status = CastTransferStatus::OFFICIAL;
         $cast->save();
+        $cast->notify(new CreateCast());
 
         return $this->respondWithNoData(trans('messages.transfer_to_cast_succeed'));
     }

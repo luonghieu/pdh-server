@@ -12,7 +12,7 @@
       <div class="modal_overlay">
         <div class="modal_content modal_content-btn5">
           <div class="text-box">
-            <h2>牛年月日の登録をしよう!</h2>
+            <h2>生年月日の登録をしよう!</h2>
             <div>
               @php
                 $max = \Carbon\Carbon::parse(now())->subYear(20);
