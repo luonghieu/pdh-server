@@ -39,6 +39,18 @@ class Payment extends Model
                 $stripe = new StripePayment;
                 $charge = $stripe->charge($request);
 
+                if ($charge->error) {
+                    $error = (array) $charge->error;
+
+                    $this->createFailedPaymentRecord($this->id, 1, $error);
+
+                    $user->suspendPayment();
+
+                    LogService::writeErrorLog($error['message']);
+
+                    return false;
+                }
+
                 // update order payment status
                 $this->charge_id = $charge->id;
                 $this->charge_at = now();
