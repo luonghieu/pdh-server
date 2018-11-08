@@ -126,7 +126,36 @@ title {
   color: red;
 }
 
+#gm1 .init-date-of-birth {
+  position: relative;
+}
+
+#gm1 .init-date-of-birth i:after {
+  pointer-events: none;
+  position: absolute;
+  content: "";
+  display: block;
+  margin-left: -1px;
+  margin-top: -1px;
+  width: 0;
+  height: 0;
+  top: 50%;
+  right: 0;
+  width: 6px;
+  height: 6px;
+  border-top: 1px solid #222222;
+  border-right: 1px solid #222222;
+  -webkit-box-sizing: border-box;
+  box-sizing: border-box;
+  -webkit-transform: translateY(-50%) translateX(0) rotate(135deg);
+  -ms-transform: translateY(-50%) translateX(0) rotate(135deg);
+  transform: translateY(-50%) translateX(0) rotate(135deg);
+}
+
 #gm1 input[type='date'] {
+  right: -6px;
+  -webkit-appearance: none;
+  display: inline-block;
   position: relative;
   width: 8rem;
   height: 20px;
@@ -138,10 +167,10 @@ title {
 
 #gm1 input[type='date']:before {
   position: absolute;
-  right: 12px;
   content: attr(data-date);
   display: inline-block;
   color: black;
+  width: 100%;
 }
 
 #gm1 input[type='date']::-webkit-datetime-edit,
@@ -1063,25 +1092,6 @@ title {
 
 #gf2 .cast-photo .image-default {
   background: none !important;
-}
-
-.gm1-edit .init-date-of-birth {
-  pointer-events: none;
-  position: absolute;
-  content: "";
-  display: block;
-  width: 0;
-  height: 0;
-  right: 7px;
-  width: 6px;
-  height: 6px;
-  border-top: 1px solid #222222;
-  border-right: 1px solid #222222;
-  -webkit-box-sizing: border-box;
-  box-sizing: border-box;
-  -webkit-transform: translateY(-50%) translateX(0) rotate(135deg);
-  -ms-transform: translateY(-50%) translateX(0) rotate(135deg);
-  transform: translateY(-50%) translateX(0) rotate(135deg);
 }
 
 #ge2-1-x .price-show {
