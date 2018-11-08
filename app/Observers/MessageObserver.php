@@ -26,15 +26,15 @@ class MessageObserver
             if (RoomType::DIRECT == $room->type) {
                 $otherId = $room->owner_id == $room->users[0]->id ? $room->users[1]->id : $room->users[0]->id;
                 if (!$room->checkBlocked($otherId)) {
-                    \Notification::send($users, (new MessageCreated($message->id)));
+                    \Notification::send($users, new MessageCreated($message->id));
 
                     $other = $users->first();
                     if ($other->line_user_id != null) {
-                        $other->notify((new DirectMessageNotifyToLine($message->id)));
+                        $other->notify(new DirectMessageNotifyToLine($message->id));
                     }
                 }
             } else {
-                \Notification::send($users, (new MessageCreated($message->id)));
+                \Notification::send($users, new MessageCreated($message->id));
             }
         }
 
