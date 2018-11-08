@@ -121,8 +121,10 @@
             @php
               $max = \Carbon\Carbon::parse(now())->subYear(20);
             @endphp
-            <input type="date" id="date-of-birth" name="date_of_birth" data-date="" max="{{ $max->format('Y-m-d') }}" data-date-format="YYYY年MM月DD日" value="{{ \Carbon\Carbon::parse($profile['date_of_birth'])->format('Y-m-d') }}">
-            <i class="init-date-of-birth"></i>
+            <div class="init-date-of-birth">
+              <input type="date" id="date-of-birth" name="date_of_birth" data-date="" max="{{ $max->format('Y-m-d') }}" data-date-format="YYYY年MM月DD日" value="{{ \Carbon\Carbon::parse($profile['date_of_birth'])->format('Y-m-d') }}">
+              <i></i>
+            </div>
           </li>
           <label data-field="date_of_birth" id="date-of-birth-error" class="error help-block" for="date-of-birth"></label>
           <li class="portlet-content__item">
