@@ -84,7 +84,7 @@ class GuestController extends ApiController
     public function requestTransfer(Request $request)
     {
         $rules = [
-            'nickname' => 'max:20|required',
+            'fullname' => 'required',
             'date_of_birth' => 'date|before:today|required',
             'job_id' => 'numeric|exists:jobs,id|required',
             'line_qr' => 'image|mimes:jpeg,png,jpg,gif,svg|max:5120',
@@ -104,7 +104,7 @@ class GuestController extends ApiController
 
         try {
             \DB::beginTransaction();
-            $user->nickname = $request->nickname;
+            $user->fullname = $request->fullname;
             $user->date_of_birth = Carbon::parse($request->date_of_birth);
             $user->job_id = $request->job_id;
             $user->prefecture_id = $request->prefecture_id;
