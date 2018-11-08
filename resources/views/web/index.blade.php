@@ -17,8 +17,7 @@
               @php
                 $max = \Carbon\Carbon::parse(now())->subYear(20);
               @endphp
-              <div class="text-lable" id="js-text-date"><span>選択してください</span></div>
-              <input type="hidden" id="date-of-birth" name="date_of_birth" data-date="" max="{{ $max->format('Y-m-d') }}" data-date-format="YYYY年MM月DD日" value="{{ \Carbon\Carbon::parse(Auth::user()->date_of_birth)->format('Y-m-d') }}">
+              <input type="date" id="date-of-birth" name="date_of_birth" data-date="" max="{{ $max->format('Y-m-d') }}" data-date-format="YYYY年MM月DD日" value="{{ \Carbon\Carbon::parse(Auth::user()->date_of_birth)->format('Y-m-d') }}">
             </div>
             <label data-field="date_of_birth" id="date-of-birth-error" class="error help-block" for="date-of-birth"></label>
           </div>
@@ -174,11 +173,6 @@
     <script>
       $(function () {
         $('.open_button').trigger('click');
-
-        $('#js-text-date').on('click', function() {
-          $(this).hide();
-          $('#date-of-birth').attr('type', 'date');
-        });
       });
     </script>
   @endif
