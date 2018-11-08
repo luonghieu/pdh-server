@@ -20,16 +20,16 @@ class OrderObserver
         $when = Carbon::now()->addSeconds(3);
         if (OrderType::NOMINATED_CALL == $order->type || OrderType::CALL == $order->type) {
             if ($order->user->provider != ProviderType::LINE) {
-                $order->user->notify(new CreateNominatedOrdersForGuest($order->id))->delay($when);
+                $order->user->notify((new CreateNominatedOrdersForGuest($order->id))->delay($when));
             }
         }
 
         if ($order->user->provider == ProviderType::LINE) {
-            $order->user->notify(new CreateOrdersForLineGuest($order->id))->delay($when);
+            $order->user->notify((new CreateOrdersForLineGuest($order->id))->delay($when));
         }
 
         $admin = User::find(1);
-        $admin->notify(new OrderCreatedNotifyToAdmin($order->id))->delay($when);
+        $admin->notify((new OrderCreatedNotifyToAdmin($order->id))->delay($when));
     }
 
     public function updated(Order $order)

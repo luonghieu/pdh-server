@@ -27,19 +27,15 @@ class MessageObserver
             if (RoomType::DIRECT == $room->type) {
                 $otherId = $room->owner_id == $room->users[0]->id ? $room->users[1]->id : $room->users[0]->id;
                 if (!$room->checkBlocked($otherId)) {
-                    foreach ($users as $user) {
-                        $user->notify(new MessageCreated($message->id))->delay($when);
-                    }
+                    \Notification::send($users, (new MessageCreated($message->id))->delay($when));
 
                     $other = $users->first();
                     if ($other->line_user_id != null) {
-                        $other->notify(new DirectMessageNotifyToLine($message->id))->delay($when);
+                        $other->notify((new DirectMessageNotifyToLine($message->id))->delay($when));
                     }
                 }
             } else {
-                foreach ($users as $user) {
-                    $user->notify(new MessageCreated($message->id))->delay($when);
-                }
+                \Notification::send($users, (new MessageCreated($message->id))->delay($when));
             }
         }
 
@@ -54,7 +50,7 @@ class MessageObserver
 
         if (RoomType::SYSTEM == $room->type && $message->user_id != 1) {
                 $admin = User::find(1);
-                $admin->notify(new MessageCreatedNotifyToAdmin($room->id))->delay($when);
+                $admin->notify((new MessageCreatedNotifyToAdmin($room->id))->delay($when));
         }
     }
 }
