@@ -78,7 +78,7 @@ class CreditCardController extends Controller
             try {
                 $response = $this->createToken($input, $accessToken);
                 if (false == $response) {
-                    return response()->json(['success' => false, 'error' => trans('messages.action_not_performed')]);
+                    return response()->json(['success' => false, 'error' => trans('messages.payment_method_not_supported')]);
                 } else {
                     if ($response->getStatusCode() != 200) {
                         return response()->json(['success' => false, 'error' => trans('messages.action_not_performed')]);
