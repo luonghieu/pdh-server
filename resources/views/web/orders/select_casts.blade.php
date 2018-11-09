@@ -4,6 +4,22 @@
 @section('web.extra_css')
 <link rel="stylesheet" href="{{ asset('assets/web/css/ge_2_3.css') }}">
 @endsection
+@section('web.extra')
+  <div class="modal_wrap">
+  <input id="max-cast" type="checkbox">
+  <div class="modal_overlay">
+    <label for="max-cast" class="modal_trigger" id="lb-max-cast"></label>
+    <div class="modal_content modal_content-btn1">
+      <div class="text-box" id="content-message">
+        <h2></h2>
+        <p>追加でキャストを指名したい場合は、<br> キャストの人数を追加してください</p>
+      </div>
+      <label for="max-cast" class="close_button">OK</label>
+    </div>
+  </div>
+</div>
+@endsection
+
 @section('web.content')
   <h2>指名したいキャストがいる場合は選択してください</h2>
   <p class="message">※ご希望に<span>添えない可能性</span>もございます。<br/>※指名料が1人あたり15分毎に500Pが別途発生します。</p>

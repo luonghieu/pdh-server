@@ -171,6 +171,7 @@ $(document).ready(function(){
       castIds = castIds.split(',');
 
       if(castIds.length == castNumbers) {
+
         if(castIds.indexOf(id) > -1) {
           castIds.splice(castIds.indexOf(id), 1);
           $(".cast-ids").val(castIds.toString());
@@ -180,6 +181,9 @@ $(document).ready(function(){
         }
 
         $(this).attr('checked',false);
+        var text = ' 指名できるキャストは'+ castNumbers + '名です';
+        $('#content-message h2').text(text);
+        $('#lb-max-cast').click();
       }else {
 
         if ($(this).is(':checked')) {
@@ -201,6 +205,9 @@ $(document).ready(function(){
       }
     }else {
       if($('.select-casts:checked').length > castNumbers) {
+        var text = ' 指名できるキャストは'+ castNumbers + '名です';
+        $('#content-message h2').text(text);
+        $('#lb-max-cast').click();
         $(this).attr('checked',false);
       }else {
 
