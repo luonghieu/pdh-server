@@ -82,6 +82,9 @@ class PointSettlement implements ShouldQueue
 
             if ($e->getMessage() == 'Auto charge failed') {
                 $user = $this->order->user;
+
+                $user->suspendPayment();
+
                 if ($user->provider == ProviderType::LINE && !$this->order->send_warning) {
                     $this->order->user->notify(new AutoChargeFailed($this->order));
                     $this->order->send_warning = true;
