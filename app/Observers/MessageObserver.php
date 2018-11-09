@@ -18,7 +18,7 @@ class MessageObserver
     {
         $room = $message->room;
         if (MessageType::SYSTEM == $message->type) {
-            broadcast(new BroadcastMessage($message));
+            broadcast(new BroadcastMessage($message->id));
         }
         if (MessageType::SYSTEM != $message->type) {
             $users = $room->users->except([$message->user_id]);

@@ -2,6 +2,7 @@
 
 namespace App\Jobs;
 
+use App\Avatar;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
@@ -14,14 +15,15 @@ class MakeAvatarThumbnail implements ShouldQueue
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels;
 
     public $avatar;
+
     /**
      * Create a new job instance.
      *
-     * @return void
+     * @param $avatarId
      */
-    public function __construct($avatar)
+    public function __construct($avatarId)
     {
-        $this->avatar = $avatar;
+        $this->avatar = Avatar::onWriteConnection()->findOrFail($avatarId);
     }
 
     /**

@@ -127,7 +127,7 @@ class GuestController extends ApiController
                     'thumbnail' => ''
                 ];
                 $avatar = $user->avatars()->create($input);
-                MakeAvatarThumbnail::dispatch($avatar);
+                MakeAvatarThumbnail::dispatch($avatar->id);
             }
             $user->type = UserType::CAST;
             $user->cast_transfer_status = CastTransferStatus::PENDING;

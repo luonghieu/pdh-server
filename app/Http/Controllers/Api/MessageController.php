@@ -160,7 +160,7 @@ class MessageController extends ApiController
             $message->save();
 
             if (request()->has('image')) {
-                MakeImagesChatThumbnail::dispatch($message);
+                MakeImagesChatThumbnail::dispatch($message->id);
             }
             if (RoomType::DIRECT == $room->type && $user->getBlocked($userIds[0])) {
                 $message->recipients()->attach($userIds, ['room_id' => $id, 'is_show' => false]);
