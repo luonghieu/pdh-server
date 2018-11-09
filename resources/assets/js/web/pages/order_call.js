@@ -171,19 +171,19 @@ $(document).ready(function(){
       castIds = castIds.split(',');
 
       if(castIds.length == castNumbers) {
-
         if(castIds.indexOf(id) > -1) {
           castIds.splice(castIds.indexOf(id), 1);
           $(".cast-ids").val(castIds.toString());
           $(this).parent().find('.cast-link').removeClass('cast-detail');
 
           $('.label-select-casts[for='+  id  +']').text('指名する');
+        } else {
+          var text = ' 指名できるキャストは'+ castNumbers + '名です';
+          $('#content-message h2').text(text);
+          $('#lb-max-cast').click();
         }
 
         $(this).attr('checked',false);
-        var text = ' 指名できるキャストは'+ castNumbers + '名です';
-        $('#content-message h2').text(text);
-        $('#lb-max-cast').click();
       }else {
 
         if ($(this).is(':checked')) {
