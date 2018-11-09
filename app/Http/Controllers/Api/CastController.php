@@ -45,9 +45,7 @@ class CastController extends ApiController
         }
 
         if ($request->class_id) {
-            $casts = $casts->orderByDesc('working_today')
-                ->orderByDesc('created_at')
-                ->orderByDesc('last_active_at');
+            $casts = $casts->orderByDesc('working_today');
         }
 
         if ($request->favorited) {
