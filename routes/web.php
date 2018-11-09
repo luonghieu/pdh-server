@@ -17,10 +17,6 @@ Route::group(['middleware' => 'auth'], function () {
     });
 
     Route::group(['middleware' => 'check_info'], function () {
-        Route::group(['prefix' => 'cast', 'as' => 'cast.'], function () {
-            Route::get('/{id}', ['as' => 'show', 'uses' => 'UserController@show'])->where('id', '[0-9]+');
-        });
-
         Route::group(['prefix' => 'purchase', 'as' => 'purchase.'], function () {
             Route::get('/', ['as' => 'index', 'uses' => 'PointController@index']);
         });
@@ -47,6 +43,17 @@ Route::group(['middleware' => 'auth'], function () {
         Route::group(['prefix' => 'point_settement', 'as' => 'point_settement.'], function () {
             Route::post('/{orderId}', ['as' => 'create', 'uses' => 'OrderController@pointSettlement']);
         });
+
+        Route::group(['prefix' => 'bank_account', 'as' => 'bank_account.'], function () {
+            Route::get('/', ['as' => 'index', 'uses' => 'BankAccountController@index']);
+            Route::get('/bank_name', ['as' => 'search_bank_name', 'uses' => 'BankAccountController@searchBankName']);
+            Route::get('/bank_name/edit', ['as' => 'edit', 'uses' => 'BankAccountController@edit']);
+            Route::post('/bank_name', ['as' => 'bank_name', 'uses' => 'BankAccountController@bankName']);
+            Route::get('/branch_bank_name', ['as' => 'search_branch_bank_name', 'uses' => 'BankAccountController@searchBranchBankName']);
+            Route::post('/branch_bank_name', ['as' => 'branch_bank_name', 'uses' => 'BankAccountController@branchBankName']);
+        });
+
+        Route::get('/cast/rank', ['as' => 'cast_rank', 'uses' => 'CastRankingController@index']);
     });
 });
 
@@ -81,6 +88,20 @@ Route::group(['middleware' => ['auth', 'guest', 'check_info'], 'as' => 'guest.']
 });
 
 Route::group(['middleware' => ['auth', 'guest', 'check_info']], function () {
+    Route::group(['prefix' => 'cast', 'as' => 'cast.'], function () {
+        Route::get('/', ['as' => 'list_casts', 'uses' => 'UserController@listCasts']);
+        Route::get('/list/more', ['as' => 'list.more', 'uses' => 'UserController@loadMoreListCasts']);
+        Route::get('/favorite', ['as' => 'favorite', 'uses' => 'UserController@listCastsFavorite']);
+        Route::get('/favorite/more', ['as' => 'favorite.more', 'uses' => 'UserController@loadMoreListCastsFavorite']);
+        Route::get('/search', ['as' => 'search', 'uses' => 'UserController@search']);
+        Route::get('/{id}', ['as' => 'show', 'uses' => 'UserController@show'])->where('id', '[0-9]+');
+    });
+
     Route::get('/history', ['as' => 'points.history', 'uses' => 'PointController@history']);
     Route::get('/point_history/more', ['as' => 'points.history.more', 'uses' => 'PointController@loadMore']);
+});
+
+Route::group(['middleware' => 'auth', 'as' => 'cast.'], function () {
+    Route::get('/payments', ['as' => 'payments', 'uses' => 'PaymentController@history']);
+    Route::get('/payments/load_more', ['as' => 'payments_load_more', 'uses' => 'PaymentController@loadMore']);
 });

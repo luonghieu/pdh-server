@@ -56,3 +56,5 @@ require('./web/pages/card');
 require('./web/pages/payment');
 require('./web/pages/upload_avatar');
 require('./web/pages/order_nomination');
+require('./web/pages/cast_detail');
+require('./web/pages/create_room');

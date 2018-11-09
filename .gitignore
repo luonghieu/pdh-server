@@ -18,3 +18,4 @@ deploy
 .DS_Store
 laravel-echo-server.json
 public/assets/web/css/web.css
+public/assets/web/css/*.min.css

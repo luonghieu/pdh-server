@@ -86,6 +86,11 @@ class CardController extends ApiController
 
             $card = $user->cards()->create($cardAttributes);
 
+            if ($user->payment_suspended) {
+                $user->payment_suspended = false;
+                $user->save();
+            }
+
             return $this->respondWithData(CardResource::make($card));
         } catch (\Exception $e) {
             LogService::writeErrorLog($e);

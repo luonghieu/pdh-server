@@ -105,11 +105,27 @@ class UserController extends Controller
         return redirect()->route('admin.users.show', ['user' => $user->id]);
     }
 
+    public function changeCost(User $user, Request $request)
+    {
+        $user->cost = $request->cast_cost;
+        $user->save();
+
+        return redirect()->route('admin.users.show', ['user' => $user->id]);
+    }
+
     public function registerGuest(User $user)
     {
         $user->type = UserType::GUEST;
         $user->save();
 
         return redirect(route('admin.users.show', ['user' => $user->id]));
+    }
+
+    public function changeRank(User $user, Request $request)
+    {
+        $user->rank = $request->cast_rank;
+        $user->save();
+
+        return redirect()->route('admin.users.show', ['user' => $user->id]);
     }
 }

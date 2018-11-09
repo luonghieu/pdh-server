@@ -3,11 +3,13 @@
     <input type="checkbox" name="casts[]" value="{{ $cast['id'] }}" {{ (isset($currentCasts) && in_array($cast['id'], $currentCasts) ) ? 'checked="checked"' : '' }} id="{{ $cast['id'] }}" class="select-casts">
     <div class="icon">
       <p>
-        @if (@getimagesize($cast['avatars'][0]['thumbnail']))
-        <img src="{{ $cast['avatars'][0]['thumbnail'] }}" alt="">
-        @else
-        <img src="{{ asset('assets/web/images/gm1/ic_default_avatar@3x.png') }}" alt="">
-        @endif
+        <a href="{{ route('cast.show', ['id' => $cast['id']]) }}" class="cast-link {{ (isset($currentCasts) && in_array($cast['id'], $currentCasts) ) ? 'cast-detail' : '' }}">
+          @if (@getimagesize($cast['avatars'][0]['thumbnail']))
+          <img src="{{ $cast['avatars'][0]['thumbnail'] }}" alt="">
+          @else
+          <img src="{{ asset('assets/web/images/gm1/ic_default_avatar@3x.png') }}" alt="">
+          @endif
+        </a>
       </p>
     </div>
     <span class="sp-name-cast text-ellipsis text-nickname">{{ $cast['nickname'] .'('. $cast['age'] .')' }}</span>

@@ -106,6 +106,7 @@ class CastController extends Controller
             'date' => $date,
             'age' => $age,
             'prefecture_id' => $request->prefecture,
+            'rank' => $request->cast_rank,
         ];
 
         if ($request->bank_name && $request->number && $request->branch_name) {
@@ -169,6 +170,7 @@ class CastController extends Controller
             'date_of_birth' => $year . '-' . $month . '-' . $date,
             'type' => UserType::CAST,
             'prefecture_id' => $request->prefecture,
+            'rank' => $request->cast_rank,
         ];
 
         $user->update($data);
@@ -234,7 +236,10 @@ class CastController extends Controller
             PointCorrectionType::CONSUMPTION => '消費ポイント',
         ];
 
-        $points = $user->points()->with('order')
+        $with['order'] = function ($query) {
+            return $query->withTrashed();
+        };
+        $points = $user->points()->with($with)
             ->whereIn('type', [PointType::RECEIVE, PointType::TRANSFER, PointType::ADJUSTED])
             ->where('status', Status::ACTIVE);
 

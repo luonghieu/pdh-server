@@ -174,7 +174,13 @@ $(document).ready(function(){
         if(castIds.indexOf(id) > -1) {
           castIds.splice(castIds.indexOf(id), 1);
           $(".cast-ids").val(castIds.toString());
+          $(this).parent().find('.cast-link').removeClass('cast-detail');
+
           $('.label-select-casts[for='+  id  +']').text('指名する');
+        } else {
+          var text = ' 指名できるキャストは'+ castNumbers + '名です';
+          $('#content-message h2').text(text);
+          $('#lb-max-cast').click();
         }
 
         $(this).attr('checked',false);
@@ -183,6 +189,7 @@ $(document).ready(function(){
         if ($(this).is(':checked')) {
           $(this).attr('checked',true);
           castIds.push(id);
+          $(this).parent().find('.cast-link').addClass('cast-detail');
           $('.label-select-casts[for='+  id  +']').text('指名中');
         } else {
           if(castIds.indexOf(id) > -1) {
@@ -190,6 +197,7 @@ $(document).ready(function(){
           }
 
           $(this).attr('checked',false);
+          $(this).parent().find('.cast-link').removeClass('cast-detail');
           $('.label-select-casts[for='+  id  +']').text('指名する');
         }
 
@@ -197,19 +205,31 @@ $(document).ready(function(){
       }
     }else {
       if($('.select-casts:checked').length > castNumbers) {
+        var text = ' 指名できるキャストは'+ castNumbers + '名です';
+        $('#content-message h2').text(text);
+        $('#lb-max-cast').click();
         $(this).attr('checked',false);
       }else {
 
         var id = $(this).val();
         if ($(this).is(':checked')) {
           $(this).attr('checked',true);
+           $(this).parent().find('.cast-link').addClass('cast-detail');
           $('.label-select-casts[for='+  id  +']').text('指名中');
         } else {
           $(this).attr('checked',false);
+           $(this).parent().find('.cast-link').removeClass('cast-detail');
           $('.label-select-casts[for='+  id  +']').text('指名する');
         }
       }
     }
+
+    if($('input[name="casts[]"]:checked').length) {
+      $('#sb-select-casts').text('次に進む(3/4)');
+    } else {
+      $('#sb-select-casts').text('指名せずに進む(3/4)');
+    }
+
   });
 
   $(".cb-cancel").on("change",function(event){
