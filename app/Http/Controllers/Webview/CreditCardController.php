@@ -53,7 +53,7 @@ class CreditCardController extends Controller
         $validator = validator($request->all(), $rules);
 
         $numberCardVisa = preg_match("/^4[0-9]{12}(?:[0-9]{3})?$/", $request->number_card);
-        $numberMasterCard = preg_match("/^5[1-5][0-9]{14}$/", $request->number_card);
+        $numberMasterCard = preg_match("/^(5[1-5][0-9]{14}|2(22[1-9][0-9]{12}|2[3-9][0-9]{13}|[3-6][0-9]{14}|7[0-1][0-9]{13}|720[0-9]{12}))$/", $request->number_card);
         $numberAmericanExpress = preg_match("/^3[47][0-9]{13,14}$/", $request->number_card);
         $numberDinnersClub = preg_match("/^3(?:0[0-5]|[68][0-9])[0-9]{11}$/", $request->number_card);
         $numberJcb = preg_match("/^(?:2131|1800|35\\d{3})\\d{11}$/", $request->number_card);
