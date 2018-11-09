@@ -77,14 +77,17 @@ class CreditCardController extends Controller
             ]);
             try {
                 $response = $this->createToken($input, $accessToken);
-
-                if ($response->getStatusCode() != 200) {
+                if (false == $response) {
                     return response()->json(['success' => false, 'error' => trans('messages.action_not_performed')]);
-                }
-                if ($user->card) {
-                    $card = $user->card;
+                } else {
+                    if ($response->getStatusCode() != 200) {
+                        return response()->json(['success' => false, 'error' => trans('messages.action_not_performed')]);
+                    }
+                    if ($user->card) {
+                        $card = $user->card;
 
-                    return response()->json(['success' => true, 'url' => 'cheers://adding_card?result=1']);
+                        return response()->json(['success' => true, 'url' => 'cheers://adding_card?result=1']);
+                    }
                 }
             } catch (\Exception $e) {
                 return response()->json(['success' => false, 'error' => trans('messages.action_not_performed')]);
@@ -117,17 +120,21 @@ class CreditCardController extends Controller
             ],
         ]);
 
-        $param = $card->id;
+        if (in_array($card->card->funding, ['debit', 'prepaid'])) {
+            return false;
+        } else {
+            $param = $card->id;
 
-        $client = new Client(['base_uri' => config('common.api_url')]);
-        $option = [
-            'headers' => ['Authorization' => 'Bearer ' . $accessToken],
-            'form_params' => ['token' => $param],
-            'allow_redirects' => false,
-        ];
+            $client = new Client(['base_uri' => config('common.api_url')]);
+            $option = [
+                'headers' => ['Authorization' => 'Bearer ' . $accessToken],
+                'form_params' => ['token' => $param],
+                'allow_redirects' => false,
+            ];
 
-        $response = $client->post(route('cards.create'), $option);
+            $response = $client->post(route('cards.create'), $option);
 
-        return $response;
+            return $response;
+        }
     }
 }

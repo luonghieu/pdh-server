@@ -64,4 +64,5 @@ return [
     'line_invalid_token' => 'Line invalid token',
     'postcode_invalid' => 'Post code invalid',
     'postcode_not_support' => 'post code not support',
+    'payment_method_not_supported' => 'Payment method not supported',
 ];
