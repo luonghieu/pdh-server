@@ -1483,3 +1483,40 @@ tbody td {
 .init-border {
   border: 1px solid #a49c9c;
 }
+
+.icon-cast img {
+  width: 100%;
+  border-radius: 8px;
+  margin-bottom: 5px;
+}
+
+.icon-cast {
+  display: inline-block;
+  width: calc((100% / 16) - 4px);
+  margin: 0 2px 10px;
+}
+
+.custom-checkbox .icheckbox_square-blue {
+  left: 34%;
+}
+
+.total-cast-offer {
+  margin-left: 30px;
+}
+
+.lb-comment-offer {
+  margin-bottom: 15px;
+}
+
+.lb-date-offer {
+  margin: 50px 0px 15px;
+}
+
+.date-offer {
+  width: 166px !important;
+}
+
+.select-time-offer {
+  display: inline-block;
+  width: 80px !important;
+}

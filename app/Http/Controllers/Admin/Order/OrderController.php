@@ -12,9 +12,13 @@ use App\Notification;
 use App\Order;
 use App\PaymentRequest;
 use App\Services\LogService;
+use Auth;
 use Carbon\Carbon;
+use GuzzleHttp\Client;
 use Illuminate\Http\Request;
+use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\DB;
+use JWTAuth;
 
 class OrderController extends Controller
 {
@@ -408,5 +412,50 @@ class OrderController extends Controller
         } else {
             return redirect(route('admin.orders.call', compact('order')));
         }
+    }
+
+    public function offer(Request $request)
+    {
+        $client = new Client(['base_uri' => config('common.api_url')]);
+        $user = Auth::user();
+
+        $accessToken = JWTAuth::fromUser($user);
+
+        $option = [
+            'headers' => ['Authorization' => 'Bearer ' . $accessToken],
+            'form_params' => [],
+            'allow_redirects' => false,
+        ];
+
+        $params = [
+            'working_today' => 1,
+            'page' => $request->get('page', 1),
+        ];
+
+        if ($request->search) {
+            $params['search'] = $request->search;
+        }
+
+        try {
+            $casts = $client->get(route('casts.index', $params), $option);
+        } catch (\Exception $e) {
+            LogService::writeErrorLog($e);
+            abort(500);
+        }
+
+        $casts = json_decode(($casts->getBody())->getContents(), JSON_NUMERIC_CHECK);
+        $casts = $casts['data'];
+        $casts = new LengthAwarePaginator(
+            $casts['data'],
+            $casts['total'],
+            $casts['per_page'],
+            $casts['current_page'],
+            [
+                'query' => $request->all(),
+                'path' => env('APP_URL') . '/admin/offer',
+            ]
+        );
+
+        return view('admin.orders.offer', compact('casts'));
     }
 }
