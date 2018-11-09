@@ -2,7 +2,7 @@
 @section('screen.class', 'ge2-3')
 @extends('layouts.web')
 @section('web.extra_css')
-<link rel="stylesheet" href="{{ asset('assets/web/css/ge_2_3.css') }}">
+<link rel="stylesheet" href="{{ mix('assets/web/css/ge_2_3.min.css') }}">
 @endsection
 @section('web.extra')
   <div class="modal_wrap">
