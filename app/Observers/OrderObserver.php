@@ -17,19 +17,18 @@ class OrderObserver
 {
     public function created(Order $order)
     {
-        $when = Carbon::now()->addSeconds(3);
         if (OrderType::NOMINATED_CALL == $order->type || OrderType::CALL == $order->type) {
             if ($order->user->provider != ProviderType::LINE) {
-                $order->user->notify((new CreateNominatedOrdersForGuest($order->id))->delay($when));
+                $order->user->notify(new CreateNominatedOrdersForGuest($order->id));
             }
         }
 
         if ($order->user->provider == ProviderType::LINE) {
-            $order->user->notify((new CreateOrdersForLineGuest($order->id))->delay($when));
+            $order->user->notify(new CreateOrdersForLineGuest($order->id));
         }
 
         $admin = User::find(1);
-        $admin->notify((new OrderCreatedNotifyToAdmin($order->id))->delay($when));
+        $admin->notify(new OrderCreatedNotifyToAdmin($order->id));
     }
 
     public function updated(Order $order)
