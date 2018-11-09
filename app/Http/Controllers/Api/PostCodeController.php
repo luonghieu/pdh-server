@@ -72,6 +72,6 @@ class PostCodeController extends ApiController
             return $this->respondErrorMessage(trans('messages.postcode_error'));
         }
 
-        return $this->respondWithData(['address' => $address]);
+        return $this->respondWithData($address);
     }
 }
