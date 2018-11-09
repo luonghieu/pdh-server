@@ -139,20 +139,7 @@ class LineController extends Controller
                 $body = json_decode($response->getBody()->getContents(), true);
                 $lineResponse = Socialite::driver('line')->userFromToken($body['access_token']);
 
-                $email = $lineResponse->email;
-                $user = User::query();
-                if ($email) {
-                    $user = $user->where('email', $email);
-                }
-                $user = $user->orWhere('line_user_id', $lineResponse->id)->first();
-
-                if (!$user) {
-                    \Session::flash('error', trans('messages.login_line_failed'));
-                    return redirect()->route('web.index');
-                }
-
-                $user->device_type = DeviceType::WEB;
-                $user->save();
+                $user = $this->findOrCreate($lineResponse)['user'];
                 Auth::login($user);
 
                 return redirect()->route('web.index');
