@@ -128,4 +128,17 @@ class UserController extends Controller
 
         return redirect()->route('admin.users.show', ['user' => $user->id]);
     }
+
+    public function delete($id)
+    {
+        $user = User::findOrFail($id);
+        $user->facebook_id = null;
+        $user->line_user_id = null;
+        $user->email = null;
+        $user->save();
+
+        $user->delete();
+
+        return redirect()->route('admin.users.index');
+    }
 }

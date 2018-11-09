@@ -5644,6 +5644,9 @@ ul.profile-details li div i {
 .notify .bag .indicator {
   font-size: 12px;
 }
+.delete-user {
+  margin-top: 20px;
+}
 @media (max-width: 479px) {
   .col-xxs-12 {
     width: 100%;
