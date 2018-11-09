@@ -132,6 +132,9 @@ class CancelFeeSettlement extends Command
             \DB::rollBack();
             if ($e->getMessage() == 'Auto charge failed') {
                 $user = $order->user;
+
+                $user->suspendPayment();
+
                 if ($user->provider == ProviderType::LINE && !$order->send_warning) {
                     $order->user->notify(new AutoChargeFailed($order));
                     $order->send_warning = true;
