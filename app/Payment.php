@@ -62,6 +62,7 @@ class Payment extends Model
                 // Since it's a decline, \Stripe\Error\Card will be caught
                 LogService::writeErrorLog($e);
 
+                $user->suspendPayment();
                 $this->handleStripeException($e);
 
                 return false;
@@ -74,6 +75,7 @@ class Payment extends Model
                 // Invalid parameters were supplied to Stripe's API
                 LogService::writeErrorLog($e);
 
+                $user->suspendPayment();
                 $this->handleStripeException($e);
 
                 return false;
@@ -93,6 +95,7 @@ class Payment extends Model
                 // yourself an email
                 LogService::writeErrorLog($e);
 
+                $user->suspendPayment();
                 $this->handleStripeException($e);
 
                 return false;
@@ -113,8 +116,6 @@ class Payment extends Model
         $error = $body['error'];
 
         $this->createFailedPaymentRecord($this->id, 1, $error);
-
-        $user->suspendPayment();
     }
 
     public function point()
