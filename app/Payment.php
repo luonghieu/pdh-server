@@ -39,6 +39,18 @@ class Payment extends Model
                 $stripe = new StripePayment;
                 $charge = $stripe->charge($request);
 
+                if ($charge->error) {
+                    $error = (array) $charge->error;
+
+                    $this->createFailedPaymentRecord($this->id, 1, $error);
+
+                    $user->suspendPayment();
+
+                    LogService::writeErrorLog($error['message']);
+
+                    return false;
+                }
+
                 // update order payment status
                 $this->charge_id = $charge->id;
                 $this->charge_at = now();
@@ -46,28 +58,64 @@ class Payment extends Model
                 $this->save();
 
                 return $charge;
-            } catch (\Stripe\Error\Base $e) {
-                $body = $e->getJsonBody();
-                $error = $body['error'];
-
-                $this->createFailedPaymentRecord($this->id, 1, $error);
+            } catch (\Stripe\Error\Card $e) {
+                // Since it's a decline, \Stripe\Error\Card will be caught
+                LogService::writeErrorLog($e);
 
                 $user->suspendPayment();
+                $this->handleStripeException($e);
 
+                return false;
+            } catch (\Stripe\Error\RateLimit $e) {
+                // Too many requests made to the API too quickly
                 LogService::writeErrorLog($e);
+
+                return false;
+            } catch (\Stripe\Error\InvalidRequest $e) {
+                // Invalid parameters were supplied to Stripe's API
+                LogService::writeErrorLog($e);
+
+                $user->suspendPayment();
+                $this->handleStripeException($e);
+
+                return false;
+            } catch (\Stripe\Error\Authentication $e) {
+                // Authentication with Stripe's API failed
+                // (maybe you changed API keys recently)
+                LogService::writeErrorLog($e);
+
+                return false;
+            } catch (\Stripe\Error\ApiConnection $e) {
+                // Network communication with Stripe failed
+                LogService::writeErrorLog($e);
+
+                return false;
+            } catch (\Stripe\Error\Base $e) {
+                // Display a very generic error to the user, and maybe send
+                // yourself an email
+                LogService::writeErrorLog($e);
+
+                $user->suspendPayment();
+                $this->handleStripeException($e);
 
                 return false;
             } catch (\Exception $e) {
                 // Something else happened, completely unrelated to Stripe
                 LogService::writeErrorLog($e);
 
-                $user->suspendPayment();
-
                 return false;
             }
         }
 
         return false;
+    }
+
+    protected function handleStripeException($e)
+    {
+        $body = $e->getJsonBody();
+        $error = $body['error'];
+
+        $this->createFailedPaymentRecord($this->id, 1, $error);
     }
 
     public function point()
