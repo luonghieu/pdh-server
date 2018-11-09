@@ -65,5 +65,5 @@ return [
     'line_invalid_token' => 'トークンは無効です',
     'postcode_invalid' => '郵便番号は7文字で入力してください',
     'postcode_not_support' => '入力した郵便番号はエリア対象外です',
-    'payment_method_not_supported' => 'この支払い方法はサポートされていません',
+    'payment_method_not_supported' => 'このクレジットカードはご利用できません',
 ];
