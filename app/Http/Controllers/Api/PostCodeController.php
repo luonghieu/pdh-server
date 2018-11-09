@@ -43,20 +43,21 @@ class PostCodeController extends ApiController
         $cacheKey = "post_code_{$request->post_code}";
 
         if (!Cache::has($cacheKey)) {
-            $response = $this->client->request('GET', 'https://maps.googleapis.com/maps/api/geocode/json', [
+            $response = $this->client->request('GET', 'http://zipcloud.ibsnet.co.jp/api/search', [
                 'query' => [
-                    'address' => $request->post_code,
-                    'language' => 'ja',
-                    'sensor' => false,
-                    'key' => env('GOOGLE_GEO_KEY')
+                    'zipcode' => $request->post_code,
+                    'limit' => 1,
                 ],
             ]);
 
             if ($response->getStatusCode() == 200) {
                 $content = json_decode($response->getBody()->getContents(), true);
-
-                if ('OK' == $content['status'] && isset($content['results'][0]['address_components'])) {
-                    $address = $content['results'][0]['address_components'];
+                if (200 == $content['status'] && isset($content['results'][0])) {
+                    $address = [
+                        'address1' => $content['results'][0]['address1'],
+                        'address2' => $content['results'][0]['address2'],
+                        'address3' => $content['results'][0]['address3'],
+                    ];
 
                     // cache post code info for 3 months
                     $expiresAt = now()->addMonths(3);
