@@ -43,6 +43,10 @@ class CastController extends ApiController
             }
         }
 
+        if ($request->order) {
+            $casts = $casts->orderByDesc('working_today');
+        }
+
         if ($request->favorited) {
             $casts->whereHas('favoriters', function ($query) use ($user) {
                 $query->where('user_id', $user->id);
