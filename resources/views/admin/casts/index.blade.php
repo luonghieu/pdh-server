@@ -43,6 +43,7 @@
                 <th>ユーザーID</th>
                 <th>ニックネーム</th>
                 <th>年齢</th>
+                <th>優先ランク</th>
                 <th>会員区分</th>
                 <th>ステータス</th>
                 <th class="sorting{{ (request()->last_active_at) ? '_' . request()->last_active_at: '' }}">
@@ -69,6 +70,7 @@
                   <td><a href="{{ route('admin.users.show', ['user' => $cast->id]) }}">{{ $cast->id }}</a></td>
                   <td>{{ $cast->nickname }}</td>
                   <td>{{ $cast->age }}</td>
+                  <td>{{ App\Enums\UserRank::getKey($cast->rank) }}</td>
                   <td>{{ App\Enums\UserType::getDescription($cast->type) }}</td>
                   <td>{{ App\Enums\Status::getDescription($cast->status) }}</td>
                   @if ($cast->is_online == true)

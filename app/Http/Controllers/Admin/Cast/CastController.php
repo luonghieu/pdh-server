@@ -114,6 +114,7 @@ class CastController extends Controller
             'date' => $date,
             'age' => $age,
             'prefecture_id' => $request->prefecture,
+            'rank' => $request->cast_rank,
         ];
 
         if ($request->bank_name && $request->number && $request->branch_name) {
@@ -177,6 +178,7 @@ class CastController extends Controller
             'date_of_birth' => $year . '-' . $month . '-' . $date,
             'type' => UserType::CAST,
             'prefecture_id' => $request->prefecture,
+            'rank' => $request->cast_rank,
         ];
 
         $user->update($data);

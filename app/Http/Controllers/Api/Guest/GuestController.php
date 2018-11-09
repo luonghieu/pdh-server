@@ -84,13 +84,14 @@ class GuestController extends ApiController
     public function requestTransfer(Request $request)
     {
         $rules = [
-            'nickname' => 'max:20|required',
+            'fullname' => 'required',
             'date_of_birth' => 'date|before:today|required',
             'job_id' => 'numeric|exists:jobs,id|required',
             'line_qr' => 'image|mimes:jpeg,png,jpg,gif,svg|max:5120',
             'images' => 'array|required|min:2|max:2',
             'images.*' => 'image|mimes:jpeg,png,jpg,gif,svg|max:5120',
             'prefecture_id' => 'required|numeric|exists:prefectures,id',
+            'fullname_kana' => 'required|string|regex:/^[ぁ-ん ]/u',
         ];
 
         $validator = validator($request->all(), $rules);
@@ -103,10 +104,11 @@ class GuestController extends ApiController
 
         try {
             \DB::beginTransaction();
-            $user->nickname = $request->nickname;
+            $user->fullname = $request->fullname;
             $user->date_of_birth = Carbon::parse($request->date_of_birth);
             $user->job_id = $request->job_id;
             $user->prefecture_id = $request->prefecture_id;
+            $user->fullname_kana = $request->fullname_kana;
 
             $lineImage = $request->file('line_qr');
             if ($lineImage) {

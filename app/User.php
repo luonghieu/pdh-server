@@ -242,6 +242,12 @@ class User extends Authenticatable implements JWTSubject
         return $payment;
     }
 
+    public function suspendPayment()
+    {
+        $this->payment_suspended = true;
+        $this->save();
+    }
+
     public function notifications()
     {
         return $this->morphMany(Notification::class, 'notifiable');

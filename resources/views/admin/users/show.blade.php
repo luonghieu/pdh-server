@@ -1,6 +1,19 @@
 @extends('layouts.admin')
 @section('admin.content')
-<div class="col-md-10 col-sm-11 main ">
+<div class="col-md-10 col-sm-11 main">
+  @if(Session::has('error'))
+    <div class="alert alert-danger fade in" id="flash">
+      <a href="#" class="close" data-dismiss="alert">&times;</a>
+      {{ Session::get('error') }}
+    </div>
+  @endif
+  @if(Session::has('message'))
+  <div class="alert alert-success fade in" id="flash">
+    <a href="#" class="close" data-dismiss="alert">&times;</a>
+    {{ Session::get('message') }}
+  </div>
+  @endif
+  <div class="message-alert"></div>
   <div class="row">
     <div class="col-lg-12">
       <div class="panel panel-default">
@@ -15,12 +28,13 @@
         <div class="panel-body">
           <div class="col-lg-6 wrap-qr-code">
             <div class="list-avatar">
-              @foreach ($user->avatars as $avatar)
-                <img src="{{ @getimagesize($avatar->path) ? $avatar->path :'/assets/web/images/gm1/ic_default_avatar@3x.png' }}" alt="avatar">
-              @endforeach
+              @include('admin.users.content_image', ['avatars' => $user->avatars])
             </div>
+            <div class="clear"></div>
             @if ($user->is_cast)
+            <div class="btn-qr">
               <button type="button" data-toggle="modal" data-target="#btn-qr-code" class="btn-detail">QRコードを表示する</button>
+            </div>
             @endif
           </div>
           <div class="clearfix"></div>
@@ -96,6 +110,24 @@
                     <select class="cast-class" name="cast_cost">
                       @foreach($arrCost as $cost)
                         <option value="{{ $cost }}" {{ $user->cost == $cost ? 'selected' : ''}}>{{number_format($cost) }}</option>
+                      @endforeach
+                    </select>
+                    <button type="submit" class="btn-change-cast-class">変更する</button>
+                  </form>
+                </td>
+              </tr>
+              <tr>
+                <th>キャスト一覧表示優先ランク</th>
+                <td>
+                  @php
+                    $arrRank = App\Enums\UserRank::toSelectArray();
+                    krsort($arrRank);
+                  @endphp
+                  <form action="{{ route('admin.users.change_rank', ['user' => $user->id]) }}" class="form-cast-class" method="post">
+                    {{ csrf_field() }}
+                    <select class="cast-class" name="cast_rank">
+                      @foreach($arrRank as $key => $rank)
+                        <option value="{{ $key }}" {{ $user->rank == $key ? 'selected' : ''}}>{{ $rank }}</option>
                       @endforeach
                     </select>
                     <button type="submit" class="btn-change-cast-class">変更する</button>
@@ -209,6 +241,40 @@
             </div>
           </div>
         </div>
+        <div class="modal fade" id="popup-img" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+          <div class="modal-dialog" role="document">
+            <div class="modal-content">
+              <a href="#" class="init-close" data-dismiss="modal">&times;</a>
+              <div class="clearfix"></div>
+              <div class="mt-btn">
+                <!-- set avatar default -->
+                <form action="" method="POST" id="set-avatar-default">
+                  {{ csrf_field() }}
+                  {{ method_field('PATCH') }}
+                  <div class="modal-body">
+                    <button type="submit" class="btn btn-default init-w-default" data-toggle="modal"><span>メインにする</span></button>
+                  </div>
+                </form><!--  -->
+                <!-- delete avatar -->
+                <form action="" method="POST" id="delete-avatar">
+                  {{ csrf_field() }}
+                  {{ method_field('DELETE') }}
+                  <div class="modal-body">
+                    <button type="submit" class="btn btn-default init-w-default" data-toggle="modal"><span>削除する</span></button>
+                  </div>
+                </form><!--  -->
+                <!-- update avatar -->
+                <div class="modal-body">
+                  <label class="img-default btn btn-default init-w-default">
+                    <span>変更する</span>
+                    <input type="file" data-toggle="modal" name="image" id="update-avatar" accept="image/*" style="display: none">
+                  </label>
+                  <div class="popup-error-message"></div>
+                </div><!--  -->
+              </div>
+            </div>
+          </div>
+        </div>
         <div class="modal fade" id="register_cast" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
           <div class="modal-dialog" role="document">
             <div class="modal-content">
@@ -296,3 +362,8 @@
   <!--/row-->
 </div>
 @endsection
+@section('admin.js')
+  <input type="hidden" id="user_id" value="{{ $user->id }}" />
+  <input type="hidden" id="url-upload" value="{{ route('admin.avatars.upload', $user->id) }}" />
+  <script src="/assets/admin/js/pages/upload_image.js"></script>
+@stop
