@@ -234,6 +234,7 @@
         </div>
         <span class="details-total-desc">❉1P=1.1円で決済が実行されます</span>
     </section>
+    @if (!$order->deleted_at)
     <form action="{{ route('point_settement.create', ['id' => $order->id]) }}" method="POST" id="payment-form">
         {{ csrf_field() }}
         @if ($order->payment_status == \App\Enums\OrderPaymentStatus::REQUESTING)
@@ -246,8 +247,8 @@
                    onclick="openRequestUpdatePoint('{{ $order->id }}')">決済ポイントの修正を依頼する場合はこちら</a>
             @endif
         @endif
-
     </form>
+    @endif
 </div>
 @endsection
 

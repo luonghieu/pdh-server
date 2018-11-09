@@ -151,7 +151,10 @@ class LineController extends Controller
                     return redirect()->route('web.index');
                 }
 
+                $user->device_type = DeviceType::WEB;
+                $user->save();
                 Auth::login($user);
+
                 return redirect()->route('web.index');
             }
 
@@ -226,6 +229,9 @@ class LineController extends Controller
             $user->line_id = $lineResponse->id;
             $user->save();
         }
+
+        $user->device_type = DeviceType::WEB;
+        $user->save();
 
         return ['user' => $user, 'first_time' => false];
     }

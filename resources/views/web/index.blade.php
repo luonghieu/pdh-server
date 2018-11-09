@@ -12,13 +12,12 @@
       <div class="modal_overlay">
         <div class="modal_content modal_content-btn5">
           <div class="text-box">
-            <h2>牛年月日の登録をしよう!</h2>
+            <h2>生年月日の登録をしよう!</h2>
             <div>
               @php
                 $max = \Carbon\Carbon::parse(now())->subYear(20);
               @endphp
-              <div class="text-lable" id="js-text-date"><span>選択してください</span></div>
-              <input type="hidden" id="date-of-birth" name="date_of_birth" data-date="" max="{{ $max->format('Y-m-d') }}" data-date-format="YYYY年MM月DD日" value="{{ \Carbon\Carbon::parse(Auth::user()->date_of_birth)->format('Y-m-d') }}">
+              <input type="date" id="date-of-birth" name="date_of_birth" data-date="" max="{{ $max->format('Y-m-d') }}" data-date-format="YYYY年MM月DD日" value="{{ \Carbon\Carbon::parse(Auth::user()->date_of_birth)->format('Y-m-d') }}">
             </div>
             <label data-field="date_of_birth" id="date-of-birth-error" class="error help-block" for="date-of-birth"></label>
           </div>
@@ -27,7 +26,7 @@
       </div>
     </div>
   </form>
-  <div class="modal_wrap">
+  <div class="modal_wrap" id="input_birthday_modal">
     <input id="trigger3" type="checkbox">
       <div class="modal_overlay">
         <label for="trigger3" class="modal_trigger" id="profile-popup"></label>
@@ -174,11 +173,6 @@
     <script>
       $(function () {
         $('.open_button').trigger('click');
-
-        $('#js-text-date').on('click', function() {
-          $(this).hide();
-          $('#date-of-birth').attr('type', 'date');
-        });
       });
     </script>
   @endif
@@ -189,10 +183,10 @@
       if (popup_mypage) {
         $('#profile-popup').trigger('click');
         $('#profile-message h2').html(popup_mypage);
+        window.sessionStorage.removeItem('popup_mypage');
 
         setTimeout(() => {
-          $('#profile-popup').trigger('click');
-          window.sessionStorage.removeItem('popup_mypage');
+          $('#input_birthday_modal').css('display', 'none');
         }, 3000);
       }
     })
