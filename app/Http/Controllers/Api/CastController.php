@@ -44,7 +44,7 @@ class CastController extends ApiController
             }
         }
 
-        if ($request->class_id) {
+        if ($request->order) {
             $casts = $casts->orderByDesc('working_today');
         }
 

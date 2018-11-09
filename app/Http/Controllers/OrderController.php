@@ -320,6 +320,7 @@ class OrderController extends Controller
             $params = [
                 'class_id' => $data['cast_class'],
                 'latest' => 1,
+                'order' => 1,
             ];
 
             $casts = $client->get(route('casts.index', $params), $option);
