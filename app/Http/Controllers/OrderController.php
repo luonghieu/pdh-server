@@ -11,6 +11,7 @@ use App\Enums\PaymentRequestStatus;
 use App\Enums\PointType;
 use App\Enums\TagType;
 use App\Enums\UserType;
+use App\Notifications\AutoChargeFailedWorkchatNotify;
 use App\Order;
 use App\Point;
 use App\Services\LogService;
@@ -612,6 +613,13 @@ class OrderController extends Controller
             return response()->json(['success' => true, 'message' => trans('messages.payment_completed')], 200);
         } catch (\Exception $e) {
             DB::rollBack();
+            if ($e->getMessage() == 'Auto charge failed') {
+                $order->payment_status = OrderPaymentStatus::PAYMENT_FAILED;
+                $order->save();
+
+                $user->notify(new AutoChargeFailedWorkchatNotify($order));
+            }
+
             LogService::writeErrorLog($e);
             return response()->json(['success' => false], 500);
         }

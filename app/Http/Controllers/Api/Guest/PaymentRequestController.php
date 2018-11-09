@@ -40,7 +40,7 @@ class PaymentRequestController extends ApiController
     public function getPaymentRequest(Request $request, $id)
     {
         $user = $this->guard()->user();
-        $order = $user->orders()->with('casts')->where('orders.id', $id)->first();
+        $order = $user->orders()->withTrashed()->with('casts')->where('orders.id', $id)->first();
 
         if (!$order) {
             return $this->respondErrorMessage(trans('messages.order_not_found'), 404);

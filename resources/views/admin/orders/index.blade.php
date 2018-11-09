@@ -181,7 +181,10 @@
                       <span class="warning-order">予定時刻が過ぎています</span>
                     @endif
                     @if(($order->status == App\Enums\OrderStatus::ACTIVE) && ($startTime < $now))
-                      <span class="warning-order">スタートボタンが押されていません。</span>
+                      <span class="warning-order">スタートボタンが押されていません</span>
+                    @endif
+                    @if($order->payment_status == App\Enums\OrderPaymentStatus::PAYMENT_FAILED)
+                      <span class="warning-order">決済エラーが発生しました</span>
                     @endif
                   </td>
                   @if ($order->type == App\Enums\OrderType::NOMINATION)

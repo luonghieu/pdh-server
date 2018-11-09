@@ -72,8 +72,8 @@ class CancelFeeSettlement extends Command
             ->whereNull('payment_status')
             ->where('canceled_at', '<=', $now->copy()->subHours(3))
             ->where('cancel_fee_percent', '>', 0)->whereHas('user', function ($q) {
-                $q->where('provider', ProviderType::LINE);
-            })->get();
+            $q->where('provider', ProviderType::LINE);
+        })->get();
 
         foreach ($lineOrders as $order) {
             $this->processPayment($order, $now);
@@ -132,9 +132,13 @@ class CancelFeeSettlement extends Command
             \DB::rollBack();
             if ($e->getMessage() == 'Auto charge failed') {
                 $user = $order->user;
-                if ($user->provider == ProviderType::LINE && !$order->send_warning) {
-                    $order->user->notify(new AutoChargeFailed($order));
+                if (!$order->send_warning) {
+                    $order->user->notify(new AutoChargeFailedWorkchatNotify($this->order));
+                    if (ProviderType::LINE == $user->provider) {
+                        $order->user->notify(new AutoChargeFailed($order));
+                    }
                     $order->send_warning = true;
+                    $order->payment_status = OrderPaymentStatus::PAYMENT_FAILED;
                     $order->save();
                 }
             }

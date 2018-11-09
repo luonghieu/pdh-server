@@ -22,7 +22,7 @@ class CardController extends Controller
         $urlPoint = route('purchase.index');
         $urlNominate = route('guest.orders.nominate');
 
-        if (!in_array($backUrl, [$urlCreateOrder, $urlPoint]) && (strpos($backUrl, $urlNominate) === false)) {
+        if (!in_array($backUrl, [$urlCreateOrder, $urlPoint]) && (strpos($backUrl, $urlNominate) === false) && (!preg_match('/history\/\d/', $backUrl))) {
             $backUrl = route('credit_card.index');
         }
 

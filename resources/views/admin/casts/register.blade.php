@@ -275,6 +275,24 @@
                         </td>
                       </tr>
                       @endif
+                      <tr>
+                        <th>キャスト一覧表示優先ランク</th>
+                        <td>
+                          @php
+                            $arrRank = App\Enums\UserRank::toSelectArray();
+                            krsort($arrRank);
+                          @endphp
+                          <div class="form-group">
+                            <div class="col-sm-3 col-sm-offset-1">
+                              <select class="cast-rank" name="cast_rank">
+                                @foreach($arrRank as $key => $rank)
+                                  <option value="{{ $key }}">{{ $rank }}</option>
+                                @endforeach
+                              </select>
+                            </div>
+                          </div>
+                        </td>
+                      </tr>
                       @if ($prefectures->count())
                       <tr>
                         <th style="color: red;">エリア</th>

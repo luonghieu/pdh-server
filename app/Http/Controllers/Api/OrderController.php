@@ -9,9 +9,6 @@ use App\Enums\CastOrderType;
 use App\Enums\OrderStatus;
 use App\Enums\OrderType;
 use App\Http\Resources\OrderResource;
-use App\Notifications\CallOrdersCreated;
-use App\Notifications\CreateNominatedOrdersForCast;
-use App\Notifications\CreateNominationOrdersForCast;
 use App\Order;
 use App\Services\LogService;
 use App\Tag;
@@ -122,6 +119,7 @@ class OrderController extends ApiController
         $input['status'] = OrderStatus::OPEN;
 
         try {
+            $when = Carbon::now()->addSeconds(3);
             DB::beginTransaction();
             $order = $user->orders()->create($input);
 
@@ -158,17 +156,17 @@ class OrderController extends ApiController
                             false
                         );
 
-                        $nominee->notify(new CreateNominationOrdersForCast($order));
+                        $nominee->notify((new CreateNominationOrdersForCast($order))->delay($when));
                     }
                 }
 
                 if (OrderType::NOMINATED_CALL == $order->type || OrderType::HYBRID == $order->type) {
                     $nominees = $order->nominees;
-                    \Notification::send($nominees, new CreateNominatedOrdersForCast($order));
+                    \Notification::send($nominees, (new CreateNominatedOrdersForCast($order))->delay($when));
                 }
             } else {
                 $casts = Cast::where('class_id', $request->class_id)->get();
-                \Notification::send($casts, new CallOrdersCreated($order));
+                \Notification::send($casts, (new CallOrdersCreated($order))->delay($when));
             }
 
             DB::commit();

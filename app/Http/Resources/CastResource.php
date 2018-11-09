@@ -87,6 +87,7 @@ class CastResource extends Resource
             'front_id_image' => $this->front_id_image,
             'post_code' => $this->post_code,
             'address' => $this->address,
+            'rank' => $this->rank,
         ]);
     }
 }

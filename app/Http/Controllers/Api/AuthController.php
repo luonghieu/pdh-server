@@ -140,7 +140,8 @@ class AuthController extends ApiController
             'line_id',
             'post_code',
             'address',
-            'fullname_kana'
+            'fullname_kana',
+            'fullname'
         ]);
 
         try {
