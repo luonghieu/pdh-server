@@ -4,9 +4,18 @@ $(document).ready(function() {
     var checked = $('#input-cookie:checked').length;
 
     if(checked) {
-      if(!getCookie('popup')) {
+      if(!helper.getCookie('popup')) {
         helper.setCookie('popup',1);
       }
     }
   });
+
+  if($('#cookie-popup').length) {
+    if(!helper.getCookie('popup')) {
+      $('#cookie-popup').click();
+    }else {
+        $('.modal_overlay-popup').css('display','none');
+    }
+  }
+
 });
