@@ -124,6 +124,8 @@ return [
     |
      */
 
+    'phone' => 'Please enter valid phone number',
+
     'custom' => [
         'nickname' => [
             'max' => '20文字以内で入力してください',
