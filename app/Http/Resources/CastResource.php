@@ -61,6 +61,7 @@ class CastResource extends Resource
             'description' => $this->description,
             'type' => $this->type,
             'status' => $this->status,
+            'is_verified' => $this->is_verified,
             'cost' => $this->cost,
             'point' => $this->point,
             'total_point' => $this->total_point + $this->point,

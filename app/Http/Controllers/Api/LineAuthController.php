@@ -63,7 +63,7 @@ class LineAuthController extends ApiController
                 'nickname' => ($lineResponse->nickname) ? $lineResponse->nickname : $lineResponse->name,
                 'line_user_id' => $lineResponse->id,
                 'type' => UserType::GUEST,
-                'status' => Status::ACTIVE,
+                'status' => Status::INACTIVE,
                 'provider' => ProviderType::LINE,
                 'device_type' => ($deviceType) ? $deviceType : DeviceType::WEB,
             ];
