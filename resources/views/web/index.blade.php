@@ -40,29 +40,7 @@
 
   @if (Auth::check())
     @if(Auth::user()->is_guest && Carbon\Carbon::parse(Auth::user()->created_at)->lt(Carbon\Carbon::parse('2018/11/10 00:00')))
-    <div class="modal_wrap">
-      <input id="cookie-popup" type="checkbox">
-      <div class="modal_overlay modal_overlay-popup">
-          <label for="cookie-popup" class="modal_trigger"></label>
-          <div class="modal_content modal_content-btn2">
-              <div class="text-box">
-                  <h2 id="" style="color: #d0021b">重要なお知らせ</h2>
-                  <p>現在、LINE@の不具合により、皆様の<br/>LINEに通知が届いておりません<br>
-                  ご面倒をおかけしますが、下記のLINE@に<br>再度友だち登録をしていただきたいです<br>
-                  <br>
-                  キャストからのメッセージも届かない状況<br>ですので、何卒よろしくお願い致します
-                  </p>
-                  <div>
-                  <input type="checkbox" id="input-cookie" style="display: inline-block;margin-bottom: 15px;margin-bottom: 15px;margin-right: 15px;">今後表示しない
-                  </div>
-              </div>
-              <div class="close_button-box">
-                  <label for="cookie-popup" class="close_button">
-                    <a href="{{ 'https://line.me/R/ti/p/%40' . env('LINE_ID') }}" style="color: #FF66BB" id="cookie-link">友だち登録する</a></label>
-              </div>
-          </div>
-      </div>
-    </div>
+      @include('web.users.popup')
     @endif
   @endif
 @endsection
