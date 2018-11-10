@@ -222,22 +222,5 @@
     if(localStorage.getItem("back_link")){
       localStorage.removeItem("back_link");
     }
-
-    function getCookie(cookie_name) {
-      if (document.cookie.length > 0) {
-          var cookie_start = document.cookie.indexOf(cookie_name + "=");
-          if (cookie_start != -1) {
-              cookie_start = cookie_start + cookie_name.length + 1;
-              var cookie_end = document.cookie.indexOf(";", cookie_start);
-              if (cookie_end == -1) {
-                  cookie_end = document.cookie.length;
-              }
-              return unescape(document.cookie.substring(cookie_start, cookie_end));
-          }
-      }
-
-      return "";
-    }
-
   </script>
 @endsection
