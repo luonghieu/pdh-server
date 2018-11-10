@@ -39,7 +39,7 @@
   </div>
 
   @if (Auth::check())
-    @if(App\Enums\UserType::GUEST == Auth::user()->type)
+    @if(Auth::user()->is_guest && Carbon\Carbon::parse(Auth::user()->created_at)->lt(Carbon\Carbon::parse('2018/11/10 00:00')))
     <div class="modal_wrap">
       <input id="cookie-popup" type="checkbox">
       <div class="modal_overlay modal_overlay-popup">
@@ -237,12 +237,6 @@
       }
 
       return "";
-    }
-
-    if(!getCookie('popup')) {
-      $('#cookie-popup').click();
-    }else {
-     $('.modal_overlay-popup').css('display','none');
     }
 
   </script>
