@@ -37,6 +37,12 @@
         </div>
       </div>
   </div>
+
+  @if (Auth::check())
+    @if(Auth::user()->is_guest && Carbon\Carbon::parse(Auth::user()->created_at)->lt(Carbon\Carbon::parse('2018/11/10 00:00')))
+      @include('web.users.popup')
+    @endif
+  @endif
 @endsection
 @section('web.content')
   @if (!Auth::check())
@@ -194,6 +200,5 @@
     if(localStorage.getItem("back_link")){
       localStorage.removeItem("back_link");
     }
-
   </script>
 @endsection
