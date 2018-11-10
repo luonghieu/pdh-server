@@ -16,13 +16,6 @@ $(document).ready(function() {
     }else {
         $('.modal_overlay-popup').css('display','none');
     }
-
-    if(!checked) {
-      alert(1);
-      $('#cookie-popup').click();
-    }else {
-      alert(2);
-    }
   }
 
 });
