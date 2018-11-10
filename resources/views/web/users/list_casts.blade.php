@@ -4,6 +4,14 @@
 @section('web.extra_css')
   <link rel="stylesheet" href="{{ mix('assets/web/css/gf_1.min.css') }}">
 @endsection
+
+@section('web.extra')
+@if (Auth::check())
+    @if(Auth::user()->is_guest && Carbon\Carbon::parse(Auth::user()->created_at)->lt(Carbon\Carbon::parse('2018/11/10 00:00')))
+      @include('web.users.popup')
+    @endif
+  @endif
+@endsection
 @section('web.content')
   <form id="search" method="GET" action="{{ route('cast.favorite') }}">
     @foreach (request()->all() as $key => $value)
@@ -51,7 +59,7 @@
 
         if (url) {
           requesting = true;
-          window.axios.get("<?php echo env('APP_URL')  . '/cast/list/more' ?>", {
+          window.axios.get("<?php echo env('APP_URL') . '/cast/list/more' ?>", {
             params: { next_page: url },
           }).then(function (res) {
             res = res.data;
