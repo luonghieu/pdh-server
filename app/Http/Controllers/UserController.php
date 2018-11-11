@@ -193,6 +193,9 @@ class UserController extends Controller
 
     public function code()
     {
-        return view('web.users.code');
+        $contents = $this->getApi('/api/v1/auth/me');
+        $isVerify = $contents['data']['is_verified'];
+
+        return view('web.users.code', compact('isVerify'));
     }
 }

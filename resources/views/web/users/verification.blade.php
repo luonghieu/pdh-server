@@ -3,7 +3,6 @@
 @extends('layouts.web')
 @section('web.extra_css')
   <link rel="stylesheet" href="{{ mix('assets/web/css/gf_3.min.css') }}">
-  <link rel="stylesheet" href="{{ asset('assets/web/css/plugin/jRange/jquery.range.css') }}">
 @endsection
 @section('web.content')
   <div class="modal_wrap">
@@ -44,15 +43,13 @@
   @endif
 @endsection
 @section('web.extra_js')
-  <script src="{{ asset('assets/web/js/jRange/jquery.range.js') }}"></script>
-  <script src="{{ asset('assets/web/js/gf-3.js') }}"></script>
   <script>
     function numberPhoneLength(event)
     {
       var phoneNumber = $('#phone-number-verify').val();
       var phoneNumberLen = phoneNumber.length;
-      if (phoneNumberLen < 11 || event.keyCode == 8 || event.keyCode == 37 || event.keyCode == 39)
-      {
+
+      if (phoneNumberLen < 11 || event.keyCode == 8 || event.keyCode == 37 || event.keyCode == 39) {
         return true;
       } else {
         return false;

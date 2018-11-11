@@ -67,4 +67,12 @@ class ProfileController extends Controller
             abort(500);
         }
     }
+
+    public function verify()
+    {
+        $contents = $this->getApi('/api/v1/auth/me');
+        $phone = $contents['data']['phone'];
+
+        return view('web.profile.verification_phone', compact('phone'));
+    }
 }
