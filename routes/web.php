@@ -57,6 +57,11 @@ Route::get('/login/line/callback', 'Auth\LineController@handleCallBack');
 Route::post('/line/webhook', 'Auth\LineController@webhook');
 Route::get('/cast_mypage', 'HomeController@castMypage')->name('web.cast_index');
 
+Route::group(['middleware' => ['auth'], 'prefix' => 'verify', 'as' => 'verify.'], function () {
+    Route::get('/code', ['as' => 'code', 'uses' => 'UserController@code']);
+    Route::get('/', ['as' => 'index', 'uses' => 'UserController@verify']);
+});
+
 Route::group(['middleware' => ['auth', 'guest', 'check_info'], 'as' => 'guest.'], function () {
     Route::group(['as' => 'orders.'], function () {
         Route::get('/reserve', ['as' => 'reserve', 'uses' => 'OrderController@index']);

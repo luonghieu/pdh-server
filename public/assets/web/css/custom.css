@@ -2082,3 +2082,87 @@ padding-top: 65px !important;
   border-radius: 12px;
   border: solid 3px #00C3C3;
 }
+
+.sms-header {
+  box-shadow: none !important;
+}
+
+.sms-header h5 {
+  text-align: center;
+  margin-top: 30px;
+  font-size: 12px;
+  color: #999999;
+  margin-bottom: 4px;
+}
+
+.sms-title {
+  text-align: center;
+  height: 20px;
+  font-family: NotoSansCJKjp;
+  font-size: 15px;
+  font-weight: normal;
+  font-style: normal;
+  font-stretch: normal;
+  line-height: 1.33;
+  letter-spacing: normal;
+  color: #222222;
+  margin-bottom: 15px;
+  margin-top: 15px;
+}
+
+.input-phone {
+  text-align: center;
+}
+
+.input-phone input {
+  height: 50px;
+  width: 85%;
+  border: solid 0.3px #999999;
+  background-color: #fafafa;
+  color: #000000;
+  padding-left: 10px;
+  font-size: 16px;
+  outline: none;
+}
+
+#send-number {
+  width: 80%;
+  height: 50px;
+  border-radius: 36px;
+  display: block;
+  text-align: center;
+  margin: 20px auto;
+  padding: 4px;
+  line-height: 50px;
+  position: relative;
+  color: white;
+  font-size: 17px;
+}
+
+.text-verify a{
+  color: #999999;
+  text-align: center;
+  text-decoration: underline;
+}
+
+.enter-number {
+  text-align: center;
+}
+
+.enter-number input {
+  width: 60px;
+  height: 80px;
+  margin-left: 11px;
+  border: solid 0.3px #999999;
+  background-color: #fafafa;
+  padding-left: 17px;
+  font-size: 36px;
+  letter-spacing: 1px;
+}
+
+.number-phone-verify-wrong {
+  background-color: #CBCBCB;
+}
+.number-phone-verify-correct {
+  background-image: linear-gradient(-162deg, #42E4B2 0%, #00C3C3 100%);
+}
