@@ -2,19 +2,19 @@
 
 namespace App;
 
-use Carbon\Carbon;
-use App\Verification;
-use App\Enums\UserType;
-use App\Enums\PointType;
 use App\Enums\PaymentStatus;
+use App\Enums\PointType;
+use App\Enums\UserType;
 use App\Services\LogService;
+use App\Verification;
+use Carbon\Carbon;
+use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Storage;
 use Tymon\JWTAuth\Contracts\JWTSubject;
-use Illuminate\Notifications\Notifiable;
-use Illuminate\Database\Eloquent\SoftDeletes;
-use Illuminate\Foundation\Auth\User as Authenticatable;
 
 class User extends Authenticatable implements JWTSubject
 {
@@ -253,7 +253,7 @@ class User extends Authenticatable implements JWTSubject
     {
         $data = [
             'code' => rand(1000, 9999),
-            'phone' => $phone
+            'phone' => $phone,
         ];
 
         return $this->verification()->create($data);
@@ -261,7 +261,7 @@ class User extends Authenticatable implements JWTSubject
 
     public function routeNotificationForTwilio()
     {
-        return $this->verification->phone;
+        return phone($this->verification->phone, config('common.phone_number_rule'), 'E164');
     }
 
     public function notifications()

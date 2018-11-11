@@ -38,10 +38,54 @@
       </div>
   </div>
 
+  <div class="modal_wrap">
+    <input id="popup-verify" type="checkbox">
+    <div class="modal_overlay">
+      <label for="popup-verify" class="modal_trigger"></label>
+      <div class="modal_content modal_content-btn2">
+        <div class="text-box">
+          <h2>SMSを利用して</h2>
+          <p>本人確認を行ってください</p>
+        </div>
+        <div class="close_button-box">
+          <div class="close_button-block">
+            <label for="popup-verify" class="close_button left">いいえ</label>
+          </div>
+          <div class="close_button-block">
+            <label for="popup-verify" class="close_button">本人確認をする</label>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
   @if (Auth::check())
     @if(Auth::user()->is_guest && Carbon\Carbon::parse(Auth::user()->created_at)->lt(Carbon\Carbon::parse('2018/11/10 00:00')))
       @include('web.users.popup')
     @endif
+  @endif
+  @if (!Auth::user()->is_verified)
+  <div class="modal_wrap">
+    <input id="triggerVerify" type="checkbox">
+    <div class="modal_overlay">
+      <label for="trigger2" class="modal_trigger"></label>
+      <div class="modal_content modal_content-btn2">
+        <div class="text-box">
+          <h2>お知らせ</h2>
+          <p>SMSを利用して</p>
+          <p>本人確認を行ってください</p>
+        </div>
+        <div class="close_button-box">
+          <div class="close_button-block">
+            <label for="triggerVerify" class="close_button left">いいえ</label>
+          </div>
+          <div class="close_button-block">
+            <a href="{{ route('verify.index') }}"><label class="close_button right">本人確認をする</label></a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
   @endif
 @endsection
 @section('web.content')
@@ -175,7 +219,7 @@
   @endif
 @endsection
 @section('web.script')
-  @if(empty(Auth::user()->date_of_birth))
+  @if(empty(Auth::user()->date_of_birth) && Auth::user()->is_verified)
     <script>
       $(function () {
         $('.open_button').trigger('click');

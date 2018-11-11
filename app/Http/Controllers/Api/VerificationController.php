@@ -3,14 +3,8 @@
 namespace App\Http\Controllers\Api;
 
 use App\Enums\Status;
-use Webpatser\Uuid\Uuid;
-use App\Services\LogService;
-use Illuminate\Http\Request;
-use App\Jobs\MakeAvatarThumbnail;
-use App\Rules\CheckAvatarLessThanTen;
-use App\Http\Resources\AvatarResource;
-use Illuminate\Support\Facades\Storage;
 use App\Notifications\SendVerificationCode;
+use Illuminate\Http\Request;
 
 class VerificationController extends ApiController
 {
@@ -26,7 +20,7 @@ class VerificationController extends ApiController
             return $this->respondWithValidationError($validator->errors()->messages());
         }
 
-        $phone = phone($request->phone, config('common.phone_number_rule'), 'E164');
+        $phone = $request->phone;
 
         $user = $this->guard()->user();
 

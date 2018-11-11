@@ -99,6 +99,13 @@
           </li>
           <label data-field="nickname" id="nickname-error" class="error help-block" for="nickname"></label>
           <li class="portlet-content__item">
+            <p class="portlet-content__text--list">電話番号<span class="text-phone">※相手には表示されません</span></p>
+            <a href="{{ route('profile.verify.index') }}">
+              <input type="text" id="phone" name="phone" value="{{ $profile['phone'] }}" readonly="">
+              <i class="phone arrow"></i>
+            </a>
+          </li>
+          <li class="portlet-content__item">
             <p class="portlet-content__text--list">性別</p>
             <label class="time-input">
               <div class="selectbox" data-field="gender">
