@@ -26,7 +26,7 @@ class VerificationController extends ApiController
             return $this->respondWithValidationError($validator->errors()->messages());
         }
 
-        $phone = phone($request->phone, config('common.phone_number_rule'), 'E164');
+        $phone = $request->phone;
 
         $user = $this->guard()->user();
 
