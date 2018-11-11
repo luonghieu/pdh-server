@@ -38,7 +38,7 @@
       @include('web.partials.header')
     @endif
     <main id="@yield('screen.id')" class="@yield('screen.class')
-    {{ Auth::check() && App\Enums\UserType::CAST == Auth::user()->type ? 'main-cast' : '' }} ">
+    {{ Auth::check() && Auth::user()->is_cast ? 'main-cast' : '' }} ">
       @yield('web.content')
     </main>
 

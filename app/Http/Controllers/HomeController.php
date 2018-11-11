@@ -31,7 +31,7 @@ class HomeController extends Controller
             $token = '';
             $token = JWTAuth::fromUser($user);
 
-            if (UserType::GUEST == $user->type) {
+            if ($user->is_guest) {
                 $order = Order::with('casts')
                     ->where('user_id', Auth::user()->id)
                     ->where('status', OrderStatus::PROCESSING)
@@ -64,7 +64,7 @@ class HomeController extends Controller
                 return view('web.index', compact('token', 'order', 'casts'));
             }
 
-            if (UserType::CAST == $user->type) {
+            if ($user->is_cast) {
                 return redirect()->route('web.cast_index');
             }
         }
