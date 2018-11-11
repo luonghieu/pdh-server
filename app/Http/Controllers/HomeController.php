@@ -45,39 +45,30 @@ class HomeController extends Controller
                 if (!$order) {
                     $order = Order::with('casts')
                         ->where('user_id', Auth::user()->id)
-                        ->where('status', OrderStatus::PROCESSING)
+                        ->whereIn('status', [OrderStatus::OPEN, OrderStatus::ACTIVE])
                         ->with(['user', 'casts', 'nominees', 'tags'])
                         ->orderBy('date')
                         ->orderBy('start_time')->first();
-
-                    if (!$order) {
-                        $order = Order::with('casts')
-                            ->where('user_id', Auth::user()->id)
-                            ->whereIn('status', [OrderStatus::OPEN, OrderStatus::ACTIVE])
-                            ->with(['user', 'casts', 'nominees', 'tags'])
-                            ->orderBy('date')
-                            ->orderBy('start_time')->first();
-                    }
-
-                    $order = OrderResource::make($order);
-
-                    $client = new Client(['base_uri' => config('common.api_url')]);
-                    $option = [
-                        'headers' => ['Authorization' => 'Bearer ' . $token],
-                        'form_params' => [],
-                        'allow_redirects' => false,
-                    ];
-
-                    $response = $client->get(route('casts.index', ['working_today' => 1, 'device' => 3]), $option);
-                    $getContents = json_decode($response->getBody()->getContents());
-                    $casts = $getContents->data;
-
-                    return view('web.index', compact('token', 'order', 'casts'));
                 }
 
-                if (UserType::CAST == $user->type) {
-                    return redirect()->route('web.cast_index');
-                }
+                $order = OrderResource::make($order);
+
+                $client = new Client(['base_uri' => config('common.api_url')]);
+                $option = [
+                    'headers' => ['Authorization' => 'Bearer ' . $token],
+                    'form_params' => [],
+                    'allow_redirects' => false,
+                ];
+
+                $response = $client->get(route('casts.index', ['working_today' => 1, 'device' => 3]), $option);
+                $getContents = json_decode($response->getBody()->getContents());
+                $casts = $getContents->data;
+
+                return view('web.index', compact('token', 'order', 'casts'));
+            }
+
+            if (UserType::CAST == $user->type) {
+                return redirect()->route('web.cast_index');
             }
         }
 

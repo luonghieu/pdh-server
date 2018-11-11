@@ -2,7 +2,7 @@
 @section('screen.id', 'gf3')
 @extends('layouts.web')
 @section('web.extra_css')
-  <link rel="stylesheet" href="{{ asset('assets/web/css/gf_3.css') }}">
+  <link rel="stylesheet" href="{{ mix('assets/web/css/gf_3.min.css') }}">
 @endsection
 @section('web.content')
 <form id="profile-verify-code" action="#" method="GET">
@@ -23,7 +23,7 @@
         <label class="init-text">新しい電話番号</label>
         <input type="number" name="phone" id="phone" value="" placeholder="電話番号入力" />
       </div>
-      <label id="phone-error" class="error error-phone help-block" for="phone"></label>
+      <label id="phone-error" data-field="phone" class="error error-phone help-block" for="phone"></label>
     </section>
   </div>
   <button type="submit" id="send-number" class="number-phone-verify-wrong bd-none">上記の番号にSMSを送る</button>

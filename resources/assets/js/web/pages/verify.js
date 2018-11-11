@@ -6,7 +6,8 @@ $(document).ready(function() {
     rules: {
       phone: {
         required: true,
-        maxlength: 10,
+        minlength: 10,
+        maxlength: 11,
       },
     },
 
