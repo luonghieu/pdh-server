@@ -3,9 +3,9 @@
 @extends('layouts.web')
 @section('web.extra_css')
   <link rel="stylesheet" href="{{ mix('assets/web/css/gf_3.min.css') }}">
-  <link rel="stylesheet" href="{{ asset('assets/web/css/plugin/jRange/jquery.range.css') }}">
 @endsection
 @section('web.content')
+  <input type="hidden" id="is-verify" value="{{ $isVerify }}">
   <div class="modal_wrap">
     <input id="verify-success" type="checkbox">
     <div class="modal_overlay">
@@ -80,16 +80,23 @@
 
 @endsection
 @section('web.extra_js')
+<<<<<<< HEAD
   <script src="{{ asset('assets/web/js/jRange/jquery.range.js') }}"></script>
   <script src="{{ asset('assets/web/js/gf-3.js') }}"></script>
+=======
+>>>>>>> 47cae6e1... [MIK-1152] [Web] Update phone number
   <script>
     function numberCodeLength(event, num)
     {
       var codeNumber = $('#code-number-'+num).val();
       var codeNumberLen = codeNumber.length;
 
+<<<<<<< HEAD
       if (codeNumberLen < 1 || event.keyCode == 8 || event.keyCode == 37 || event.keyCode == 39)
       {
+=======
+      if (codeNumberLen < 1 || event.keyCode == 8 || event.keyCode == 37 || event.keyCode == 39) {
+>>>>>>> 47cae6e1... [MIK-1152] [Web] Update phone number
         return true;
       } else {
         return false;

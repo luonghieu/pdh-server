@@ -2163,6 +2163,64 @@ padding-top: 65px !important;
 .number-phone-verify-wrong {
   background-color: #CBCBCB;
 }
+
 .number-phone-verify-correct {
   background-image: linear-gradient(-162deg, #42E4B2 0%, #00C3C3 100%);
+}
+
+#gm1 .text-phone {
+  display: block;
+  font-size: 10px;
+  margin-top: 4px;
+  color: #999999;
+}
+
+#gm1.gm1-edit .phone.arrow:after {
+  float: right;
+  margin-top: 0.5rem;
+  pointer-events: none;
+  content: "";
+  display: block;
+  width: 6px;
+  height: 6px;
+  border-top: 1px solid #222222;
+  border-right: 1px solid #222222;
+  -webkit-box-sizing: border-box;
+  box-sizing: border-box;
+  -webkit-transform: translateY(-50%) translateX(0) rotate(135deg);
+  -ms-transform: translateY(-50%) translateX(0) rotate(135deg);
+  transform: translateY(-50%) translateX(0) rotate(403deg);
+}
+
+#gm1.gm1-edit #phone {
+  margin-right: 0.5em;
+}
+
+#gf3 .init-mt {
+  margin-top: 5%;
+}
+
+#gf3 .init-height input {
+  height: 40px;
+}
+
+#send-number.bd-none {
+  border: none;
+  background-image: linear-gradient(-162deg, #42E4B2 0%, #00C3C3 100%);
+}
+
+.error-phone {
+  margin-left: 7%;
+}
+
+.input-phone .init-text {
+  float: left;
+  margin-left: 7%;
+  font-size: 15px;
+}
+
+.input-phone .text-old-phone {
+  border: none;
+  padding-left: 0;
+  font-weight: bold;
 }
