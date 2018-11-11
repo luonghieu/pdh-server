@@ -266,7 +266,7 @@ class User extends Authenticatable implements JWTSubject
 
     public function routeNotificationForTwilio()
     {
-        return $this->verification->phone;
+        return phone($this->verification->phone, config('common.phone_number_rule'), 'E164');
     }
 
     public function notifications()
