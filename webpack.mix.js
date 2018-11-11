@@ -25,6 +25,7 @@ mix.styles([
 mix.styles('public/assets/web/css/ge_1.css', 'public/assets/web/css/ge_1.min.css').version();
 mix.styles('public/assets/web/css/gf_1.css', 'public/assets/web/css/gf_1.min.css').version();
 mix.styles('public/assets/web/css/ge_2_3.css', 'public/assets/web/css/ge_2_3.min.css').version();
+mix.styles('public/assets/web/css/gf_3.css', 'public/assets/web/css/gf_3.min.css').version();
 
 mix.js("resources/assets/js/app.js", "public/js").version();
 mix.js("resources/assets/js/web.js", "public/js").version();
