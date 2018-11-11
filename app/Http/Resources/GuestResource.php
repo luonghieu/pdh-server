@@ -37,6 +37,7 @@ class GuestResource extends Resource
             'email' => $this->email,
             'nickname' => $this->nickname,
             'fullname' => $this->fullname,
+            'fullname_kana' => $this->fullname_kana,
             'phone' => $this->phone,
             'gender' => $this->gender,
             'date_of_birth' => $this->date_of_birth,
@@ -79,7 +80,7 @@ class GuestResource extends Resource
             'line_qr' => $this->line_qr,
             'post_code' => $this->post_code,
             'address' => $this->address,
-            'fullname_kana' => $this->fullname_kana,
+            'is_verified' => $this->is_verified,
         ]);
     }
 }

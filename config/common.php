@@ -9,6 +9,8 @@ return [
 
     'autocharge_point' => 3000,
 
+    'phone_number_rule' => env('PHONE_NUMBER_RULE', 'JP'),
+
     'order_options' => [
         'call_time' => [
             [

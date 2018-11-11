@@ -65,4 +65,8 @@ return [
     'postcode_invalid' => 'Post code invalid',
     'postcode_not_support' => 'post code not support',
     'payment_method_not_supported' => 'Payment method not supported',
+    'verification_code_sent' => 'Verification code sent',
+    'verification_code_is_wrong' => 'Verification code is wrong',
+    'user_verify_success' => 'Your account has been verified',
+    'phone_update_success' => 'Your phone number has been updated',
 ];

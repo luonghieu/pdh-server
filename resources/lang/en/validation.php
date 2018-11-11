@@ -124,6 +124,8 @@ return [
     |
     */
 
+    'phone' => 'Please enter valid phone number',
+
     'custom' => [
         'attribute-name' => [
             'rule-name' => 'custom-message',
