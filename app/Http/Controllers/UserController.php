@@ -185,4 +185,14 @@ class UserController extends Controller
             abort(500);
         }
     }
+
+    public function verify()
+    {
+        return view('web.users.verification');
+    }
+
+    public function code()
+    {
+        return view('web.users.code');
+    }
 }
