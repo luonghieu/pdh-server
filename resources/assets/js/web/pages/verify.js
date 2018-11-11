@@ -48,6 +48,7 @@ $(document).ready(function() {
       $('#send-number').removeClass('number-phone-verify-correct');
       $('#send-number').addClass('number-phone-verify-wrong');
     }
+
   });
 
   $('#send-number').click(function(event) {

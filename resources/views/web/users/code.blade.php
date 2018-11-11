@@ -80,13 +80,23 @@
 
 @endsection
 @section('web.extra_js')
+<<<<<<< HEAD
+=======
+  <script src="{{ asset('assets/web/js/jRange/jquery.range.js') }}"></script>
+  <script src="{{ asset('assets/web/js/gf-3.js') }}"></script>
+>>>>>>> develop
   <script>
     function numberCodeLength(event, num)
     {
       var codeNumber = $('#code-number-'+num).val();
       var codeNumberLen = codeNumber.length;
 
+<<<<<<< HEAD
       if (codeNumberLen < 1 || event.keyCode == 8 || event.keyCode == 37 || event.keyCode == 39) {
+=======
+      if (codeNumberLen < 1 || event.keyCode == 8 || event.keyCode == 37 || event.keyCode == 39)
+      {
+>>>>>>> develop
         return true;
       } else {
         return false;
