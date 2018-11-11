@@ -23,6 +23,10 @@ Route::group(['prefix' => 'v1'], function () {
         Route::group(['middleware' => ['auth:api']], function () {
             Route::get('me', ['as' => 'me', 'uses' => 'AuthController@me']);
             Route::post('update', ['as' => 'update', 'uses' => 'AuthController@update']);
+
+            Route::post('/verify_code', ['as' => 'code', 'uses' => 'VerificationController@code']);
+            Route::post('/resend_code', ['as' => 'resend', 'uses' => 'VerificationController@resend']);
+            Route::post('/verify', ['as' => 'verify', 'uses' => 'VerificationController@verify']);
         });
     });
 

@@ -273,7 +273,9 @@ $(document).ready(function(){
             };
           }
         } else {
-          localStorage.setItem('full',true);
+          if(arrIds.indexOf(id) < 0) {
+            localStorage.setItem('full',true);
+          }
         }
       } else {
         var arrIds = [];

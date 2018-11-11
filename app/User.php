@@ -6,6 +6,7 @@ use App\Enums\PaymentStatus;
 use App\Enums\PointType;
 use App\Enums\UserType;
 use App\Services\LogService;
+use App\Verification;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -248,6 +249,21 @@ class User extends Authenticatable implements JWTSubject
         $this->save();
     }
 
+    public function generateVerifyCode($phone)
+    {
+        $data = [
+            'code' => rand(1000, 9999),
+            'phone' => $phone,
+        ];
+
+        return $this->verification()->create($data);
+    }
+
+    public function routeNotificationForTwilio()
+    {
+        return phone($this->verification->phone, config('common.phone_number_rule'), 'E164');
+    }
+
     public function notifications()
     {
         return $this->morphMany(Notification::class, 'notifiable');
@@ -365,6 +381,11 @@ class User extends Authenticatable implements JWTSubject
     public function bankAccount()
     {
         return $this->hasOne(BankAccount::class);
+    }
+
+    public function verification()
+    {
+        return $this->hasOne(Verification::class)->latest();
     }
 
     public function positivePoints($points)

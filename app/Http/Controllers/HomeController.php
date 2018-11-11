@@ -25,11 +25,14 @@ class HomeController extends Controller
         if ($request->session()->has('data')) {
             $request->session()->forget('data');
         }
-
         if (Auth::check()) {
             $user = Auth::user();
             $token = '';
             $token = JWTAuth::fromUser($user);
+
+            if (!$user->status) {
+                return view('web.users.verification', compact('token'));
+            }
 
             if ($user->is_guest) {
                 $order = Order::with('casts')
