@@ -149,6 +149,18 @@ $(document).ready(function() {
     }
   });
 
+  $('#code-verify .enter-number input').blur(function(event) {
+    $('#code-verify footer').css({
+      display: 'none',
+    });
+  });
+
+  $('#code-number-1').on('click', function(event) {
+    $('#code-verify footer').css({
+      display: 'none',
+    });
+  });
+
   $('#alert-code-wrong').click(function() {
     $('#triggerAcceptResenCode').trigger('click');
   });
