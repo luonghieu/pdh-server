@@ -77,15 +77,15 @@ $(document).ready(function() {
     });
   });
 
-  $('#code-number-1').on('keypress', function() {
+  $('#code-number-1').on('keyup', function() {
     $('#code-number-2').focus();
   });
 
-  $('#code-number-2').on('keypress', function() {
+  $('#code-number-2').on('keyup', function() {
     $('#code-number-3').focus();
   });
 
-  $('#code-number-3').on('keypress', function() {
+  $('#code-number-3').on('keyup', function() {
     $('#code-number-4').focus();
   });
 
