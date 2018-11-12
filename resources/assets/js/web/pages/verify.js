@@ -102,7 +102,10 @@ $(document).ready(function() {
   $('.resend-code').click(function() {
     window.axios.post(`/api/v1/auth/resend_code`)
     .then(function (response) {
-      window.location = '/verify/code';
+      $('#accept-resend-code').css({
+        display: 'none',
+      });
+      $('#trigger-alert-resend-code').trigger('click');
     })
     .catch(function (error) {
       console.log(error);
@@ -178,5 +181,9 @@ $(document).ready(function() {
     $('#accept-resend-code').css({
       display: 'none',
     });
+  });
+
+  $('#resend-success').click(function(event) {
+    location.reload();
   });
 });
