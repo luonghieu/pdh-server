@@ -11,28 +11,28 @@ $(document).ready(function() {
       },
     },
 
-    submitHandler: function(form) {
-      var param = {
-        phone: $('#phone').val(),
-      };
+  submitHandler: function(form) {
+    var param = {
+      phone: $('#phone').val(),
+    };
 
-      window.axios.post('/api/v1/auth/verify_code', param)
-        .then(function(response) {
-          window.location.href = '/verify/code';
-        })
-        .catch(function(error) {
-          if (error.response.status == 401) {
-            window.location = '/login/line';
-          }
+    window.axios.post('/api/v1/auth/verify_code', param)
+      .then(function(response) {
+        window.location.href = '/verify/code';
+      })
+      .catch(function(error) {
+        if (error.response.status == 401) {
+          window.location = '/login/line';
+        }
 
-          if (error.response.data.error) {
-            var errors = error.response.data.error;
+        if (error.response.data.error) {
+          var errors = error.response.data.error;
 
-            Object.keys(errors).forEach(function(field) {
-              $(`[data-field="${field}"].help-block`).html(errors[field][0]);
-            });
-          };
-        });
+          Object.keys(errors).forEach(function(field) {
+            $(`[data-field="${field}"].help-block`).html(errors[field][0]);
+          });
+        };
+      });
     }
   });
 
@@ -76,14 +76,6 @@ $(document).ready(function() {
     .catch(function (error) {
       console.log(error);
     });
-  });
-
-  $('#code-number-1').on('keyup', function() {
-    var codeNumber1 = $(this).val();
-    var codeNumber1Len = codeNumber1.length;
-    if (codeNumber1Len == 1) {
-      $('#code-number-2').focus();
-    }
   });
 
   $('#code-number-1').on('keypress', function() {
