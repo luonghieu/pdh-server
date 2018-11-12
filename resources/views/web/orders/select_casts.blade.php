@@ -63,18 +63,20 @@
       function checkedCasts() {
         if(localStorage.getItem("order_call")){
           var arrIds = JSON.parse(localStorage.getItem("order_call")).arrIds;
-          if(arrIds.length) {
-            const inputCasts = $('.select-casts');
-            $.each(inputCasts,function(index,val){
-              if(arrIds.indexOf(val.value) > -1) {
-                $(this).prop('checked',true);
-                $(this).parent().find('.cast-link').addClass('cast-detail');
-                $('.label-select-casts[for='+  val.value  +']').text('指名中');
-              }
-            })
+          if(arrIds) {
+            if(arrIds.length) {
+              const inputCasts = $('.select-casts');
+              $.each(inputCasts,function(index,val){
+                if(arrIds.indexOf(val.value) > -1) {
+                  $(this).prop('checked',true);
+                  $(this).parent().find('.cast-link').addClass('cast-detail');
+                  $('.label-select-casts[for='+  val.value  +']').text('指名中');
+                }
+              })
 
-            $(".cast-ids").val(arrIds.toString());
-            $('#sb-select-casts').text('次に進む(3/4)');
+              $(".cast-ids").val(arrIds.toString());
+              $('#sb-select-casts').text('次に進む(3/4)');
+            }
           }
         }
       }

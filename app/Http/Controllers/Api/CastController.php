@@ -74,7 +74,7 @@ class CastController extends ApiController
         } elseif ($request->latest) {
             $casts = $casts->orderBy('rank')
                 ->orderByDesc('users.created_at')
-                ->paginate($request->per_page)
+                ->paginate(10)
                 ->appends($request->query());
         } else {
             $casts = $casts->leftJoin('cast_order as co', 'co.user_id', '=', 'users.id')
