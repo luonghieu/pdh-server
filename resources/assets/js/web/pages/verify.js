@@ -131,20 +131,21 @@ $(document).ready(function() {
 
       window.axios.post(`/api/v1/auth/verify`, formData)
       .then(function (response) {
-        setTimeout(() => {
-          $('#verify-success').trigger('click');
-        }, 3000);
+        $('#verify-success').trigger('click');
 
         if (isVerify != 0) {
-          window.location.href = '/profile';
+          setTimeout(() => {
+            window.location.href = '/profile';
+          }, 3000);
         } else {
-          window.location.href = '/mypage';
+          setTimeout(() => {
+            window.location.href = '/mypage';
+          }, 3000);
         }
       })
       .catch(function (error) {
         $('#code-number-4').blur();
         $('#triggerVerifyIncorrect').trigger('click');
-        console.log(error);
       });
     }
   });
