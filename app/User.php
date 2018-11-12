@@ -261,6 +261,10 @@ class User extends Authenticatable implements JWTSubject
             'phone' => $phone,
         ];
 
+        if ($this->verification) {
+            $this->verification->delete();
+        }
+
         return $this->verification()->create($data);
     }
 
