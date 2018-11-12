@@ -25,7 +25,6 @@
       <label for="full-cast" class="modal_trigger" id="lb-full-cast"></label>
       <div class="modal_content modal_content-btn1">
         <div class="text-box" id="full-cast-message">
-          <h2></h2>
           <p></p>
         </div>
         <label for="full-cast" class="close_button">OK</label>
@@ -107,7 +106,7 @@
       var countIds = JSON.parse(localStorage.getItem("order_call")).countIds;
       if(localStorage.getItem("full")){
           var text = ' 指名できるキャストは'+ countIds + '名です';
-          $('#full-cast-message h2').text(text);
+          $('#full-cast-message p').text(text);
           $('#full-cast').attr('checked','checked');
           localStorage.removeItem("full");
       }
