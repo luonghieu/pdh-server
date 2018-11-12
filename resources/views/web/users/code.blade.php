@@ -65,10 +65,10 @@
         <h2 class="sms-title">SMSで届いた番号を入力してください</h2>
       </div>
       <div class="enter-number">
-        <input type="number" id="code-number-1" onkeydown="return numberCodeLength(event, 1)">
-        <input type="number" id="code-number-2" onkeydown="return numberCodeLength(event, 2)">
-        <input type="number" id="code-number-3" onkeydown="return numberCodeLength(event, 3)">
-        <input type="number" id="code-number-4" onkeydown="return numberCodeLength(event, 4)">
+        <input type="tel" pattern="[0-9]*" id="code-number-1" onkeydown="return numberCodeLength(event, 1)">
+        <input type="tel" pattern="[0-9]*" id="code-number-2" onkeydown="return numberCodeLength(event, 2)">
+        <input type="tel" pattern="[0-9]*" id="code-number-3" onkeydown="return numberCodeLength(event, 3)">
+        <input type="tel" pattern="[0-9]*" id="code-number-4" onkeydown="return numberCodeLength(event, 4)">
       </div>
 
     </section>

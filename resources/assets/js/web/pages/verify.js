@@ -53,19 +53,21 @@ $(document).ready(function() {
   });
 
   $('#send-number').click(function(event) {
-    var formData = new FormData();
-    var phone = $('#phone-number-verify').val();
-    formData.append('phone', phone);
+    if ($('#send-number').attr('class') == 'number-phone-verify-correct') {
+      var formData = new FormData();
+      var phone = $('#phone-number-verify').val();
+      formData.append('phone', phone);
 
-    window.axios.post(`/api/v1/auth/verify_code`, formData)
-    .then(function (response) {
-      window.location = '/verify/code';
-    })
-    .catch(function (error) {
-      var err = error.response.data.error.phone[0];
-      $('.phone-number-incorrect h2').text(err);
-      $('#triggerPhoneNumberIncorrect').trigger('click');
-    });
+      window.axios.post(`/api/v1/auth/verify_code`, formData)
+      .then(function (response) {
+        window.location = '/verify/code';
+      })
+      .catch(function (error) {
+        var err = error.response.data.error.phone[0];
+        $('.phone-number-incorrect h2').text(err);
+        $('#triggerPhoneNumberIncorrect').trigger('click');
+      });
+    }
   });
 
   $('.resend-code').click(function() {
@@ -78,16 +80,22 @@ $(document).ready(function() {
     });
   });
 
-  $('#code-number-1').on('keyup', function() {
-    $('#code-number-2').focus();
+  $('#code-number-1').on('keyup', function(event) {
+    if (event.keyCode != 8 && event.keyCode != 32) {
+      $('#code-number-2').focus();
+    }
   });
 
-  $('#code-number-2').on('keyup', function() {
-    $('#code-number-3').focus();
+  $('#code-number-2').on('keyup', function(event) {
+    if (event.keyCode != 8 && event.keyCode != 32) {
+      $('#code-number-3').focus();
+    }
   });
 
-  $('#code-number-3').on('keyup', function() {
-    $('#code-number-4').focus();
+  $('#code-number-3').on('keyup', function(event) {
+    if (event.keyCode != 8 && event.keyCode != 32) {
+      $('#code-number-4').focus();
+    }
   });
 
   $('#code-number-4').on('keyup', function() {
@@ -98,7 +106,9 @@ $(document).ready(function() {
 
       axios.post(`/api/v1/auth/verify`, formData)
       .then(function (response) {
-        $('#verify-success').trigger('click');
+        setTimeout(() => {
+          $('#verify-success').trigger('click');
+        }, 3000);
 
         if (isVerify) {
            window.location = '/profile';
@@ -107,6 +117,7 @@ $(document).ready(function() {
         }
       })
       .catch(function (error) {
+        $('#code-number-4').blur();
         $('#triggerVerifyIncorrect').trigger('click');
         console.log(error);
       });
