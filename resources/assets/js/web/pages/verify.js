@@ -1,13 +1,24 @@
 $(document).ready(function() {
-  const isVerify = $('#is-verify').val();
+  var isVerify = null;
+  var oldPhone = $('#old-phone').val();
+
   $('#profile-verify-code').submit(function(e) {
     e.preventDefault();
   }).validate({
     rules: {
       phone: {
         required: true,
+        number: true,
         minlength: 10,
         maxlength: 11,
+      },
+    },
+    messages: {
+      phone: {
+        required: '正しい電話番号を入力してください',
+        number: '正しい電話番号を入力してください',
+        minlength: '正しい電話番号を入力してください',
+        maxlength: '正しい電話番号を入力してください',
       },
     },
 
@@ -16,11 +27,22 @@ $(document).ready(function() {
         phone: $('#phone').val(),
       };
 
+      if (oldPhone == param['phone']) {
+        $('.error-phone').html('入力された電話番号はすでに登録されています');
+        $('.error-phone').css('display', '');
+        return false;
+      }
+
+      $('.error-phone').each(function() {
+        $(this).html('');
+      });
+
       window.axios.post('/api/v1/auth/verify_code', param)
         .then(function(response) {
           window.location.href = '/verify/code';
         })
         .catch(function(error) {
+          console.log(error);
           if (error.response.status == 401) {
             window.location = '/login/line';
           }
@@ -30,6 +52,7 @@ $(document).ready(function() {
 
             Object.keys(errors).forEach(function(field) {
               $(`[data-field="${field}"].help-block`).html(errors[field][0]);
+              $(`[data-field="${field}"].help-block`).css('display', '');
             });
           };
         });
@@ -99,19 +122,21 @@ $(document).ready(function() {
   });
 
   $('#code-number-4').on('keyup', function() {
+    var isVerify = $('#is-verify').val();
+
     var formData = new FormData();
     var code = $('#code-number-1').val()+$('#code-number-2').val()+$('#code-number-3').val()+$('#code-number-4').val();
-    if(code.length == 4) {
+    if (code.length == 4) {
       formData.append('code', code);
 
-      axios.post(`/api/v1/auth/verify`, formData)
+      window.axios.post(`/api/v1/auth/verify`, formData)
       .then(function (response) {
         $('#verify-success').trigger('click');
 
-        if (isVerify) {
-           window.location = '/profile';
+        if (isVerify != 0) {
+          window.location.href = '/profile';
         } else {
-          window.location = '/mypage';
+          window.location.href = '/mypage';
         }
       })
       .catch(function (error) {
