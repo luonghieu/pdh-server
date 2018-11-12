@@ -48,7 +48,7 @@
             <label data-dismiss="modal" class="close_button left">いいえ</label>
           </div>
           <div class="close_button-block">
-            <label class="close_button right resend-code" >はい</label>
+            <label class="close_button right resend-code" >再送する</label>
           </div>
         </div>
       </div>
