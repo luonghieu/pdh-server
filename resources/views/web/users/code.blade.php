@@ -1,5 +1,6 @@
 @section('title', '本人確認')
 @section('screen.id', 'gf3')
+@section('controller.id', 'code-verify')
 @extends('layouts.web')
 @section('web.extra_css')
   <link rel="stylesheet" href="{{ mix('assets/web/css/gf_3.min.css') }}">
@@ -61,7 +62,7 @@
   <div class="cast-search">
     <section class="search">
       <div class="search-header sms-header">
-        <h2 class="sms-title">SMSを利用して本人確認を行います</h2>
+        <h2 class="sms-title">SMSで届いた番号を入力してください</h2>
       </div>
       <div class="enter-number">
         <input type="number" id="code-number-1" onkeydown="return numberCodeLength(event, 1)">
