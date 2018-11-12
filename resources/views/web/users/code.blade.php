@@ -35,7 +35,7 @@
     </div>
   </div>
 
-  <div class="modal_wrap">
+  <div class="modal_wrap" id="accept-resend-code">
     <input id="triggerAcceptResenCode" type="checkbox">
     <div class="modal_overlay">
       <label for="triggerAcceptResenCode" class="modal_trigger"></label>
@@ -45,7 +45,7 @@
         </div>
         <div class="close_button-box">
           <div class="close_button-block">
-            <label data-dismiss="modal" class="close_button left">いいえ</label>
+            <label for="triggerAcceptResenCode" class="close_button left" id="deny-resend">いいえ</label>
           </div>
           <div class="close_button-block">
             <label class="close_button right resend-code" >再送する</label>

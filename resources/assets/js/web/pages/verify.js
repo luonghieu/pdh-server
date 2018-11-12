@@ -163,4 +163,10 @@ $(document).ready(function() {
   $('#alert-code-wrong').click(function() {
     $('#triggerAcceptResenCode').trigger('click');
   });
+
+  $('#deny-resend').click(function(event) {
+    $('#accept-resend-code').css({
+      display: 'none',
+    });
+  });
 });
