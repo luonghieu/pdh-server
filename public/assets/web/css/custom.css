@@ -2082,3 +2082,167 @@ padding-top: 65px !important;
   border-radius: 12px;
   border: solid 3px #00C3C3;
 }
+
+.sms-header {
+  box-shadow: none !important;
+}
+
+.sms-header h5 {
+  text-align: center;
+  margin-top: 30px;
+  font-size: 12px;
+  color: #999999;
+  margin-bottom: 4px;
+}
+
+.sms-title {
+  text-align: center;
+  height: 20px;
+  font-family: NotoSansCJKjp;
+  font-size: 15px;
+  font-weight: normal;
+  font-style: normal;
+  font-stretch: normal;
+  line-height: 1.33;
+  letter-spacing: normal;
+  color: #222222;
+  margin-bottom: 15px;
+  margin-top: 15px;
+}
+
+.input-phone {
+  text-align: center;
+}
+
+.input-phone input {
+  height: 50px;
+  width: 85%;
+  border: solid 0.3px #999999;
+  background-color: #fafafa;
+  color: #000000;
+  padding-left: 10px;
+  font-size: 16px;
+  outline: none;
+}
+
+.btn-phone-update,
+#send-number {
+  width: 80%;
+  height: 50px;
+  border-radius: 36px;
+  display: block;
+  text-align: center;
+  margin: 20px auto;
+  padding: 4px;
+  line-height: 50px;
+  position: relative;
+  color: white;
+  font-size: 17px;
+}
+
+.text-verify a{
+  color: #999999;
+  text-align: center;
+  text-decoration: underline;
+}
+
+.enter-number {
+  text-align: center;
+}
+
+.enter-number input {
+  width: 60px;
+  height: 80px;
+  margin-left: 11px;
+  border: solid 0.3px #999999;
+  background-color: #fafafa;
+  padding-left: 17px;
+  font-size: 36px;
+  letter-spacing: 1px;
+}
+
+.number-phone-verify-wrong {
+  background-color: #CBCBCB;
+}
+
+.number-phone-verify-correct {
+  background-image: linear-gradient(-162deg, #42E4B2 0%, #00C3C3 100%);
+}
+
+#gm1 .text-phone {
+  display: block;
+  font-size: 10px;
+  margin-top: 4px;
+  color: #999999;
+}
+
+#gm1.gm1-edit .phone.arrow:after {
+  float: right;
+  margin-top: 0.5rem;
+  pointer-events: none;
+  content: "";
+  display: block;
+  width: 6px;
+  height: 6px;
+  border-top: 1px solid #222222;
+  border-right: 1px solid #222222;
+  -webkit-box-sizing: border-box;
+  box-sizing: border-box;
+  -webkit-transform: translateY(-50%) translateX(0) rotate(135deg);
+  -ms-transform: translateY(-50%) translateX(0) rotate(135deg);
+  transform: translateY(-50%) translateX(0) rotate(403deg);
+}
+
+#gm1.gm1-edit #phone {
+  margin-right: 0.5em;
+}
+
+#gf3 .init-mt {
+  margin-top: 5%;
+}
+
+#gf3 .init-height input {
+  height: 40px;
+}
+
+.btn-phone-update {
+  border: none;
+  background-image: linear-gradient(-162deg, #42E4B2 0%, #00C3C3 100%);
+}
+
+.error-phone {
+  margin-left: 7%;
+}
+
+.input-phone .init-text {
+  float: left;
+  margin-left: 7%;
+  font-size: 15px;
+}
+
+.input-phone .text-old-phone {
+  border: none;
+  padding-left: 0;
+  font-weight: bold;
+}
+
+.text-not-set {
+  color: #515151;
+}
+
+#code-verify #gf3 .modal_wrap .text-box p {
+  font-weight: bold;
+}
+
+.wrap-link {
+  text-align: center;
+  margin-left: 20px;
+}
+
+.wrap-link h6 {
+  display: inline-block;
+}
+
+.wrap-link h6:first-child {
+  margin-right: 15px;
+}
