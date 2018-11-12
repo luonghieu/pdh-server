@@ -76,7 +76,10 @@
 
   <div class="page-header sms-header">
     <h5>SMSが届かない場合</h5>
-    <h6 class="text-verify resend-code"><a href="javascript:void(0)">SMSを再送する</a></h6>
+    <div class="wrap-link">
+      <h6 class="text-verify resend-code"><a href="javascript:void(0)">SMSを再送する</a></h6>
+      <h6 class="text-verify"><a href="/service/contact">運営に問い合わせる</a></h6>
+    </div>
   </div>
 
 @endsection
