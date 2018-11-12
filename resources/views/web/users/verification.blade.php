@@ -26,7 +26,7 @@
         <h2 class="sms-title">SMSを利用して本人確認を行います</h2>
       </div>
       <div class="input-phone">
-        <input type="number" id="phone-number-verify" onkeydown="return numberPhoneLength(event)">
+        <input type="tel" pattern="[0-9]*" id="phone-number-verify" onkeydown="return numberPhoneLength(event)" placeholder="電話番号を入力">
       </div>
     </section>
   </div>
