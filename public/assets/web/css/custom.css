@@ -2237,3 +2237,19 @@ padding-top: 65px !important;
   color: #515151;
 }
 
+#code-verify #gf3 .modal_wrap .text-box p {
+  font-weight: bold;
+}
+
+.wrap-link {
+  text-align: center;
+  margin-left: 20px;
+}
+
+.wrap-link h6 {
+  display: inline-block;
+}
+
+.wrap-link h6:first-child {
+  margin-right: 15px;
+}

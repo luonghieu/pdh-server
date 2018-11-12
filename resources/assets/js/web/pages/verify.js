@@ -85,7 +85,13 @@ $(document).ready(function() {
         window.location = '/verify/code';
       })
       .catch(function (error) {
-        var err = error.response.data.error.phone[0];
+        if(error.response.status == 500) {
+          var err = 'この操作は実行できません';
+        } else {
+          if (error.response.data.error.phone) {
+            var err = error.response.data.error.phone[0];
+          }
+        }
         $('.phone-number-incorrect h2').text(err);
         $('#triggerPhoneNumberIncorrect').trigger('click');
       });
@@ -144,6 +150,9 @@ $(document).ready(function() {
       })
       .catch(function (error) {
         $('#code-number-4').blur();
+        $('#accept-resend-code').css({
+          display: 'block',
+        });
         $('#triggerVerifyIncorrect').trigger('click');
       });
     }
