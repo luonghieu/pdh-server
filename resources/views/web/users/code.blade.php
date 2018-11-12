@@ -45,7 +45,7 @@
         </div>
         <div class="close_button-box">
           <div class="close_button-block">
-            <label for="triggerAcceptResenCode" class="close_button left">いいえ</label>
+            <label data-dismiss="modal" class="close_button left">いいえ</label>
           </div>
           <div class="close_button-block">
             <label class="close_button right resend-code" >はい</label>
