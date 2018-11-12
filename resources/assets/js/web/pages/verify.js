@@ -137,6 +137,7 @@ $(document).ready(function() {
 
       window.axios.post(`/api/v1/auth/verify`, formData)
       .then(function (response) {
+        $('#code-number-4').blur();
         $('#verify-success').trigger('click');
 
         if (isVerify != 0) {

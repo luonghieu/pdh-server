@@ -32,7 +32,7 @@
 @section('web.extra_css')
 <style>
   footer {
-    margin-top: 2rem;
+    margin-top: 2rem !important;
   }
 </style>
 @stop
