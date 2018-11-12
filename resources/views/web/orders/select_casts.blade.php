@@ -108,7 +108,7 @@
       if(localStorage.getItem("full")){
           var text = ' 指名できるキャストは'+ countIds + '名です';
           $('#full-cast-message h2').text(text);
-          $('#lb-full-cast').click();
+          $('#full-cast').attr('checked','checked');
           localStorage.removeItem("full");
       }
     }
