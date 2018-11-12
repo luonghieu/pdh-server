@@ -21,12 +21,12 @@ class StopOrder implements ShouldQueue
     /**
      * Create a new job instance.
      *
-     * @param Order $order
+     * @param $orderId
      * @param null $cast
      */
-    public function __construct(Order $order, $cast = null)
+    public function __construct($orderId, $cast = null)
     {
-        $this->order = $order;
+        $this->order = Order::onWriteConnection()->findOrFail($orderId);
         $this->cast = $cast;
     }
 

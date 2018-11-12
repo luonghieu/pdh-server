@@ -167,7 +167,7 @@ class MessageController extends ApiController
             } else {
                 $message->recipients()->attach($userIds, ['room_id' => $id]);
 
-                broadcast(new MessageCreated($message))->toOthers();
+                broadcast(new MessageCreated($message->id))->toOthers();
             }
 
             $message = $message->load('user');
