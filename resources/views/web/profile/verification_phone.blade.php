@@ -8,7 +8,7 @@
 <form id="profile-verify-code" action="#" method="GET">
   {{ csrf_field() }}
   <div class="page-header sms-header">
-    <h1 class="text-bold">本人確認</h1>
+    <h1 class="text-bold">電話番号を変更する</h1>
   </div>
   <div class="cast-search">
     <section class="search">
@@ -17,15 +17,15 @@
       </div>
       <div class="input-phone init-height">
         <label class="init-text">現在の電話番号</label>
-        <input type="text" name="old_phone" class="text-old-phone" value="{{ $phone }}" disabled="" />
+        <input type="text" name="old_phone" id="old-phone" class="text-old-phone" value="{{ $phone ? $phone : '未設定' }}" disabled="" />
       </div>
       <div class="input-phone init-height init-mt">
         <label class="init-text">新しい電話番号</label>
-        <input type="number" name="phone" id="phone" value="" placeholder="電話番号入力" />
+        <input type="tel" name="phone" id="phone" value="" placeholder="電話番号を入力" />
       </div>
       <label id="phone-error" data-field="phone" class="error error-phone help-block" for="phone"></label>
     </section>
   </div>
-  <button type="submit" id="send-number" class="number-phone-verify-wrong bd-none">上記の番号にSMSを送る</button>
+  <button type="submit" class="btn-phone-update">上記の番号にSMSを送る</button>
 </form>
 @endsection
