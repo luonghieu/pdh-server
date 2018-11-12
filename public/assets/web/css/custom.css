@@ -2224,3 +2224,7 @@ padding-top: 65px !important;
   padding-left: 0;
   font-weight: bold;
 }
+
+#code-verify #gf3 .modal_wrap .text-box p {
+  font-weight: bold;
+}
