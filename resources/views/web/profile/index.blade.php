@@ -79,7 +79,7 @@
         </li>
         <li class="portlet-content__item">
           <p class="portlet-content__text--list">電話番号<span class="text-phone">※相手には表示されません</span></p>
-          <p class="portlet-content__value">{{ $profile['phone'] or '未設定' }}</p>
+          <p class="portlet-content__value">{{ (!$profile['phone']) ? '未設定' : $profile['phone']}}</p>
         </li>
         @php
         switch ($profile['gender']) {

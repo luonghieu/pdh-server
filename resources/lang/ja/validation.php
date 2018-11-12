@@ -124,7 +124,7 @@ return [
     |
      */
 
-    'phone' => 'Please enter valid phone number',
+    'phone' => '正しい電話番号を入力してください',
 
     'custom' => [
         'nickname' => [

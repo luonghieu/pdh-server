@@ -2125,6 +2125,7 @@ padding-top: 65px !important;
   outline: none;
 }
 
+.btn-phone-update,
 #send-number {
   width: 80%;
   height: 50px;
@@ -2204,7 +2205,7 @@ padding-top: 65px !important;
   height: 40px;
 }
 
-#send-number.bd-none {
+.btn-phone-update {
   border: none;
   background-image: linear-gradient(-162deg, #42E4B2 0%, #00C3C3 100%);
 }
@@ -2232,3 +2233,7 @@ padding-top: 65px !important;
 #code-verify footer {
   margin-top: 12%;
 }
+.text-not-set {
+  color: #515151;
+}
+
