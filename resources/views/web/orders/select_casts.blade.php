@@ -18,19 +18,6 @@
       </div>
     </div>
   </div>
-
-  <div class="modal_wrap">
-    <input id="full-cast" type="checkbox">
-    <div class="modal_overlay">
-      <label for="full-cast" class="modal_trigger" id="lb-full-cast"></label>
-      <div class="modal_content modal_content-btn1">
-        <div class="text-box" id="full-cast-message">
-          <p></p>
-        </div>
-        <label for="full-cast" class="close_button">OK</label>
-      </div>
-    </div>
-  </div>
 @endsection
 
 @section('web.content')
@@ -108,8 +95,8 @@
       var countIds = JSON.parse(localStorage.getItem("order_call")).countIds;
       if(localStorage.getItem("full")){
           var text = ' 指名できるキャストは'+ countIds + '名です';
-          $('#full-cast-message p').text(text);
-          $('#full-cast').attr('checked','checked');
+          $('#content-message h2').text(text);
+          $('#max-cast').prop('checked',true);
           localStorage.removeItem("full");
       }
     }

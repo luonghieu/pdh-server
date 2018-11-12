@@ -142,7 +142,7 @@ $(document).ready(function(){
     var activeTag = $('.tags-name:checked').length;
 
     if (activeTag > 5) {
-      $('.lbmax').click();
+      $('#max-tags').prop('checked', true);
     }
   });
 
@@ -150,14 +150,14 @@ $(document).ready(function(){
     var activeSum = $(".active").length;
 
     if ($(this).hasClass("active")) {
-      $(this).children().attr('checked',false);
+      $(this).children().prop('checked',false);
       $(this).removeClass('active');
     } else {
       if(activeSum >= 5) {
-        $(this).children().attr('checked',false);
+        $(this).children().prop('checked',false);
         $(this).removeClass('active');
       } else {
-        $(this).children().attr('checked',true);
+        $(this).children().prop('checked',true);
         $(this).addClass('active');
       }
     }
@@ -169,8 +169,8 @@ $(document).ready(function(){
     if($('.select-casts:checked').length > countIds) {
       var text = ' 指名できるキャストは'+ countIds + '名です';
       $('#content-message h2').text(text);
-      $('#lb-max-cast').click();
-      $(this).attr('checked',false);
+      $('#max-cast').prop('checked', true);
+      $(this).prop('checked',false);
     }else {
       if ($(this).is(':checked')) {
         if(localStorage.getItem("order_call")){
@@ -182,14 +182,14 @@ $(document).ready(function(){
                   arrIds: arrIds
                 };
 
-              $(this).attr('checked',true);
+              $(this).prop('checked',true);
               $(this).parent().find('.cast-link').addClass('cast-detail');
               $('.label-select-casts[for='+  id  +']').text('指名中');
             } else {
               var text = ' 指名できるキャストは'+ countIds + '名です';
               $('#content-message h2').text(text);
-              $('#lb-max-cast').click();
-              $(this).attr('checked',false);
+              $('#max-cast').prop('checked', true);
+              $(this).prop('checked',false);
             }
 
           if(arrIds.length) {
@@ -206,7 +206,7 @@ $(document).ready(function(){
                 arrIds: arrIds
               };
 
-            $(this).attr('checked',true);
+            $(this).prop('checked',true);
             $(this).parent().find('.cast-link').addClass('cast-detail');
             $('.label-select-casts[for='+  id  +']').text('指名中');
           }
@@ -238,7 +238,7 @@ $(document).ready(function(){
           }
         }
 
-        $(this).attr('checked',false);
+        $(this).prop('checked',false);
         $(this).parent().find('.cast-link').removeClass('cast-detail');
         $('.label-select-casts[for='+  id  +']').text('指名する');
       }
