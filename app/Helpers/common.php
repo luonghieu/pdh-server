@@ -120,21 +120,19 @@ if (!function_exists('listDate')) {
         }
 
         if (!isset($data['year'])) {
-            $data['year'] = [$currentDate->year];
+            $data['year'] = $currentDate->year;
         }
 
         $days = [];
 
-        foreach ($data['year'] as $year) {
-            $number = cal_days_in_month(CAL_GREGORIAN, $data['month'], $year);
+        $number = cal_days_in_month(CAL_GREGORIAN, $data['month'], $data['year']);
 
-            foreach (range(01, $number) as $val) {
-                if ($data['month'] == $currentMonth && $currentDay <= $val) {
+        foreach (range(01, $number) as $val) {
+            if ($data['month'] == $currentMonth && $currentDay <= $val) {
+                $days[$val] = $val;
+            } else {
+                if ($data['month'] != $currentMonth) {
                     $days[$val] = $val;
-                } else {
-                    if ($data['month'] != $currentMonth) {
-                        $days[$val] = $val;
-                    }
                 }
             }
         }
