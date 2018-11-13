@@ -62,7 +62,7 @@
             <label for="triggerAcceptResenCode" class="close_button left" id="deny-resend">いいえ</label>
           </div>
           <div class="close_button-block">
-            <label id="resend-code" class="close_button right">はい</label>
+            <label id="resend-code" class="close_button right">再送する</label>
           </div>
         </div>
       </div>

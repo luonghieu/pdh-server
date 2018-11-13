@@ -29,3 +29,10 @@
   <button type="submit" class="btn-phone-update">上記の番号にSMSを送る</button>
 </form>
 @endsection
+@section('web.extra_css')
+<style>
+  footer {
+    margin-top: 2rem !important;
+  }
+</style>
+@stop

@@ -8,9 +8,9 @@ use App\Events\MessageCreated as BroadcastMessage;
 use App\Message;
 use App\Notifications\DirectMessageNotifyToLine;
 use App\Notifications\MessageCreated;
+use App\Notifications\MessageCreatedFromAdmin;
 use App\Notifications\MessageCreatedNotifyToAdmin;
 use App\User;
-use Carbon\Carbon;
 
 class MessageObserver
 {
@@ -48,8 +48,13 @@ class MessageObserver
         }
 
         if (RoomType::SYSTEM == $room->type && $message->user_id != 1) {
-                $admin = User::find(1);
-                $admin->notify((new MessageCreatedNotifyToAdmin($room->id)));
+            $admin = User::find(1);
+            $admin->notify((new MessageCreatedNotifyToAdmin($room->id)));
+        }
+
+        if (RoomType::SYSTEM == $room->type && $message->user_id == 1) {
+            $user = $room->users->except([$message->user_id])->first();
+            $user->notify(new MessageCreatedFromAdmin($room->id));
         }
     }
 }
