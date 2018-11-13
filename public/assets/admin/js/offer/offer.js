@@ -16,6 +16,7 @@ $(document).ready(function(){
   $(".iCheck-helper").on("click", function(event){
     var checkedId = $(this).siblings("input:checkbox[name='casts_offer[]']:checked").val();
     var searchId = $(this).siblings("input:checkbox[name='casts_offer[]']").val();
+
     if(localStorage.getItem("offer")){
       var offer = JSON.parse(localStorage.getItem("offer"));
       if(offer.arrIds) {
@@ -28,11 +29,14 @@ $(document).ready(function(){
             arrIds.push(checkedId);
           } else {
             $(this).css('opacity', 1);
-            arrIds.splice(arrIds.indexOf(searchId), 1);
+
+            if(arrIds.indexOf(searchId) > -1) {
+              arrIds.splice(arrIds.indexOf(searchId), 1);
+            }
           }
         } else {
           if(arrIds.indexOf(searchId) > -1) {
-            arrIds.splice(arrIds.indexOf(searchId[0]), 1);
+            arrIds.splice(arrIds.indexOf(searchId), 1);
           }
 
           $(this).siblings("input:checkbox[name='casts_offer[]']").prop('checked', false);
@@ -64,6 +68,7 @@ $(document).ready(function(){
             arrIds: arrIds
           };
     }
+
     updateLocalStorageValue('offer', params);
 
     var totalCast = JSON.parse(localStorage.getItem("offer"));
