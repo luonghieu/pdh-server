@@ -30,6 +30,11 @@ class HomeController extends Controller
             $token = '';
             $token = JWTAuth::fromUser($user);
 
+            $verification = $user->verification;
+            if ($verification && !$verification->status) {
+                return redirect()->route('verify.code');
+            }
+
             if (!$user->status) {
                 return view('web.users.verification', compact('token'));
             }

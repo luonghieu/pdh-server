@@ -191,11 +191,6 @@
       <a href="{{ route('cast.list_casts') }}" class="cast-item import"></a>
     </div>
   </div>
-  @if($token)
-    <script>
-        window.localStorage.setItem('access_token', '{{ $token }}');
-    </script>
-  @endif
 @endsection
 @section('web.script')
   @if(empty(Auth::user()->date_of_birth) && Auth::user()->is_verified)
