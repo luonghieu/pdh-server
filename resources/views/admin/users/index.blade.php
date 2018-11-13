@@ -36,15 +36,23 @@
         </div>
         <div class="panel-body">
           @include('admin.partials.notification')
+          @php
+            $request = [
+              'page' => request()->page,
+              'limit' => request()->limit,
+              'search' => request()->search,
+              'from_date' => request()->from_date,
+              'to_date' => request()->to_date,
+           ];
+          @endphp
           <table class="table table-striped table-bordered bootstrap-datatable">
             <thead>
               <tr>
                 <th>No.</th>
                 <th class="sorting{{ (request()->id) ? '_' . request()->id: '' }}">
                   <a href="{{ route('admin.users.index',
-                    ['page' => request()->page,
-                     'id' => (request()->id == 'asc') ? 'desc' : 'asc',
-                     ]) }}">ユーザーID
+                    array_merge($request, ['id' => (request()->id == 'asc') ? 'desc' : 'asc',])
+                    ) }}">ユーザーID
                    </a>
                 </th>
                 <th>ニックネーム</th>
@@ -52,16 +60,14 @@
                 <th>会員区分</th>
                 <th class="sorting{{ (request()->status) ? '_' . request()->status: '' }}">
                   <a href="{{ route('admin.users.index',
-                    ['page' => request()->page,
-                     'status' => (request()->status == 'asc') ? 'desc' : 'asc',
-                     ]) }}">ステータス
+                    array_merge($request, ['status' => (request()->status == 'asc') ? 'desc' : 'asc',])
+                    ) }}">ステータス
                    </a>
                 </th>
                 <th class="sorting{{ (request()->last_active_at) ? '_' . request()->last_active_at: '' }}">
                   <a href="{{ route('admin.users.index',
-                    ['page' => request()->page,
-                     'last_active_at' => (request()->last_active_at == 'asc') ? 'desc' : 'asc',
-                     ]) }}">オンライン
+                    array_merge($request, ['last_active_at' => (request()->last_active_at == 'asc') ? 'desc' : 'asc',])
+                    ) }}">オンライン
                    </a>
                 </th>
                 <th>登録日時</th>
