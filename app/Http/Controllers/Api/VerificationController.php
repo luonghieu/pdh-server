@@ -2,9 +2,11 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\User;
 use App\Enums\Status;
-use App\Notifications\SendVerificationCode;
 use Illuminate\Http\Request;
+use App\Notifications\SendVerificationCode;
+use App\Notifications\ResendVerificationCode;
 
 class VerificationController extends ApiController
 {
@@ -42,7 +44,8 @@ class VerificationController extends ApiController
 
         $newVerification = $user->generateVerifyCode($verification->phone);
 
-        $user->notify(new SendVerificationCode($newVerification->id));
+        $admin = User::find(1);
+        $admin->notify(new ResendVerificationCode($newVerification->id));
 
         return $this->respondWithNoData(trans('messages.verification_code_sent'));
     }
@@ -63,6 +66,10 @@ class VerificationController extends ApiController
         $user = $this->guard()->user();
         $isVerified = $user->is_verified;
         $verification = $user->verification;
+
+        if (!$verification) {
+            return $this->respondErrorMessage(trans('messages.action_not_performed'), 422);
+        }
 
         if ($code != $verification->code) {
             return $this->respondErrorMessage(trans('messages.verification_code_is_wrong'), 400);
