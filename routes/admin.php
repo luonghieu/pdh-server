@@ -108,4 +108,8 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.'], function () {
         Route::get('/', ['as' => 'index', 'uses' => 'NotificationScheduleController@getNotificationScheduleList']);
         Route::post('/upload', ['as' => 'upload', 'uses' => 'UploadImageController@upload']);
     });
+
+    Route::group(['prefix' => 'verifications', 'as' => 'verifications.', 'middleware' => 'is_admin'], function () {
+        Route::get('/', ['as' => 'index', 'uses' => 'VerificationController@index']);
+    });
 });
