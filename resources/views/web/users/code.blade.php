@@ -85,7 +85,11 @@
         <input type="tel" pattern="[0-9]*" id="code-number-4" onkeydown="return numberCodeLength(event, 4)">
       </div>
       <div class="mt5">
+        @if (!$isVerify)
         <a href="{{ route('verify.index') }}" class="green-button"><i class="arrow"></i> 再度電話番号を入力する</a>
+        @else
+        <a href="{{ route('profile.verify.index') }}" class="green-button"><i class="arrow"></i> 再度電話番号を入力する</a>
+        @endif
       </div>
 
     </section>
