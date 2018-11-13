@@ -185,4 +185,17 @@ class UserController extends Controller
             abort(500);
         }
     }
+
+    public function verify()
+    {
+        return view('web.users.verification');
+    }
+
+    public function code()
+    {
+        $contents = $this->getApi('/api/v1/auth/me');
+        $isVerify = $contents['data']['is_verified'];
+
+        return view('web.users.code', compact('isVerify'));
+    }
 }

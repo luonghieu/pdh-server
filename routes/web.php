@@ -14,6 +14,10 @@ Route::group(['middleware' => 'auth'], function () {
     Route::group(['prefix' => 'profile', 'as' => 'profile.'], function () {
         Route::get('/', ['as' => 'index', 'uses' => 'ProfileController@index'])->middleware('check_info');
         Route::get('edit', ['as' => 'edit', 'uses' => 'ProfileController@edit']);
+
+        Route::group(['prefix' => 'verify', 'as' => 'verify.'], function () {
+            Route::get('/', ['as' => 'index', 'uses' => 'ProfileController@verify']);
+        });
     });
 
     Route::group(['middleware' => 'check_info'], function () {
@@ -64,6 +68,17 @@ Route::get('/mypage', 'HomeController@index')->name('web.index');
 Route::get('/login/line', 'Auth\LineController@login')->name('auth.line');
 Route::get('/login/line/callback', 'Auth\LineController@handleCallBack');
 Route::post('/line/webhook', 'Auth\LineController@webhook');
+
+Route::group(['middleware' => ['auth'], 'prefix' => 'verify', 'as' => 'verify.'], function () {
+    Route::get('/code', ['as' => 'code', 'uses' => 'UserController@code']);
+    Route::get('/', ['as' => 'index', 'uses' => 'UserController@verify']);
+});
+
+
+Route::group(['middleware' => 'auth', 'prefix' => 'verify', 'as' => 'verify.'], function () {
+    Route::get('/code', ['as' => 'code', 'uses' => 'UserController@code']);
+    Route::get('/', ['as' => 'index', 'uses' => 'UserController@verify']);
+});
 
 Route::group(['middleware' => ['auth', 'guest', 'check_info'], 'as' => 'guest.'], function () {
     Route::group(['as' => 'orders.'], function () {
