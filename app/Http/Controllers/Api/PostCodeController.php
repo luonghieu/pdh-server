@@ -69,7 +69,7 @@ class PostCodeController extends ApiController
         }
 
         if (!$address) {
-            return $this->respondErrorMessage(trans('messages.postcode_error'));
+            return $this->respondErrorMessage(trans('messages.postcode_invalid'));
         }
 
         return $this->respondWithData($address);
