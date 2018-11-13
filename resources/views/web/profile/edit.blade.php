@@ -101,9 +101,9 @@
           <li class="portlet-content__item">
             <p class="portlet-content__text--list">電話番号<span class="text-phone">※相手には表示されません</span></p>
             @if(!$profile['phone'])
-            <a href="{{ route('verify.index') }}">
+            <a href="{{ route('verify.index') }}" class="phone-relative">
               <input type="text" id="phone" class="text-not-set" name="phone" value="未設定" readonly="">
-              <i class="phone arrow"></i>
+              <i class="phone arrow init-m"></i>
             </a>
             @else
             <a href="{{ route('profile.verify.index') }}" class="phone-relative">
