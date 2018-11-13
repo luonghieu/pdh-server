@@ -193,8 +193,4 @@ $(document).ready(function() {
   $('#resend-success').click(function(event) {
     location.reload();
   });
-
-  $('#resend-success').click(function(event) {
-    location.reload();
-  });
 });
