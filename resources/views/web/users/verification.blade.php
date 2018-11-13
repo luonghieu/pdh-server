@@ -36,11 +36,6 @@
   <div class="page-header sms-header">
     <h6 class="text-verify"><a href="/service/law">利用規約はこちら</a></h6>
   </div>
-  @if(isset($token))
-    <script>
-        window.localStorage.setItem('access_token', '{{ $token }}');
-    </script>
-  @endif
 @endsection
 @section('web.extra_js')
   <script>

@@ -188,7 +188,10 @@ class UserController extends Controller
 
     public function verify()
     {
-        return view('web.users.verification');
+        $user = Auth::user();
+        $token = JWTAuth::fromUser($user);
+
+        return view('web.users.verification', compact('token'));
     }
 
     public function code()
