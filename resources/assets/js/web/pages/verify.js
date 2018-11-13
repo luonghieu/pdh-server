@@ -72,6 +72,7 @@ $(document).ready(function() {
       $('#send-number').removeClass('number-phone-verify-correct');
       $('#send-number').addClass('number-phone-verify-wrong');
     }
+
   });
 
   $('#send-number').click(function(event) {
@@ -101,7 +102,10 @@ $(document).ready(function() {
   $('#resend-code').click(function() {
     window.axios.post(`/api/v1/auth/resend_code`)
     .then(function (response) {
-      window.location = '/verify/code';
+      $('#accept-resend-code').css({
+        display: 'none',
+      });
+      $('#trigger-alert-resend-code').trigger('click');
     })
     .catch(function (error) {
       console.log(error);
@@ -136,6 +140,7 @@ $(document).ready(function() {
 
       window.axios.post(`/api/v1/auth/verify`, formData)
       .then(function (response) {
+        $('#code-number-4').blur();
         $('#verify-success').trigger('click');
 
         if (isVerify != 0) {
@@ -182,6 +187,10 @@ $(document).ready(function() {
     $('#accept-resend-code').css({
       display: 'none',
     });
+    location.reload();
+  });
+
+  $('#resend-success').click(function(event) {
     location.reload();
   });
 });
