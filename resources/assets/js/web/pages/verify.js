@@ -98,7 +98,7 @@ $(document).ready(function() {
     }
   });
 
-  $('.resend-code').click(function() {
+  $('#resend-code').click(function() {
     window.axios.post(`/api/v1/auth/resend_code`)
     .then(function (response) {
       window.location = '/verify/code';
@@ -174,9 +174,14 @@ $(document).ready(function() {
     $('#triggerAcceptResenCode').trigger('click');
   });
 
+  $('#request-resend-code').click(function(event) {
+    $('#triggerAcceptResenCode').trigger('click');
+  });
+
   $('#deny-resend').click(function(event) {
     $('#accept-resend-code').css({
       display: 'none',
     });
+    location.reload();
   });
 });

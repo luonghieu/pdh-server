@@ -26,7 +26,7 @@
     <input id="triggerVerifyIncorrect" type="checkbox">
     <div class="modal_overlay">
       <label for="trigger" class="modal_trigger"></label>
-      <div class="modal_content modal_content-btn1">
+      <div class="modal_content modal_content-btn1 notify-code-wrong">
         <div class="text-box">
           <p>認証コードが間違っています</p>
         </div>
@@ -34,7 +34,21 @@
       </div>
     </div>
   </div>
-
+  <div class="modal_wrap">
+    <input id="trigger-alert-resend-code" type="checkbox">
+    <div class="modal_overlay">
+      <label for="trigger" class="modal_trigger"></label>
+      <div class="modal_content modal_content-btn1">
+        <div class="text-box notify-resend-success">
+          <h2>SMS認証を承りました</h2>
+          <p>24時間以内に認証番号を</p>
+          <p>お送りいたしますので</p>
+          <p>しばらくお待ち下さい</p>
+        </div>
+        <label for="trigger-alert-resend-code" class="close_button" id="resend-success">OK</label>
+      </div>
+    </div>
+  </div>
   <div class="modal_wrap" id="accept-resend-code">
     <input id="triggerAcceptResenCode" type="checkbox">
     <div class="modal_overlay">
@@ -48,7 +62,7 @@
             <label for="triggerAcceptResenCode" class="close_button left" id="deny-resend">いいえ</label>
           </div>
           <div class="close_button-block">
-            <label class="close_button right resend-code" >再送する</label>
+            <label id="resend-code" class="close_button right">再送する</label>
           </div>
         </div>
       </div>
@@ -77,7 +91,7 @@
   <div class="page-header sms-header">
     <h5>SMSが届かない場合</h5>
     <div class="wrap-link">
-      <h6 class="text-verify resend-code"><a href="javascript:void(0)">SMSを再送する</a></h6>
+      <h6 id="request-resend-code" class="text-verify"><a href="javascript:void(0)">SMSを再送する</a></h6>
       <h6 class="text-verify"><a href="/service/contact">運営に問い合わせる</a></h6>
     </div>
   </div>

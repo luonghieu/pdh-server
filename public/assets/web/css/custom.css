@@ -2246,3 +2246,12 @@ padding-top: 65px !important;
 .wrap-link h6:first-child {
   margin-right: 15px;
 }
+
+#code-verify .notify-code-wrong {
+  margin-bottom: 17%;
+}
+
+#code-verify .notify-resend-success p {
+  line-height: 1px;
+  font-weight: 100 !important;
+}
