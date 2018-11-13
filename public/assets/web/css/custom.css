@@ -2246,3 +2246,8 @@ padding-top: 65px !important;
 .wrap-link h6:first-child {
   margin-right: 15px;
 }
+
+.init-textarea {
+  width: 100%;
+  border: none;
+}

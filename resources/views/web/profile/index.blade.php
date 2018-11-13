@@ -61,7 +61,7 @@
       @if (!$profile['description'])
       <p class="portlet-header__title">自己紹介設定されていません</p>
       @else
-      <p class="portlet-content__text">{{ $profile['description'] }}</p>
+      <textarea rows="5" class="portlet-content__text init-textarea" readonly="">{{ $profile['description'] }}</textarea>
       @endif
     </div>
   </section>

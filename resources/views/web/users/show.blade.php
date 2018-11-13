@@ -69,7 +69,11 @@
         <h2 class="portlet-header__title">自己紹介</h2>
       </div>
       <div class="portlet-content">
-        <p class="portlet-content__text">{{ (!$cast['description']) ? '' : $cast['description'] }}</p>
+        @if (!$cast['description'])
+        <p class="portlet-header__title">自己紹介設定されていません</p>
+        @else
+        <textarea rows="5" class="portlet-content__text init-textarea" readonly="">{{ $cast['description'] }}</textarea>
+        @endif
       </div>
     </section>
 
