@@ -175,10 +175,6 @@ $(document).ready(function() {
     });
   });
 
-  $('#alert-code-wrong').click(function() {
-    $('#triggerAcceptResenCode').trigger('click');
-  });
-
   $('#request-resend-code').click(function(event) {
     $('#triggerAcceptResenCode').trigger('click');
   });
