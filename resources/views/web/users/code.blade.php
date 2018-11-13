@@ -52,7 +52,7 @@
   <div class="modal_wrap" id="accept-resend-code">
     <input id="triggerAcceptResenCode" type="checkbox">
     <div class="modal_overlay">
-      <label for="triggerAcceptResenCode" class="modal_trigger"></label>
+      <label for="trigger" class="modal_trigger"></label>
       <div class="modal_content modal_content-btn2">
         <div class="text-box">
           <p>SMSを再送しますか？</p>
