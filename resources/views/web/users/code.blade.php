@@ -84,6 +84,9 @@
         <input type="tel" pattern="[0-9]*" id="code-number-3" onkeydown="return numberCodeLength(event, 3)">
         <input type="tel" pattern="[0-9]*" id="code-number-4" onkeydown="return numberCodeLength(event, 4)">
       </div>
+      <div class="mt5">
+        <a href="{{ route('verify.index') }}" class="green-button"><i class="arrow"></i> 再度電話番語を入力する</a>
+      </div>
 
     </section>
   </div>
