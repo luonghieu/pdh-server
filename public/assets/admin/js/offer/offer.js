@@ -89,6 +89,27 @@ $(document).ready(function(){
   $("#duration_offer").on("change",function(){
     var duration = $("#duration_offer option:selected").val();
 
+    if(localStorage.getItem("offer")){
+      var offer = JSON.parse(localStorage.getItem("offer"));
+      if(offer.arrIds.length) {
+        var nomineeIds = offer.arrIds.toString();
+        var date =  $('.date-offer option:selected').val();
+
+        var time = '18:00';
+
+        var data = {
+            date : date,
+            start_time : time,
+            type :3,
+            duration :duration,
+            total_cast :offer.arrIds.length,
+            nominee_ids : nomineeIds
+          };
+
+      console.log(data)
+      }
+    }
+
     var params = {
         duration_offer: duration,
       };
