@@ -50,9 +50,10 @@ class MessageObserver
         if (RoomType::SYSTEM == $room->type && $message->user_id != 1) {
             $admin = User::find(1);
             $admin->notify((new MessageCreatedNotifyToAdmin($room->id)));
-        } else {
-            $user = $room->users->except([$message->user_id])->first();
+        }
 
+        if (RoomType::SYSTEM == $room->type && $message->user_id == 1) {
+            $user = $room->users->except([$message->user_id])->first();
             $user->notify(new MessageCreatedFromAdmin($room->id));
         }
     }

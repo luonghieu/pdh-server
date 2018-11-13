@@ -2,6 +2,8 @@
 
 namespace App\Notifications;
 
+use App\Enums\DeviceType;
+use App\Enums\ProviderType;
 use App\Message;
 use Illuminate\Bus\Queueable;
 use Illuminate\Notifications\Notification;
@@ -31,7 +33,11 @@ class MessageCreatedFromAdmin extends Notification implements ShouldQueue
      */
     public function via($notifiable)
     {
-        return [LineBotNotificationChannel::class];
+        if ($notifiable->device_type == DeviceType::WEB) {
+            return [LineBotNotificationChannel::class];
+        }
+
+        return [];
     }
 
     public function lineBotPushData($notifiable)
