@@ -36,6 +36,15 @@
         </div>
         <div class="panel-body">
           @include('admin.partials.notification')
+          @php
+            $request = [
+              'page' => request()->page,
+              'limit' => request()->limit,
+              'search' => request()->search,
+              'from_date' => request()->from_date,
+              'to_date' => request()->to_date,
+           ];
+          @endphp
           <table class="table table-striped table-bordered bootstrap-datatable">
             <thead>
               <tr>
@@ -45,18 +54,16 @@
                 <th>年齢</th>
                 <th class="sorting{{ (request()->rank) ? '_' . request()->rank: '' }}">
                   <a href="{{ route('admin.casts.index',
-                    ['page' => request()->page,
-                     'rank' => (request()->rank == 'asc') ? 'desc' : 'asc',
-                     ]) }}">優先ランク
+                    array_merge($request, ['rank' => (request()->rank == 'asc') ? 'desc' : 'asc',])
+                    ) }}">優先ランク
                   </a>
                 </th>
                 <th>会員区分</th>
                 <th>ステータス</th>
                 <th class="sorting{{ (request()->last_active_at) ? '_' . request()->last_active_at: '' }}">
                   <a href="{{ route('admin.casts.index',
-                    ['page' => request()->page,
-                     'last_active_at' => (request()->last_active_at == 'asc') ? 'desc' : 'asc',
-                     ]) }}">オンライン
+                    array_merge($request, ['last_active_at' => (request()->last_active_at == 'asc') ? 'desc' : 'asc',])
+                    ) }}">オンライン
                    </a>
                 </th>
                 <th>本日出勤</th>
