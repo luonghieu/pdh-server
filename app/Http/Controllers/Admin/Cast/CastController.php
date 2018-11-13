@@ -26,7 +26,7 @@ class CastController extends Controller
     public function index(Request $request)
     {
         $keyword = $request->search;
-        $orderBy = $request->only('last_active_at');
+        $orderBy = $request->only('last_active_at', 'rank');
         $casts = Cast::query();
 
         if ($request->has('from_date') && !empty($request->from_date)) {

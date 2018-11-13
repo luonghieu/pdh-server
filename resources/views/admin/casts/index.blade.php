@@ -43,7 +43,13 @@
                 <th>ユーザーID</th>
                 <th>ニックネーム</th>
                 <th>年齢</th>
-                <th>優先ランク</th>
+                <th class="sorting{{ (request()->rank) ? '_' . request()->rank: '' }}">
+                  <a href="{{ route('admin.casts.index',
+                    ['page' => request()->page,
+                     'rank' => (request()->rank == 'asc') ? 'desc' : 'asc',
+                     ]) }}">優先ランク
+                  </a>
+                </th>
                 <th>会員区分</th>
                 <th>ステータス</th>
                 <th class="sorting{{ (request()->last_active_at) ? '_' . request()->last_active_at: '' }}">
