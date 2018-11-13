@@ -2247,11 +2247,12 @@ padding-top: 65px !important;
   margin-right: 15px;
 }
 
-#code-verify .notify-code-wrong {
-  margin-bottom: 17%;
-}
-
 #code-verify .notify-resend-success p {
   line-height: 1px;
   font-weight: 100 !important;
+}
+
+.modal_overlay {
+  top: 0;
+  bottom: 0;
 }
