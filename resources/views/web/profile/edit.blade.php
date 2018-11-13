@@ -106,7 +106,7 @@
               <i class="phone arrow"></i>
             </a>
             @else
-            <a href="{{ route('profile.verify.index') }}">
+            <a href="{{ route('profile.verify.index') }}" class="phone-relative">
               <input type="text" id="phone" name="phone" value="{{ $profile['phone'] }}" readonly="">
               <i class="phone arrow"></i>
             </a>
