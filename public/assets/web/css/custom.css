@@ -2195,6 +2195,10 @@ padding-top: 65px !important;
   transform: translateY(-50%) translateX(-2px) rotate(404deg);
 }
 
+#gm1.gm1-edit .phone.arrow.init-m:after {
+  margin: 1px auto;
+}
+
 #gm1.gm1-edit #phone {
   margin-right: 1em;
 }
