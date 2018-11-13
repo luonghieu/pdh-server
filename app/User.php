@@ -257,7 +257,7 @@ class User extends Authenticatable implements JWTSubject
         ];
 
         if ($this->verification) {
-            $this->verification->delete();
+            $this->verification()->delete();
         }
 
         return $this->verification()->create($data);
@@ -265,7 +265,9 @@ class User extends Authenticatable implements JWTSubject
 
     public function routeNotificationForTwilio()
     {
-        return phone($this->verification->phone, config('common.phone_number_rule'), 'E164');
+        $verification = $this->verification()->first();
+
+        return phone($verification->phone, config('common.phone_number_rule'), 'E164');
     }
 
     public function notifications()
