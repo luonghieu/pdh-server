@@ -2177,24 +2177,34 @@ padding-top: 65px !important;
 }
 
 #gm1.gm1-edit .phone.arrow:after {
-  float: right;
-  margin-top: 0.5rem;
+  margin: 2% auto;
   pointer-events: none;
+  position: absolute;
   content: "";
   display: block;
+  bottom: 0;
+  right: 0;
   width: 6px;
   height: 6px;
   border-top: 1px solid #222222;
   border-right: 1px solid #222222;
   -webkit-box-sizing: border-box;
   box-sizing: border-box;
-  -webkit-transform: translateY(-50%) translateX(0) rotate(135deg);
-  -ms-transform: translateY(-50%) translateX(0) rotate(135deg);
-  transform: translateY(-50%) translateX(0) rotate(403deg);
+  -webkit-transform: translateY(-50%) translateX(-2px) rotate(404deg);
+  -ms-transform: translateY(-50%) translateX(-2px) rotate(404deg);
+  transform: translateY(-50%) translateX(-2px) rotate(404deg);
+}
+
+#gm1.gm1-edit .phone.arrow.init-m:after {
+  margin: 1px auto;
 }
 
 #gm1.gm1-edit #phone {
-  margin-right: 0.5em;
+  margin-right: 1em;
+}
+
+.phone-relative {
+  position: relative;
 }
 
 #gf3 .init-mt {
@@ -2206,6 +2216,7 @@ padding-top: 65px !important;
 }
 
 .btn-phone-update {
+  padding: 0;
   border: none;
   background-image: linear-gradient(-162deg, #42E4B2 0%, #00C3C3 100%);
 }
@@ -2250,4 +2261,46 @@ padding-top: 65px !important;
 .init-textarea {
   width: 100%;
   border: none;
+}
+
+#code-verify .notify-resend-success p {
+  line-height: 1px;
+  font-weight: 100 !important;
+}
+
+#code-verify .mt5 {
+  margin-top: 5px;
+  padding: 0 50px;
+}
+
+#code-verify a.green-button {
+  color: #30CCC3;
+  position: relative;
+  padding: 0 4px;
+  text-align-last: left;
+  outline: 0;
+  background: none;
+}
+
+#code-verify a.green-button i.arrow::after {
+  pointer-events: none;
+  position: absolute;
+  content: "";
+  display: block;
+  bottom: 0;
+  left: 0;
+  width: 8px;
+  height: 8px;
+  border-top: 1px solid #30CCC3;
+  border-right: 1px solid #30CCC3;
+  -webkit-box-sizing: border-box;
+  box-sizing: border-box;
+  -webkit-transform: translateY(-50%) translateX(-2px) rotate(-135deg);
+  -ms-transform: translateY(-50%) translateX(-2px) rotate(-135deg);
+  transform: translateY(-50%) translateX(-2px) rotate(-135deg);
+}
+
+.modal_overlay {
+  top: 0;
+  bottom: 0;
 }

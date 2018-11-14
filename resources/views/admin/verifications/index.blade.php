@@ -6,19 +6,20 @@
       <div class="panel panel-default">
         <div class="panel-body handling">
           <div class="search">
-            <form class="navbar-form navbar-left form-search" action="{{route('admin.users.index')}}" method="GET">
-              <input type="text" class="form-control input-search" placeholder="ユーザーID,名前" name="search" value="{{request()->search}}">
+            <form class="navbar-form navbar-left form-search" action="#" method="GET">
+              <input type="text" class="form-control input-search" placeholder="ユーザーID,電話番号" name="search" value="{{request()->search}}">
               <label for="">From date: </label>
               <input type="text" class="form-control date-picker input-search" name="from_date" id="date01" data-date-format="yyyy/mm/dd" value="{{request()->from_date}}" placeholder="yyyy/mm/dd" />
               <label for="">To date: </label>
               <input type="text" class="form-control date-picker" name="to_date" id="date01" data-date-format="yyyy/mm/dd" value="{{request()->to_date}}" placeholder="yyyy/mm/dd"/>
               <button type="submit" class="fa fa-search btn-search"></button>
+              <input type="hidden" name="limit" value="{{ request()->limit }}" />
             </form>
           </div>
         </div>
         <div class="clearfix"></div>
         <div class="panel-body">
-          <form class="navbar-form navbar-left form-search" action="{{route('admin.users.index')}}" id="limit-page" method="GET">
+          <form class="navbar-form navbar-left form-search" action="#" id="limit-page" method="GET">
             <div class="form-group">
               <label class="col-md-1 limit-page">表示件数：</label>
               <div class="col-md-1">
@@ -49,52 +50,25 @@
             <thead>
               <tr>
                 <th>No.</th>
-                <th class="sorting{{ (request()->id) ? '_' . request()->id: '' }}">
-                  <a href="{{ route('admin.users.index',
-                    array_merge($request, ['id' => (request()->id == 'asc') ? 'desc' : 'asc',])
-                    ) }}">ユーザーID
-                   </a>
-                </th>
-                <th>ニックネーム</th>
-                <th>年齢</th>
-                <th>会員区分</th>
-                <th class="sorting{{ (request()->status) ? '_' . request()->status: '' }}">
-                  <a href="{{ route('admin.users.index',
-                    array_merge($request, ['status' => (request()->status == 'asc') ? 'desc' : 'asc',])
-                    ) }}">ステータス
-                   </a>
-                </th>
-                <th class="sorting{{ (request()->last_active_at) ? '_' . request()->last_active_at: '' }}">
-                  <a href="{{ route('admin.users.index',
-                    array_merge($request, ['last_active_at' => (request()->last_active_at == 'asc') ? 'desc' : 'asc',])
-                    ) }}">オンライン
-                   </a>
-                </th>
-                <th>登録日時</th>
-                <th></th>
+                <th>ユーザーID</th>
+                <th>電話番号</th>
+                <th>認証番号</th>
+                <th>受付日時</th>
               </tr>
             </thead>
             <tbody>
-              @if (empty($users->count()))
+              @if (empty($verifications->count()))
                 <tr>
-                  <td colspan="8">{{ trans('messages.user_not_found') }}</td>
+                  <td colspan="8">{{ trans('messages.results_not_found') }}</td>
                 </tr>
               @else
-                @foreach ($users as $key => $user)
+                @foreach ($verifications as $key => $verification)
                 <tr>
-                  <td>{{ $users->firstItem() +$key }}</td>
-                  <td>{{ $user->id }}</td>
-                  <td>{{ $user->nickname }}</td>
-                  <td>{{ $user->age }}</td>
-                  <td>{{ App\Enums\UserType::getDescription($user->type) }}</td>
-                  <td>{{ App\Enums\Status::getDescription($user->status) }}</td>
-                  @if ($user->is_online == true)
-                  <td>オンライン中</td>
-                  @else
-                  <td>{{ $user->last_active }}</td>
-                  @endif
-                  <td>{{ Carbon\Carbon::parse($user->created_at)->format('Y/m/d H:i') }}</td>
-                  <td><a href="{{ route('admin.users.show', ['user' => $user->id]) }}" class="btn-detail">詳細</a></td>
+                  <td>{{ $verifications->firstItem() + $key }}</td>
+                  <td>{{ $verification->user->id }}</td>
+                  <td>{{ $verification->phone }}</td>
+                  <td>{{ $verification->code }}</td>
+                  <td>{{ Carbon\Carbon::parse($verification->created_at)->format('Y/m/d H:i') }}</td>
                 </tr>
                 @endforeach
               @endif
@@ -103,14 +77,14 @@
         </div>
         <div class="col-lg-12">
           <div class="dataTables_info" id="DataTables_Table_0_info">
-            @if ($users->total())
-              全 {{ $users->total() }}件中 {{ $users->firstItem() }}~{{ $users->lastItem() }}件を表示しています
+            @if ($verifications->total())
+              全 {{ $verifications->total() }}件中 {{ $verifications->firstItem() }}~{{ $verifications->lastItem() }}件を表示しています
             @endif
           </div>
         </div>
         <div class="pagination-outter">
           <ul class="pagination">
-            {{ $users->appends(request()->all())->links() }}
+            {{ $verifications->appends(request()->all())->links() }}
           </ul>
         </div>
       </div>

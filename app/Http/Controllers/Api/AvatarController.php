@@ -42,7 +42,7 @@ class AvatarController extends ApiController
         try {
             $avatar = $user->avatars()->create($input);
 
-            MakeAvatarThumbnail::dispatch($avatar);
+            MakeAvatarThumbnail::dispatch($avatar->id);
         } catch (\Exception $e) {
             LogService::writeErrorLog($e);
             return $this->respondServerError();
@@ -138,7 +138,7 @@ class AvatarController extends ApiController
             if ($avatarUpdate) {
                 $avatar = $user->avatars->find($id);
 
-                MakeAvatarThumbnail::dispatch($avatar);
+                MakeAvatarThumbnail::dispatch($avatar->id);
                 $avatar->thumbnail = null;
             }
         } catch (\Exception $e) {

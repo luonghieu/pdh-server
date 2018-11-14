@@ -2,6 +2,7 @@
 
 namespace App\Jobs;
 
+use App\Message;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
@@ -18,11 +19,11 @@ class MakeImagesChatThumbnail implements ShouldQueue
     /**
      * Create a new job instance.
      *
-     * @return void
+     * @param $messageId
      */
-    public function __construct($message)
+    public function __construct($messageId)
     {
-        $this->message = $message;
+        $this->message = Message::onWriteConnection()->findOrFail($messageId);
     }
 
     /**

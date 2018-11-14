@@ -42,6 +42,12 @@
       @yield('web.content')
     </main>
 
+    @if(isset($token))
+    <script>
+      window.localStorage.setItem('access_token', '{{ $token }}');
+    </script>
+    @endif
+
     @include('web.partials.footer')
   </div>
   @yield('web.script')

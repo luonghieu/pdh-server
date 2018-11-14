@@ -55,7 +55,7 @@ class AvatarController extends Controller
         try {
             $avatar = $user->avatars()->create($input);
 
-            MakeAvatarThumbnail::dispatch($avatar);
+            MakeAvatarThumbnail::dispatch($avatar->id);
         } catch (\Exception $e) {
             LogService::writeErrorLog($e);
             return response()->json([
@@ -171,7 +171,7 @@ class AvatarController extends Controller
             if ($avatarUpdate) {
                 $avatar = $user->avatars->find($id);
 
-                MakeAvatarThumbnail::dispatch($avatar);
+                MakeAvatarThumbnail::dispatch($avatar->id);
                 $avatar->thumbnail = null;
             }
         } catch (\Exception $e) {
