@@ -391,7 +391,7 @@ class OrderController extends ApiController
             return $this->respondServerError();
         }
 
-        broadcast(new MessageCreated($message))->toOthers();
+        broadcast(new MessageCreated($message->id))->toOthers();
 
         return $this->respondWithData(MessageResource::make($message));
     }
