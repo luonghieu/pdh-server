@@ -65,7 +65,7 @@
                 @foreach ($verifications as $key => $verification)
                 <tr>
                   <td>{{ $verifications->firstItem() + $key }}</td>
-                  <td>{{ $verification->user->id }}</td>
+                  <td>{{ $verification->user_id }}</td>
                   <td>{{ $verification->phone }}</td>
                   <td>{{ $verification->code }}</td>
                   <td>{{ Carbon\Carbon::parse($verification->created_at)->format('Y/m/d H:i') }}</td>
