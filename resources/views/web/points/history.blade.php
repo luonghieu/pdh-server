@@ -81,7 +81,7 @@
 
         if (url) {
           requesting = true;
-          window.axios.get("<?php echo env('APP_URL')  . '/point_history/more' ?>", {
+          window.axios.get("<?php echo env('APP_URL') . '/point_history/more' ?>", {
             params: { next_page: url },
           }).then(function (res) {
             res = res.data;

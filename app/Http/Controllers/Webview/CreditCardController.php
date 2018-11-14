@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Webview;
 
 use App\Card;
+use App\Enums\OrderPaymentStatus;
 use App\Http\Controllers\Controller;
 use App\Services\Payment;
 use Auth;
@@ -85,6 +86,9 @@ class CreditCardController extends Controller
                     }
                     if ($user->card) {
                         $card = $user->card;
+
+                        $user->orders()->where('payment_status', OrderPaymentStatus::PAYMENT_FAILED)
+                            ->update(['payment_status' => OrderPaymentStatus::REQUESTING]);
 
                         return response()->json(['success' => true, 'url' => 'cheers://adding_card?result=1']);
                     }

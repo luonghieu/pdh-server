@@ -553,7 +553,7 @@ class Order extends Model
         if ($user->point < $this->total_point) {
             $subPoint = $this->total_point - $user->point;
 
-            if ($user->provider == ProviderType::LINE) {
+            if (ProviderType::LINE == $user->provider) {
                 $pointAmount = $subPoint;
             } else {
                 $autoChargePoint = config('common.autocharge_point');

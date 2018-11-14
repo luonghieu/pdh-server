@@ -195,7 +195,6 @@ class OrderController extends ApiController
         }
 
         $nomineeExists = $order->nominees()->where('user_id', $user->id)->where('cast_order.status', CastOrderStatus::OPEN)->first();
-
         if (!$nomineeExists) {
             return $this->respondErrorMessage(trans('messages.action_not_performed'), 422);
         }
