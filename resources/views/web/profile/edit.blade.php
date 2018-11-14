@@ -34,8 +34,8 @@
   <div class="cast-profile">
     <section class="profile-photo">
       <div class="profile-photo__top">
-        @if ($profile['avatars'] && @getimagesize($profile['avatars'][0]['thumbnail']))
-          <img class="init-image-radius" src="{{ $profile['avatars'][0]['thumbnail'] }}" alt="">
+        @if ($profile['avatars'] && @getimagesize($profile['avatars'][0]['path']))
+          <img class="init-image-radius" src="{{ $profile['avatars'][0]['path'] }}" alt="">
         @else
         <img src="{{ asset('assets/web/images/gm1/ic_default_avatar@3x.png') }}" alt="">
         @endif
@@ -43,10 +43,10 @@
       <div class="profile-photo__list">
         <ul>
           @foreach ($profile['avatars'] as $avatar)
-            @if (@getimagesize($avatar['thumbnail']))
+            @if (@getimagesize($avatar['path']))
             <div class="css-img">
               <label for="trigger4" class="open_button button-settlement js-img" id="{{ $avatar['id'] }}">
-                <img type="file" id="valid" src="{{ $avatar['thumbnail'] }}" alt="">
+                <img type="file" id="valid" src="{{ $avatar['path'] }}" alt="">
               </label>
             </div>
             @endif

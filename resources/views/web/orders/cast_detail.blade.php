@@ -15,14 +15,14 @@
     <div class="slider cast-photo__show">
       @if($cast['avatars'])
         @foreach ($cast['avatars'] as $avatar)
-          @if (@getimagesize($avatar['thumbnail']))
-          <img src="{{ $avatar['thumbnail'] }}" alt="">
+          @if (@getimagesize($avatar['path']))
+          <img class="lazy" data-src="{{ $avatar['path'] }}" alt="">
           @else
-          <img src="{{ asset('assets/web/images/gm1/ic_default_avatar@3x.png') }}" alt="">
+          <img class="lazy" data-src="{{ asset('assets/web/images/gm1/ic_default_avatar@3x.png') }}" alt="">
           @endif
         @endforeach
       @else
-        <img class="image-default" src="{{ asset('assets/web/images/gm1/ic_default_avatar@3x.png') }}" alt="">
+        <img class="image-default lazy" data-src="{{ asset('assets/web/images/gm1/ic_default_avatar@3x.png') }}" alt="">
       @endif
     </div>
     @if ($cast['working_today'])

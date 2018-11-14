@@ -46,8 +46,19 @@
 <script>
   $(function () {
     var requesting = false;
-    $(document).on('scroll', function () {
-      if ($(window).scrollTop() + $(window).height() == $(document).height() && requesting == false) {
+    var windowHeight = $(window).height();
+
+    function needToLoadmore() {
+      return requesting == false && $(window).scrollTop() >= $(document).height() - windowHeight - 100;
+    }
+
+    function handleOnLoadMore() {
+      // Improve load list image
+      $('.lazy').lazy({
+          placeholder: "data:image/gif;base64,R0lGODlhEALAPQAPzl5uLr9Nrl8e7..."
+      });
+
+      if (needToLoadmore()) {
         var url = $('#next_page').val();
 
         if (url) {
@@ -64,7 +75,10 @@
           });
         }
       }
-    });
+    }
+
+    $(document).on('scroll', handleOnLoadMore);
+    $(document).ready(handleOnLoadMore);
   });
 </script>
 @endsection
