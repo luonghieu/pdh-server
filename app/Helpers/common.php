@@ -61,7 +61,7 @@ if (!function_exists('getPrefectureName')) {
 if (!function_exists('getDay')) {
     function getDay($data = null)
     {
-        $date = \Carbon\Carbon::now();
+        $date = \Carbon\Carbon::now()->addMinutes(60);
         $dayOfWeek = ['日', '月', '火', '水', '木', '金', '土'];
 
         if (!$data['month']) {
@@ -96,10 +96,11 @@ if (!function_exists('removeHtmlTags')) {
 }
 
 if (!function_exists('linkExtractor')) {
-    function linkExtractor($html){
+    function linkExtractor($html)
+    {
         $linkArray = [];
-        if(preg_match_all('/<img\s+.*?src=[\"\']?([^\"\' >]*)[\"\']?[^>]*>/i',$html,$matches,PREG_SET_ORDER)){
-            foreach($matches as $match){
+        if (preg_match_all('/<img\s+.*?src=[\"\']?([^\"\' >]*)[\"\']?[^>]*>/i', $html, $matches, PREG_SET_ORDER)) {
+            foreach ($matches as $match) {
                 array_push($linkArray, $match[1]);
             }
         }
