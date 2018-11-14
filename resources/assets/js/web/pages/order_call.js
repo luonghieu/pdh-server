@@ -138,22 +138,14 @@ $(document).ready(function(){
     $(".overlay").fadeOut();
   });
 
-  $('.tags-name').on('click', function(e) {
-    var activeTag = $('.tags-name:checked').length;
-
-    if (activeTag > 5) {
-      $('#max-tags').prop('checked', true);
-    }
-  });
-
   $(".form-grpup .checkbox-tags").on("change",function(event){
     var activeSum = $(".active").length;
-
     if ($(this).hasClass("active")) {
       $(this).children().prop('checked',false);
       $(this).removeClass('active');
     } else {
       if(activeSum >= 5) {
+        $('#max-tags').prop('checked', true);
         $(this).children().prop('checked',false);
         $(this).removeClass('active');
       } else {

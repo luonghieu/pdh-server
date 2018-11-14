@@ -2086,16 +2086,19 @@ padding-top: 65px !important;
 #cast-order-call {
   width: 100%;
   padding: 0px 0px !important;
+  height: 60px !important;
 }
 
 #cast-order-call div {
   width: 100%;
+  line-height: 20px;
 }
 
 #cast-order-call a {
   width: 100%;
   padding: 1.08em 0em !important;
   border-radius: 0px;
+  font-size: 18px;
 }
 
 .sms-header {
