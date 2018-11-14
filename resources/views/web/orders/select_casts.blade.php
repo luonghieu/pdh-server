@@ -72,7 +72,7 @@
       var windowHeight = $(window).height();
 
       function needToLoadmore() {
-        return requesting == false && $(window).scrollTop() >= $(document).height() - windowHeight - 100;
+        return requesting == false && $(window).scrollTop() >= $(document).height() - windowHeight - 300;
       }
 
       function handleOnLoadMore() {
