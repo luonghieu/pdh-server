@@ -69,7 +69,11 @@
         <h2 class="portlet-header__title">自己紹介</h2>
       </div>
       <div class="portlet-content">
-        <p class="portlet-content__text">{{ (!$cast['description']) ? '' : $cast['description'] }}</p>
+        @if (!$cast['description'])
+        <p class="portlet-header__title">自己紹介設定されていません</p>
+        @else
+        <p class="portlet-content__text">{!! strip_tags(nl2br($cast['description']), '<br>') !!}</p>
+        @endif
       </div>
     </section>
 
