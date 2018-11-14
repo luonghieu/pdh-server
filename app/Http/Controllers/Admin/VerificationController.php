@@ -11,7 +11,7 @@ class VerificationController extends Controller
 {
     public function index(Request $request)
     {
-        $verifications = Verification::where('status', null)->with('user');
+        $verifications = Verification::whereNull('status');
 
         $keyword = $request->search;
 
@@ -31,9 +31,7 @@ class VerificationController extends Controller
 
         if ($request->has('search') && $request->search) {
             $verifications->where('phone', 'like', "%$keyword%")
-                ->orWhereHas('user', function ($query) use ($keyword) {
-                    $query->where('id', "$keyword");
-                });
+                ->orWhere('user_id', 'like', "%$keyword%");
         }
 
         $verifications = $verifications->paginate($request->limit ?: 10);
