@@ -1,4 +1,5 @@
 $(document).ready(function() {
+  $('#triggerVerify').trigger('click');
   $('#change-point').on('click', function(event){
     var check = $('#point-cast').is(':disabled');
     if(check) {

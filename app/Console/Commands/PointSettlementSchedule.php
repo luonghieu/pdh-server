@@ -52,7 +52,7 @@ class PointSettlementSchedule extends Command
             })
             ->get();
         foreach ($orders as $order) {
-            PointSettlement::dispatchNow($order);
+            PointSettlement::dispatchNow($order->id);
         }
 
         $lineOrders = Order::where('payment_status', OrderPaymentStatus::REQUESTING)
@@ -63,7 +63,7 @@ class PointSettlementSchedule extends Command
             ->get();
 
         foreach ($lineOrders as $order) {
-            PointSettlement::dispatchNow($order);
+            PointSettlement::dispatchNow($order->id);
         }
 
     }

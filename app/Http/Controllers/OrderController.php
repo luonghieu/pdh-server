@@ -286,11 +286,7 @@ class OrderController extends Controller
         if (isset($request->cast_ids)) {
             $data['casts'] = explode(",", $request->cast_ids);
         } else {
-            if (isset($request->casts)) {
-                $data['casts'] = $request->casts;
-            } else {
-                $data['casts'] = null;
-            }
+            $data['casts'] = null;
         }
 
         Session::put('data', $data);
@@ -906,6 +902,42 @@ class OrderController extends Controller
                 'next_page' => $casts['next_page_url'],
                 'view' => view('web.orders.load_more_list_casts', compact('casts', 'currentCasts'))->render(),
             ];
+        } catch (\Exception $e) {
+            LogService::writeErrorLog($e);
+            abort(500);
+        }
+    }
+
+    public function castDetail($id)
+    {
+        try {
+            $client = new Client(['base_uri' => config('common.api_url')]);
+            $user = Auth::user();
+
+            $accessToken = JWTAuth::fromUser($user);
+
+            $option = [
+                'headers' => ['Authorization' => 'Bearer ' . $accessToken],
+                'form_params' => [],
+                'allow_redirects' => false,
+            ];
+
+            try {
+                $params = [
+                    'id' => $id,
+                ];
+
+                $casts = $client->get(route('users.show', $params), $option);
+            } catch (\Exception $e) {
+                LogService::writeErrorLog($e);
+                abort(500);
+            }
+
+            $cast = json_decode(($casts->getBody())->getContents(), JSON_NUMERIC_CHECK);
+
+            $cast = $cast['data'];
+
+            return view('web.orders.cast_detail', compact('cast'));
         } catch (\Exception $e) {
             LogService::writeErrorLog($e);
             abort(500);

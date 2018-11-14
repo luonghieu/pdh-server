@@ -185,4 +185,20 @@ class UserController extends Controller
             abort(500);
         }
     }
+
+    public function verify()
+    {
+        $user = Auth::user();
+        $token = JWTAuth::fromUser($user);
+
+        return view('web.users.verification', compact('token'));
+    }
+
+    public function code()
+    {
+        $contents = $this->getApi('/api/v1/auth/me');
+        $isVerify = $contents['data']['is_verified'];
+
+        return view('web.users.code', compact('isVerify'));
+    }
 }

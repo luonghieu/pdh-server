@@ -22,7 +22,7 @@ class OrderCreatedNotifyToAdmin extends Notification implements ShouldQueue
      */
     public function __construct($orderId)
     {
-        $order = Order::findOrFail($orderId);
+        $order = Order::onWriteConnection()->findOrFail($orderId);
 
         $this->order = $order;
     }

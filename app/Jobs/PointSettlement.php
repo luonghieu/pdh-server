@@ -30,11 +30,11 @@ class PointSettlement implements ShouldQueue
     /**
      * Create a new job instance.
      *
-     * @param Order $order
+     * @param $orderId
      */
-    public function __construct(Order $order)
+    public function __construct($orderId)
     {
-        $this->order = $order;
+        $this->order = Order::onWriteConnection()->findOrFail($orderId);
     }
 
     /**
@@ -82,11 +82,13 @@ class PointSettlement implements ShouldQueue
 
             if ($e->getMessage() == 'Auto charge failed') {
                 $user = $this->order->user;
+                $user->suspendPayment();
                 if (!$this->order->send_warning) {
                     $user->notify(new AutoChargeFailedWorkchatNotify($this->order));
                     if (ProviderType::LINE == $user->provider) {
                         $this->order->user->notify(new AutoChargeFailed($this->order));
                     }
+
                     $this->order->send_warning = true;
                     $this->order->payment_status = OrderPaymentStatus::PAYMENT_FAILED;
                     $this->order->save();

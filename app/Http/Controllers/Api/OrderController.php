@@ -9,6 +9,9 @@ use App\Enums\CastOrderType;
 use App\Enums\OrderStatus;
 use App\Enums\OrderType;
 use App\Http\Resources\OrderResource;
+use App\Notifications\CallOrdersCreated;
+use App\Notifications\CreateNominatedOrdersForCast;
+use App\Notifications\CreateNominationOrdersForCast;
 use App\Order;
 use App\Services\LogService;
 use App\Tag;
@@ -156,17 +159,17 @@ class OrderController extends ApiController
                             false
                         );
 
-                        $nominee->notify((new CreateNominationOrdersForCast($order))->delay($when));
+                        $nominee->notify(new CreateNominationOrdersForCast($order->id));
                     }
                 }
 
                 if (OrderType::NOMINATED_CALL == $order->type || OrderType::HYBRID == $order->type) {
                     $nominees = $order->nominees;
-                    \Notification::send($nominees, (new CreateNominatedOrdersForCast($order))->delay($when));
+                    \Notification::send($nominees, new CreateNominatedOrdersForCast($order->id));
                 }
             } else {
                 $casts = Cast::where('class_id', $request->class_id)->get();
-                \Notification::send($casts, (new CallOrdersCreated($order))->delay($when));
+                \Notification::send($casts, new CallOrdersCreated($order->id));
             }
 
             DB::commit();

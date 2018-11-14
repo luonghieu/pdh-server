@@ -17,6 +17,7 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.'], function () {
         Route::post('{user}/change_prefecture', ['as' => 'change_prefecture', 'uses' => 'UserController@changePrefecture'])->where('user', '[0-9]+');
         Route::post('{user}/change_cost', ['as' => 'change_cost', 'uses' => 'UserController@changeCost'])->where('user', '[0-9]+');
         Route::post('{user}/change_rank', ['as' => 'change_rank', 'uses' => 'UserController@changeRank'])->where('user', '[0-9]+');
+        Route::delete('{user}', ['as' => 'delete', 'uses' => 'UserController@delete'])->where('user', '[0-9]+');
     });
 
     Route::group(['as' => 'avatars.', 'middleware' => 'is_admin'], function () {
@@ -106,5 +107,9 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.'], function () {
         Route::delete('/{notification_schedule}', ['as' => 'delete', 'uses' => 'NotificationScheduleController@delete'])->where('notification_schedules', '[0-9]+');
         Route::get('/', ['as' => 'index', 'uses' => 'NotificationScheduleController@getNotificationScheduleList']);
         Route::post('/upload', ['as' => 'upload', 'uses' => 'UploadImageController@upload']);
+    });
+
+    Route::group(['prefix' => 'verifications', 'as' => 'verifications.', 'middleware' => 'is_admin'], function () {
+        Route::get('/', ['as' => 'index', 'uses' => 'VerificationController@index']);
     });
 });

@@ -26,11 +26,11 @@ class CancelOrder implements ShouldQueue
     /**
      * Create a new job instance.
      *
-     * @param Order $order
+     * @param $orderId
      */
-    public function __construct(Order $order)
+    public function __construct($orderId)
     {
-        $this->order = $order;
+        $this->order = Order::onWriteConnection()->findOrFail($orderId);
     }
 
     /**

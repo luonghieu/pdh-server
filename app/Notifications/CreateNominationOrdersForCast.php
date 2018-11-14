@@ -5,6 +5,7 @@ namespace App\Notifications;
 use App\Enums\MessageType;
 use App\Enums\SystemMessageType;
 use App\Enums\UserType;
+use App\Order;
 use App\Traits\DirectRoom;
 use Illuminate\Bus\Queueable;
 use Illuminate\Notifications\Notification;
@@ -20,11 +21,11 @@ class CreateNominationOrdersForCast extends Notification implements ShouldQueue
     /**
      * Create a new notification instance.
      *
-     * @param $order
+     * @param $orderId
      */
-    public function __construct($order)
+    public function __construct($orderId)
     {
-        $this->order = $order;
+        $this->order = Order::onWriteConnection()->findOrFail($orderId);
     }
 
     /**

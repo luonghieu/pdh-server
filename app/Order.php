@@ -148,7 +148,7 @@ class Order extends Model
                 $this->user->notify(new CastDenyOrders($this, $cast));
             }
 
-            ValidateOrder::dispatchNow($this);
+            ValidateOrder::dispatchNow($this->id);
 
             return true;
         } catch (\Exception $e) {
@@ -192,7 +192,7 @@ class Order extends Model
                 'canceled_at' => Carbon::now(),
             ]);
 
-            CancelOrder::dispatchNow($this);
+            CancelOrder::dispatchNow($this->id);
 
             return true;
         } catch (\Exception $e) {
@@ -222,7 +222,7 @@ class Order extends Model
                 ]
             );
 
-            ValidateOrder::dispatchNow($this);
+            ValidateOrder::dispatchNow($this->id);
 
             return true;
         } catch (\Exception $e) {
@@ -252,7 +252,7 @@ class Order extends Model
                 false
             );
 
-            ValidateOrder::dispatchNow($this);
+            ValidateOrder::dispatchNow($this->id);
 
             return true;
         } catch (\Exception $e) {
@@ -310,7 +310,7 @@ class Order extends Model
 
             \DB::commit();
 
-            StopOrder::dispatchNow($this, $cast);
+            StopOrder::dispatchNow($this->id, $cast);
 
             return $paymentRequest;
         } catch (\Exception $e) {
@@ -330,7 +330,7 @@ class Order extends Model
             ], false);
 
             $cast = User::find($userId);
-            ProcessOrder::dispatchNow($this, $cast);
+            ProcessOrder::dispatchNow($this->id, $cast);
 
             return true;
         } catch (\Exception $e) {

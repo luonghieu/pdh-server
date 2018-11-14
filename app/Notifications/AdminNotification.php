@@ -53,7 +53,11 @@ class AdminNotification extends Notification implements ShouldQueue
 
             return [CustomDatabaseChannel::class, PushNotificationChannel::class];
         } else {
-            return [CustomDatabaseChannel::class, PushNotificationChannel::class];
+            if ($notifiable->device_type != DeviceType::WEB && $this->schedule->send_to != NotificationScheduleSendTo::WEB) {
+                return [CustomDatabaseChannel::class, PushNotificationChannel::class];
+            }
+
+            return [];
         }
     }
 

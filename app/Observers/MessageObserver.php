@@ -8,18 +8,17 @@ use App\Events\MessageCreated as BroadcastMessage;
 use App\Message;
 use App\Notifications\DirectMessageNotifyToLine;
 use App\Notifications\MessageCreated;
+use App\Notifications\MessageCreatedFromAdmin;
 use App\Notifications\MessageCreatedNotifyToAdmin;
 use App\User;
-use Carbon\Carbon;
 
 class MessageObserver
 {
     public function created(Message $message)
     {
-        $when = Carbon::now()->addSeconds(3);
         $room = $message->room;
         if (MessageType::SYSTEM == $message->type) {
-            broadcast(new BroadcastMessage($message));
+            broadcast(new BroadcastMessage($message->id));
         }
         if (MessageType::SYSTEM != $message->type) {
             $users = $room->users->except([$message->user_id]);
@@ -27,15 +26,15 @@ class MessageObserver
             if (RoomType::DIRECT == $room->type) {
                 $otherId = $room->owner_id == $room->users[0]->id ? $room->users[1]->id : $room->users[0]->id;
                 if (!$room->checkBlocked($otherId)) {
-                    \Notification::send($users, (new MessageCreated($message->id))->delay($when));
+                    \Notification::send($users, new MessageCreated($message->id));
 
                     $other = $users->first();
                     if ($other->line_user_id != null) {
-                        $other->notify((new DirectMessageNotifyToLine($message->id))->delay($when));
+                        $other->notify(new DirectMessageNotifyToLine($message->id));
                     }
                 }
             } else {
-                \Notification::send($users, (new MessageCreated($message->id))->delay($when));
+                \Notification::send($users, new MessageCreated($message->id));
             }
         }
 
@@ -49,8 +48,13 @@ class MessageObserver
         }
 
         if (RoomType::SYSTEM == $room->type && $message->user_id != 1) {
-                $admin = User::find(1);
-                $admin->notify((new MessageCreatedNotifyToAdmin($room->id))->delay($when));
+            $admin = User::find(1);
+            $admin->notify((new MessageCreatedNotifyToAdmin($room->id)));
+        }
+
+        if (RoomType::SYSTEM == $room->type && $message->user_id == 1) {
+            $user = $room->users->except([$message->user_id])->first();
+            $user->notify(new MessageCreatedFromAdmin($room->id));
         }
     }
 }

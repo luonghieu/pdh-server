@@ -23,3 +23,39 @@ export function getResponseMessage(data) {
 
     return message;
 }
+
+export function setCookie(cookie_name, value) {
+    var exdate = new Date();
+    exdate.setDate(exdate.getDate() + (365 * 25));
+    document.cookie = cookie_name + "=" + escape(value) + "; expires=" + exdate.toUTCString() + "; path=/";
+}
+
+export function getCookie(cookie_name) {
+    if (document.cookie.length > 0) {
+        var cookie_start = document.cookie.indexOf(cookie_name + "=");
+        if (cookie_start != -1) {
+            cookie_start = cookie_start + cookie_name.length + 1;
+            var cookie_end = document.cookie.indexOf(";", cookie_start);
+            if (cookie_end == -1) {
+                cookie_end = document.cookie.length;
+            }
+            return unescape(document.cookie.substring(cookie_start, cookie_end));
+        }
+    }
+
+    return "";
+}
+
+export function updateLocalStorageValue(key, data) {
+    var oldData = JSON.parse(localStorage.getItem(key));
+    var newData;
+
+    if (oldData) {
+      newData = Object.assign({}, oldData, data);
+    } else {
+      newData = data;
+    }
+
+    localStorage.setItem(key, JSON.stringify(newData));
+  }
+

@@ -25,13 +25,21 @@ class HomeController extends Controller
         if ($request->session()->has('data')) {
             $request->session()->forget('data');
         }
-
         if (Auth::check()) {
             $user = Auth::user();
             $token = '';
             $token = JWTAuth::fromUser($user);
 
-            if (UserType::GUEST == $user->type) {
+            $verification = $user->verification;
+            if ($verification && !$verification->status) {
+                return redirect()->route('verify.code');
+            }
+
+            if (!$user->status) {
+                return view('web.users.verification', compact('token'));
+            }
+
+            if ($user->is_guest) {
                 $order = Order::with('casts')
                     ->where('user_id', Auth::user()->id)
                     ->where('status', OrderStatus::PROCESSING)
@@ -64,7 +72,7 @@ class HomeController extends Controller
                 return view('web.index', compact('token', 'order', 'casts'));
             }
 
-            if (UserType::CAST == $user->type) {
+            if ($user->is_cast) {
                 return redirect()->route('web.cast_index');
             }
         }
