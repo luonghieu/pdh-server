@@ -17,13 +17,13 @@ return [
                 'id' => 1,
                 'name' => '20分後',
                 'value' => '20',
-                'is_active' => 1,
+                'is_active' => 0,
             ],
             [
                 'id' => 2,
                 'name' => '30分後',
                 'value' => '30',
-                'is_active' => 1,
+                'is_active' => 0,
             ],
             [
                 'id' => 3,
