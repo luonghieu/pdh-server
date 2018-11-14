@@ -3,8 +3,8 @@ $(function(){
     dots:true,
     customPaging: function(slick,index) {
         slick.$slides.eq(index).css("background","white")
-        var targetImage = slick.$slides.eq(index).attr('src');
-        return '<img src=' + targetImage +'>';
+        var targetImage = slick.$slides.eq(index).attr('data-src');
+        return '<img class="lazy" data-src=' + targetImage +'>';
     }
 });
 

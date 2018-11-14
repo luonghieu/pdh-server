@@ -34,7 +34,7 @@ class VerificationController extends Controller
                 ->orWhere('user_id', 'like', "%$keyword%");
         }
 
-        $verifications = $verifications->paginate($request->limit ?: 10);
+        $verifications = $verifications->orderByDesc('created_at')->paginate($request->limit ?: 10);
 
         return view('admin.verifications.index', compact('verifications'));
     }

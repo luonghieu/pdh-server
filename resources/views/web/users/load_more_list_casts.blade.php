@@ -17,9 +17,9 @@
       @endphp
 
       @if ($cast['avatars'] && @getimagesize($cast['avatars'][0]['thumbnail']))
-      <img src="{{ $cast['avatars'][0]['thumbnail'] }}" alt="">
+      <img class="lazy" data-src="{{ $cast['avatars'][0]['thumbnail'] }}">
       @else
-      <img src="{{ asset('assets/web/images/gm1/ic_default_avatar@3x.png') }}" alt="">
+      <img class="lazy" data-src="{{ asset('assets/web/images/gm1/ic_default_avatar@3x.png') }}">
       @endif
 
       <span class="{{ $class }} text-bold">{{ $cast['class'] }}</span>

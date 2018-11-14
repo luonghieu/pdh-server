@@ -19,19 +19,19 @@
 <div class="cast-profile">
   <section class="profile-photo">
     <div class="profile-photo__top">
-      @if ($profile['avatars'] && @getimagesize($profile['avatars'][0]['thumbnail']))
-      <img class="init-image-radius" src="{{ $profile['avatars'][0]['thumbnail'] }}" alt="">
+      @if ($profile['avatars'] && @getimagesize($profile['avatars'][0]['path']))
+      <img class="init-image-radius lazy" data-src="{{ $profile['avatars'][0]['path'] }}" alt="">
       @else
-      <img class="init-image-radius" src="{{ asset('assets/web/images/ge1/user_icon.svg') }}" alt="">
+      <img class="init-image-radius lazy" data-src="{{ asset('assets/web/images/ge1/user_icon.svg') }}" alt="">
       @endif
     </div>
     <div class="profile-photo__list">
       <ul>
         @foreach ($profile['avatars'] as $avatar)
-          @if (@getimagesize($avatar['thumbnail']))
-          <li class="css-img"><img src="{{ $avatar['thumbnail'] }}" alt=""></li>
+          @if (@getimagesize($avatar['path']))
+          <li class="css-img"><img class="lazy" data-src="{{ $avatar['path'] }}" alt=""></li>
           @else
-          <li class="css-img"><img src="{{ asset('assets/web/images/gm1/ic_default_avatar@3x.png') }}" alt=""></li>
+          <li class="css-img"><img class="lazy" data-src="{{ asset('assets/web/images/gm1/ic_default_avatar@3x.png') }}" alt=""></li>
           @endif
         @endforeach
       </ul>

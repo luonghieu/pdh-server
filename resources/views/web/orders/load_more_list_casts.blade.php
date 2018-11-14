@@ -5,9 +5,9 @@
       <p>
         <a href="{{ route('guest.orders.cast_detail', ['id' => $cast['id']]) }}" class="cast-link">
           @if (@getimagesize($cast['avatars'][0]['thumbnail']))
-          <img src="{{ $cast['avatars'][0]['thumbnail'] }}" alt="">
+          <img class="lazy" data-src="{{ $cast['avatars'][0]['thumbnail'] }}" alt="">
           @else
-          <img src="{{ asset('assets/web/images/gm1/ic_default_avatar@3x.png') }}" alt="">
+          <img class="lazy" data-src="{{ asset('assets/web/images/gm1/ic_default_avatar@3x.png') }}" alt="">
           @endif
         </a>
       </p>
