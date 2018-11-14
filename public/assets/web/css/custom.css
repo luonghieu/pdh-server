@@ -2258,11 +2258,6 @@ padding-top: 65px !important;
   margin-right: 15px;
 }
 
-.init-textarea {
-  width: 100%;
-  border: none;
-}
-
 #code-verify .notify-resend-success p {
   line-height: 1px;
   font-weight: 100 !important;
@@ -2272,7 +2267,6 @@ padding-top: 65px !important;
   margin-top: 5px;
   padding: 0 50px;
 }
-
 #code-verify a.green-button {
   color: #30CCC3;
   position: relative;
@@ -2281,7 +2275,6 @@ padding-top: 65px !important;
   outline: 0;
   background: none;
 }
-
 #code-verify a.green-button i.arrow::after {
   pointer-events: none;
   position: absolute;
@@ -2299,7 +2292,6 @@ padding-top: 65px !important;
   -ms-transform: translateY(-50%) translateX(-2px) rotate(-135deg);
   transform: translateY(-50%) translateX(-2px) rotate(-135deg);
 }
-
 .modal_overlay {
   top: 0;
   bottom: 0;

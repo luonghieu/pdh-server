@@ -61,7 +61,7 @@
       @if (!$profile['description'])
       <p class="portlet-header__title">自己紹介設定されていません</p>
       @else
-      <textarea rows="5" class="portlet-content__text init-textarea" readonly="">{{ $profile['description'] }}</textarea>
+      <p class="portlet-content__text">{!! strip_tags(nl2br($profile['description']), '<br>') !!}</p>
       @endif
     </div>
   </section>
