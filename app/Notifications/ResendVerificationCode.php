@@ -37,10 +37,10 @@ class ResendVerificationCode extends Notification
 
     public function rocketChatPushData($notifiable)
     {
+        $link = route('admin.verifications.index', ['search' => $this->verification->phone]);
+
         return [
-            'text' => "新着のSMS認証依頼が届きました
-                電話番号:【{$this->verification->phone}】
-                認証番号:【{$this->verification->code}】"
+            'text' => "新着のSMS認証依頼が届きました。[Link]($link)"
         ];
     }
 }
