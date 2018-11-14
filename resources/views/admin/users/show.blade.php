@@ -89,6 +89,12 @@
                 <th>ニックネーム</th>
                 <td>{{ $user->nickname }}</td>
               </tr>
+              @if($user->is_guest)
+              <tr>
+                <th>電話番号</th>
+                <td>{{ $user->phone ? $user->phone : '-' }}</td>
+              </tr>
+              @endif
               @if ($user->is_cast)
               <tr>
                 <th>30分あたりのポイント</th>
