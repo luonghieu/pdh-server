@@ -135,7 +135,7 @@ class CancelFeeSettlement extends Command
                 $user = $order->user;
                 $user->suspendPayment();
                 if (!$order->send_warning) {
-                    $order->user->notify(new AutoChargeFailedWorkchatNotify($this->order));
+                    $user->notify(new AutoChargeFailedWorkchatNotify($order));
                     if (ProviderType::LINE == $user->provider) {
                         $order->user->notify(new AutoChargeFailed($order));
                     }
