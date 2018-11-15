@@ -9,6 +9,7 @@ use App\Enums\PointType;
 use App\Enums\ProviderType;
 use App\Enums\UserType;
 use App\Notifications\AutoChargeFailed;
+use App\Notifications\AutoChargeFailedWorkchatNotify;
 use App\Order;
 use App\PaymentRequest;
 use App\Point;
