@@ -40,6 +40,8 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.'], function () {
 
     Route::group(['middleware' => 'is_admin', 'as' => 'offer.'], function () {
         Route::get('/offer', ['as' => 'index', 'uses' => 'Order\OrderController@offer']);
+        Route::post('/offer/confirm', ['as' => 'offer_confirm', 'uses' => 'Order\OrderController@confirmOffer']);
+        Route::post('/offer/price', ['as' => 'offer_price', 'uses' => 'Order\OrderController@price']);
     });
 
     Route::group(['namespace' => 'Room', 'prefix' => 'rooms', 'as' => 'rooms.', 'middleware' => 'is_admin'], function () {

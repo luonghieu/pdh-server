@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers\Admin\Order;
 
+use App\Cast;
+use App\Enums\CastClass;
 use App\Enums\OrderPaymentStatus;
 use App\Enums\OrderStatus;
 use App\Enums\OrderType;
@@ -19,6 +21,7 @@ use Illuminate\Http\Request;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\DB;
 use JWTAuth;
+use Session;
 
 class OrderController extends Controller
 {
@@ -457,5 +460,104 @@ class OrderController extends Controller
         );
 
         return view('admin.orders.offer', compact('casts'));
+    }
+
+    public function confirmOffer(Request $request)
+    {
+        $data['cast_ids'] = $request->casts_offer;
+        $data['comment_offer'] = $request->comment_offer;
+        $data['date_offer'] = $request->date_offer;
+        $data['start_time'] = $request->start_time_offer;
+        $data['end_time'] = $request->end_time_offer;
+        $data['duration_offer'] = $request->duration_offer;
+        $data['area_offer'] = $request->area_offer;
+
+        Session::put('offer', $data);
+
+        $casts = Cast::whereIn('id', $data['cast_ids'])->get();
+
+        return view('admin.orders.confirm_offer', compact('casts', 'data'));
+    }
+
+    public function price(Request $request)
+    {
+        $rules = $this->validate($request,
+            [
+                'date' => 'required|date|date_format:Y-m-d|after_or_equal:today',
+                'start_time' => 'required|date_format:H:i',
+                'duration' => 'numeric|min:1|max:10',
+                'class_id' => 'exists:cast_classes,id',
+                'type' => 'required|in:1,2,3,4',
+                'nominee_ids' => '',
+                'total_cast' => 'required|numeric|min:1',
+            ]
+        );
+
+        $orderStartTime = Carbon::parse($request->date . ' ' . $request->start_time);
+        $stoppedAt = $orderStartTime->copy()->addHours($request->duration);
+
+        //nightTime
+
+        $nightTime = 0;
+        $allowanceStartTime = Carbon::parse('00:01:00');
+        $allowanceEndTime = Carbon::parse('04:00:00');
+
+        $startDay = Carbon::parse($orderStartTime)->startOfDay();
+        $endDay = Carbon::parse($stoppedAt)->startOfDay();
+
+        $timeStart = Carbon::parse(Carbon::parse($orderStartTime->format('H:i:s')));
+        $timeEnd = Carbon::parse(Carbon::parse($stoppedAt->format('H:i:s')));
+
+        $allowance = false;
+
+        if ($startDay->diffInDays($endDay) != 0 && $stoppedAt->diffInMinutes($endDay) != 0) {
+            $allowance = true;
+        }
+
+        if ($timeStart->between($allowanceStartTime, $allowanceEndTime) || $timeEnd->between($allowanceStartTime, $allowanceEndTime)) {
+            $allowance = true;
+        }
+
+        if ($timeStart < $allowanceStartTime && $timeEnd > $allowanceEndTime) {
+            $allowance = true;
+        }
+
+        if ($allowance) {
+            $nightTime = $stoppedAt->diffInMinutes($endDay);
+        }
+
+        //allowance
+
+        $totalCast = $request->total_cast;
+        $allowancePoint = 0;
+        if ($nightTime) {
+            $allowancePoint = $totalCast * 4000;
+        }
+
+        //orderPoint
+
+        $orderPoint = 0;
+        $orderDuration = $request->duration * 60;
+        $nomineeIds = explode(",", trim($request->nominee_ids, ","));
+
+        if (OrderType::NOMINATION != $request->type) {
+            $cost = CastClass::find($request->class_id)->cost;
+            $orderPoint = $totalCast * (($cost / 2) * floor($orderDuration / 15));
+        } else {
+            $cost = Cast::find($nomineeIds[0])->cost;
+            $orderPoint = ($cost / 2) * floor($orderDuration / 15);
+        }
+
+        //ordersFee
+
+        $orderFee = 0;
+        if (OrderType::NOMINATION != $request->type) {
+            if (!empty($nomineeIds[0])) {
+                $multiplier = floor($orderDuration / 15);
+                $orderFee = 500 * $multiplier * count($nomineeIds);
+            }
+        }
+
+        return ($orderPoint + $orderFee + $allowancePoint);
     }
 }

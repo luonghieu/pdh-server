@@ -88,25 +88,40 @@ $(document).ready(function(){
   //duration
   $("#duration_offer").on("change",function(){
     var duration = $("#duration_offer option:selected").val();
-
     if(localStorage.getItem("offer")){
       var offer = JSON.parse(localStorage.getItem("offer"));
       if(offer.arrIds.length) {
         var nomineeIds = offer.arrIds.toString();
         var date =  $('.date-offer option:selected').val();
 
-        var time = '18:00';
+        var time = $('#start_time_offer option:selected').val();
 
-        var data = {
+        $.ajax({
+          headers: {
+            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+          },
+          type: "POST",
+          dataType: "html",
+          url: '/admin/offer/price',
+          data: {
             date : date,
             start_time : time,
-            type :3,
+            type :5,
             duration :duration,
             total_cast :offer.arrIds.length,
             nominee_ids : nomineeIds
-          };
+          },
+          success: function( val ) {
+            console.log(val)
+            $('.show-current-point-offer').text('予定合計ポイント : ' + val + 'P~' );
+            $('#current-point-offer').val(offer.current_point);
+            var point = {
+              current_point: val,
+            };
+            updateLocalStorageValue('offer', point);
+          },
+        });
 
-      console.log(data)
       }
     }
 
@@ -120,6 +135,42 @@ $(document).ready(function(){
   //start_time
   $("#start_time_offer").on("change",function(){
     var time = $("#start_time_offer option:selected").val();
+
+    if(localStorage.getItem("offer")){
+      var offer = JSON.parse(localStorage.getItem("offer"));
+      if(offer.arrIds.length) {
+        var duration = $("#duration_offer option:selected").val();
+        var nomineeIds = offer.arrIds.toString();
+        var date =  $('.date-offer option:selected').val();
+
+        $.ajax({
+          headers: {
+            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+          },
+          type: "POST",
+          dataType: "html",
+          url: '/admin/offer/price',
+          data: {
+            date : date,
+            start_time : time,
+            type :5,
+            duration :duration,
+            total_cast :offer.arrIds.length,
+            nominee_ids : nomineeIds
+          },
+          success: function( val ) {
+            console.log(val)
+            $('.show-current-point-offer').text('予定合計ポイント : ' + val + 'P~' );
+            $('#current-point-offer').val(offer.current_point);
+            var point = {
+              current_point: val,
+            };
+            updateLocalStorageValue('offer', point);
+          },
+        });
+
+      }
+    }
 
     var params = {
         start_time: time,
@@ -191,6 +242,13 @@ $(document).ready(function(){
           $(this).prop('selected',true);
         }
       })
+    }
+
+    //current_point
+    if(offer.current_point){
+      $('.show-current-point-offer').text('予定合計ポイント : ' + offer.current_point + 'P~' );
+      $('#current-point-offer').val(offer.current_point);
+
     }
 
   }
