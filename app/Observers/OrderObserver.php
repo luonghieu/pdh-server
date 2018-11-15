@@ -5,6 +5,7 @@ namespace App\Observers;
 use App\Enums\OrderPaymentStatus;
 use App\Enums\OrderType;
 use App\Enums\ProviderType;
+use App\Notifications\CompletedPayment;
 use App\Notifications\CreateNominatedOrdersForGuest;
 use App\Notifications\CreateOrdersForLineGuest;
 use App\Notifications\OrderCreatedNotifyToAdmin;

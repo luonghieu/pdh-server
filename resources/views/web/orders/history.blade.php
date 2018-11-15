@@ -238,11 +238,6 @@
     <form action="{{ route('point_settement.create', ['id' => $order->id]) }}" method="POST" id="payment-form">
         {{ csrf_field() }}
         @if ($order->payment_status == \App\Enums\OrderPaymentStatus::REQUESTING || $order->payment_status == \App\Enums\OrderPaymentStatus::PAYMENT_FAILED)
-            @if ($order->payment_status == \App\Enums\OrderPaymentStatus::PAYMENT_FAILED)
-                <div class="action" style="width: 100%; text-align: center;">
-                    <button class="btn-l" type="button" id="payment-failed-popup">決済を確定する</button>
-                </div>
-            @else
             <div class="action" style="width: 100%; text-align: center;">
                 <button class="btn-l" type="submit" id="payment-submit">決済を確定する</button>
             </div>
@@ -251,8 +246,6 @@
                     <a href="javascript:void(0)" class="point-fix"
                        onclick="openRequestUpdatePoint('{{ $order->id }}')">決済ポイントの修正を依頼する場合はこちら</a>
                 @endif
-
-            @endif
         @endif
     </form>
     @endif

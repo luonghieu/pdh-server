@@ -57,6 +57,7 @@ class CancelFeeSettlement extends Command
 
         $orders = Order::where('status', OrderStatus::CANCELED)
             ->whereNull('payment_status')
+            ->orWhere('payment_status', OrderPaymentStatus::PAYMENT_FAILED)
             ->where('canceled_at', '<=', $now->copy()->subHours(24))
             ->where('cancel_fee_percent', '>', 0)
             ->whereHas('user', function ($q) {
@@ -64,13 +65,13 @@ class CancelFeeSettlement extends Command
                     ->orWhere('provider', null);
             })
             ->get();
-
         foreach ($orders as $order) {
             $this->processPayment($order, $now);
         }
 
         $lineOrders = Order::where('status', OrderStatus::CANCELED)
-            ->whereNull('payment_status')
+            ->where('payment_status', null)
+            ->orWhere('payment_status', OrderPaymentStatus::PAYMENT_FAILED)
             ->where('canceled_at', '<=', $now->copy()->subHours(3))
             ->where('cancel_fee_percent', '>', 0)->whereHas('user', function ($q) {
             $q->where('provider', ProviderType::LINE);
