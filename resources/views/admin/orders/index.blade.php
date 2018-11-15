@@ -126,7 +126,7 @@
                     @endif
                   </td>
                   <td>{{ $orders->firstItem() + $key }}</td>
-                  <td><a href="{{ route('admin.users.show', ['user' => $order->user->id]) }}">{{ $order->user ? $order->user->id : '' }}</a></td>
+                  <td><a href="{{ route('admin.users.show', ['user' => $order->user_id]) }}">{{ $order->user_id }}</a></td>
                   <td>{{ $order->user ? $order->user->nickname : '' }}</td>
                   <td>{{ $order->id }}</td>
                   <td>{{ App\Enums\OrderType::getDescription($order->type) }}</td>

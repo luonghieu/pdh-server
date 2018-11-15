@@ -1,8 +1,7 @@
 @section('title', 'Cheers')
 @extends('layouts.web')
 @section('web.extra_css')
-<link rel="stylesheet" href="{{ asset('assets/web/css/ge_1.css') }}">
-
+<link rel="stylesheet" href="{{ mix('assets/web/css/ge_1.min.css') }}">
 @endsection
 @section('web.content')
   @if (!Auth::check())

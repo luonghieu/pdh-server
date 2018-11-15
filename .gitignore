@@ -19,3 +19,4 @@ deploy
 laravel-echo-server.json
 public/assets/web/css/web.css
 public/assets/web/css/*.min.css
+public/assets/webview/css/*.min.css

@@ -4,15 +4,15 @@
 @extends('layouts.web')
 @section('web.extra')
 <div class="modal_wrap">
-  <input id="trigger3" type="checkbox">
-    <div class="modal_overlay">
-      <label for="trigger3" class="modal_trigger" id="profile-popup"></label>
-      <div class="modal_content modal_content-btn3">
-        <div class="content-in" id="profile-message">
-          <h2></h2>
-        </div>
+  <input id="trigger-profile" type="checkbox">
+  <div class="modal_overlay">
+    <label for="trigger-profile" class="modal_trigger" id="profile-popup"></label>
+    <div class="modal_content modal_content-btn3">
+      <div class="content-in" id="profile-message">
+        <h2></h2>
       </div>
     </div>
+  </div>
 </div>
 @endsection
 @section('web.content')
@@ -188,7 +188,17 @@
         $('#profile-message h2').html(popup_profile);
 
         window.sessionStorage.removeItem('popup_profile');
+
+        $('#profile-popup').on('click', function () {
+          var checked = $('#trigger-profile').prop('checked');
+
+          if (checked == false) {
+            return false;
+          }
+
+          return true;
+        });
       }
-    })
+    });
   </script>
 @endsection

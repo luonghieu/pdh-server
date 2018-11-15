@@ -2,7 +2,7 @@
 @section('screen.class', '')
 @extends('layouts.web')
 @section('web.extra_css')
-<link rel="stylesheet" href="{{ asset('assets/web/css/ge_2_4.css') }}">
+<link rel="stylesheet" href="{{ mix('assets/web/css/ge_2_4.min.css') }}">
 @endsection
 @section('web.content')
   <div class="ge2-4-block">
