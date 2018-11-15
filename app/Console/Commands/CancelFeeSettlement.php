@@ -56,8 +56,10 @@ class CancelFeeSettlement extends Command
         $now = Carbon::now();
 
         $orders = Order::where('status', OrderStatus::CANCELED)
-            ->whereNull('payment_status')
-            ->orWhere('payment_status', OrderPaymentStatus::PAYMENT_FAILED)
+            ->where(function ($query) {
+                $query->orWhere('payment_status', null)
+                    ->orWhere('payment_status', OrderPaymentStatus::PAYMENT_FAILED);
+            })
             ->where('canceled_at', '<=', $now->copy()->subHours(24))
             ->where('cancel_fee_percent', '>', 0)
             ->whereHas('user', function ($q) {
@@ -70,8 +72,10 @@ class CancelFeeSettlement extends Command
         }
 
         $lineOrders = Order::where('status', OrderStatus::CANCELED)
-            ->where('payment_status', null)
-            ->orWhere('payment_status', OrderPaymentStatus::PAYMENT_FAILED)
+            ->where(function ($query) {
+                $query->orWhere('payment_status', null)
+                    ->orWhere('payment_status', OrderPaymentStatus::PAYMENT_FAILED);
+            })
             ->where('canceled_at', '<=', $now->copy()->subHours(3))
             ->where('cancel_fee_percent', '>', 0)->whereHas('user', function ($q) {
             $q->where('provider', ProviderType::LINE);
