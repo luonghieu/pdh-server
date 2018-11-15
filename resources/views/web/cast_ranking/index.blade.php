@@ -1,6 +1,6 @@
 @section('title', 'キャストランキング')
 @section('web.extra_css')
-<link rel="stylesheet" href="{{ asset('assets/web/css/gf_4.css') }}">
+<link rel="stylesheet" href="{{ mix('assets/web/css/gf_4.min.css') }}">
 @endsection
 @section('screen.id', 'gf4')
 @extends('layouts.web')
