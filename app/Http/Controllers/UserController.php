@@ -199,6 +199,9 @@ class UserController extends Controller
         $contents = $this->getApi('/api/v1/auth/me');
         $isVerify = $contents['data']['is_verified'];
 
-        return view('web.users.code', compact('isVerify'));
+        $user = Auth::user();
+        $token = JWTAuth::fromUser($user);
+
+        return view('web.users.code', compact('isVerify', 'token'));
     }
 }
