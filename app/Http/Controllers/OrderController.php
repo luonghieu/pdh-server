@@ -943,4 +943,9 @@ class OrderController extends Controller
             abort(500);
         }
     }
+
+    public function offer(Request $request)
+    {
+        return view('web.orders.offer');
+    }
 }
