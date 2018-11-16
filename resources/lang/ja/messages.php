@@ -70,4 +70,5 @@ return [
     'verification_code_is_wrong' => '認証コードが間違っています',
     'user_verify_success' => '認証が完了しました',
     'phone_update_success' => '変更しました',
+    'postcode_error' => '住所が見つかりません',
 ];

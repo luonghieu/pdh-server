@@ -34,10 +34,10 @@ class PostCodeController extends ApiController
         }
 
 //        $pattern = '/^(1[0-9]|20)\d{1}[-]?\d{4}$/';
-//
-//        if (preg_match($pattern, $subject) == false) {
-//            return $this->respondErrorMessage(trans('messages.postcode_not_support'), 422);
-//        }
+        //
+        //        if (preg_match($pattern, $subject) == false) {
+        //            return $this->respondErrorMessage(trans('messages.postcode_not_support'), 422);
+        //        }
 
         $address = '';
         $cacheKey = "post_code_{$request->post_code}";
@@ -69,7 +69,7 @@ class PostCodeController extends ApiController
         }
 
         if (!$address) {
-            return $this->respondErrorMessage(trans('messages.postcode_invalid'));
+            return $this->respondErrorMessage(trans('messages.postcode_error'));
         }
 
         return $this->respondWithData($address);
