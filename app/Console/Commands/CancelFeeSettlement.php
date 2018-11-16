@@ -57,7 +57,7 @@ class CancelFeeSettlement extends Command
 
         $orders = Order::where('status', OrderStatus::CANCELED)
             ->where(function ($query) {
-                $query->orWhere('payment_status', null)
+                $query->where('payment_status', null)
                     ->orWhere('payment_status', OrderPaymentStatus::PAYMENT_FAILED);
             })
             ->where('canceled_at', '<=', $now->copy()->subHours(24))
