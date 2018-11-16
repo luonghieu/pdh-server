@@ -20,3 +20,6 @@ laravel-echo-server.json
 public/assets/web/css/web.css
 public/assets/web/css/*.min.css
 public/assets/webview/css/*.min.css
+public/assets/web/js/*.min.js
+public/assets/web/js/lazy/*.min.js
+public/assets/webview/js/*.min.js

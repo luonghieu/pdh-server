@@ -65,5 +65,5 @@
 @endsection
 @section('web.extra_js')
   <script src="{{ asset('assets/web/js/jRange/jquery.range.js') }}"></script>
-  <script src="{{ asset('assets/web/js/gf-3.js') }}"></script>
+  <script src="{{ mix('assets/web/js/gf-3.min.js') }}"></script>
 @endsection
