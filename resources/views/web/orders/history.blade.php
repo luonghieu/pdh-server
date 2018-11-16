@@ -23,7 +23,7 @@
                         <label for="request-update-point" class="close_button  left">いいえ</label>
                     </div>
                     <div class="close_button-block">
-                        <label class="close_button" id="request-update-point-btn">修正依頼する</label>
+                        <label class="close_button right" id="request-update-point-btn">修正依頼する</label>
                     </div>
                     <input type="hidden" id="request-update-cast-id">
                 </div>
@@ -50,7 +50,7 @@
                         <label for="request-buy-point" class="close_button  left">キャンセル</label>
                     </div>
                     <div class="close_button-block">
-                        <label class="close_button" id="request-buy-point-btn">決済を確定する</label>
+                        <label class="close_button right" id="request-buy-point-btn">決済を確定する</label>
                     </div>
                 </div>
             </div>
@@ -72,7 +72,7 @@
                         <label for="payment-confirm" class="close_button  left">いいえ</label>
                     </div>
                     <div class="close_button-block">
-                        <label class="close_button" id="payment-confirm-btn">はい</label>
+                        <label class="close_button right" id="payment-confirm-btn">はい</label>
                     </div>
                 </div>
             </div>
@@ -159,7 +159,7 @@
                 <h3 class="order-cancel-header">※キャンセル料が発生します</h3>
             @endif
             <div class="details-list__header">
-                <div class="details-list__thumbnail">
+                <div class="details-list__thumbnail init-height">
                     <a href="{{ route('cast.show', ['id' => $cast->id]) }}">
                         <img src="{{ @getimagesize($cast->avatars[0]->thumbnail) ? $cast->avatars[0]->thumbnail : '/assets/web/images/gm1/ic_default_avatar@3x.png' }}"
                              alt="Avatar">
@@ -234,20 +234,21 @@
         </div>
         <span class="details-total-desc">❉1P=1.1円で決済が実行されます</span>
     </section>
+    @if (!$order->deleted_at)
     <form action="{{ route('point_settement.create', ['id' => $order->id]) }}" method="POST" id="payment-form">
         {{ csrf_field() }}
-        @if ($order->payment_status == \App\Enums\OrderPaymentStatus::REQUESTING)
-        <div class="action" style="width: 100%; text-align: center;">
-            <button class="btn-l" type="submit" id="payment-submit">決済を確定する</button>
-        </div>
+        @if ($order->payment_status == \App\Enums\OrderPaymentStatus::REQUESTING || $order->payment_status == \App\Enums\OrderPaymentStatus::PAYMENT_FAILED)
+            <div class="action" style="width: 100%; text-align: center;">
+                <button class="btn-l" type="submit" id="payment-submit">決済を確定する</button>
+            </div>
 
-            @if ($order->payment_status != \App\Enums\OrderPaymentStatus::EDIT_REQUESTING)
-                <a href="javascript:void(0)" class="point-fix"
-                   onclick="openRequestUpdatePoint('{{ $order->id }}')">決済ポイントの修正を依頼する場合はこちら</a>
-            @endif
+                @if ($order->payment_status != \App\Enums\OrderPaymentStatus::EDIT_REQUESTING)
+                    <a href="javascript:void(0)" class="point-fix"
+                       onclick="openRequestUpdatePoint('{{ $order->id }}')">決済ポイントの修正を依頼する場合はこちら</a>
+                @endif
         @endif
-
     </form>
+    @endif
 </div>
 @endsection
 

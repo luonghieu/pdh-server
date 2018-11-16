@@ -3,21 +3,39 @@
 
 @extends('layouts.web')
 @section('web.content')
+@section('web.extra')
+@if (Auth::check())
+    @if(Auth::user()->is_guest && Carbon\Carbon::parse(Auth::user()->created_at)->lt(Carbon\Carbon::parse('2018/11/10 00:00')))
+      @include('web.users.popup')
+    @endif
+  @endif
+@endsection
 <div class="cast-call">
   <section class="cast-photo">
     <div class="slider cast-photo__show">
       @if($cast['avatars'])
         @foreach ($cast['avatars'] as $avatar)
-          @if (@getimagesize($avatar['thumbnail']))
-          <img src="{{ $avatar['thumbnail'] }}" alt="">
+          @if (@getimagesize($avatar['path']))
+          <img class="lazy" data-src="{{ $avatar['path'] }}">
           @else
-          <img src="{{ asset('assets/web/images/gm1/ic_default_avatar@3x.png') }}" alt="">
+          <img class="lazy" data-src="{{ asset('assets/web/images/gm1/ic_default_avatar@3x.png') }}">
           @endif
         @endforeach
       @else
-        <img class="image-default" src="{{ asset('assets/web/images/gm1/ic_default_avatar@3x.png') }}" alt="">
+        <img class="image-default lazy" data-src="{{ asset('assets/web/images/gm1/ic_default_avatar@3x.png') }}">
       @endif
     </div>
+    @if ($cast['working_today'])
+      <input type="hidden" id="working-today" value="{{ $cast['working_today'] }}">
+      <span class="init-today text-bold">今日OK</span>
+    @endif
+    @if (isset($cast['is_online']))
+      <input type="hidden" id="is-online" value="{{ $cast['is_online'] }}">
+      <span class="init-status text-bold">
+        <i class="{{ $cast['is_online'] ? 'online' : 'offline' }}"></i>
+        {{ $cast['is_online'] ? 'オンライン' : $cast['last_active'] }}
+      </span>
+    @endif
   </section>
   <div class="cast-set">
     <section class="cast-info">
@@ -26,22 +44,24 @@
         <li class="cast-info__item"><b class="text-bold">{{ (!$cast['age']) ? '' : ($cast['age'] . "歳") }}</b></li>
         @php
           $class = '';
-          switch ($cast['class_id']) {
-              case 1:
-                  $class = 'bronz';
-                  break;
-              case 2:
-                  $class = 'platinum';
-                  break;
-              case 3:
-                  $class = 'daiamond';
-                  break;
+          if (isset($cast['class_id'])) {
+            switch ($cast['class_id']) {
+                case 1:
+                    $class = 'bronz';
+                    break;
+                case 2:
+                    $class = 'platinum';
+                    break;
+                case 3:
+                    $class = 'daiamond';
+                    break;
+            }
           }
         @endphp
-        <li class="{{ $class }}">{{ (!$cast['class']) ? '未設定' : $cast['class'] }}</li>
+        <li class="{{ $class }}">{{ isset($cast['class']) ? $cast['class'] : '未設定' }}</li>
       </ul>
       <p class="cast-info__signature">{{ $cast['job'] }}{{ (!$cast['job'] || !$cast['intro']) ? '' : ' | '}}{{ $cast['intro'] }}</p>
-      <p class="cast-info__price">30分あたりの料金<span class="text-bold">{{ $cast['cost'] ? number_format($cast['cost']) : '未設定' }}P</span></p>
+      <p class="cast-info__price">30分あたりの料金<span class="text-bold">{{ isset($cast['cost']) ? number_format($cast['cost']) : '未設定' }}P</span></p>
     </section>
 
     <section class="portlet">
@@ -49,7 +69,11 @@
         <h2 class="portlet-header__title">自己紹介</h2>
       </div>
       <div class="portlet-content">
-        <p class="portlet-content__text">{{ (!$cast['description']) ? '' : $cast['description'] }}</p>
+        @if (!$cast['description'])
+        <p class="portlet-header__title">自己紹介設定されていません</p>
+        @else
+        <p class="portlet-content__text">{!! strip_tags(nl2br($cast['description']), '<br>') !!}</p>
+        @endif
       </div>
     </section>
 
@@ -133,8 +157,18 @@
   </div>
 </div>
 <div class="cast-call-btn">
-  <a href="{{ route('message.messages', $cast['room_id']) }}"><img src="{{ asset('assets/web/images/common/msg2.svg') }}"></a>
-  <div class="btn-l"><a href="{{ route('guest.orders.nominate',['id' => $cast['id'] ]) }}">指名予約する</a></div>
+  <a class="heart" id="favorite-cast-detail" data-user-id="{{ $cast['id'] }}" data-is-favorited="{{ $cast['is_favorited'] }}">
+    @if ($cast['is_favorited'])
+    <img src="{{ asset('assets/web/images/common/like.svg') }}"><span class="text-color">イイネ済</span>
+    @else
+    <img src="{{ asset('assets/web/images/common/unlike.svg') }}"><span class="text-color">イイネ</span>
+    @endif
+  </a>
+  <a class="msg" id="create-room" data-user-id="{{ $cast['id'] }}">
+    <img src="{{ asset('assets/web/images/common/msg2.svg') }}">
+    <span class="text-color">メッセージ</span>
+  </a>
+  <div class="btn-m"><a href="{{ route('guest.orders.nominate',['id' => $cast['id'] ]) }}">指名予約する</a></div>
 </div>
 @endsection
 @section('web.script')
@@ -147,4 +181,24 @@
     localStorage.removeItem("back_link");
   }
 </script>
+
+<script>
+  $(function () {
+    workingToday = $('#working-today').val();
+    isOnline = $('#is-online').val();
+
+    if (!workingToday && isOnline) {
+      $('.init-status').addClass('init-last');
+    }
+  });
+</script>
+@stop
+@section('web.extra_css')
+<style>
+  footer {
+    height: 12%;
+    padding-top: 0;
+    padding-bottom: 5px;
+  }
+</style>
 @stop

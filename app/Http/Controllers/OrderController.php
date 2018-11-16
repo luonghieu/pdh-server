@@ -11,6 +11,7 @@ use App\Enums\PaymentRequestStatus;
 use App\Enums\PointType;
 use App\Enums\TagType;
 use App\Enums\UserType;
+use App\Notifications\AutoChargeFailedWorkchatNotify;
 use App\Order;
 use App\Point;
 use App\Services\LogService;
@@ -285,11 +286,7 @@ class OrderController extends Controller
         if (isset($request->cast_ids)) {
             $data['casts'] = explode(",", $request->cast_ids);
         } else {
-            if (isset($request->casts)) {
-                $data['casts'] = $request->casts;
-            } else {
-                $data['casts'] = null;
-            }
+            $data['casts'] = null;
         }
 
         Session::put('data', $data);
@@ -317,7 +314,13 @@ class OrderController extends Controller
         ];
 
         try {
-            $casts = $client->get(route('casts.index', ['working_today' => 1, 'class_id' => $data['cast_class']]), $option);
+            $params = [
+                'class_id' => $data['cast_class'],
+                'latest' => 1,
+                'order' => 1,
+            ];
+
+            $casts = $client->get(route('casts.index', $params), $option);
         } catch (\Exception $e) {
             LogService::writeErrorLog($e);
             abort(500);
@@ -391,6 +394,9 @@ class OrderController extends Controller
             $type = OrderType::CALL;
             $nomineeIds = '';
         }
+
+        $data['type'] = $type;
+        $data['nomineeIds'] = $nomineeIds;
 
         if (isset($data['otherTime'])) {
             $startDate = Carbon::parse($data['otherTime'])->format('Y-m-d');
@@ -479,18 +485,6 @@ class OrderController extends Controller
             $startTime = Carbon::parse($timeOrder)->format('H:i');
         }
 
-        if (isset($data['casts'])) {
-            if (count($data['casts']) == $data['cast_numbers']) {
-                $type = OrderType::NOMINATED_CALL;
-            } else {
-                $type = OrderType::HYBRID;
-            }
-            $nomineeIds = implode(',', $data['casts']);
-        } else {
-            $type = OrderType::CALL;
-            $nomineeIds = '';
-        }
-
         $desires = [];
         $situations = [];
 
@@ -529,12 +523,12 @@ class OrderController extends Controller
                 'address' => $area,
                 'class_id' => $data['cast_class'],
                 'duration' => $data['duration'],
-                'nominee_ids' => $nomineeIds,
+                'nominee_ids' => $data['nomineeIds'],
                 'date' => $startDate,
                 'start_time' => $startTime,
                 'total_cast' => $data['cast_numbers'],
                 'temp_point' => $data['temp_point'],
-                'type' => $type,
+                'type' => $data['type'],
                 'tags' => $tags,
             ]), $option);
         } catch (\Exception $e) {
@@ -581,7 +575,11 @@ class OrderController extends Controller
         }
 
         $now = Carbon::now();
-        $order = Order::where('payment_status', OrderPaymentStatus::REQUESTING)->find($id);
+        $order = Order::where('id', $id)
+            ->where('payment_status', OrderPaymentStatus::REQUESTING)
+            ->orWhere('payment_status', OrderPaymentStatus::PAYMENT_FAILED)
+            ->first();
+
         if (!$order) {
             return redirect()->back();
         }
@@ -621,6 +619,13 @@ class OrderController extends Controller
             return response()->json(['success' => true, 'message' => trans('messages.payment_completed')], 200);
         } catch (\Exception $e) {
             DB::rollBack();
+            if ($e->getMessage() == 'Auto charge failed') {
+                $order->payment_status = OrderPaymentStatus::PAYMENT_FAILED;
+                $order->save();
+
+                $user->notify(new AutoChargeFailedWorkchatNotify($order));
+            }
+
             LogService::writeErrorLog($e);
             return response()->json(['success' => false], 500);
         }
@@ -901,6 +906,42 @@ class OrderController extends Controller
                 'next_page' => $casts['next_page_url'],
                 'view' => view('web.orders.load_more_list_casts', compact('casts', 'currentCasts'))->render(),
             ];
+        } catch (\Exception $e) {
+            LogService::writeErrorLog($e);
+            abort(500);
+        }
+    }
+
+    public function castDetail($id)
+    {
+        try {
+            $client = new Client(['base_uri' => config('common.api_url')]);
+            $user = Auth::user();
+
+            $accessToken = JWTAuth::fromUser($user);
+
+            $option = [
+                'headers' => ['Authorization' => 'Bearer ' . $accessToken],
+                'form_params' => [],
+                'allow_redirects' => false,
+            ];
+
+            try {
+                $params = [
+                    'id' => $id,
+                ];
+
+                $casts = $client->get(route('users.show', $params), $option);
+            } catch (\Exception $e) {
+                LogService::writeErrorLog($e);
+                abort(500);
+            }
+
+            $cast = json_decode(($casts->getBody())->getContents(), JSON_NUMERIC_CHECK);
+
+            $cast = $cast['data'];
+
+            return view('web.orders.cast_detail', compact('cast'));
         } catch (\Exception $e) {
             LogService::writeErrorLog($e);
             abort(500);

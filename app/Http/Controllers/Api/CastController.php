@@ -25,17 +25,26 @@ class CastController extends ApiController
 
         $params = $request->only([
             'working_today',
-            'prefecture_id',
             'class_id',
             'height',
             'body_type_id',
+            'device',
         ]);
 
-        $casts = Cast::query();
         $user = $this->guard()->user();
+        if (!$user->status) {
+            return $this->respondErrorMessage(trans('messages.freezing_account'), 403);
+        }
 
+        $casts = Cast::query();
         foreach ($params as $key => $value) {
-            $casts->where($key, $value);
+            if (!(3 == $request->device)) {
+                $casts->where($key, $value);
+            }
+        }
+
+        if ($request->order) {
+            $casts = $casts->orderByDesc('working_today');
         }
 
         if ($request->favorited) {
@@ -50,17 +59,33 @@ class CastController extends ApiController
             $casts->whereBetween('users.cost', [$min, $max]);
         }
 
-        $casts = $casts->leftJoin('cast_order as co', 'co.user_id', '=', 'users.id')
-            ->whereDoesntHave('blockers', function ($query) use ($user) {
-                $query->where('user_id', $user->id);
-            })->whereDoesntHave('blocks', function ($q) use ($user) {
+        $casts = $casts->whereDoesntHave('blockers', function ($query) use ($user) {
+            $query->where('user_id', $user->id);
+        })->whereDoesntHave('blocks', function ($q) use ($user) {
             $q->where('blocked_id', $user->id);
-        })->active()
-            ->groupBy('users.id')
-            ->orderByDesc('co.created_at')
-            ->select('users.*')
-            ->paginate($request->per_page)
-            ->appends($request->query());
+        })->active();
+
+        if ($request->device) {
+            $casts = $casts->orderByDesc('working_today')
+                ->orderBy('rank')
+                ->orderByDesc('created_at')
+                ->orderByDesc('last_active_at')
+                ->limit(10)->get();
+        } elseif ($request->latest) {
+            $casts = $casts->orderBy('rank')
+                ->orderByDesc('users.created_at')
+                ->paginate($request->per_page)
+                ->appends($request->query());
+        } else {
+            $casts = $casts->leftJoin('cast_order as co', 'co.user_id', '=', 'users.id')
+                ->groupBy('users.id')
+                ->orderBy('rank')
+                ->orderBy('last_active_at', 'DESC')
+                ->orderByDesc('co.created_at')
+                ->select('users.*')
+                ->paginate($request->per_page)
+                ->appends($request->query());
+        }
 
         return $this->respondWithData(CastResource::collection($casts));
     }

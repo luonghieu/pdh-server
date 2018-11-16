@@ -18,7 +18,12 @@ class CheckInfo
     {
         $user = Auth::user();
 
-        if (empty($user->nickname) || empty($user->date_of_birth) || empty($user->avatars[0])) {
+        $verification = $user->verification;
+        if (!$user->is_verified && $verification && !$verification->status) {
+            return redirect()->route('verify.code');
+        }
+
+        if (empty($user->date_of_birth)) {
             return redirect()->route('web.index');
         }
 

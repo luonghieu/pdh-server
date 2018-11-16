@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Auth;
 
+use App\Enums\DeviceType;
 use App\Enums\ProviderType;
 use App\Enums\Status;
 use App\Enums\UserType;
@@ -137,6 +138,11 @@ class LineController extends Controller
 
                 $body = json_decode($response->getBody()->getContents(), true);
                 $lineResponse = Socialite::driver('line')->userFromToken($body['access_token']);
+
+                $user = $this->findOrCreate($lineResponse)['user'];
+                Auth::login($user);
+
+                return redirect()->route('web.index');
             }
 
             if (!isset($request->error)) {
@@ -186,8 +192,9 @@ class LineController extends Controller
                 'nickname' => ($lineResponse->nickname) ? $lineResponse->nickname : $lineResponse->name,
                 'line_user_id' => $lineResponse->id,
                 'type' => UserType::GUEST,
-                'status' => Status::ACTIVE,
+                'status' => Status::INACTIVE,
                 'provider' => ProviderType::LINE,
+                'device_type' => DeviceType::WEB
             ];
 
             $user = User::create($data);
@@ -209,6 +216,9 @@ class LineController extends Controller
             $user->line_id = $lineResponse->id;
             $user->save();
         }
+
+        $user->device_type = DeviceType::WEB;
+        $user->save();
 
         return ['user' => $user, 'first_time' => false];
     }

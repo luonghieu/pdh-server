@@ -16,7 +16,7 @@
 
 @section('web.extra')
   @confirm(['triggerId' => 'cancel', 'buttonRight' =>'はい',
-   'buttonLeft' =>'いいえ', 'triggerCancel' =>'','triggerSuccess' =>'cf-cancel-order'])
+   'buttonLeft' =>'いいえ', 'triggerCancel' =>'','triggerSuccess' =>'cf-cancel-order right'])
     @slot('title')
       この日程をキャンセルしますか？
     @endslot

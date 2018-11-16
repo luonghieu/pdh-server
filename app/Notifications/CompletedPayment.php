@@ -2,6 +2,7 @@
 
 namespace App\Notifications;
 
+use App\Enums\DeviceType;
 use App\Enums\MessageType;
 use App\Enums\ProviderType;
 use App\Enums\RoomType;
@@ -37,7 +38,19 @@ class CompletedPayment extends Notification
     public function via($notifiable)
     {
         if ($notifiable->provider == ProviderType::LINE) {
-            return [LineBotNotificationChannel::class];
+            if ($notifiable->type == UserType::GUEST && $notifiable->device_type == null) {
+                return [LineBotNotificationChannel::class];
+            }
+
+            if ($notifiable->type == UserType::CAST && $notifiable->device_type == null) {
+                return [PushNotificationChannel::class];
+            }
+
+            if ($notifiable->device_type == DeviceType::WEB) {
+                return [LineBotNotificationChannel::class];
+            } else {
+                return [PushNotificationChannel::class];
+            }
         } else {
             return [PushNotificationChannel::class];
         }
@@ -68,7 +81,7 @@ class CompletedPayment extends Notification
 
     public function pushData($notifiable)
     {
-        $orderStartDate = Carbon::parse($this->order->date . ' ' . $this->order->start_time);
+        $orderStartDate = Carbon::parse($this->order->actual_started_at);
         $orderEndDate = Carbon::parse($this->order->actual_ended_at);
         $guestNickname = $this->order->user->nickname ? $this->order->user->nickname . '様' : 'お客様';
         $content = 'Cheersをご利用いただきありがとうございました♪'
@@ -124,7 +137,7 @@ class CompletedPayment extends Notification
 
     public function lineBotPushData($notifiable)
     {
-        $orderStartDate = Carbon::parse($this->order->date . ' ' . $this->order->start_time);
+        $orderStartDate = Carbon::parse($this->order->actual_started_at);
         $orderEndDate = Carbon::parse($this->order->actual_ended_at);
         $guestNickname = $this->order->user->nickname ? $this->order->user->nickname . '様' : 'お客様';
         $content = 'Cheersをご利用いただきありがとうございました♪'

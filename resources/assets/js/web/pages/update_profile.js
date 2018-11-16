@@ -69,7 +69,7 @@ $(document).ready(function() {
         gender: $('#gender').val(),
         intro: $('#intro').val(),
         description: $('#description').val(),
-        prefecture_id: $('#prefecture-id').val(),
+        living_id: $('#living-id').val(),
         cost: $('#cost').val(),
         salary_id: $('#salary-id').val(),
         height: $('#height').val(),
@@ -105,6 +105,59 @@ $(document).ready(function() {
             window.sessionStorage.setItem('popup_profile', 'プロフィール登録が完了しました')
             window.location.href = '/profile';
           }
+        })
+        .catch(function(error) {
+          if (error.response.status == 401) {
+            window.location = '/login/line';
+          }
+
+          if (error.response.data.error) {
+            var errors = error.response.data.error;
+
+            Object.keys(errors).forEach(function(field) {
+              $(`[data-field="${field}"].help-block`).html(errors[field][0]);
+            });
+          };
+        });
+    }
+  });
+
+
+  $('#update-date-of-birth').submit(function(e) {
+    e.preventDefault();
+  }).validate({
+    rules: {
+      date_of_birth: {
+        required: true,
+        max: maxYear,
+      },
+    },
+    messages: {
+      date_of_birth: {
+        required: "生年月日は、必ず指定してください。",
+        max: '年齢は20歳以上で入力してください。',
+      },
+    },
+
+    submitHandler: function(form) {
+      var param = {
+        date_of_birth: $('#date-of-birth').val(),
+      };
+
+      const day = $('#day').val();
+
+      if (!param['date_of_birth']) {
+        delete param['date_of_birth'];
+      }
+
+      $('.help-block').each(function() {
+        $(this).html('');
+      });
+
+      window.axios.post('/api/v1/auth/update', param)
+        .then(function(response) {
+          window.sessionStorage.setItem('popup_mypage', '生年月日の登録が完了しました!');
+          window.location.href = '/mypage';
         })
         .catch(function(error) {
           if (error.response.status == 401) {

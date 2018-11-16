@@ -34,8 +34,8 @@
   <div class="cast-profile">
     <section class="profile-photo">
       <div class="profile-photo__top">
-        @if ($profile['avatars'] && @getimagesize($profile['avatars'][0]['thumbnail']))
-          <img class="init-image-radius" src="{{ $profile['avatars'][0]['thumbnail'] }}" alt="">
+        @if ($profile['avatars'] && @getimagesize($profile['avatars'][0]['path']))
+          <img class="init-image-radius" src="{{ $profile['avatars'][0]['path'] }}" alt="">
         @else
         <img src="{{ asset('assets/web/images/gm1/ic_default_avatar@3x.png') }}" alt="">
         @endif
@@ -43,10 +43,10 @@
       <div class="profile-photo__list">
         <ul>
           @foreach ($profile['avatars'] as $avatar)
-            @if (@getimagesize($avatar['thumbnail']))
+            @if (@getimagesize($avatar['path']))
             <div class="css-img">
               <label for="trigger4" class="open_button button-settlement js-img" id="{{ $avatar['id'] }}">
-                <img type="file" id="valid" src="{{ $avatar['thumbnail'] }}" alt="">
+                <img type="file" id="valid" src="{{ $avatar['path'] }}" alt="">
               </label>
             </div>
             @endif
@@ -99,6 +99,20 @@
           </li>
           <label data-field="nickname" id="nickname-error" class="error help-block" for="nickname"></label>
           <li class="portlet-content__item">
+            <p class="portlet-content__text--list">電話番号<span class="text-phone">※相手には表示されません</span></p>
+            @if(!$profile['phone'])
+            <a href="{{ route('verify.index') }}" class="phone-relative">
+              <input type="text" id="phone" class="text-not-set" name="phone" value="未設定" readonly="">
+              <i class="phone arrow init-m"></i>
+            </a>
+            @else
+            <a href="{{ route('profile.verify.index') }}" class="phone-relative">
+              <input type="text" id="phone" name="phone" value="{{ $profile['phone'] }}" readonly="">
+              <i class="phone arrow"></i>
+            </a>
+            @endif
+          </li>
+          <li class="portlet-content__item">
             <p class="portlet-content__text--list">性別</p>
             <label class="time-input">
               <div class="selectbox" data-field="gender">
@@ -121,8 +135,10 @@
             @php
               $max = \Carbon\Carbon::parse(now())->subYear(20);
             @endphp
-            <input type="date" id="date-of-birth" name="date_of_birth" data-date="" max="{{ $max->format('Y-m-d') }}" data-date-format="YYYY年MM月DD日" value="{{ \Carbon\Carbon::parse($profile['date_of_birth'])->format('Y-m-d') }}">
-            <i class="init-date-of-birth"></i>
+            <div class="init-date-of-birth">
+              <input type="date" id="date-of-birth" name="date_of_birth" data-date="" max="{{ $max->format('Y-m-d') }}" data-date-format="YYYY年MM月DD日" value="{{ \Carbon\Carbon::parse($profile['date_of_birth'])->format('Y-m-d') }}">
+              <i></i>
+            </div>
           </li>
           <label data-field="date_of_birth" id="date-of-birth-error" class="error help-block" for="date-of-birth"></label>
           <li class="portlet-content__item">
@@ -194,7 +210,7 @@
             <p class="portlet-content__text--list">居住地</p>
             <label class="time-input">
               <div class="selectbox">
-                <select dir="rtl" id="prefecture-id">
+                <select dir="rtl" id="living-id">
                   <option value="" class="hidden">未設定</option>
                   @foreach ($glossaries['prefectures'] as $prefecture)
                     @php

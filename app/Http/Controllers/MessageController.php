@@ -35,7 +35,7 @@ class MessageController extends Controller
                 return redirect(route('evaluation.index', ['order_id' => $order->id]));
             }
 
-            if (in_array($messages['order']['payment_status'], [OrderPaymentStatus::WAITING, OrderPaymentStatus::REQUESTING, OrderPaymentStatus::EDIT_REQUESTING])) {
+            if (in_array($messages['order']['payment_status'], [OrderPaymentStatus::WAITING, OrderPaymentStatus::REQUESTING, OrderPaymentStatus::EDIT_REQUESTING, OrderPaymentStatus::PAYMENT_FAILED])) {
                 return redirect(route('history.show', ['orderId' => $order->id]));
             }
 

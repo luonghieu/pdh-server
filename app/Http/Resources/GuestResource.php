@@ -37,6 +37,7 @@ class GuestResource extends Resource
             'email' => $this->email,
             'nickname' => $this->nickname,
             'fullname' => $this->fullname,
+            'fullname_kana' => $this->fullname_kana,
             'phone' => $this->phone,
             'gender' => $this->gender,
             'date_of_birth' => $this->date_of_birth,
@@ -76,6 +77,10 @@ class GuestResource extends Resource
             'rating_score' => $this->rating_score,
             'room_id' => $this->room_id,
             'card' => CardResource::make($this->whenLoaded('card')),
+            'line_qr' => $this->line_qr,
+            'post_code' => $this->post_code,
+            'address' => $this->address,
+            'is_verified' => $this->is_verified,
         ]);
     }
 }

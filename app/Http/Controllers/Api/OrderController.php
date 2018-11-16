@@ -47,6 +47,10 @@ class OrderController extends ApiController
             return $this->respondWithValidationError($validator->errors()->messages());
         }
 
+        if (!$user->status) {
+            return $this->respondErrorMessage(trans('messages.freezing_account'), 403);
+        }
+
         $input = $request->only([
             'prefecture_id',
             'address',
@@ -118,6 +122,7 @@ class OrderController extends ApiController
         $input['status'] = OrderStatus::OPEN;
 
         try {
+            $when = Carbon::now()->addSeconds(3);
             DB::beginTransaction();
             $order = $user->orders()->create($input);
 
@@ -154,17 +159,17 @@ class OrderController extends ApiController
                             false
                         );
 
-                        $nominee->notify(new CreateNominationOrdersForCast($order));
+                        $nominee->notify(new CreateNominationOrdersForCast($order->id));
                     }
                 }
 
                 if (OrderType::NOMINATED_CALL == $order->type || OrderType::HYBRID == $order->type) {
                     $nominees = $order->nominees;
-                    \Notification::send($nominees, new CreateNominatedOrdersForCast($order));
+                    \Notification::send($nominees, new CreateNominatedOrdersForCast($order->id));
                 }
             } else {
                 $casts = Cast::where('class_id', $request->class_id)->get();
-                \Notification::send($casts, new CallOrdersCreated($order));
+                \Notification::send($casts, new CallOrdersCreated($order->id));
             }
 
             DB::commit();

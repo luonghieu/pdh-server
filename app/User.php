@@ -2,21 +2,23 @@
 
 namespace App;
 
-use Carbon\Carbon;
-use App\Enums\UserType;
-use App\Enums\PointType;
 use App\Enums\PaymentStatus;
+use App\Enums\PointType;
+use App\Enums\UserType;
 use App\Services\LogService;
+use App\Verification;
+use Carbon\Carbon;
+use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Foundation\Auth\User as Authenticatable;
+use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\Storage;
 use Tymon\JWTAuth\Contracts\JWTSubject;
-use Illuminate\Notifications\Notifiable;
-use Illuminate\Foundation\Auth\User as Authenticatable;
 
 class User extends Authenticatable implements JWTSubject
 {
-    use Notifiable;
+    use Notifiable, SoftDeletes;
 
     protected $hidden = [
         'password',
@@ -119,11 +121,6 @@ class User extends Authenticatable implements JWTSubject
     public function getBlocked($id)
     {
         return $this->blockers->contains($id) || $this->blocks->contains($id) ? 1 : 0;
-    }
-
-    public function getLastActiveAtAttribute($value)
-    {
-        return Cache::get('last_active_at_' . $this->id);
     }
 
     public function getLastActiveAttribute()
@@ -246,6 +243,33 @@ class User extends Authenticatable implements JWTSubject
         return $payment;
     }
 
+    public function suspendPayment()
+    {
+        $this->payment_suspended = true;
+        $this->save();
+    }
+
+    public function generateVerifyCode($phone)
+    {
+        $data = [
+            'code' => rand(1000, 9999),
+            'phone' => $phone,
+        ];
+
+        if ($this->verification) {
+            $this->verification()->delete();
+        }
+
+        return $this->verification()->create($data);
+    }
+
+    public function routeNotificationForTwilio()
+    {
+        $verification = $this->verification()->first();
+
+        return phone($verification->phone, config('common.phone_number_rule'), 'E164');
+    }
+
     public function notifications()
     {
         return $this->morphMany(Notification::class, 'notifiable');
@@ -363,6 +387,11 @@ class User extends Authenticatable implements JWTSubject
     public function bankAccount()
     {
         return $this->hasOne(BankAccount::class);
+    }
+
+    public function verification()
+    {
+        return $this->hasOne(Verification::class)->latest();
     }
 
     public function positivePoints($points)

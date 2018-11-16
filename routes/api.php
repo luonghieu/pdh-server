@@ -11,16 +11,22 @@ Route::group(['prefix' => 'v1'], function () {
     Route::get('tags', ['as' => 'tags', 'uses' => 'TagController@index']);
     Route::get('glossaries', ['as' => 'glossaries', 'uses' => 'GlossaryController@glossary']);
     Route::post('/get_day', ['as' => 'get_day', 'uses' => 'OrderController@getDayOfMonth']);
+    Route::get('post_code', ['as' => 'post_code', 'uses' => 'PostCodeController@find']);
 
     Route::group(['prefix' => 'auth', 'as' => 'auth.'], function () {
         Route::post('login', ['as' => 'login', 'uses' => 'AuthController@login']);
         Route::post('refresh', ['as' => 'refresh', 'uses' => 'AuthController@refresh']);
         Route::get('logout', ['as' => 'logout', 'uses' => 'AuthController@logout']);
         Route::post('facebook', ['as' => 'login_facebook', 'uses' => 'FacebookAuthController@login']);
+        Route::post('line', ['as' => 'login_line', 'uses' => 'LineAuthController@login']);
 
         Route::group(['middleware' => ['auth:api']], function () {
             Route::get('me', ['as' => 'me', 'uses' => 'AuthController@me']);
             Route::post('update', ['as' => 'update', 'uses' => 'AuthController@update']);
+
+            Route::post('/verify_code', ['as' => 'code', 'uses' => 'VerificationController@code']);
+            Route::post('/resend_code', ['as' => 'resend', 'uses' => 'VerificationController@resend']);
+            Route::post('/verify', ['as' => 'verify', 'uses' => 'VerificationController@verify']);
         });
     });
 

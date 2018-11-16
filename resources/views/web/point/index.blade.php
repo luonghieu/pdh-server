@@ -17,7 +17,7 @@
                     <label for="buypoint-popup" class="close_button  left">キャンセル</label>
                 </div>
                 <div class="close_button-block" id="buypoint-confirm">
-                    <label class="close_button">購入する</label>
+                    <label class="close_button right">購入する</label>
                     <input type="hidden" id="point-amount">
                 </div>
             </div>

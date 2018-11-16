@@ -22,7 +22,7 @@ class UserController extends Controller
 
     public function index(Request $request)
     {
-        $orderBy = $request->only('id', 'status');
+        $orderBy = $request->only('id', 'status', 'last_active_at');
         $keyword = $request->search;
 
         $users = User::where('type', '<>', UserType::ADMIN);
@@ -55,7 +55,7 @@ class UserController extends Controller
                 $users->orderBy($key, $value);
             }
         } else {
-            $users->orderBy('created_at', 'DESC');
+            $users->orderBy('last_active_at', 'DESC');
         }
 
         $users = $users->paginate($request->limit ?: 10);
@@ -105,11 +105,40 @@ class UserController extends Controller
         return redirect()->route('admin.users.show', ['user' => $user->id]);
     }
 
+    public function changeCost(User $user, Request $request)
+    {
+        $user->cost = $request->cast_cost;
+        $user->save();
+
+        return redirect()->route('admin.users.show', ['user' => $user->id]);
+    }
+
     public function registerGuest(User $user)
     {
         $user->type = UserType::GUEST;
         $user->save();
 
         return redirect(route('admin.users.show', ['user' => $user->id]));
+    }
+
+    public function changeRank(User $user, Request $request)
+    {
+        $user->rank = $request->cast_rank;
+        $user->save();
+
+        return redirect()->route('admin.users.show', ['user' => $user->id]);
+    }
+
+    public function delete($id)
+    {
+        $user = User::findOrFail($id);
+        $user->facebook_id = null;
+        $user->line_user_id = null;
+        $user->email = null;
+        $user->save();
+
+        $user->delete();
+
+        return redirect()->route('admin.users.index');
     }
 }

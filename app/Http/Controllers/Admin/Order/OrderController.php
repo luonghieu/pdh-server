@@ -362,11 +362,16 @@ class OrderController extends Controller
             $latestStoppedAt = $input['stopped_at'];
             $earliesStartedtAt = $input['started_at'];
 
-            if ($order->actual_started_at > $earliesStartedtAt) {
-                $order->actual_started_at = $earliesStartedtAt;
-            }
+            if ($order->casts->count() > 1) {
+                if ($order->actual_started_at > $earliesStartedtAt) {
+                    $order->actual_started_at = $earliesStartedtAt;
+                }
 
-            if ($order->actual_ended_at < $latestStoppedAt) {
+                if ($order->actual_ended_at < $latestStoppedAt) {
+                    $order->actual_ended_at = $latestStoppedAt;
+                }
+            } else {
+                $order->actual_started_at = $earliesStartedtAt;
                 $order->actual_ended_at = $latestStoppedAt;
             }
 
@@ -401,7 +406,7 @@ class OrderController extends Controller
 
     public function pointSettlement(Request $request, Order $order)
     {
-        PointSettlement::dispatchNow($order);
+        PointSettlement::dispatchNow($order->id);
 
         if ('order_nominee' == $request->page) {
             return redirect(route('admin.orders.order_nominee', compact('order')));

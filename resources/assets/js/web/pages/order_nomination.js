@@ -1,16 +1,5 @@
 $(document).ready(function(){
-  function updateLocalStorageValue(key, data) {
-    var oldData = JSON.parse(localStorage.getItem(key));
-    var newData;
-
-    if (oldData) {
-      newData = Object.assign({}, oldData, data);
-    } else {
-      newData = data;
-    }
-
-    localStorage.setItem(key, JSON.stringify(newData));
-  }
+  const helper = require('./helper');
 
   $(".checked-order").on("change",function(event){
     if ($(this).is(':checked')) {
@@ -47,7 +36,7 @@ $(document).ready(function(){
     var params = {
       text_area: $(this).val(),
     };
-    updateLocalStorageValue('order_params', params);
+    helper.updateLocalStorageValue('order_params', params);
   });
 
   //area
@@ -69,7 +58,7 @@ $(document).ready(function(){
       select_area: areaNomination,
     };
 
-    updateLocalStorageValue('order_params', params);
+    helper.updateLocalStorageValue('order_params', params);
   })
 
   //duration
@@ -83,7 +72,7 @@ $(document).ready(function(){
       current_duration: duration,
     };
 
-    updateLocalStorageValue('order_params', params);
+    helper.updateLocalStorageValue('order_params', params);
 
     if('other_time_set' == duration) {
       duration = $('.select-duration option:selected').val();
@@ -184,7 +173,7 @@ $(document).ready(function(){
             current_total_point: totalPoint,
           };
 
-          updateLocalStorageValue('order_params', params);
+          helper.updateLocalStorageValue('order_params', params);
         }).catch(function(error) {
           console.log(error);
           if (error.response.status == 401) {
@@ -199,7 +188,7 @@ $(document).ready(function(){
             current_total_point: totalPoint,
           };
 
-        updateLocalStorageValue('order_params', params);
+        helper.updateLocalStorageValue('order_params', params);
       }
   })
 
@@ -211,7 +200,7 @@ $(document).ready(function(){
         select_duration: duration,
       };
 
-    updateLocalStorageValue('order_params', params);
+    helper.updateLocalStorageValue('order_params', params);
 
     var cost = $('.cost-order').val();
     var totalPoint=cost*(duration*6)/3;
@@ -300,7 +289,7 @@ $(document).ready(function(){
               current_total_point: totalPoint,
             };
 
-          updateLocalStorageValue('order_params', params);
+          helper.updateLocalStorageValue('order_params', params);
         }).catch(function(error) {
           console.log(error);
           if (error.response.status == 401) {
@@ -315,7 +304,7 @@ $(document).ready(function(){
             current_total_point: totalPoint,
           };
 
-        updateLocalStorageValue('order_params', params);
+        helper.updateLocalStorageValue('order_params', params);
       }
 
     cost = parseInt(cost).toLocaleString(undefined,{ minimumFractionDigits: 0 });
@@ -360,7 +349,7 @@ $(document).ready(function(){
           current_minute: minute,
         };
 
-      updateLocalStorageValue('order_params', updateOtherTime);
+      helper.updateLocalStorageValue('order_params', updateOtherTime);
 
       var date = year+'-'+month+'-'+day;
       var time = hour+':'+minute;
@@ -406,7 +395,7 @@ $(document).ready(function(){
           current_time: time,
         };
 
-        updateLocalStorageValue('order_params', updateSelectedDate);
+        helper.updateLocalStorageValue('order_params', updateSelectedDate);
     }
 
     if ($("input:radio[name='time_set_nomination']:checked").length) {
@@ -437,7 +426,7 @@ $(document).ready(function(){
             current_total_point: totalPoint,
           };
 
-          updateLocalStorageValue('order_params', params);
+          helper.updateLocalStorageValue('order_params', params);
         }).catch(function(error) {
           console.log(error);
           if (error.response.status == 401) {
@@ -456,7 +445,7 @@ $(document).ready(function(){
           current_time_set: time,
         };
 
-    updateLocalStorageValue('order_params', updateTime);
+    helper.updateLocalStorageValue('order_params', updateTime);
 
     if('other_time' == time) {
       if(localStorage.getItem("order_params")){
@@ -601,7 +590,7 @@ $(document).ready(function(){
             current_total_point: totalPoint,
           };
 
-          updateLocalStorageValue('order_params', params);
+          helper.updateLocalStorageValue('order_params', params);
         }).catch(function(error) {
           console.log(error);
           if (error.response.status == 401) {
@@ -684,6 +673,7 @@ $(document).ready(function(){
 
     //current_time_set
     if(orderParams.current_time_set){
+      $(".input-time-join").parent().removeClass('active');
       if('other_time'== orderParams.current_time_set){
         $('.date-input-nomination').css('display', 'flex')
 

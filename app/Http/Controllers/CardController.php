@@ -20,10 +20,12 @@ class CardController extends Controller
         $backUrl = \URL::previous();
         $urlCreateOrder = route('guest.orders.get_confirm');
         $urlPoint = route('purchase.index');
+        $urlNominate = route('guest.orders.nominate');
 
-        if (!in_array($backUrl, [$urlCreateOrder, $urlPoint])) {
+        if (!in_array($backUrl, [$urlCreateOrder, $urlPoint]) && (strpos($backUrl, $urlNominate) === false) && (!preg_match('/history\/\d/', $backUrl))) {
             $backUrl = route('credit_card.index');
         }
+
         $request->session()->put('backUrl', $backUrl);
 
         if ($card) {

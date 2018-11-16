@@ -5,8 +5,8 @@ namespace App\Http\Controllers\Admin\Cast;
 use App\BankAccount;
 use App\Cast;
 use App\CastClass;
-use App\Enums\PointType;
 use App\Enums\PointCorrectionType;
+use App\Enums\PointType;
 use App\Enums\Status;
 use App\Enums\UserType;
 use App\Http\Controllers\Controller;
@@ -26,7 +26,7 @@ class CastController extends Controller
     public function index(Request $request)
     {
         $keyword = $request->search;
-
+        $orderBy = $request->only('last_active_at', 'rank');
         $casts = Cast::query();
 
         if ($request->has('from_date') && !empty($request->from_date)) {
@@ -52,7 +52,15 @@ class CastController extends Controller
             });
         }
 
-        $casts = $casts->orderBy('created_at', 'DESC')->paginate($request->limit ?: 10);
+        if (!empty($orderBy)) {
+            foreach ($orderBy as $key => $value) {
+                $casts->orderBy($key, $value);
+            }
+        } else {
+            $casts->orderBy('last_active_at', 'DESC');
+        }
+
+        $casts = $casts->paginate($request->limit ?: 10);
 
         return view('admin.casts.index', compact('casts'));
     }
@@ -106,6 +114,7 @@ class CastController extends Controller
             'date' => $date,
             'age' => $age,
             'prefecture_id' => $request->prefecture,
+            'rank' => $request->cast_rank,
         ];
 
         if ($request->bank_name && $request->number && $request->branch_name) {
@@ -169,6 +178,7 @@ class CastController extends Controller
             'date_of_birth' => $year . '-' . $month . '-' . $date,
             'type' => UserType::CAST,
             'prefecture_id' => $request->prefecture,
+            'rank' => $request->cast_rank,
         ];
 
         $user->update($data);

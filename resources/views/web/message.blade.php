@@ -173,7 +173,7 @@
   </div>
 @endsection
 @section('web.extra')
-  @confirm(['triggerId' => 'trigger2', 'triggerClass' =>'cancel-order', 'buttonLeft' => 'いいえ', 'buttonRight' => 'キャンセルする'])
+  @confirm(['triggerId' => 'trigger2', 'triggerClass' =>'cancel-order right', 'buttonLeft' => 'いいえ', 'buttonRight' => 'キャンセルする'])
   @slot('title')
     確定予約をキャンセルしますか？
   @endslot
