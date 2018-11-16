@@ -66,8 +66,8 @@
     </div>
     </form>
   </div>
-  <script src="/assets/webview/js/script.js"></script>
-  <script src="/assets/webview/js/create_card.js"></script>
+  <script src="{{ mix('assets/webview/js/script.min.js') }}"></script>
+  <script src="{{ mix('assets/webview/js/create_card.min.js') }}"></script>
   <script src="/assets/webview/js/lib/payment.js"></script>
 </body>
 </html>

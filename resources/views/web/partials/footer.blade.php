@@ -14,12 +14,12 @@
         });
     });
 </script>
-<script src="{{ asset('assets/web/js/common.js') }}"></script>
+<script src="{{ mix('assets/web/js/common.min.js') }}"></script>
 <script src="{{ asset('assets/web/js/slick/slick.min.js') }}"></script>
-<script src="{{ asset('assets/web/js/gf-2.js') }}"></script>
-<script src="{{ asset('assets/web/js/ge-2-1-a.js') }}"></script>
+<script src="{{ mix('assets/web/js/gf-2.min.js') }}"></script>
+<script src="{{ mix('assets/web/js/ge-2-1-a.min.js') }}"></script>
 <script src="{{ asset('assets/web/js/jquery.validate.min.js') }}"></script>
 <script src="{{ asset('assets/web/js/moment.min.js') }}"></script>
 <!-- Improve load list image -->
 <script src="{{ asset('assets/web/js/lazy/jquery.lazy.min.js') }}"></script>
-<script src="{{ asset('assets/web/js/lazy/loading_image.js') }}"></script>
+<script src="{{ mix('assets/web/js/lazy/loading_image.min.js') }}"></script>
