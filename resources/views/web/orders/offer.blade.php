@@ -84,8 +84,8 @@
             </label>
           </div>
           <div class="form-grpup"><!-- フォーム内容 -->
-            <label class="button button--green area">
-              <input class="input-area-offer" type="radio" name="offer_area" value="六本木">六本木</label>
+            <label class="button button--green area active">
+              <input class="input-area-offer" type="radio" name="offer_area" value="六本木" checked>六本木</label>
             <label class="button button--green area">
               <input class="input-area-offer" type="radio" name="offer_area" value="恵比寿">恵比寿</label>
             <label class="button button--green area">
@@ -121,11 +121,12 @@
               <p class="date-input__text">
                 <span>2018年</span>
                 <span>7月</span>
-                <span>2日</span>
-                <span>21:30~</span>
+                <span>2日</span>&nbsp&nbsp&nbsp
+                <span class='time-offer'>21:30~</span>
               </p>
             </label>
           </div>
+          <input type="hidden" name="current_date_offer" value="2018-11-20" id="current-date-offer">
         </div>
 
         <div class="reservation-item">
@@ -134,28 +135,28 @@
           </div>
           <div class="form-grpup"><!-- フォーム内容 -->
             <label class="button button--green time">
-              <input class="input-duration" type="radio" name="time_set_offer" value="1">
+              <input class="input-duration-offer" type="radio" name="time_set_offer" value="1">
               1時間
             </label>
             <label class="button button--green time ">
-              <input class="input-duration" type="radio" name="time_set_offer" value="2">
+              <input class="input-duration-offer" type="radio" name="time_set_offer" value="2">
               2時間
             </label>
-            <label class="button button--green time">
-              <input class="input-duration" type="radio" name="time_set_offer" value="3">
+            <label class="button button--green time active">
+              <input class="input-duration-offer" type="radio" name="time_set_offer" value="3" checked>
               3時間
             </label>
             <label id="time-input" class="button button--green time">
-              <input class="input-duration" type="radio" name="time_set_offer" value="other_time_set">
+              <input class="input-duration-offer" type="radio" name="time_set_offer" value="other_time_set">
               4時間以上
             </label>
             <label class="time-input time-input-offer">
               <span>呼ぶ時間</span>
               <div class="selectbox">
-                <select class="select-duration" name="sl_duration_nominition">
+                <select class="select-duration-offer" name="sl_duration_offer">
                   <option value="4" >4時間</option>
                   <option value="5" >5時間</option>
-                  <option value="6" >6時間</option>
+                  <option value="6" selected>6時間</option>
                   <option value="7" >7時間</option>
                   <option value="8" >8時間</option>
                   <option value="9" >9時間</option>
@@ -195,22 +196,22 @@
     <div class="overlay">
       <div class="date-select">
         <div class="date-select__content">
-           <select class="" name="">
-             <option value="">20時</option>
-             <option value="">21時</option>
-             <option value="">22時</option>
-             <option value="">23時</option>
+           <select class="select-hour-offer" name="select_hour_offer">
+             <option value="20">20時</option>
+             <option value="21" selected>21時</option>
+             <option value="22">22時</option>
+             <option value="23">23時</option>
            </select>
-           <select class="" name="">
-             <option value="">00分</option>
-             <option value="">10分</option>
-             <option value="">20分</option>
-             <option value="">30分</option>
+           <select class="select-minute-offer" name="select_minute_offer">
+             <option value="00">00分</option>
+             <option value="10">10分</option>
+             <option value="20" selected>20分</option>
+             <option value="30">30分</option>
            </select>
         </div>
         <div class="date-select__footer">
           <button class="date-select__cancel" type="button">キャンセル</button>
-          <button class="date-select__ok" type="button">完了</button>
+          <button class="date-select__ok date-select-offer" type="button">完了</button>
         </div>
 
       </div>

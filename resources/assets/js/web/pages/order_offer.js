@@ -3,11 +3,9 @@ $(document).ready(function(){
   $(".checked-order-offer").on("change",function(event){
     if ($(this).is(':checked')) {
       var area = $("input:radio[name='offer_area']:checked").val();
-      var duration = $("input:radio[name='time_set_offer']:checked").val();
       var otherArea = $("input:text[name='other_area_offer']").val();
 
-      if((!area || (area=='その他' && !otherArea)) ||
-       (!duration || (duration<1 && 'other_time_set' != duration))) {
+      if((!area || (area=='その他' && !otherArea))) {
         $('#confirm-orders-offer').addClass("disable");
         $(this).prop('checked', false);
         $('#confirm-orders-offer').prop('disabled', true);
@@ -41,11 +39,11 @@ $(document).ready(function(){
 
     if('その他'== areaOffer){
       if(localStorage.getItem("order_offer")){
-        var orderParams = JSON.parse(localStorage.getItem("order_offer"));
+        var orderOffer = JSON.parse(localStorage.getItem("order_offer"));
       }
 
-      if(orderParams.text_area){
-        $("input:text[name='other_area_offer']").val(orderParams.text_area);
+      if(orderOffer.text_area){
+        $("input:text[name='other_area_offer']").val(orderOffer.text_area);
       }
     }
 
@@ -59,137 +57,64 @@ $(document).ready(function(){
   //duration
   var timeSet = $("input:radio[name='time_set_offer']");
   timeSet.on("change",function(){
-    var time = $("input:radio[name='time_join_offer']:checked").val();
-
+    var hour = $(".select-hour-offer option:selected").val();
+    var minute = $(".select-minute-offer option:selected").val();
     var duration = $("input:radio[name='time_set_offer']:checked").val();
 
     var params = {
       current_duration: duration,
     };
-
     helper.updateLocalStorageValue('order_offer', params);
 
+
     if('other_time_set' == duration) {
-      duration = $('.select-duration option:selected').val();
-    }
-
-    var date = $('.sp-date').text();
-    var cancel=$("input:checkbox[name='confrim_order_offer']:checked").length;
-
-    var cost = $('.cost-order').val();
-    var totalPoint=cost*(duration*6)/3;
-
-    cost = parseInt(cost).toLocaleString(undefined,{ minimumFractionDigits: 0 });
-
-    $('.reservation-total__text').text('内訳：'+cost+ '(キャストP/30分)✖'+(duration)+'時間');
-
-    if(time){
-      var currentDate = new Date();
-      var year = currentDate.getFullYear();
-      if ((time == 'other_time')) {
-        var month = $('.select-month').val();
-
-        if(month<10) {
-          month = '0'+month;
-        }
-
-        var day = $('.select-date').val();
-
-        if(day<10) {
-          day = '0'+day;
-        }
-
-        var hour = $('.select-hour').val();
-
-        if(hour<10) {
-          hour = '0'+hour;
-        }
-
-        var minute = $('.select-minute').val();
-        if(minute<10) {
-          minute = '0'+minute;
-        }
-
-        var date = year+'-'+month+'-'+day;
-        var time = hour+':'+minute;
-      } else{
-          utc = currentDate.getTime() + (currentDate.getTimezoneOffset() * 60000);
-          nd = new Date(utc + (3600000*9));
-
-          var add_minutes =  function (dt, minutes) {
-            return new Date(dt.getTime() + minutes*60000);
-          }
-
-          var selectDate = add_minutes(nd,time);
-
-          if (add_minutes(nd, 60) > selectDate) {
-            selectDate = add_minutes(nd, 60);
-          }
-
-          var day = selectDate.getDate();
-          if(day<10) {
-            day = '0'+day;
-          }
-
-          var month = selectDate.getMonth() +1;
-          if(month<10) {
-            month = '0'+month;
-          }
-          var hour = selectDate.getHours();
-          if(hour<10) {
-            hour = '0'+hour;
-          }
-
-          var minute = selectDate.getMinutes();
-          if(minute<10) {
-            minute = '0'+minute;
-          }
-          var date = year+'-'+month+'-'+day;
-          var time = hour+':'+minute;
-      }
-
-      $castId = $('.cast-id').val();
-      var params = {
-        date : date,
-        start_time : time,
-        type :3,
-        duration :duration,
-        total_cast :1,
-        nominee_ids : $castId
+      var selectDuration = {
+        select_duration: $('.select-duration-offer option:selected').val(),
       };
 
-      window.axios.post('/api/v1/orders/price',params)
-        .then(function(response) {
-          totalPoint = response.data['data'];
-          totalPoint = parseInt(totalPoint).toLocaleString(undefined,{ minimumFractionDigits: 0 });
-          $('.total-point').text(totalPoint +'P~');
+      duration = $('.select-duration-offer option:selected').val();
 
-          var params = {
-            current_total_point: totalPoint,
-          };
+      helper.updateLocalStorageValue('order_offer', selectDuration);
+    }
 
-          helper.updateLocalStorageValue('order_offer', params);
-        }).catch(function(error) {
-          console.log(error);
-          if (error.response.status == 401) {
-            window.location = '/login/line';
-          }
-        });
-      } else {
+
+    var date = '2018-11-17';
+
+    var time = hour+':'+minute;
+
+    var input = {
+      date : date,
+      start_time : time,
+      type :3,
+      duration :duration,
+      total_cast :1,
+      nominee_ids : '5'
+    };
+
+    window.axios.post('/api/v1/orders/price',input)
+      .then(function(response) {
+        totalPoint = response.data['data'];
         totalPoint = parseInt(totalPoint).toLocaleString(undefined,{ minimumFractionDigits: 0 });
-        $('.total-point').text(totalPoint +'P~');
+        $('.total-amount').text(totalPoint +'P~');
 
         var params = {
-            current_total_point: totalPoint,
-          };
+          current_total_point: totalPoint,
+        };
 
         helper.updateLocalStorageValue('order_offer', params);
-      }
+      }).catch(function(error) {
+        console.log(error);
+        if (error.response.status == 401) {
+          window.location = '/login/line';
+        }
+      });
   })
 
-  $('.select-duration').on("change",function(){
-    var time = $("input:radio[name='time_join_offer']:checked").val();
-    var duration = $('.select-duration option:selected').val();
+  //other-duration
+  $('.select-duration-offer').on("change",function(){
+    var hour = $(".select-hour-offer option:selected").val();
+    var minute = $(".select-minute-offer option:selected").val();
+    var duration = $(this).val();
 
     var params = {
         select_duration: duration,
@@ -197,207 +122,58 @@ $(document).ready(function(){
 
     helper.updateLocalStorageValue('order_offer', params);
 
-    var cost = $('.cost-order').val();
-    var totalPoint=cost*(duration*6)/3;
-    if(time) {
-      var currentDate = new Date();
-      var year = currentDate.getFullYear();
-      if (time == 'other_time') {
-        var month = $('.select-month').val();
+    var date = '2018-11-17';
+    var time = hour+':'+minute;
 
-        if(month<10) {
-          month = '0'+month;
-        }
+    $castId = $('.cast-id').val();
+    var input = {
+      date : date,
+      start_time : time,
+      type :3,
+      duration :duration,
+      total_cast :1,
+      nominee_ids : 5
+    };
 
-        var day = $('.select-date').val();
-
-        if(day<10) {
-          day = '0'+day;
-        }
-
-        var hour = $('.select-hour').val();
-
-        if(hour<10) {
-          hour = '0'+hour;
-        }
-
-        var minute = $('.select-minute').val();
-        if(minute<10) {
-          minute = '0'+minute;
-        }
-
-        var date = year+'-'+month+'-'+day;
-        var time = hour+':'+minute;
-      } else{
-          utc = currentDate.getTime() + (currentDate.getTimezoneOffset() * 60000);
-          nd = new Date(utc + (3600000*9));
-
-          var add_minutes =  function (dt, minutes) {
-            return new Date(dt.getTime() + minutes*60000);
-          }
-          var selectDate = add_minutes(nd,time);
-
-          if (add_minutes(nd, 60) > selectDate) {
-            selectDate = add_minutes(nd, 60);
-          }
-
-          var day = selectDate.getDate();
-          if(day<10) {
-            day = '0'+day;
-          }
-
-          var month = selectDate.getMonth() +1;
-          if(month<10) {
-            month = '0'+month;
-          }
-          var hour = selectDate.getHours();
-          if(hour<10) {
-            hour = '0'+hour;
-          }
-
-          var minute = selectDate.getMinutes();
-          if(minute<10) {
-            minute = '0'+minute;
-          }
-          var date = year+'-'+month+'-'+day;
-          var time = hour+':'+minute;
-
-      }
-
-      $castId = $('.cast-id').val();
-      var params = {
-        date : date,
-        start_time : time,
-        type :3,
-        duration :duration,
-        total_cast :1,
-        nominee_ids : $castId
-      };
-
-      window.axios.post('/api/v1/orders/price',params)
-        .then(function(response) {
-          totalPoint = response.data['data']
-          totalPoint = parseInt(totalPoint).toLocaleString(undefined,{ minimumFractionDigits: 0 });
-          $('.total-point').text(totalPoint +'P~');
-
-          var params = {
-              current_total_point: totalPoint,
-            };
-
-          helper.updateLocalStorageValue('order_offer', params);
-        }).catch(function(error) {
-          console.log(error);
-          if (error.response.status == 401) {
-            window.location = '/login/line';
-          }
-        });
-      } else {
+    window.axios.post('/api/v1/orders/price',input)
+      .then(function(response) {
+        totalPoint = response.data['data']
         totalPoint = parseInt(totalPoint).toLocaleString(undefined,{ minimumFractionDigits: 0 });
-        $('.total-point').text(totalPoint +'P~');
+        $('.total-amount').text(totalPoint +'P~');
 
         var params = {
             current_total_point: totalPoint,
           };
 
         helper.updateLocalStorageValue('order_offer', params);
-      }
-
-    cost = parseInt(cost).toLocaleString(undefined,{ minimumFractionDigits: 0 });
-
-    $('.reservation-total__text').text('内訳：'+cost+ '(キャストP/30分)✖'+(duration)+'時間')
+      }).catch(function(error) {
+        console.log(error);
+        if (error.response.status == 401) {
+          window.location = '/login/line';
+        }
+      });
   })
 
-  $('.choose-time').on("click",function(){
-    var cost = $('.cost-order').val();
-    var time = $("input:radio[name='time_join_offer']:checked").val();
+  //time
+  $('.date-select-offer').on("click",function(){
+    var hour = $(".select-hour-offer option:selected").val();
+    var minute = $(".select-minute-offer option:selected").val();
 
-      var currentDate = new Date();
-      var year = currentDate.getFullYear();
-      if ((time == 'other_time')) {
-        var month = $('.select-month').val();
+    var params = {
+        hour : hour,
+        minute : minute,
+      };
 
-        if(month<10) {
-          month = '0'+month;
-        }
+    $('.time-offer').text(hour + ':' + minute +'~');
 
-        var day = $('.select-date').val();
+    helper.updateLocalStorageValue('order_offer', params);
 
-        if(day<10) {
-          day = '0'+day;
-        }
-
-        var hour = $('.select-hour').val();
-
-        if(hour<10) {
-          hour = '0'+hour;
-        }
-
-        var minute = $('.select-minute').val();
-        if(minute<10) {
-          minute = '0'+minute;
-        }
-
-      var updateOtherTime = {
-          current_month: month,
-          current_date: day,
-          current_hour: hour,
-          current_minute: minute,
-        };
-
-      helper.updateLocalStorageValue('order_offer', updateOtherTime);
-
-      var date = year+'-'+month+'-'+day;
-      var time = hour+':'+minute;
-      } else{
-        utc = currentDate.getTime() + (currentDate.getTimezoneOffset() * 60000);
-        nd = new Date(utc + (3600000*9));
-
-        var add_minutes =  function (dt, minutes) {
-          return new Date(dt.getTime() + minutes*60000);
-        }
-
-        var selectDate = add_minutes(nd,time);
-
-        if (add_minutes(nd, 60) > selectDate) {
-          selectDate = add_minutes(nd, 60);
-        }
-
-        var day = selectDate.getDate();
-        if(day<10) {
-          day = '0'+day;
-        }
-
-        var month = selectDate.getMonth() +1;
-        if(month<10) {
-          month = '0'+month;
-        }
-        var hour = selectDate.getHours();
-        if(hour<10) {
-          hour = '0'+hour;
-        }
-
-        var minute = selectDate.getMinutes();
-        if(minute<10) {
-          minute = '0'+minute;
-        }
-
-        var date = year+'-'+month+'-'+day;
-        var time = hour+':'+minute;
-
-        var updateSelectedDate = {
-          current_date: day,
-          current_month: month,
-          current_time: time,
-        };
-
-        helper.updateLocalStorageValue('order_offer', updateSelectedDate);
-    }
 
     if ($("input:radio[name='time_set_offer']:checked").length) {
       var duration = $("input:radio[name='time_set_offer']:checked").val();
 
       if('other_time_set' == duration) {
-        duration = $('.select-duration option:selected').val();
+        duration = $('.select-duration-offer option:selected').val();
       }
 
       $castId = $('.cast-id').val();
@@ -415,7 +191,7 @@ $(document).ready(function(){
           var totalPoint=cost*(duration*6)/3;
           totalPoint = response.data['data'];
           totalPoint = parseInt(totalPoint).toLocaleString(undefined,{ minimumFractionDigits: 0 });
-          $('.total-point').text(totalPoint +'P~');
+          $('.total-amount').text(totalPoint +'P~');
 
           var params = {
             current_total_point: totalPoint,
@@ -431,174 +207,6 @@ $(document).ready(function(){
     }
   })
 
-//timejoin
-  $("input:radio[name='time_join_offer']").on("change",function(){
-    var time = $("input:radio[name='time_join_offer']:checked").val();
-    var duration = $("input:radio[name='time_set_offer']:checked").val();
-
-    var updateTime = {
-          current_time_set: time,
-        };
-
-    helper.updateLocalStorageValue('order_offer', updateTime);
-
-    if('other_time' == time) {
-      if(localStorage.getItem("order_offer")){
-        var orderParams = JSON.parse(localStorage.getItem("order_offer"));
-      }
-
-      if(orderParams){
-        if('other_time'== orderParams.current_time_set){
-          if(orderParams.current_month){
-           const inputMonth = $('select[name=sl_month_offer] option');
-            $.each(inputMonth,function(index,val){
-              if(val.value == orderParams.current_month) {
-                $(this).prop('selected',true);
-              }
-            })
-
-            $('.month-offer').text(orderParams.current_month +'月');
-          }
-
-          if(orderParams.current_date){
-            const inputDate = $('select[name=sl_date_offer] option');
-            $.each(inputDate,function(index,val){
-              if(val.value == orderParams.current_date) {
-                $(this).prop('selected',true);
-              }
-            })
-            $('.date-offer').text(orderParams.current_date +'日');
-          }
-
-          if(orderParams.current_hour) {
-            const inputHour = $('select[name=sl_hour_offer] option');
-            $.each(inputHour,function(index,val){
-              if(val.value == orderParams.current_hour) {
-                $(this).prop('selected',true);
-              }
-            })
-
-            const inputMinute = $('select[name=sl_minute_offer] option');
-            $.each(inputMinute,function(index,val){
-              if(val.value == orderParams.current_minute) {
-                $(this).prop('selected',true);
-              }
-            })
-
-            var currentTime =orderParams.current_hour + ":" + orderParams.current_minute;
-          }
-
-          $('.time-offer').text(currentTime);
-        }
-      }
-    }
-
-    if ($("input:radio[name='time_set_offer']:checked").length) {
-      if('other_time_set' == duration) {
-        duration = $('.select-duration option:selected').val();
-      }
-
-      var cost = $('.cost-order').val();
-
-      var currentDate = new Date();
-      var year = currentDate.getFullYear();
-      if (time == 'other_time') {
-        var month = $('.select-month').val();
-
-        if(month<10) {
-          month = '0'+month;
-        }
-
-        var day = $('.select-date').val();
-
-        if(day<10) {
-          day = '0'+day;
-        }
-
-        var hour = $('.select-hour').val();
-
-        if(hour<10) {
-          hour = '0'+hour;
-        }
-
-        var minute = $('.select-minute').val();
-        if(minute<10) {
-          minute = '0'+minute;
-        }
-
-        var date = year+'-'+month+'-'+day;
-        var time = hour+':'+minute;
-      } else{
-          utc = currentDate.getTime() + (currentDate.getTimezoneOffset() * 60000);
-          nd = new Date(utc + (3600000*9));
-
-          var add_minutes =  function (dt, minutes) {
-            return new Date(dt.getTime() + minutes*60000);
-          }
-          var selectDate = add_minutes(nd,time);
-
-          if (add_minutes(nd, 60) > selectDate) {
-            selectDate = add_minutes(nd, 60);
-          }
-
-          var day = selectDate.getDate();
-          if(day<10) {
-            day = '0'+day;
-          }
-
-          var month = selectDate.getMonth() +1;
-          if(month<10) {
-            month = '0'+month;
-          }
-          var hour = selectDate.getHours();
-          if(hour<10) {
-            hour = '0'+hour;
-          }
-
-          var minute = selectDate.getMinutes();
-          if(minute<10) {
-            minute = '0'+minute;
-          }
-
-          var date = year+'-'+month+'-'+day;
-          var time = hour+':'+minute;
-      }
-
-      $castId = $('.cast-id').val();
-      var params = {
-        date : date,
-        start_time : time,
-        type :3,
-        duration :duration,
-        total_cast :1,
-        nominee_ids : $castId
-      };
-
-      window.axios.post('/api/v1/orders/price',params)
-        .then(function(response) {
-          var totalPoint=cost*(duration*6)/3;
-          totalPoint = response.data['data'];
-          totalPoint = parseInt(totalPoint).toLocaleString(undefined,{ minimumFractionDigits: 0 });
-          $('.total-point').text(totalPoint +'P~');
-
-          var params = {
-            current_total_point: totalPoint,
-          };
-
-          helper.updateLocalStorageValue('order_offer', params);
-        }).catch(function(error) {
-          console.log(error);
-          if (error.response.status == 401) {
-            window.location = '/login/line';
-          }
-        });
-    }
-  })
-
-  $('#confirm-orders-offer').on('click',function(){
-    $('.lb-orders-nominate').click();
-  });
-
   $('.cf-orders-nominate').on('click',function(){
       if($('#md-require-card').length){
         $('#md-require-card').click();
@@ -609,123 +217,75 @@ $(document).ready(function(){
   });
 
   if(localStorage.getItem("order_offer")){
-    var orderParams = JSON.parse(localStorage.getItem("order_offer"));
-  }
+    var orderOffer = JSON.parse(localStorage.getItem("order_offer"));
 
-  if(orderParams){
-    if(orderParams.current_total_point){
-        $('.total-point').text(orderParams.current_total_point +'P~');
+    if(orderOffer.current_total_point){
+        $('.total-amount').text(orderOffer.current_total_point +'P~');
     }
 
       //area
-    if(orderParams.select_area){
-     if('その他'== orderParams.select_area){
+    if(orderOffer.select_area){
+     if('その他'== orderOffer.select_area){
         $('.area-offer').css('display', 'flex')
-        $("input:text[name='other_area_offer']").val(orderParams.text_area);
+        $("input:text[name='other_area_offer']").val(orderOffer.text_area);
       }
 
       const inputArea = $(".input-area-offer");
+      inputArea.parent().removeClass('active');
+
       $.each(inputArea,function(index,val){
-        if (val.value == orderParams.select_area) {
+        if (val.value == orderOffer.select_area) {
           $(this).prop('checked', true);
           $(this).parent().addClass('active');
         }
       })
     }
 
-      //duration
-    var cost = $('.cost-order').val();
-    if(orderParams.current_duration){
-      if('other_time_set' == orderParams.current_duration) {
-        var chooseDuration = orderParams.select_duration;
+    //duration
+    if(orderOffer.current_duration){
+      if('other_time_set' == orderOffer.current_duration) {
         $('.time-input-offer').css('display','flex');
-      } else {
-        var chooseDuration = orderParams.current_duration;
+
       }
 
-      cost = parseInt(cost).toLocaleString(undefined,{ minimumFractionDigits: 0 });
-
-      $('.reservation-total__text').text('内訳：'+cost+ '(キャストP/30分)✖'+chooseDuration+'時間');
-
-      const inputDuration = $(".input-duration");
-
+      const inputDuration = $(".input-duration-offer");
+      inputDuration.parent().removeClass('active');
       $.each(inputDuration,function(index,val){
-        if (val.value == orderParams.current_duration) {
+        if (val.value == orderOffer.current_duration) {
           $(this).prop('checked', true);
           $(this).parent().addClass('active');
         }
       })
 
-      if(orderParams.select_duration) {
-        const inputDuration = $('select[name=sl_duration_nominition] option');
+      if(orderOffer.select_duration) {
+        const inputDuration = $('select[name=sl_duration_offer] option');
         $.each(inputDuration,function(index,val){
-          if(val.value == orderParams.select_duration) {
+          if(val.value == orderOffer.select_duration) {
             $(this).prop('selected',true);
           }
         })
       }
     }
 
-    //current_time_set
-    if(orderParams.current_time_set){
-      $(".input-time-join").parent().removeClass('active');
-      if('other_time'== orderParams.current_time_set){
-        $('.date-input-offer').css('display', 'flex')
+    //time
+    if(orderOffer.hour){
+      $('.time-offer').text(orderOffer.hour + ":" + orderOffer.minute + '~');
 
-        if(orderParams.current_month){
-         const inputMonth = $('select[name=sl_month_offer] option');
-          $.each(inputMonth,function(index,val){
-            if(val.value == orderParams.current_month) {
-              $(this).prop('selected',true);
-            }
-          })
-
-          $('.month-offer').text(orderParams.current_month +'月');
-        }
-
-        if(orderParams.current_date){
-          const inputDate = $('select[name=sl_date_offer] option');
-          $.each(inputDate,function(index,val){
-            if(val.value == orderParams.current_date) {
-              $(this).prop('selected',true);
-            }
-          })
-          $('.date-offer').text(orderParams.current_date +'日');
-        }
-
-        if(orderParams.current_hour) {
-          const inputHour = $('select[name=sl_hour_offer] option');
-          $.each(inputHour,function(index,val){
-            if(val.value == orderParams.current_hour) {
-              $(this).prop('selected',true);
-            }
-          })
-
-          const inputMinute = $('select[name=sl_minute_offer] option');
-          $.each(inputMinute,function(index,val){
-            if(val.value == orderParams.current_minute) {
-              $(this).prop('selected',true);
-            }
-          })
-
-          var currentTime =orderParams.current_hour + ":" + orderParams.current_minute;
-        }
-
-        $('.time-offer').text(currentTime);
-      }
-
-      const inputTimeSet = $(".input-time-join");
-      $.each(inputTimeSet,function(index,val){
-        if (val.value == orderParams.current_time_set) {
-          $(this).prop('checked', true);
-          $(this).parent().addClass('active');
+      const inputHour = $('select[name=select_hour_offer] option');
+      $.each(inputHour,function(index,val){
+        if(val.value == orderOffer.hour) {
+          $(this).prop('selected',true);
         }
       })
-    }
-  }
 
-  if($("label").hasClass("status-code-offer")){
-    $('.status-code-offer').click();
+      const inputMinute = $('select[name=select_minute_offer] option');
+      $.each(inputMinute,function(index,val){
+        if(val.value == orderOffer.minute) {
+          $(this).prop('selected',true);
+        }
+      })
+
+    }
   }
 
 })
