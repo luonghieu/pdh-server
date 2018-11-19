@@ -89,24 +89,24 @@
   <section class="button-box" style="display: none;">
     <label for="popup-date-of-birth" class="open_button button-settlement"></label>
   </section>
-  <div class="top-header">
-    <div class="user-data">
-      <div class="user-icon init-image-radius">
+  <div class="top-header-user">
+    <div class="wrap-user">
+      <div class="wrap-user-left">
         @if (Auth::user()->avatars && !empty(Auth::user()->avatars->first()->thumbnail))
           <img src="{{ Auth::user()->avatars->first()->thumbnail }}" alt="">
         @else
           <img src="{{ asset('assets/web/images/ge1/user_icon.svg') }}" alt="">
+        @endif
+        @if (Auth::user()->nickname)
+        <span class="user-name thth">{{ Auth::user()->nickname }}</span>
         @endif
       </div>
       <a href="{{ route('profile.edit') }}" class="edit-button">
         <img src="{{ asset('assets/web/images/ge1/pencil.svg') }}" alt="">
       </a>
     </div>
-    @if (Auth::user()->nickname)
-    <span class="user-name">{{ Auth::user()->nickname }}</span>
-    @endif
   </div>
-  <a href="{{ route('guest.orders.call') }}" class="cast-call">今すぐキャストを呼ぶ<span>最短20分で合流!</span></a>
+
   @if ($order->resource)
   <div class="booking">
     <h2>現在の予約</h2>
@@ -151,6 +151,7 @@
     </div>
   </div>
   @endif
+  <a href="{{ route('guest.orders.call') }}" class="cast-call">今すぐキャストを呼ぶ<span>最短20分で合流!</span></a>
   <div class="cast-list">
     <div class="cast-head">
       <h2>在籍中のキャスト</h2>
