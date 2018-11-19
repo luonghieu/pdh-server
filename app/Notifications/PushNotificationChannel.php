@@ -17,6 +17,10 @@ class PushNotificationChannel
 
         $data = $notification->pushData($notifiable);
 
+        if (isset($data['devices'])) {
+            return $urbanAirship->push($data['audienceOptions'], $data['notificationOptions'], $data['devices']);
+        }
+
         return $urbanAirship->push($data['audienceOptions'], $data['notificationOptions']);
     }
 }

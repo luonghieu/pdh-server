@@ -36,7 +36,7 @@ class TenMinBeforeOrderEnded extends Notification implements ShouldQueue
      */
     public function via($notifiable)
     {
-        return [CustomDatabaseChannel::class, PushNotificationChannel::class];
+        return [PushNotificationChannel::class];
     }
 
     /**
@@ -57,13 +57,7 @@ class TenMinBeforeOrderEnded extends Notification implements ShouldQueue
      */
     public function toArray($notifiable)
     {
-        $content = '解散予定時刻まで残り10分です！'
-            . PHP_EOL . '解散予定時刻後は自動で延長されます。';
-
-        return [
-            'content' => $content,
-            'send_from' => UserType::ADMIN,
-        ];
+        return [];
     }
 
     public function pushData($notifiable)

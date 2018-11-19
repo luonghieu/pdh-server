@@ -126,7 +126,7 @@
                     @endif
                   </td>
                   <td>{{ $orders->firstItem() + $key }}</td>
-                  <td><a href="{{ route('admin.users.show', ['user' => $order->user->id]) }}">{{ $order->user ? $order->user->id : '' }}</a></td>
+                  <td><a href="{{ route('admin.users.show', ['user' => $order->user_id]) }}">{{ $order->user_id }}</a></td>
                   <td>{{ $order->user ? $order->user->nickname : '' }}</td>
                   <td>{{ $order->id }}</td>
                   <td>{{ App\Enums\OrderType::getDescription($order->type) }}</td>
@@ -181,7 +181,10 @@
                       <span class="warning-order">予定時刻が過ぎています</span>
                     @endif
                     @if(($order->status == App\Enums\OrderStatus::ACTIVE) && ($startTime < $now))
-                      <span class="warning-order">スタートボタンが押されていません。</span>
+                      <span class="warning-order">スタートボタンが押されていません</span>
+                    @endif
+                    @if($order->payment_status == App\Enums\OrderPaymentStatus::PAYMENT_FAILED)
+                      <span class="warning-order">決済エラーが発生しました</span>
                     @endif
                   </td>
                   @if ($order->type == App\Enums\OrderType::NOMINATION)

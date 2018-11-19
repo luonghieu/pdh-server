@@ -58,5 +58,6 @@ require('./web/pages/upload_avatar');
 require('./web/pages/order_nomination');
 require('./web/pages/cast_mypage');
 require('./web/pages/cast_detail');
+require('./web/pages/bank_account');
 require('./web/pages/create_room');
 require('./web/pages/verify');

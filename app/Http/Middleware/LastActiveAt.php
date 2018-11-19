@@ -3,10 +3,8 @@
 namespace App\Http\Middleware;
 
 use Closure;
-use App\Services\LogService;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cache;
-use Illuminate\Support\Facades\Redis;
 
 class LastActiveAt
 {
@@ -22,9 +20,12 @@ class LastActiveAt
         if (!Auth::check()) {
             return $next($request);
         }
-
         Cache::forever('last_active_at_' . Auth::id(), now());
         Cache::forever('is_online_' . Auth::id(), true);
+
+        $user = Auth::user();
+        $user->last_active_at = now();
+        $user->save();
 
         return $next($request);
     }

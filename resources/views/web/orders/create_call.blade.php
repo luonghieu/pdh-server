@@ -243,5 +243,9 @@
       window.location.replace(window.location.href);
     }
   });
+
+  if(localStorage.getItem("order_call")){
+    localStorage.removeItem("order_call");
+  }
 </script>
 @endsection

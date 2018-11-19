@@ -55,9 +55,6 @@
   </form>
 </div>
 @endsection
-@section('web.extra_js')
-<script src="/assets/webview/js/script.js"></script>
-@endsection
 
 <script>
   if(localStorage.getItem("back_link")){

@@ -129,6 +129,17 @@ $routes = [
             ],
         ],
     ],
+
+    'verification' => [
+        [
+            'name' => 'admin.verifications.index',
+            'value' => 'SMS認証管理',
+            'url' => route('admin.verifications.index'),
+            'submenu' => [
+
+            ],
+        ],
+    ],
 ];
 @endphp
 

@@ -17,7 +17,7 @@
                   <div class="col-sm-12 init-inline-flex">
                     <label class="col-sm-2 init-m-auto">投稿日時: </label>
                     <div class="input-group date col-sm-10" id="datetimepicker">
-                      <input type="text" class="form-control" name="send_date" data-date-format="YYYY/MM/DD HH:mm" placeholder="yyyy/mm/dd hh:mm" />
+                      <input type="text" class="form-control" name="send_date" data-date-format="YYYY/MM/DD HH:mm" placeholder="yyyy/mm/dd hh:mm" value="{{ request()->old('send_date') }}"/>
                       <span class="input-group-addon init-border">
                         <span class="glyphicon glyphicon-calendar init-glyphicon"></span>
                       </span>
@@ -33,7 +33,7 @@
                   <div class="col-sm-12 init-inline-flex init-mt">
                     <label class="col-sm-2 init-m-auto">タイトル: </label>
                     <div class="col-sm-10 p-0">
-                      <input type="text" class="form-control" placeholder="タイトル" name="title" value="">
+                      <input type="text" class="form-control" placeholder="タイトル" name="title" value="{{ request()->old('title') }}">
                     </div>
                   </div>
                 </div>
@@ -44,7 +44,7 @@
                 @endif
                 <div class="row p-0">
                   <div class="col-sm-12 init-mt">
-                    <textarea class="col-sm-12" name="content"></textarea>
+                    <textarea class="col-sm-12" name="content">{{ request()->old('content') }}</textarea>
                   </div>
                 </div>
                 @if ($errors->has('content'))
@@ -56,9 +56,18 @@
                   <div class="init-m">
                     <label class="css-m-auto">ステータスを変更: </label>
                     <select name="status">
-                      <option value="">全て</option>
                       @foreach($notificationScheduleStatus as $key => $value)
-                        <option value="{{ $key }}">{{ $value }}</option>
+                        <option value="{{ $key }}" {{ (request()->old("status") == $key ? "selected": "") }}>{{ $value }}</option>
+                      @endforeach
+                    </select>
+                  </div>
+                </div>
+                <div class="col-sm-12 p-0">
+                  <div class="init-m">
+                    <label class="css-m-auto">送信先: </label>
+                    <select name="send_to">
+                      @foreach($notificationScheduleSendTo as $key => $value)
+                        <option value="{{ $key }}" {{ (request()->old("send_to") == $key ? "selected": "") }}>{{ $value }}</option>
                       @endforeach
                     </select>
                   </div>
@@ -84,8 +93,16 @@
 </div>
 @endsection
 @section('admin.js')
-<script src="https://cdn.ckeditor.com/4.10.1/standard/ckeditor.js"></script>
+<script src="https://cdn.ckeditor.com/4.7.3/standard/ckeditor.js"></script>
 <script>
-  CKEDITOR.replace('content');
+    CKEDITOR.plugins.addExternal( 'lineutils', '/assets/admin/js/ckeditor_plugin/lineutils/', 'plugin.js' );
+    CKEDITOR.plugins.addExternal( 'widgetselection', '/assets/admin/js/ckeditor_plugin/widgetselection/', 'plugin.js' );
+    CKEDITOR.plugins.addExternal( 'widget', '/assets/admin/js/ckeditor_plugin/widget/', 'plugin.js' );
+    CKEDITOR.plugins.addExternal( 'image2', '/assets/admin/js/ckeditor_plugin/image2/', 'plugin.js' );
+    CKEDITOR.plugins.addExternal( 'justify', '/assets/admin/js/ckeditor_plugin/justify/', 'plugin.js' );
+    CKEDITOR.config.filebrowserImageUploadUrl = '{!! route('admin.notification_schedules.upload').'?_token=' . csrf_token() !!}';
+    CKEDITOR.replace('content', {
+      extraPlugins: 'widget,widgetselection,lineutils,image2,justify'
+    });
 </script>
 @stop

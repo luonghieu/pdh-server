@@ -1,4 +1,5 @@
 $(document).ready(function(){
+  const helper = require('./helper');
   if($("#ge2-1-x input:radio[name='area']:checked").length){
     $("#ge2-1-x input:radio[name='area']:checked").parent().addClass("active");
   }
@@ -137,100 +138,151 @@ $(document).ready(function(){
     $(".overlay").fadeOut();
   });
 
-  $('.tags-name').on('click', function(e) {
-    var activeTag = $('.tags-name:checked').length;
-
-    if (activeTag > 5) {
-      $('.lbmax').click();
-    }
-  });
-
   $(".form-grpup .checkbox-tags").on("change",function(event){
     var activeSum = $(".active").length;
-
     if ($(this).hasClass("active")) {
-      $(this).children().attr('checked',false);
+      $(this).children().prop('checked',false);
       $(this).removeClass('active');
     } else {
       if(activeSum >= 5) {
-        $(this).children().attr('checked',false);
+        $('#max-tags').prop('checked', true);
+        $(this).children().prop('checked',false);
         $(this).removeClass('active');
       } else {
-        $(this).children().attr('checked',true);
+        $(this).children().prop('checked',true);
         $(this).addClass('active');
       }
     }
   });
 
   $('#list-cast-order').on("change", ".cast_block .select-casts", function(event){
-    var castNumbers = $(".cast-numbers").val();
-    var castIds = $(".cast-ids").val();
     var id = $(this).val();
+    var countIds = JSON.parse(localStorage.getItem("order_call")).countIds;
+    if($('.select-casts:checked').length > countIds) {
+      var text = ' 指名できるキャストは'+ countIds + '名です';
+      $('#content-message h2').text(text);
+      $('#max-cast').prop('checked', true);
+      $(this).prop('checked',false);
+    }else {
+      if ($(this).is(':checked')) {
+        if(localStorage.getItem("order_call")){
+          var arrIds = JSON.parse(localStorage.getItem("order_call")).arrIds;
+          if (arrIds) {
+            if(arrIds.length < countIds) {
+              arrIds.push(id);
+              var params = {
+                  arrIds: arrIds
+                };
 
-    if(castIds) {
-      castIds = castIds.split(',');
+              $(this).prop('checked',true);
+              $(this).parent().find('.cast-link').addClass('cast-detail');
+              $('.label-select-casts[for='+  id  +']').text('指名中');
+            } else {
+              var text = ' 指名できるキャストは'+ countIds + '名です';
+              $('#content-message h2').text(text);
+              $('#max-cast').prop('checked', true);
+              $(this).prop('checked',false);
+            }
 
-      if(castIds.length == castNumbers) {
-        if(castIds.indexOf(id) > -1) {
-          castIds.splice(castIds.indexOf(id), 1);
-          $(".cast-ids").val(castIds.toString());
-          $(this).parent().find('.cast-link').removeClass('cast-detail');
-
-          $('.label-select-casts[for='+  id  +']').text('指名する');
-        } else {
-          var text = ' 指名できるキャストは'+ castNumbers + '名です';
-          $('#content-message h2').text(text);
-          $('#lb-max-cast').click();
-        }
-
-        $(this).attr('checked',false);
-      }else {
-
-        if ($(this).is(':checked')) {
-          $(this).attr('checked',true);
-          castIds.push(id);
-          $(this).parent().find('.cast-link').addClass('cast-detail');
-          $('.label-select-casts[for='+  id  +']').text('指名中');
-        } else {
-          if(castIds.indexOf(id) > -1) {
-            castIds.splice(castIds.indexOf(id), 1);
+          if(arrIds.length) {
+            $('#sb-select-casts').text('次に進む(3/4)');
+          } else {
+            $('#sb-select-casts').text('指名せずに進む(3/4)');
           }
 
-          $(this).attr('checked',false);
-          $(this).parent().find('.cast-link').removeClass('cast-detail');
-          $('.label-select-casts[for='+  id  +']').text('指名する');
-        }
+          } else {
+            var arrIds = [];
+            arrIds.push(id);
 
-        $(".cast-ids").val(castIds.toString());
-      }
-    }else {
-      if($('.select-casts:checked').length > castNumbers) {
-        var text = ' 指名できるキャストは'+ castNumbers + '名です';
-        $('#content-message h2').text(text);
-        $('#lb-max-cast').click();
-        $(this).attr('checked',false);
-      }else {
+            var params = {
+                arrIds: arrIds
+              };
 
-        var id = $(this).val();
-        if ($(this).is(':checked')) {
-          $(this).attr('checked',true);
-           $(this).parent().find('.cast-link').addClass('cast-detail');
-          $('.label-select-casts[for='+  id  +']').text('指名中');
+            $(this).prop('checked',true);
+            $(this).parent().find('.cast-link').addClass('cast-detail');
+            $('.label-select-casts[for='+  id  +']').text('指名中');
+          }
         } else {
-          $(this).attr('checked',false);
-           $(this).parent().find('.cast-link').removeClass('cast-detail');
-          $('.label-select-casts[for='+  id  +']').text('指名する');
+          var arrIds = [];
+          arrIds.push(id);
+
+          var params = {
+              arrIds: arrIds
+            };
         }
+      } else {
+        if(localStorage.getItem("order_call")){
+          var arrIds = JSON.parse(localStorage.getItem("order_call")).arrIds;
+          if(arrIds) {
+            if(arrIds.indexOf(id) > -1) {
+              arrIds.splice(arrIds.indexOf(id), 1);
+            }
+
+            var params = {
+              arrIds: arrIds,
+            }
+
+            if(arrIds.length) {
+              $('#sb-select-casts').text('次に進む(3/4)');
+            } else {
+              $('#sb-select-casts').text('指名せずに進む(3/4)');
+            }
+          }
+        }
+
+        $(this).prop('checked',false);
+        $(this).parent().find('.cast-link').removeClass('cast-detail');
+        $('.label-select-casts[for='+  id  +']').text('指名する');
       }
     }
 
-    if($('input[name="casts[]"]:checked').length) {
-      $('#sb-select-casts').text('次に進む(3/4)');
-    } else {
-      $('#sb-select-casts').text('指名せずに進む(3/4)');
+    if(params) {
+      helper.updateLocalStorageValue('order_call', params);
+      $(".cast-ids").val(arrIds.toString());
+    }
+  });
+
+  if($('.cast-numbers').length){
+    var ids = $('.cast-numbers').val();
+    var params = {
+          countIds: ids,
+        };
+    helper.updateLocalStorageValue('order_call', params);
+  }
+
+  $("#cast-order-call a").on("click",function(event){
+    var id = $('#cast-id-info').val();
+    if(localStorage.getItem("order_call")){
+      var arrIds = JSON.parse(localStorage.getItem("order_call")).arrIds;
+      var countIds = JSON.parse(localStorage.getItem("order_call")).countIds;
+      if(arrIds) {
+        if(arrIds.length < countIds) {
+          if(arrIds.indexOf(id) < 0) {
+            arrIds.push(id);
+
+            var params = {
+              arrIds: arrIds,
+            };
+          }
+        } else {
+          if(arrIds.indexOf(id) < 0) {
+            localStorage.setItem('full',true);
+          }
+        }
+      } else {
+        var arrIds = [];
+        arrIds.push(id);
+
+        var params = {
+            arrIds: arrIds
+          };
+      }
     }
 
-  });
+    if(params) {
+      helper.updateLocalStorageValue('order_call', params);
+    }
+  })
 
   $(".cb-cancel").on("change",function(event){
     if ($(this).is(':checked')) {

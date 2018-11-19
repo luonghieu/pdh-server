@@ -43,6 +43,7 @@
     {
       var phoneNumber = $('#phone-number-verify').val();
       var phoneNumberLen = phoneNumber.length;
+
       if (phoneNumberLen < 11 || event.keyCode == 8 || event.keyCode == 37 || event.keyCode == 39) {
         return true;
       } else {

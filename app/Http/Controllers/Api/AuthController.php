@@ -81,7 +81,7 @@ class AuthController extends ApiController
             'intro' => 'max:30',
             'description' => 'max:1000',
             'phone' => 'max:13',
-            'prefecture_id' => 'numeric|exists:prefectures,id',
+            'living_id' => 'numeric|exists:prefectures,id',
             'cost' => 'numeric',
             'salary_id' => 'numeric|exists:salaries,id',
             'height' => ['numeric', new CheckHeight],
@@ -95,12 +95,29 @@ class AuthController extends ApiController
             'front_id_image' => 'image|mimes:jpeg,png,jpg,gif,svg|max:5120',
             'back_id_image' => 'image|mimes:jpeg,png,jpg,gif,svg|max:5120',
             'line_qr' => 'image|mimes:jpeg,png,jpg,gif,svg|max:5120',
+            'fullname_kana' => 'string|regex:/^[ぁ-ん ]/u',
         ];
         $validator = validator(request()->all(), $rules);
 
         if ($validator->fails()) {
             return $this->respondWithValidationError($validator->errors()->messages());
         }
+
+        if ($request->post_code) {
+            $subject = $request->post_code;
+            $count = strlen($subject);
+
+            if ($count < 7) {
+                return $this->respondErrorMessage(trans('messages.postcode_invalid'), 400);
+            }
+
+//            $pattern = '/^(1[0-9]|20)\d{1}[-]?\d{4}$/';
+//
+//            if (preg_match($pattern, $subject) == false) {
+//                return $this->respondErrorMessage(trans('messages.postcode_not_support'), 422);
+//            }
+        }
+
 
         $input = request()->only([
             'nickname',
@@ -109,7 +126,7 @@ class AuthController extends ApiController
             'description',
             'intro',
             'phone',
-            'prefecture_id',
+            'living_id',
             'cost',
             'salary_id',
             'height',
@@ -121,6 +138,10 @@ class AuthController extends ApiController
             'siblings_type',
             'cohabitant_type',
             'line_id',
+            'post_code',
+            'address',
+            'fullname_kana',
+            'fullname'
         ]);
 
         try {

@@ -137,9 +137,9 @@
           <li>
             <div class="top-image">
               @if (@getimagesize($cast->avatars->first()->thumbnail))
-              <img src="{{ $cast->avatars->first()->thumbnail }}" alt="">
+              <img class="lazy" data-src="{{ $cast->avatars->first()->thumbnail }}" alt="">
               @else
-              <img src="{{ asset('assets/web/images/gm1/ic_default_avatar@3x.png') }}" alt="">
+              <img class="lazy" data-src="{{ asset('assets/web/images/gm1/ic_default_avatar@3x.png') }}" alt="">
               @endif
             </div>
           </li>
@@ -217,6 +217,10 @@
 
     if(localStorage.getItem("back_link")){
       localStorage.removeItem("back_link");
+    }
+
+    if(localStorage.getItem("order_call")){
+      localStorage.removeItem("order_call");
     }
   </script>
 @endsection

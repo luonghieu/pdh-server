@@ -2,7 +2,7 @@
 @section('screen.class', '')
 @extends('layouts.web')
 @section('web.extra_css')
-<link rel="stylesheet" href="{{ asset('assets/web/css/ge_2_4.css') }}">
+<link rel="stylesheet" href="{{ mix('assets/web/css/ge_2_4.min.css') }}">
 @endsection
 @section('web.content')
   <div class="ge2-4-block">
@@ -32,6 +32,6 @@
   </div>
   <div class="ge2-4-block">
     <h2>オートチャージ</h2>
-    <p>ご利用後の決済の際、ポイントの不足分はご登録いただいたクレジットカードから、自動的に3000P単位でオートチャージされます。</p>
+    <p>ご利用後、評価と決済確定作業を行っていただいておりますが、決済確定作業を行われなかった場合は、ポイントの不足分をご登録いただいたクレジットカードから、自動決済させていただきます。</p>
   </div>
 @endsection

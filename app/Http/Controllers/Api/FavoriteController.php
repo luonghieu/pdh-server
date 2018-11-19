@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Enums\UserType;
+use App\Notifications\FavoritedNotify;
 use App\User;
 
 class FavoriteController extends ApiController
@@ -21,6 +23,11 @@ class FavoriteController extends ApiController
         }
 
         $user->favorites()->attach($id);
+
+        if ($user->type == UserType::CAST) {
+            $guest = User::find($id);
+            $guest->notify(new FavoritedNotify($user));
+        }
 
         return $this->respondWithNoData(trans('messages.favorite_success'));
     }

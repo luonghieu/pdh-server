@@ -25,14 +25,20 @@
   </script>
 </head>
 
-<body id="@yield('controller.id')">
+<body id="@yield('controller.id')" class="@yield('controller.class')">
 <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-NKVKVFK"
                   height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
   @yield('web.extra')
   <div id="page">
-    @include('web.partials.header')
-
-    <main id="@yield('screen.id')" class="@yield('screen.class')">
+    @if (Auth::check())
+      @if(App\Enums\UserType::GUEST == Auth::user()->type)
+        @include('web.partials.header')
+      @endif
+    @else
+      @include('web.partials.header')
+    @endif
+    <main id="@yield('screen.id')" class="@yield('screen.class')
+    {{ Auth::check() && Auth::user()->is_cast ? 'main-cast' : '' }} ">
       @yield('web.content')
     </main>
 

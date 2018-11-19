@@ -23,9 +23,9 @@ class MessageCreated implements ShouldBroadcast
      *
      * @return void
      */
-    public function __construct(Message $message)
+    public function __construct($messageId)
     {
-        $this->message = $message;
+        $this->message = Message::onWriteConnection()->findOrFail($messageId);
     }
 
     /**

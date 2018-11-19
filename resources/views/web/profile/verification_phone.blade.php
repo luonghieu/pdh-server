@@ -3,6 +3,11 @@
 @extends('layouts.web')
 @section('web.extra_css')
   <link rel="stylesheet" href="{{ mix('assets/web/css/gf_3.min.css') }}">
+  <style>
+    footer {
+      margin-top: 2rem !important;
+    }
+  </style>
 @endsection
 @section('web.content')
 <form id="profile-verify-code" action="#" method="GET">
@@ -29,10 +34,3 @@
   <button type="submit" class="btn-phone-update">上記の番号にSMSを送る</button>
 </form>
 @endsection
-@section('web.extra_css')
-<style>
-  footer {
-    margin-top: 2rem !important;
-  }
-</style>
-@stop

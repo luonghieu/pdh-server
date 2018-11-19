@@ -18,7 +18,7 @@ use Tymon\JWTAuth\Contracts\JWTSubject;
 
 class User extends Authenticatable implements JWTSubject
 {
-    use Notifiable;
+    use Notifiable, SoftDeletes;
 
     protected $hidden = [
         'password',
@@ -121,11 +121,6 @@ class User extends Authenticatable implements JWTSubject
     public function getBlocked($id)
     {
         return $this->blockers->contains($id) || $this->blocks->contains($id) ? 1 : 0;
-    }
-
-    public function getLastActiveAtAttribute($value)
-    {
-        return Cache::get('last_active_at_' . $this->id);
     }
 
     public function getLastActiveAttribute()

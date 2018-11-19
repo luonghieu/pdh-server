@@ -104,7 +104,7 @@ class NominatedCallSchedule extends Command
                 $casts = Cast::where('class_id', $order->class_id)->whereNotIn('id',
                     $nomineeIds)->get();
 
-                \Notification::send($casts, new CallOrdersCreated($order));
+                \Notification::send($casts, new CallOrdersCreated($order->id));
 
                 DB::commit();
             } catch (\Exception $e) {

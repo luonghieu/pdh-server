@@ -2,6 +2,7 @@
 
 namespace App\Notifications;
 
+use App\Enums\DeviceType;
 use App\Enums\MessageType;
 use App\Enums\PaymentRequestStatus;
 use App\Enums\ProviderType;
@@ -42,7 +43,19 @@ class PaymentRequestFromCast extends Notification implements ShouldQueue
     public function via($notifiable)
     {
         if ($notifiable->provider == ProviderType::LINE) {
-            return [LineBotNotificationChannel::class];
+            if ($notifiable->type == UserType::GUEST && $notifiable->device_type == null) {
+                return [LineBotNotificationChannel::class];
+            }
+
+            if ($notifiable->type == UserType::CAST && $notifiable->device_type == null) {
+                return [PushNotificationChannel::class];
+            }
+
+            if ($notifiable->device_type == DeviceType::WEB) {
+                return [LineBotNotificationChannel::class];
+            } else {
+                return [PushNotificationChannel::class];
+            }
         } else {
             return [PushNotificationChannel::class];
         }
