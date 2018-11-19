@@ -392,4 +392,16 @@ class CastController extends Controller
 
         return response()->json(['success' => true]);
     }
+
+    public function changeStatusWork(Cast $user)
+    {
+        try {
+            $user->working_today = !$user->working_today;
+            $user->save();
+
+            return back();
+        } catch (\Exception $e) {
+            LogService::writeErrorLog($e);
+        }
+    }
 }
