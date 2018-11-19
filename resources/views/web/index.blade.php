@@ -191,6 +191,28 @@
       <a href="{{ route('cast.list_casts') }}" class="cast-item import"></a>
     </div>
   </div>
+<!-- Timeline -->
+  <div class="timeline">
+    <div class="tl-head">
+      <h2>キャストのつぶやき</h2>
+    </div>
+
+    <div class="tl-list">
+    @foreach ($newIntros as $intro)
+      <div class="tl-item">
+        <div class="tl-item_avatar">
+          <a href="{{ route('cast.show', ['id' => $intro->id]) }}"><img src="{{ ($intro->avatars && @getimagesize($intro->avatars[0]->thumbnail)) ? $intro->avatars[0]->thumbnail :'/assets/web/images/gm1/ic_default_avatar@3x.png' }}" alt="avatar"></a>
+        </div>
+
+        <div class="tl-item_info">
+          <h3 class="info-title">{{ str_limit($intro->nickname, 15) }}  {{ $intro->age }}歳</h3>
+          <p class="info-text">{{ $intro->intro }}</p>
+        </div>
+      </div>
+    @endforeach
+
+    </div>
+  </div>
 @endsection
 @section('web.script')
   @if(empty(Auth::user()->date_of_birth) && Auth::user()->is_verified)
