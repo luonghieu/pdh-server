@@ -37,7 +37,7 @@ class FavoritedNotify extends Notification implements ShouldQueue
     public function lineBotPushData($notifiable)
     {
         $content = $this->user->nickname . 'さんからイイネされました！';
-        $page = env('LINE_LIFF_REDIRECT_PAGE') . '?page=cast&id=' . $this->user->id;
+        $page = env('LINE_LIFF_REDIRECT_PAGE') . '?page=cast&cast_id=' . $this->user->id;
 
         return [
             [
