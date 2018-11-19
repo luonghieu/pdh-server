@@ -2336,13 +2336,20 @@ padding-top: 65px !important;
   display: inline-block;
 }
 
-#top .wrap-user .wrap-user-left .thth {
+#top .wrap-user .wrap-user-left .user-name-nickname {
   position: absolute;
-  bottom: 12px;
+  bottom: 15px;
   left: 60px;
 }
 
 #top .edit-button {
   bottom: 10px;
   right: 12px;
+}
+
+#top .image-intro {
+  width: 50px;
+  height: 50px;
+  -o-object-fit: cover;
+  object-fit: cover;
 }
