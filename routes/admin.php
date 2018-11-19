@@ -112,4 +112,9 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.'], function () {
     Route::group(['prefix' => 'verifications', 'as' => 'verifications.', 'middleware' => 'is_admin'], function () {
         Route::get('/', ['as' => 'index', 'uses' => 'VerificationController@index']);
     });
+
+    Route::group(['prefix' => 'favorites', 'as' => 'favorites.', 'middleware' => 'is_admin'], function () {
+        Route::get('/guest', ['as' => 'guest', 'uses' => 'FavoriteController@guest']);
+        Route::get('/cast', ['as' => 'cast', 'uses' => 'FavoriteController@cast']);
+    });
 });
