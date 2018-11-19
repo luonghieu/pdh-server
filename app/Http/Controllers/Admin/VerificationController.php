@@ -30,8 +30,10 @@ class VerificationController extends Controller
         }
 
         if ($request->has('search') && $request->search) {
-            $verifications->where('phone', 'like', "%$keyword%")
-                ->orWhere('user_id', 'like', "%$keyword%");
+            $verifications->where(function ($query) use ($keyword) {
+                $query->where('phone', 'like', "%$keyword%")
+                    ->orWhere('user_id', 'like', "%$keyword%");
+            });
         }
 
         $verifications = $verifications->orderByDesc('created_at')->paginate($request->limit ?: 10);
