@@ -98,7 +98,7 @@
           <img src="{{ asset('assets/web/images/ge1/user_icon.svg') }}" alt="">
         @endif
         @if (Auth::user()->nickname)
-        <span class="user-name thth">{{ Auth::user()->nickname }}</span>
+        <span class="user-name user-name-nickname">{{ Auth::user()->nickname }}</span>
         @endif
       </div>
       <a href="{{ route('profile.edit') }}" class="edit-button">
@@ -202,7 +202,7 @@
     @foreach ($newIntros as $intro)
       <div class="tl-item">
         <div class="tl-item_avatar">
-          <a href="{{ route('cast.show', ['id' => $intro->id]) }}"><img src="{{ ($intro->avatars && @getimagesize($intro->avatars[0]->thumbnail)) ? $intro->avatars[0]->thumbnail :'/assets/web/images/gm1/ic_default_avatar@3x.png' }}" alt="avatar"></a>
+          <a href="{{ route('cast.show', ['id' => $intro->id]) }}"><img src="{{ ($intro->avatars && @getimagesize($intro->avatars[0]->thumbnail)) ? $intro->avatars[0]->thumbnail :'/assets/web/images/gm1/ic_default_avatar@3x.png' }}" alt="avatar" class="image-intro"></a>
         </div>
 
         <div class="tl-item_info">

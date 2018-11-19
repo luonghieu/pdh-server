@@ -70,7 +70,7 @@ class HomeController extends Controller
                 $getContents = json_decode($response->getBody()->getContents());
                 $casts = $getContents->data;
 
-                $newIntros = Cast::active()->orderByDesc('intro_updated_at')->limit(10)->get();
+                $newIntros = Cast::active()->whereNotNull('intro')->orderByDesc('intro_updated_at')->limit(10)->get();
 
                 return view('web.index', compact('token', 'order', 'casts', 'newIntros'));
             }
