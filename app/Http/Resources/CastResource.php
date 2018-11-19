@@ -58,6 +58,7 @@ class CastResource extends Resource
             'cohabitant_type' => $this->cohabitant_type,
             'cohabitant' => $this->cohabitant_type ? CohabitantType::getDescription($this->cohabitant_type) : '',
             'intro' => $this->intro,
+            'intro_updated_at' => $this->intro_updated_at,
             'description' => $this->description,
             'type' => $this->type,
             'status' => $this->status,

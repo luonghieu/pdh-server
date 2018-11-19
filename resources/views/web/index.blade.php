@@ -89,24 +89,24 @@
   <section class="button-box" style="display: none;">
     <label for="popup-date-of-birth" class="open_button button-settlement"></label>
   </section>
-  <div class="top-header">
-    <div class="user-data">
-      <div class="user-icon init-image-radius">
+  <div class="top-header-user">
+    <div class="wrap-user">
+      <div class="wrap-user-left">
         @if (Auth::user()->avatars && !empty(Auth::user()->avatars->first()->thumbnail))
           <img src="{{ Auth::user()->avatars->first()->thumbnail }}" alt="">
         @else
           <img src="{{ asset('assets/web/images/ge1/user_icon.svg') }}" alt="">
+        @endif
+        @if (Auth::user()->nickname)
+        <span class="user-name user-name-nickname">{{ Auth::user()->nickname }}</span>
         @endif
       </div>
       <a href="{{ route('profile.edit') }}" class="edit-button">
         <img src="{{ asset('assets/web/images/ge1/pencil.svg') }}" alt="">
       </a>
     </div>
-    @if (Auth::user()->nickname)
-    <span class="user-name">{{ Auth::user()->nickname }}</span>
-    @endif
   </div>
-  <a href="{{ route('guest.orders.call') }}" class="cast-call">今すぐキャストを呼ぶ<span>最短20分で合流!</span></a>
+
   @if ($order->resource)
   <div class="booking">
     <h2>現在の予約</h2>
@@ -151,6 +151,7 @@
     </div>
   </div>
   @endif
+  <a href="{{ route('guest.orders.call') }}" class="cast-call">今すぐキャストを呼ぶ<span>最短20分で合流!</span></a>
   <div class="cast-list">
     <div class="cast-head">
       <h2>在籍中のキャスト</h2>
@@ -189,6 +190,28 @@
       @endforeach
 
       <a href="{{ route('cast.list_casts') }}" class="cast-item import"></a>
+    </div>
+  </div>
+<!-- Timeline -->
+  <div class="timeline">
+    <div class="tl-head">
+      <h2>キャストのつぶやき</h2>
+    </div>
+
+    <div class="tl-list">
+    @foreach ($newIntros as $intro)
+      <div class="tl-item">
+        <div class="tl-item_avatar">
+          <a href="{{ route('cast.show', ['id' => $intro->id]) }}"><img src="{{ ($intro->avatars && @getimagesize($intro->avatars[0]->thumbnail)) ? $intro->avatars[0]->thumbnail :'/assets/web/images/gm1/ic_default_avatar@3x.png' }}" alt="avatar" class="image-intro"></a>
+        </div>
+
+        <div class="tl-item_info">
+          <h3 class="info-title">{{ str_limit($intro->nickname, 15) }}  {{ $intro->age }}歳</h3>
+          <p class="info-text">{{ $intro->intro }}</p>
+        </div>
+      </div>
+    @endforeach
+
     </div>
   </div>
 @endsection
