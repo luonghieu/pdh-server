@@ -2,6 +2,8 @@
 
 namespace App\Notifications;
 
+use App\Enums\DeviceType;
+use App\Enums\NotificationScheduleSendTo;
 use App\Enums\ProviderType;
 use App\Enums\UserType;
 use Illuminate\Bus\Queueable;
@@ -27,49 +29,110 @@ class AdminNotification extends Notification implements ShouldQueue
     /**
      * Get the notification's delivery channels.
      *
-     * @param  mixed  $notifiable
+     * @param  mixed $notifiable
      * @return array
      */
     public function via($notifiable)
     {
-        if (ProviderType::LINE == $notifiable->provider) {
-            return [CustomDatabaseChannel::class, LineBotNotificationChannel::class];
-        } else {
-            return [CustomDatabaseChannel::class, PushNotificationChannel::class];
-        }
-    }
+        if ($notifiable->provider == ProviderType::LINE) {
+            if ($notifiable->type == UserType::GUEST && $notifiable->device_type == null) {
+                return [CustomDatabaseChannel::class, LineBotNotificationChannel::class];
+            }
 
-    /**
-     * Get the mail representation of the notification.
-     *
-     * @param  mixed $notifiable
-     * @return void
-     */
-    public function toMail($notifiable)
-    {
-        //
+            if ($notifiable->type == UserType::CAST && $notifiable->device_type == null) {
+                return [CustomDatabaseChannel::class, PushNotificationChannel::class];
+            }
+
+            if ($this->schedule->send_to == NotificationScheduleSendTo::ALL) {
+                if ($notifiable->device_type == DeviceType::WEB) {
+                    return [CustomDatabaseChannel::class, LineBotNotificationChannel::class];
+                } else {
+                    return [CustomDatabaseChannel::class, PushNotificationChannel::class];
+                }
+            }
+
+            if ($notifiable->device_type == DeviceType::WEB && $this->schedule->send_to == NotificationScheduleSendTo::WEB) {
+                return [CustomDatabaseChannel::class, LineBotNotificationChannel::class];
+            }
+
+            if ($notifiable->device_type == DeviceType::WEB && $this->schedule->send_to != NotificationScheduleSendTo::WEB) {
+                return [];
+            }
+
+            if ($notifiable->device_type == DeviceType::IOS && $this->schedule->send_to != NotificationScheduleSendTo::IOS) {
+                return [];
+            }
+
+            if ($notifiable->device_type == DeviceType::ANDROID && $this->schedule->send_to != NotificationScheduleSendTo::ANDROID) {
+                return [];
+            }
+
+            return [CustomDatabaseChannel::class, PushNotificationChannel::class];
+        } else {
+            if ($notifiable->device_type != DeviceType::WEB && $this->schedule->send_to != NotificationScheduleSendTo::WEB) {
+                return [CustomDatabaseChannel::class, PushNotificationChannel::class];
+            }
+
+            return [];
+        }
     }
 
     public function toArray($notifiable)
     {
-        $content = $this->schedule->content;
+        $schedule = $this->schedule;
+        $content = $schedule->content;
         $send_from = UserType::ADMIN;
+        $bool = false;
+        if (($notifiable->device_type == DeviceType::IOS && $this->schedule->send_to == NotificationScheduleSendTo::IOS)) {
+            $bool = true;
+        }
 
-        return [
-            'content' => $content,
-            'send_from' => $send_from,
-        ];
+        if (($notifiable->device_type == DeviceType::ANDROID && $this->schedule->send_to == NotificationScheduleSendTo::ANDROID)) {
+            $bool = true;
+        }
+
+        if (($notifiable->device_type == DeviceType::WEB && $this->schedule->send_to == NotificationScheduleSendTo::WEB)) {
+            $bool = true;
+        }
+
+        if ($notifiable->device_type == null) {
+            $bool = true;
+        }
+
+        if ($this->schedule->send_to == NotificationScheduleSendTo::ALL) {
+            $bool = true;
+        }
+
+        if ($bool) {
+            return [
+                'title' => $schedule->title,
+                'content' => $content,
+                'send_from' => $send_from,
+            ];
+        }
+
+        return [];
     }
 
     public function pushData($notifiable)
     {
-        $content = $this->schedule->content;
-        $content = removeHtmlTags($content);
+        $schedule = $this->schedule;
+        $content = $schedule->title;
 
         $namedUser = 'user_' . $notifiable->id;
         $send_from = UserType::ADMIN;
 
+        $scheduleSendTo = $schedule->send_to;
+        if ($scheduleSendTo == NotificationScheduleSendTo::IOS) {
+            $devices = ['ios'];
+        } elseif ($scheduleSendTo == NotificationScheduleSendTo::ANDROID) {
+            $devices = ['android'];
+        } else {
+            $devices = ['android', 'ios'];
+        }
+
         return [
+            'devices' => $devices,
             'audienceOptions' => ['named_user' => $namedUser],
             'notificationOptions' => [
                 'alert' => $content,
@@ -80,12 +143,14 @@ class AdminNotification extends Notification implements ShouldQueue
                     'content-available' => true,
                     'extra' => [
                         'send_from' => $send_from,
+                        'push_id' => 'a_1'
                     ],
                 ],
                 'android' => [
                     'alert' => $content,
                     'extra' => [
                         'send_from' => $send_from,
+                        'push_id' => 'a_1'
                     ],
                 ],
             ],
@@ -95,13 +160,29 @@ class AdminNotification extends Notification implements ShouldQueue
     public function lineBotPushData($notifiable)
     {
         $content = $this->schedule->content;
+        $linkArray = linkExtractor($content);
         $content = removeHtmlTags($content);
+        if ($content) {
+            $pushData = [
+                [
+                    'type' => 'text',
+                    'text' => $content,
+                ]
+            ];
+        } else {
+            $pushData = [];
+        }
 
-        return [
-            [
-                'type' => 'text',
-                'text' => $content,
-            ],
-        ];
+        if ($linkArray) {
+            foreach ($linkArray as $link) {
+                $pushData[] = [
+                    'type' => 'image',
+                    'originalContentUrl' => $link,
+                    'previewImageUrl' => $link
+                ];
+            }
+        }
+
+        return $pushData;
     }
 }

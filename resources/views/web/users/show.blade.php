@@ -15,14 +15,14 @@
     <div class="slider cast-photo__show">
       @if($cast['avatars'])
         @foreach ($cast['avatars'] as $avatar)
-          @if (@getimagesize($avatar['thumbnail']))
-          <img src="{{ $avatar['thumbnail'] }}" alt="">
+          @if (@getimagesize($avatar['path']))
+          <img data-lazy="{{ $avatar['path'] }}">
           @else
-          <img src="{{ asset('assets/web/images/gm1/ic_default_avatar@3x.png') }}" alt="">
+          <img data-lazy="{{ asset('assets/web/images/gm1/ic_default_avatar@3x.png') }}">
           @endif
         @endforeach
       @else
-        <img class="image-default" src="{{ asset('assets/web/images/gm1/ic_default_avatar@3x.png') }}" alt="">
+        <img class="image-default" data-lazy="{{ asset('assets/web/images/gm1/ic_default_avatar@3x.png') }}">
       @endif
     </div>
     @if ($cast['working_today'])
@@ -69,7 +69,11 @@
         <h2 class="portlet-header__title">自己紹介</h2>
       </div>
       <div class="portlet-content">
-        <p class="portlet-content__text">{{ (!$cast['description']) ? '' : $cast['description'] }}</p>
+        @if (!$cast['description'])
+        <p class="portlet-header__title">自己紹介設定されていません</p>
+        @else
+        <p class="portlet-content__text">{!! strip_tags(nl2br($cast['description']), '<br>') !!}</p>
+        @endif
       </div>
     </section>
 

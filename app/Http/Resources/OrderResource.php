@@ -65,6 +65,7 @@ class OrderResource extends Resource
             'paid_at' => $this->paid_at,
             'call_point' => $this->when($isCast, $this->call_point * $castPercent, $this->call_point),
             'nominee_point' => $this->when($isCast, $this->nominee_point * $castPercent, $this->nominee_point),
+            'deleted_at' => $this->deleted_at
         ]);
     }
 }

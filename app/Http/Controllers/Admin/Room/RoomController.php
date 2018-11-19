@@ -81,7 +81,7 @@ class RoomController extends Controller
                     ->orWhere('nickname', 'like', "%$keyword%");
             });
         }
-        $rooms = $rooms->orderBy('created_at', 'DESC')->paginate($request->limit ?: 10);
+        $rooms = $rooms->orderBy('updated_at', 'DESC')->paginate($request->limit ?: 10);
 
         return view('admin.rooms.index', compact('rooms'));
     }

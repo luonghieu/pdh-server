@@ -36,6 +36,15 @@
         </div>
         <div class="panel-body">
           @include('admin.partials.notification')
+          @php
+            $request = [
+              'page' => request()->page,
+              'limit' => request()->limit,
+              'search' => request()->search,
+              'from_date' => request()->from_date,
+              'to_date' => request()->to_date,
+           ];
+          @endphp
           <table class="table table-striped table-bordered bootstrap-datatable">
             <thead>
               <tr>
@@ -43,10 +52,20 @@
                 <th>ユーザーID</th>
                 <th>ニックネーム</th>
                 <th>年齢</th>
-                <th>優先ランク</th>
+                <th class="sorting{{ (request()->rank) ? '_' . request()->rank: '' }}">
+                  <a href="{{ route('admin.casts.index',
+                    array_merge($request, ['rank' => (request()->rank == 'asc') ? 'desc' : 'asc',])
+                    ) }}">優先ランク
+                  </a>
+                </th>
                 <th>会員区分</th>
                 <th>ステータス</th>
-                <th>オンライン</th>
+                <th class="sorting{{ (request()->last_active_at) ? '_' . request()->last_active_at: '' }}">
+                  <a href="{{ route('admin.casts.index',
+                    array_merge($request, ['last_active_at' => (request()->last_active_at == 'asc') ? 'desc' : 'asc',])
+                    ) }}">オンライン
+                   </a>
+                </th>
                 <th>本日出勤</th>
                 <th>キャスト登録日時</th>
                 <th></th>
@@ -67,7 +86,11 @@
                   <td>{{ App\Enums\UserRank::getKey($cast->rank) }}</td>
                   <td>{{ App\Enums\UserType::getDescription($cast->type) }}</td>
                   <td>{{ App\Enums\Status::getDescription($cast->status) }}</td>
-                  <td>{{ latestOnlineStatus($cast->last_active_at) }}</td>
+                  @if ($cast->is_online == true)
+                  <td>オンライン中</td>
+                  @else
+                  <td>{{ $cast->last_active }}</td>
+                  @endif
                   <td>{{ App\Enums\WorkingType::getDescription($cast->working_today) }}</td>
                   <td>{{ Carbon\Carbon::parse($cast->created_at)->format('Y/m/d H:i') }}</td>
                   <td><a href="{{ route('admin.users.show', ['user' => $cast->id]) }}" class="btn-detail">詳細</a></td>

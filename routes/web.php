@@ -48,15 +48,6 @@ Route::group(['middleware' => 'auth'], function () {
             Route::post('/{orderId}', ['as' => 'create', 'uses' => 'OrderController@pointSettlement']);
         });
 
-        Route::group(['prefix' => 'bank_account', 'as' => 'bank_account.'], function () {
-            Route::get('/', ['as' => 'index', 'uses' => 'BankAccountController@index']);
-            Route::get('/bank_name', ['as' => 'search_bank_name', 'uses' => 'BankAccountController@searchBankName']);
-            Route::get('/bank_name/edit', ['as' => 'edit', 'uses' => 'BankAccountController@edit']);
-            Route::post('/bank_name', ['as' => 'bank_name', 'uses' => 'BankAccountController@bankName']);
-            Route::get('/branch_bank_name', ['as' => 'search_branch_bank_name', 'uses' => 'BankAccountController@searchBranchBankName']);
-            Route::post('/branch_bank_name', ['as' => 'branch_bank_name', 'uses' => 'BankAccountController@branchBankName']);
-        });
-
         Route::get('/cast/rank', ['as' => 'cast_rank', 'uses' => 'CastRankingController@index']);
     });
 });
@@ -68,12 +59,7 @@ Route::get('/mypage', 'HomeController@index')->name('web.index');
 Route::get('/login/line', 'Auth\LineController@login')->name('auth.line');
 Route::get('/login/line/callback', 'Auth\LineController@handleCallBack');
 Route::post('/line/webhook', 'Auth\LineController@webhook');
-
-Route::group(['middleware' => ['auth'], 'prefix' => 'verify', 'as' => 'verify.'], function () {
-    Route::get('/code', ['as' => 'code', 'uses' => 'UserController@code']);
-    Route::get('/', ['as' => 'index', 'uses' => 'UserController@verify']);
-});
-
+Route::get('/cast_mypage', 'HomeController@castMypage')->name('web.cast_index');
 
 Route::group(['middleware' => 'auth', 'prefix' => 'verify', 'as' => 'verify.'], function () {
     Route::get('/code', ['as' => 'code', 'uses' => 'UserController@code']);
@@ -99,6 +85,7 @@ Route::group(['middleware' => ['auth', 'guest', 'check_info'], 'as' => 'guest.']
         Route::get('/nominate/step2', ['as' => 'nominate_step2', 'uses' => 'OrderController@nominateAttention']);
         Route::get('/orders/load_more', ['as' => 'orders_load_more', 'uses' => 'OrderController@loadMoreListOrder']);
         Route::get('/step3/load_more', ['as' => 'step3_load_more', 'uses' => 'OrderController@loadMoreListCast']);
+        Route::get('/cast/{id}/call', ['as' => 'cast_detail', 'uses' => 'OrderController@castDetail'])->where('id', '[0-9]+');;
     });
 });
 
@@ -116,7 +103,20 @@ Route::group(['middleware' => ['auth', 'guest', 'check_info']], function () {
     Route::get('/point_history/more', ['as' => 'points.history.more', 'uses' => 'PointController@loadMore']);
 });
 
-Route::group(['middleware' => 'auth', 'as' => 'cast.'], function () {
-    Route::get('/payments', ['as' => 'payments', 'uses' => 'PaymentController@history']);
-    Route::get('/payments/load_more', ['as' => 'payments_load_more', 'uses' => 'PaymentController@loadMore']);
+Route::group(['middleware' => ['auth', 'cast'], 'prefix' => 'cast_mypage'], function () {
+    Route::group(['prefix' => 'transfer_history', 'as' => 'cast.'], function () {
+        Route::get('/', ['as' => 'transfer_history', 'uses' => 'PaymentController@history']);
+        Route::get('/load_more', ['as' => 'transfer_history_load_more', 'uses' => 'PaymentController@loadMore']);
+    });
+
+    Route::group(['as' => 'cast_mypage.'], function () {
+        Route::group(['prefix' => 'bank_account', 'as' => 'bank_account.'], function () {
+            Route::get('/', ['as' => 'index', 'uses' => 'BankAccountController@index']);
+            Route::get('/edit/bank', ['as' => 'search_bank_name', 'uses' => 'BankAccountController@searchBankName']);
+            Route::get('/edit', ['as' => 'edit', 'uses' => 'BankAccountController@edit']);
+            Route::post('/edit/bank', ['as' => 'bank_name', 'uses' => 'BankAccountController@bankName']);
+            Route::get('/edit/branch', ['as' => 'search_branch_bank_name', 'uses' => 'BankAccountController@searchBranchBankName']);
+            Route::post('/edit/branch', ['as' => 'branch_bank_name', 'uses' => 'BankAccountController@branchBankName']);
+        });
+    });
 });

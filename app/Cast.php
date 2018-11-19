@@ -2,6 +2,7 @@
 
 namespace App;
 
+use App\Enums\CastTransferStatus;
 use App\Enums\OrderStatus;
 use App\Enums\UserType;
 use App\Traits\HasParentModel;
@@ -16,7 +17,10 @@ class Cast extends User
         parent::boot();
 
         static::addGlobalScope(function ($query) {
-            $query->where('users.type', UserType::CAST);
+            $query->where('users.type', UserType::CAST)->where(function ($subQuery) {
+                $subQuery->whereNull('cast_transfer_status')
+                    ->orWhere('cast_transfer_status', CastTransferStatus::OFFICIAL);
+            });
         });
     }
 

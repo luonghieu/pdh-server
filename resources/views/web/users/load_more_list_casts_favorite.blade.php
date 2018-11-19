@@ -16,9 +16,9 @@
       }
       @endphp
       @if ($favorite['avatars'] && @getimagesize($favorite['avatars'][0]['thumbnail']))
-      <img src="{{ $favorite['avatars'][0]['thumbnail'] }}" alt="">
+      <img class="lazy" data-src="{{ $favorite['avatars'][0]['thumbnail'] }}">
       @else
-      <img src="{{ asset('assets/web/images/gm1/ic_default_avatar@3x.png') }}" alt="">
+      <img class="lazy" data-src="{{ asset('assets/web/images/gm1/ic_default_avatar@3x.png') }}">
       @endif
 
       <span class="{{ $class }} text-bold">{{ $favorite['class'] }}</span>

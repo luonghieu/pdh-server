@@ -4,34 +4,34 @@
 @extends('layouts.web')
 @section('web.extra')
 <div class="modal_wrap">
-  <input id="trigger3" type="checkbox">
-    <div class="modal_overlay">
-      <label for="trigger3" class="modal_trigger" id="profile-popup"></label>
-      <div class="modal_content modal_content-btn3">
-        <div class="content-in" id="profile-message">
-          <h2></h2>
-        </div>
+  <input id="trigger-profile" type="checkbox">
+  <div class="modal_overlay">
+    <label for="trigger-profile" class="modal_trigger" id="profile-popup"></label>
+    <div class="modal_content modal_content-btn3">
+      <div class="content-in" id="profile-message">
+        <h2></h2>
       </div>
     </div>
+  </div>
 </div>
 @endsection
 @section('web.content')
 <div class="cast-profile">
   <section class="profile-photo">
     <div class="profile-photo__top">
-      @if ($profile['avatars'] && @getimagesize($profile['avatars'][0]['thumbnail']))
-      <img class="init-image-radius" src="{{ $profile['avatars'][0]['thumbnail'] }}" alt="">
+      @if ($profile['avatars'] && @getimagesize($profile['avatars'][0]['path']))
+      <img class="init-image-radius lazy" data-src="{{ $profile['avatars'][0]['path'] }}" alt="">
       @else
-      <img class="init-image-radius" src="{{ asset('assets/web/images/ge1/user_icon.svg') }}" alt="">
+      <img class="init-image-radius lazy" data-src="{{ asset('assets/web/images/ge1/user_icon.svg') }}" alt="">
       @endif
     </div>
     <div class="profile-photo__list">
       <ul>
         @foreach ($profile['avatars'] as $avatar)
-          @if (@getimagesize($avatar['thumbnail']))
-          <li class="css-img"><img src="{{ $avatar['thumbnail'] }}" alt=""></li>
+          @if (@getimagesize($avatar['path']))
+          <li class="css-img"><img class="lazy" data-src="{{ $avatar['path'] }}" alt=""></li>
           @else
-          <li class="css-img"><img src="{{ asset('assets/web/images/gm1/ic_default_avatar@3x.png') }}" alt=""></li>
+          <li class="css-img"><img class="lazy" data-src="{{ asset('assets/web/images/gm1/ic_default_avatar@3x.png') }}" alt=""></li>
           @endif
         @endforeach
       </ul>
@@ -61,7 +61,7 @@
       @if (!$profile['description'])
       <p class="portlet-header__title">自己紹介設定されていません</p>
       @else
-      <p class="portlet-content__text">{{ $profile['description'] }}</p>
+      <p class="portlet-content__text">{!! strip_tags(nl2br($profile['description']), '<br>') !!}</p>
       @endif
     </div>
   </section>
@@ -188,7 +188,17 @@
         $('#profile-message h2').html(popup_profile);
 
         window.sessionStorage.removeItem('popup_profile');
+
+        $('#profile-popup').on('click', function () {
+          var checked = $('#trigger-profile').prop('checked');
+
+          if (checked == false) {
+            return false;
+          }
+
+          return true;
+        });
       }
-    })
+    });
   </script>
 @endsection

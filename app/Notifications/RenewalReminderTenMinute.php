@@ -33,7 +33,7 @@ class RenewalReminderTenMinute extends Notification implements ShouldQueue
      */
     public function via($notifiable)
     {
-        return [CustomDatabaseChannel::class, PushNotificationChannel::class];
+        return [PushNotificationChannel::class];
     }
 
     /**
@@ -54,35 +54,25 @@ class RenewalReminderTenMinute extends Notification implements ShouldQueue
      */
     public function toArray($notifiable)
     {
+        return [];
+    }
+
+    public function pushData($notifiable)
+    {
         $message = $notifiable->nickname . 'さんの解散予定時刻まで残り10分です。';
         $room = $this->order->room;
-
         $roomMessage = $room->messages()->create([
             'user_id' => 1,
             'type' => MessageType::SYSTEM,
             'system_type' => SystemMessageType::NOTIFY,
             'message' => $message,
         ]);
-
         $roomMessage->recipients()->attach($this->order->user_id, ['room_id' => $room->id]);
 
-
-        $message = '解散予定時刻まで残り10分です！'
-            . PHP_EOL . '解散予定時刻後は自動で延長されます。';
-
-        return [
-            'content' => $message,
-            'send_from' => UserType::ADMIN,
-        ];
-    }
-
-    public function pushData($notifiable)
-    {
         $content = '解散予定時刻まで残り10分です！'
             . PHP_EOL . '解散予定時刻後は自動で延長されます。';
 
         $pushId = 'c_6';
-
         $namedUser = 'user_' . $notifiable->id;
         $send_from = UserType::ADMIN;
 

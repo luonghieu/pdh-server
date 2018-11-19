@@ -2,12 +2,11 @@
 
 namespace App\Http\Controllers\Api;
 
-use App\Enums\MessageType;
+use App\Enums\DeviceType;
 use App\Enums\ProviderType;
 use App\Enums\Status;
 use App\Enums\UserGender;
 use App\Enums\UserType;
-use App\Guest;
 use App\Notifications\CreateGuest;
 use App\Services\LogService;
 use App\User;
@@ -22,6 +21,7 @@ class FacebookAuthController extends ApiController
     {
         $validator = validator($request->all(), [
             'access_token' => 'required',
+            'device_type' => 'integer|min:1|max:3',
         ]);
 
         if ($validator->fails()) {
@@ -48,11 +48,7 @@ class FacebookAuthController extends ApiController
                 $avatar = env('FACEBOOK_GRAP_API_URL') . '/' . $asid . '/picture?type=normal&height=400&width=400';
             }
 
-            $user = $this->findOrCreate($fbResponse->user, $avatar);
-
-            if (!$user->status) {
-                return $this->respondErrorMessage(trans('messages.login_forbidden'), 403);
-            }
+            $user = $this->findOrCreate($fbResponse->user, $avatar, $request->device_type);
 
             $token = JWTAuth::fromUser($user);
 
@@ -66,21 +62,29 @@ class FacebookAuthController extends ApiController
         }
     }
 
-    protected function findOrCreate($fbResponse, $avatar)
+    protected function findOrCreate($fbResponse, $avatar, $deviceType = null)
     {
-        $user = User::where('facebook_id', $fbResponse['id'])->first();
+        $email = (isset($fbResponse['email'])) ? $fbResponse['email'] : null;
+        $user = User::query();
+
+        if ($email) {
+            $user = $user->where('email', $email);
+        }
+
+        $user = $user->orWhere('facebook_id', $fbResponse['id'])->first();
 
         if (!$user) {
             $data = [
-                'email' => (isset($fbResponse['email'])) ? $fbResponse['email'] : null,
+                'email' => $email,
                 'fullname' => $fbResponse['name'],
                 'nickname' => (isset($fbResponse['first_name'])) ? $fbResponse['first_name'] : '',
                 'facebook_id' => $fbResponse['id'],
                 'date_of_birth' => (isset($fbResponse['birthday'])) ? Carbon::parse($fbResponse['birthday']) : null,
                 'gender' => (isset($fbResponse['gender'])) ? ($fbResponse['gender'] == 'male') ? UserGender::MALE : UserGender::FEMALE : null,
                 'type' => UserType::GUEST,
-                'status' => Status::ACTIVE,
-                'provider' => ProviderType::FACEBOOK
+                'status' => Status::INACTIVE,
+                'provider' => ProviderType::FACEBOOK,
+                'device_type' => ($deviceType) ? $deviceType : DeviceType::WEB
             ];
 
             $user = User::create($data);
@@ -97,6 +101,9 @@ class FacebookAuthController extends ApiController
 
             return $user;
         }
+
+        $user->device_type = ($deviceType) ? $deviceType : DeviceType::WEB;
+        $user->save();
 
         return $user;
     }

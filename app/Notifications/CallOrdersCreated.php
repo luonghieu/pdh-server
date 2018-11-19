@@ -3,6 +3,7 @@
 namespace App\Notifications;
 
 use App\Enums\UserType;
+use App\Order;
 use Illuminate\Bus\Queueable;
 use Illuminate\Notifications\Notification;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -17,11 +18,11 @@ class CallOrdersCreated extends Notification implements ShouldQueue
     /**
      * Create a new notification instance.
      *
-     * @param $order
+     * @param $orderId
      */
-    public function __construct($order)
+    public function __construct($orderId)
     {
-        $this->order = $order;
+        $this->order = Order::onWriteConnection()->findOrFail($orderId);
     }
 
     /**
@@ -32,7 +33,7 @@ class CallOrdersCreated extends Notification implements ShouldQueue
      */
     public function via($notifiable)
     {
-        return [CustomDatabaseChannel::class, PushNotificationChannel::class];
+        return [PushNotificationChannel::class];
     }
 
     /**
@@ -53,12 +54,7 @@ class CallOrdersCreated extends Notification implements ShouldQueue
      */
     public function toArray($notifiable)
     {
-        $content = '新着のキャスト募集が追加されました♪';
-
-        return [
-            'content' => $content,
-            'send_from' => UserType::ADMIN,
-        ];
+        return [];
     }
 
     public function pushData($notifiable)

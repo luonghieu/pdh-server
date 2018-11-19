@@ -2,6 +2,7 @@
 
 namespace App\Notifications;
 
+use App\Enums\DeviceType;
 use App\Enums\ProviderType;
 use App\Enums\UserType;
 use Carbon\Carbon;
@@ -35,9 +36,21 @@ class CastAcceptNominationOrders extends Notification implements ShouldQueue
     public function via($notifiable)
     {
         if ($notifiable->provider == ProviderType::LINE) {
-            return [CustomDatabaseChannel::class, LineBotNotificationChannel::class];
+            if ($notifiable->type == UserType::GUEST && $notifiable->device_type == null) {
+                return [LineBotNotificationChannel::class];
+            }
+
+            if ($notifiable->type == UserType::CAST && $notifiable->device_type == null) {
+                return [PushNotificationChannel::class];
+            }
+
+            if ($notifiable->device_type == DeviceType::WEB) {
+                return [LineBotNotificationChannel::class];
+            } else {
+                return [PushNotificationChannel::class];
+            }
         } else {
-            return [CustomDatabaseChannel::class, PushNotificationChannel::class];
+            return [PushNotificationChannel::class];
         }
     }
 
@@ -59,17 +72,7 @@ class CastAcceptNominationOrders extends Notification implements ShouldQueue
      */
     public function toArray($notifiable)
     {
-        if ($notifiable->type == UserType::GUEST) {
-            $message = 'おめでとうございます！'
-                . PHP_EOL . 'キャストとのマッチングが確定しました♪';
-        } else {
-            $message = 'おめでとう！ゲストとのマッチングが確定しました♪';
-        }
-
-        return [
-            'content' => $message,
-            'send_from' => UserType::ADMIN,
-        ];
+        return [];
     }
 
     public function pushData($notifiable)

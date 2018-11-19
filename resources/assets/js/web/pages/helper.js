@@ -45,3 +45,17 @@ export function getCookie(cookie_name) {
 
     return "";
 }
+
+export function updateLocalStorageValue(key, data) {
+    var oldData = JSON.parse(localStorage.getItem(key));
+    var newData;
+
+    if (oldData) {
+      newData = Object.assign({}, oldData, data);
+    } else {
+      newData = data;
+    }
+
+    localStorage.setItem(key, JSON.stringify(newData));
+  }
+
