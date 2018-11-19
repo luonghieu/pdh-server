@@ -100,7 +100,7 @@
                         $workStatus = 'leaving-work';
                       }
                     @endphp
-                    <button data-toggle="modal" data-target="#{{ $workStatus }}" data-url="{{ route('admin.casts.change_status_work', $cast->id) }}" id="change-status-work" class="btn btn-default">{{ App\Enums\WorkingType::getDescription(($cast->working_today == 1) ? 0 : 1) }}</button>
+                    <button data-toggle="modal" data-target="#{{ $workStatus }}" data-url="{{ route('admin.casts.change_status_work', $cast->id) }}" id="change-status-work" class="btn btn-default">{{ ($cast->working_today == 1) ? '退勤'  : '出勤' }}</button>
                   </td>
                   <td>{{ Carbon\Carbon::parse($cast->created_at)->format('Y/m/d H:i') }}</td>
                   <td><a href="{{ route('admin.users.show', ['user' => $cast->id]) }}" class="btn btn-detail">詳細</a></td>
