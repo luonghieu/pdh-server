@@ -112,12 +112,11 @@ class AuthController extends ApiController
             }
 
 //            $pattern = '/^(1[0-9]|20)\d{1}[-]?\d{4}$/';
-//
-//            if (preg_match($pattern, $subject) == false) {
-//                return $this->respondErrorMessage(trans('messages.postcode_not_support'), 422);
-//            }
+            //
+            //            if (preg_match($pattern, $subject) == false) {
+            //                return $this->respondErrorMessage(trans('messages.postcode_not_support'), 422);
+            //            }
         }
-
 
         $input = request()->only([
             'nickname',
@@ -141,7 +140,7 @@ class AuthController extends ApiController
             'post_code',
             'address',
             'fullname_kana',
-            'fullname'
+            'fullname',
         ]);
 
         try {
@@ -167,6 +166,10 @@ class AuthController extends ApiController
                 Storage::put($lineImageName, file_get_contents($lineImage), 'public');
 
                 $input['line_qr'] = $lineImageName;
+            }
+
+            if (md5($input['intro']) != md5($user->intro)) {
+                $input['intro_updated_at'] = now();
             }
 
             $user->update($input);
