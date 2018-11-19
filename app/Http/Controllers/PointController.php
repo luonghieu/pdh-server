@@ -4,8 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Services\LogService;
 use Auth;
-use JWTAuth;
 use GuzzleHttp\Client;
+use JWTAuth;
 
 class PointController extends Controller
 {

@@ -31,7 +31,7 @@ class HomeController extends Controller
             $token = JWTAuth::fromUser($user);
 
             $verification = $user->verification;
-            if ($verification && !$verification->status) {
+            if (!$user->is_verified && $verification && !$verification->status) {
                 return redirect()->route('verify.code');
             }
 
@@ -39,7 +39,7 @@ class HomeController extends Controller
                 return view('web.users.verification', compact('token'));
             }
 
-            if (UserType::GUEST == $user->type) {
+            if ($user->is_guest) {
                 $order = Order::with('casts')
                     ->where('user_id', Auth::user()->id)
                     ->where('status', OrderStatus::PROCESSING)
@@ -72,7 +72,7 @@ class HomeController extends Controller
                 return view('web.index', compact('token', 'order', 'casts'));
             }
 
-            if (UserType::CAST == $user->type) {
+            if ($user->is_cast) {
                 return redirect()->route('web.cast_index');
             }
         }

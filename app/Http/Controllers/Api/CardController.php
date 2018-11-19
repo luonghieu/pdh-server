@@ -32,7 +32,6 @@ class CardController extends ApiController
         }
 
         $user = $this->guard()->user();
-
         try {
             if (!$user->stripe_id) {
                 $customer = $this->createCustomer($user);
@@ -49,6 +48,10 @@ class CardController extends ApiController
             $user->cards()->delete();
 
             $card = $customer->sources->create(['source' => $request->token]);
+
+            if (in_array($card->funding, ['debit', 'prepaid'])) {
+                return $this->respondErrorMessage(trans('messages.payment_method_not_supported'));
+            }
 
             if (!in_array($card->brand, Card::BRANDS)) {
                 $customer->sources->retrieve($card->id)->delete();

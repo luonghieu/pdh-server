@@ -406,7 +406,7 @@ class OrderController extends Controller
 
     public function pointSettlement(Request $request, Order $order)
     {
-        PointSettlement::dispatchNow($order);
+        PointSettlement::dispatchNow($order->id);
 
         if ('order_nominee' == $request->page) {
             return redirect(route('admin.orders.order_nominee', compact('order')));

@@ -89,6 +89,12 @@
                 <th>ニックネーム</th>
                 <td>{{ $user->nickname }}</td>
               </tr>
+              @if($user->is_guest)
+              <tr>
+                <th>電話番号</th>
+                <td>{{ $user->phone ? $user->phone : '-' }}</td>
+              </tr>
+              @endif
               @if ($user->is_cast)
               <tr>
                 <th>30分あたりのポイント</th>
@@ -220,6 +226,10 @@
                 <td>{{ Carbon\Carbon::parse($user->created_at)->format('Y/m/d H:i') }}</td>
               </tr>
             </table>
+            <div class="delete-user pull-left">
+              <button type="button" class="btn btn-danger" data-toggle="modal"
+                      data-target="#delete_user">アカウントを削除する</button>
+            </div>
             <div class="active-user">
               @php
                 if($user->status == App\Enums\Status::ACTIVE) {
@@ -355,6 +365,24 @@
             </div>
           </div>
         </div>
+        <div class="modal fade" id="delete_user" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+               aria-hidden="true">
+            <div class="modal-dialog" role="document">
+              <div class="modal-content">
+                <div class="modal-body">
+                  <p>本当にこのアカウントを削除しますか</p>
+                </div>
+                <div class="modal-footer">
+                  <form action="{{ route('admin.users.delete',['user' => $user->id]) }}" method="POST">
+                    {{ csrf_field() }}
+                    {{ method_field('DELETE') }}
+                    <button type="button" class="btn btn-canceled" data-dismiss="modal">キャンセル</button>
+                    <button type="submit" class="btn btn-accept">はい</button>
+                  </form>
+                </div>
+              </div>
+            </div>
+      </div>
       </div>
     </div>
     <!--/col-->

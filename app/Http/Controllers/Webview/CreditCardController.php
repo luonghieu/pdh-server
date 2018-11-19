@@ -53,7 +53,7 @@ class CreditCardController extends Controller
         $validator = validator($request->all(), $rules);
 
         $numberCardVisa = preg_match("/^4[0-9]{12}(?:[0-9]{3})?$/", $request->number_card);
-        $numberMasterCard = preg_match("/^5[1-5][0-9]{14}$/", $request->number_card);
+        $numberMasterCard = preg_match("/^(5[1-5][0-9]{14}|2(22[1-9][0-9]{12}|2[3-9][0-9]{13}|[3-6][0-9]{14}|7[0-1][0-9]{13}|720[0-9]{12}))$/", $request->number_card);
         $numberAmericanExpress = preg_match("/^3[47][0-9]{13,14}$/", $request->number_card);
         $numberDinnersClub = preg_match("/^3(?:0[0-5]|[68][0-9])[0-9]{11}$/", $request->number_card);
         $numberJcb = preg_match("/^(?:2131|1800|35\\d{3})\\d{11}$/", $request->number_card);
@@ -77,14 +77,17 @@ class CreditCardController extends Controller
             ]);
             try {
                 $response = $this->createToken($input, $accessToken);
+                if (false == $response) {
+                    return response()->json(['success' => false, 'error' => trans('messages.payment_method_not_supported')]);
+                } else {
+                    if ($response->getStatusCode() != 200) {
+                        return response()->json(['success' => false, 'error' => trans('messages.action_not_performed')]);
+                    }
+                    if ($user->card) {
+                        $card = $user->card;
 
-                if ($response->getStatusCode() != 200) {
-                    return response()->json(['success' => false, 'error' => trans('messages.action_not_performed')]);
-                }
-                if ($user->card) {
-                    $card = $user->card;
-
-                    return response()->json(['success' => true, 'url' => 'cheers://adding_card?result=1']);
+                        return response()->json(['success' => true, 'url' => 'cheers://adding_card?result=1']);
+                    }
                 }
             } catch (\Exception $e) {
                 return response()->json(['success' => false, 'error' => trans('messages.action_not_performed')]);
@@ -117,17 +120,21 @@ class CreditCardController extends Controller
             ],
         ]);
 
-        $param = $card->id;
+        if (in_array($card->card->funding, ['debit', 'prepaid'])) {
+            return false;
+        } else {
+            $param = $card->id;
 
-        $client = new Client(['base_uri' => config('common.api_url')]);
-        $option = [
-            'headers' => ['Authorization' => 'Bearer ' . $accessToken],
-            'form_params' => ['token' => $param],
-            'allow_redirects' => false,
-        ];
+            $client = new Client(['base_uri' => config('common.api_url')]);
+            $option = [
+                'headers' => ['Authorization' => 'Bearer ' . $accessToken],
+                'form_params' => ['token' => $param],
+                'allow_redirects' => false,
+            ];
 
-        $response = $client->post(route('cards.create'), $option);
+            $response = $client->post(route('cards.create'), $option);
 
-        return $response;
+            return $response;
+        }
     }
 }

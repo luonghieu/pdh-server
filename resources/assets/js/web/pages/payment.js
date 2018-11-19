@@ -1,11 +1,15 @@
 const helper = require('./helper');
+$('#gl3 #payment-failed-popup').on('click', function(event) {
+  $('#payment-failed').trigger('click');
+});
+
 $('#request-buy-point-btn').on('click', function(e) {
     $('#request-buy-point').trigger('click');
     $('#payment-form').submit();
 });
 
 $('#payment-confirm-btn').on('click', function(e) {
-    $('#payment-form').submit();
+  $('#payment-form').submit();
 });
 
 $('#payment-submit').on('click', function(e) {
@@ -25,7 +29,7 @@ $('#request-update-point-btn').on('click', function(e) {
         $('#alert-payment-content').html('修正依頼しました');
         $('#request-update-point').trigger('click');
         $('#alert-payment-label').trigger('click');
-        
+
         setTimeout(() => {
             window.location.href = '/mypage';
         }, 2000);

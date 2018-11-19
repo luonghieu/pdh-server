@@ -37,6 +37,9 @@ final class OrderPaymentStatus extends Enum
             case self::CANCEL_FEE_PAYMENT_FINISHED:
                 return 'ポイント決済完了(キャンセル料)';
                 break;
+            case self::PAYMENT_FAILED:
+                return '決済エラー';
+                break;
             default:
                 return self::getKey($value);
         }

@@ -5,6 +5,7 @@ namespace App\Notifications;
 use App\Enums\MessageType;
 use App\Enums\SystemMessageType;
 use App\Enums\UserType;
+use App\Order;
 use App\Traits\DirectRoom;
 use Illuminate\Bus\Queueable;
 use Illuminate\Notifications\Notification;
@@ -20,11 +21,11 @@ class CreateNominationOrdersForCast extends Notification implements ShouldQueue
     /**
      * Create a new notification instance.
      *
-     * @param $order
+     * @param $orderId
      */
-    public function __construct($order)
+    public function __construct($orderId)
     {
-        $this->order = $order;
+        $this->order = Order::onWriteConnection()->findOrFail($orderId);
     }
 
     /**
@@ -35,7 +36,7 @@ class CreateNominationOrdersForCast extends Notification implements ShouldQueue
      */
     public function via($notifiable)
     {
-        return [PushNotificationChannel::class, CustomDatabaseChannel::class];
+        return [PushNotificationChannel::class];
     }
 
     /**
@@ -56,14 +57,7 @@ class CreateNominationOrdersForCast extends Notification implements ShouldQueue
      */
     public function toArray($notifiable)
     {
-        $owner = $this->order->user;
-        $message = $owner->nickname . 'さんから指名予約が入りました。'
-            . PHP_EOL .'承諾、キャンセルの処理を行ってください！';
-
-        return [
-            'content' => $message,
-            'send_from' => UserType::ADMIN,
-        ];
+        return [];
     }
 
     public function pushData($notifiable)

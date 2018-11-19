@@ -13,7 +13,8 @@ $(document).ready(function() {
 var flag = false;
 var flag_color = false;
 
-function valid(str) {
+window.valid = function (str)
+{
   var count = 0;
   ['(', ')', '.', '+', '-', ',', ';', 'N', '/'].forEach(function (sample) {
       if(str.indexOf(sample) >= 0) {
@@ -25,7 +26,7 @@ function valid(str) {
   return count;
 }
 
-function creditValidate()
+window.creditValidate = function ()
 {
   var str = document.getElementById("number-card").value;
 
@@ -35,7 +36,7 @@ function creditValidate()
   }
 
   var visa = '^4[0-9]{12}(?:[0-9]{3})?$';
-  var mastercard = '^5[1-5][0-9]{14}$';
+  var mastercard = '^(5[1-5][0-9]{14}|2(22[1-9][0-9]{12}|2[3-9][0-9]{13}|[3-6][0-9]{14}|7[0-1][0-9]{13}|720[0-9]{12}))$';
   var americanExpress = '^3[47][0-9]{13,14}$';
   var dinnersClub = '^3(?:0[0-5]|[68][0-9])[0-9]{11}$';
   var jcb = '^(?:2131|1800|35\\d{3})\\d{11}$';
@@ -72,7 +73,7 @@ function creditValidate()
   }
 }
 
-function addColor()
+window.addColor = function ()
 {
   var str = document.getElementById("card-cvv").value;
 
@@ -104,7 +105,7 @@ function addColor()
   }
 }
 
-function numberCvvLength(event)
+window.numberCvvLength = function (event)
 {
   var str = document.getElementById("card-cvv").value;
   var strlen = str.length;

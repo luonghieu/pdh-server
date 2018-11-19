@@ -68,6 +68,6 @@
 </div>
 @endsection
 @section('web.extra_js')
-<script src="/assets/webview/js/script.js"></script>
+<script src="{{ mix('assets/webview/js/script.min.js') }}"></script>
 <script src="/assets/webview/js/lib/payment.js"></script>
 @endsection
