@@ -140,6 +140,17 @@ $routes = [
             ],
         ],
     ],
+
+    'favorite' => [
+        [
+            'name' => 'admin.favorites.guest',
+            'value' => 'イイネ管理',
+            'url' => route('admin.favorites.guest'),
+            'submenu' => [
+              'admin.favorites.cast',
+            ],
+        ],
+    ],
 ];
 @endphp
 
