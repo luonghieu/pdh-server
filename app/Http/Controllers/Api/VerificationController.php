@@ -28,7 +28,9 @@ class VerificationController extends ApiController
 
         $verification = $user->generateVerifyCode($phone);
 
-        $user->notify(new SendVerificationCode($verification->id));
+        $user->notify(
+            (new SendVerificationCode($verification->id))->delay(now()->addSeconds(2))
+        );
 
         return $this->respondWithNoData(trans('messages.verification_code_sent'));
     }
@@ -45,7 +47,9 @@ class VerificationController extends ApiController
         $newVerification = $user->generateVerifyCode($verification->phone);
 
         $admin = User::find(1);
-        $admin->notify(new ResendVerificationCode($newVerification->id));
+        $admin->notify(
+            (new ResendVerificationCode($newVerification->id))->delay(now()->addSeconds(3))
+        );
 
         return $this->respondWithNoData(trans('messages.verification_code_sent'));
     }
