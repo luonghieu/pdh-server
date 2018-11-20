@@ -77,18 +77,20 @@ $(document).ready(function(){
       helper.updateLocalStorageValue('order_offer', selectDuration);
     }
 
-
-    var date = '2018-11-28';
-
-    var time = hour+':'+minute;
+    var castIds = $('#current-cast-id-offer').val();
+    var totalCast = castIds.split(',');
+    var date = $('#current-date-offer').val();
+    var time = hour + ':' + minute;
+    var classId = $('#current-class-id-offer').val();
 
     var input = {
       date : date,
       start_time : time,
-      type :3,
+      type :2,
       duration :duration,
-      total_cast :1,
-      nominee_ids : '5'
+      total_cast :totalCast.length,
+      nominee_ids : castIds,
+      class_id :classId
     };
 
     window.axios.post('/api/v1/orders/price',input)
@@ -122,17 +124,20 @@ $(document).ready(function(){
 
     helper.updateLocalStorageValue('order_offer', params);
 
-    var date = '2018-11-28';
-    var time = hour+':'+minute;
+    var castIds = $('#current-cast-id-offer').val();
+    var totalCast = castIds.split(',');
+    var date = $('#current-date-offer').val();
+    var time = hour + ':' + minute;
+    var classId = $('#current-class-id-offer').val();
 
-    $castId = $('.cast-id').val();
     var input = {
       date : date,
       start_time : time,
-      type :3,
+      type :2,
       duration :duration,
-      total_cast :1,
-      nominee_ids : 5
+      total_cast :totalCast.length,
+      nominee_ids : castIds,
+      class_id : classId
     };
 
     window.axios.post('/api/v1/orders/price',input)
@@ -159,15 +164,24 @@ $(document).ready(function(){
     var startTimeFrom = $('#start-time-from-offer').val();
     startTimeFrom = startTimeFrom.split(":");
     var startHourFrom = startTimeFrom[0];
-    var startTimeTo = $('#start-time-to-offer').val();
+    var startMinuteFrom = startTimeFrom[1];
 
+    var startTimeTo = $('#start-time-to-offer').val();
+    startTimeTo = startTimeTo.split(":");
+    var startHourTo = startTimeTo[0];
+    var startMinuteTo = startTimeTo[1];
     var html = '';
-    Object.keys(response.data).forEach(function (key) {
-      if(key!='debug') {
-      html +='<option value="'+key+'">'+ response.data[key] +'</option>';
-      }
-    })
-  $('.select-date').html(html);
+
+    startMinuteFrom = hour == startHourFrom ? startMinuteFrom : 0;
+    startMinuteTo   = hour == startHourTo   ? startMinuteTo   : 59;
+
+    for (var i = startMinuteFrom; i <= startMinuteTo; i++) {
+      var value = i < 10 ? `0${i}` : i;
+
+      html += `<option value="${value}">${value}分</option>`;
+    }
+
+    $('.select-minute-offer').html(html);
   });
 
   //time
@@ -192,19 +206,24 @@ $(document).ready(function(){
         duration = $('.select-duration-offer option:selected').val();
       }
 
-      $castId = $('.cast-id').val();
+      var castIds = $('#current-cast-id-offer').val();
+      var totalCast = castIds.split(',');
+      var date = $('#current-date-offer').val();
+      var time = hour + ':' + minute;
+      var classId = $('#current-class-id-offer').val();
+
       var params = {
         date : date,
         start_time : time,
-        type :3,
+        type :2,
         duration :duration,
-        total_cast :1,
-        nominee_ids : $castId
+        total_cast :totalCast.length,
+        nominee_ids : castIds,
+        class_id : classId
       };
 
       window.axios.post('/api/v1/orders/price',params)
         .then(function(response) {
-          var totalPoint=cost*(duration*6)/3;
           totalPoint = response.data['data'];
           totalPoint = parseInt(totalPoint).toLocaleString(undefined,{ minimumFractionDigits: 0 });
           $('.total-amount').text(totalPoint +'P~');

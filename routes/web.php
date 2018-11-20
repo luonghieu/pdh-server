@@ -86,7 +86,7 @@ Route::group(['middleware' => ['auth', 'guest', 'check_info'], 'as' => 'guest.']
         Route::get('/orders/load_more', ['as' => 'orders_load_more', 'uses' => 'OrderController@loadMoreListOrder']);
         Route::get('/step3/load_more', ['as' => 'step3_load_more', 'uses' => 'OrderController@loadMoreListCast']);
         Route::get('/cast/{id}/call', ['as' => 'cast_detail', 'uses' => 'OrderController@castDetail'])->where('id', '[0-9]+');
-        Route::get('/offer/{id}', ['as' => 'offer', 'uses' => 'OrderController@offer'])->where('id', '[0-9]+');
+        Route::get('/offers/{id}', ['as' => 'offers', 'uses' => 'OrderController@offer'])->where('id', '[0-9]+');
     });
 });
 

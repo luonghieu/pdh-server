@@ -16,6 +16,8 @@
           <div class="cast-head">
           <div class="cast-body">
             @if(count($casts))
+            <input type="hidden" value="{{ implode(",", $offer->cast_ids) }}" id="current-cast-id-offer">
+            <input type="hidden" value="{{ $offer->class_id }}" id="current-class-id-offer">
              @php
               $class = '';
               switch ($offer->class_id) {
@@ -136,7 +138,7 @@
             </label>
             @endfor
             <label id="time-input" class="button button--green time {{ $offer->duration > 3 ? 'active' : '' }}">
-              <input class="input-duration-offer" type="radio" name="time_set_offer" value="other_time_set">
+              <input class="input-duration-offer" type="radio" name="time_set_offer" value="other_time_set"  {{ $offer->duration > 3 ? 'checked' : '' }}>
               4時間以上
             </label>
             <label class="time-input time-input-offer" style="{{  $offer->duration > 3 ? 'display: flex;' : '' }}">
@@ -185,11 +187,7 @@
             $startHour = (int)Carbon\Carbon::parse($offer->start_time_from)->format('H');
             $endHour = (int)Carbon\Carbon::parse($offer->start_time_to)->format('H');
 
-            $startMinute = Carbon\Carbon::parse($offer->start_time_from)->format('i');
-            $endMinute = Carbon\Carbon::parse($offer->start_time_to)->format('i');
-
-            $start = Carbon\Carbon::parse($offer->start_time_from)->format('H:i');
-            $end = Carbon\Carbon::parse($offer->start_time_to)->format('H:i');
+            $startMinute =  (int)Carbon\Carbon::parse($offer->start_time_from)->format('i');
 
             $arrHour = [];
             $check = true;
@@ -197,6 +195,7 @@
               if ($startHour == 24 ) {
                 $startHour = 0;
               }
+
               array_push($arrHour, $startHour);
 
               if ($startHour == $endHour) {
@@ -208,12 +207,12 @@
           @endphp
            <select class="select-hour-offer" name="select_hour_offer">
               @foreach($arrHour as $hour)
-                <option value="{{ ($hour <10 && $hour>=0 ) ? '0'.$hour : $hour }}" {{ $hour == $startHour ? 'selected' : '' }}>{{ ($hour <10 && $hour>=0 ) ? '0'.$hour : $hour }}時</option>
+                <option value="{{ ($hour <10) ? '0'.$hour : $hour }}" {{ $hour == $startHour ? 'selected' : '' }}>{{ ($hour <10 && $hour>=0 ) ? '0'.$hour : $hour }}時</option>
               @endforeach
            </select>
            <select class="select-minute-offer" name="select_minute_offer">
-              @foreach(range(00, 59) as $minute)
-                <option value="{{ $minute }}" {{ $startMinute == $minute ? 'selected' : '' }}>
+              @foreach(range($startMinute, 59) as $minute)
+                <option value="{{ $minute<10 ? '0'.$minute : $minute }}" {{ $startMinute == $minute ? 'selected' : '' }}>
                   {{ $minute<10 ? '0'.$minute : $minute }}分
                 </option>
               @endforeach
