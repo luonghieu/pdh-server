@@ -62,16 +62,16 @@
             <tbody>
               @if (empty($favorites->count()))
                 <tr>
-                  <td colspan="8">{{ trans('messages.results_not_found') }}</td>
+                  <td colspan="6">{{ trans('messages.results_not_found') }}</td>
                 </tr>
               @else
                 @foreach ($favorites as $key => $favorite)
                 <tr>
                   <td>{{ $favorites->firstItem() + $key }}</td>
                   <td>{{ $favorite->user_id }}</td>
-                  <td>{{ $favorite->user->nickname }}</td>
+                  <td><a href="{{ route('admin.users.show', $favorite->user_id) }}">{{ $favorite->user->nickname }}</a></td>
                   <td>{{ $favorite->favorited_id }}</td>
-                  <td>{{ $favorite->favorited->nickname }}</td>
+                  <td><a href="{{ route('admin.users.show', $favorite->favorited_id) }}">{{ $favorite->favorited->nickname }}</a></td>
                   <td>{{ Carbon\Carbon::parse($favorite->created_at)->format('Y/m/d H:i') }}</td>
                 </tr>
                 @endforeach
