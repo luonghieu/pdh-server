@@ -64,7 +64,7 @@ if (!function_exists('getDay')) {
         $date = \Carbon\Carbon::now()->addMinutes(60);
         $dayOfWeek = ['日', '月', '火', '水', '木', '金', '土'];
 
-        if (!$data['month']) {
+        if (!isset($data['month'])) {
             $data['month'] = $date->month;
         }
 
@@ -105,5 +105,38 @@ if (!function_exists('linkExtractor')) {
             }
         }
         return $linkArray;
+    }
+}
+
+if (!function_exists('listDate')) {
+    function listDate($data = null)
+    {
+        $currentDate = \Carbon\Carbon::now();
+        $currentMonth = $currentDate->format('m');
+        $currentDay = $currentDate->format('d');
+
+        if (!isset($data['month'])) {
+            $data['month'] = $currentDate->month;
+        }
+
+        if (!isset($data['year'])) {
+            $data['year'] = $currentDate->year;
+        }
+
+        $days = [];
+
+        $number = cal_days_in_month(CAL_GREGORIAN, $data['month'], $data['year']);
+
+        foreach (range(01, $number) as $val) {
+            if ($data['month'] == $currentMonth && $currentDay <= $val) {
+                $days[$val] = $val;
+            } else {
+                if ($data['month'] != $currentMonth) {
+                    $days[$val] = $val;
+                }
+            }
+        }
+
+        return $days;
     }
 }
