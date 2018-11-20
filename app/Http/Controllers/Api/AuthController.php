@@ -168,7 +168,7 @@ class AuthController extends ApiController
                 $input['line_qr'] = $lineImageName;
             }
 
-            if (md5($input['intro']) != md5($user->intro)) {
+            if (isset($input['intro']) && md5($input['intro']) != md5($user->intro)) {
                 $input['intro_updated_at'] = now();
             }
 

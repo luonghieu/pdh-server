@@ -2357,3 +2357,7 @@ padding-top: 65px !important;
 #top .tl-list .tl-item .info-text {
   word-break: break-all;
 }
+
+#chat .msg-input {
+  bottom: 10px;
+}
