@@ -89,7 +89,7 @@
                       <i class="icon-remove"></i>
                     </button>
                     <strong>
-                      asf
+                      訴求コメントは、80文字以内で入力してください
                     </strong>
                   </div>
                 </div>
