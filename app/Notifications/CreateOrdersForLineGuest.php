@@ -2,19 +2,20 @@
 
 namespace App\Notifications;
 
-use App\Enums\MessageType;
-use App\Enums\OrderType;
-use App\Enums\RoomType;
-use App\Enums\SystemMessageType;
 use App\Order;
 use Carbon\Carbon;
+use App\Enums\RoomType;
+use App\Enums\OrderType;
+use App\Enums\MessageType;
 use Illuminate\Bus\Queueable;
+use App\Enums\SystemMessageType;
+use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Notifications\Notification;
 use Illuminate\Contracts\Queue\ShouldQueue;
 
 class CreateOrdersForLineGuest extends Notification implements ShouldQueue
 {
-    use Queueable;
+    use Queueable, InteractsWithQueue;
 
     public $order;
 
@@ -25,9 +26,17 @@ class CreateOrdersForLineGuest extends Notification implements ShouldQueue
      */
     public function __construct($orderId)
     {
-        $order = Order::onWriteConnection()->findOrFail($orderId);
+        try {
+            $order = Order::onWriteConnection()->findOrFail($orderId);
 
-        $this->order = $order;
+            $this->order = $order;
+        } catch (\Exception $exception) {
+            logger('QUEUE FAILED:');
+            logger($exception->getMessage());
+            logger('Attempts: ' . $this->attempts());
+
+            $this->release(10);
+        }
     }
 
     /**
