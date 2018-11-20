@@ -80,12 +80,10 @@
              </div>
           </div>
           <div class="clear_fix"></div>
-          <div class="col-lg-12 wrap-qr-code">
-            <div class="col-sm-2 col-sm-offset-9">
-            <label class="lb-date-offer"></label>
-              <form action="">
-                <button type="submit" class="btn btn-accept">確認画面へ</button>
-              </form>
+          <div class="col-lg-12">
+            <div class="col-sm-4 col-sm-offset-8" style="text-align: center;">
+                <button data-toggle="modal" data-target="#save_url" class="btn btn-accept">URL発行する</button>
+                <button data-toggle="modal" data-target="#save_temporarily" class="btn btn-accept">確認画面へ</button>
             </div>
           </div>
         </div>
@@ -94,6 +92,41 @@
     </div>
   <!--/row-->
   </div>
+  <div class="modal fade" id="save_url" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-body">
+          <p>URLを発行しますか？</p>
+        </div>
+        <form action="{{ route('admin.offer.create') }}" method="POST">
+          {{ csrf_field() }}
+          <div class="modal-footer" style="text-align: center;">
+            <button type="button" class="btn btn-canceled" data-dismiss="modal">いいえ</button>
+            <button type="submit" class="btn btn-accept del-order">はい</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal fade" id="save_temporarily" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-body">
+          <p>チェックした予約を無効しますか？</p>
+        </div>
+        <form action="{{ route('admin.offer.create') }}" method="POST">
+          {{ csrf_field() }}
+          <input type="hidden" value="1" name="save_temporarily">
+          <div class="modal-footer" style="text-align: center;">
+            <button type="button" class="btn btn-canceled" data-dismiss="modal">いいえ</button>
+            <button type="submit" class="btn btn-accept del-order">はい</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
 @endsection
 @section('admin.js')
   <script src="/assets/admin/js/offer/offer.js"></script>

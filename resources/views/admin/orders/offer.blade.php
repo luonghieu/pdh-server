@@ -8,7 +8,12 @@
           <div class="search">
             <form class="navbar-form navbar-left form-search" action="{{route('admin.offer.index')}}" method="GET">
               <input type="text" class="form-control input-search" placeholder="ユーザーID,名前" name="search" value="{{request()->search}}">
-              <button type="submit" class="fa fa-search btn-search"></button>
+              <select class="form-control search-point-type" name="cast_class" style="margin-right: 15px;" id="class-id-offer">
+                @foreach ($castClasses as $castClass)
+                  <option value="{{ $castClass->id }}" {{ request()->cast_class == $castClass->id ? 'selected' : '' }}>{{ $castClass->name }}</option>
+                @endforeach
+              </select>
+              <button type="submit" class="fa fa-search btn-search" id="sbm-offer"></button>
               <span class="total-cast-offer">現在選択しているキャスト: 0名</span>
             </form>
           </div>
@@ -31,11 +36,12 @@
                   @endif
                 </a>
                 <div class="custom-checkbox" id="list-casts-offer">
-                  <input type="checkbox" name="casts_offer[]" value="{{ $cast['id'] }}" id="{{ $cast['id'] }}" class="cb-casts-offer">
+                  <input type="checkbox" name="casts_offer[]" data-id='{{ $cast['class_id'] }}' value="{{ $cast['id'] }}" id="{{ $cast['id'] }}" class="cb-casts-offer">
                 </div>
                 </div>
                 @endforeach
               @endif
+              <input type="hidden" value="" name="class_id_offer" class="class-id-offer">
               <div class="pagination-outter">
                 <ul class="pagination">
                   {{ $casts->appends(request()->all())->links() }}
@@ -43,12 +49,52 @@
               </div>
               <div class="clearfix"></div>
             </div>
+            @if(Session::has('cast_not_found'))
+              <div class="form-group error-end-coupon" >
+                <div class="alert alert-danger fade in col-sm-4">
+                  <button data-dismiss="alert" class="close close-sm" type="button">
+                    <i class="icon-remove"></i>
+                  </button>
+                  <strong>
+                    {{trans('messages.cast_not_found') }}
+                  </strong>
+                </div>
+              </div>
+            @endif
             <div class="col-lg-12 wrap-qr-code">
               <label for="comment-offer" class="lb-comment-offer">訴求コメントを入力する</label>
               <div class="col-sm-12 ">
                 <textarea class="form-control" rows="5" id="comment-offer" name='comment_offer' placeholder="キャストからのコメントを入力する"></textarea>
               </div>
             </div>
+            @if(Session::has('message_exits'))
+            <div class="col-lg-12 wrap-qr-code">
+              <div class="form-group error-end-coupon" >
+                <div class="alert alert-danger fade in col-sm-4">
+                  <button data-dismiss="alert" class="close close-sm" type="button">
+                      <i class="icon-remove"></i>
+                    </button>
+                    <strong>
+                      {{trans('messages.message_exits') }}
+                    </strong>
+                  </div>
+                </div>
+              </div>
+            @endif
+            @if(Session::has('message_invalid'))
+            <div class="col-lg-12 wrap-qr-code">
+              <div class="form-group error-end-coupon" >
+                <div class="alert alert-danger fade in col-sm-4">
+                  <button data-dismiss="alert" class="close close-sm" type="button">
+                      <i class="icon-remove"></i>
+                    </button>
+                    <strong>
+                      asf
+                    </strong>
+                  </div>
+                </div>
+              </div>
+            @endif
             <div class="col-lg-12 wrap-qr-code">
               <label class="lb-date-offer">訴求コメントを入力する</label>
             </div>
@@ -57,7 +103,7 @@
                  @php
                     $arrMonth = [11,12,1,2];
                   @endphp
-                <select id="" name="date_offer" class="form-control select-time date-offer">
+                <select name="date_offer" class="form-control select-time date-offer" id="select-date-offer">
                   @foreach ($arrMonth as $month)
                     @php
                       $data['month'] = $month;
@@ -103,6 +149,20 @@
                 </select>
               </div>
             </div>
+            @if(Session::has('date_not_valid'))
+            <div class="col-lg-12 wrap-qr-code">
+              <div class="form-group error-end-coupon" >
+                <div class="alert alert-danger fade in col-sm-4">
+                  <button data-dismiss="alert" class="close close-sm" type="button">
+                      <i class="icon-remove"></i>
+                    </button>
+                    <strong>
+                      {{trans('messages.date_not_valid') }}
+                    </strong>
+                  </div>
+                </div>
+              </div>
+            @endif
             <div class="col-lg-12 wrap-qr-code lb-date-offer">
               <label class="">ギャラ飲みの時間を選択する</label>
             </div>
@@ -125,7 +185,7 @@
                 @endphp
                 <select id="area_offer" name="area_offer" class="form-control select-time date-offer">
                   @foreach ($arrArea as $area)
-                    <option value="{{ $area }}">{{ $area }}</option>
+                    <option value="13">{{ $area }}</option>
                   @endforeach
                 </select>
               </div>

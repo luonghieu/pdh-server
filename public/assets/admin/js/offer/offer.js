@@ -12,10 +12,38 @@ $(document).ready(function(){
     localStorage.setItem(key, JSON.stringify(newData));
   }
 
+  $('#sbm-offer').on("click", function(event){
+    var classId = $('#class-id-offer').val();
+
+    if(localStorage.getItem("offer")){
+      var offer = JSON.parse(localStorage.getItem("offer"));
+      if(offer.arrIds) {
+        if (offer.class_id != classId) {
+          var params = {
+            arrIds: [],
+            class_id : classId,
+            current_point : 0,
+          }
+
+          updateLocalStorageValue('offer', params);
+        }
+      }
+    }
+  })
+
+  if(localStorage.getItem("offer")){
+    var offer = JSON.parse(localStorage.getItem("offer"));
+    if(offer.class_id) {
+      $('.class-id-offer').val(offer.class_id);
+    }
+  }
+
+
   //select-cast
   $(".iCheck-helper").on("click", function(event){
     var checkedId = $(this).siblings("input:checkbox[name='casts_offer[]']:checked").val();
     var searchId = $(this).siblings("input:checkbox[name='casts_offer[]']").val();
+    var classId = $(this).siblings("input:checkbox[name='casts_offer[]']").data("id");
 
     if(localStorage.getItem("offer")){
       var offer = JSON.parse(localStorage.getItem("offer"));
@@ -25,8 +53,12 @@ $(document).ready(function(){
 
         if(4 > arrIds.length && arrIds.length >= 0) {
           if(checkedId) {
-            $(this).css('opacity', 0);
-            arrIds.push(checkedId);
+            if (offer.class_id == classId) {
+              $(this).css('opacity', 0);
+              arrIds.push(checkedId);
+            } else {
+              $(this).css('opacity', 1);
+            }
           } else {
             $(this).css('opacity', 1);
 
@@ -46,6 +78,48 @@ $(document).ready(function(){
         var params = {
               arrIds: arrIds,
             };
+
+        if(arrIds.length) {
+          var nomineeIds = arrIds.toString();
+          var date =  $('.date-offer option:selected').val();
+          var duration = $("#duration_offer option:selected").val();
+          var time = $('#start_time_offer option:selected').val();
+          $('.class-id-offer').val(classId);
+          $.ajax({
+            headers: {
+              'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            },
+            type: "POST",
+            dataType: "html",
+            url: '/admin/offer/price',
+            data: {
+              date : date,
+              start_time : time,
+              type :5,
+              duration :duration,
+              total_cast :arrIds.length,
+              nominee_ids : nomineeIds,
+              class_id : classId
+            },
+            success: function( val ) {
+              $('.show-current-point-offer').text('予定合計ポイント : ' + val + 'P~' );
+              $('#current-point-offer').val(val);
+              var point = {
+                current_point: val,
+              };
+              updateLocalStorageValue('offer', point);
+            },
+          });
+        } else {
+          $('.show-current-point-offer').text('予定合計ポイント : 0P~' );
+          $('#current-point-offer').val(0);
+          var point = {
+            current_point: 0,
+          };
+          updateLocalStorageValue('offer', point);
+        }
+
+
       } else {
         //not isset arrIds
         var arrIds = [];
@@ -53,8 +127,42 @@ $(document).ready(function(){
           arrIds.push(checkedId);
         }
 
+      $('.class-id-offer').val(classId);
+      var nomineeIds = arrIds.toString();
+      var date =  $('.date-offer option:selected').val();
+      var duration = $("#duration_offer option:selected").val();
+      var time = $('#start_time_offer option:selected').val();
+
+      $.ajax({
+        headers: {
+          'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+        },
+        type: "POST",
+        dataType: "html",
+        url: '/admin/offer/price',
+        data: {
+          date : date,
+          start_time : time,
+          type :5,
+          duration :duration,
+          total_cast :arrIds.length,
+          nominee_ids : nomineeIds,
+          class_id : classId
+        },
+        success: function( val ) {
+          $('.show-current-point-offer').text('予定合計ポイント : ' + val + 'P~' );
+          $('#current-point-offer').val(val);
+          var point = {
+            current_point: val,
+          };
+          updateLocalStorageValue('offer', point);
+        },
+      });
+
+
         var params = {
-            arrIds: arrIds
+            arrIds: arrIds,
+            class_id: classId
           };
       }
     } else {
@@ -63,9 +171,41 @@ $(document).ready(function(){
       if(checkedId) {
         arrIds.push(checkedId);
       }
+      $('.class-id-offer').val(classId);
+      var nomineeIds = arrIds.toString();
+      var date =  $('.date-offer option:selected').val();
+      var duration = $("#duration_offer option:selected").val();
+      var time = $('#start_time_offer option:selected').val();
+
+      $.ajax({
+        headers: {
+          'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+        },
+        type: "POST",
+        dataType: "html",
+        url: '/admin/offer/price',
+        data: {
+          date : date,
+          start_time : time,
+          type :5,
+          duration :duration,
+          total_cast :arrIds.length,
+          nominee_ids : nomineeIds,
+          class_id : classId
+        },
+        success: function( val ) {
+          $('.show-current-point-offer').text('予定合計ポイント : ' + val + 'P~' );
+          $('#current-point-offer').val(val);
+          var point = {
+            current_point: val,
+          };
+          updateLocalStorageValue('offer', point);
+        },
+      });
 
       var params = {
-            arrIds: arrIds
+            arrIds: arrIds,
+            class_id: classId
           };
     }
 
@@ -96,6 +236,12 @@ $(document).ready(function(){
 
         var time = $('#start_time_offer option:selected').val();
 
+        if(offer.class_id) {
+          var classId = offer.class_id
+        } else {
+          var classId =1;
+        }
+
         $.ajax({
           headers: {
             'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
@@ -109,12 +255,12 @@ $(document).ready(function(){
             type :5,
             duration :duration,
             total_cast :offer.arrIds.length,
-            nominee_ids : nomineeIds
+            nominee_ids : nomineeIds,
+            class_id : classId
           },
           success: function( val ) {
-            console.log(val)
             $('.show-current-point-offer').text('予定合計ポイント : ' + val + 'P~' );
-            $('#current-point-offer').val(offer.current_point);
+            $('#current-point-offer').val(val);
             var point = {
               current_point: val,
             };
@@ -132,43 +278,62 @@ $(document).ready(function(){
     updateLocalStorageValue('offer', params);
   });
 
+  //date
+
+  $("#select-date-offer").on("change",function(){
+    var date = $("#select-date-offer option:selected").val();
+
+     var params = {
+        date: date,
+      };
+
+    updateLocalStorageValue('offer', params);
+  })
+
+
   //start_time
   $("#start_time_offer").on("change",function(){
     var time = $("#start_time_offer option:selected").val();
-
     if(localStorage.getItem("offer")){
       var offer = JSON.parse(localStorage.getItem("offer"));
-      if(offer.arrIds.length) {
-        var duration = $("#duration_offer option:selected").val();
-        var nomineeIds = offer.arrIds.toString();
-        var date =  $('.date-offer option:selected').val();
+      if(offer.arrIds) {
+        if(offer.arrIds.length) {
+          var duration = $("#duration_offer option:selected").val();
+          var nomineeIds = offer.arrIds.toString();
+          var date =  $('.date-offer option:selected').val();
 
-        $.ajax({
-          headers: {
-            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-          },
-          type: "POST",
-          dataType: "html",
-          url: '/admin/offer/price',
-          data: {
-            date : date,
-            start_time : time,
-            type :5,
-            duration :duration,
-            total_cast :offer.arrIds.length,
-            nominee_ids : nomineeIds
-          },
-          success: function( val ) {
-            console.log(val)
-            $('.show-current-point-offer').text('予定合計ポイント : ' + val + 'P~' );
-            $('#current-point-offer').val(offer.current_point);
-            var point = {
-              current_point: val,
-            };
-            updateLocalStorageValue('offer', point);
-          },
-        });
+          if(offer.class_id) {
+            var classId = offer.class_id
+          } else {
+            var classId =1;
+          }
 
+          $.ajax({
+            headers: {
+              'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            },
+            type: "POST",
+            dataType: "html",
+            url: '/admin/offer/price',
+            data: {
+              date : date,
+              start_time : time,
+              type :5,
+              duration :duration,
+              total_cast :offer.arrIds.length,
+              nominee_ids : nomineeIds,
+              class_id : classId
+            },
+            success: function( val ) {
+              $('.show-current-point-offer').text('予定合計ポイント : ' + val + 'P~' );
+              $('#current-point-offer').val(val);
+              var point = {
+                current_point: val,
+              };
+              updateLocalStorageValue('offer', point);
+            },
+          });
+        }
       }
     }
 
@@ -207,6 +372,12 @@ $(document).ready(function(){
           $(this).parent().addClass('checked');
         }
       })
+
+      if(offer.arrIds.length){
+        $('.show-current-point-offer').text('予定合計ポイント : ' + offer.current_point + 'P~' );
+        $('#current-point-offer').val(offer.current_point);
+        $('.class-id-offer').val(offer.class_id);
+      }
     }
 
     //comment
@@ -244,13 +415,15 @@ $(document).ready(function(){
       })
     }
 
-    //current_point
-    if(offer.current_point){
-      $('.show-current-point-offer').text('予定合計ポイント : ' + offer.current_point + 'P~' );
-      $('#current-point-offer').val(offer.current_point);
-
+    //date
+    if(offer.date){
+      const inputEndTime = $('select[name=date_offer] option');
+      $.each(inputEndTime,function(index,val){
+        if(val.value == offer.date) {
+          $(this).prop('selected',true);
+        }
+      })
     }
-
   }
 
 });
