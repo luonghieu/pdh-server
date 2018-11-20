@@ -159,17 +159,27 @@ class OrderController extends ApiController
                             false
                         );
 
-                        $nominee->notify(new CreateNominationOrdersForCast($order->id));
+                        $nominee->notify(
+                            (new CreateNominationOrdersForCast($order->id))->delay(now()->addSeconds(3))
+                        );
                     }
                 }
 
                 if (OrderType::NOMINATED_CALL == $order->type || OrderType::HYBRID == $order->type) {
                     $nominees = $order->nominees;
-                    \Notification::send($nominees, new CreateNominatedOrdersForCast($order->id));
+
+                    \Notification::send(
+                        $nominees,
+                        (new CreateNominatedOrdersForCast($order->id))->delay(now()->addSeconds(3))
+                    );
                 }
             } else {
                 $casts = Cast::where('class_id', $request->class_id)->get();
-                \Notification::send($casts, new CallOrdersCreated($order->id));
+
+                \Notification::send(
+                    $casts,
+                    (new CallOrdersCreated($order->id))->delay(now()->addSeconds(3))
+                );
             }
 
             DB::commit();
