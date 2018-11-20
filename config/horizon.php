@@ -88,8 +88,8 @@ return [
                 'queue' => ['default'],
                 'balance' => 'simple',
                 'processes' => 6,
-                'tries' => 3,
-                'delay'=> 10,
+                'tries' => 5,
+                'delay'=> 15,
             ],
         ],
 
