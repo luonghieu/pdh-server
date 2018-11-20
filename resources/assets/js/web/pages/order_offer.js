@@ -78,7 +78,7 @@ $(document).ready(function(){
     }
 
 
-    var date = '2018-11-17';
+    var date = '2018-11-28';
 
     var time = hour+':'+minute;
 
@@ -122,7 +122,7 @@ $(document).ready(function(){
 
     helper.updateLocalStorageValue('order_offer', params);
 
-    var date = '2018-11-17';
+    var date = '2018-11-28';
     var time = hour+':'+minute;
 
     $castId = $('.cast-id').val();
@@ -153,6 +153,22 @@ $(document).ready(function(){
         }
       });
   })
+
+  $('.select-hour-offer').on('change', function (e) {
+    var hour = $(this).val();
+    var startTimeFrom = $('#start-time-from-offer').val();
+    startTimeFrom = startTimeFrom.split(":");
+    var startHourFrom = startTimeFrom[0];
+    var startTimeTo = $('#start-time-to-offer').val();
+
+    var html = '';
+    Object.keys(response.data).forEach(function (key) {
+      if(key!='debug') {
+      html +='<option value="'+key+'">'+ response.data[key] +'</option>';
+      }
+    })
+  $('.select-date').html(html);
+  });
 
   //time
   $('.date-select-offer').on("click",function(){

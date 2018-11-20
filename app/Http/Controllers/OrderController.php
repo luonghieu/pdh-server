@@ -12,6 +12,7 @@ use App\Enums\PointType;
 use App\Enums\TagType;
 use App\Enums\UserType;
 use App\Notifications\AutoChargeFailedWorkchatNotify;
+use App\Offer;
 use App\Order;
 use App\Point;
 use App\Services\LogService;
@@ -946,6 +947,16 @@ class OrderController extends Controller
 
     public function offer(Request $request)
     {
-        return view('web.orders.offer');
+        try {
+            $id = $request->id;
+            $offer = Offer::find($id);
+
+            $casts = Cast::whereIn('id', $offer->cast_ids)->with(['job', 'castClass'])->get();
+        } catch (\Exception $e) {
+            LogService::writeErrorLog($e);
+            abort(500);
+        }
+
+        return view('web.orders.offer', compact('offer', 'casts'));
     }
 }

@@ -15,48 +15,44 @@
         <div class="cast-list">
           <div class="cast-head">
           <div class="cast-body">
+            @if(count($casts))
+             @php
+              $class = '';
+              switch ($offer->class_id) {
+                  case 1:
+                      $class = 'cast-class_b';
+                      break;
+                  case 2:
+                      $class = 'cast-class_p';
+                      break;
+                  case 3:
+                      $class = 'cast-class_d';
+                      break;
+              }
+              @endphp
+              @foreach($casts as $cast)
               <div class="cast-item cast-item-offer">
-                <a href="">
-                  <span class="tag cast-class_p">fadsfasdf</span>
+                <a href="{{ route('cast.show', $cast->id) }}">
+                  <span class="tag {{ $class }} ">{{ $cast->castClass->name }}</span>
+                  @if ($cast->working_today)
                   <span class="cast-ok">今日OK</span>
-                  <img src="http://cheers.test/storage/4ca093be755b42fb0cf9d639b62e5d96.jpg">
+                  @endif
+                  @if ($cast['avatars'] && @getimagesize($cast['avatars'][0]['thumbnail']))
+                  <img src="{{ $cast->avatars[0]['thumbnail'] }}">
+                  @else
+                  <img src="{{ asset('assets/web/images/gm1/ic_default_avatar@3x.png') }}">
+                  @endif
                   <div class="info">
-                    <span class="tick tick-online"></span>
-                    <span class="title-info">asdf  21歳</span>
+                    <span class="tick {{ $cast->is_online ? 'tick-online' : 'tick-offline' }}"></span>
+                    <span class="title-info">{{ $cast->job->name }}  {{ $cast->age }}歳</span>
                     <div class="wrap-description">
-                      <span class="description">xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx</span>
+                      <p class="description">{{ $cast->intro ? $cast->intro : '...' }}</p>
                     </div>
                   </div>
                 </a>
               </div>
-              <div class="cast-item cast-item-offer">
-                <a href="">
-                  <span class="tag cast-class_d">fadsfasdf</span>
-                  <span class="cast-ok">今日OK</span>
-                  <img src="http://cheers.test/storage/4ca093be755b42fb0cf9d639b62e5d96.jpg">
-                  <div class="info">
-                    <span class="tick tick-online"></span>
-                    <span class="title-info">asdf  21歳</span>
-                    <div class="wrap-description">
-                      <span class="description">xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx</span>
-                    </div>
-                  </div>
-                </a>
-              </div>
-              <div class="cast-item cast-item-offer">
-                <a href="">
-                  <span class="tag cast-class_b">fadsfasdf</span>
-                  <span class="cast-ok">今日OK</span>
-                  <img src="http://cheers.test/storage/4ca093be755b42fb0cf9d639b62e5d96.jpg">
-                  <div class="info">
-                    <span class="tick tick-online"></span>
-                    <span class="title-info">asdf  21歳</span>
-                    <div class="wrap-description">
-                      <span class="description">xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx</span>
-                    </div>
-                  </div>
-                </a>
-              </div>
+              @endforeach
+            @endif
           </div>
         </div>
       </div>
@@ -65,8 +61,7 @@
             <h2>キャストからのお誘いメッセージ</h2>
           </div>
           <div class="form-group">
-            <div class="cheer-input" rows="4">カラオケが好きです！！！普段は赤坂、六本木付近にいるので、いつでもお誘い待っています★
-            カラオケが好きです！！！普段は赤坂、六本木付近にいるので、いつでもお誘い待っています★</div>
+            <div class="cheer-input" rows="4">{{ $offer->comment }}</div>
           </div>
         </div>
 
@@ -84,8 +79,8 @@
             </label>
           </div>
           <div class="form-grpup"><!-- フォーム内容 -->
-            <label class="button button--green area active">
-              <input class="input-area-offer" type="radio" name="offer_area" value="六本木" checked>六本木</label>
+            <label class="button button--green area">
+              <input class="input-area-offer" type="radio" name="offer_area" value="六本木">六本木</label>
             <label class="button button--green area">
               <input class="input-area-offer" type="radio" name="offer_area" value="恵比寿">恵比寿</label>
             <label class="button button--green area">
@@ -119,14 +114,14 @@
           <div class="form-grpup"><!-- フォーム内容 -->
             <label class="date-input d-flex-end">
               <p class="date-input__text">
-                <span>2018年</span>
-                <span>7月</span>
-                <span>2日</span>&nbsp&nbsp&nbsp
-                <span class='time-offer'>21:30~</span>
+                <span>{{ Carbon\Carbon::parse($offer->date)->format('Y年m月d日') }}</span>&nbsp&nbsp&nbsp
+                <span class='time-offer'>{{ Carbon\Carbon::parse($offer->start_time_from)->format('H:i') }}~</span>
               </p>
             </label>
           </div>
-          <input type="hidden" name="current_date_offer" value="2018-11-20" id="current-date-offer">
+          <input type="hidden" name="current_date_offer" value="{{ $offer->date }}" id="current-date-offer">
+          <input type="hidden" name="start_time_from_offer" value="{{ Carbon\Carbon::parse($offer->start_time_from)->format('H:i') }}" id="start-time-from-offer">
+          <input type="hidden" name="start_time_to_offer" value="{{ Carbon\Carbon::parse($offer->start_time_to)->format('H:i') }}" id="start-time-to-offer">
         </div>
 
         <div class="reservation-item">
@@ -134,33 +129,23 @@
             <h2>キャストとを呼ぶ時間</h2>
           </div>
           <div class="form-grpup"><!-- フォーム内容 -->
-            <label class="button button--green time">
-              <input class="input-duration-offer" type="radio" name="time_set_offer" value="1">
-              1時間
+            @for($i=1; $i<4; $i++)
+            <label class="button button--green time {{ $i == $offer->duration ? 'active' : '' }}">
+              <input class="input-duration-offer" type="radio" name="time_set_offer" value="{{ $i }}" {{ $i == $offer->duration ? 'checked' : '' }} >
+              {{ $i }}時間
             </label>
-            <label class="button button--green time ">
-              <input class="input-duration-offer" type="radio" name="time_set_offer" value="2">
-              2時間
-            </label>
-            <label class="button button--green time active">
-              <input class="input-duration-offer" type="radio" name="time_set_offer" value="3" checked>
-              3時間
-            </label>
-            <label id="time-input" class="button button--green time">
+            @endfor
+            <label id="time-input" class="button button--green time {{ $offer->duration > 3 ? 'active' : '' }}">
               <input class="input-duration-offer" type="radio" name="time_set_offer" value="other_time_set">
               4時間以上
             </label>
-            <label class="time-input time-input-offer">
+            <label class="time-input time-input-offer" style="{{  $offer->duration > 3 ? 'display: flex;' : '' }}">
               <span>呼ぶ時間</span>
               <div class="selectbox">
                 <select class="select-duration-offer" name="sl_duration_offer">
-                  <option value="4" >4時間</option>
-                  <option value="5" >5時間</option>
-                  <option value="6" selected>6時間</option>
-                  <option value="7" >7時間</option>
-                  <option value="8" >8時間</option>
-                  <option value="9" >9時間</option>
-                  <option value="10" >10時間</option>
+                  @for ($i=4; $i <11; $i++)
+                  <option value="{{ $i }}" {{ $i == $offer->duration ? 'selected' : '' }}>{{ $i }}時間</option>
+                  @endfor
                 </select>
                 <i></i>
               </div>
@@ -178,7 +163,7 @@
           <div class="form-group">
             <div class="total-box">
               <span class="total-text">合計</span>
-              <span class="total-amount">60,000P~</span>
+              <span class="total-amount">{{ number_format($offer->temp_point) }}P~</span>
             </div>
 
             <div class="reservation-policy">
@@ -196,17 +181,42 @@
     <div class="overlay">
       <div class="date-select">
         <div class="date-select__content">
+          @php
+            $startHour = (int)Carbon\Carbon::parse($offer->start_time_from)->format('H');
+            $endHour = (int)Carbon\Carbon::parse($offer->start_time_to)->format('H');
+
+            $startMinute = Carbon\Carbon::parse($offer->start_time_from)->format('i');
+            $endMinute = Carbon\Carbon::parse($offer->start_time_to)->format('i');
+
+            $start = Carbon\Carbon::parse($offer->start_time_from)->format('H:i');
+            $end = Carbon\Carbon::parse($offer->start_time_to)->format('H:i');
+
+            $arrHour = [];
+            $check = true;
+            while($check){
+              if ($startHour == 24 ) {
+                $startHour = 0;
+              }
+              array_push($arrHour, $startHour);
+
+              if ($startHour == $endHour) {
+                $check = false;
+              }
+
+              $startHour+=1;
+            }
+          @endphp
            <select class="select-hour-offer" name="select_hour_offer">
-             <option value="20">20時</option>
-             <option value="21" selected>21時</option>
-             <option value="22">22時</option>
-             <option value="23">23時</option>
+              @foreach($arrHour as $hour)
+                <option value="{{ ($hour <10 && $hour>=0 ) ? '0'.$hour : $hour }}" {{ $hour == $startHour ? 'selected' : '' }}>{{ ($hour <10 && $hour>=0 ) ? '0'.$hour : $hour }}時</option>
+              @endforeach
            </select>
            <select class="select-minute-offer" name="select_minute_offer">
-             <option value="00">00分</option>
-             <option value="10">10分</option>
-             <option value="20" selected>20分</option>
-             <option value="30">30分</option>
+              @foreach(range(00, 59) as $minute)
+                <option value="{{ $minute }}" {{ $startMinute == $minute ? 'selected' : '' }}>
+                  {{ $minute<10 ? '0'.$minute : $minute }}分
+                </option>
+              @endforeach
            </select>
         </div>
         <div class="date-select__footer">

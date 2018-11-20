@@ -277,6 +277,9 @@
   font-family: Helvetica;
   font-size: 10px;
   color: #222222;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .cast-item.import {
