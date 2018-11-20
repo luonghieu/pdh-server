@@ -207,7 +207,9 @@ class LineController extends Controller
                 ]);
             }
 
-            $user->notify(new CreateGuest());
+            $user->notify(
+                (new CreateGuest())->delay(now()->addSeconds(3))
+            );
 
             return ['user' => $user, 'first_time' => true];
         }
