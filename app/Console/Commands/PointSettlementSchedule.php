@@ -44,27 +44,32 @@ class PointSettlementSchedule extends Command
     {
         $now = Carbon::now();
 
-        $orders = Order::where('payment_status', OrderPaymentStatus::REQUESTING)
+        $orders = Order::where(function ($query) {
+            $query->where('payment_status', OrderPaymentStatus::REQUESTING)
+                ->orWhere('payment_status', OrderPaymentStatus::PAYMENT_FAILED);
+        })
             ->where('payment_requested_at', '<=', $now->copy()->subHours(24))
-            ->whereHas('user', function($q) {
+            ->whereHas('user', function ($q) {
                 $q->where('provider', '<>', ProviderType::LINE)
                     ->orWhere('provider', null);
             })
             ->get();
         foreach ($orders as $order) {
-            PointSettlement::dispatchNow($order);
+            PointSettlement::dispatchNow($order->id);
         }
 
-        $lineOrders = Order::where('payment_status', OrderPaymentStatus::REQUESTING)
+        $lineOrders = Order::where(function ($query) {
+            $query->where('payment_status', OrderPaymentStatus::REQUESTING)
+                ->orWhere('payment_status', OrderPaymentStatus::PAYMENT_FAILED);
+        })
             ->where('payment_requested_at', '<=', $now->copy()->subHours(3))
-            ->whereHas('user', function($q) {
+            ->whereHas('user', function ($q) {
                 $q->where('provider', ProviderType::LINE);
             })
             ->get();
 
         foreach ($lineOrders as $order) {
-            PointSettlement::dispatchNow($order);
+            PointSettlement::dispatchNow($order->id);
         }
-
     }
 }

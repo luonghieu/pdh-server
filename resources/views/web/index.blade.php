@@ -12,13 +12,12 @@
       <div class="modal_overlay">
         <div class="modal_content modal_content-btn5">
           <div class="text-box">
-            <h2>牛年月日の登録をしよう!</h2>
+            <h2>生年月日の登録をしよう!</h2>
             <div>
               @php
                 $max = \Carbon\Carbon::parse(now())->subYear(20);
               @endphp
-              <div class="text-lable" id="js-text-date"><span>選択してください</span></div>
-              <input type="hidden" id="date-of-birth" name="date_of_birth" data-date="" max="{{ $max->format('Y-m-d') }}" data-date-format="YYYY年MM月DD日" value="{{ \Carbon\Carbon::parse(Auth::user()->date_of_birth)->format('Y-m-d') }}">
+              <input type="date" id="date-of-birth" name="date_of_birth" data-date="" max="{{ $max->format('Y-m-d') }}" data-date-format="YYYY年MM月DD日" value="{{ \Carbon\Carbon::parse(Auth::user()->date_of_birth)->format('Y-m-d') }}">
             </div>
             <label data-field="date_of_birth" id="date-of-birth-error" class="error help-block" for="date-of-birth"></label>
           </div>
@@ -27,7 +26,7 @@
       </div>
     </div>
   </form>
-  <div class="modal_wrap">
+  <div class="modal_wrap" id="input_birthday_modal">
     <input id="trigger3" type="checkbox">
       <div class="modal_overlay">
         <label for="trigger3" class="modal_trigger" id="profile-popup"></label>
@@ -38,6 +37,35 @@
         </div>
       </div>
   </div>
+
+  @if (Auth::check())
+    @if(Auth::user()->is_guest && Carbon\Carbon::parse(Auth::user()->created_at)->lt(Carbon\Carbon::parse('2018/11/10 00:00')) && Auth::user()->is_verified)
+      @include('web.users.popup')
+    @endif
+  @endif
+  @if (!Auth::user()->is_verified)
+  <div class="modal_wrap">
+    <input id="triggerVerify" type="checkbox">
+    <div class="modal_overlay">
+      <label for="trigger2" class="modal_trigger"></label>
+      <div class="modal_content modal_content-btn2">
+        <div class="text-box">
+          <h2>お知らせ</h2>
+          <p>SMSを利用して</p>
+          <p>本人確認を行ってください</p>
+        </div>
+        <div class="close_button-box">
+          <div class="close_button-block">
+            <label for="triggerVerify" class="close_button left">いいえ</label>
+          </div>
+          <div class="close_button-block">
+            <a href="{{ route('verify.index') }}"><label class="close_button right">本人確認をする</label></a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  @endif
 @endsection
 @section('web.content')
   @if (!Auth::check())
@@ -61,24 +89,24 @@
   <section class="button-box" style="display: none;">
     <label for="popup-date-of-birth" class="open_button button-settlement"></label>
   </section>
-  <div class="top-header">
-    <div class="user-data">
-      <div class="user-icon init-image-radius">
+  <div class="top-header-user">
+    <div class="wrap-user">
+      <div class="wrap-user-left">
         @if (Auth::user()->avatars && !empty(Auth::user()->avatars->first()->thumbnail))
           <img src="{{ Auth::user()->avatars->first()->thumbnail }}" alt="">
         @else
           <img src="{{ asset('assets/web/images/ge1/user_icon.svg') }}" alt="">
+        @endif
+        @if (Auth::user()->nickname)
+        <span class="user-name user-name-nickname">{{ Auth::user()->nickname }}</span>
         @endif
       </div>
       <a href="{{ route('profile.edit') }}" class="edit-button">
         <img src="{{ asset('assets/web/images/ge1/pencil.svg') }}" alt="">
       </a>
     </div>
-    @if (Auth::user()->nickname)
-    <span class="user-name">{{ Auth::user()->nickname }}</span>
-    @endif
   </div>
-  <a href="{{ route('guest.orders.call') }}" class="cast-call">今すぐキャストを呼ぶ<span>最短20分で合流!</span></a>
+
   @if ($order->resource)
   <div class="booking">
     <h2>現在の予約</h2>
@@ -109,9 +137,9 @@
           <li>
             <div class="top-image">
               @if (@getimagesize($cast->avatars->first()->thumbnail))
-              <img src="{{ $cast->avatars->first()->thumbnail }}" alt="">
+              <img class="lazy" data-src="{{ $cast->avatars->first()->thumbnail }}" alt="">
               @else
-              <img src="{{ asset('assets/web/images/gm1/ic_default_avatar@3x.png') }}" alt="">
+              <img class="lazy" data-src="{{ asset('assets/web/images/gm1/ic_default_avatar@3x.png') }}" alt="">
               @endif
             </div>
           </li>
@@ -123,6 +151,7 @@
     </div>
   </div>
   @endif
+  <a href="{{ route('guest.orders.call') }}" class="cast-call">今すぐキャストを呼ぶ<span>最短20分で合流!</span></a>
   <div class="cast-list">
     <div class="cast-head">
       <h2>在籍中のキャスト</h2>
@@ -163,22 +192,34 @@
       <a href="{{ route('cast.list_casts') }}" class="cast-item import"></a>
     </div>
   </div>
-  @if($token)
-    <script>
-        window.localStorage.setItem('access_token', '{{ $token }}');
-    </script>
-  @endif
+<!-- Timeline -->
+  <div class="timeline">
+    <div class="tl-head">
+      <h2>キャストのつぶやき</h2>
+    </div>
+
+    <div class="tl-list">
+    @foreach ($newIntros as $intro)
+      <div class="tl-item">
+        <div class="tl-item_avatar">
+          <a href="{{ route('cast.show', ['id' => $intro->id]) }}"><img src="{{ ($intro->avatars && @getimagesize($intro->avatars[0]->thumbnail)) ? $intro->avatars[0]->thumbnail :'/assets/web/images/gm1/ic_default_avatar@3x.png' }}" alt="avatar" class="image-intro"></a>
+        </div>
+
+        <div class="tl-item_info">
+          <h3 class="info-title">{{ str_limit($intro->nickname, 15) }}  {{ $intro->age }}歳</h3>
+          <p class="info-text">{{ $intro->intro }}</p>
+        </div>
+      </div>
+    @endforeach
+
+    </div>
+  </div>
 @endsection
 @section('web.script')
-  @if(empty(Auth::user()->date_of_birth))
+  @if(empty(Auth::user()->date_of_birth) && Auth::user()->is_verified)
     <script>
       $(function () {
         $('.open_button').trigger('click');
-
-        $('#js-text-date').on('click', function() {
-          $(this).hide();
-          $('#date-of-birth').attr('type', 'date');
-        });
       });
     </script>
   @endif
@@ -189,10 +230,10 @@
       if (popup_mypage) {
         $('#profile-popup').trigger('click');
         $('#profile-message h2').html(popup_mypage);
+        window.sessionStorage.removeItem('popup_mypage');
 
         setTimeout(() => {
-          $('#profile-popup').trigger('click');
-          window.sessionStorage.removeItem('popup_mypage');
+          $('#input_birthday_modal').css('display', 'none');
         }, 3000);
       }
     })
@@ -201,5 +242,8 @@
       localStorage.removeItem("back_link");
     }
 
+    if(localStorage.getItem("order_call")){
+      localStorage.removeItem("order_call");
+    }
   </script>
 @endsection

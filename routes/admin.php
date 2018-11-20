@@ -16,6 +16,15 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.'], function () {
         Route::get('{user}/cast_ratings', ['as' => 'cast_ratings', 'uses' => 'RatingController@ratings'])->where('user', '[0-9]+');
         Route::post('{user}/change_prefecture', ['as' => 'change_prefecture', 'uses' => 'UserController@changePrefecture'])->where('user', '[0-9]+');
         Route::post('{user}/change_cost', ['as' => 'change_cost', 'uses' => 'UserController@changeCost'])->where('user', '[0-9]+');
+        Route::post('{user}/change_rank', ['as' => 'change_rank', 'uses' => 'UserController@changeRank'])->where('user', '[0-9]+');
+        Route::delete('{user}', ['as' => 'delete', 'uses' => 'UserController@delete'])->where('user', '[0-9]+');
+    });
+
+    Route::group(['as' => 'avatars.', 'middleware' => 'is_admin'], function () {
+        Route::post('{user}/avatars', ['as' => 'upload', 'uses' => 'AvatarController@upload'])->where('user', '[0-9]+');
+        Route::post('{user}/avatars/{id}', ['as' => 'update', 'uses' => 'AvatarController@update']);
+        Route::patch('{user}/avatars/{id}', ['as' => 'set_avatar_default', 'uses' => 'AvatarController@setAvatarDefault']);
+        Route::delete('{user}/avatars/{id}', ['as' => 'delete', 'uses' => 'AvatarController@delete']);
     });
 
     Route::group(['namespace' => 'RequestTransfer', 'prefix' => 'request_transfer', 'as' => 'request_transfer.', 'middleware' => 'is_admin'], function () {
@@ -29,6 +38,7 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.'], function () {
         Route::get('{user}/register', ['as' => 'register', 'uses' => 'CastController@registerCast']);
         Route::post('{user}/confirm', ['as' => 'confirm', 'uses' => 'CastController@confirmRegister']);
         Route::post('{user}/save', ['as' => 'save', 'uses' => 'CastController@saveCast']);
+        Route::post('{user}/change_status_work', ['as' => 'change_status_work', 'uses' => 'CastController@changeStatusWork'])->where('user', '[0-9]+');
         Route::get('{user}/guest_ratings', ['as' => 'guest_ratings', 'uses' => 'RatingController@ratings'])->where('user', '[0-9]+');
         Route::get('{user}/operation_history', ['as' => 'operation_history', 'uses' => 'CastController@getOperationHistory'])->where('user', '[0-9]+');
         Route::put('{user}/operation_history', ['as' => 'change_point', 'uses' => 'CastController@changePoint'])->where('user', '[0-9]+');
@@ -105,5 +115,14 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.'], function () {
         Route::delete('/{notification_schedule}', ['as' => 'delete', 'uses' => 'NotificationScheduleController@delete'])->where('notification_schedules', '[0-9]+');
         Route::get('/', ['as' => 'index', 'uses' => 'NotificationScheduleController@getNotificationScheduleList']);
         Route::post('/upload', ['as' => 'upload', 'uses' => 'UploadImageController@upload']);
+    });
+
+    Route::group(['prefix' => 'verifications', 'as' => 'verifications.', 'middleware' => 'is_admin'], function () {
+        Route::get('/', ['as' => 'index', 'uses' => 'VerificationController@index']);
+    });
+
+    Route::group(['prefix' => 'favorites', 'as' => 'favorites.', 'middleware' => 'is_admin'], function () {
+        Route::get('/guest', ['as' => 'guest', 'uses' => 'FavoriteController@guest']);
+        Route::get('/cast', ['as' => 'cast', 'uses' => 'FavoriteController@cast']);
     });
 });

@@ -4,6 +4,14 @@
 @section('web.extra_css')
   <link rel="stylesheet" href="{{ mix('assets/web/css/gf_1.min.css') }}">
 @endsection
+
+@section('web.extra')
+@if (Auth::check())
+    @if(Auth::user()->is_guest && Carbon\Carbon::parse(Auth::user()->created_at)->lt(Carbon\Carbon::parse('2018/11/10 00:00')))
+      @include('web.users.popup')
+    @endif
+  @endif
+@endsection
 @section('web.content')
   <form id="search" method="GET" action="{{ route('cast.favorite') }}">
     @foreach (request()->all() as $key => $value)
@@ -32,6 +40,7 @@
   @endif
 @endsection
 @section('web.script')
+<!-- Change favorite -->
 <script>
   $(function () {
     $('#heart_off').click(function (e) {
@@ -42,16 +51,28 @@
   });
 </script>
 
+<!-- Load more list cast -->
 <script>
   $(function () {
     var requesting = false;
-    $(document).on('scroll', function () {
-      if ($(window).scrollTop() + $(window).height() == $(document).height() && requesting == false) {
+    var windowHeight = $(window).height();
+
+    function needToLoadmore() {
+      return requesting == false && $(window).scrollTop() >= $(document).height() - windowHeight - 500;
+    }
+
+    function handleOnLoadMore() {
+      // Improve load list image
+      $('.lazy').lazy({
+          placeholder: "data:image/gif;base64,R0lGODlhEALAPQAPzl5uLr9Nrl8e7..."
+      });
+
+      if (needToLoadmore()) {
         var url = $('#next_page').val();
 
         if (url) {
           requesting = true;
-          window.axios.get("<?php echo env('APP_URL')  . '/cast/list/more' ?>", {
+          window.axios.get("<?php echo env('APP_URL') . '/cast/list/more' ?>", {
             params: { next_page: url },
           }).then(function (res) {
             res = res.data;
@@ -63,7 +84,10 @@
           });
         }
       }
-    });
+    }
+
+    $(document).on('scroll', handleOnLoadMore);
+    $(document).ready(handleOnLoadMore);
   });
 </script>
 @endsection

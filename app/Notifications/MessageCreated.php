@@ -24,7 +24,7 @@ class MessageCreated extends Notification implements ShouldQueue
      */
     public function __construct($messageId)
     {
-        $message = Message::findOrFail($messageId);
+        $message = Message::onWriteConnection()->findOrFail($messageId);
 
         $this->message = $message;
     }

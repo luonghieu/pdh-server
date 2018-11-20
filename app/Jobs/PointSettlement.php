@@ -8,6 +8,7 @@ use App\Enums\PointType;
 use App\Enums\ProviderType;
 use App\Enums\UserType;
 use App\Notifications\AutoChargeFailed;
+use App\Notifications\AutoChargeFailedWorkchatNotify;
 use App\Order;
 use App\Point;
 use App\Services\LogService;
@@ -30,11 +31,11 @@ class PointSettlement implements ShouldQueue
     /**
      * Create a new job instance.
      *
-     * @param Order $order
+     * @param $orderId
      */
-    public function __construct(Order $order)
+    public function __construct($orderId)
     {
-        $this->order = $order;
+        $this->order = Order::onWriteConnection()->findOrFail($orderId);
     }
 
     /**
@@ -82,12 +83,19 @@ class PointSettlement implements ShouldQueue
 
             if ($e->getMessage() == 'Auto charge failed') {
                 $user = $this->order->user;
-                if ($user->provider == ProviderType::LINE && !$this->order->send_warning) {
-                    $this->order->user->notify(new AutoChargeFailed($this->order));
+                $user->suspendPayment();
+                if (!$this->order->send_warning) {
+                    $user->notify(new AutoChargeFailedWorkchatNotify($this->order));
+                    if (ProviderType::LINE == $user->provider) {
+                        $this->order->user->notify(new AutoChargeFailed($this->order));
+                    }
+
                     $this->order->send_warning = true;
+                    $this->order->payment_status = OrderPaymentStatus::PAYMENT_FAILED;
                     $this->order->save();
                 }
             }
+
             LogService::writeErrorLog($e);
         }
     }

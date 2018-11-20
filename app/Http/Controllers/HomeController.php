@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Cast;
 use App\Enums\OrderStatus;
 use App\Enums\UserType;
 use App\Http\Controllers\Controller;
@@ -25,13 +26,21 @@ class HomeController extends Controller
         if ($request->session()->has('data')) {
             $request->session()->forget('data');
         }
-
         if (Auth::check()) {
             $user = Auth::user();
             $token = '';
             $token = JWTAuth::fromUser($user);
 
-            if (UserType::GUEST == $user->type) {
+            $verification = $user->verification;
+            if (!$user->is_verified && $verification && !$verification->status) {
+                return redirect()->route('verify.code');
+            }
+
+            if (!$user->status) {
+                return view('web.users.verification', compact('token'));
+            }
+
+            if ($user->is_guest) {
                 $order = Order::with('casts')
                     ->where('user_id', Auth::user()->id)
                     ->where('status', OrderStatus::PROCESSING)
@@ -61,10 +70,12 @@ class HomeController extends Controller
                 $getContents = json_decode($response->getBody()->getContents());
                 $casts = $getContents->data;
 
-                return view('web.index', compact('token', 'order', 'casts'));
+                $newIntros = Cast::active()->whereNotNull('intro')->orderByDesc('intro_updated_at')->limit(10)->get();
+
+                return view('web.index', compact('token', 'order', 'casts', 'newIntros'));
             }
 
-            if (UserType::CAST == $user->type) {
+            if ($user->is_cast) {
                 return redirect()->route('web.cast_index');
             }
         }

@@ -2,20 +2,15 @@
 
 namespace App\Http\Resources;
 
-use App\Job;
-use App\Room;
-use App\Salary;
-use App\BodyType;
-use App\Enums\RoomType;
-use App\Enums\SmokingType;
-use App\Enums\SiblingsType;
 use App\Enums\CohabitantType;
 use App\Enums\DrinkVolumeType;
-use App\Traits\ResourceResponse;
-use App\Repositories\JobRepository;
-use App\Repositories\SalaryRepository;
+use App\Enums\SiblingsType;
+use App\Enums\SmokingType;
 use App\Repositories\BodyTypeRepository;
+use App\Repositories\JobRepository;
 use App\Repositories\PrefectureRepository;
+use App\Repositories\SalaryRepository;
+use App\Traits\ResourceResponse;
 use Illuminate\Http\Resources\Json\Resource;
 
 class GuestResource extends Resource
@@ -37,6 +32,7 @@ class GuestResource extends Resource
             'email' => $this->email,
             'nickname' => $this->nickname,
             'fullname' => $this->fullname,
+            'fullname_kana' => $this->fullname_kana,
             'phone' => $this->phone,
             'gender' => $this->gender,
             'date_of_birth' => $this->date_of_birth,
@@ -61,6 +57,7 @@ class GuestResource extends Resource
             'cohabitant_type' => $this->cohabitant_type,
             'cohabitant' => $this->cohabitant_type ? CohabitantType::getDescription($this->cohabitant_type) : '',
             'intro' => $this->intro,
+            'intro_updated_at' => $this->intro_updated_at,
             'description' => $this->description,
             'type' => $this->type,
             'status' => $this->status,
@@ -79,6 +76,7 @@ class GuestResource extends Resource
             'line_qr' => $this->line_qr,
             'post_code' => $this->post_code,
             'address' => $this->address,
+            'is_verified' => $this->is_verified,
         ]);
     }
 }

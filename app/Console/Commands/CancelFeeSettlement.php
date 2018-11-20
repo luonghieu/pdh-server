@@ -9,6 +9,7 @@ use App\Enums\PointType;
 use App\Enums\ProviderType;
 use App\Enums\UserType;
 use App\Notifications\AutoChargeFailed;
+use App\Notifications\AutoChargeFailedWorkchatNotify;
 use App\Order;
 use App\PaymentRequest;
 use App\Point;
@@ -55,7 +56,10 @@ class CancelFeeSettlement extends Command
         $now = Carbon::now();
 
         $orders = Order::where('status', OrderStatus::CANCELED)
-            ->whereNull('payment_status')
+            ->where(function ($query) {
+                $query->where('payment_status', null)
+                    ->orWhere('payment_status', OrderPaymentStatus::PAYMENT_FAILED);
+            })
             ->where('canceled_at', '<=', $now->copy()->subHours(24))
             ->where('cancel_fee_percent', '>', 0)
             ->whereHas('user', function ($q) {
@@ -63,17 +67,19 @@ class CancelFeeSettlement extends Command
                     ->orWhere('provider', null);
             })
             ->get();
-
         foreach ($orders as $order) {
             $this->processPayment($order, $now);
         }
 
         $lineOrders = Order::where('status', OrderStatus::CANCELED)
-            ->whereNull('payment_status')
+            ->where(function ($query) {
+                $query->orWhere('payment_status', null)
+                    ->orWhere('payment_status', OrderPaymentStatus::PAYMENT_FAILED);
+            })
             ->where('canceled_at', '<=', $now->copy()->subHours(3))
             ->where('cancel_fee_percent', '>', 0)->whereHas('user', function ($q) {
-                $q->where('provider', ProviderType::LINE);
-            })->get();
+            $q->where('provider', ProviderType::LINE);
+        })->get();
 
         foreach ($lineOrders as $order) {
             $this->processPayment($order, $now);
@@ -132,9 +138,15 @@ class CancelFeeSettlement extends Command
             \DB::rollBack();
             if ($e->getMessage() == 'Auto charge failed') {
                 $user = $order->user;
-                if ($user->provider == ProviderType::LINE && !$order->send_warning) {
-                    $order->user->notify(new AutoChargeFailed($order));
+                $user->suspendPayment();
+                if (!$order->send_warning) {
+                    $user->notify(new AutoChargeFailedWorkchatNotify($order));
+                    if (ProviderType::LINE == $user->provider) {
+                        $order->user->notify(new AutoChargeFailed($order));
+                    }
+
                     $order->send_warning = true;
+                    $order->payment_status = OrderPaymentStatus::PAYMENT_FAILED;
                     $order->save();
                 }
             }

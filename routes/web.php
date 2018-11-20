@@ -14,6 +14,10 @@ Route::group(['middleware' => 'auth'], function () {
     Route::group(['prefix' => 'profile', 'as' => 'profile.'], function () {
         Route::get('/', ['as' => 'index', 'uses' => 'ProfileController@index'])->middleware('check_info');
         Route::get('edit', ['as' => 'edit', 'uses' => 'ProfileController@edit']);
+
+        Route::group(['prefix' => 'verify', 'as' => 'verify.'], function () {
+            Route::get('/', ['as' => 'index', 'uses' => 'ProfileController@verify']);
+        });
     });
 
     Route::group(['middleware' => 'check_info'], function () {
@@ -57,6 +61,11 @@ Route::get('/login/line/callback', 'Auth\LineController@handleCallBack');
 Route::post('/line/webhook', 'Auth\LineController@webhook');
 Route::get('/cast_mypage', 'HomeController@castMypage')->name('web.cast_index');
 
+Route::group(['middleware' => 'auth', 'prefix' => 'verify', 'as' => 'verify.'], function () {
+    Route::get('/code', ['as' => 'code', 'uses' => 'UserController@code']);
+    Route::get('/', ['as' => 'index', 'uses' => 'UserController@verify']);
+});
+
 Route::group(['middleware' => ['auth', 'guest', 'check_info'], 'as' => 'guest.'], function () {
     Route::group(['as' => 'orders.'], function () {
         Route::get('/reserve', ['as' => 'reserve', 'uses' => 'OrderController@index']);
@@ -76,6 +85,7 @@ Route::group(['middleware' => ['auth', 'guest', 'check_info'], 'as' => 'guest.']
         Route::get('/nominate/step2', ['as' => 'nominate_step2', 'uses' => 'OrderController@nominateAttention']);
         Route::get('/orders/load_more', ['as' => 'orders_load_more', 'uses' => 'OrderController@loadMoreListOrder']);
         Route::get('/step3/load_more', ['as' => 'step3_load_more', 'uses' => 'OrderController@loadMoreListCast']);
+        Route::get('/cast/{id}/call', ['as' => 'cast_detail', 'uses' => 'OrderController@castDetail'])->where('id', '[0-9]+');;
     });
 });
 

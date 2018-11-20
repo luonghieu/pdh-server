@@ -9,6 +9,8 @@ return [
 
     'autocharge_point' => 3000,
 
+    'phone_number_rule' => env('PHONE_NUMBER_RULE', 'JP'),
+
     'order_options' => [
         'call_time' => [
             [
@@ -49,14 +51,14 @@ return [
                 'id' => 2,
                 'name' => 'プラチナ',
                 'cost' => 5000,
-                'is_active' => 0,
+                'is_active' => 1,
                 'url_image' => 'assets/web/images/ge2-1-a/grade-icon_002.png',
             ],
             [
                 'id' => 3,
                 'name' => 'ダイヤモンド',
                 'cost' => 12500,
-                'is_active' => 0,
+                'is_active' => 1,
                 'url_image' => 'assets/web/images/ge2-1-a/grade-icon_001.png',
             ],
         ],

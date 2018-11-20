@@ -136,6 +136,28 @@ $routes = [
             'value' => '新規オファー作成',
             'url' => route('admin.offer.index'),
             'submenu' => [
+          ],
+        ],
+    ],
+
+    'verification' => [
+        [
+            'name' => 'admin.verifications.index',
+            'value' => 'SMS認証管理',
+            'url' => route('admin.verifications.index'),
+            'submenu' => [
+
+            ],
+        ],
+    ],
+
+    'favorite' => [
+        [
+            'name' => 'admin.favorites.guest',
+            'value' => 'イイネ管理',
+            'url' => route('admin.favorites.guest'),
+            'submenu' => [
+              'admin.favorites.cast',
             ],
         ],
     ],

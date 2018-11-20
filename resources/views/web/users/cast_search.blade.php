@@ -2,7 +2,7 @@
 @section('screen.id', 'gf3')
 @extends('layouts.web')
 @section('web.extra_css')
-  <link rel="stylesheet" href="{{ asset('assets/web/css/gf_3.css') }}">
+  <link rel="stylesheet" href="{{ mix('assets/web/css/gf_3.min.css') }}">
   <link rel="stylesheet" href="{{ asset('assets/web/css/plugin/jRange/jquery.range.css') }}">
 @endsection
 @section('web.content')
@@ -65,5 +65,5 @@
 @endsection
 @section('web.extra_js')
   <script src="{{ asset('assets/web/js/jRange/jquery.range.js') }}"></script>
-  <script src="{{ asset('assets/web/js/gf-3.js') }}"></script>
+  <script src="{{ mix('assets/web/js/gf-3.min.js') }}"></script>
 @endsection

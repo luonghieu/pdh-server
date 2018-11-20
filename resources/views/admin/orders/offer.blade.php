@@ -135,7 +135,7 @@
                     $tNow = strtotime('+1 minutes',$tNow);
                   }
               @endphp
-              <div class="col-sm-4 col-sm-offset-1">
+              <div class="col-sm-6 col-sm-offset-1">
                 <select id="start_time_offer" name="start_time_offer" class="form-control select-time select-time-offer">
                   @foreach ($arrTime as $time)
                     <option value="{{ $time }}">{{ $time }}</option>
@@ -204,7 +204,7 @@
             </div>
             <div class="clear_fix"></div>
             <div class="col-lg-12 wrap-qr-code">
-              <div class="col-sm-2 col-sm-offset-9">
+              <div class="col-sm-2 col-sm-offset-9" style="text-align: center;">
               <label class="lb-date-offer"></label>
                   <button type="submit" class="btn btn-accept">確認画面へ</button>
               </div>

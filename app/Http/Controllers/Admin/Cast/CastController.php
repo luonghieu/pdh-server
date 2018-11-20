@@ -26,7 +26,7 @@ class CastController extends Controller
     public function index(Request $request)
     {
         $keyword = $request->search;
-        $orderBy = $request->only('last_active_at');
+        $orderBy = $request->only('last_active_at', 'rank');
         $casts = Cast::query();
 
         if ($request->has('from_date') && !empty($request->from_date)) {
@@ -114,6 +114,7 @@ class CastController extends Controller
             'date' => $date,
             'age' => $age,
             'prefecture_id' => $request->prefecture,
+            'rank' => $request->cast_rank,
         ];
 
         if ($request->bank_name && $request->number && $request->branch_name) {
@@ -177,6 +178,7 @@ class CastController extends Controller
             'date_of_birth' => $year . '-' . $month . '-' . $date,
             'type' => UserType::CAST,
             'prefecture_id' => $request->prefecture,
+            'rank' => $request->cast_rank,
         ];
 
         $user->update($data);
@@ -242,7 +244,10 @@ class CastController extends Controller
             PointCorrectionType::CONSUMPTION => '消費ポイント',
         ];
 
-        $points = $user->points()->with('order')
+        $with['order'] = function ($query) {
+            return $query->withTrashed();
+        };
+        $points = $user->points()->with($with)
             ->whereIn('type', [PointType::RECEIVE, PointType::TRANSFER, PointType::ADJUSTED])
             ->where('status', Status::ACTIVE);
 
@@ -386,5 +391,17 @@ class CastController extends Controller
         }
 
         return response()->json(['success' => true]);
+    }
+
+    public function changeStatusWork(Cast $user)
+    {
+        try {
+            $user->working_today = !$user->working_today;
+            $user->save();
+
+            return back();
+        } catch (\Exception $e) {
+            LogService::writeErrorLog($e);
+        }
     }
 }

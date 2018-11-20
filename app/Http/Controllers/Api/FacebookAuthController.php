@@ -64,18 +64,25 @@ class FacebookAuthController extends ApiController
 
     protected function findOrCreate($fbResponse, $avatar, $deviceType = null)
     {
-        $user = User::where('facebook_id', $fbResponse['id'])->first();
+        $email = (isset($fbResponse['email'])) ? $fbResponse['email'] : null;
+        $user = User::query();
+
+        if ($email) {
+            $user = $user->where('email', $email);
+        }
+
+        $user = $user->orWhere('facebook_id', $fbResponse['id'])->first();
 
         if (!$user) {
             $data = [
-                'email' => (isset($fbResponse['email'])) ? $fbResponse['email'] : null,
+                'email' => $email,
                 'fullname' => $fbResponse['name'],
                 'nickname' => (isset($fbResponse['first_name'])) ? $fbResponse['first_name'] : '',
                 'facebook_id' => $fbResponse['id'],
                 'date_of_birth' => (isset($fbResponse['birthday'])) ? Carbon::parse($fbResponse['birthday']) : null,
                 'gender' => (isset($fbResponse['gender'])) ? ($fbResponse['gender'] == 'male') ? UserGender::MALE : UserGender::FEMALE : null,
                 'type' => UserType::GUEST,
-                'status' => Status::ACTIVE,
+                'status' => Status::INACTIVE,
                 'provider' => ProviderType::FACEBOOK,
                 'device_type' => ($deviceType) ? $deviceType : DeviceType::WEB
             ];
@@ -94,6 +101,9 @@ class FacebookAuthController extends ApiController
 
             return $user;
         }
+
+        $user->device_type = ($deviceType) ? $deviceType : DeviceType::WEB;
+        $user->save();
 
         return $user;
     }

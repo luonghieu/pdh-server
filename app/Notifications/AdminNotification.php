@@ -44,16 +44,36 @@ class AdminNotification extends Notification implements ShouldQueue
             }
 
             if ($this->schedule->send_to == NotificationScheduleSendTo::ALL) {
-                return [CustomDatabaseChannel::class, LineBotNotificationChannel::class, PushNotificationChannel::class];
+                if ($notifiable->device_type == DeviceType::WEB) {
+                    return [CustomDatabaseChannel::class, LineBotNotificationChannel::class];
+                } else {
+                    return [CustomDatabaseChannel::class, PushNotificationChannel::class];
+                }
             }
 
-            if ($this->schedule->send_to == NotificationScheduleSendTo::WEB) {
+            if ($notifiable->device_type == DeviceType::WEB && $this->schedule->send_to == NotificationScheduleSendTo::WEB) {
                 return [CustomDatabaseChannel::class, LineBotNotificationChannel::class];
+            }
+
+            if ($notifiable->device_type == DeviceType::WEB && $this->schedule->send_to != NotificationScheduleSendTo::WEB) {
+                return [];
+            }
+
+            if ($notifiable->device_type == DeviceType::IOS && $this->schedule->send_to != NotificationScheduleSendTo::IOS) {
+                return [];
+            }
+
+            if ($notifiable->device_type == DeviceType::ANDROID && $this->schedule->send_to != NotificationScheduleSendTo::ANDROID) {
+                return [];
             }
 
             return [CustomDatabaseChannel::class, PushNotificationChannel::class];
         } else {
-            return [CustomDatabaseChannel::class, PushNotificationChannel::class];
+            if ($notifiable->device_type != DeviceType::WEB && $this->schedule->send_to != NotificationScheduleSendTo::WEB) {
+                return [CustomDatabaseChannel::class, PushNotificationChannel::class];
+            }
+
+            return [];
         }
     }
 

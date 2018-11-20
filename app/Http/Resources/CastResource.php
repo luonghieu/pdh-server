@@ -58,9 +58,11 @@ class CastResource extends Resource
             'cohabitant_type' => $this->cohabitant_type,
             'cohabitant' => $this->cohabitant_type ? CohabitantType::getDescription($this->cohabitant_type) : '',
             'intro' => $this->intro,
+            'intro_updated_at' => $this->intro_updated_at,
             'description' => $this->description,
             'type' => $this->type,
             'status' => $this->status,
+            'is_verified' => $this->is_verified,
             'cost' => $this->cost,
             'point' => $this->point,
             'total_point' => $this->total_point + $this->point,
@@ -87,6 +89,7 @@ class CastResource extends Resource
             'front_id_image' => $this->front_id_image,
             'post_code' => $this->post_code,
             'address' => $this->address,
+            'rank' => $this->rank,
         ]);
     }
 }
