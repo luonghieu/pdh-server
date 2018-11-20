@@ -48,11 +48,11 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.'], function () {
         Route::get('cast_rankings', ['as' => 'cast_rankings.index', 'uses' => 'CastRankingController@index']);
     });
 
-    Route::group(['middleware' => 'is_admin', 'as' => 'offer.'], function () {
-        Route::get('/offer', ['as' => 'index', 'uses' => 'Order\OrderController@offer']);
-        Route::post('/offer/confirm', ['as' => 'offer_confirm', 'uses' => 'Order\OrderController@confirmOffer']);
-        Route::post('/offer/price', ['as' => 'offer_price', 'uses' => 'Order\OrderController@price']);
-        Route::post('/offer/create', ['as' => 'create', 'uses' => 'Order\OrderController@createOrder']);
+    Route::group(['middleware' => 'is_admin', 'as' => 'offer.', 'prefix' => 'offers'], function () {
+        Route::get('/', ['as' => 'index', 'uses' => 'Order\OrderController@offer']);
+        Route::post('/confirm', ['as' => 'offer_confirm', 'uses' => 'Order\OrderController@confirmOffer']);
+        Route::post('/price', ['as' => 'offer_price', 'uses' => 'Order\OrderController@price']);
+        Route::post('/create', ['as' => 'create', 'uses' => 'Order\OrderController@createOrder']);
     });
 
     Route::group(['namespace' => 'Room', 'prefix' => 'rooms', 'as' => 'rooms.', 'middleware' => 'is_admin'], function () {

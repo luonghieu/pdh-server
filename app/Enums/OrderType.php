@@ -10,7 +10,6 @@ final class OrderType extends Enum
     const CALL = 2;
     const NOMINATION = 3;
     const HYBRID = 4;
-    const OFFER = 5;
 
     /**
      * Get the description for an enum value
