@@ -7,6 +7,7 @@ use App\Enums\UserType;
 use App\Http\Controllers\Controller;
 use App\Prefecture;
 use App\Repositories\CastClassRepository;
+use App\Repositories\PrefectureRepository;
 use App\User;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -68,6 +69,7 @@ class UserController extends Controller
         $prefectures = Prefecture::supported()->get();
 
         $castClasses = $this->castClass->all();
+        $user->living = $user->living_id ? app(PrefectureRepository::class)->find($user->living_id)->name : '';
 
         return view('admin.users.show', compact('user', 'castClasses', 'prefectures'));
     }
