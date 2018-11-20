@@ -77,8 +77,8 @@ return [
                 'queue' => ['default'],
                 'balance' => 'simple',
                 'processes' => 6,
-                'tries' => 3,
-                'delay'=> 5,
+                'tries' => 5,
+                'delay'=> 20,
             ],
         ],
 
@@ -89,7 +89,7 @@ return [
                 'balance' => 'simple',
                 'processes' => 6,
                 'tries' => 5,
-                'delay'=> 15,
+                'delay'=> 20,
             ],
         ],
 
