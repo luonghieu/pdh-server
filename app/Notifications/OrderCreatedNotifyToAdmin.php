@@ -8,7 +8,6 @@ use Illuminate\Bus\Queueable;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Notifications\Notification;
 use Illuminate\Contracts\Queue\ShouldQueue;
-use Illuminate\Database\Eloquent\ModelNotFoundException;
 
 class OrderCreatedNotifyToAdmin extends Notification implements ShouldQueue
 {
@@ -28,12 +27,12 @@ class OrderCreatedNotifyToAdmin extends Notification implements ShouldQueue
             $order = Order::onWriteConnection()->findOrFail($orderId);
 
             $this->order = $order;
-        } catch (ModelNotFoundException $exception) {
+        } catch (\Exception $exception) {
             logger('QUEUE FAILED:');
             logger($exception->getMessage());
             logger('Attempts: ' . $this->attempts());
 
-            return $this->release(10);
+            $this->release(10);
         }
     }
 
