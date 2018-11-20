@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Cast;
 use App\Enums\OrderStatus;
 use App\Enums\UserType;
 use App\Http\Controllers\Controller;
@@ -69,7 +70,9 @@ class HomeController extends Controller
                 $getContents = json_decode($response->getBody()->getContents());
                 $casts = $getContents->data;
 
-                return view('web.index', compact('token', 'order', 'casts'));
+                $newIntros = Cast::active()->whereNotNull('intro')->orderByDesc('intro_updated_at')->limit(10)->get();
+
+                return view('web.index', compact('token', 'order', 'casts', 'newIntros'));
             }
 
             if ($user->is_cast) {

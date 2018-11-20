@@ -77,8 +77,30 @@ return [
                 'queue' => ['default'],
                 'balance' => 'simple',
                 'processes' => 6,
+                'tries' => 5,
+                'delay'=> 30,
+            ],
+        ],
+
+        'staging' => [
+            'supervisor-1' => [
+                'connection' => 'redis',
+                'queue' => ['default'],
+                'balance' => 'simple',
+                'processes' => 6,
+                'tries' => 5,
+                'delay'=> 30,
+            ],
+        ],
+
+        'develop' => [
+            'supervisor-1' => [
+                'connection' => 'redis',
+                'queue' => ['default'],
+                'balance' => 'simple',
+                'processes' => 6,
                 'tries' => 3,
-                'delay' => 5,
+                'delay'=> 30,
             ],
         ],
 

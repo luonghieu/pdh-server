@@ -29,7 +29,7 @@
       <input type="hidden" id="working-today" value="{{ $cast['working_today'] }}">
       <span class="init-today text-bold">今日OK</span>
     @endif
-    @if (isset($cast['is_online']))
+    @if (isset($cast['is_online']) && $cast['last_active'])
       <input type="hidden" id="is-online" value="{{ $cast['is_online'] }}">
       <span class="init-status text-bold">
         <i class="{{ $cast['is_online'] ? 'online' : 'offline' }}"></i>

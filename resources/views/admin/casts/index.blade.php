@@ -91,15 +91,61 @@
                   @else
                   <td>{{ $cast->last_active }}</td>
                   @endif
-                  <td>{{ App\Enums\WorkingType::getDescription($cast->working_today) }}</td>
+                  <td>
+                    {{ App\Enums\WorkingType::getDescription($cast->working_today) }}
+                    @php
+                      if ($cast->working_today == App\Enums\WorkingType::LEAVING_WORK) {
+                        $workStatus = 'on-work';
+                      } else {
+                        $workStatus = 'leaving-work';
+                      }
+                    @endphp
+                    <button data-toggle="modal" data-target="#{{ $workStatus }}" data-url="{{ route('admin.casts.change_status_work', $cast->id) }}" id="change-status-work" class="btn btn-default">{{ ($cast->working_today == 1) ? '退勤'  : '出勤' }}</button>
+                  </td>
                   <td>{{ Carbon\Carbon::parse($cast->created_at)->format('Y/m/d H:i') }}</td>
-                  <td><a href="{{ route('admin.users.show', ['user' => $cast->id]) }}" class="btn-detail">詳細</a></td>
+                  <td><a href="{{ route('admin.users.show', ['user' => $cast->id]) }}" class="btn btn-detail">詳細</a></td>
                 </tr>
                 @endforeach
               @endif
             </tbody>
           </table>
         </div>
+        <!-- popup on work -->
+        <div class="modal fade" id="on-work" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+          <div class="modal-dialog" role="document">
+            <div class="modal-content">
+              <div class="modal-body">
+                <p>このキャストを"出勤中"にしますか？</p>
+              </div>
+              <form method="POST" class="form-action">
+                {{ csrf_field() }}
+                <div class="modal-footer">
+                  <button type="button" class="btn btn-canceled" data-dismiss="modal">いいえ</button>
+                  <button type="submit" class="btn btn-accept on-work">はい</button>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+        <!--  -->
+        <!-- popup leaving work -->
+        <div class="modal fade" id="leaving-work" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+          <div class="modal-dialog" role="document">
+            <div class="modal-content">
+              <div class="modal-body">
+                <p>このキャストを"退勤中"にしますか？</p>
+              </div>
+              <form method="POST" class="form-action">
+                {{ csrf_field() }}
+                <div class="modal-footer">
+                  <button type="button" class="btn btn-canceled" data-dismiss="modal">いいえ</button>
+                  <button type="submit" class="btn btn-accept leaving-work">はい</button>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+        <!--  -->
         <div class="col-lg-12">
           <div class="dataTables_info" id="DataTables_Table_0_info">
             @if ($casts->total())
@@ -118,4 +164,14 @@
   </div>
   <!--/row-->
 </div>
+@endsection
+@section('admin.js')
+  <script type="text/javascript">
+    $(function () {
+      $('body').on('click', '#change-status-work', function () {
+        var url = $(this).attr('data-url');
+        $('.form-action').attr('action', url);
+      });
+    });
+  </script>
 @endsection
