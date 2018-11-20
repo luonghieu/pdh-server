@@ -177,7 +177,7 @@
               </tr>
               <tr>
                 <th>基本情報：居住地</th>
-                <td>{{ $user->prefecture ? $user->prefecture->name : "" }}</td>
+                <td>{{ $user->living }}</td>
               </tr>
               <tr>
                 <th>基本情報：出身地</th>
