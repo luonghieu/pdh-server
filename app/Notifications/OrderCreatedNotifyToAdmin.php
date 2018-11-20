@@ -2,15 +2,16 @@
 
 namespace App\Notifications;
 
-use App\Enums\OrderType;
 use App\Order;
+use App\Enums\OrderType;
 use Illuminate\Bus\Queueable;
+use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Notifications\Notification;
 use Illuminate\Contracts\Queue\ShouldQueue;
 
 class OrderCreatedNotifyToAdmin extends Notification implements ShouldQueue
 {
-    use Queueable;
+    use Queueable, InteractsWithQueue;
 
     public $order;
 
@@ -22,9 +23,17 @@ class OrderCreatedNotifyToAdmin extends Notification implements ShouldQueue
      */
     public function __construct($orderId)
     {
-        $order = Order::onWriteConnection()->findOrFail($orderId);
+        try {
+            $order = Order::onWriteConnection()->findOrFail($orderId);
 
-        $this->order = $order;
+            $this->order = $order;
+        } catch (\Exception $exception) {
+            logger('QUEUE FAILED:');
+            logger($exception->getMessage());
+            logger('Attempts: ' . $this->attempts());
+
+            $this->release(10);
+        }
     }
 
     /**
