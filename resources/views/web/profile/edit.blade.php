@@ -214,7 +214,7 @@
                   <option value="" class="hidden">未設定</option>
                   @foreach ($glossaries['prefectures'] as $prefecture)
                     @php
-                      ($prefecture['id'] == $profile['prefecture_id']) ? ($selected = "selected='selected'") : ($selected = '')
+                      ($prefecture['id'] == $profile['living_id']) ? ($selected = "selected='selected'") : ($selected = '')
                     @endphp
                     <option value="{{ $prefecture['id'] }}" {{ $selected }}>
                       {{ $prefecture['name'] }}

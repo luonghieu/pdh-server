@@ -77,6 +77,8 @@ class GuestResource extends Resource
             'post_code' => $this->post_code,
             'address' => $this->address,
             'is_verified' => $this->is_verified,
+            'living_id' => $this->living_id,
+            'living' => $this->living_id ? app(PrefectureRepository::class)->find($this->living_id)->name : '',
         ]);
     }
 }

@@ -90,6 +90,8 @@ class CastResource extends Resource
             'post_code' => $this->post_code,
             'address' => $this->address,
             'rank' => $this->rank,
+            'living_id' => $this->living_id,
+            'living' => $this->living_id ? app(PrefectureRepository::class)->find($this->living_id)->name : '',
         ]);
     }
 }
