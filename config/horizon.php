@@ -78,7 +78,7 @@ return [
                 'balance' => 'simple',
                 'processes' => 6,
                 'tries' => 5,
-                'delay'=> 20,
+                'delay'=> 30,
             ],
         ],
 
@@ -89,7 +89,7 @@ return [
                 'balance' => 'simple',
                 'processes' => 6,
                 'tries' => 5,
-                'delay'=> 20,
+                'delay'=> 30,
             ],
         ],
 
