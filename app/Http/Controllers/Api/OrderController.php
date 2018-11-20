@@ -169,7 +169,11 @@ class OrderController extends ApiController
                 }
             } else {
                 $casts = Cast::where('class_id', $request->class_id)->get();
-                \Notification::send($casts, new CallOrdersCreated($order->id));
+
+                \Notification::send(
+                    $casts,
+                    (new CallOrdersCreated($order->id))->delay(now()->addSeconds(3))
+                );
             }
 
             DB::commit();
