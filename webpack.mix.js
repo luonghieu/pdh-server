@@ -37,4 +37,12 @@ mix.styles('public/assets/web/css/cast.css', 'public/assets/web/css/cast.min.css
 mix.js("resources/assets/js/app.js", "public/js").version();
 mix.js("resources/assets/js/web.js", "public/js").version();
 
+mix.js('public/assets/web/js/common.js', 'public/assets/web/js/common.min.js').version();
+mix.js('public/assets/web/js/gf-2.js', 'public/assets/web/js/gf-2.min.js').version();
+mix.js('public/assets/web/js/gf-3.js', 'public/assets/web/js/gf-3.min.js').version();
+mix.js('public/assets/web/js/ge-2-1-a.js', 'public/assets/web/js/ge-2-1-a.min.js').version();
+mix.js('public/assets/web/js/lazy/loading_image.js', 'public/assets/web/js/lazy/loading_image.min.js').version();
+mix.js('public/assets/webview/js/script.js', 'public/assets/webview/js/script.min.js').version();
+mix.js('public/assets/webview/js/create_card.js', 'public/assets/webview/js/create_card.min.js').version();
+
 

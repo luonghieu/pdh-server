@@ -55,7 +55,9 @@ class ReportController extends ApiController
         $input['room_id'] = $room->id;
         try {
             $report = Report::create($input);
-            $user->notify(new CreatedReport());
+            $user->notify(
+                (new CreatedReport())->delay(now()->addSeconds(3))
+            );
         } catch (\Exception $e) {
             LogService::writeErrorLog($e->getMessage());
 

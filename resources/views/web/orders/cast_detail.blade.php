@@ -16,13 +16,13 @@
       @if($cast['avatars'])
         @foreach ($cast['avatars'] as $avatar)
           @if (@getimagesize($avatar['path']))
-          <img class="lazy" data-src="{{ $avatar['path'] }}" alt="">
+          <img data-lazy="{{ $avatar['path'] }}" alt="">
           @else
-          <img class="lazy" data-src="{{ asset('assets/web/images/gm1/ic_default_avatar@3x.png') }}" alt="">
+          <img data-lazy="{{ asset('assets/web/images/gm1/ic_default_avatar@3x.png') }}" alt="">
           @endif
         @endforeach
       @else
-        <img class="image-default lazy" data-src="{{ asset('assets/web/images/gm1/ic_default_avatar@3x.png') }}" alt="">
+        <img class="image-default" data-lazy="{{ asset('assets/web/images/gm1/ic_default_avatar@3x.png') }}" alt="">
       @endif
     </div>
     @if ($cast['working_today'])

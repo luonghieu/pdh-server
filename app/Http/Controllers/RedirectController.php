@@ -40,6 +40,8 @@ class RedirectController extends Controller
             case 'credit_card':
                 \Session::put('order_history', $request->order_id);
                 return \Redirect::to(route('credit_card.update'));
+            case 'cast':
+                return \Redirect::to(route('cast.show', ['id' => $request->cast_id]));
             default:
                 return \Redirect::to(route('web.index'));
         }

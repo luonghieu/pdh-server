@@ -16,20 +16,20 @@
       @if($cast['avatars'])
         @foreach ($cast['avatars'] as $avatar)
           @if (@getimagesize($avatar['path']))
-          <img class="lazy" data-src="{{ $avatar['path'] }}">
+          <img data-lazy="{{ $avatar['path'] }}">
           @else
-          <img class="lazy" data-src="{{ asset('assets/web/images/gm1/ic_default_avatar@3x.png') }}">
+          <img data-lazy="{{ asset('assets/web/images/gm1/ic_default_avatar@3x.png') }}">
           @endif
         @endforeach
       @else
-        <img class="image-default lazy" data-src="{{ asset('assets/web/images/gm1/ic_default_avatar@3x.png') }}">
+        <img class="image-default" data-lazy="{{ asset('assets/web/images/gm1/ic_default_avatar@3x.png') }}">
       @endif
     </div>
     @if ($cast['working_today'])
       <input type="hidden" id="working-today" value="{{ $cast['working_today'] }}">
       <span class="init-today text-bold">今日OK</span>
     @endif
-    @if (isset($cast['is_online']))
+    @if (isset($cast['is_online']) && $cast['last_active'])
       <input type="hidden" id="is-online" value="{{ $cast['is_online'] }}">
       <span class="init-status text-bold">
         <i class="{{ $cast['is_online'] ? 'online' : 'offline' }}"></i>
@@ -198,7 +198,7 @@
   footer {
     height: 12%;
     padding-top: 0;
-    padding-bottom: 5px;
+    padding-bottom: 15px;
   }
 </style>
 @stop

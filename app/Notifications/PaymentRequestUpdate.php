@@ -2,14 +2,16 @@
 
 namespace App\Notifications;
 
+use App\Order;
 use App\Enums\RoomType;
 use App\Enums\UserType;
-use App\Order;
+use App\Enums\OrderType;
 use Illuminate\Bus\Queueable;
-use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
+use Illuminate\Contracts\Queue\ShouldQueue;
+use Illuminate\Notifications\Messages\MailMessage;
 
-class PaymentRequestUpdate extends Notification
+class PaymentRequestUpdate extends Notification implements ShouldQueue
 {
     use Queueable;
 
@@ -54,8 +56,12 @@ class PaymentRequestUpdate extends Notification
 
     public function rocketChatPushData($notifiable)
     {
-        $systemRoom = $this->order->user->rooms()->where('type', RoomType::SYSTEM)->first();
-        $link = route('admin.chat.index', ['room' => $systemRoom->id]);
+        if (OrderType::CALL == $this->order->type) {
+            $link = route('admin.orders.call', ['order' => $this->order->id]);
+        } else {
+            $link = route('admin.orders.order_nominee', ['room' => $this->order->id]);
+        }
+
         return [
             'text' => "売上申請の修正依頼がありました。[Link]($link)"
         ];

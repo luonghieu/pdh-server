@@ -249,11 +249,12 @@ class User extends Authenticatable implements JWTSubject
         $this->save();
     }
 
-    public function generateVerifyCode($phone)
+    public function generateVerifyCode($phone, $isResend = false)
     {
         $data = [
             'code' => rand(1000, 9999),
             'phone' => $phone,
+            'is_resend' => $isResend,
         ];
 
         if ($this->verification) {

@@ -1828,7 +1828,7 @@ div.user-data span.total-point-cast{
   background-color: white;
   bottom: 0;
   min-width: 92%;
-  height: 45px;
+  height: 60px;
   position: fixed;
   padding: 7px 15px;
 }
@@ -2313,4 +2313,51 @@ padding-top: 65px !important;
 .modal_overlay {
   top: 0;
   bottom: 0;
+}
+
+#top .top-header-user {
+  height: 55px;
+  margin-bottom: 20px;
+  position: relative;
+  border-bottom: 1px solid #e7e7e7;
+}
+
+#top .wrap-user .wrap-user-left img {
+  width: 40px;
+  height: 40px;
+  display: inline-block;
+  border-radius: 50%;
+  margin-left: 12px;
+  position: absolute;
+  top: 8px;
+}
+
+#top .user-name {
+  display: inline-block;
+}
+
+#top .wrap-user .wrap-user-left .user-name-nickname {
+  position: absolute;
+  bottom: 15px;
+  left: 60px;
+}
+
+#top .edit-button {
+  bottom: 10px;
+  right: 12px;
+}
+
+#top .image-intro {
+  width: 50px;
+  height: 50px;
+  -o-object-fit: cover;
+  object-fit: cover;
+}
+
+#top .tl-list .tl-item .info-text {
+  word-break: break-all;
+}
+
+#chat .msg-input {
+  bottom: 10px;
 }

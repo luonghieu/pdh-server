@@ -35,7 +35,7 @@ class AutoChargeFailedWorkchatNotify extends Notification implements ShouldQueue
 
     public function rocketChatPushData($notifiable)
     {
-        if (OrderType::CALL == $this->order->type) {
+        if (OrderType::NOMINATION != $this->order->type) {
             $link = route('admin.orders.call', ['order' => $this->order->id]);
         } else {
             $link = route('admin.orders.order_nominee', ['room' => $this->order->id]);

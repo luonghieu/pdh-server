@@ -38,6 +38,7 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.'], function () {
         Route::get('{user}/register', ['as' => 'register', 'uses' => 'CastController@registerCast']);
         Route::post('{user}/confirm', ['as' => 'confirm', 'uses' => 'CastController@confirmRegister']);
         Route::post('{user}/save', ['as' => 'save', 'uses' => 'CastController@saveCast']);
+        Route::post('{user}/change_status_work', ['as' => 'change_status_work', 'uses' => 'CastController@changeStatusWork'])->where('user', '[0-9]+');
         Route::get('{user}/guest_ratings', ['as' => 'guest_ratings', 'uses' => 'RatingController@ratings'])->where('user', '[0-9]+');
         Route::get('{user}/operation_history', ['as' => 'operation_history', 'uses' => 'CastController@getOperationHistory'])->where('user', '[0-9]+');
         Route::put('{user}/operation_history', ['as' => 'change_point', 'uses' => 'CastController@changePoint'])->where('user', '[0-9]+');
@@ -45,6 +46,13 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.'], function () {
 
     Route::group(['middleware' => 'is_admin'], function () {
         Route::get('cast_rankings', ['as' => 'cast_rankings.index', 'uses' => 'CastRankingController@index']);
+    });
+
+    Route::group(['middleware' => 'is_admin', 'as' => 'offer.', 'prefix' => 'offers'], function () {
+        Route::get('/', ['as' => 'index', 'uses' => 'Order\OrderController@offer']);
+        Route::post('/confirm', ['as' => 'offer_confirm', 'uses' => 'Order\OrderController@confirmOffer']);
+        Route::post('/price', ['as' => 'offer_price', 'uses' => 'Order\OrderController@price']);
+        Route::post('/create', ['as' => 'create', 'uses' => 'Order\OrderController@createOrder']);
     });
 
     Route::group(['namespace' => 'Room', 'prefix' => 'rooms', 'as' => 'rooms.', 'middleware' => 'is_admin'], function () {
@@ -111,5 +119,10 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.'], function () {
 
     Route::group(['prefix' => 'verifications', 'as' => 'verifications.', 'middleware' => 'is_admin'], function () {
         Route::get('/', ['as' => 'index', 'uses' => 'VerificationController@index']);
+    });
+
+    Route::group(['prefix' => 'favorites', 'as' => 'favorites.', 'middleware' => 'is_admin'], function () {
+        Route::get('/guest', ['as' => 'guest', 'uses' => 'FavoriteController@guest']);
+        Route::get('/cast', ['as' => 'cast', 'uses' => 'FavoriteController@cast']);
     });
 });

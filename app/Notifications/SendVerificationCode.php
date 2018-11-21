@@ -10,7 +10,7 @@ use Illuminate\Notifications\Messages\MailMessage;
 use NotificationChannels\Twilio\TwilioChannel;
 use NotificationChannels\Twilio\TwilioSmsMessage;
 
-class SendVerificationCode extends Notification
+class SendVerificationCode extends Notification implements ShouldQueue
 {
     use Queueable;
 

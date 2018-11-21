@@ -576,7 +576,12 @@ class OrderController extends Controller
         }
 
         $now = Carbon::now();
-        $order = Order::where('payment_status', OrderPaymentStatus::REQUESTING)->find($id);
+        $order = Order::where(function ($query) {
+            $query->where('payment_status', OrderPaymentStatus::REQUESTING)
+                ->orWhere('payment_status', OrderPaymentStatus::PAYMENT_FAILED);
+        })
+            ->find($id);
+
         if (!$order) {
             return redirect()->back();
         }
