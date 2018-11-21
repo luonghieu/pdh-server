@@ -39,10 +39,11 @@
   </div>
 
   @if (Auth::check())
-    @if(Auth::user()->is_guest && Carbon\Carbon::parse(Auth::user()->created_at)->lt(Carbon\Carbon::parse('2018/11/10 00:00')) && Auth::user()->is_verified)
+    @if(Auth::user()->is_guest && Auth::user()->is_verified && !Auth::user()->campaign_participated)
       @include('web.users.popup')
     @endif
   @endif
+
   @if (!Auth::user()->is_verified)
   <div class="modal_wrap">
     <input id="triggerVerify" type="checkbox">
