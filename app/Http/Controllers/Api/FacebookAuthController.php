@@ -97,7 +97,9 @@ class FacebookAuthController extends ApiController
                 ]);
             }
 
-            $user->notify(new CreateGuest());
+            $user->notify(
+                (new CreateGuest())->delay(now()->addSeconds(3))
+            );
 
             return $user;
         }

@@ -8,7 +8,7 @@ use Illuminate\Notifications\Notification;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
 
-class ResendVerificationCode extends Notification
+class ResendVerificationCode extends Notification implements ShouldQueue
 {
     use Queueable;
 
