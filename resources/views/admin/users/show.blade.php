@@ -243,9 +243,11 @@
                 }
               @endphp
                 @if($user->is_guest)
-                  <button type="button" class="btn btn-info" data-toggle="modal" data-target="#campaign_participated" {{ $user->campaign_participated ? 'disabled' : '' }}>
-                    11月キャンペーン利用完了
-                  </button>
+                  @if(!$user->campaign_participated)
+                    <button type="button" class="btn btn-info" data-toggle="modal" data-target="#campaign_participated">
+                      11月キャンペーン利用完了
+                    </button>
+                  @endif
                   <button type="button" class="btn btn-info" data-toggle="modal" data-target="#register_cast">キャストへ変更する</button>
                 @endif
                 @if($user->is_cast)
