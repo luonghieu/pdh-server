@@ -7,7 +7,9 @@ use App\Enums\OrderStatus;
 use App\Http\Controllers\Api\ApiController;
 use App\Http\Resources\OrderResource;
 use App\Notifications\PaymentRequestUpdate;
+use App\Notifications\PaymentRequestUpdateLineNotify;
 use App\Services\LogService;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 
 class PaymentRequestController extends ApiController
@@ -25,9 +27,11 @@ class PaymentRequestController extends ApiController
             return $this->respondErrorMessage(trans('messages.action_not_performed'), 422);
         }
         try {
+            $delay = Carbon::now()->addSeconds(3);
             $order->payment_status = OrderPaymentStatus::EDIT_REQUESTING;
             $order->save();
             $user->notify(new PaymentRequestUpdate($order));
+            $user->notify((new PaymentRequestUpdateLineNotify($order))->delay($delay));
 
             return $this->respondWithData(OrderResource::make($order));
         } catch (\Exception $e) {

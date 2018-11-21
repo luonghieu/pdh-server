@@ -9,8 +9,10 @@ use App\Message;
 use App\Notifications\DirectMessageNotifyToLine;
 use App\Notifications\MessageCreated;
 use App\Notifications\MessageCreatedFromAdmin;
+use App\Notifications\MessageCreatedLineNotify;
 use App\Notifications\MessageCreatedNotifyToAdmin;
 use App\User;
+use Carbon\Carbon;
 
 class MessageObserver
 {
@@ -48,8 +50,10 @@ class MessageObserver
         }
 
         if (RoomType::SYSTEM == $room->type && $message->user_id != 1) {
+            $delay = Carbon::now()->addSeconds(3);
             $admin = User::find(1);
             $admin->notify((new MessageCreatedNotifyToAdmin($room->id)));
+            $admin->notify((new MessageCreatedLineNotify($room->id))->delay($delay));
         }
 
         if (RoomType::SYSTEM == $room->type && $message->user_id == 1) {
