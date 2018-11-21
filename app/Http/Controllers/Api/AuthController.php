@@ -96,6 +96,7 @@ class AuthController extends ApiController
             'back_id_image' => 'image|mimes:jpeg,png,jpg,gif,svg|max:5120',
             'line_qr' => 'image|mimes:jpeg,png,jpg,gif,svg|max:5120',
             'fullname_kana' => 'string|regex:/^[ぁ-ん ]/u',
+            'prefecture_id' => 'numeric|exists:prefectures,id',
         ];
         $validator = validator(request()->all(), $rules);
 
@@ -141,6 +142,7 @@ class AuthController extends ApiController
             'address',
             'fullname_kana',
             'fullname',
+            'prefecture_id'
         ]);
 
         try {

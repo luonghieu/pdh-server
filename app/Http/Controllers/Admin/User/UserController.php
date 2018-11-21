@@ -69,7 +69,6 @@ class UserController extends Controller
         $prefectures = Prefecture::supported()->get();
 
         $castClasses = $this->castClass->all();
-        $user->living = $user->living_id ? app(PrefectureRepository::class)->find($user->living_id)->name : '';
 
         return view('admin.users.show', compact('user', 'castClasses', 'prefectures'));
     }
