@@ -85,10 +85,12 @@
         </div>
           <div class="details-total__marks">{{ number_format($data['temp_point']) .'P' }}</div>
         </div>
-        @if(Auth::user()->is_guest && Auth::user()->is_verified && !Auth::user()->campaign_participated && $data['cast_numbers'] < 3)
-          <div class="notify-campaign-confirm">
-            <span>キャンペーン運用の場合、キャストと合流後に無料時間分のポイントを付与いたします</span>
-          </div>
+        @if(Auth::user()->is_guest && Auth::user()->is_verified && !Auth::user()->campaign_participated)
+          @if ($data['cast_numbers'] < 3 || $data['obj_cast_class']->id < 2)
+            <div class="notify-campaign-confirm">
+              <span>※キャンペーン運用の場合、キャストと合流後に無料時間分のポイントを付与いたします</span>
+            </div>
+          @endif
         @endif
       </section>
     </div>

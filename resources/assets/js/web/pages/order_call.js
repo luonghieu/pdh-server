@@ -6,6 +6,21 @@ $(document).ready(function(){
 
   if($("#ge2-1-x input:radio[name='cast_class']:checked").length){
     $("#ge2-1-x input:radio[name='cast_class']:checked").parent().addClass("active");
+    var castClass = $("#ge2-1-x input:radio[name='cast_class']:checked").val();
+    if (castClass == 3) {
+      $('.notify-campaign-over-cast-class span').text('※”ダイヤモンド”はキャンペーン対象外です');
+      $('.notify-campaign-over-cast-class').css('display','block');
+    }
+
+    if (castClass == 2) {
+      $('.notify-campaign-over-cast-class span').text('※”プラチナ”はキャンペーン対象外です');
+      $('.notify-campaign-over-cast-class').css('display','block');
+    }
+
+    if (castClass == 1) {
+      $('.notify-campaign-over-cast-class').css('display','none');
+    }
+
   }
 
   if($("#ge2-1-x input:radio[name='time_set']:checked").length){
@@ -482,6 +497,10 @@ $(document).ready(function(){
 
   if(!maxCasts) {
     maxCasts =10;
+  }
+
+  if (checkNumber > 2) {
+    $('.notify-campaign-over').css('display','block');
   }
 
   if (checkNumber>1) {
