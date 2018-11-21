@@ -142,7 +142,7 @@
         <li class="portlet-content__item">
           <p class="portlet-content__text--list">居住地</p>
           <p class="portlet-content__value">
-            {{ (!$profile['living']) ? '未設定' : $profile['living'] }}
+            {{ (!$profile['prefecture']) ? '未設定' : $profile['prefecture'] }}
           </p>
         </li>
         <li class="portlet-content__item">

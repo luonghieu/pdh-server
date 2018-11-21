@@ -69,7 +69,7 @@ $(document).ready(function() {
         gender: $('#gender').val(),
         intro: $('#intro').val(),
         description: $('#description').val(),
-        living_id: $('#living-id').val(),
+        prefecture_id: $('#prefecture-id').val(),
         cost: $('#cost').val(),
         salary_id: $('#salary-id').val(),
         height: $('#height').val(),

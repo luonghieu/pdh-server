@@ -210,11 +210,11 @@
             <p class="portlet-content__text--list">居住地</p>
             <label class="time-input">
               <div class="selectbox">
-                <select dir="rtl" id="living-id">
+                <select dir="rtl" id="prefecture-id">
                   <option value="" class="hidden">未設定</option>
                   @foreach ($glossaries['prefectures'] as $prefecture)
                     @php
-                      ($prefecture['id'] == $profile['living_id']) ? ($selected = "selected='selected'") : ($selected = '')
+                      ($prefecture['id'] == $profile['prefecture_id']) ? ($selected = "selected='selected'") : ($selected = '')
                     @endphp
                     <option value="{{ $prefecture['id'] }}" {{ $selected }}>
                       {{ $prefecture['name'] }}

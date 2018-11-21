@@ -112,10 +112,10 @@
           </li>
           <li class="portlet-content__item">
             <p class="portlet-content__text--list">居住地</p>
-            @if (!$cast['living'])
+            @if (!$cast['prefecture'])
             <p class="portlet-content__text--list">未設定</p>
             @else
-            <p class="portlet-content__value">{{ $cast['living'] }}</p>
+            <p class="portlet-content__value">{{ $cast['prefecture'] }}</p>
             @endif
           </li>
           <li class="portlet-content__item">
