@@ -141,4 +141,12 @@ class UserController extends Controller
 
         return redirect()->route('admin.users.index');
     }
+
+    public function campaignParticipated(User $user)
+    {
+        $user->campaign_participated = true;
+        $user->save();
+
+        return redirect(route('admin.users.show', ['user' => $user->id]));
+    }
 }
