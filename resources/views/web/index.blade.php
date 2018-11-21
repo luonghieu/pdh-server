@@ -156,7 +156,7 @@
   <div class="cast-list">
     <div class="cast-head">
       <h2>在籍中のキャスト</h2>
-      <a href="{{ route('cast.list_casts') }}"><img class="head-icon" src="/assets/web/images/common/arrow-right.svg" alt="arrow-right"></a>
+      <a href="{{ route('cast.list_casts') }}"><h2>一覧</h2></a>
     </div>
 
     <div class="cast-body">

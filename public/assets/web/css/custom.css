@@ -2330,6 +2330,8 @@ padding-top: 65px !important;
   margin-left: 12px;
   position: absolute;
   top: 8px;
+  -o-object-fit: cover;
+  object-fit: cover;
 }
 
 #top .user-name {
