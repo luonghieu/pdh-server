@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Admin\User;
 
+use App\Enums\PointCorrectionType;
 use App\Enums\PointType;
 use App\Enums\Status;
 use App\Http\Controllers\Controller;
@@ -66,6 +67,11 @@ class PointController extends Controller
             PointType::AUTO_CHARGE => 'オートチャージ',
             PointType::ADJUSTED => '調整',
             PointType::EVICT => 'ポイント失効',
+        ];
+
+        $pointCorrectionTypes = [
+            PointCorrectionType::ACQUISITION => '取得ポイント',
+            PointCorrectionType::CONSUMPTION => '消費ポイント',
         ];
 
         $points = $user->points()->with('payment', 'order')->where('status', Status::ACTIVE);
@@ -152,7 +158,11 @@ class PointController extends Controller
             return;
         }
 
-        return view('admin.users.points_history', compact('user', 'points', 'sumAmount', 'sumPointPay', 'sumPointBuy', 'sumBalance', 'pointTypes'));
+        return view('admin.users.points_history', compact(
+            'user', 'points', 'sumAmount',
+            'sumPointPay', 'sumPointBuy', 'sumBalance',
+            'pointTypes', 'pointCorrectionTypes')
+        );
     }
 
     public function changePoint(User $user, Request $request)
@@ -167,12 +177,21 @@ class PointController extends Controller
             return response()->json(['errors' => $validator->errors()->all()], 400);
         }
 
-        $newPoint = $request->point;
-        $oldPoint = $user->point;
-        $differencePoint = $newPoint - $oldPoint;
+        switch ($request->correction_type) {
+            case PointCorrectionType::ACQUISITION:
+                $point = $request->point;
+                break;
+            case PointCorrectionType::CONSUMPTION:
+                $point = -$request->point;
+                break;
+
+            default:break;
+        }
+
+        $newPoint = $user->point + $point;
 
         $input = [
-            'point' => $differencePoint,
+            'point' => $point,
             'balance' => $newPoint,
             'type' => PointType::ADJUSTED,
             'status' => Status::ACTIVE,
@@ -190,7 +209,7 @@ class PointController extends Controller
             DB::rollBack();
             LogService::writeErrorLog($e);
 
-            return $this->respondServerError();
+            $request->session()->flash('msg', trans('messages.server_error'));
         }
 
         return response()->json(['success' => true]);

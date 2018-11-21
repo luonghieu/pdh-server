@@ -128,8 +128,17 @@
               <form action="{{ route('admin.users.change_point', ['user' => $user->id]) }}" method="POST" id="change-point-form">
                 {{ csrf_field() }}
                 {{ method_field('PUT') }}
-                <div class="change-point-input">
-                  <input type="text" name="point" id="point" value=""> P
+                <div class="change-point-input row">
+                  <div class="col-sm-offset-1 col-sm-4">
+                    <select class="form-control correction-type" id="correction-type" name="correction_type">
+                      @foreach ($pointCorrectionTypes as $key => $pointCorrectionType)
+                        <option value="{{ $key }}" {{ request()->correction_type == $key ? 'selected' : '' }}>{{ $pointCorrectionType }}</option>
+                      @endforeach
+                    </select>
+                  </div>
+                  <div class="col-sm-6">
+                    <input type="text" name="point" id="point" value=""> P
+                  </div>
                 </div>
                 <div class="modal-footer">
                   <button type="button" class="btn btn-canceled" data-dismiss="modal">キャンセル</button>
