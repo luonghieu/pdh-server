@@ -4,7 +4,6 @@ namespace App\Http\Controllers\Admin\Order;
 
 use App\Cast;
 use App\CastClass;
-use App\Enums\OfferStatus;
 use App\Enums\OrderPaymentStatus;
 use App\Enums\OrderStatus;
 use App\Enums\OrderType;
@@ -523,6 +522,7 @@ class OrderController extends Controller
                 'duration' => 'numeric|min:1|max:10',
                 'class_id' => 'exists:cast_classes,id',
                 'type' => 'required|in:1,2,3,4',
+
                 'nominee_ids' => '',
                 'total_cast' => 'required|numeric|min:1',
             ]
