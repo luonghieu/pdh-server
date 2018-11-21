@@ -3,9 +3,45 @@
 @section('web.extra_css')
 <link rel="stylesheet" href="{{ mix('assets/web/css/cast.min.css') }}">
 <link rel="stylesheet" href="{{ mix('assets/web/css/ge_4.min.css') }}">
-{{-- <link rel="stylesheet" href="{{ mix('assets/web/css/ge_1.min.css') }}"> --}}
 @endsection
 @extends('layouts.web')
+@section('web.extra')
+<div class="modal_wrap">
+    <input id="order-offer-popup" type="checkbox">
+    <div class="modal_overlay">
+        <label for="order-offer-popup" class="modal_trigger"></label>
+        <div class="modal_content modal_content-btn2">
+            <div class="text-box">
+                <h2>予約を確定しますか？</h2>
+                <p>確定後のキャンセルは<br>キャンセルポリシーに基づいて<br>キャンセル料が発生します</p>
+            </div>
+            <div class="close_button-box">
+                <div class="close_button-block">
+                    <label for="order-offer-popup" class="close_button  left">キャンセル</label>
+                </div>
+                <div class="close_button-block" id="lb-order-offer">
+                    <label class="close_button right">購入する</label>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal_wrap">
+  <input id="err-offer" type="checkbox">
+  <div class="modal_overlay">
+    <label for="err-offer" class="modal_trigger" id="lb-err-offer"></label>
+    <div class="modal_content modal_content-btn1">
+      <div class="text-box" id="err-offer-message">
+        <h2></h2>
+        <p></p>
+      </div>
+      <label for="err-offer" class="close_button">OK</label>
+    </div>
+  </div>
+</div>
+
+@endsection
 @section('web.content')
     <a href="javascript:void(0)" id="confirm-order-offer-submit" class="gtm-hidden-btn" onclick="dataLayer.push({
         'userId': '<?php echo Auth::user()->id; ?>',
@@ -15,6 +51,7 @@
         <div class="cast-list">
           <div class="cast-head">
           <div class="cast-body">
+            <input type="hidden" value="{{ $offer->id }}" class="offer-id">
             @if(count($casts))
             <input type="hidden" value="{{ implode(",", $offer->cast_ids) }}" id="current-cast-id-offer">
             <input type="hidden" value="{{ $offer->class_id }}" id="current-class-id-offer">
@@ -33,7 +70,7 @@
               }
               @endphp
               @foreach($casts as $cast)
-              <div class="cast-item cast-item-offer">
+              <div class="cast-item {{ count($casts) ==2 ? 'two-item' : 'cast-item-offer' }} img-offer">
                 <a href="{{ route('cast.show', $cast->id) }}">
                   <span class="tag {{ $class }} ">{{ $cast->castClass->name }}</span>
                   @if ($cast->working_today)
@@ -160,22 +197,27 @@
             <h2>クレジットカードの登録</h2>
           </div>
 
-          <a class="link-arrow link-arrow--left">未登録</a>
-
+          @if(!Auth::user()->card)
+          <a class="link-arrow link-arrow--left" href="{{ route('credit_card.index') }}" style="color: #222222;">未登録</a>
+          @else
+          <a class="link-arrow link-arrow--left" href="{{ route('credit_card.index') }}" style="color: #222222;">登録済み</a>
+          @endif
           <div class="form-group">
+            <div class="reservation-attention"><a href="{{ route('guest.orders.offers_attention') }}" style="margin: 10px 0px -7px">予約前の注意事項</a></div>
             <div class="total-box">
               <span class="total-text">合計</span>
               <span class="total-amount">{{ number_format($offer->temp_point) }}P~</span>
+              <input type="hidden" value="{{ $offer->temp_point }} " id="temp-point-offer">
             </div>
 
             <div class="reservation-policy">
-          <label class="checkbox">
-            <input type="checkbox" class="checked-order-offer" name="confrim_order_offer">
-            <span class="sp-disable" id="sp-cancel"></span>
-            <a href="{{ route('guest.orders.cancel') }}">キャンセルポリシー</a>
-            に同意する
-          </label>
-        </div>
+              <label class="checkbox">
+                <input type="checkbox" class="checked-order-offer" name="confrim_order_offer">
+                <span class="sp-disable" id="sp-cancel"></span>
+                <a href="{{ route('guest.orders.cancel') }}">キャンセルポリシー</a>
+                に同意する
+              </label>
+            </div>
           </div>
         </div>
       </form>
@@ -225,4 +267,24 @@
 
       </div>
     </div>
+@endsection
+
+@section('web.script')
+<script>
+window.onload = function () {
+
+  if ($('.two-item').length) {
+    var width = $('.two-item').width();
+    var height = width+50;
+    $('.two-item').css("height",height+"px");
+    $('.cast-body').css('overflow','hidden')
+
+  } else {
+    var width = $('.cast-item-offer').width();
+    var height = width+50;
+    $('.cast-item-offer').css("height",height+"px");
+  }
+
+};
+</script>
 @endsection

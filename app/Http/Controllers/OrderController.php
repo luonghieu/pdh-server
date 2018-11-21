@@ -959,4 +959,9 @@ class OrderController extends Controller
 
         return view('web.orders.offer', compact('offer', 'casts'));
     }
+
+    public function offerAttention()
+    {
+        return view('web.orders.nominate_attention');
+    }
 }

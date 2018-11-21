@@ -1857,7 +1857,7 @@ padding-top: 65px !important;
   width: calc(100% - 60px);
 }
 
-.ge2-1-b .reservation-attention {
+.reservation-attention {
   width: 100%;
   height: auto;
   margin-bottom: 8px;
@@ -1866,13 +1866,13 @@ padding-top: 65px !important;
   box-sizing: border-box;
 }
 
-.ge2-1-b .reservation-attention a {
+.reservation-attention a {
   color: #00C3C3;
   font-size: 12px;
   text-align: right;
 }
 
-.ge2-1-b .reservation-attention a:before {
+.reservation-attention a:before {
   content: "";
   display: inline-block;
   width: 1.5em;
