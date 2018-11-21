@@ -226,11 +226,13 @@
                 <td>{{ Carbon\Carbon::parse($user->created_at)->format('Y/m/d H:i') }}</td>
               </tr>
             </table>
+          </div>
+          <div class="col-lg-9">
             <div class="delete-user pull-left">
               <button type="button" class="btn btn-danger" data-toggle="modal"
                       data-target="#delete_user">アカウントを削除する</button>
             </div>
-            <div class="active-user">
+            <div class="active-user pull-right">
               @php
                 if($user->status == App\Enums\Status::ACTIVE) {
                   $nameId = "#inactiveModal";
@@ -241,6 +243,9 @@
                 }
               @endphp
                 @if($user->is_guest)
+                  <button type="button" class="btn btn-info" data-toggle="modal" data-target="#campaign_participated" {{ $user->campaign_participated ? 'disabled' : '' }}>
+                    11月キャンペーン利用完了
+                  </button>
                   <button type="button" class="btn btn-info" data-toggle="modal" data-target="#register_cast">キャストへ変更する</button>
                 @endif
                 @if($user->is_cast)
@@ -281,6 +286,23 @@
                   </label>
                   <div class="popup-error-message"></div>
                 </div><!--  -->
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="modal fade" id="campaign_participated" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+          <div class="modal-dialog" role="document">
+            <div class="modal-content">
+              <div class="modal-body">
+                <p>このゲストは11月キャンペーンを利用しましたか？</p>
+                <p>「はい」をタップすると、キャンペーン告知のポップアップが表示されなくなります。</p>
+              </div>
+              <div class="modal-footer">
+                <form action="{{ route('admin.users.campaign_participated',['user' => $user->id]) }}" method="post">
+                  {{ csrf_field() }}
+                  <button type="button" class="btn btn-canceled" data-dismiss="modal">キャンセル</button>
+                  <button type="submit" class="btn btn-accept">はい</button>
+                </form>
               </div>
             </div>
           </div>
