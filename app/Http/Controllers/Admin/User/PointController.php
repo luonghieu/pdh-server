@@ -78,6 +78,7 @@ class PointController extends Controller
 
         $fromDate = $request->from_date ? Carbon::parse($request->from_date)->startOfDay() : null;
         $toDate = $request->to_date ? Carbon::parse($request->to_date)->endOfDay() : null;
+        $limit = $request->limit;
 
         if ($fromDate) {
             $points->where(function ($query) use ($fromDate) {
