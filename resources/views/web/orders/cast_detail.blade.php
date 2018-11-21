@@ -3,7 +3,6 @@
 
 @extends('layouts.web')
 @section('web.content')
-@section('web.extra')
 <div class="cast-call">
   <section class="cast-photo">
     <div class="slider cast-photo__show">
