@@ -44,7 +44,7 @@ class VerificationController extends ApiController
             return $this->respondErrorMessage(trans('messages.action_not_performed'), 422);
         }
 
-        $newVerification = $user->generateVerifyCode($verification->phone);
+        $newVerification = $user->generateVerifyCode($verification->phone, true);
 
         $admin = User::find(1);
         $admin->notify(

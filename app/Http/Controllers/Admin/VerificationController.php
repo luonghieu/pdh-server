@@ -11,7 +11,7 @@ class VerificationController extends Controller
 {
     public function index(Request $request)
     {
-        $verifications = Verification::whereNull('status');
+        $verifications = Verification::whereNull('status')->where('is_resend', true);
 
         $keyword = $request->search;
 
