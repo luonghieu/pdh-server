@@ -39,10 +39,11 @@
   </div>
 
   @if (Auth::check())
-    @if(Auth::user()->is_guest && Carbon\Carbon::parse(Auth::user()->created_at)->lt(Carbon\Carbon::parse('2018/11/10 00:00')) && Auth::user()->is_verified)
+    @if(Auth::user()->is_guest && Auth::user()->is_verified && !Auth::user()->campaign_participated)
       @include('web.users.popup')
     @endif
   @endif
+
   @if (!Auth::user()->is_verified)
   <div class="modal_wrap">
     <input id="triggerVerify" type="checkbox">
@@ -155,7 +156,7 @@
   <div class="cast-list">
     <div class="cast-head">
       <h2>在籍中のキャスト</h2>
-      <a href="{{ route('cast.list_casts') }}"><img class="head-icon" src="/assets/web/images/common/arrow-right.svg" alt="arrow-right"></a>
+      <a href="{{ route('cast.list_casts') }}"><h2>一覧</h2></a>
     </div>
 
     <div class="cast-body">

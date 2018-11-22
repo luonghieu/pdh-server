@@ -7,10 +7,10 @@
 
 @section('web.extra')
 @if (Auth::check())
-    @if(Auth::user()->is_guest && Carbon\Carbon::parse(Auth::user()->created_at)->lt(Carbon\Carbon::parse('2018/11/10 00:00')))
-      @include('web.users.popup')
-    @endif
+  @if(Auth::user()->is_guest && Auth::user()->is_verified && !Auth::user()->campaign_participated)
+    @include('web.users.popup')
   @endif
+@endif
 @endsection
 @section('web.content')
   <form id="search" method="GET" action="{{ route('cast.favorite') }}">
