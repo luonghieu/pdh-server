@@ -74,7 +74,10 @@ class PointController extends Controller
             PointCorrectionType::CONSUMPTION => '消費ポイント',
         ];
 
-        $points = $user->points()->with('payment', 'order')->where('status', Status::ACTIVE);
+        $with = ['payment', 'order' => function($query) {
+            return $query->withTrashed();
+        }];
+        $points = $user->points()->with($with)->where('status', Status::ACTIVE);
 
         $fromDate = $request->from_date ? Carbon::parse($request->from_date)->startOfDay() : null;
         $toDate = $request->to_date ? Carbon::parse($request->to_date)->endOfDay() : null;
