@@ -124,5 +124,9 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.'], function () {
         Route::post('/', ['as' => 'store', 'uses' => 'OfferController@store']);
         Route::post('/confirm', ['as' => 'confirm', 'uses' => 'OfferController@confirm']);
         Route::post('/price', ['as' => 'price', 'uses' => 'OfferController@price']);
+        Route::get('/{offer}', ['as' => 'detail', 'uses' => 'OfferController@detail'])->where('offer', '[0-9]+');
+        Route::delete('/{offer}', ['as' => 'delete', 'uses' => 'OfferController@delete'])->where('offer', '[0-9]+');
+        Route::get('/edit/{offer}', ['as' => 'edit', 'uses' => 'OfferController@edit'])->where('offer', '[0-9]+');
+        Route::post('/edit_confirm', ['as' => 'edit_confirm', 'uses' => 'OfferController@editConfirm']);
     });
 });

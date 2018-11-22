@@ -18,7 +18,6 @@ use Session;
 
 class OfferController extends Controller
 {
-
     public function create(Request $request)
     {
         $castClasses = CastClass::all();
@@ -65,7 +64,7 @@ class OfferController extends Controller
             $casts['current_page'],
             [
                 'query' => $request->all(),
-                'path' => env('APP_URL') . '/admin/offers',
+                'path' => env('APP_URL') . '/admin/offers/create',
             ]
         );
 
@@ -232,5 +231,112 @@ class OfferController extends Controller
         }
 
         return redirect()->route('admin.offers.create');
+    }
+
+    public function detail(Offer $offer)
+    {
+        $casts = Cast::whereIn('id', $offer->cast_ids)->get();
+
+        return view('admin.offers.detail', compact('offer', 'casts'));
+    }
+
+    public function delete(Offer $offer)
+    {
+        $offer = Offer::findOrFail($offer->id);
+
+        $offer->delete();
+
+        return redirect()->route('admin.offers.create');
+    }
+
+    public function edit(Request $request, Offer $offer)
+    {
+        $castClasses = CastClass::all();
+
+        $client = new Client(['base_uri' => config('common.api_url')]);
+        $user = Auth::user();
+
+        $accessToken = JWTAuth::fromUser($user);
+
+        $option = [
+            'headers' => ['Authorization' => 'Bearer ' . $accessToken],
+            'form_params' => [],
+            'allow_redirects' => false,
+        ];
+
+        $classId = $request->cast_class;
+        if (!isset($classId)) {
+            $classId = $offer->class_id;
+        }
+        $params = [
+            'working_today' => 1,
+            'page' => $request->get('page', 1),
+            'latest' => 1,
+            'class_id' => $classId,
+        ];
+
+        if ($request->search) {
+            $params['search'] = $request->search;
+        }
+
+        try {
+            $casts = $client->get(route('casts.index', $params), $option);
+        } catch (\Exception $e) {
+            LogService::writeErrorLog($e);
+            abort(500);
+        }
+
+        $casts = json_decode(($casts->getBody())->getContents(), JSON_NUMERIC_CHECK);
+        $casts = $casts['data'];
+        $casts = new LengthAwarePaginator(
+            $casts['data'],
+            $casts['total'],
+            $casts['per_page'],
+            $casts['current_page'],
+            [
+                'query' => $request->all(),
+                'path' => env('APP_URL') . '/admin/offers/edit/' . $offer->id,
+            ]
+        );
+
+        return view('admin.offers.edit', compact('offer', 'casts', 'castClasses'));
+    }
+
+    public function editConfirm(Request $request)
+    {
+        $data['cast_ids'] = $request->casts_offer;
+        if (!isset($data['cast_ids'])) {
+            $request->session()->flash('cast_not_found', 'cast_not_found');
+
+            return redirect()->route('admin.offers.create');
+        }
+
+        $data['comment_offer'] = $request->comment_offer;
+        if (!isset($data['comment_offer'])) {
+            $request->session()->flash('message_exits', 'message_exits');
+
+            return redirect()->route('admin.offers.create');
+        }
+
+        if (80 < strlen($data['comment_offer'])) {
+            $request->session()->flash('message_invalid', 'message_invalid');
+
+            return redirect()->route('admin.offers.create');
+        }
+
+        $data['start_time'] = $request->start_time_offer;
+        $data['end_time'] = $request->end_time_offer;
+        $data['date_offer'] = $request->date_offer;
+        $data['duration_offer'] = $request->duration_offer;
+        $data['area_offer'] = $request->area_offer;
+        $data['current_point_offer'] = $request->current_point_offer;
+        $data['class_id_offer'] = $request->class_id_offer;
+        $data['offer_id'] = $request->offer_ids;
+
+        Session::put('offerConfirm', $data);
+
+        $casts = Cast::whereIn('id', $data['cast_ids'])->get();
+        dd($data);
+        return view('admin.offers.confirm', compact('casts', 'data'));
     }
 }

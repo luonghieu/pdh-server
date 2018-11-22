@@ -6,7 +6,7 @@
       <div class="panel panel-default">
         <div class="panel-body handling">
           <div class="search">
-            <form class="navbar-form navbar-left form-search" action="{{route('admin.offers.create')}}" method="GET">
+            <form class="navbar-form navbar-left form-search" action="{{route('admin.offers.edit', $offer->id )}}" method="GET">
               <input type="text" class="form-control input-search" placeholder="ユーザーID,名前" name="search" value="{{request()->search}}">
               <select class="form-control search-point-type" name="cast_class" style="margin-right: 15px;" id="class-id-offer">
                 @foreach ($castClasses as $castClass)
@@ -14,7 +14,7 @@
                 @endforeach
               </select>
               <button type="submit" class="fa fa-search btn-search" id="sbm-offer"></button>
-              <span class="total-cast-offer">現在選択しているキャスト: 0名</span>
+              <span class="total-cast-offer">現在選択しているキャスト: {{ count($offer->cast_ids) }} 名</span>
             </form>
           </div>
         </div>
@@ -22,15 +22,28 @@
         @include('admin.partials.notification')
         <div class="clearfix"></div>
         <div class="panel-body">
-          <form action="{{route('admin.offers.confirm')}}" method="POST">
+          <form action="{{route('admin.offers.edit_confirm')}}" method="POST">
             {{ csrf_field() }}
             <div class="col-lg-12 wrap-qr-code">
               @if(count($casts))
+                @php
+                  $castIds = implode(',', $offer->cast_ids);
+                @endphp
+                <input type="hidden" value="{{ $castIds }}" name="list_cast_ids" class="cast-ids-edit">
+                <input type="hidden" value="{{ $offer->temp_point }}" class="temp_point-edit">
+                <input type="hidden" value="{{ $offer->class_id }}" class="class_id-edit">
+                <input type="hidden" value="{{ $offer->id }}" name="offer_ids">
+                <input type="hidden" value="{{ $offer->date }}" class="date-offer-edit">
+                <input type="hidden" value="{{ Carbon\Carbon::parse($offer->start_time_from)->format('H:i') }}" class="start_time_from-edit">
+                <input type="hidden" value="{{ Carbon\Carbon::parse($offer->start_time_to)->format('H:i') }} }}" class="start_time_to-edit">
+                <input type="hidden" value="{{ $offer->duration }}" class="duration-edit">
+                <input type="hidden" value="{{ $offer->comment }}" class="comment-edit">
+
                 @foreach($casts as $cast)
                 <div class="list-avatar icon-cast">
                 <a href="{{ route('admin.users.show', ['id' => $cast['id'] ]) }}" class="cast-link cast-detail">
                   @if (@getimagesize($cast['avatars'][0]['thumbnail']))
-                    <img src="{{ $cast['avatars'][0]['thumbnail'] }}" alt="" class="adaf">
+                    <img src="{{ $cast['avatars'][0]['thumbnail'] }}" alt="">
                     @else
                     <img src="{{ asset('assets/web/images/gm1/ic_default_avatar@3x.png') }}" alt="">
                   @endif
@@ -138,13 +151,13 @@
               <div class="col-sm-6 col-sm-offset-1">
                 <select id="start_time_offer" name="start_time_offer" class="form-control select-time select-time-offer">
                   @foreach ($arrTime as $time)
-                    <option value="{{ $time }}">{{ $time }}</option>
+                    <option value="{{ $time }}" >{{ $time }}</option>
                   @endforeach
                 </select>
                 &nbsp;&nbsp;&nbsp; ~ &nbsp;&nbsp;&nbsp;
                 <select id="end_time_offer" name="end_time_offer" class="form-control select-time select-time-offer">
                   @foreach ($arrTime as $time)
-                    <option value="{{ $time }}">{{ $time }}</option>
+                    <option value="{{ $time }}" >{{ $time }}</option>
                   @endforeach
                 </select>
               </div>
@@ -170,7 +183,7 @@
               <div class="col-sm-4 ">
                 <select id="duration_offer" name="duration_offer" class="form-control select-time date-offer">
                   @foreach (range(1,10) as $duration)
-                    <option value="{{ $duration }}">{{ $duration }}時間</option>
+                    <option value="{{ $duration }}" >{{ $duration }}時間</option>
                   @endforeach
                 </select>
               </div>
