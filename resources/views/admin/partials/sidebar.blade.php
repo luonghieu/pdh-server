@@ -130,11 +130,11 @@ $routes = [
         ],
     ],
 
-    'offer' => [
+    'offers' => [
         [
-            'name' => 'admin.offer.index',
+            'name' => 'admin.offers.create',
             'value' => '新規オファー作成',
-            'url' => route('admin.offer.index'),
+            'url' => route('admin.offers.create'),
             'submenu' => [
           ],
         ],
