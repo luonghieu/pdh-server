@@ -500,6 +500,14 @@ $(document).ready(function(){
   }
 
   if (checkNumber > 2) {
+    if (checkNumber == 3) {
+      $('.notify-campaign-over span').text('※3名はキャンペーン対象外です');
+    }
+
+    if (checkNumber == 4) {
+      $('.notify-campaign-over span').text('※4名はキャンペーン対象外です');
+    }
+
     $('.notify-campaign-over').css('display','block');
   }
 
@@ -524,7 +532,13 @@ $(document).ready(function(){
       $(".cast-number__button-minus").prop('disabled', false);
     }
 
-    if(number_val >= 2 ) {
+    if(number_val == 2 ) {
+      $('.notify-campaign-over span').text('※3名はキャンペーン対象外です');
+      $('.notify-campaign-over').css('display','block');
+    }
+
+    if (number_val >= 3 ) {
+      $('.notify-campaign-over span').text('※4名はキャンペーン対象外です');
       $('.notify-campaign-over').css('display','block');
     }
 
@@ -551,9 +565,14 @@ $(document).ready(function(){
       $(".cast-number__button-plus").prop('disabled', false);
     }
 
+    if (number_val == 4 ) {
+      $('.notify-campaign-over span').text('※3名はキャンペーン対象外です');
+    }
+
     if(number_val < 4 ) {
       $('.notify-campaign-over').css('display','none');
     }
+
 
     if(number_val>0 && number_val !=1) {
       if(number_val==2) {
