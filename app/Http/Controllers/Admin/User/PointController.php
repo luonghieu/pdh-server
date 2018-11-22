@@ -51,6 +51,10 @@ class PointController extends Controller
                 $sum += $product->point;
             }
 
+            if ($product->is_adjusted) {
+                $sum += $product->point;
+            }
+
             return $sum;
         });
 
@@ -120,7 +124,7 @@ class PointController extends Controller
                     ($item->is_buy || $item->is_auto_charge) ? $item->id : '-',
                     ($item->is_pay) ? $item->order->id : '-',
                     ($item->is_adjusted || !$item->payment) ? '-' : '¥ ' . number_format($item->payment->amount),
-                    ($item->is_buy || $item->is_auto_charge) ? $item->point : '',
+                    ($item->is_buy || $item->is_auto_charge || $item->is_adjusted) ? $item->point : '',
                     ($item->is_pay) ? (-$item->point) : '-',
                     $item->balance,
                 ];
