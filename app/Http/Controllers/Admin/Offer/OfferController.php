@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin\Offer;
 
 use App\Cast;
 use App\CastClass;
+use App\Enums\OfferStatus;
 use App\Enums\OrderType;
 use App\Http\Controllers\Controller;
 use App\Offer;
@@ -18,6 +19,12 @@ use Session;
 
 class OfferController extends Controller
 {
+    public function index(Request $request)
+    {
+        $offers = Offer::orderByDesc('created_at')->paginate($request->limit ?: 10);
+
+        return view('admin.offers.index', compact('offers'));
+    }
 
     public function create(Request $request)
     {
@@ -65,7 +72,7 @@ class OfferController extends Controller
             $casts['current_page'],
             [
                 'query' => $request->all(),
-                'path' => env('APP_URL') . '/admin/offers',
+                'path' => env('APP_URL') . '/admin/offers/create',
             ]
         );
 
@@ -231,6 +238,6 @@ class OfferController extends Controller
             $request->session()->forget('offer');
         }
 
-        return redirect()->route('admin.offers.create');
+        return redirect()->route('admin.offers.index');
     }
 }

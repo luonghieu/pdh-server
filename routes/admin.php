@@ -120,6 +120,7 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.'], function () {
     });
 
     Route::group(['namespace' => 'Offer', 'prefix' => 'offers', 'as' => 'offers.', 'middleware' => 'is_admin'], function () {
+        Route::get('/', ['as' => 'index', 'uses' => 'OfferController@index']);
         Route::get('/create', ['as' => 'create', 'uses' => 'OfferController@create']);
         Route::post('/', ['as' => 'store', 'uses' => 'OfferController@store']);
         Route::post('/confirm', ['as' => 'confirm', 'uses' => 'OfferController@confirm']);
