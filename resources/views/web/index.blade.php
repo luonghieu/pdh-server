@@ -39,7 +39,7 @@
   </div>
 
   @if (Auth::check())
-    @if(Auth::user()->is_guest && Auth::user()->is_verified && !Auth::user()->campaign_participated)
+    @if(Auth::user()->is_guest && Auth::user()->is_verified && Auth::user()->date_of_birth && !Auth::user()->campaign_participated)
       @include('web.users.popup')
     @endif
   @endif
