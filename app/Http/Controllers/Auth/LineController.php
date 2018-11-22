@@ -237,19 +237,16 @@ class LineController extends Controller
 
             $pricesSrc = Storage::url('add_friend_prices_223011.png');
             $bannerSrc = Storage::url('add_friend_banner_223011.png');
-
             if (!@getimagesize($pricesSrc)) {
                 $fileContents = Storage::disk('local')->get("system_images/add_friend_prices_223011.png");
                 $fileName = 'add_friend_prices_223011.png';
                 Storage::put($fileName, $fileContents, 'public');
             }
-
             if (!@getimagesize($bannerSrc)) {
                 $fileContents = Storage::disk('local')->get("system_images/add_friend_banner_223011.jpg");
                 $fileName = 'add_friend_banner_223011.png';
                 Storage::put($fileName, $fileContents, 'public');
             }
-
 
             $message = '【1時間無料でギャラ飲み体験🥂💓】'
                 . PHP_EOL . '11月中にご利用いただいた方限定で、'
