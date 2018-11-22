@@ -44,7 +44,6 @@
                 <input type="hidden" name="from_date" value="{{ request()->from_date }}" />
                 <input type="hidden" name="to_date" value="{{ request()->to_date }}" />
                 <input type="hidden" name="search_point_type" value="{{ request()->search_point_type }}" />
-                <input type="hidden" name="page" value="{{ request()->page }}" />
               </div>
             </div>
           </form>
@@ -97,7 +96,7 @@
                     @else
                       <td>￥ {{ $point->payment ? number_format($point->payment->amount) : 0 }}</td>
                     @endif
-                    @if ($point->is_buy || $point->is_autocharge)
+                    @if ($point->is_buy || $point->is_autocharge || $point->is_adjusted)
                       <td>{{ number_format($point->point) }}</td>
                     @else
                       <td>-</td>
