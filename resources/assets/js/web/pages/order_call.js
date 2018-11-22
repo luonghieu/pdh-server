@@ -6,6 +6,21 @@ $(document).ready(function(){
 
   if($("#ge2-1-x input:radio[name='cast_class']:checked").length){
     $("#ge2-1-x input:radio[name='cast_class']:checked").parent().addClass("active");
+    var castClass = $("#ge2-1-x input:radio[name='cast_class']:checked").val();
+    if (castClass == 3) {
+      $('.notify-campaign-over-cast-class span').text('※”ダイヤモンド”はキャンペーン対象外です');
+      $('.notify-campaign-over-cast-class').css('display','block');
+    }
+
+    if (castClass == 2) {
+      $('.notify-campaign-over-cast-class span').text('※”プラチナ”はキャンペーン対象外です');
+      $('.notify-campaign-over-cast-class').css('display','block');
+    }
+
+    if (castClass == 1) {
+      $('.notify-campaign-over-cast-class').css('display','none');
+    }
+
   }
 
   if($("#ge2-1-x input:radio[name='time_set']:checked").length){
@@ -446,6 +461,20 @@ $(document).ready(function(){
   var castClass = $("input:radio[name='cast_class']");
   castClass.on("change",function(){
     var castClass = $("input:radio[name='cast_class']:checked").val();
+    if (castClass == 3) {
+      $('.notify-campaign-over-cast-class span').text('※”ダイヤモンド”はキャンペーン対象外です');
+      $('.notify-campaign-over-cast-class').css('display','block');
+    }
+
+    if (castClass == 2) {
+      $('.notify-campaign-over-cast-class span').text('※”プラチナ”はキャンペーン対象外です');
+      $('.notify-campaign-over-cast-class').css('display','block');
+    }
+
+    if (castClass == 1) {
+      $('.notify-campaign-over-cast-class').css('display','none');
+    }
+
     var area = $("input:radio[name='area']:checked").val();
     var otherArea = $("input:text[name='other_area']").val();
     var duration = $("input:radio[name='time_set']:checked").val();
@@ -470,6 +499,18 @@ $(document).ready(function(){
     maxCasts =10;
   }
 
+  if (checkNumber > 2) {
+    if (checkNumber == 3) {
+      $('.notify-campaign-over span').text('※3名はキャンペーン対象外です');
+    }
+
+    if (checkNumber == 4) {
+      $('.notify-campaign-over span').text('※4名はキャンペーン対象外です');
+    }
+
+    $('.notify-campaign-over').css('display','block');
+  }
+
   if (checkNumber>1) {
     if (checkNumber==maxCasts) {
       $(".cast-number__button-plus").prop('disabled', false);
@@ -491,6 +532,16 @@ $(document).ready(function(){
       $(".cast-number__button-minus").prop('disabled', false);
     }
 
+    if(number_val == 2 ) {
+      $('.notify-campaign-over span').text('※3名はキャンペーン対象外です');
+      $('.notify-campaign-over').css('display','block');
+    }
+
+    if (number_val >= 3 ) {
+      $('.notify-campaign-over span').text('※4名はキャンペーン対象外です');
+      $('.notify-campaign-over').css('display','block');
+    }
+
     if(number_val==(maxCasts-1)){
       $(this).css({"border": "1.5px #cccccc solid"});
       $(this).addClass('active');
@@ -506,7 +557,6 @@ $(document).ready(function(){
 
   $(".cast-number__button-minus").on("click",function(){
     var number_val = parseInt( $(".cast-number__value input").val());
-
     if(number_val ==1) {
       $(this).removeClass('active');
       $(this).attr("disabled", "disabled");
@@ -514,6 +564,15 @@ $(document).ready(function(){
     } else {
       $(".cast-number__button-plus").prop('disabled', false);
     }
+
+    if (number_val == 4 ) {
+      $('.notify-campaign-over span').text('※3名はキャンペーン対象外です');
+    }
+
+    if(number_val < 4 ) {
+      $('.notify-campaign-over').css('display','none');
+    }
+
 
     if(number_val>0 && number_val !=1) {
       if(number_val==2) {

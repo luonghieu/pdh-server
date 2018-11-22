@@ -83,7 +83,10 @@ class PointController extends Controller
             PointType::ADJUSTED => '調整',
         ];
 
-        $points = Point::whereIn('type', [PointType::BUY, PointType::AUTO_CHARGE, PointType::ADJUSTED]);
+        $with['user'] = function ($query) {
+            return $query->withTrashed();
+        };
+        $points = Point::with($with)->whereIn('type', [PointType::BUY, PointType::AUTO_CHARGE, PointType::ADJUSTED]);
 
         $fromDate = $request->from_date ? Carbon::parse($request->from_date)->startOfDay() : null;
         $toDate = $request->to_date ? Carbon::parse($request->to_date)->endOfDay() : null;
@@ -189,7 +192,10 @@ class PointController extends Controller
             UserType::CAST => 'キャスト',
         ];
 
-        $points = Point::with('user');
+        $with['user'] = function ($query) {
+            return $query->withTrashed();
+        };
+        $points = Point::with($with);
 
         $fromDate = $request->from_date ? Carbon::parse($request->from_date)->startOfDay() : null;
         $toDate = $request->to_date ? Carbon::parse($request->to_date)->endOfDay() : null;
@@ -297,7 +303,7 @@ class PointController extends Controller
         $fromDate = $request->from_date ? Carbon::parse($request->from_date)->startOfDay() : null;
         $toDate = $request->to_date ? Carbon::parse($request->to_date)->endOfDay() : null;
 
-        $users = User::with(['points' => function ($query) use ($fromDate, $toDate) {
+        $users = User::withTrashed()->with(['points' => function ($query) use ($fromDate, $toDate) {
             if ($fromDate) {
                 $query->where('points.created_at', '>=', $fromDate);
             }

@@ -2,15 +2,16 @@
 
 namespace App\Notifications;
 
-use App\Enums\OrderType;
+use App\Order;
 use App\Enums\RoomType;
 use App\Enums\UserType;
-use App\Order;
+use App\Enums\OrderType;
 use Illuminate\Bus\Queueable;
-use Illuminate\Notifications\Messages\MailMessage;
 use Illuminate\Notifications\Notification;
+use Illuminate\Contracts\Queue\ShouldQueue;
+use Illuminate\Notifications\Messages\MailMessage;
 
-class PaymentRequestUpdate extends Notification
+class PaymentRequestUpdate extends Notification implements ShouldQueue
 {
     use Queueable;
 

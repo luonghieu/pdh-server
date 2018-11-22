@@ -3,13 +3,6 @@
 
 @extends('layouts.web')
 @section('web.content')
-@section('web.extra')
-@if (Auth::check())
-    @if(Auth::user()->is_guest && Carbon\Carbon::parse(Auth::user()->created_at)->lt(Carbon\Carbon::parse('2018/11/10 00:00')))
-      @include('web.users.popup')
-    @endif
-  @endif
-@endsection
 <div class="cast-call">
   <section class="cast-photo">
     <div class="slider cast-photo__show">
