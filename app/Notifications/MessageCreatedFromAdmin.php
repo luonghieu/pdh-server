@@ -6,7 +6,7 @@ use App\Enums\DeviceType;
 use Illuminate\Bus\Queueable;
 use Illuminate\Notifications\Notification;
 use Illuminate\Contracts\Queue\ShouldQueue;
-use NotificationChannels\Twilio\Twilio;
+use NotificationChannels\Twilio\TwilioChannel;
 use NotificationChannels\Twilio\TwilioMmsMessage;
 
 class MessageCreatedFromAdmin extends Notification implements ShouldQueue
@@ -34,7 +34,7 @@ class MessageCreatedFromAdmin extends Notification implements ShouldQueue
     {
         if ($notifiable->device_type == DeviceType::WEB) {
             if ($notifiable->is_verified) {
-                return [LineBotNotificationChannel::class, Twilio::class];
+                return [LineBotNotificationChannel::class, TwilioChannel::class];
             }
 
             return [LineBotNotificationChannel::class];
