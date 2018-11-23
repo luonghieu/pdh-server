@@ -7,7 +7,7 @@ use Illuminate\Bus\Queueable;
 use Illuminate\Notifications\Notification;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use NotificationChannels\Twilio\TwilioChannel;
-use NotificationChannels\Twilio\TwilioMmsMessage;
+use NotificationChannels\Twilio\TwilioSmsMessage;
 
 class MessageCreatedFromAdmin extends Notification implements ShouldQueue
 {
@@ -73,10 +73,8 @@ class MessageCreatedFromAdmin extends Notification implements ShouldQueue
     {
         $content = 'Cheers運営局から新着メッセージが届きました。'
             . PHP_EOL . 'CheersのLINE内にあるメニューから、メッセージをご確認ください。';
-        $link = route('message.messages', ['room' => $this->room_id]);
 
-        return (new TwilioMmsMessage())
-            ->content($content)
-            ->mediaUrl($link);
+        return (new TwilioSmsMessage())
+            ->content($content);
     }
 }
