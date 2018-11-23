@@ -3,15 +3,11 @@
 namespace App\Notifications;
 
 use App\Enums\DeviceType;
-use App\Enums\ProviderType;
-use App\Message;
 use Illuminate\Bus\Queueable;
 use Illuminate\Notifications\Notification;
 use Illuminate\Contracts\Queue\ShouldQueue;
-use Illuminate\Notifications\Messages\MailMessage;
 use NotificationChannels\Twilio\Twilio;
 use NotificationChannels\Twilio\TwilioMmsMessage;
-use NotificationChannels\Twilio\TwilioSmsMessage;
 
 class MessageCreatedFromAdmin extends Notification implements ShouldQueue
 {
