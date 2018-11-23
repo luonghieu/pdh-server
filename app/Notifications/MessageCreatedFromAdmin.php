@@ -71,7 +71,7 @@ class MessageCreatedFromAdmin extends Notification implements ShouldQueue
 
     public function toTwilio($notifiable)
     {
-        $content = 'Cheers運営局から新着メッセージが届きました。'
+        $content = '[Cheers]運営局から新着メッセージが届きました。'
             . PHP_EOL . 'CheersのLINE内にあるメニューから、メッセージをご確認ください。';
 
         return (new TwilioSmsMessage())
