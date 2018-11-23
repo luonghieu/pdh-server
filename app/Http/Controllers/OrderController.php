@@ -11,6 +11,7 @@ use App\Enums\PaymentRequestStatus;
 use App\Enums\PointType;
 use App\Enums\TagType;
 use App\Enums\UserType;
+use App\Notifications\AutoChargeFailedLineNotify;
 use App\Notifications\AutoChargeFailedWorkchatNotify;
 use App\Order;
 use App\Point;
@@ -623,8 +624,9 @@ class OrderController extends Controller
             if ($e->getMessage() == 'Auto charge failed') {
                 $order->payment_status = OrderPaymentStatus::PAYMENT_FAILED;
                 $order->save();
-
+                $delay = Carbon::now()->addSeconds(3);
                 $user->notify(new AutoChargeFailedWorkchatNotify($order));
+                $user->notify((new AutoChargeFailedLineNotify($order))->delay($delay));
             }
 
             LogService::writeErrorLog($e);
