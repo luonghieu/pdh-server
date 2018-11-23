@@ -7,7 +7,6 @@ use App\Enums\UserType;
 use App\Http\Controllers\Controller;
 use App\Prefecture;
 use App\Repositories\CastClassRepository;
-use App\Repositories\PrefectureRepository;
 use App\User;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -64,8 +63,10 @@ class UserController extends Controller
         return view('admin.users.index', compact('users'));
     }
 
-    public function show(User $user)
+    public function show($user)
     {
+        $user = User::withTrashed()->find($user);
+
         $prefectures = Prefecture::supported()->get();
 
         $castClasses = $this->castClass->all();
