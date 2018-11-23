@@ -5,7 +5,6 @@ namespace App\Notifications;
 use Illuminate\Bus\Queueable;
 use Illuminate\Notifications\Notification;
 use Illuminate\Contracts\Queue\ShouldQueue;
-use Illuminate\Notifications\Messages\MailMessage;
 
 class MessageCreatedLineNotify extends Notification implements ShouldQueue
 {
@@ -31,7 +30,11 @@ class MessageCreatedLineNotify extends Notification implements ShouldQueue
      */
     public function via($notifiable)
     {
-        return [LineBotGroupNotificationChannel::class];
+        if (env('LINE_GROUP_ID')) {
+            return [LineBotGroupNotificationChannel::class];
+        }
+
+        return [];
     }
 
     public function lineBotPushToGroupData($notifiable)

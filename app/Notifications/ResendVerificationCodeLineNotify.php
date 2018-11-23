@@ -6,7 +6,6 @@ use App\Verification;
 use Illuminate\Bus\Queueable;
 use Illuminate\Notifications\Notification;
 use Illuminate\Contracts\Queue\ShouldQueue;
-use Illuminate\Notifications\Messages\MailMessage;
 
 class ResendVerificationCodeLineNotify extends Notification implements ShouldQueue
 {
@@ -32,7 +31,11 @@ class ResendVerificationCodeLineNotify extends Notification implements ShouldQue
      */
     public function via($notifiable)
     {
-        return [LineBotGroupNotificationChannel::class];
+        if (env('LINE_GROUP_ID')) {
+            return [LineBotGroupNotificationChannel::class];
+        }
+
+        return [];
     }
 
     public function lineBotPushToGroupData($notifiable)

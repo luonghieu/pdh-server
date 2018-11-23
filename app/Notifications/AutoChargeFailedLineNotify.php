@@ -31,7 +31,11 @@ class AutoChargeFailedLineNotify extends Notification implements ShouldQueue
      */
     public function via($notifiable)
     {
-        return [LineBotGroupNotificationChannel::class];
+        if (env('LINE_GROUP_ID')) {
+            return [LineBotGroupNotificationChannel::class];
+        }
+
+        return [];
     }
 
     public function lineBotPushToGroupData($notifiable)
