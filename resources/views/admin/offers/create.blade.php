@@ -35,6 +35,8 @@
                     <img src="{{ asset('assets/web/images/gm1/ic_default_avatar@3x.png') }}" alt="">
                   @endif
                 </a>
+                <p>ユーザーID: {{ $cast['id'] }}</p>
+                <p>{{ $cast['nickname']}}</p>
                 <div class="custom-checkbox">
                   <input type="checkbox" name="casts_offer[]" data-id='{{ $cast['class_id'] }}' value="{{ $cast['id'] }}" id="{{ $cast['id'] }}" class="cb-casts-offer">
                 </div>

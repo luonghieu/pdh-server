@@ -22,7 +22,7 @@
         @include('admin.partials.notification')
         <div class="clearfix"></div>
         <div class="panel-body">
-          <form action="{{route('admin.offers.edit_confirm')}}" method="POST">
+          <form action="{{route('admin.offers.confirm')}}" method="POST">
             {{ csrf_field() }}
             <div class="col-lg-12 wrap-qr-code">
               @if(count($casts))
@@ -32,7 +32,7 @@
                 <input type="hidden" value="{{ $castIds }}" name="list_cast_ids" class="cast-ids-edit">
                 <input type="hidden" value="{{ $offer->temp_point }}" class="temp_point-edit">
                 <input type="hidden" value="{{ $offer->class_id }}" class="class_id-edit">
-                <input type="hidden" value="{{ $offer->id }}" name="offer_ids">
+                <input type="hidden" value="{{ $offer->id }}" name="offer_id">
                 <input type="hidden" value="{{ $offer->date }}" class="date-offer-edit">
                 <input type="hidden" value="{{ Carbon\Carbon::parse($offer->start_time_from)->format('H:i') }}" class="start_time_from-edit">
                 <input type="hidden" value="{{ Carbon\Carbon::parse($offer->start_time_to)->format('H:i') }} }}" class="start_time_to-edit">
@@ -48,6 +48,8 @@
                     <img src="{{ asset('assets/web/images/gm1/ic_default_avatar@3x.png') }}" alt="">
                   @endif
                 </a>
+                <p>ユーザーID: {{ $cast['id'] }}</p>
+                <p>{{ $cast['nickname']}}</p>
                 <div class="custom-checkbox">
                   <input type="checkbox" name="casts_offer[]" data-id='{{ $cast['class_id'] }}' value="{{ $cast['id'] }}" id="{{ $cast['id'] }}" class="cb-casts-offer">
                 </div>

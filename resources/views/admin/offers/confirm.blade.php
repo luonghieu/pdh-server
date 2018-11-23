@@ -65,7 +65,7 @@
           </div>
           <div class="col-lg-12 wrap-qr-code">
             <div class="col-sm-4 ">
-              <p class="confirm-area-offer">{{ $data['area_offer'] }}</p>
+              <p class="confirm-area-offer">東京</p>
             </div>
           </div>
           <div class="col-lg-12 wrap-qr-code">
@@ -82,8 +82,13 @@
           <div class="clear_fix"></div>
           <div class="col-lg-12">
             <div class="col-sm-4 col-sm-offset-8" style="text-align: center;">
-                <button data-toggle="modal" data-target="#save_url" class="btn btn-accept">URL発行する</button>
-                <button data-toggle="modal" data-target="#save_temporarily" class="btn btn-accept">確認画面へ</button>
+                @if(isset($data['offer_id']))
+                <button class="btn btn-accept"><a href="{{ route('admin.offers.edit', $data['offer_id'] ) }}" style="color: white">戻る</a></button>
+                @else
+                <button class="btn btn-accept"><a href="{{ route('admin.offers.create' ) }}" style="color: white">戻る</a></button>
+                @endif
+                <button data-toggle="modal" data-target="#save_url" class="btn btn-accept" style="color: white">URL発行する</button>
+                <button data-toggle="modal" data-target="#save_temporarily" class="btn btn-accept" style="color: white">確認画面へ</button>
             </div>
           </div>
         </div>

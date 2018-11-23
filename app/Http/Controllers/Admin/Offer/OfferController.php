@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin\Offer;
 
 use App\Cast;
 use App\CastClass;
+use App\Enums\OfferStatus;
 use App\Enums\OrderType;
 use App\Http\Controllers\Controller;
 use App\Offer;
@@ -100,6 +101,10 @@ class OfferController extends Controller
         $data['area_offer'] = $request->area_offer;
         $data['current_point_offer'] = $request->current_point_offer;
         $data['class_id_offer'] = $request->class_id_offer;
+
+        if (isset($request->offer_id)) {
+            $data['offer_id'] = $request->offer_id;
+        }
 
         Session::put('offer', $data);
 
@@ -205,7 +210,11 @@ class OfferController extends Controller
 
         $data = Session::get('offer');
 
-        $offer = new Offer;
+        if (isset($data['offer_id'])) {
+            $offer = Offer::findOrFail($data['offer_id']);
+        } else {
+            $offer = new Offer;
+        }
 
         $offer->comment = $data['comment_offer'];
         $offer->date = $data['date_offer'];
@@ -300,43 +309,5 @@ class OfferController extends Controller
         );
 
         return view('admin.offers.edit', compact('offer', 'casts', 'castClasses'));
-    }
-
-    public function editConfirm(Request $request)
-    {
-        $data['cast_ids'] = $request->casts_offer;
-        if (!isset($data['cast_ids'])) {
-            $request->session()->flash('cast_not_found', 'cast_not_found');
-
-            return redirect()->route('admin.offers.create');
-        }
-
-        $data['comment_offer'] = $request->comment_offer;
-        if (!isset($data['comment_offer'])) {
-            $request->session()->flash('message_exits', 'message_exits');
-
-            return redirect()->route('admin.offers.create');
-        }
-
-        if (80 < strlen($data['comment_offer'])) {
-            $request->session()->flash('message_invalid', 'message_invalid');
-
-            return redirect()->route('admin.offers.create');
-        }
-
-        $data['start_time'] = $request->start_time_offer;
-        $data['end_time'] = $request->end_time_offer;
-        $data['date_offer'] = $request->date_offer;
-        $data['duration_offer'] = $request->duration_offer;
-        $data['area_offer'] = $request->area_offer;
-        $data['current_point_offer'] = $request->current_point_offer;
-        $data['class_id_offer'] = $request->class_id_offer;
-        $data['offer_id'] = $request->offer_ids;
-
-        Session::put('offerConfirm', $data);
-
-        $casts = Cast::whereIn('id', $data['cast_ids'])->get();
-        dd($data);
-        return view('admin.offers.confirm', compact('casts', 'data'));
     }
 }
