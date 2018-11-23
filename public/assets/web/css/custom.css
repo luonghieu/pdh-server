@@ -1106,6 +1106,10 @@ title {
   padding: 3% 3% 0 3%;
 }
 
+#chat .msg-input button {
+  width: 30px;
+}
+
 #chat .text-wrapper {
   word-break: break-all;
 }
@@ -1828,7 +1832,7 @@ div.user-data span.total-point-cast{
   background-color: white;
   bottom: 0;
   min-width: 92%;
-  height: 45px;
+  height: 60px;
   position: fixed;
   padding: 7px 15px;
 }
@@ -2360,8 +2364,9 @@ padding-top: 65px !important;
   word-break: break-all;
 }
 
-#chat .msg-input {
-  bottom: 10px;
+#chat .msg-wrap figure img {
+  -o-object-fit: cover;
+  object-fit: cover;
 }
 
 .modal_wrap .modal_content .wrap-banner {

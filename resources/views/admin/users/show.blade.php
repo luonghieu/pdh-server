@@ -177,7 +177,7 @@
               </tr>
               <tr>
                 <th>基本情報：居住地</th>
-                <td>{{ $user->prefecture ? $user->prefecture->name : "" }}</td>
+                <td>{{ ($user->prefecture_id) ? $user->prefecture->name : "" }}</td>
               </tr>
               <tr>
                 <th>基本情報：出身地</th>
@@ -243,11 +243,10 @@
                 }
               @endphp
                 @if($user->is_guest)
-                  @if(!$user->campaign_participated)
-                    <button type="button" class="btn btn-info" data-toggle="modal" data-target="#campaign_participated">
-                      11月キャンペーン利用完了
-                    </button>
-                  @endif
+                  <button type="button" class="btn {{ !$user->campaign_participated ? 'btn-info' : 'btn-default' }}"
+                    data-toggle="modal" data-target="#campaign_participated" {{ !$user->campaign_participated ?: 'disabled' }}>
+                    11月キャンペーン利用完了
+                  </button>
                   <button type="button" class="btn btn-info" data-toggle="modal" data-target="#register_cast">キャストへ変更する</button>
                 @endif
                 @if($user->is_cast)

@@ -193,7 +193,7 @@
   footer {
     height: 12%;
     padding-top: 0;
-    padding-bottom: 5px;
+    padding-bottom: 15px;
   }
 </style>
 @stop

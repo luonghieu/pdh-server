@@ -5,7 +5,7 @@
     <div class="modal_content">
       <div class="wrap-banner">
         <a href="{{ route('guest.orders.call') }}">
-          <img src="/assets/web/images/campaign/campaign_banner.png" alt="" class="banner">
+          <img src="/assets/web/images/campaign/new_campaign_banner.png" alt="" class="banner">
         </a>
         <label for="campaign"><img src="/assets/web/images/campaign/close.png" alt="" class="icon-close-banner"></label>
       </div>

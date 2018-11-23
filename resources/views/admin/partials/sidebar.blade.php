@@ -130,6 +130,16 @@ $routes = [
         ],
     ],
 
+    'offer' => [
+        [
+            'name' => 'admin.offer.index',
+            'value' => '新規オファー作成',
+            'url' => route('admin.offer.index'),
+            'submenu' => [
+          ],
+        ],
+    ],
+
     'verification' => [
         [
             'name' => 'admin.verifications.index',

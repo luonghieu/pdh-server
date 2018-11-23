@@ -53,6 +53,14 @@ class CastController extends ApiController
             });
         }
 
+        if ($request->search) {
+            $search = $request->search;
+            $casts->where(function ($query) use ($search) {
+                $query->where('nickname', 'like', "%$search%")
+                    ->orWhere('users.id', $search);
+            });
+        }
+
         if (isset($request->min_point) && isset($request->max_point)) {
             $min = $request->min_point;
             $max = $request->max_point;
