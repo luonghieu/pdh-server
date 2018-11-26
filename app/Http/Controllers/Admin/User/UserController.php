@@ -7,6 +7,7 @@ use App\Enums\UserType;
 use App\Http\Controllers\Controller;
 use App\Prefecture;
 use App\Repositories\CastClassRepository;
+use App\Repositories\PrefectureRepository;
 use App\User;
 use Carbon\Carbon;
 use Illuminate\Http\Request;

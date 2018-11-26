@@ -1,4 +1,17 @@
 $(document).ready(function() {
+  var userAgent = navigator.userAgent || navigator.vendor || window.opera;
+
+  // iOS detection
+  if (/iPad|iPhone|iPod/.test(userAgent) && !window.MSStream) {
+    $('#chat .msg').css('height','65%');
+    $('#chat #message-box').css('height','100%');
+    $('#chat .msg-input').css({
+      'position' : 'absolute',
+      'bottom':'0',
+      'margin-bottom' : '-30px'
+    });
+  }
+
   function isValidImage(url, callback) {
     var image = new Image();
     image.src = url;
@@ -67,10 +80,20 @@ $(document).ready(function() {
           </div>
           `);
           $('.pic p img').promise().done(function(){
-             $('img').load(function(){
+            $('img').load(function(){
+              //android detection
+              if (/android/i.test(userAgent)) {
+                $(document).scrollTop($('#message-box')[0].scrollHeight);
+              }
 
-               $(document).scrollTop($('#message-box')[0].scrollHeight);
-             });
+
+              // iOS detection
+              if (/iPad|iPhone|iPod/.test(userAgent) && !window.MSStream) {
+                setTimeout(function(){
+                  $('#message-box').scrollTop($('#message-box')[0].scrollHeight);
+                });
+              }
+            });
           });
         }
 
@@ -83,7 +106,18 @@ $(document).ready(function() {
         }
       });
 
-      $(document).scrollTop($('#message-box')[0].scrollHeight);
+      //android detection
+      if (/android/i.test(userAgent)) {
+        $(document).scrollTop($('#message-box')[0].scrollHeight);
+      }
+
+
+      // iOS detection
+      if (/iPad|iPhone|iPod/.test(userAgent) && !window.MSStream) {
+        setTimeout(function(){
+          $('#message-box').scrollTop($('#message-box')[0].scrollHeight);
+        });
+      }
     });
 
   $('#send-message, #content').keydown(function(event) {
@@ -189,24 +223,52 @@ $(document).ready(function() {
           `);
 
           $('.pic p img').promise().done(function(){
-             $('img').load(function(){
-              $(document).scrollTop($('#message-box')[0].scrollHeight);
-             });
+            $('img').load(function(){
+              //android detection
+              if (/android/i.test(userAgent)) {
+                $(document).scrollTop($('#message-box')[0].scrollHeight);
+              }
+
+
+              // iOS detection
+              if (/iPad|iPhone|iPod/.test(userAgent) && !window.MSStream) {
+                setTimeout(function(){
+                  $('#message-box').scrollTop($('#message-box')[0].scrollHeight);
+                });
+              }
+            });
           });
         }
       });
 
       $('body').on('load', '.pic p img', function(){
-        $(document).scrollTop($('#message-box')[0].scrollHeight);
+        $('#message-box').scrollTop($('#message-box')[0].scrollHeight);
       });
-      $(document).scrollTop($('#message-box')[0].scrollHeight);
+
+      //android detection
+      if (/android/i.test(userAgent)) {
+        $(document).scrollTop($('#message-box')[0].scrollHeight);
+      }
+
+
+      // iOS detection
+      if (/iPad|iPhone|iPod/.test(userAgent) && !window.MSStream) {
+        setTimeout(function(){
+          $('#message-box').scrollTop($('#message-box')[0].scrollHeight);
+        });
+      }
 
       $("#content").val(null);
+      $("#content").css('height','30px');
       $("#image-camera").val(null);
       $("#image").val(null);
     })
     .catch(function (error) {
-      console.log(error);
+      if (error.response.data.error) {
+        var messageError = error.response.data.error.image[0];
+        $('.alert-image-oversize .content-in h2').text(messageError);
+        $('#alert-image-oversize').trigger('click');
+      }
     });
   }
 
