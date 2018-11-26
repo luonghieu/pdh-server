@@ -357,6 +357,7 @@ class OrderController extends Controller
     {
         try {
             \DB::beginTransaction();
+
             $order->casts()->updateExistingPivot($castId, $input, false);
 
             $latestStoppedAt = $input['stopped_at'];
@@ -375,7 +376,17 @@ class OrderController extends Controller
                 $order->actual_ended_at = $latestStoppedAt;
             }
 
-            $order->total_point = $input['total_point'];
+            if (OrderType::NOMINATION != $order->type) {
+                $totalPoint = 0;
+                foreach ($order->casts as $cast) {
+                    if ($cast->pivot->user_id != $castId) {
+                        $totalPoint += $cast->pivot->total_point;
+                    }
+                }
+                $order->total_point = $input['total_point'] + $totalPoint;
+            } else {
+                $order->total_point = $input['total_point'];
+            }
 
             $order->save();
 
