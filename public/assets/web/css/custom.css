@@ -2428,3 +2428,15 @@ padding-top: 65px !important;
   letter-spacing: normal;
   color: #d0021b;
 }
+
+.ge2-4-block .mb-text {
+  margin-bottom: 7px;
+}
+
+.ge2-4-block .text-ge-2-4 p {
+  font-size: 12px;
+}
+
+.ge2-4-block .text-ge-2-4 .ml-p {
+  margin-left: 10px;
+}
