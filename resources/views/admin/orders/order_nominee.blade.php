@@ -152,11 +152,7 @@
                   {{ count($order->casts) > 0 ? number_format($order->casts[0]->pivot->temp_point).'P' : '0P' }}
                   @endif
                   @if ($order->status >= App\Enums\OrderStatus::DONE)
-                    @if ($order->payment_status == App\Enums\OrderPaymentStatus::REQUESTING || $order->status == App\Enums\OrderStatus::CANCELED)
                     {{ number_format($order->total_point).'P' }}
-                    @else
-                    {{ count($order->casts) > 0 ? number_format($order->casts[0]->pivot->total_point).'P' : '0P' }}
-                    @endif
                   @endif
                 </td>
               </tr>
