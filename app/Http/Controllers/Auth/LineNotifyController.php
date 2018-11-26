@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Auth;
 
+use App\Services\LogService;
 use GuzzleHttp\Client;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
@@ -11,8 +12,6 @@ class LineNotifyController extends Controller
     public function webhook(Request $request)
     {
         if ($request->events[0]['type'] == 'join') {
-            putPermanentEnv('LINE_GROUP_ID', $request->events[0]['source']['groupId']);
-
             $header = [
                 'Content-Type' => 'application/json',
                 'Authorization' => 'Bearer ' . env('LINE_BOT_NOTIFY_CHANNEL_ACCESS_TOKEN')
