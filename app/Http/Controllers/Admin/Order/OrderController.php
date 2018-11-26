@@ -375,6 +375,8 @@ class OrderController extends Controller
                 $order->actual_ended_at = $latestStoppedAt;
             }
 
+            $order->total_point = $input['total_point'];
+
             $order->save();
 
             $paymentRequest = $order->paymentRequests->where('cast_id', $castId)->first();
