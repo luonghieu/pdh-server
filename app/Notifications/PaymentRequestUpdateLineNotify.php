@@ -37,10 +37,10 @@ class PaymentRequestUpdateLineNotify extends Notification implements ShouldQueue
 
     public function lineBotPushToGroupData($notifiable)
     {
-        if (OrderType::CALL == $this->order->type) {
-            $link = route('admin.orders.call', ['order' => $this->order->id]);
+        if (OrderType::NOMINATION == $this->order->type) {
+            $link = route('admin.orders.order_nominee', ['order' => $this->order->id]);
         } else {
-            $link = route('admin.orders.order_nominee', ['room' => $this->order->id]);
+            $link = route('admin.orders.call', ['order' => $this->order->id]);
         }
 
         $content = '売上申請の修正依頼がありました。';
