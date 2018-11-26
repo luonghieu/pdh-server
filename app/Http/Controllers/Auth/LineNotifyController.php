@@ -11,11 +11,35 @@ class LineNotifyController extends Controller
 {
     public function webhook(Request $request)
     {
-        if ($request->events[0]['type'] == 'join') {
+        try {
+            if ($request->events[0]['type'] == 'join') {
+                $header = [
+                    'Content-Type' => 'application/json',
+                    'Authorization' => 'Bearer ' . env('LINE_BOT_NOTIFY_CHANNEL_ACCESS_TOKEN')
+                ];
+                $client = new Client(['headers' => $header]);
+
+                $body = [
+                    'replyToken' => $request->events[0]['replyToken'],
+                    'messages' => [
+                        [
+                            'type' => 'text',
+                            'text' => 'Bot Joined.',
+                        ]
+                    ]
+                ];
+
+                $body = \GuzzleHttp\json_encode($body);
+                $client->post(env('LINE_REPLY_URL'),
+                    ['body' => $body]
+                );
+            }
+
             $header = [
                 'Content-Type' => 'application/json',
                 'Authorization' => 'Bearer ' . env('LINE_BOT_NOTIFY_CHANNEL_ACCESS_TOKEN')
             ];
+
             $client = new Client(['headers' => $header]);
 
             $body = [
@@ -23,7 +47,7 @@ class LineNotifyController extends Controller
                 'messages' => [
                     [
                         'type' => 'text',
-                        'text' => 'Bot Joined.',
+                        'text' => 'Text reply.',
                     ]
                 ]
             ];
@@ -32,28 +56,10 @@ class LineNotifyController extends Controller
             $client->post(env('LINE_REPLY_URL'),
                 ['body' => $body]
             );
+        } catch (\Exception $e) {
+            LogService::writeErrorLog('----------------------- BOT NOTIFY ERROR -------------------------------');
+            LogService::writeErrorLog($e->getMessage());
+            LogService::writeErrorLog('----------------------- BOT NOTIFY ERROR -------------------------------');
         }
-
-        $header = [
-            'Content-Type' => 'application/json',
-            'Authorization' => 'Bearer ' . env('LINE_BOT_NOTIFY_CHANNEL_ACCESS_TOKEN')
-        ];
-
-        $client = new Client(['headers' => $header]);
-
-        $body = [
-            'replyToken' => $request->events[0]['replyToken'],
-            'messages' => [
-                [
-                    'type' => 'text',
-                    'text' => 'Text reply.',
-                ]
-            ]
-        ];
-
-        $body = \GuzzleHttp\json_encode($body);
-        $client->post(env('LINE_REPLY_URL'),
-            ['body' => $body]
-        );
     }
 }
