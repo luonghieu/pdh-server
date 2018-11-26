@@ -34,28 +34,6 @@ class LineNotifyController extends Controller
                     ['body' => $body]
                 );
             }
-
-            $header = [
-                'Content-Type' => 'application/json',
-                'Authorization' => 'Bearer ' . env('LINE_BOT_NOTIFY_CHANNEL_ACCESS_TOKEN')
-            ];
-
-            $client = new Client(['headers' => $header]);
-
-            $body = [
-                'replyToken' => $request->events[0]['replyToken'],
-                'messages' => [
-                    [
-                        'type' => 'text',
-                        'text' => 'Text reply.',
-                    ]
-                ]
-            ];
-
-            $body = \GuzzleHttp\json_encode($body);
-            $client->post(env('LINE_REPLY_URL'),
-                ['body' => $body]
-            );
         } catch (\Exception $e) {
             LogService::writeErrorLog('----------------------- BOT NOTIFY ERROR -------------------------------');
             LogService::writeErrorLog($e->getMessage());
