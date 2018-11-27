@@ -6,7 +6,7 @@
       <div class="panel panel-default">
         <div class="panel-body handling">
           <div class="search">
-            <form class="navbar-form navbar-left form-search" action="{{route('admin.offer.index')}}" method="GET">
+            <form class="navbar-form navbar-left form-search" action="{{route('admin.offers.create')}}" method="GET">
               <input type="text" class="form-control input-search" placeholder="ユーザーID,名前" name="search" value="{{request()->search}}">
               <select class="form-control search-point-type" name="cast_class" style="margin-right: 15px;" id="class-id-offer">
                 @foreach ($castClasses as $castClass)
@@ -22,7 +22,7 @@
         @include('admin.partials.notification')
         <div class="clearfix"></div>
         <div class="panel-body">
-          <form action="{{route('admin.offer.offer_confirm')}}" method="POST">
+          <form action="{{route('admin.offers.confirm')}}" method="POST">
             {{ csrf_field() }}
             <div class="col-lg-12 wrap-qr-code">
               @if(count($casts))

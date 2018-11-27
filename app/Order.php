@@ -41,6 +41,7 @@ class Order extends Model
         'temp_point',
         'class_id',
         'type',
+        'offer_id',
         'status',
         'canceled_at',
         'is_changed',

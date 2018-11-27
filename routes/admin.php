@@ -49,13 +49,6 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.'], function () {
         Route::get('cast_rankings', ['as' => 'cast_rankings.index', 'uses' => 'CastRankingController@index']);
     });
 
-    Route::group(['middleware' => 'is_admin', 'as' => 'offer.', 'prefix' => 'offers'], function () {
-        Route::get('/', ['as' => 'index', 'uses' => 'Order\OrderController@offer']);
-        Route::post('/confirm', ['as' => 'offer_confirm', 'uses' => 'Order\OrderController@confirmOffer']);
-        Route::post('/price', ['as' => 'offer_price', 'uses' => 'Order\OrderController@price']);
-        Route::post('/create', ['as' => 'create', 'uses' => 'Order\OrderController@createOrder']);
-    });
-
     Route::group(['namespace' => 'Room', 'prefix' => 'rooms', 'as' => 'rooms.', 'middleware' => 'is_admin'], function () {
         Route::get('{room}/messages', ['as' => 'messages_by_room', 'uses' => 'RoomController@getMessageByRoom'])->where('room', '[0-9]+');
         Route::put('{room}', ['as' => 'change_active', 'uses' => 'RoomController@changeActive'])->where('room', '[0-9]+');
@@ -125,5 +118,13 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.'], function () {
     Route::group(['prefix' => 'favorites', 'as' => 'favorites.', 'middleware' => 'is_admin'], function () {
         Route::get('/guest', ['as' => 'guest', 'uses' => 'FavoriteController@guest']);
         Route::get('/cast', ['as' => 'cast', 'uses' => 'FavoriteController@cast']);
+    });
+
+    Route::group(['namespace' => 'Offer', 'prefix' => 'offers', 'as' => 'offers.', 'middleware' => 'is_admin'], function () {
+        Route::get('/', ['as' => 'index', 'uses' => 'OfferController@index']);
+        Route::get('/create', ['as' => 'create', 'uses' => 'OfferController@create']);
+        Route::post('/', ['as' => 'store', 'uses' => 'OfferController@store']);
+        Route::post('/confirm', ['as' => 'confirm', 'uses' => 'OfferController@confirm']);
+        Route::post('/price', ['as' => 'price', 'uses' => 'OfferController@price']);
     });
 });

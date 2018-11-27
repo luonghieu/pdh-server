@@ -99,7 +99,8 @@ $(document).ready(function(){
               duration :duration,
               total_cast :arrIds.length,
               nominee_ids : nomineeIds,
-              class_id : classId
+              class_id : classId,
+              offer : 1
             },
             success: function( val ) {
               $('.show-current-point-offer').text('予定合計ポイント : ' + val + 'P~' );
@@ -147,7 +148,8 @@ $(document).ready(function(){
           duration :duration,
           total_cast :arrIds.length,
           nominee_ids : nomineeIds,
-          class_id : classId
+          class_id : classId,
+          offer : 1
         },
         success: function( val ) {
           $('.show-current-point-offer').text('予定合計ポイント : ' + val + 'P~' );
@@ -191,7 +193,8 @@ $(document).ready(function(){
           duration :duration,
           total_cast :arrIds.length,
           nominee_ids : nomineeIds,
-          class_id : classId
+          class_id : classId,
+          offer : 1
         },
         success: function( val ) {
           $('.show-current-point-offer').text('予定合計ポイント : ' + val + 'P~' );
@@ -256,7 +259,8 @@ $(document).ready(function(){
             duration :duration,
             total_cast :offer.arrIds.length,
             nominee_ids : nomineeIds,
-            class_id : classId
+            class_id : classId,
+            offer : 1
           },
           success: function( val ) {
             $('.show-current-point-offer').text('予定合計ポイント : ' + val + 'P~' );
@@ -322,7 +326,8 @@ $(document).ready(function(){
               duration :duration,
               total_cast :offer.arrIds.length,
               nominee_ids : nomineeIds,
-              class_id : classId
+              class_id : classId,
+              offer : 1
             },
             success: function( val ) {
               $('.show-current-point-offer').text('予定合計ポイント : ' + val + 'P~' );

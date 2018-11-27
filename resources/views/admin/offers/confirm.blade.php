@@ -98,7 +98,7 @@
         <div class="modal-body">
           <p>URLを発行しますか？</p>
         </div>
-        <form action="{{ route('admin.offer.create') }}" method="POST">
+        <form action="{{ route('admin.offers.store') }}" method="POST">
           {{ csrf_field() }}
           <div class="modal-footer" style="text-align: center;">
             <button type="button" class="btn btn-canceled" data-dismiss="modal">いいえ</button>
@@ -115,7 +115,7 @@
         <div class="modal-body">
           <p>チェックした予約を無効しますか？</p>
         </div>
-        <form action="{{ route('admin.offer.create') }}" method="POST">
+        <form action="{{ route('admin.offers.store') }}" method="POST">
           {{ csrf_field() }}
           <input type="hidden" value="1" name="save_temporarily">
           <div class="modal-footer" style="text-align: center;">

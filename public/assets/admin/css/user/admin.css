@@ -1495,7 +1495,7 @@ tbody td {
 
 .icon-cast {
   display: inline-block;
-  width: calc((100% / 16) - 4px);
+  width: calc((100% / 10) - 4px);
   margin: 0 2px 10px;
 }
 
