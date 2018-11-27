@@ -8,6 +8,7 @@ use App\Enums\ProviderType;
 use App\Enums\SystemMessageType;
 use App\Enums\UserType;
 use App\Room;
+use Carbon\Carbon;
 use Illuminate\Bus\Queueable;
 use Illuminate\Notifications\Notification;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -98,6 +99,7 @@ class CreateGuest extends Notification implements ShouldQueue
             'system_type' => SystemMessageType::NORMAL
         ]);
         $roomMessage->recipients()->attach($notifiable->id, ['room_id' => $room->id]);
+        $this->limitedMessages($notifiable, $room);
 
         $namedUser = 'user_' . $notifiable->id;
         $send_from = UserType::ADMIN;
@@ -153,6 +155,7 @@ class CreateGuest extends Notification implements ShouldQueue
             'system_type' => SystemMessageType::NORMAL
         ]);
         $roomMessage->recipients()->attach($notifiable->id, ['room_id' => $room->id]);
+        $this->limitedMessages($notifiable, $room);
 
         $name = $notifiable->nickname ? $notifiable->nickname : $notifiable->name;
         $content = 'こんにちは！' . $name . 'さん🌼';
@@ -176,5 +179,34 @@ class CreateGuest extends Notification implements ShouldQueue
                 ]
             ]
         ];
+    }
+
+    private function limitedMessages($notifiable, $room)
+    {
+        $limitedStartTime = Carbon::parse('2018-11-22');
+        $limitedEndTime = Carbon::parse('2018-11-30');
+        $now = Carbon::now();
+        if ($now->between($limitedStartTime, $limitedEndTime)) {
+            $OpContent = '【1時間無料でギャラ飲み体験🥂💓】'
+                . PHP_EOL . '11月中にご利用いただいた方限定で、'
+                . PHP_EOL . '30分〜1時間無料でギャラ飲みができるキャンペーン（最大11,000円OFF）を実施します✨'
+                . PHP_EOL . PHP_EOL . 'ゲストからメッセージを送って、今日いけるキャストを見つける必要もありません！'
+                . PHP_EOL . '「今すぐキャストを呼ぶ」から、時間/場所/人数を選ぶだけ！'
+                . PHP_EOL . PHP_EOL . '※キャストは指名せずにご予約ください'
+                . PHP_EOL . '※指名予約、コール内指名予約は対象外です🙇‍♀️'
+                . PHP_EOL . '※対象の予約はコール予約のブロンズクラス（キャスト2名まで）のみとなります️'
+                . PHP_EOL . PHP_EOL . '無料体験ができるのは11月の今だけ！️'
+                . PHP_EOL . 'ぜひご利用ください🌷🌷️'
+                . PHP_EOL . PHP_EOL . '詳しくは、下記の金額早見表からご確認ください♩'
+                . PHP_EOL . '不明点は、メッセージ内の運営者チャットからご連絡ください。';
+
+            $roomMessage = $room->messages()->create([
+                'user_id' => 1,
+                'type' => MessageType::SYSTEM,
+                'message' => $OpContent,
+                'system_type' => SystemMessageType::NORMAL
+            ]);
+            $roomMessage->recipients()->attach($notifiable->id, ['room_id' => $room->id]);
+        }
     }
 }
