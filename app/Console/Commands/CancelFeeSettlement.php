@@ -64,10 +64,14 @@ class CancelFeeSettlement extends Command
             ->where('canceled_at', '<=', $now->copy()->subHours(24))
             ->where('cancel_fee_percent', '>', 0)
             ->whereHas('user', function ($q) {
-                $q->where('provider', '<>', ProviderType::LINE)
-                    ->orWhere('provider', null);
+                $q->where('payment_suspended', false)
+                    ->where(function ($query) {
+                        $query->where('provider', '<>', ProviderType::LINE)
+                            ->orWhere('provider', null);
+                    });
             })
             ->get();
+
         foreach ($orders as $order) {
             $this->processPayment($order, $now);
         }
@@ -79,7 +83,7 @@ class CancelFeeSettlement extends Command
             })
             ->where('canceled_at', '<=', $now->copy()->subHours(3))
             ->where('cancel_fee_percent', '>', 0)->whereHas('user', function ($q) {
-            $q->where('provider', ProviderType::LINE);
+            $q->where('provider', ProviderType::LINE)->where('payment_suspended', false);
         })->get();
 
         foreach ($lineOrders as $order) {
