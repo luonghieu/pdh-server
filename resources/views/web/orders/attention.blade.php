@@ -19,12 +19,24 @@
   </div>
   <div class="ge2-4-block">
     <h2>延長料金</h2>
-    <p>キャストとの合流後、終了時刻が過ぎた場合は自動的に延長となり延長料金が発生します。延長料金はキャストクラスによって異なります。</p>
+    <p>キャストとの合流後、終了予定時刻を過ぎた場合は自動的に延長となり延長料金が15分単位で発生します。延長料金は下記のとおりです。</p>
+  </div>
+  <div class="ge2-4-block">
+    <p>コール予約の場合</p>
     <ul>
       <li><span>ダイヤモンド</span><span>8750P/15分</span></li>
       <li><span>プラチナ</span><span>3500P/15分</span></li>
       <li><span>ブロンズ</span><span>1750P/15分</span></li>
     </ul>
+  </div>
+  <div class="ge2-4-block">
+    <p class="mb-text">指名予約の場合</p>
+    <p class="mb-text">指名キャストの[30分あたりのポイント]の1.4倍となります。</p>
+    <div class="text-ge-2-4">
+      <p>(例) 3,000P/30分のキャストを1時間、指名予約した場合</p>
+      <p class="ml-p">最初の1時間 = 6,000P</p>
+      <p class="ml-p">延長15分 = 2,100P(1,500P×1.4)となります。</p>
+    </div>
   </div>
   <div class="ge2-4-block">
     <h2>コール内指名料金</h2>
