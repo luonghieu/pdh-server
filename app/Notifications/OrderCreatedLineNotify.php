@@ -45,24 +45,13 @@ class OrderCreatedLineNotify extends Notification implements ShouldQueue
             $link = route('admin.orders.call', ['order' => $this->order->id]);
         }
 
-        $content = '新規の予約がありました。';
+        $content = '新規の予約がありました。'
+            . PHP_EOL . 'Link: ' . $link;
 
         return [
             [
-                'type' => 'template',
-                'altText' => $content,
+                'type' => 'text',
                 'text' => $content,
-                'template' => [
-                    'type' => 'buttons',
-                    'text' => $content,
-                    'actions' => [
-                        [
-                            'type' => 'uri',
-                            'label' => '確認する',
-                            'uri' => $link
-                        ]
-                    ]
-                ]
             ]
         ];
     }

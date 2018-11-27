@@ -38,24 +38,13 @@ class ResendVerificationCodeLineNotify extends Notification implements ShouldQue
     {
         $link = route('admin.verifications.index', ['search' => $this->verification->phone]);
 
-        $content = '新着のSMS認証依頼が届きました。';
+        $content = '新着のSMS認証依頼が届きました。'
+            . PHP_EOL . 'Link: ' . $link;
 
         return [
             [
-                'type' => 'template',
-                'altText' => $content,
+                'type' => 'text',
                 'text' => $content,
-                'template' => [
-                    'type' => 'buttons',
-                    'text' => $content,
-                    'actions' => [
-                        [
-                            'type' => 'uri',
-                            'label' => '確認する',
-                            'uri' => $link
-                        ]
-                    ]
-                ]
             ]
         ];
     }

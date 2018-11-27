@@ -24,7 +24,7 @@ class CreateReportLineNotify extends Notification implements ShouldQueue
     /**
      * Get the notification's delivery channels.
      *
-     * @param  mixed  $notifiable
+     * @param  mixed $notifiable
      * @return array
      */
     public function via($notifiable)
@@ -35,25 +35,14 @@ class CreateReportLineNotify extends Notification implements ShouldQueue
     public function lineBotPushToGroupData($notifiable)
     {
 
-        $content = '通報がありました。';
         $link = route('admin.reports.index');
+        $content = '通報がありました。'
+            . PHP_EOL . 'Link: ' . $link;
 
         return [
             [
-                'type' => 'template',
-                'altText' => $content,
+                'type' => 'text',
                 'text' => $content,
-                'template' => [
-                    'type' => 'buttons',
-                    'text' => $content,
-                    'actions' => [
-                        [
-                            'type' => 'uri',
-                            'label' => '確認する',
-                            'uri' => $link
-                        ]
-                    ]
-                ]
             ]
         ];
     }
