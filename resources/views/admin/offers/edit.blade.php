@@ -115,20 +115,30 @@
             </div>
             <div class="col-lg-12 wrap-qr-code">
               <div class="col-sm-2 ">
-                 @php
-                    $arrMonth = [11,12,1,2];
+                  @php
+                  $arrMonth = [];
+                  $currentYear = (int)Carbon\Carbon::now()->format('Y');
+                  $currentMonth = (int)Carbon\Carbon::now()->format('m');
+
+                  for ($i = $currentMonth; $i <=12; $i++) {
+                    array_push($arrMonth, $i);
+                  }
                   @endphp
                 <select name="date_offer" class="form-control select-time date-offer" id="select-date-offer">
                   @foreach ($arrMonth as $month)
                     @php
                       $data['month'] = $month;
-                      if (1 == $month || 2 == $month || 3 == $month ) {
-                        $data['year'] = 2019;
-                      } else {
-                         $data['year'] = 2018;
-                      }
+                      $data['year'] = (int)Carbon\Carbon::now()->format('Y');
+                    @endphp
+                    @foreach(listDate($data) as $date)
+                    <option value="{{ $data['year']. '-' .$month . '-' . $date }}" data-name ="{{ $data['year'] }}年{{ $month }}月{{ $date }}日" >{{ $data['year'] }}年{{ $month }}月{{ $date }}日</option>
+                    @endforeach
+                  @endforeach
 
+                  @foreach([1,2] as $month)
+                    @php
                       $data['month'] = $month;
+                      $data['year'] = (int)Carbon\Carbon::now()->format('Y') +1;
                     @endphp
                     @foreach(listDate($data) as $date)
                     <option value="{{ $data['year']. '-' .$month . '-' . $date }}" data-name ="{{ $data['year'] }}年{{ $month }}月{{ $date }}日" >{{ $data['year'] }}年{{ $month }}月{{ $date }}日</option>

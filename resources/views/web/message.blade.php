@@ -173,6 +173,18 @@
   </div>
 @endsection
 @section('web.extra')
+  <div class="modal_wrap wrap-alert-image-oversize">
+    <input id="alert-image-oversize" type="checkbox">
+    <div class="modal_overlay">
+      <label for="alert-image-oversize" class="modal_trigger"></label>
+      <div class="modal_content modal_content-btn3 alert-image-oversize">
+        <div class="content-in">
+          <h2></h2>
+        </div>
+      </div>
+    </div>
+  </div>
+
   @confirm(['triggerId' => 'trigger2', 'triggerClass' =>'cancel-order right', 'buttonLeft' => 'いいえ', 'buttonRight' => 'キャンセルする'])
   @slot('title')
     確定予約をキャンセルしますか？
@@ -187,6 +199,8 @@
 @section('web.extra_js')
 <script>
   $(function() {
+    var userAgent = navigator.userAgent || navigator.vendor || window.opera;
+
     $('.tgl > dl > dt',).click(function(){
       $(this).toggleClass("active");
       $(this).next().slideToggle();
@@ -194,11 +208,19 @@
 
     if ($('.pic p img').length > 0) {
        $('.pic p img').load(function(){
-         $(document).scrollTop($('#message-box')[0].scrollHeight);
+         $('#message-box').scrollTop($('#message-box')[0].scrollHeight);
        });
     }
 
-    $(document).scrollTop($('#message-box')[0].scrollHeight);
+    //android detection
+    if (/android/i.test(userAgent)) {
+      $(document).scrollTop($('#message-box')[0].scrollHeight);
+    }
+
+    // iOS detection
+    if (/iPad|iPhone|iPod/.test(userAgent) && !window.MSStream) {
+      $('#message-box').scrollTop($('#message-box')[0].scrollHeight);
+    }
   });
 </script>
 <script>
@@ -208,7 +230,7 @@
 
   ta.addEventListener("input",function(evt){
       if(evt.target.scrollHeight > evt.target.offsetHeight){
-          evt.target.style.height = evt.target.scrollHeight + "px";
+        evt.target.style.height = evt.target.scrollHeight + "px";
       }else{
           var height,lineHeight;
           while (true){

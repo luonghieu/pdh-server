@@ -82,9 +82,11 @@
           <div class="clear_fix"></div>
           <div class="col-lg-12">
             <div class="col-sm-4 col-sm-offset-8" style="text-align: center;">
-                <button class="btn btn-accept"><a href="" style="color: white">戻る</a></button>
-                <button class="btn btn-accept"><a href="{{ route('admin.offers.edit', $offer->id ) }}" style="color: white">編集する</a></button>
-                <button data-toggle="modal" data-target="#delete-offer" class="btn btn-accept" style="color: white">削除する</button>
+                <button class="btn btn-accept"><a href="{{ route('admin.offers.index') }}" style="color: white">戻る</a></button>
+                @if(App\Enums\OfferStatus::INACTIVE == $offer->status)
+                  <button class="btn btn-accept"><a href="{{ route('admin.offers.edit', $offer->id ) }}" style="color: white">編集する</a></button>
+                  <button data-toggle="modal" data-target="#delete-offer" class="btn btn-accept" style="color: white">削除する</button>
+                @endif
             </div>
           </div>
         </div>

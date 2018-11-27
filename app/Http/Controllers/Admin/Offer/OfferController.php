@@ -19,6 +19,13 @@ use Session;
 
 class OfferController extends Controller
 {
+    public function index(Request $request)
+    {
+        $offers = Offer::with('order')->orderByDesc('created_at')->paginate($request->limit ?: 10);
+
+        return view('admin.offers.index', compact('offers'));
+    }
+
     public function create(Request $request)
     {
         $castClasses = CastClass::all();
@@ -239,7 +246,7 @@ class OfferController extends Controller
             $request->session()->forget('offer');
         }
 
-        return redirect()->route('admin.offers.create');
+        return redirect()->route('admin.offers.index');
     }
 
     public function detail(Offer $offer)

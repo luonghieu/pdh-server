@@ -133,6 +133,11 @@ class Order extends Model
         return $this->hasMany(Transfer::class);
     }
 
+    public function offer()
+    {
+        return $this->hasOne(Offer::class, 'id', 'offer_id');
+    }
+
     public function deny($userId)
     {
         try {

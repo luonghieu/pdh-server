@@ -64,8 +64,10 @@ class UserController extends Controller
         return view('admin.users.index', compact('users'));
     }
 
-    public function show(User $user)
+    public function show($user)
     {
+        $user = User::withTrashed()->find($user);
+
         $prefectures = Prefecture::supported()->get();
 
         $castClasses = $this->castClass->all();
@@ -141,5 +143,13 @@ class UserController extends Controller
         $user->delete();
 
         return redirect()->route('admin.users.index');
+    }
+
+    public function campaignParticipated(User $user)
+    {
+        $user->campaign_participated = true;
+        $user->save();
+
+        return redirect(route('admin.users.show', ['user' => $user->id]));
     }
 }

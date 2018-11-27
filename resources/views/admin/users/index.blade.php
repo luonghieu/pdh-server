@@ -120,3 +120,12 @@
   <!--/row-->
 </div>
 @endsection
+@section('admin.js')
+  <script>
+    $(function () {
+      if (localStorage.getItem('offer')){
+        localStorage.removeItem('offer');
+      }
+    })
+  </script>
+@stop

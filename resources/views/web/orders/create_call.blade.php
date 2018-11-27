@@ -98,11 +98,16 @@
         <label class="cast-number__value"><input type="text" value="{{ (isset($currentCastNumbers)) ? $currentCastNumbers : 1 }}" name="txtCast_Number" readonly>人</label>
 
         <button class="cast-number__button-minus" type="button" name="button"></button>
-        <button class="cast-number__button-plus"type="button" name="button"></button>
+        <button class="cast-number__button-plus" type="button" name="button"></button>
         @if(isset($orderOptions['max_casts']))
         <input type="hidden" value="{{ $orderOptions['max_casts'] }}" id="max_casts">
         @endif
       </div>
+      @if(Auth::user()->is_guest && Auth::user()->is_verified && !Auth::user()->campaign_participated)
+        <div class="notify-campaign-over">
+          <span>※3名はキャンペーン対象外です</span>
+        </div>
+      @endif
     </div>
   </div>
   <div class="reservation-item">
@@ -164,6 +169,11 @@
           @endforeach
         @endif
       </div>
+      @if(Auth::user()->is_guest && Auth::user()->is_verified && !Auth::user()->campaign_participated)
+        <div class="notify-campaign-over-cast-class">
+          <span>※3名はキャンペーン対象外です</span>
+        </div>
+      @endif
     </div>
   </div>
   <div class="overlay">

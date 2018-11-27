@@ -1106,6 +1106,10 @@ title {
   padding: 3% 3% 0 3%;
 }
 
+#chat .msg-input button {
+  width: 30px;
+}
+
 #chat .text-wrapper {
   word-break: break-all;
 }
@@ -2330,6 +2334,8 @@ padding-top: 65px !important;
   margin-left: 12px;
   position: absolute;
   top: 8px;
+  -o-object-fit: cover;
+  object-fit: cover;
 }
 
 #top .user-name {
@@ -2358,6 +2364,72 @@ padding-top: 65px !important;
   word-break: break-all;
 }
 
-#chat .msg-input {
-  bottom: 10px;
+#chat .msg-wrap figure img {
+  -o-object-fit: cover;
+  object-fit: cover;
+}
+
+.modal_wrap .modal_content .wrap-banner {
+  position: relative;
+}
+
+.modal_wrap .modal_content .wrap-banner .icon-close-banner{
+  width: 20px;
+  height: 20px;
+  object-fit: contain;
+  display: inline-block;
+  position: absolute;
+  right: 5px;
+  top: 5px;
+}
+
+#ge2-1-x .notify-campaign-over {
+  display: none;
+  text-align: right;
+  margin-top: 5px;
+  margin-right: 5px;
+}
+
+#ge2-1-x .notify-campaign-over span {
+  width: 196px;
+  height: 19px;
+  font-family: NotoSansCJKjp;
+  font-size: 13px;
+  font-weight: normal;
+  font-style: normal;
+  font-stretch: normal;
+  line-height: normal;
+  letter-spacing: normal;
+  color: #d0021b;
+}
+
+#ge2-1-x .notify-campaign-over-cast-class {
+  text-align: left;
+  display: none;
+}
+
+#ge2-1-x .notify-campaign-over-cast-class span {
+  width: 267px;
+  height: 19px;
+  font-family: NotoSansCJKjp;
+  font-size: 13px;
+  font-weight: normal;
+  font-style: normal;
+  font-stretch: normal;
+  line-height: normal;
+  letter-spacing: normal;
+  color: #d0021b;
+}
+
+#gl3 .notify-campaign-confirm span {
+  width: 307px;
+  height: 38px;
+  font-family: NotoSansCJKjp;
+  font-size: 13px;
+  font-weight: normal;
+  font-style: normal;
+  font-stretch: normal;
+  line-height: normal;
+  letter-spacing: normal;
+  color: #d0021b;
 }

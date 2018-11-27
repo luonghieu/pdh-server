@@ -17,6 +17,7 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.'], function () {
         Route::post('{user}/change_prefecture', ['as' => 'change_prefecture', 'uses' => 'UserController@changePrefecture'])->where('user', '[0-9]+');
         Route::post('{user}/change_cost', ['as' => 'change_cost', 'uses' => 'UserController@changeCost'])->where('user', '[0-9]+');
         Route::post('{user}/change_rank', ['as' => 'change_rank', 'uses' => 'UserController@changeRank'])->where('user', '[0-9]+');
+        Route::post('{user}/campaign_participated', ['as' => 'campaign_participated', 'uses' => 'UserController@campaignParticipated'])->where('user', '[0-9]+');
         Route::delete('{user}', ['as' => 'delete', 'uses' => 'UserController@delete'])->where('user', '[0-9]+');
     });
 
@@ -120,6 +121,7 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.'], function () {
     });
 
     Route::group(['namespace' => 'Offer', 'prefix' => 'offers', 'as' => 'offers.', 'middleware' => 'is_admin'], function () {
+        Route::get('/', ['as' => 'index', 'uses' => 'OfferController@index']);
         Route::get('/create', ['as' => 'create', 'uses' => 'OfferController@create']);
         Route::post('/', ['as' => 'store', 'uses' => 'OfferController@store']);
         Route::post('/confirm', ['as' => 'confirm', 'uses' => 'OfferController@confirm']);
