@@ -43,24 +43,13 @@ class PaymentRequestUpdateLineNotify extends Notification implements ShouldQueue
             $link = route('admin.orders.call', ['order' => $this->order->id]);
         }
 
-        $content = '売上申請の修正依頼がありました。';
+        $content = '売上申請の修正依頼がありました。'
+            . PHP_EOL . 'Link: ' . $link;
 
         return [
             [
-                'type' => 'template',
-                'altText' => $content,
+                'type' => 'text',
                 'text' => $content,
-                'template' => [
-                    'type' => 'buttons',
-                    'text' => $content,
-                    'actions' => [
-                        [
-                            'type' => 'uri',
-                            'label' => '確認する',
-                            'uri' => $link
-                        ]
-                    ]
-                ]
             ]
         ];
     }

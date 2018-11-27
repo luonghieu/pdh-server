@@ -36,30 +36,19 @@ class AutoChargeFailedLineNotify extends Notification implements ShouldQueue
 
     public function lineBotPushToGroupData($notifiable)
     {
-
         if (OrderType::NOMINATION != $this->order->type) {
             $link = route('admin.orders.call', ['order' => $this->order->id]);
         } else {
             $link = route('admin.orders.order_nominee', ['room' => $this->order->id]);
         }
-        $content = '決済エラーが発生しました';
+
+        $content = '決済エラーが発生しました'
+            . PHP_EOL . 'Link: ' . $link;
 
         return [
             [
-                'type' => 'template',
-                'altText' => $content,
+                'type' => 'text',
                 'text' => $content,
-                'template' => [
-                    'type' => 'buttons',
-                    'text' => $content,
-                    'actions' => [
-                        [
-                            'type' => 'uri',
-                            'label' => '確認する',
-                            'uri' => $link
-                        ]
-                    ]
-                ]
             ]
         ];
     }
