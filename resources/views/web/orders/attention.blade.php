@@ -44,7 +44,7 @@
   </div>
   <div class="ge2-4-block">
     <h2>オートチャージ</h2>
-    <p>ご利用後、評価と決済確定作業を行っていただいておりますが、決済確定作業を行われなかった場合は、ポイントの不足分をご登録いただいたクレジットカードから、自動決済させていただきます。</p>
+    <p>ご利用後、評価と決済確定作業を行っていただいておりますが、決済確定作業を行われなかった場合は、ポイントの不足分をご登録いただいたクレジットカードから、自動決済させていただきます。(1P = 1.1円)</p>
   </div>
   <form action="{{ route('guest.orders.post_confirm') }}" method="POST" class="create-call-form" id="" name="attention_form">
     {{ csrf_field() }}
