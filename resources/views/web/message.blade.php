@@ -173,7 +173,7 @@
   </div>
 @endsection
 @section('web.extra')
-  <div class="modal_wrap">
+  <div class="modal_wrap wrap-alert-image-oversize">
     <input id="alert-image-oversize" type="checkbox">
     <div class="modal_overlay">
       <label for="alert-image-oversize" class="modal_trigger"></label>

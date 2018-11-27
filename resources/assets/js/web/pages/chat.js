@@ -26,7 +26,6 @@ $(document).ready(function() {
 
   var roomId = $("#room-id").val();
   var orderId = $("#order-id").val();
-  var formData = new FormData();
   var currentDate = new Date();
   var time = currentDate.getHours()+':'+currentDate.getMinutes();
   window.Echo.private('room.'+roomId)
@@ -127,13 +126,14 @@ $(document).ready(function() {
   });
 
   $("#send-message").click(function(event) {
+    var formData = new FormData();
 
     $('#content').focus();
 
     $(this).prop('disabled', true);
 
-    if($.trim($("#content").val())) {
-      var content = $("#content").val();
+    var content = $("#content").val();
+    if($.trim(content)) {
 
       formData.append('message', content);
       formData.append('type', 2);
@@ -155,7 +155,9 @@ $(document).ready(function() {
   });
 
   $("#image-camera").change(function(event) {
+    var formData = new FormData();
     var filesCamera = $('#image-camera').prop('files');
+
     if(filesCamera.length > 0){
       formData.append('image', filesCamera[0]);
       formData.append('type', 3);
@@ -165,6 +167,7 @@ $(document).ready(function() {
   });
 
   $("#image").change(function(event) {
+    var formData = new FormData();
     var files = $('#image').prop('files');
 
     if (files.length > 0) {
@@ -264,11 +267,18 @@ $(document).ready(function() {
       $("#image").val(null);
     })
     .catch(function (error) {
+      if (error.response.data.message) {
+        var messageError = error.response.data.message;
+      }
       if (error.response.data.error) {
         var messageError = error.response.data.error.image[0];
-        $('.alert-image-oversize .content-in h2').text(messageError);
-        $('#alert-image-oversize').trigger('click');
       }
+      $('.alert-image-oversize .content-in h2').text(messageError);
+      $('#alert-image-oversize').trigger('click');
+
+      setTimeout(() => {
+        $('.wrap-alert-image-oversize').css('display', 'none');
+      }, 2000);
     });
   }
 
