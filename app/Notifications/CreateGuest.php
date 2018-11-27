@@ -155,7 +155,6 @@ class CreateGuest extends Notification implements ShouldQueue
             'system_type' => SystemMessageType::NORMAL
         ]);
         $roomMessage->recipients()->attach($notifiable->id, ['room_id' => $room->id]);
-        $this->limitedMessages($notifiable, $room);
 
         $name = $notifiable->nickname ? $notifiable->nickname : $notifiable->name;
         $content = 'こんにちは！' . $name . 'さん🌼';
@@ -185,7 +184,7 @@ class CreateGuest extends Notification implements ShouldQueue
     {
         $limitedStartTime = Carbon::parse('2018-11-22');
         $limitedEndTime = Carbon::parse('2018-11-30');
-        $now = Carbon::now();
+        $now = Carbon::now()->startOfDay();
         if ($now->between($limitedStartTime, $limitedEndTime)) {
             $opContent = '【1時間無料でギャラ飲み体験🥂💓】'
                 . PHP_EOL . '11月中にご利用いただいた方限定で、'
