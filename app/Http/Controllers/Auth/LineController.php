@@ -148,14 +148,15 @@ class LineController extends Controller
 
     protected function findOrCreate($lineResponse)
     {
-        $email = $lineResponse->email;
-        $user = User::query();
+        $user = User::where('line_user_id', $lineResponse->id)->first();
 
-        if ($email) {
-            $user = $user->where('email', $email);
+        if (!$user) {
+            $email = $lineResponse->email;
+
+            if ($email) {
+                $user = User::where('email', $email)->first();
+            }
         }
-
-        $user = $user->orWhere('line_user_id', $lineResponse->id)->first();
 
         if (!$user) {
             $data = [
@@ -186,8 +187,8 @@ class LineController extends Controller
             return ['user' => $user, 'first_time' => true];
         }
 
-        if (!$user->line_id) {
-            $user->line_id = $lineResponse->id;
+        if (!$user->line_user_id) {
+            $user->line_user_id = $lineResponse->id;
             $user->save();
         }
 
