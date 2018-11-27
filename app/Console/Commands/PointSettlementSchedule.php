@@ -50,7 +50,10 @@ class PointSettlementSchedule extends Command
         })
             ->where('payment_requested_at', '<=', $now->copy()->subHours(24))
             ->whereHas('user', function ($q) {
-                $q->where('payment_suspended', false)
+                $q->where(function ($query1) {
+                    $query1->where('payment_suspended', false)
+                        ->orWhere('payment_suspended', null);
+                })
                     ->where(function ($query) {
                         $query->where('provider', '<>', ProviderType::LINE)
                             ->orWhere('provider', null);
@@ -68,7 +71,10 @@ class PointSettlementSchedule extends Command
         })
             ->where('payment_requested_at', '<=', $now->copy()->subHours(3))
             ->whereHas('user', function ($q) {
-                $q->where('provider', ProviderType::LINE)->where('payment_suspended', false);
+                $q->where('provider', ProviderType::LINE)->where(function ($query) {
+                    $query->where('payment_suspended', false)
+                        ->orWhere('payment_suspended', null);
+                });
             })
             ->get();
 

@@ -64,7 +64,10 @@ class CancelFeeSettlement extends Command
             ->where('canceled_at', '<=', $now->copy()->subHours(24))
             ->where('cancel_fee_percent', '>', 0)
             ->whereHas('user', function ($q) {
-                $q->where('payment_suspended', false)
+                $q->where(function ($query1) {
+                    $query1->where('payment_suspended', false)
+                        ->orWhere('payment_suspended', null);
+                })
                     ->where(function ($query) {
                         $query->where('provider', '<>', ProviderType::LINE)
                             ->orWhere('provider', null);
@@ -83,7 +86,10 @@ class CancelFeeSettlement extends Command
             })
             ->where('canceled_at', '<=', $now->copy()->subHours(3))
             ->where('cancel_fee_percent', '>', 0)->whereHas('user', function ($q) {
-            $q->where('provider', ProviderType::LINE)->where('payment_suspended', false);
+            $q->where('provider', ProviderType::LINE)->where(function ($query) {
+                $query->where('payment_suspended', false)
+                    ->orWhere('payment_suspended', null);
+            });
         })->get();
 
         foreach ($lineOrders as $order) {
