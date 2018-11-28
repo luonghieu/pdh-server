@@ -13,6 +13,7 @@ use Illuminate\Bus\Queueable;
 use Illuminate\Notifications\Notification;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
+use Storage;
 
 class CreateGuest extends Notification implements ShouldQueue
 {
@@ -187,15 +188,14 @@ class CreateGuest extends Notification implements ShouldQueue
         $now = Carbon::now()->startOfDay();
         if ($now->between($limitedStartTime, $limitedEndTime)) {
             $opContent = '【1時間無料でギャラ飲み体験🥂💓】'
-                . PHP_EOL . '11月中にご利用いただいた方限定で、'
-                . PHP_EOL . '30分〜1時間無料でギャラ飲みができるキャンペーン（最大11,000円OFF）を実施します✨'
-                . PHP_EOL . PHP_EOL . 'ゲストからメッセージを送って、今日いけるキャストを見つける必要もありません！'
-                . PHP_EOL . '「今すぐキャストを呼ぶ」から、時間/場所/人数を選ぶだけ！'
-                . PHP_EOL . PHP_EOL . '※キャストは指名せずにご予約ください'
-                . PHP_EOL . '※指名予約、コール内指名予約は対象外です🙇‍♀️'
-                . PHP_EOL . '※対象の予約はコール予約のブロンズクラス（キャスト2名まで）のみとなります️'
-                . PHP_EOL . PHP_EOL . '無料体験ができるのは11月の今だけ！️'
-                . PHP_EOL . 'ぜひご利用ください🌷🌷️'
+                . PHP_EOL . '11月中にご利用いただいた方限定で、30分〜1時間無料でギャラ飲みができるキャンペーン（最大11,000円OFF）を実施します✨'
+                . PHP_EOL . PHP_EOL . '※対象の予約は下記の通りとなります'
+                . PHP_EOL . PHP_EOL . 'コール予約の場合：ブロンズクラスのキャスト2名まで'
+                . PHP_EOL . PHP_EOL . '指名予約の場合：ブロンズクラスのキャストを指名（ただし、キャストによってポイントが異なるため、最大11,000円分OFFとなります。）'
+                . PHP_EOL . PHP_EOL . '1時間ご予約の場合、30分無料'
+                . PHP_EOL . PHP_EOL . '2時間以上のご予約の場合、1時間無料'
+                . PHP_EOL . PHP_EOL . '無料体験ができるのは11月の今だけ！'
+                . PHP_EOL . 'この機会にぜひご利用ください🌷🌷'
                 . PHP_EOL . PHP_EOL . '詳しくは、下記の金額早見表からご確認ください♩'
                 . PHP_EOL . '不明点は、メッセージ内の運営者チャットからご連絡ください。';
 
@@ -206,6 +206,36 @@ class CreateGuest extends Notification implements ShouldQueue
                 'system_type' => SystemMessageType::NORMAL
             ]);
             $roomMessage->recipients()->attach($notifiable->id, ['room_id' => $room->id]);
+
+            $pricesSrc = Storage::url('add_friend_prices_v2_223011.png');
+            $bannerSrc = Storage::url('add_friend_banner_v2_223011.png');
+
+            if (!@getimagesize($pricesSrc)) {
+                $fileContents = Storage::disk('local')->get("system_images/add_friend_prices_v2_223011.png");
+                $fileName = 'add_friend_prices_v2_223011.png';
+                Storage::put($fileName, $fileContents, 'public');
+            }
+            if (!@getimagesize($bannerSrc)) {
+                $fileContents = Storage::disk('local')->get("system_images/add_friend_banner_v2_223011.jpg");
+                $fileName = 'add_friend_banner_v2_223011.png';
+                Storage::put($fileName, $fileContents, 'public');
+            }
+
+            $bannerImgMessage = $room->messages()->create([
+                'user_id' => 1,
+                'type' => MessageType::IMAGE,
+                'image' => 'add_friend_prices_v2_223011.png',
+                'system_type' => SystemMessageType::NORMAL
+            ]);
+            $bannerImgMessage->recipients()->attach($notifiable->id, ['room_id' => $room->id]);
+
+            $priceImgMessge = $room->messages()->create([
+                'user_id' => 1,
+                'type' => MessageType::IMAGE,
+                'image' => 'add_friend_banner_v2_223011.png',
+                'system_type' => SystemMessageType::NORMAL
+            ]);
+            $priceImgMessge->recipients()->attach($notifiable->id, ['room_id' => $room->id]);
         }
     }
 }
