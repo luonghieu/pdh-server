@@ -18,8 +18,8 @@
   <script src="{{ asset('/ld/js/guest.js') }}" charset="utf-8"></script>
   <script src="{{ asset('/ld/js/jquery.inview.min.js') }}" charset="utf-8"></script>
   <!--[if lt IE 9]>
-	<script src=".js/html5.js"></script>
-	<![endif]-->
+  <script src=".js/html5.js"></script>
+  <![endif]-->
   <!-- Google Tag Manager -->
   <script>
     (function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
@@ -33,7 +33,7 @@
   <link rel='dns-prefetch' href='//s.w.org' />
   <script type="text/javascript">
     window._wpemojiSettings = {"baseUrl":"https:\/\/s.w.org\/images\/core\/emoji\/11\/72x72\/","ext":".png","svgUrl":"https:\/\/s.w.org\/images\/core\/emoji\/11\/svg\/","svgExt":".svg","source":{"concatemoji":window.location + "service\/wp-includes\/js\/wp-emoji-release.min.js?ver=4.9.8"}};
-			!function(a,b,c){function d(a,b){var c=String.fromCharCode;l.clearRect(0,0,k.width,k.height),l.fillText(c.apply(this,a),0,0);var d=k.toDataURL();l.clearRect(0,0,k.width,k.height),l.fillText(c.apply(this,b),0,0);var e=k.toDataURL();return d===e}function e(a){var b;if(!l||!l.fillText)return!1;switch(l.textBaseline="top",l.font="600 32px Arial",a){case"flag":return!(b=d([55356,56826,55356,56819],[55356,56826,8203,55356,56819]))&&(b=d([55356,57332,56128,56423,56128,56418,56128,56421,56128,56430,56128,56423,56128,56447],[55356,57332,8203,56128,56423,8203,56128,56418,8203,56128,56421,8203,56128,56430,8203,56128,56423,8203,56128,56447]),!b);case"emoji":return b=d([55358,56760,9792,65039],[55358,56760,8203,9792,65039]),!b}return!1}function f(a){var c=b.createElement("script");c.src=a,c.defer=c.type="text/javascript",b.getElementsByTagName("head")[0].appendChild(c)}var g,h,i,j,k=b.createElement("canvas"),l=k.getContext&&k.getContext("2d");for(j=Array("flag","emoji"),c.supports={everything:!0,everythingExceptFlag:!0},i=0;i<j.length;i++)c.supports[j[i]]=e(j[i]),c.supports.everything=c.supports.everything&&c.supports[j[i]],"flag"!==j[i]&&(c.supports.everythingExceptFlag=c.supports.everythingExceptFlag&&c.supports[j[i]]);c.supports.everythingExceptFlag=c.supports.everythingExceptFlag&&!c.supports.flag,c.DOMReady=!1,c.readyCallback=function(){c.DOMReady=!0},c.supports.everything||(h=function(){c.readyCallback()},b.addEventListener?(b.addEventListener("DOMContentLoaded",h,!1),a.addEventListener("load",h,!1)):(a.attachEvent("onload",h),b.attachEvent("onreadystatechange",function(){"complete"===b.readyState&&c.readyCallback()})),g=c.source||{},g.concatemoji?f(g.concatemoji):g.wpemoji&&g.twemoji&&(f(g.twemoji),f(g.wpemoji)))}(window,document,window._wpemojiSettings);
+      !function(a,b,c){function d(a,b){var c=String.fromCharCode;l.clearRect(0,0,k.width,k.height),l.fillText(c.apply(this,a),0,0);var d=k.toDataURL();l.clearRect(0,0,k.width,k.height),l.fillText(c.apply(this,b),0,0);var e=k.toDataURL();return d===e}function e(a){var b;if(!l||!l.fillText)return!1;switch(l.textBaseline="top",l.font="600 32px Arial",a){case"flag":return!(b=d([55356,56826,55356,56819],[55356,56826,8203,55356,56819]))&&(b=d([55356,57332,56128,56423,56128,56418,56128,56421,56128,56430,56128,56423,56128,56447],[55356,57332,8203,56128,56423,8203,56128,56418,8203,56128,56421,8203,56128,56430,8203,56128,56423,8203,56128,56447]),!b);case"emoji":return b=d([55358,56760,9792,65039],[55358,56760,8203,9792,65039]),!b}return!1}function f(a){var c=b.createElement("script");c.src=a,c.defer=c.type="text/javascript",b.getElementsByTagName("head")[0].appendChild(c)}var g,h,i,j,k=b.createElement("canvas"),l=k.getContext&&k.getContext("2d");for(j=Array("flag","emoji"),c.supports={everything:!0,everythingExceptFlag:!0},i=0;i<j.length;i++)c.supports[j[i]]=e(j[i]),c.supports.everything=c.supports.everything&&c.supports[j[i]],"flag"!==j[i]&&(c.supports.everythingExceptFlag=c.supports.everythingExceptFlag&&c.supports[j[i]]);c.supports.everythingExceptFlag=c.supports.everythingExceptFlag&&!c.supports.flag,c.DOMReady=!1,c.readyCallback=function(){c.DOMReady=!0},c.supports.everything||(h=function(){c.readyCallback()},b.addEventListener?(b.addEventListener("DOMContentLoaded",h,!1),a.addEventListener("load",h,!1)):(a.attachEvent("onload",h),b.attachEvent("onreadystatechange",function(){"complete"===b.readyState&&c.readyCallback()})),g=c.source||{},g.concatemoji?f(g.concatemoji):g.wpemoji&&g.twemoji&&(f(g.twemoji),f(g.wpemoji)))}(window,document,window._wpemojiSettings);
   </script>
   <style type="text/css">
     img.wp-smiley,
@@ -48,10 +48,64 @@
       background: none !important;
       padding: 0 !important;
     }
+
+    /* The Modal (background) */
+    .modal {
+      display: block; /* Hidden by default */
+      position: fixed; /* Stay in place */
+      z-index: 100; /* Sit on top */
+      padding-top: 100px; /* Location of the box */
+      left: 0;
+      top: 0;
+      width: 100%; /* Full width */
+      height: 100%; /* Full height */
+      overflow: auto; /* Enable scroll if needed */
+      background-color: rgb(0,0,0); /* Fallback color */
+      background-color: rgba(0,0,0,0.9); /* Black w/ opacity */
+    }
+
+    .modal img {
+      margin: 0 auto;
+    }
+
+    /* The Close Button */
+    .close {
+      position: absolute;
+      top: 15px;
+      right: 35px;
+      color: #f1f1f1;
+      font-size: 40px;
+      font-weight: bold;
+      transition: 0.3s;
+    }
+
+    .close:hover,
+    .close:focus {
+      color: #bbb;
+      text-decoration: none;
+      cursor: pointer;
+    }
+
+    /* 100% Image Width on Smaller Screens */
+    @media only screen and (max-width: 700px) {
+      .modal-content {
+        width: 100%;
+      }
+    }
   </style>
 </head>
 
 <body class="home blog">
+  @php
+    $campaignFrom = Carbon\Carbon::parse('2018-11-28');
+    $campaignTo = Carbon\Carbon::parse('2018-11-30');
+  @endphp
+  @if (now()->between($campaignFrom, $campaignTo))
+  <div id="campaign-modal" class="modal">
+    <span class="close">&times;</span>
+    <img src="/ld/images/guest/lp_campaign.png" class="modal-content">
+  </div>
+  @endif
   <!-- Google Tag Manager (noscript) -->
   <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-NKVKVFK"
   height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
@@ -104,10 +158,10 @@
           size_md">LINEではじめる</a>
         </div> -->
         <!--本番環境
-			<div class="g_btn">
-				<a href="https://line.me/R/ti/p/%40guk2609l" target="_blank" class="btn_color site size_md">LINE@で友達追加</a>
-			</div>
-			-->
+      <div class="g_btn">
+        <a href="https://line.me/R/ti/p/%40guk2609l" target="_blank" class="btn_color site size_md">LINE@で友達追加</a>
+      </div>
+      -->
         <div class="gTop-sns fi animated g-pcOnly">
           <p>FOLLOW US</p>
           <div class="gTop-sns-icon">
@@ -127,7 +181,7 @@
         </div>
         <h2>いつでも、どこでも<br>最短20分で<br class="g-spOnly"><span>※</span>キャストに会える！</h2>
         <p class="guest01-atcl01"><span class="font-w">六本木・恵比寿・渋谷・新宿など、主要地域を中心に、<br class="g-pcOnly">呼びたい時にすぐキャストが駆けつけその場を盛り上げてくれます。</p>
-			<p class="guest01-atcl02">プライベートの飲み会から接待まで、様々なシーンでご利用いただけます。モーニングやランチにキャストを呼ぶ方も♪</span>
+      <p class="guest01-atcl02">プライベートの飲み会から接待まで、様々なシーンでご利用いただけます。モーニングやランチにキャストを呼ぶ方も♪</span>
           <p class="guest01-atcl03">※キャストとは飲み会に参加してくれる方のことを指します</p>
       </div>
       <ul class="guest01-belt">
@@ -211,8 +265,8 @@
             <div class="ad-app">
               <p>\ ダウンロードしてキャストを呼ぶ /</p>
               <!-- <a href="#v">
-							<img src="{{ asset('/ld/images/guest/app_stor.png') }}" alt="Apple Store">
-						</a> -->
+              <img src="{{ asset('/ld/images/guest/app_stor.png') }}" alt="Apple Store">
+            </a> -->
               <!--a href="#v"><img src="{{ asset('/ld/images/guest/ggl_stor_soon.png') }}" alt="Google Store"></a-->
             </div>
             <div class="dp_soon">
@@ -346,8 +400,8 @@
             <div class="ad-app">
               <p>\ ダウンロードしてキャストを呼ぶ /</p>
               <!-- <a href="#v">
-							<img src="{{ asset('/ld/images/guest/app_stor.png') }}" alt="Apple Store">
-						</a> -->
+              <img src="{{ asset('/ld/images/guest/app_stor.png') }}" alt="Apple Store">
+            </a> -->
               <!--a href="#v"><img src="{{ asset('/ld/images/guest/ggl_stor_soon.png') }}" alt="Google Store"></a-->
             </div>
             <div class="dp_soon">
@@ -367,32 +421,32 @@
   </main>
   <script>
     $(function() {
-	$('.fi').on('inview', function(event, isInView) {
-		if (isInView) {
-			$(this).addClass('fadeIn');
-		}
-	});
-	$('.fiu').on('inview', function(event, isInView) {
-		if (isInView) {
-			$(this).addClass('fadeInUp');
-		}
-	});
-	$('.fil').on('inview', function(event, isInView) {
-		if (isInView) {
-			$(this).addClass('fadeInLittelLeft');
-		}
-	});
-	$('.fir').on('inview', function(event, isInView) {
-		if (isInView) {
-			$(this).addClass('fadeInLittelRight');
-		}
-	});
-	$('.filu').on('inview', function(event, isInView) {
-		if (isInView) {
-			$(this).addClass('fadeInLittleUp');
-		}
-	});
-});
+      $('.fi').on('inview', function(event, isInView) {
+        if (isInView) {
+          $(this).addClass('fadeIn');
+        }
+      });
+      $('.fiu').on('inview', function(event, isInView) {
+        if (isInView) {
+          $(this).addClass('fadeInUp');
+        }
+      });
+      $('.fil').on('inview', function(event, isInView) {
+        if (isInView) {
+          $(this).addClass('fadeInLittelLeft');
+        }
+      });
+      $('.fir').on('inview', function(event, isInView) {
+        if (isInView) {
+          $(this).addClass('fadeInLittelRight');
+        }
+      });
+      $('.filu').on('inview', function(event, isInView) {
+        if (isInView) {
+          $(this).addClass('fadeInLittleUp');
+        }
+      });
+    });
   </script>
   <div class="push"></div>
   <footer id="guest" class="g_footer cf">
@@ -411,6 +465,18 @@
     <p class="copy">Copyright © 2018 Cheers</p>
   </footer>
   <script type='text/javascript' src="/service/wp-includes/js/wp-embed.min.js?ver=4.9.8"></script>
+
+  <script type="text/javascript">
+    // Get the modal
+    var modal = document.getElementById('campaign-modal');
+    // Get the <span> element that closes the modal
+    var span = document.getElementsByClassName('close')[0];
+
+    // When the user clicks on <span> (x), close the modal
+    span.onclick = function () {
+      modal.style.display = 'none';
+    }
+  </script>
 </body>
 
 </html>
