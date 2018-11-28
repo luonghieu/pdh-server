@@ -35,13 +35,13 @@
             <div class="clearfix"></div>
           </div>
           <div class="col-lg-12 wrap-qr-code">
-            <label for="comment-offer" class="lb-comment-offer">訴求コメントを入力する</label>
+            <label for="comment-offer" class="lb-comment-offer">訴求コメント</label>
             <div class="col-sm-12 ">
-              <p class="confirm-message-offer" style="font-size: 12px">{{ $offer->comment }}</p>
+              <p class="confirm-message-offer" >{{ $offer->comment }}</p>
             </div>
           </div>
           <div class="col-lg-12 wrap-qr-code">
-            <label class="lb-date-offer">訴求コメントを入力する</label>
+            <label class="lb-date-offer">開始日時</label>
           </div>
           <div class="col-lg-12 wrap-qr-code">
             <div class="col-sm-2 ">
@@ -49,11 +49,11 @@
                <p class="confirm-date-offer"></p>
             </div>
             <div class="col-sm-4">
-              {{ $offer->start_time_from }} &nbsp ~ &nbsp {{ $offer->start_time_to }}
+              {{ Carbon\Carbon::parse($offer->start_time_from)->format('H:i') }} &nbsp ~ &nbsp {{ Carbon\Carbon::parse($offer->start_time_to)->format('H:i') }}
             </div>
           </div>
           <div class="col-lg-12 wrap-qr-code lb-date-offer">
-            <label class="">ギャラ飲みの時間を選択する</label>
+            <label class="">ギャラ飲みの時間</label>
           </div>
           <div class="col-lg-12 wrap-qr-code">
             <div class="col-sm-4 ">
@@ -61,7 +61,7 @@
             </div>
           </div>
           <div class="col-lg-12 wrap-qr-code lb-date-offer">
-            <label class="">エリアを選択する</label>
+            <label class="">エリア</label>
           </div>
           <div class="col-lg-12 wrap-qr-code">
             <div class="col-sm-4 ">
@@ -75,7 +75,7 @@
           <div class="col-lg-12 wrap-qr-code">
             <label class="lb-date-offer"></label>
              <div class="col-sm-4 col-sm-offset-8" style="text-align: center;">
-              <span class="show-current-point-offer">予定合計ポイント : {{ $offer->temp_point }}P</span>
+              <span class="show-current-point-offer">予定合計ポイント : {{ number_format($offer->temp_point) }}P~</span>
               <hr style="border: 1px #0000006e dashed;width: 65%;">
              </div>
           </div>

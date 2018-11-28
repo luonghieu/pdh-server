@@ -36,7 +36,7 @@
                   @endif
                 </a>
                 <p>ユーザーID: {{ $cast['id'] }}</p>
-                <p>{{ $cast['nickname']}}</p>
+                <p class="nickname-offer">{{ $cast['nickname']}}</p>
                 <div class="custom-checkbox">
                   <input type="checkbox" name="casts_offer[]" data-id='{{ $cast['class_id'] }}' value="{{ $cast['id'] }}" id="{{ $cast['id'] }}" class="cb-casts-offer">
                 </div>
@@ -157,6 +157,13 @@
                 &nbsp;&nbsp;&nbsp; ~ &nbsp;&nbsp;&nbsp;
                 <select id="end_time_offer" name="end_time_offer" class="form-control select-time select-time-offer">
                   @foreach ($arrTime as $time)
+                    @if($time != '00:00' && $time != '00:30')
+                    <option value="{{ $time }}">{{ $time }}</option>
+                    @endif
+                  }
+                  }
+                  @endforeach
+                  @foreach (['24:00', '24:30','25:00', '25:30', '26:00'] as $time)
                     <option value="{{ $time }}">{{ $time }}</option>
                   @endforeach
                 </select>

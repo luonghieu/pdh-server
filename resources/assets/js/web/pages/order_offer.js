@@ -1,5 +1,16 @@
 $(document).ready(function(){
   const helper = require('./helper');
+
+  var checkApp = {
+      isAppleDevice : function() {
+        if (navigator.userAgent.match(/(iPhone|iPod|iPad)/) != null) {
+          return true;
+        }
+
+        return false;
+      }
+    };
+
   $(".checked-order-offer").on("change",function(event){
     if ($(this).is(':checked')) {
       var area = $("input:radio[name='offer_area']:checked").val();
@@ -36,10 +47,33 @@ $(document).ready(function(){
     }
 
     var hour = $(".select-hour-offer option:selected").val();
+    if (23<hour) {
+      switch(hour) {
+        case '24':
+            hour = '00';
+            break;
+        case '25':
+            hour = '01';
+            break;
+        case '26':
+            hour = '02';
+            break;
+      }
+    }
     var minute = $(".select-minute-offer option:selected").val();
 
     var time = hour + ':' + minute;
-    var date = $('#current-date-offer').val();
+
+    if(localStorage.getItem("order_offer")){
+      var orderOffer = JSON.parse(localStorage.getItem("order_offer"));
+      if(orderOffer.current_date) {
+        var date = orderOffer.current_date;
+      } else {
+        var date = $('#current-date-offer').val();
+      }
+    } else {
+      var date = $('#current-date-offer').val();
+    }
 
     var duration = $("input:radio[name='time_set_offer']:checked").val();
     if('other_time_set' == duration) {
@@ -139,6 +173,19 @@ $(document).ready(function(){
   var timeSet = $("input:radio[name='time_set_offer']");
   timeSet.on("change",function(){
     var hour = $(".select-hour-offer option:selected").val();
+    if (23<hour) {
+      switch(hour) {
+        case '24':
+            hour = '00';
+            break;
+        case '25':
+            hour = '01';
+            break;
+        case '26':
+            hour = '02';
+            break;
+      }
+    }
     var minute = $(".select-minute-offer option:selected").val();
     var duration = $("input:radio[name='time_set_offer']:checked").val();
 
@@ -160,7 +207,18 @@ $(document).ready(function(){
 
     var castIds = $('#current-cast-id-offer').val();
     var totalCast = castIds.split(',');
-    var date = $('#current-date-offer').val();
+
+    if(localStorage.getItem("order_offer")){
+      var orderOffer = JSON.parse(localStorage.getItem("order_offer"));
+      if(orderOffer.current_date) {
+        var date = orderOffer.current_date;
+      } else {
+        var date = $('#current-date-offer').val();
+      }
+    } else {
+      var date = $('#current-date-offer').val();
+    }
+
     var time = hour + ':' + minute;
     var classId = $('#current-class-id-offer').val();
 
@@ -199,6 +257,19 @@ $(document).ready(function(){
   //other-duration
   $('.select-duration-offer').on("change",function(){
     var hour = $(".select-hour-offer option:selected").val();
+    if (23<hour) {
+      switch(hour) {
+        case '24':
+            hour = '00';
+            break;
+        case '25':
+            hour = '01';
+            break;
+        case '26':
+            hour = '02';
+            break;
+      }
+    }
     var minute = $(".select-minute-offer option:selected").val();
     var duration = $(this).val();
 
@@ -210,7 +281,18 @@ $(document).ready(function(){
 
     var castIds = $('#current-cast-id-offer').val();
     var totalCast = castIds.split(',');
-    var date = $('#current-date-offer').val();
+
+    if(localStorage.getItem("order_offer")){
+      var orderOffer = JSON.parse(localStorage.getItem("order_offer"));
+      if(orderOffer.current_date) {
+        var date = orderOffer.current_date;
+      } else {
+        var date = $('#current-date-offer').val();
+      }
+    } else {
+      var date = $('#current-date-offer').val();
+    }
+
     var time = hour + ':' + minute;
     var classId = $('#current-class-id-offer').val();
 
@@ -248,6 +330,21 @@ $(document).ready(function(){
 
   $('.select-hour-offer').on('change', function (e) {
     var hour = $(this).val();
+
+    if (23<hour) {
+      switch(hour) {
+        case '24':
+            hour = '00';
+            break;
+        case '25':
+            hour = '01';
+            break;
+        case '26':
+            hour = '02';
+            break;
+      }
+    }
+
     var startTimeFrom = $('#start-time-from-offer').val();
     startTimeFrom = startTimeFrom.split(":");
     var startHourFrom = startTimeFrom[0];
@@ -271,17 +368,70 @@ $(document).ready(function(){
     $('.select-minute-offer').html(html);
   });
 
+   var add_minutes =  function (dt, minutes) {
+      return new Date(dt.getTime() + minutes*60000);
+    }
+
   //time
   $('.date-select-offer').on("click",function(){
     var hour = $(".select-hour-offer option:selected").val();
     var minute = $(".select-minute-offer option:selected").val();
+    var currentDate = $('#current-date-offer').val();
+    currentDate = currentDate.split('-');
 
-    var params = {
+     var params = {
         hour : hour,
         minute : minute,
       };
 
+    helper.updateLocalStorageValue('order_offer', params);
+
+    if (23<hour) {
+      switch(hour) {
+        case '24':
+            hour = '00';
+            break;
+        case '25':
+            hour = '01';
+            break;
+        case '26':
+            hour = '02';
+            break;
+      }
+
+
+      if (checkApp.isAppleDevice()) {
+        var selectDate = new Date(currentDate[1] +'/' +currentDate[2]+'/'+currentDate[0]);
+      } else {
+        var selectDate = new Date(currentDate[0] +'-' +currentDate[1]+'-'+currentDate[2]);
+      }
+
+      selectDate.setDate(selectDate.getDate() + 1);
+
+      var monthOffer = selectDate.getMonth() +1;
+      if (monthOffer<10) {
+        monthOffer = '0'+monthOffer;
+      }
+      var dateOffer = selectDate.getDate();
+      if (dateOffer<10) {
+        dateOffer = '0'+dateOffer;
+      }
+
+      var yearOffer = selectDate.getFullYear();
+      var time = yearOffer + '-' + monthOffer + '-' +  dateOffer;
+      $('#temp-date-offer').text(yearOffer+'年'+monthOffer+'月'+dateOffer+'日');
+    }else {
+      var time = $('#current-date-offer').val();
+
+      $('#temp-date-offer').text(currentDate[0]+'年'+currentDate[1]+'月'+currentDate[1]+'日');
+    }
+
+
     $('.time-offer').text(hour + ':' + minute +'~');
+
+    var params = {
+      current_date : time,
+    }
 
     helper.updateLocalStorageValue('order_offer', params);
 
@@ -295,13 +445,10 @@ $(document).ready(function(){
 
       var castIds = $('#current-cast-id-offer').val();
       var totalCast = castIds.split(',');
-      var date = $('#current-date-offer').val();
-      var time = hour + ':' + minute;
       var classId = $('#current-class-id-offer').val();
-
       var params = {
-        date : date,
-        start_time : time,
+        date : time,
+        start_time : hour + ':' + minute,
         type :2,
         duration :duration,
         total_cast :totalCast.length,
@@ -352,6 +499,10 @@ $(document).ready(function(){
         $('#temp-point-offer').val(orderOffer.current_total_point);
       }
 
+      if(orderOffer.current_date) {
+        currentDate = orderOffer.current_date.split('-');
+        $('#temp-date-offer').text(currentDate[0]+'年'+currentDate[1]+'月'+currentDate[2]+'日');
+      }
         //area
       if(orderOffer.select_area){
        if('その他'== orderOffer.select_area){
@@ -398,14 +549,30 @@ $(document).ready(function(){
 
       //time
       if(orderOffer.hour){
-        $('.time-offer').text(orderOffer.hour + ":" + orderOffer.minute + '~');
-
+        var hour = orderOffer.hour;
         const inputHour = $('select[name=select_hour_offer] option');
         $.each(inputHour,function(index,val){
-          if(val.value == orderOffer.hour) {
+          if(val.value == hour) {
             $(this).prop('selected',true);
           }
         })
+
+        if (23<hour) {
+          switch(hour) {
+            case '24':
+                hour = '00';
+                break;
+            case '25':
+                hour = '01';
+                break;
+            case '26':
+                hour = '02';
+                break;
+          }
+        }
+
+        $('.time-offer').text(hour + ":" + orderOffer.minute + '~');
+
 
         var startTimeFrom = $('#start-time-from-offer').val();
         startTimeFrom = startTimeFrom.split(":");
