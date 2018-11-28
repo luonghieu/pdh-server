@@ -98,7 +98,6 @@ class CreateGuest extends Notification implements ShouldQueue
             'type' => MessageType::SYSTEM,
             'message' => $content,
             'system_type' => SystemMessageType::NORMAL,
-            'created_at' => now()
         ]);
         $roomMessage->recipients()->attach($notifiable->id, ['room_id' => $room->id]);
         $this->limitedMessages($notifiable, $room);
@@ -158,7 +157,6 @@ class CreateGuest extends Notification implements ShouldQueue
         ]);
 
         $roomMessage->recipients()->attach($notifiable->id, ['room_id' => $room->id]);
-        $this->limitedMessages($notifiable, $room);
 
         $name = $notifiable->nickname ? $notifiable->nickname : $notifiable->name;
         $content = 'こんにちは！' . $name . 'さん🌼';
@@ -211,7 +209,7 @@ class CreateGuest extends Notification implements ShouldQueue
             ]);
             $roomMessage->recipients()->attach($notifiable->id, ['room_id' => $room->id]);
 
-            $pricesSrc = Storage::url('add_friend_prices_v2_223011.png');
+            $pricesSrc = Storage::url('add_friend_prices_v3_223011.png');
             $bannerSrc = Storage::url('add_friend_banner_v2_223011.png');
 
             if (!@getimagesize($pricesSrc)) {
