@@ -46,7 +46,6 @@ class OfferController extends Controller
             $classId = 1;
         }
         $params = [
-            'working_today' => 1,
             'page' => $request->get('page', 1),
             'latest' => 1,
             'class_id' => $classId,
@@ -285,7 +284,6 @@ class OfferController extends Controller
             $classId = $offer->class_id;
         }
         $params = [
-            'working_today' => 1,
             'page' => $request->get('page', 1),
             'latest' => 1,
             'class_id' => $classId,
