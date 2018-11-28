@@ -97,7 +97,8 @@ class CreateGuest extends Notification implements ShouldQueue
             'user_id' => 1,
             'type' => MessageType::SYSTEM,
             'message' => $content,
-            'system_type' => SystemMessageType::NORMAL
+            'system_type' => SystemMessageType::NORMAL,
+            'created_at' => now()
         ]);
         $roomMessage->recipients()->attach($notifiable->id, ['room_id' => $room->id]);
         $this->limitedMessages($notifiable, $room);
@@ -153,9 +154,11 @@ class CreateGuest extends Notification implements ShouldQueue
             'user_id' => 1,
             'type' => MessageType::SYSTEM,
             'message' => $content,
-            'system_type' => SystemMessageType::NORMAL
+            'system_type' => SystemMessageType::NORMAL,
         ]);
+
         $roomMessage->recipients()->attach($notifiable->id, ['room_id' => $room->id]);
+        $this->limitedMessages($notifiable, $room);
 
         $name = $notifiable->nickname ? $notifiable->nickname : $notifiable->name;
         $content = 'こんにちは！' . $name . 'さん🌼';
@@ -203,7 +206,8 @@ class CreateGuest extends Notification implements ShouldQueue
                 'user_id' => 1,
                 'type' => MessageType::SYSTEM,
                 'message' => $opContent,
-                'system_type' => SystemMessageType::NORMAL
+                'system_type' => SystemMessageType::NORMAL,
+                'created_at' => now()->copy()->addSeconds(1)
             ]);
             $roomMessage->recipients()->attach($notifiable->id, ['room_id' => $room->id]);
 
@@ -211,8 +215,8 @@ class CreateGuest extends Notification implements ShouldQueue
             $bannerSrc = Storage::url('add_friend_banner_v2_223011.png');
 
             if (!@getimagesize($pricesSrc)) {
-                $fileContents = Storage::disk('local')->get("system_images/add_friend_prices_v2_223011.png");
-                $fileName = 'add_friend_prices_v2_223011.png';
+                $fileContents = Storage::disk('local')->get("system_images/add_friend_prices_v3_223011.png");
+                $fileName = 'add_friend_prices_v3_223011.png';
                 Storage::put($fileName, $fileContents, 'public');
             }
             if (!@getimagesize($bannerSrc)) {
@@ -224,8 +228,9 @@ class CreateGuest extends Notification implements ShouldQueue
             $priceImgMessge = $room->messages()->create([
                 'user_id' => 1,
                 'type' => MessageType::IMAGE,
-                'image' => 'add_friend_prices_v2_223011.png',
-                'system_type' => SystemMessageType::NORMAL
+                'image' => 'add_friend_prices_v3_223011.png',
+                'system_type' => SystemMessageType::NORMAL,
+                'created_at' => now()->copy()->addSeconds(2)
             ]);
             $priceImgMessge->recipients()->attach($notifiable->id, ['room_id' => $room->id]);
 
@@ -233,7 +238,8 @@ class CreateGuest extends Notification implements ShouldQueue
                 'user_id' => 1,
                 'type' => MessageType::IMAGE,
                 'image' => 'add_friend_banner_v2_223011.png',
-                'system_type' => SystemMessageType::NORMAL
+                'system_type' => SystemMessageType::NORMAL,
+                'created_at' => now()->copy()->addSeconds(3)
             ]);
             $bannerImgMessage->recipients()->attach($notifiable->id, ['room_id' => $room->id]);
         }
