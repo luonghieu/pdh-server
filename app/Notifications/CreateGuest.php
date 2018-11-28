@@ -221,14 +221,6 @@ class CreateGuest extends Notification implements ShouldQueue
                 Storage::put($fileName, $fileContents, 'public');
             }
 
-            $bannerImgMessage = $room->messages()->create([
-                'user_id' => 1,
-                'type' => MessageType::IMAGE,
-                'image' => 'add_friend_prices_v2_223011.png',
-                'system_type' => SystemMessageType::NORMAL
-            ]);
-            $bannerImgMessage->recipients()->attach($notifiable->id, ['room_id' => $room->id]);
-
             $priceImgMessge = $room->messages()->create([
                 'user_id' => 1,
                 'type' => MessageType::IMAGE,
@@ -236,6 +228,14 @@ class CreateGuest extends Notification implements ShouldQueue
                 'system_type' => SystemMessageType::NORMAL
             ]);
             $priceImgMessge->recipients()->attach($notifiable->id, ['room_id' => $room->id]);
+
+            $bannerImgMessage = $room->messages()->create([
+                'user_id' => 1,
+                'type' => MessageType::IMAGE,
+                'image' => 'add_friend_prices_v2_223011.png',
+                'system_type' => SystemMessageType::NORMAL
+            ]);
+            $bannerImgMessage->recipients()->attach($notifiable->id, ['room_id' => $room->id]);
         }
     }
 }
