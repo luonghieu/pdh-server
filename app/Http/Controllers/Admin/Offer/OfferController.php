@@ -21,7 +21,48 @@ class OfferController extends Controller
 {
     public function index(Request $request)
     {
-        $offers = Offer::with('order')->orderByDesc('created_at')->paginate($request->limit ?: 10);
+        $offers = Offer::with('order');
+
+        $keyword = $request->search;
+
+        if ($request->has('from_date') && !empty($request->from_date)) {
+            $fromDate = Carbon::parse($request->from_date)->startOfDay();
+            $offers->where(function ($query) use ($fromDate) {
+                $query->whereDate('date', '>=', $fromDate);
+            });
+        }
+
+        if ($request->has('to_date') && !empty($request->to_date)) {
+            $toDate = Carbon::parse($request->to_date)->endOfDay();
+            $offers->where(function ($query) use ($toDate) {
+                $query->whereDate('date', '<=', $toDate);
+            });
+        }
+
+        $offers = $offers->orderByDesc('created_at')->get();
+
+        if ($keyword) {
+            $offers = $offers->filter(function ($offer) use ($keyword) {
+                $casts = $offer->casts;
+                $castsNickname = $casts->reject(function ($cast) use ($keyword) {
+                    return mb_strpos($cast->nickname, $keyword) === false;
+                });
+
+                $offerId = strpos($offer->id, $keyword) !== false;
+
+                $castId = in_array($keyword, $offer->cast_ids) !== false;
+
+                $orderId = strpos($offer->order['id'], $keyword) !== false;
+
+                return $castsNickname->count() > 0 || $offerId || $castId || $orderId;
+            });
+        }
+
+        $total = $offers->count();
+        $offers = $offers->forPage($request->page, $request->limit);
+
+        $offers = new LengthAwarePaginator($offers, $total, $request->limit ?: 10);
+        $offers = $offers->withPath('');
 
         return view('admin.offers.index', compact('offers'));
     }
