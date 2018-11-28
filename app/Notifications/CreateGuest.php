@@ -224,7 +224,7 @@ class CreateGuest extends Notification implements ShouldQueue
             $priceImgMessge = $room->messages()->create([
                 'user_id' => 1,
                 'type' => MessageType::IMAGE,
-                'image' => 'add_friend_banner_v2_223011.png',
+                'image' => 'add_friend_prices_v2_223011.png',
                 'system_type' => SystemMessageType::NORMAL
             ]);
             $priceImgMessge->recipients()->attach($notifiable->id, ['room_id' => $room->id]);
@@ -232,7 +232,7 @@ class CreateGuest extends Notification implements ShouldQueue
             $bannerImgMessage = $room->messages()->create([
                 'user_id' => 1,
                 'type' => MessageType::IMAGE,
-                'image' => 'add_friend_prices_v2_223011.png',
+                'image' => 'add_friend_banner_v2_223011.png',
                 'system_type' => SystemMessageType::NORMAL
             ]);
             $bannerImgMessage->recipients()->attach($notifiable->id, ['room_id' => $room->id]);
