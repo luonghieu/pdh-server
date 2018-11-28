@@ -98,7 +98,7 @@
               </div>
             @endif
             <div class="col-lg-12 wrap-qr-code">
-              <label class="lb-date-offer">訴求コメントを入力する</label>
+              <label class="lb-date-offer">開始日時を選択する</label>
             </div>
             <div class="col-lg-12 wrap-qr-code">
               <div class="col-sm-2 ">
