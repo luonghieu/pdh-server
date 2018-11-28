@@ -8,6 +8,7 @@ use App\Enums\PointType;
 use App\Enums\ProviderType;
 use App\Enums\UserType;
 use App\Notifications\AutoChargeFailed;
+use App\Notifications\AutoChargeFailedLineNotify;
 use App\Notifications\AutoChargeFailedWorkchatNotify;
 use App\Order;
 use App\Point;
@@ -85,7 +86,10 @@ class PointSettlement implements ShouldQueue
                 $user = $this->order->user;
                 $user->suspendPayment();
                 if (!$this->order->send_warning) {
+                    $delay = Carbon::now()->addSeconds(3);
                     $user->notify(new AutoChargeFailedWorkchatNotify($this->order));
+                    $user->notify((new AutoChargeFailedLineNotify($this->order))->delay($delay));
+
                     if (ProviderType::LINE == $user->provider) {
                         $this->order->user->notify(new AutoChargeFailed($this->order));
                     }

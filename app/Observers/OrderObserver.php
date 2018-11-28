@@ -8,6 +8,7 @@ use App\Enums\ProviderType;
 use App\Notifications\CompletedPayment;
 use App\Notifications\CreateNominatedOrdersForGuest;
 use App\Notifications\CreateOrdersForLineGuest;
+use App\Notifications\OrderCreatedLineNotify;
 use App\Notifications\OrderCreatedNotifyToAdmin;
 use App\Order;
 use App\User;
@@ -31,8 +32,12 @@ class OrderObserver
         }
 
         $admin = User::find(1);
+        $delay = now()->addSeconds(3);
         $admin->notify(
-            (new OrderCreatedNotifyToAdmin($order->id))->delay(now()->addSeconds(3))
+            (new OrderCreatedNotifyToAdmin($order->id))->delay($delay)
+        );
+        $admin->notify(
+            (new OrderCreatedLineNotify($order->id))->delay($delay)
         );
     }
 

@@ -4,7 +4,7 @@ namespace App\Notifications;
 
 use App\Enums\UserType;
 use Illuminate\Bus\Queueable;
-use Illuminate\Notifications\Messages\MailMessage;
+use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Notification;
 
 class CreatedReport extends Notification implements ShouldQueue

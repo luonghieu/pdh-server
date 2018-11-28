@@ -14,9 +14,14 @@ class Line {
     private $client;
 
 
-    public function __construct()
+    public function __construct($accessToken = null)
     {
-        $this->access_token = env('LINE_BOT_CHANNEL_ACCESS_TOKEN');
+        if ($accessToken) {
+            $this->access_token = $accessToken;
+        } else {
+            $this->access_token = env('LINE_BOT_CHANNEL_ACCESS_TOKEN');
+        }
+
         $this->pushUrl = env('LINE_PUSH_URL');
         $this->liffUrl = env('LINE_LIFF_URL');
         if (!$this->access_token && !$this->pushUrl && !$this->liffUrl) {
@@ -25,7 +30,7 @@ class Line {
 
         $this->headers = [
             'Content-Type' => 'application/json',
-            'Authorization' => 'Bearer ' . env('LINE_BOT_CHANNEL_ACCESS_TOKEN')
+            'Authorization' => 'Bearer ' . $this->access_token
         ];
         $this->client = new Client([ 'headers' => $this->headers ]);
     }

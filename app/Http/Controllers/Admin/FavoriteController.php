@@ -14,6 +14,9 @@ class FavoriteController extends Controller
     {
         $favorites = Favorite::whereHas('user', function ($query) {
             $query->where('type', UserType::GUEST);
+        })
+        ->whereHas('favorited', function ($query) {
+            $query->where('type', UserType::CAST);
         });
 
         $keyword = $request->search;
@@ -54,6 +57,9 @@ class FavoriteController extends Controller
     {
         $favorites = Favorite::whereHas('user', function ($query) {
             $query->where('type', UserType::CAST);
+        })
+        ->whereHas('favorited', function ($query) {
+            $query->where('type', UserType::GUEST);
         });
 
         $keyword = $request->search;
