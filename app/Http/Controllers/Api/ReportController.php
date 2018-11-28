@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Enums\RoomType;
 use App\Notifications\CreatedReport;
+use App\Notifications\CreateReportLineNotify;
 use App\Report;
 use App\Room;
 use App\Services\LogService;
@@ -55,9 +56,11 @@ class ReportController extends ApiController
         $input['room_id'] = $room->id;
         try {
             $report = Report::create($input);
+            $delay = now()->addSeconds(3);
             $user->notify(
-                (new CreatedReport())->delay(now()->addSeconds(3))
+                (new CreatedReport())->delay($delay)
             );
+            $user->notify((new CreateReportLineNotify())->delay($delay));
         } catch (\Exception $e) {
             LogService::writeErrorLog($e->getMessage());
 

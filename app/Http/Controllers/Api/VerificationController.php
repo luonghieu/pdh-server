@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Notifications\ResendVerificationCodeLineNotify;
 use App\User;
 use App\Enums\Status;
 use Illuminate\Http\Request;
@@ -45,12 +46,14 @@ class VerificationController extends ApiController
         }
 
         $newVerification = $user->generateVerifyCode($verification->phone, true);
-
+        $delay = now()->addSeconds(3);
         $admin = User::find(1);
         $admin->notify(
-            (new ResendVerificationCode($newVerification->id))->delay(now()->addSeconds(3))
+            (new ResendVerificationCode($newVerification->id))->delay($delay)
         );
-
+        $admin->notify(
+            (new ResendVerificationCodeLineNotify($newVerification->id))->delay($delay)
+        );
         return $this->respondWithNoData(trans('messages.verification_code_sent'));
     }
 

@@ -39,15 +39,6 @@
         </div>
         <div class="panel-body">
           @include('admin.partials.notification')
-          @php
-            $request = [
-              'page' => request()->page,
-              'limit' => request()->limit,
-              'search' => request()->search,
-              'from_date' => request()->from_date,
-              'to_date' => request()->to_date,
-           ];
-          @endphp
           <table class="table table-striped table-bordered bootstrap-datatable">
             <thead>
               <tr>

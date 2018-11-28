@@ -63,8 +63,10 @@ class UserController extends Controller
         return view('admin.users.index', compact('users'));
     }
 
-    public function show(User $user)
+    public function show($user)
     {
+        $user = User::withTrashed()->find($user);
+
         $prefectures = Prefecture::supported()->get();
 
         $castClasses = $this->castClass->all();

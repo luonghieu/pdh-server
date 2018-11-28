@@ -9,6 +9,7 @@ use App\Enums\PointType;
 use App\Enums\ProviderType;
 use App\Enums\UserType;
 use App\Notifications\AutoChargeFailed;
+use App\Notifications\AutoChargeFailedLineNotify;
 use App\Notifications\AutoChargeFailedWorkchatNotify;
 use App\Order;
 use App\PaymentRequest;
@@ -140,7 +141,10 @@ class CancelFeeSettlement extends Command
                 $user = $order->user;
                 $user->suspendPayment();
                 if (!$order->send_warning) {
+                    $delay = Carbon::now()->addSeconds(3);
                     $user->notify(new AutoChargeFailedWorkchatNotify($order));
+                    $user->notify((new AutoChargeFailedLineNotify($order))->delay($delay));
+
                     if (ProviderType::LINE == $user->provider) {
                         $order->user->notify(new AutoChargeFailed($order));
                     }

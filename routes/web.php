@@ -59,6 +59,7 @@ Route::get('/mypage', 'HomeController@index')->name('web.index');
 Route::get('/login/line', 'Auth\LineController@login')->name('auth.line');
 Route::get('/login/line/callback', 'Auth\LineController@handleCallBack');
 Route::post('/line/webhook', 'Auth\LineController@webhook');
+Route::post('/line_notify/webhook', ['as' => 'line_notify', 'uses' => 'Auth\LineNotifyController@webhook']);
 Route::get('/cast_mypage', 'HomeController@castMypage')->name('web.cast_index');
 
 Route::group(['middleware' => 'auth', 'prefix' => 'verify', 'as' => 'verify.'], function () {
