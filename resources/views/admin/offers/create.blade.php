@@ -145,7 +145,7 @@
                   $arrTime = [];
                   while($tNow <= $tEnd){
                     array_push($arrTime, date("H:i",$tNow));
-                    $tNow = strtotime('+1 minutes',$tNow);
+                    $tNow = strtotime('+30 minutes',$tNow);
                   }
               @endphp
               <div class="col-sm-6 col-sm-offset-1">
