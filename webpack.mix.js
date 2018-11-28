@@ -30,7 +30,6 @@ mix.styles('public/assets/web/css/ge_2_4.css', 'public/assets/web/css/ge_2_4.min
 mix.styles('public/assets/web/css/gf_1.css', 'public/assets/web/css/gf_1.min.css').version();
 mix.styles('public/assets/web/css/gf_3.css', 'public/assets/web/css/gf_3.min.css').version();
 mix.styles('public/assets/web/css/gf_4.css', 'public/assets/web/css/gf_4.min.css').version();
-mix.styles('public/assets/web/css/gf_4.css', 'public/assets/web/css/gf_4.min.css').version();
 mix.styles('public/assets/web/css/ge_4.css', 'public/assets/web/css/ge_4.min.css').version();
 mix.styles('public/assets/web/css/cast.css', 'public/assets/web/css/cast.min.css').version();
 

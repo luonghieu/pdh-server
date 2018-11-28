@@ -46,7 +46,11 @@
                   <td>{{ getPrefectureName($offer->prefecture_id) }}</td>
                   <td>{{ number_format($offer->temp_point) }}P</td>
                   <td>{{ App\Enums\OfferStatus::getDescription($offer->status) }}</td>
-                  <td><a href="#" class="btn btn-info">詳細</a></td>
+                  @if(App\Enums\OfferStatus::DONE == $offer->status)
+                  <td><a href="{{ route('admin.orders.call', $offer->order->id ) }}" class="btn btn-info">詳細</a></td>
+                  @else
+                  <td><a href="{{ route('admin.offers.detail', $offer->id ) }}" class="btn btn-info">詳細</a></td>
+                  @endif
                 </tr>
                 @endforeach
               @endif

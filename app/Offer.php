@@ -28,4 +28,9 @@ class Offer extends Model
         'class_id',
         'status',
     ];
+
+    public function order()
+    {
+        return $this->hasOne(Order::class);
+    }
 }

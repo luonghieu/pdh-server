@@ -21,7 +21,7 @@ class OfferController extends Controller
 {
     public function index(Request $request)
     {
-        $offers = Offer::orderByDesc('created_at')->paginate($request->limit ?: 10);
+        $offers = Offer::with('order')->orderByDesc('created_at')->paginate($request->limit ?: 10);
 
         return view('admin.offers.index', compact('offers'));
     }
@@ -108,6 +108,10 @@ class OfferController extends Controller
         $data['area_offer'] = $request->area_offer;
         $data['current_point_offer'] = $request->current_point_offer;
         $data['class_id_offer'] = $request->class_id_offer;
+
+        if (isset($request->offer_id)) {
+            $data['offer_id'] = $request->offer_id;
+        }
 
         Session::put('offer', $data);
 
@@ -213,7 +217,11 @@ class OfferController extends Controller
 
         $data = Session::get('offer');
 
-        $offer = new Offer;
+        if (isset($data['offer_id'])) {
+            $offer = Offer::findOrFail($data['offer_id']);
+        } else {
+            $offer = new Offer;
+        }
 
         $offer->comment = $data['comment_offer'];
         $offer->date = $data['date_offer'];
@@ -239,5 +247,74 @@ class OfferController extends Controller
         }
 
         return redirect()->route('admin.offers.index');
+    }
+
+    public function detail(Offer $offer)
+    {
+        $casts = Cast::whereIn('id', $offer->cast_ids)->get();
+
+        return view('admin.offers.detail', compact('offer', 'casts'));
+    }
+
+    public function delete(Offer $offer)
+    {
+        $offer = Offer::findOrFail($offer->id);
+
+        $offer->delete();
+
+        return redirect()->route('admin.offers.create');
+    }
+
+    public function edit(Request $request, Offer $offer)
+    {
+        $castClasses = CastClass::all();
+
+        $client = new Client(['base_uri' => config('common.api_url')]);
+        $user = Auth::user();
+
+        $accessToken = JWTAuth::fromUser($user);
+
+        $option = [
+            'headers' => ['Authorization' => 'Bearer ' . $accessToken],
+            'form_params' => [],
+            'allow_redirects' => false,
+        ];
+
+        $classId = $request->cast_class;
+        if (!isset($classId)) {
+            $classId = $offer->class_id;
+        }
+        $params = [
+            'working_today' => 1,
+            'page' => $request->get('page', 1),
+            'latest' => 1,
+            'class_id' => $classId,
+        ];
+
+        if ($request->search) {
+            $params['search'] = $request->search;
+        }
+
+        try {
+            $casts = $client->get(route('casts.index', $params), $option);
+        } catch (\Exception $e) {
+            LogService::writeErrorLog($e);
+            abort(500);
+        }
+
+        $casts = json_decode(($casts->getBody())->getContents(), JSON_NUMERIC_CHECK);
+        $casts = $casts['data'];
+        $casts = new LengthAwarePaginator(
+            $casts['data'],
+            $casts['total'],
+            $casts['per_page'],
+            $casts['current_page'],
+            [
+                'query' => $request->all(),
+                'path' => env('APP_URL') . '/admin/offers/edit/' . $offer->id,
+            ]
+        );
+
+        return view('admin.offers.edit', compact('offer', 'casts', 'castClasses'));
     }
 }

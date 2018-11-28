@@ -38,6 +38,34 @@ $(document).ready(function(){
     }
   }
 
+  if ($(".cast-ids-edit").length) {
+    if(!localStorage.getItem("offer")){
+      var arrIds = $(".cast-ids-edit").val();
+      arrIds =arrIds.split(',');
+      var point = $(".temp_point-edit").val();
+      var classId = $(".class_id-edit").val();
+
+      var date = $(".date-offer-edit").val();
+      var startTimeFrom = $(".start_time_from-edit").val();
+      var startTimeTo = $(".start_time_to-edit").val();
+      var duration = $(".duration-edit").val();
+      var comment = $(".comment-edit").val();
+
+      var params = {
+        arrIds: arrIds,
+        current_point: point,
+        class_id: classId,
+        duration_offer: duration,
+        comment: comment,
+        end_time: startTimeTo,
+        start_time: startTimeFrom,
+        date: date
+      };
+
+      updateLocalStorageValue('offer', params);
+    }
+
+  }
 
   //select-cast
   $(".iCheck-helper").on("click", function(event){
@@ -128,38 +156,38 @@ $(document).ready(function(){
           arrIds.push(checkedId);
         }
 
-      $('.class-id-offer').val(classId);
-      var nomineeIds = arrIds.toString();
-      var date =  $('.date-offer option:selected').val();
-      var duration = $("#duration_offer option:selected").val();
-      var time = $('#start_time_offer option:selected').val();
+        $('.class-id-offer').val(classId);
+        var nomineeIds = arrIds.toString();
+        var date =  $('.date-offer option:selected').val();
+        var duration = $("#duration_offer option:selected").val();
+        var time = $('#start_time_offer option:selected').val();
 
-      $.ajax({
-        headers: {
-          'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-        },
-        type: "POST",
-        dataType: "html",
-        url: '/admin/offers/price',
-        data: {
-          date : date,
-          start_time : time,
-          type :2,
-          duration :duration,
-          total_cast :arrIds.length,
-          nominee_ids : nomineeIds,
-          class_id : classId,
-          offer : 1
-        },
-        success: function( val ) {
-          $('.show-current-point-offer').text('予定合計ポイント : ' + val + 'P~' );
-          $('#current-point-offer').val(val);
-          var point = {
-            current_point: val,
-          };
-          updateLocalStorageValue('offer', point);
-        },
-      });
+        $.ajax({
+          headers: {
+            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+          },
+          type: "POST",
+          dataType: "html",
+          url: '/admin/offers/price',
+          data: {
+            date : date,
+            start_time : time,
+            type :2,
+            duration :duration,
+            total_cast :arrIds.length,
+            nominee_ids : nomineeIds,
+            class_id : classId,
+            offer : 1
+          },
+          success: function( val ) {
+            $('.show-current-point-offer').text('予定合計ポイント : ' + val + 'P~' );
+            $('#current-point-offer').val(val);
+            var point = {
+              current_point: val,
+            };
+            updateLocalStorageValue('offer', point);
+          },
+        });
 
 
         var params = {
@@ -367,18 +395,20 @@ $(document).ready(function(){
 
     //select-cast
     if(offer.arrIds){
+
       const cbCastOffer = $("input:checkbox[name='casts_offer[]']");
       var arrIds = offer.arrIds;
       $('.total-cast-offer').text('現在選択しているキャスト: ' + arrIds.length + '名');
 
-      $.each(cbCastOffer,function(index,val){
-        if (arrIds.indexOf(val.value) >-1) {
-          $(this).prop('checked', true);
-          $(this).parent().addClass('checked');
-        }
-      })
-
       if(offer.arrIds.length){
+
+        $.each(cbCastOffer,function(index,val){
+          if (arrIds.indexOf(val.value) >-1) {
+            $(this).prop('checked', true);
+            $(this).parent().addClass('checked');
+          }
+        })
+
         $('.show-current-point-offer').text('予定合計ポイント : ' + offer.current_point + 'P~' );
         $('#current-point-offer').val(offer.current_point);
         $('.class-id-offer').val(offer.class_id);

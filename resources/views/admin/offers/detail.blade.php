@@ -7,7 +7,7 @@
         <div class="panel-body handling">
           <div class="search">
             <label style="margin-left: 30px">選択しているキャスト</label>
-              <span class="total-cast-offer" style="font-size: 12px">現在選択しているキャスト: 0名</span>
+              <span class="total-cast-offer" style="font-size: 12px">現在選択しているキャスト: {{ count($offer->cast_ids) }} 名</span>
           </div>
         </div>
         <div class="clearfix"></div>
@@ -37,7 +37,7 @@
           <div class="col-lg-12 wrap-qr-code">
             <label for="comment-offer" class="lb-comment-offer">訴求コメントを入力する</label>
             <div class="col-sm-12 ">
-              <p class="confirm-message-offer" style="font-size: 12px">{{ $data['comment_offer'] }}</p>
+              <p class="confirm-message-offer" style="font-size: 12px">{{ $offer->comment }}</p>
             </div>
           </div>
           <div class="col-lg-12 wrap-qr-code">
@@ -45,11 +45,11 @@
           </div>
           <div class="col-lg-12 wrap-qr-code">
             <div class="col-sm-2 ">
-                {{ Carbon\Carbon::parse($data['date_offer'])->format('Y年m月d日') }}
+                {{ Carbon\Carbon::parse($offer->date)->format('Y年m月d日') }}
                <p class="confirm-date-offer"></p>
             </div>
             <div class="col-sm-4">
-              {{ $data['start_time'] }} &nbsp ~ &nbsp {{ $data['end_time'] }}
+              {{ $offer->start_time_from }} &nbsp ~ &nbsp {{ $offer->start_time_to }}
             </div>
           </div>
           <div class="col-lg-12 wrap-qr-code lb-date-offer">
@@ -57,7 +57,7 @@
           </div>
           <div class="col-lg-12 wrap-qr-code">
             <div class="col-sm-4 ">
-                <p class="confirm-duration-offer">{{ $data['duration_offer'] }}時間</p>
+                <p class="confirm-duration-offer">{{ $offer->duration }}時間</p>
             </div>
           </div>
           <div class="col-lg-12 wrap-qr-code lb-date-offer">
@@ -75,20 +75,18 @@
           <div class="col-lg-12 wrap-qr-code">
             <label class="lb-date-offer"></label>
              <div class="col-sm-4 col-sm-offset-8" style="text-align: center;">
-              <span class="show-current-point-offer">予定合計ポイント : 0P</span>
+              <span class="show-current-point-offer">予定合計ポイント : {{ $offer->temp_point }}P</span>
               <hr style="border: 1px #0000006e dashed;width: 65%;">
              </div>
           </div>
           <div class="clear_fix"></div>
           <div class="col-lg-12">
             <div class="col-sm-4 col-sm-offset-8" style="text-align: center;">
-                @if(isset($data['offer_id']))
-                <button class="btn btn-accept"><a href="{{ route('admin.offers.edit', $data['offer_id'] ) }}" style="color: white">戻る</a></button>
-                @else
-                <button class="btn btn-accept"><a href="{{ route('admin.offers.create' ) }}" style="color: white">戻る</a></button>
+                <button class="btn btn-accept"><a href="{{ route('admin.offers.index') }}" style="color: white">戻る</a></button>
+                @if(App\Enums\OfferStatus::INACTIVE == $offer->status)
+                  <button class="btn btn-accept"><a href="{{ route('admin.offers.edit', $offer->id ) }}" style="color: white">編集する</a></button>
+                  <button data-toggle="modal" data-target="#delete-offer" class="btn btn-accept" style="color: white">削除する</button>
                 @endif
-                <button data-toggle="modal" data-target="#save_url" class="btn btn-accept" style="color: white">URL発行する</button>
-                <button data-toggle="modal" data-target="#save_temporarily" class="btn btn-accept" style="color: white">確認画面へ</button>
             </div>
           </div>
         </div>
@@ -97,32 +95,15 @@
     </div>
   <!--/row-->
   </div>
-  <div class="modal fade" id="save_url" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal fade" id="delete-offer" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog" role="document">
       <div class="modal-content">
         <div class="modal-body">
-          <p>URLを発行しますか？</p>
+          <p>削除しますか？</p>
         </div>
-        <form action="{{ route('admin.offers.store') }}" method="POST">
+        <form action="{{ route('admin.offers.delete', $offer->id) }}" method="POST">
           {{ csrf_field() }}
-          <div class="modal-footer" style="text-align: center;">
-            <button type="button" class="btn btn-canceled" data-dismiss="modal">いいえ</button>
-            <button type="submit" class="btn btn-accept del-order">はい</button>
-          </div>
-        </form>
-      </div>
-    </div>
-  </div>
-
-  <div class="modal fade" id="save_temporarily" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <div class="modal-dialog" role="document">
-      <div class="modal-content">
-        <div class="modal-body">
-          <p>チェックした予約を無効しますか？</p>
-        </div>
-        <form action="{{ route('admin.offers.store') }}" method="POST">
-          {{ csrf_field() }}
-          <input type="hidden" value="1" name="save_temporarily">
+          {{ method_field('DELETE') }}
           <div class="modal-footer" style="text-align: center;">
             <button type="button" class="btn btn-canceled" data-dismiss="modal">いいえ</button>
             <button type="submit" class="btn btn-accept del-order">はい</button>
