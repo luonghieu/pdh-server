@@ -235,8 +235,8 @@ class LineController extends Controller
         $limitedMessageToDate = Carbon::parse('2018-11-30');
         if ($now->between($limitedMessageFromDate, $limitedMessageToDate)) {
 
-            $pricesSrc = Storage::url('add_friend_prices_223011.png');
-            $bannerSrc = Storage::url('add_friend_banner_223011.png');
+            $pricesSrc = Storage::url('add_friend_prices_v2_223011.png');
+            $bannerSrc = Storage::url('add_friend_banner_v2_223011.png');
             if (!@getimagesize($pricesSrc)) {
                 $fileContents = Storage::disk('local')->get("system_images/add_friend_prices_v2_223011.png");
                 $fileName = 'add_friend_prices_v2_223011.png';
