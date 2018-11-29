@@ -58,11 +58,11 @@
                     <table class="table table-bordered">
                       <!--  table-striped -->
                       <tr>
-                        <th>Eメール</th>
+                        <th>メールアドレス</th>
                         <td>
                           <div class="form-group">
                             <div class="col-sm-6">
-                              <input type="email" name="email" placeholder="Eメール" value="{{ old('email') }}">
+                              <input type="email" name="email" placeholder="メールアドレス" value="{{ old('email') }}">
                               @if ($errors->has('email'))
                                 <div class="error pull-left">
                                   <span>{{ $errors->first('email') }}</span>
