@@ -70,7 +70,7 @@
                 @endphp
                 @foreach ($offers as $key => $offer)
                 <tr>
-                  <td>{{ $index++ }}</td>
+                  <td>{{ (request()->limit ?: 10) * ((request()->page ?: 1) - 1) + $index++ }}</td>
                   @if (App\Enums\OfferStatus::DONE == $offer->status && $offer->order)
                   <td><a href="{{ route('admin.orders.call', $offer->order->id ) }}">{{ $offer->id }}</a></td>
                   @else

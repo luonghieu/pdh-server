@@ -45,7 +45,7 @@ class OfferController extends Controller
             $offers = $offers->filter(function ($offer) use ($keyword) {
                 $casts = $offer->casts;
                 $castsNickname = $casts->reject(function ($cast) use ($keyword) {
-                    return mb_strpos($cast->nickname, $keyword) === false;
+                    return str_is('*' . strtolower($keyword) . '*', strtolower($cast->nickname)) === false;
                 });
 
                 $offerId = strpos($offer->id, $keyword) !== false;
@@ -59,7 +59,7 @@ class OfferController extends Controller
         }
 
         $total = $offers->count();
-        $offers = $offers->forPage($request->page, $request->limit);
+        $offers = $offers->forPage($request->page, $request->limit ?: 10);
 
         $offers = new LengthAwarePaginator($offers, $total, $request->limit ?: 10);
         $offers = $offers->withPath('');
