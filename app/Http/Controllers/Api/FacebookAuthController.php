@@ -82,7 +82,8 @@ class FacebookAuthController extends ApiController
                 'date_of_birth' => (isset($fbResponse['birthday'])) ? Carbon::parse($fbResponse['birthday']) : null,
                 'gender' => (isset($fbResponse['gender'])) ? ($fbResponse['gender'] == 'male') ? UserGender::MALE : UserGender::FEMALE : null,
                 'type' => UserType::GUEST,
-                'status' => Status::INACTIVE,
+                'status' => ($deviceType == DeviceType::IOS) ? Status::ACTIVE : Status::INACTIVE,
+                'is_verified' => ($deviceType == DeviceType::IOS) ? Status::ACTIVE : Status::INACTIVE,
                 'provider' => ProviderType::FACEBOOK,
                 'device_type' => ($deviceType) ? $deviceType : DeviceType::WEB
             ];
