@@ -28,7 +28,12 @@ $routes = [
             'value' => 'キャスト管理',
             'url' => route('admin.casts.index'),
             'submenu' => [
-              'admin.casts.register', 'admin.casts.confirm', 'admin.casts.save', 'admin.casts.guest_ratings', 'admin.casts.operation_history'
+              'admin.casts.register',
+              'admin.casts.confirm',
+              'admin.casts.save',
+              'admin.casts.guest_ratings',
+              'admin.casts.operation_history',
+              'admin.casts.create'
             ],
         ],
     ],
