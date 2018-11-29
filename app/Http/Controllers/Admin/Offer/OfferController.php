@@ -138,7 +138,7 @@ class OfferController extends Controller
             return redirect()->route('admin.offers.create');
         }
 
-        if (81 < mb_strlen($data['comment_offer'])) {
+        if (80 < mb_strlen($data['comment_offer'], 'UTF-8')) {
             $request->session()->flash('message_invalid', 'message_invalid');
 
             return redirect()->route('admin.offers.create');
