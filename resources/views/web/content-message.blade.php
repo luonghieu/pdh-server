@@ -51,7 +51,7 @@
               <div class="text-wrapper">
                 <p>
                   @php
-                  $reg_exUrl = "/(https?:\/\/)?([\da-z\.-]+)\.([a-z\.]{2,6})([\/\w \.-]*)*\/?/";
+                  $reg_exUrl = " /((([A-Za-z]{3,9}:(?:\/\/)?)(?:[\-;:&=\+\$,\w]+@)?[A-Za-z0-9\.\-]+|(?:www\.|[\-;:&=\+\$,\w]+@)[A-Za-z0-9\.\-]+)((?:\/[\+~%\/\.\w\-_]*)?\??(?:[\-\+=&;%@\.\w_]*)#?(?:[\.\!\/\\\w]*))?)/";
                   @endphp
                   @if (preg_match($reg_exUrl, $element['message'], $url))
                     {!! nl2br(preg_replace($reg_exUrl, '<a href='. $url[0].' target="_blank">'. $url[0].'</a>' , $element['message'])) !!}

@@ -34,7 +34,7 @@ $(document).ready(function() {
       var reg_exUrl = /(http|https|ftp|ftps)\:\/\/[a-zA-Z0-9\-\.]+\.[a-zA-Z]{2,3}(\/\S*)?/;
       var find = message.match(reg_exUrl);
       if (find) {
-        message = message.replace(find['input'], '<a href="'+find['input']+'" target="_blank">'+find['input']+'</a>');
+        message = message.replace(find[0], '<a href="'+find[0]+'" target="_blank">'+find[0]+'</a>');
       }
 
       var createdAt = e.message.created_at;
@@ -191,10 +191,11 @@ $(document).ready(function() {
 
         if(response.data.data.type == 2) {
           var message = response.data.data.message;
-          var reg_exUrl = /(http|https|ftp|ftps)\:\/\/[a-zA-Z0-9\-\.]+\.[a-zA-Z]{2,3}(\/\S*)?/;
+          var reg_exUrl = /((([A-Za-z]{3,9}:(?:\/\/)?)(?:[\-;:&=\+\$,\w]+@)?[A-Za-z0-9\.\-]+|(?:www\.|[\-;:&=\+\$,\w]+@)[A-Za-z0-9\.\-]+)((?:\/[\+~%\/\.\w\-_]*)?\??(?:[\-\+=&;%@\.\w_]*)#?(?:[\.\!\/\\\w]*))?)/;
           var find = message.match(reg_exUrl);
+
           if (find) {
-            message = message.replace(find['input'], '<a href="'+find['input']+'" target="_blank">'+find['input']+'</a>');
+            message = message.replace(find[0], '<a href="'+find[0]+'" target="_blank">'+find[0]+'</a>');
           }
 
           $("#message-box").append(`
