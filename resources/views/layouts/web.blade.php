@@ -31,7 +31,7 @@
   @yield('web.extra')
   <div id="page">
     @if (Auth::check())
-      @if(App\Enums\UserType::GUEST == Auth::user()->type)
+      @if(Auth::user()->is_admin || Auth::user()->is_guest)
         @include('web.partials.header')
       @endif
     @else

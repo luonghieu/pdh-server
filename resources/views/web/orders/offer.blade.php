@@ -43,10 +43,6 @@
 
 @endsection
 @section('web.content')
-    <a href="javascript:void(0)" id="confirm-order-offer-submit" class="gtm-hidden-btn" onclick="dataLayer.push({
-        'userId': '<?php echo Auth::user()->id; ?>',
-        'event': 'nominationbooking_complete'
-    });"></a>
       <form>
         <div class="cast-list">
           <div class="cast-head">
