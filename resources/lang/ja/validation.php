@@ -201,5 +201,7 @@ return [
         'title' => 'タイトル',
         'content' => '内容',
         'status' => '状況',
+        'email' => 'メールアドレス',
+        'password' => 'パスワード',
     ],
 ];
