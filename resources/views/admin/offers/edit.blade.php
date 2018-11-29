@@ -134,7 +134,7 @@
                       $data['year'] = (int)Carbon\Carbon::now()->format('Y');
                     @endphp
                     @foreach(listDate($data) as $date)
-                    <option value="{{ $data['year']. '-' .$month . '-' . $date }}" data-name ="{{ $data['year'] }}年{{ $month }}月{{ $date }}日" >{{ $data['year'] }}年{{ $month }}月{{ $date }}日</option>
+                    <option value="{{ $data['year']. '-' .(($month < 10) ? '0'.$month : $month) . '-' . (($date < 10) ? '0'.$date : $date) }}" >{{ $data['year'] }}年{{ (($month < 10) ? '0'.$month : $month) }}月{{ (($date < 10) ? '0'.$date : $date) }}日</option>
                     @endforeach
                   @endforeach
 
@@ -144,7 +144,9 @@
                       $data['year'] = (int)Carbon\Carbon::now()->format('Y') +1;
                     @endphp
                     @foreach(listDate($data) as $date)
-                    <option value="{{ $data['year']. '-' .$month . '-' . $date }}" data-name ="{{ $data['year'] }}年{{ $month }}月{{ $date }}日" >{{ $data['year'] }}年{{ $month }}月{{ $date }}日</option>
+                    @php
+                    @endphp
+                    <option value="{{ $data['year']. '-' .(($month < 10) ? '0'.$month : $month) . '-' . (($date < 10) ? '0'.$date : $date) }}" >{{ $data['year'] }}年{{ (($month < 10) ? '0'.$month : $month) }}月{{ (($date < 10) ? '0'.$date : $date) }}日</option>
                     @endforeach
                   @endforeach
                 </select>
