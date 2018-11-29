@@ -59,7 +59,7 @@ class OfferController extends Controller
         }
 
         $total = $offers->count();
-        $offers = $offers->forPage($request->page, $request->limit);
+        $offers = $offers->forPage($request->page, $request->limit ?: 10);
 
         $offers = new LengthAwarePaginator($offers, $total, $request->limit ?: 10);
         $offers = $offers->withPath('');
