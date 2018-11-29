@@ -166,8 +166,6 @@
                     @if($time != '00:00' && $time != '00:30')
                     <option value="{{ $time }}">{{ $time }}</option>
                     @endif
-                  }
-                  }
                   @endforeach
                   @foreach (['24:00', '24:30','25:00', '25:30', '26:00'] as $time)
                     <option value="{{ $time }}">{{ $time }}</option>

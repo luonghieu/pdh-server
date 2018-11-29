@@ -35,7 +35,28 @@
                 <input type="hidden" value="{{ $offer->id }}" name="offer_id">
                 <input type="hidden" value="{{ $offer->date }}" class="date-offer-edit">
                 <input type="hidden" value="{{ Carbon\Carbon::parse($offer->start_time_from)->format('H:i') }}" class="start_time_from-edit">
-                <input type="hidden" value="{{ Carbon\Carbon::parse($offer->start_time_to)->format('H:i') }} }}" class="start_time_to-edit">
+                @php
+                  $startTimeFrom = explode(":", $offer->start_time_from);
+                  $startTimeTo = explode(":", $offer->start_time_to);
+                  if ($startTimeFrom[0] > $startTimeTo[0]) {
+                      switch ($startTimeTo[0]) {
+                          case 0:
+                              $hour = 24;
+                              break;
+                          case 1:
+                              $hour = 25;
+                              break;
+                          case 2:
+                              $hour = 26;
+                              break;
+                      }
+
+                      $time = $hour . ':' . $startTimeTo[1];
+                  } else {
+                      $time = Carbon\Carbon::parse($offer->start_time_to)->format('H:i');
+                  }
+                @endphp
+                <input type="hidden" value="{{ $time }}" class="start_time_to-edit">
                 <input type="hidden" value="{{ $offer->duration }}" class="duration-edit">
                 <input type="hidden" value="{{ $offer->comment }}" class="comment-edit">
 
@@ -168,13 +189,18 @@
               <div class="col-sm-6 col-sm-offset-1">
                 <select id="start_time_offer" name="start_time_offer" class="form-control select-time select-time-offer">
                   @foreach ($arrTime as $time)
-                    <option value="{{ $time }}" >{{ $time }}</option>
+                    <option value="{{ $time }}">{{ $time }}</option>
                   @endforeach
                 </select>
                 &nbsp;&nbsp;&nbsp; ~ &nbsp;&nbsp;&nbsp;
                 <select id="end_time_offer" name="end_time_offer" class="form-control select-time select-time-offer">
                   @foreach ($arrTime as $time)
-                    <option value="{{ $time }}" >{{ $time }}</option>
+                    @if($time != '00:00' && $time != '00:30')
+                    <option value="{{ $time }}">{{ $time }}</option>
+                    @endif
+                  @endforeach
+                  @foreach (['24:00', '24:30','25:00', '25:30', '26:00'] as $time)
+                    <option value="{{ $time }}">{{ $time }}</option>
                   @endforeach
                 </select>
               </div>

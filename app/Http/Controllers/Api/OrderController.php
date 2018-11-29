@@ -373,20 +373,24 @@ class OrderController extends ApiController
                 );
             }
 
-            $room = new Room;
-            $room->order_id = $order->id;
-            $room->owner_id = $order->user_id;
-            $room->type = RoomType::GROUP;
-            $room->save();
+            if (1 == count($castIds)) {
+                $room = $this->createDirectRoom($user->id, $castIds[0]);
+            } else {
+                $room = new Room;
+                $room->order_id = $order->id;
+                $room->owner_id = $order->user_id;
+                $room->type = RoomType::GROUP;
+                $room->save();
 
-            $casts = $order->casts()->get();
+                $casts = $order->casts()->get();
 
-            $data = [$order->user_id];
-            foreach ($casts as $cast) {
-                $data = array_merge($data, [$cast->pivot->user_id]);
+                $data = [$order->user_id];
+                foreach ($casts as $cast) {
+                    $data = array_merge($data, [$cast->pivot->user_id]);
+                }
+
+                $room->users()->attach($data);
             }
-
-            $room->users()->attach($data);
 
             $order->room_id = $room->id;
             $order->update();
