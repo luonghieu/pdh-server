@@ -420,7 +420,7 @@ class CastController extends Controller
 
             $rules = [
                 'email' => 'nullable|string|email|max:255|unique:users',
-                'password' => 'string|min:6|required_if:email,!=,null',
+                'password' => 'nullable|string|min:6|required_if:email,!=,null',
                 'gender' => 'required',
                 'lastname' => 'required|string',
                 'firstname' => 'required|string',
@@ -428,7 +428,7 @@ class CastController extends Controller
                 'first_name_kana' => 'required|string',
                 'nickname' => 'required|string',
                 'phone' => 'required|regex:/^[0-9]+$/|unique:users',
-                'line' => 'required|string',
+                'line_id' => 'required|string',
                 'number' => 'nullable|numeric|digits:7',
                 'front_side' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:5120',
                 'back_side' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:5120',
@@ -441,7 +441,7 @@ class CastController extends Controller
                 return back()->withErrors($validator->errors())->withInput();
             }
 
-            $castClass = CastClass::where('id', $request->cast_class)->first();
+            $castClass = CastClass::where('id', $request->class_id)->first();
 
             $year = $request->year;
             $month = $request->month;

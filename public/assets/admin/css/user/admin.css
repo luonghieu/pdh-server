@@ -1455,9 +1455,12 @@ tbody td {
 }
 
 .error {
-  color: red;
   margin-bottom: 1rem;
   float: right;
+}
+
+.error, .color-error {
+  color: red;
 }
 
 .p-0 {
