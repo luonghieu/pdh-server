@@ -1490,13 +1490,19 @@ tbody td {
   border-radius: 8px;
   margin-bottom: 5px;
   float: none !important;
-  height: auto !important;
 }
 
 .icon-cast {
   display: inline-block;
   width: calc((100% / 10) - 4px);
-  margin: 0 2px 10px;
+  margin: 0 2px 40px;
+  vertical-align: top;
+}
+
+.nickname-offer {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .custom-checkbox .icheckbox_square-blue {

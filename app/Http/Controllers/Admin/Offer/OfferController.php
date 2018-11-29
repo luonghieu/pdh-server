@@ -49,6 +49,7 @@ class OfferController extends Controller
             'page' => $request->get('page', 1),
             'latest' => 1,
             'class_id' => $classId,
+            'per_page' => 18,
         ];
 
         if ($request->search) {
@@ -94,7 +95,7 @@ class OfferController extends Controller
             return redirect()->route('admin.offers.create');
         }
 
-        if (80 < strlen($data['comment_offer'])) {
+        if (81 < strlen($data['comment_offer'])) {
             $request->session()->flash('message_invalid', 'message_invalid');
 
             return redirect()->route('admin.offers.create');
@@ -222,10 +223,31 @@ class OfferController extends Controller
             $offer = new Offer;
         }
 
+        $startTimeTo = explode(":", $data['end_time']);
+        if (23 < $startTimeTo[0]) {
+            switch ($startTimeTo[0]) {
+                case 24:
+                    $hour = '00';
+                    break;
+                case 25:
+                    $hour = '01';
+                    break;
+                case 26:
+                    $hour = '02';
+                    break;
+            }
+
+            $time = $hour . ':' . $startTimeTo[1];
+        } else {
+            $time = $data['end_time'];
+        }
+
+        $offer->start_time_to = $data['end_time'];
+
         $offer->comment = $data['comment_offer'];
         $offer->date = $data['date_offer'];
         $offer->start_time_from = $data['start_time'];
-        $offer->start_time_to = $data['end_time'];
+        $offer->start_time_to = $time;
         $offer->duration = $data['duration_offer'];
         $offer->total_cast = count($data['cast_ids']);
         $offer->prefecture_id = 13;
@@ -287,6 +309,7 @@ class OfferController extends Controller
             'page' => $request->get('page', 1),
             'latest' => 1,
             'class_id' => $classId,
+            'per_page' => 18,
         ];
 
         if ($request->search) {

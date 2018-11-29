@@ -39,8 +39,8 @@
                   <td>{{ count($offer->cast_ids) }}名</td>
                   <td>
                     {{ Carbon\Carbon::parse($offer->date)->format('Y/m/d') }}
-                    {{ Carbon\Carbon::parse($offer->start_time_from)->format('h:i') }} ~
-                    {{ Carbon\Carbon::parse($offer->start_time_to)->format('h:i') }}
+                    {{ Carbon\Carbon::parse($offer->start_time_from)->format('H:i') }} ~
+                    {{ Carbon\Carbon::parse($offer->start_time_to)->format('H:i') }}
                   </td>
                   <td>{{ $offer->duration }}時間</td>
                   <td>{{ getPrefectureName($offer->prefecture_id) }}</td>
