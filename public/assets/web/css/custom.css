@@ -2446,7 +2446,12 @@ padding-top: 65px !important;
   margin-left: 10px;
 }
 
-#chat .text-wrapper p a {
+#chat .msg-right .text-wrapper p a {
   color: #fff;
+  text-decoration:underline;
+}
+
+#chat .msg-left .text-wrapper p a {
+  color: rgb(80, 80, 80);;
   text-decoration:underline;
 }
