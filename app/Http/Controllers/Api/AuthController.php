@@ -41,7 +41,7 @@ class AuthController extends ApiController
             return $this->respondWithData($this->respondWithToken($token, $this->guard()->user())->getData());
         }
 
-        return $this->respondErrorMessage(trans('messages.login_error'), 401);
+        return $this->respondErrorMessage(trans('messages.login_error'));
     }
 
     public function refresh()
