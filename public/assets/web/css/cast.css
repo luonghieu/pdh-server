@@ -130,6 +130,10 @@
   text-overflow: ellipsis;
 }
 
+.select-hour-offer {
+  background-image: none !important;
+}
+
 .cast-item.import {
   background-color: #F3F2F2;
   border-radius: 5px;

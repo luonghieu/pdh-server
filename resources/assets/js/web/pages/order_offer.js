@@ -356,11 +356,11 @@ $(document).ready(function(){
     var startMinuteTo = startTimeTo[1];
     var html = '';
 
-    startMinuteFrom = hour == startHourFrom ? startMinuteFrom : 0;
-    startMinuteTo   = hour == startHourTo   ? startMinuteTo   : 59;
+    startMinuteFrom = hour == startHourFrom ? parseInt(startMinuteFrom) : 0;
+    startMinuteTo   = hour == startHourTo   ? parseInt(startMinuteTo) : 59;
 
     for (var i = startMinuteFrom; i <= startMinuteTo; i++) {
-      var value = (i < 10 && i>0) ? `0${i}` : i;
+      var value = (i < 10) ? `0${i}` : i;
 
       html += `<option value="${value}">${value}分</option>`;
     }
