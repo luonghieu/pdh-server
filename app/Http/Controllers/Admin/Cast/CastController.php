@@ -419,8 +419,8 @@ class CastController extends Controller
             $minYear = Carbon::parse(now())->subYear(20)->format('Y');
 
             $rules = [
-                'email' => 'nullable|string|email|max:255|unique:users',
-                'password' => 'nullable|string|min:6|required_if:email,!=,null',
+                'email' => 'required|string|email|max:255|unique:users',
+                'password' => 'required|string|min:6',
                 'gender' => 'required',
                 'lastname' => 'required|string',
                 'firstname' => 'required|string',

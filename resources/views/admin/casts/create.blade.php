@@ -58,7 +58,7 @@
                     <table class="table table-bordered">
                       <!--  table-striped -->
                       <tr>
-                        <th>ログインID (メールアドレス)</th>
+                        <th><span class="color-error">*</span>ログインID (メールアドレス)</th>
                         <td>
                           <div class="form-group">
                             <div class="col-sm-6">
@@ -73,7 +73,7 @@
                         </td>
                       </tr>
                       <tr>
-                        <th>パスワード(6桁以上)</th>
+                        <th><span class="color-error">*</span>パスワード(6桁以上)</th>
                         <td>
                           <div class="form-group">
                             <div class="col-sm-6">
