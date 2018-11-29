@@ -18,6 +18,7 @@ use App\User;
 use Carbon\Carbon;
 use DB;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Storage;
 use Webpatser\Uuid\Uuid;
 
@@ -31,21 +32,19 @@ class CastController extends Controller
 
         if ($request->has('from_date') && !empty($request->from_date)) {
             $fromDate = Carbon::parse($request->from_date)->startOfDay();
-            $toDate = Carbon::parse($request->to_date)->endOfDay();
             $casts->where(function ($query) use ($fromDate, $toDate) {
                 $query->where('created_at', '>=', $fromDate);
             });
         }
 
         if ($request->has('to_date') && !empty($request->to_date)) {
-            $fromDate = Carbon::parse($request->from_date)->startOfDay();
             $toDate = Carbon::parse($request->to_date)->endOfDay();
             $casts->where(function ($query) use ($fromDate, $toDate) {
                 $query->where('created_at', '<=', $toDate);
             });
         }
 
-        if ($request->has('search')) {
+        if ($request->has('search') && !empty($request->search)) {
             $casts->where(function ($query) use ($keyword) {
                 $query->where('id', "$keyword")
                     ->orWhere('nickname', 'like', "%$keyword%");
@@ -402,6 +401,104 @@ class CastController extends Controller
             return back();
         } catch (\Exception $e) {
             LogService::writeErrorLog($e);
+        }
+    }
+
+    public function create()
+    {
+        $castClass = CastClass::all();
+        $prefectures = Prefecture::supported()->get();
+
+        return view('admin.casts.create', compact('castClass', 'prefectures'));
+    }
+
+    public function store(Request $request)
+    {
+        try {
+            $maxYear = Carbon::parse(now())->subYear(52)->format('Y');
+            $minYear = Carbon::parse(now())->subYear(20)->format('Y');
+
+            $rules = [
+                'email' => 'nullable|string|email|max:255|unique:users',
+                'password' => 'string|min:6|required_if:email,!=,null',
+                'gender' => 'required',
+                'lastname' => 'required|string',
+                'firstname' => 'required|string',
+                'last_name_kana' => 'required|string',
+                'first_name_kana' => 'required|string',
+                'nickname' => 'required|string',
+                'phone' => 'required|regex:/^[0-9]+$/|unique:users',
+                'line' => 'required|string',
+                'number' => 'nullable|numeric|digits:7',
+                'front_side' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:5120',
+                'back_side' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:5120',
+                'date_of_birth' => 'required|date|after:'. $maxYear.'|before:'.$minYear,
+            ];
+
+            $validator = validator($request->all(), $rules);
+
+            if ($validator->fails()) {
+                return back()->withErrors($validator->errors())->withInput();
+            }
+
+            $castClass = CastClass::where('id', $request->cast_class)->first();
+
+            $year = $request->year;
+            $month = $request->month;
+            $date = $request->date;
+
+            $input = [
+                'email' => $request->email,
+                'password' => Hash::make($request->password),
+                'lastname' => $request->lastname,
+                'firstname' => $request->firstname,
+                'lastname_kana' => $request->lastname_kana,
+                'firstname_kana' => $request->firstname_kana,
+                'nickname' => $request->nickname,
+                'phone' => $request->phone,
+                'line_id' => $request->line_id,
+                'note' => $request->note,
+                'gender' => $request->gender,
+                'class_id' => $request->class_id,
+                'front_id_image' => $request->front_id_image,
+                'back_id_image' => $request->back_id_image,
+                'cost' => $castClass->cost,
+                'date_of_birth' => $year . '-' . $month . '-' . $date,
+                'type' => UserType::CAST,
+                'prefecture_id' => $request->prefecture,
+                'rank' => $request->cast_rank,
+            ];
+
+            $frontImage = request()->file('front_side');
+            $backImage = request()->file('back_side');
+
+            $frontImageName = Uuid::generate()->string . '.' . strtolower($frontImage->getClientOriginalExtension());
+            $backImageName = Uuid::generate()->string . '.' . strtolower($backImage->getClientOriginalExtension());
+
+            $frontFileUploaded = Storage::put($frontImageName, file_get_contents($frontImage), 'public');
+            $backFileUploaded = Storage::put($backImageName, file_get_contents($backImage), 'public');
+
+            if ($frontFileUploaded && $backFileUploaded) {
+                $input['front_id_image'] = $frontImageName;
+                $input['back_id_image'] = $backImageName;
+            }
+
+            $user = new Cast;
+            $user->create($input);
+
+            if (isset($request->bank_name)) {
+                BankAccount::create([
+                    'user_id' => $user->id,
+                    'bank_name' => $request->bank_name,
+                    'branch_name' => $request->branch_name,
+                    'number' => $request->number,
+                ]);
+            }
+
+            return redirect()->route('admin.casts.index');
+        } catch (\Exception $e) {
+            LogService::writeErrorLog($e);
+            return back();
         }
     }
 }
