@@ -79,7 +79,7 @@
                   @endif
                   <div class="info">
                     <span class="tick {{ $cast->is_online ? 'tick-online' : 'tick-offline' }}"></span>
-                    <span id="title-info">{{ str_limit($cast->nickname, 12) }} {{ $cast->age }}歳</span>
+                    <span id="title-info">{{ str_limit($cast->nickname, 8) }} {{ $cast->age }}歳</span>
                     <div class="wrap-description">
                       <p class="description">{{ $cast->intro ? $cast->intro : '...' }}</p>
                     </div>
