@@ -58,7 +58,7 @@
                     <table class="table table-bordered">
                       <!--  table-striped -->
                       <tr>
-                        <th>メールアドレス</th>
+                        <th>ログインID (メールアドレス)</th>
                         <td>
                           <div class="form-group">
                             <div class="col-sm-6">
@@ -73,7 +73,7 @@
                         </td>
                       </tr>
                       <tr>
-                        <th>パスワード</th>
+                        <th>パスワード(6桁以上)</th>
                         <td>
                           <div class="form-group">
                             <div class="col-sm-6">
@@ -88,7 +88,7 @@
                         </td>
                       </tr>
                       <tr>
-                        <th>*氏名</th>
+                        <th><span class="color-error">*</span>氏名</th>
                         <td>
                           <div class="form-group">
                             <div class="col-sm-3">
@@ -111,7 +111,7 @@
                         </td>
                       </tr>
                       <tr>
-                        <th>*ふりがな</th>
+                        <th><span class="color-error">*</span>ふりがな</th>
                         <td>
                           <div class="form-group">
                             <div class="col-sm-3">
@@ -134,7 +134,7 @@
                         </td>
                       </tr>
                       <tr>
-                        <th>*ニックネーム</th>
+                        <th><span class="color-error">*</span>ニックネーム</th>
                         <td>
                           <div class="form-group " >
                             <div class="col-sm-6">
@@ -149,7 +149,7 @@
                         </td>
                       </tr>
                       <tr>
-                        <th>*生年月日</th>
+                        <th><span class="color-error">*</span>生年月日</th>
                         <td>
                           <div class="form-group">
                             @php
@@ -196,12 +196,12 @@
                         </td>
                       </tr>
                       <tr>
-                        <th>*性別</th>
+                        <th><span class="color-error">*</span>性別</th>
                         <td>
                           <div class="form-group">
                             <div class="col-sm-3">
                               <select name="gender" class="form-control select-time notify-type" >
-                                <option value="2"  class="for_user">女性</option>
+                                <option value="2" class="for_user">女性</option>
                               </select>
                             </div>
                           </div>
@@ -214,22 +214,22 @@
                       </tr>
                       @if ($castClass->count())
                       <tr>
-                        <th>*キャストクラス</th>
+                        <th><span class="color-error">*</span>キャストクラス</th>
                         <td>
                           <div class="form-group">
                             <div class="col-sm-3">
-                              <select name="cast_class" class="form-control select-time notify-type" >
+                              <select name="class_id" class="form-control select-time notify-type" >
                                 @foreach($castClass as $value)
-                                <option value="{{ $value->id }}" class="for_user" {{ old('cast_class') == $value->id ? 'selected' : '' }}>
+                                <option value="{{ $value->id }}" class="for_user" {{ old('class_id') == $value->id ? 'selected' : '' }}>
                                   {{ $value->name }}
                                 </option>
                                 @endforeach
                               </select>
                             </div>
                           </div>
-                          @if ($errors->has('cast_class'))
+                          @if ($errors->has('class_id'))
                             <div class="error pull-left">
-                              <span>{{ $errors->first('cast_class') }}</span>
+                              <span>{{ $errors->first('class_id') }}</span>
                             </div>
                           @endif
                         </td>
@@ -255,7 +255,7 @@
                       </tr>
                       @if ($prefectures->count())
                       <tr>
-                        <th style="color: red;">エリア</th>
+                        <th class="color-error">エリア</th>
                         <td>
                           <div class="form-group">
                             <div class="col-sm-3">
@@ -277,7 +277,7 @@
                       </tr>
                       @endif
                       <tr>
-                        <th>*電話番号</th>
+                        <th><span class="color-error">*</span>電話番号</th>
                         <td>
                           <div class="form-group">
                             <div class="col-sm-6">
@@ -292,14 +292,14 @@
                         </td>
                       </tr>
                       <tr>
-                        <th>*LINE ID</th>
+                        <th><span class="color-error">*</span>LINE ID</th>
                         <td>
                           <div class="form-group">
                             <div class="col-sm-6">
-                              <input type="text" name="line" placeholder="LINE IDを入力してください"  value="{{ old('line') }}">
-                              @if ($errors->has('line'))
+                              <input type="text" name="line_id" placeholder="LINE IDを入力してください"  value="{{ old('line_id') }}">
+                              @if ($errors->has('line_id'))
                                 <div class="error pull-left">
-                                  <span>{{ $errors->first('line') }}</span>
+                                  <span>{{ $errors->first('line_id') }}</span>
                                 </div>
                               @endif
                             </div>
