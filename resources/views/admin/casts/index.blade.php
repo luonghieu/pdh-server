@@ -34,6 +34,10 @@
             </div>
           </form>
         </div>
+        <div class="pull-right">
+          <a href="{{ route('admin.casts.create') }}" class="btn btn-info">新規キャスト登録</a>
+        </div>
+        <div class="clearfix"></div>
         <div class="panel-body">
           @include('admin.partials.notification')
           @php

@@ -228,8 +228,8 @@
                           <div class="form-group">
                             <div class="col-sm-3 col-sm-offset-1">
                               <select id="" name="gender" class="form-control select-time notify-type" >
-                                <option value="1"  class="for_user" >女性</option>
-                                <option value="2"  class="for_staff" >男性</option>
+                                <option value="1" class="for_user">男性</option>
+                                <option value="2"  class="for_staff">女性</option>
                               </select>
                             </div>
                           </div>
