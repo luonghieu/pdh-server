@@ -293,6 +293,8 @@ $(document).ready(function(){
           };
     }
 
+    $(".cast-ids-offer").val(arrIds.toString());
+
     updateLocalStorageValue('offer', params);
 
     var totalCast = JSON.parse(localStorage.getItem("offer"));
@@ -458,7 +460,7 @@ $(document).ready(function(){
       $('.total-cast-offer').text('現在選択しているキャスト: ' + arrIds.length + '名');
 
       if(offer.arrIds.length){
-
+        $(".cast-ids-offer").val(offer.arrIds.toString());
         $.each(cbCastOffer,function(index,val){
           if (arrIds.indexOf(val.value) >-1) {
             $(this).prop('checked', true);

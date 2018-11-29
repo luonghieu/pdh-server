@@ -55,8 +55,11 @@
                 </div>
                 </div>
                 @endforeach
+              @else
+                {{ trans('messages.cast_not_found') }}
               @endif
               <input type="hidden" value="" name="class_id_offer" class="class-id-offer">
+              <input type="hidden" value="" name="cast_ids_offer" class="cast-ids-offer">
               <div class="pagination-outter">
                 <ul class="pagination">
                   {{ $casts->appends(request()->all())->links() }}

@@ -118,7 +118,7 @@
     <div class="modal-dialog" role="document">
       <div class="modal-content">
         <div class="modal-body">
-          <p>チェックした予約を無効しますか？</p>
+          <p>仮保存しますか？</p>
         </div>
         <form action="{{ route('admin.offers.store') }}" method="POST">
           {{ csrf_field() }}

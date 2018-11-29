@@ -360,7 +360,7 @@ $(document).ready(function(){
     startMinuteTo   = hour == startHourTo   ? startMinuteTo   : 59;
 
     for (var i = startMinuteFrom; i <= startMinuteTo; i++) {
-      var value = i < 10 ? `0${i}` : i;
+      var value = (i < 10 && i>0) ? `0${i}` : i;
 
       html += `<option value="${value}">${value}分</option>`;
     }
@@ -422,8 +422,7 @@ $(document).ready(function(){
       $('#temp-date-offer').text(yearOffer+'年'+monthOffer+'月'+dateOffer+'日');
     }else {
       var time = $('#current-date-offer').val();
-
-      $('#temp-date-offer').text(currentDate[0]+'年'+currentDate[1]+'月'+currentDate[1]+'日');
+      $('#temp-date-offer').text(currentDate[0]+'年'+currentDate[1]+'月'+currentDate[2]+'日');
     }
 
 
