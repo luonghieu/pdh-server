@@ -479,15 +479,6 @@ $(document).ready(function(){
     }
   })
 
-  $('.cf-orders-nominate').on('click',function(){
-      if($('#md-require-card').length){
-        $('#md-require-card').click();
-      }else {
-        document.getElementById('confirm-order-offer-submit').click();
-        $('#create-offer-form').submit();
-      }
-  });
-
   if($('#temp-point-offer').length) {
 
     if(localStorage.getItem("order_offer")){
