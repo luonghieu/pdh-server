@@ -2445,3 +2445,8 @@ padding-top: 65px !important;
 .ge2-4-block .text-ge-2-4 .ml-p {
   margin-left: 10px;
 }
+
+#chat .text-wrapper p a {
+  color: #fff;
+  text-decoration:underline;
+}
