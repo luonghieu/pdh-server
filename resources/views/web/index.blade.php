@@ -246,5 +246,9 @@
     if(localStorage.getItem("order_call")){
       localStorage.removeItem("order_call");
     }
+
+    if (localStorage.getItem("order_offer")) {
+      localStorage.removeItem("order_offer");
+    }
   </script>
 @endsection

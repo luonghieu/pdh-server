@@ -49,7 +49,7 @@
                   @endif
                 </a>
                 <p>ユーザーID: {{ $cast['id'] }}</p>
-                <p class="nickname-offer">{{ $cast['nickname']}}</p>
+                <p class="nickname-offer">{{ $cast['nickname'] ? $cast['nickname'] : '...' }}</p>
                 <div class="custom-checkbox">
                   <input type="checkbox" name="casts_offer[]" data-id='{{ $cast['class_id'] }}' value="{{ $cast['id'] }}" id="{{ $cast['id'] }}" class="cb-casts-offer">
                 </div>
