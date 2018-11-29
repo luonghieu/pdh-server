@@ -5,11 +5,43 @@
     <div class="col-lg-12">
       <div class="panel panel-default">
         <div class="panel-body handling">
-          <div class="pull-right">
-            <a href="{{ route('admin.offers.create') }}" class="btn btn-info">新規オファーを作成する</a>
+          <div class="search">
+            <form class="navbar-form navbar-left form-search" action="#" method="GET">
+              <input type="text" class="form-control input-search" placeholder="ユーザーID,名前,予約ID" name="search" value="{{request()->search}}">
+              <label for="">From date: </label>
+              <input type="text" class="form-control date-picker input-search" name="from_date" id="date01" data-date-format="yyyy/mm/dd" value="{{request()->from_date}}" placeholder="yyyy/mm/dd" />
+              <label for="">To date: </label>
+              <input type="text" class="form-control date-picker" name="to_date" id="date01" data-date-format="yyyy/mm/dd" value="{{request()->to_date}}" placeholder="yyyy/mm/dd"/>
+              <button type="submit" class="fa fa-search btn-search"></button>
+              <input type="hidden" name="limit" value="{{ request()->limit }}" />
+            </form>
           </div>
         </div>
         <div class="clearfix"></div>
+        <div class="panel-body">
+          <div class="col-sm-6">
+            <form class="navbar-form navbar-left form-search" action="#" id="limit-page" method="GET">
+              <div class="form-group">
+                <label class="col-md-1 limit-page">表示件数：</label>
+                <div class="col-md-1">
+                  <select id="select-limit" name="limit" class="form-control">
+                    @foreach ([10, 20, 50, 100] as $limit)
+                      <option value="{{ $limit }}" {{ request()->limit == $limit ? 'selected' : '' }}>{{ $limit }}</option>
+                    @endforeach
+                  </select>
+                  <input type="hidden" name="from_date" value="{{ request()->from_date }}" />
+                  <input type="hidden" name="to_date" value="{{ request()->to_date }}" />
+                  <input type="hidden" name="search" value="{{ request()->search }}" />
+                </div>
+              </div>
+            </form>
+          </div>
+          <div class="col-sm-6">
+            <div class="pull-right">
+              <a href="{{ route('admin.offers.create') }}" class="btn btn-info">新規オファーを作成する</a>
+            </div>
+          </div>
+        </div>
         <div class="panel-body">
           @include('admin.partials.notification')
           <table class="table table-striped table-bordered bootstrap-datatable">
@@ -23,19 +55,27 @@
                 <th>エリア</th>
                 <th>合計予定ポイント</th>
                 <th>ステータス</th>
+                <th>リンク</th>
                 <th></th>
               </tr>
             </thead>
             <tbody>
               @if (empty($offers->count()))
                 <tr>
-                  <td colspan="9">{{ trans('messages.results_not_found') }}</td>
+                  <td colspan="10">{{ trans('messages.results_not_found') }}</td>
                 </tr>
               @else
+                @php
+                  $index = 1;
+                @endphp
                 @foreach ($offers as $key => $offer)
                 <tr>
-                  <td>{{ $offers->firstItem() + $key }}</td>
-                  <td><a href="#">{{ $offer->id }}</a></td>
+                  <td>{{ $index++ }}</td>
+                  @if(App\Enums\OfferStatus::DONE == $offer->status)
+                  <td><a href="{{ route('admin.orders.call', $offer->order->id ) }}">{{ $offer->order->id }}</a></td>
+                  @else
+                  <td><a href="{{ route('admin.offers.detail', $offer->id ) }}">{{ $offer->id }}</a></td>
+                  @endif
                   <td>{{ count($offer->cast_ids) }}名</td>
                   <td>
                     {{ Carbon\Carbon::parse($offer->date)->format('Y/m/d') }}
@@ -46,10 +86,13 @@
                   <td>{{ getPrefectureName($offer->prefecture_id) }}</td>
                   <td>{{ number_format($offer->temp_point) }}P</td>
                   <td>{{ App\Enums\OfferStatus::getDescription($offer->status) }}</td>
+                  <td>
+                    {{ ($offer->status == App\Enums\OfferStatus::ACTIVE) ? (env('APP_URL', false) . "/offers/". $offer->id) : '' }}
+                  </td>
                   @if(App\Enums\OfferStatus::DONE == $offer->status)
-                  <td><a href="{{ route('admin.orders.call', $offer->order->id ) }}" class="btn btn-info">詳細</a></td>
+                  <td><a href="{{ route('admin.orders.call', $offer->order->id) }}" class="btn btn-info">詳細</a></td>
                   @else
-                  <td><a href="{{ route('admin.offers.detail', $offer->id ) }}" class="btn btn-info">詳細</a></td>
+                  <td><a href="{{ route('admin.offers.detail', $offer->id) }}" class="btn btn-info">詳細</a></td>
                   @endif
                 </tr>
                 @endforeach
