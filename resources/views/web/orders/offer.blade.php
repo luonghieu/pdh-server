@@ -20,7 +20,7 @@
                     <label for="order-offer-popup" class="close_button  left">キャンセル</label>
                 </div>
                 <div class="close_button-block" id="lb-order-offer">
-                    <label class="close_button right">購入する</label>
+                    <label class="close_button right">確定する</label>
                 </div>
             </div>
         </div>
@@ -79,7 +79,7 @@
                   @endif
                   <div class="info">
                     <span class="tick {{ $cast->is_online ? 'tick-online' : 'tick-offline' }}"></span>
-                    <span class="title-info">{{ $cast->nickname }}  {{ $cast->age }}歳</span>
+                    <span id="title-info">{{ str_limit($cast->nickname, 12) }} {{ $cast->age }}歳</span>
                     <div class="wrap-description">
                       <p class="description">{{ $cast->intro ? $cast->intro : '...' }}</p>
                     </div>

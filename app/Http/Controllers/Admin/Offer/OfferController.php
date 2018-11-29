@@ -81,12 +81,14 @@ class OfferController extends Controller
 
     public function confirm(Request $request)
     {
-        $data['cast_ids'] = $request->casts_offer;
-        if (!isset($data['cast_ids'])) {
+
+        if (!isset($request->cast_ids_offer)) {
             $request->session()->flash('cast_not_found', 'cast_not_found');
 
             return redirect()->route('admin.offers.create');
         }
+
+        $data['cast_ids'] = explode(",", trim($request->cast_ids_offer, ","));
 
         $data['comment_offer'] = $request->comment_offer;
         if (!isset($data['comment_offer'])) {
@@ -95,7 +97,7 @@ class OfferController extends Controller
             return redirect()->route('admin.offers.create');
         }
 
-        if (81 < strlen($data['comment_offer'])) {
+        if (81 < mb_strlen($data['comment_offer'])) {
             $request->session()->flash('message_invalid', 'message_invalid');
 
             return redirect()->route('admin.offers.create');
