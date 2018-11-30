@@ -7,7 +7,7 @@
         <div class="panel-body handling">
           <div class="search">
             <label style="margin-left: 30px">選択しているキャスト</label>
-              <span class="total-cast-offer" style="font-size: 12px">現在選択しているキャスト: 0名</span>
+              <span class="total-cast-offer" >現在選択しているキャスト: 0名</span>
           </div>
         </div>
         <div class="clearfix"></div>
