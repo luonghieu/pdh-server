@@ -15,7 +15,7 @@ $(document).ready(function(){
     $offerStatus = $('.offer-status').val();
 
     if(3 == $offerStatus) {
-      $('#timeout-offer-message h2').css('width', '250px');
+      $('#timeout-offer-message h2').css('font-size', '15px');
 
       $('#timeout-offer-message h2').html('この予約は募集が締め切られました');
 
