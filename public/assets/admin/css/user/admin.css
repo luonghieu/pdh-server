@@ -255,7 +255,9 @@ td {
 .notify {
   display: inline-block;
   float: right;
-  margin: 0px 30px;
+  position: absolute;
+  top: 0;
+  right: 70px;
 }
 
 .smallstat {
@@ -1424,6 +1426,14 @@ tbody td {
   .stopped-time {
     top: 95px;
     right: 90px;
+  }
+
+  .limit-page {
+    margin-left: 0;
+  }
+
+  .btn-delete-order {
+    top: 200px;
   }
 }
 

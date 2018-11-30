@@ -242,18 +242,18 @@
                   $title = "凍結を解除する";
                 }
               @endphp
-                @if($user->is_guest)
-                  <button type="button" class="btn {{ !$user->campaign_participated ? 'btn-info' : 'btn-default' }}"
-                    data-toggle="modal" data-target="#campaign_participated" {{ !$user->campaign_participated ?: 'disabled' }}>
-                    11月キャンペーン利用完了
-                  </button>
-                  <button type="button" class="btn btn-info" data-toggle="modal" data-target="#register_cast">キャストへ変更する</button>
-                @endif
-                @if($user->is_cast)
-                  <button type="button" class="btn btn-info" data-toggle="modal" data-target="#register_guest">ゲストに変更する</button>
-                @endif
+              @if($user->is_guest)
+                <button type="button" class="btn {{ !$user->campaign_participated ? 'btn-info' : 'btn-default' }}"
+                  data-toggle="modal" data-target="#campaign_participated" {{ !$user->campaign_participated ?: 'disabled' }}>
+                  11月キャンペーン利用完了
+                </button>
+                <button type="button" class="btn btn-info" data-toggle="modal" data-target="#register_cast">キャストへ変更する</button>
+              @endif
+              @if($user->is_cast)
+                <button type="button" class="btn btn-info" data-toggle="modal" data-target="#register_guest">ゲストに変更する</button>
+              @endif
 
-                <button type="submit" class="btn btn-info" data-toggle="modal" data-target="{{ $nameId }}">{{ $title }}</button>
+              <button type="submit" class="btn btn-info" data-toggle="modal" data-target="{{ $nameId }}">{{ $title }}</button>
             </div>
           </div>
         </div>
