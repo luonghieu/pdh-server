@@ -98,7 +98,7 @@
 <body class="home blog">
   @php
     $campaignFrom = Carbon\Carbon::parse('2018-11-28');
-    $campaignTo = Carbon\Carbon::parse('2018-11-30');
+    $campaignTo = Carbon\Carbon::parse('2018-11-30 23:59:59');
   @endphp
   @if (now()->between($campaignFrom, $campaignTo))
   <div id="campaign-modal" class="modal">
