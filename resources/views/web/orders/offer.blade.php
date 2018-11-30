@@ -110,7 +110,7 @@
             <h2>キャストからのお誘いメッセージ</h2>
           </div>
           <div class="form-group">
-            <div class="cheer-input" rows="4">{!! str_replace(["\r\n", "\n\r", "\r", "\n"], "<br>", $offer->comment) !!}</div>
+            <div class="cheer-input" rows="4">{!! nl2br($offer->comment) !!}</div>
           </div>
         </div>
 
