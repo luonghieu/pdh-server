@@ -115,18 +115,18 @@
                         <td>
                           <div class="form-group">
                             <div class="col-sm-3">
-                              <input type="text" name="last_name_kana" placeholder="せい"  value="{{ old('last_name_kana') }}">
-                              @if ($errors->has('last_name_kana'))
+                              <input type="text" name="lastname_kana" placeholder="せい"  value="{{ old('lastname_kana') }}">
+                              @if ($errors->has('lastname_kana'))
                                 <div class="error pull-left">
-                                  <span>{{ $errors->first('last_name_kana') }}</span>
+                                  <span>{{ $errors->first('lastname_kana') }}</span>
                                 </div>
                               @endif
                             </div>
                             <div class="col-sm-3">
-                              <input type="text" name="first_name_kana" value="{{ old('first_name_kana') }}" placeholder="めい">
-                              @if ($errors->has('first_name_kana'))
+                              <input type="text" name="firstname_kana" value="{{ old('firstname_kana') }}" placeholder="めい">
+                              @if ($errors->has('firstname_kana'))
                                 <div class="error pull-left">
-                                  <span>{{ $errors->first('first_name_kana') }}</span>
+                                  <span>{{ $errors->first('firstname_kana') }}</span>
                                 </div>
                               @endif
                             </div>

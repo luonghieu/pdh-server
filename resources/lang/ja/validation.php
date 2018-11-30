@@ -203,5 +203,9 @@ return [
         'status' => '状況',
         'email' => 'メールアドレス',
         'password' => 'パスワード',
+        'lastname' => '姓',
+        'firstname' => '名',
+        'lastname_kana' => 'せい',
+        'firstname_kana' => 'めい',
     ],
 ];
