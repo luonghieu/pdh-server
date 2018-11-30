@@ -376,7 +376,6 @@ class OrderController extends ApiController
 
             if (1 == count($castIds)) {
                 $room = $this->createDirectRoom($user->id, $castIds[0]);
-                $room->users()->attach([1]);
             } else {
                 $room = new Room;
                 $room->order_id = $order->id;
@@ -386,7 +385,7 @@ class OrderController extends ApiController
 
                 $casts = $order->casts()->get();
 
-                $data = [$order->user_id, 1];
+                $data = [$order->user_id];
                 foreach ($casts as $cast) {
                     $data = array_merge($data, [$cast->pivot->user_id]);
                 }

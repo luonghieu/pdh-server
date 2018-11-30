@@ -61,9 +61,9 @@ class AcceptedOffer extends Notification implements ShouldQueue
         $casts = $this->order->casts;
         $recipients = [];
         foreach ($casts as $cast) {
-            $recipients[] = $cast->id;
+            $recipients += [$cast->id => ['room_id' => $this->room->id]];
         }
-        $recipients[] = $notifiable->id;
+        $recipients += [$notifiable->id => ['room_id' => $this->room->id]];
 
         $roomMessage = $room->messages()->create([
             'user_id' => 1,
