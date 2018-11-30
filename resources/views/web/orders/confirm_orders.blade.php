@@ -85,7 +85,11 @@
         </div>
           <div class="details-total__marks">{{ number_format($data['temp_point']) .'P' }}</div>
         </div>
-        @if(Auth::user()->is_guest && Auth::user()->is_verified && !Auth::user()->campaign_participated)
+        @php
+          $campaignFrom = Carbon\Carbon::parse('2018-11-28');
+          $campaignTo = Carbon\Carbon::parse('2018-11-30 23:59:59');
+        @endphp
+        @if(Auth::user()->is_guest && Auth::user()->is_verified && !Auth::user()->campaign_participated && now()->between($campaignFrom, $campaignTo))
           @if ($data['cast_numbers'] < 3 && $data['obj_cast_class']->id < 2)
             <div class="notify-campaign-confirm">
               <span>※キャンペーン適用の場合、キャストと合流後に無料時間分のポイントを付与いたします</span>
