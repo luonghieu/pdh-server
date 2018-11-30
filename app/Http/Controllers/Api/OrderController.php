@@ -330,7 +330,14 @@ class OrderController extends ApiController
             return $this->respondErrorMessage(trans('messages.order_not_found'), 404);
         }
 
+        $now = Carbon::now()->second(0);
+
         $start_time = Carbon::parse($request->date . ' ' . $request->start_time);
+
+        if ($now->gt($start_time)) {
+            return $this->respondErrorMessage(trans('messages.time_invalid'), 400);
+        }
+
         $end_time = $start_time->copy()->addHours($input['duration']);
         $input['end_time'] = $end_time->format('H:i');
 
