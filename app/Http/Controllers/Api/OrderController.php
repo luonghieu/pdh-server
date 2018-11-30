@@ -398,7 +398,8 @@ class OrderController extends ApiController
 
             $offer->status = OfferStatus::DONE;
             $offer->update();
-            $order->user->notify(new AcceptedOffer($order->id));
+            $delay = Carbon::now()->addSeconds(3);
+            $order->user->notify((new AcceptedOffer($order->id))->delay($delay));
             DB::commit();
 
             return $this->respondWithData(new OrderResource($order));
