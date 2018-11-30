@@ -32,14 +32,14 @@ class CastController extends Controller
 
         if ($request->has('from_date') && !empty($request->from_date)) {
             $fromDate = Carbon::parse($request->from_date)->startOfDay();
-            $casts->where(function ($query) use ($fromDate, $toDate) {
+            $casts->where(function ($query) use ($fromDate) {
                 $query->where('created_at', '>=', $fromDate);
             });
         }
 
         if ($request->has('to_date') && !empty($request->to_date)) {
             $toDate = Carbon::parse($request->to_date)->endOfDay();
-            $casts->where(function ($query) use ($fromDate, $toDate) {
+            $casts->where(function ($query) use ($toDate) {
                 $query->where('created_at', '<=', $toDate);
             });
         }
@@ -452,8 +452,10 @@ class CastController extends Controller
                 'password' => Hash::make($request->password),
                 'lastname' => $request->lastname,
                 'firstname' => $request->firstname,
+                'fullname' => $request->lastname . $request->firstname,
                 'lastname_kana' => $request->lastname_kana,
                 'firstname_kana' => $request->firstname_kana,
+                'fullname_kana' => $request->lastname_kana . $request->firstname_kana,
                 'nickname' => $request->nickname,
                 'phone' => $request->phone,
                 'line_id' => $request->line_id,
