@@ -38,6 +38,52 @@ $(document).ready(function(){
     }
   }
 
+  $('#start_time_offer').on('change', function (e) {
+    var startTimeFrom = $(this).val();
+
+    var startTimeTo = getStartTimeTo(startTimeFrom);
+    var html ='';
+    for (var i = 0; i < startTimeTo.length; i++) {
+       html += `<option value="${startTimeTo[i]}">${startTimeTo[i]}</option>`;
+    }
+
+    $('#end_time_offer').html(html);
+
+    var time = $("#end_time_offer option:selected").val();
+
+    var params = {
+        end_time: time,
+      };
+
+    updateLocalStorageValue('offer', params);
+
+  });
+
+  function getStartTimeTo(data)
+  {
+    var startTimeFrom = data.split(":");
+    var startHourFrom = startTimeFrom[0];
+    var startMinuteFrom = startTimeFrom[1];
+
+    var startHourTo = parseInt(startHourFrom);
+    startHourTo +=1;
+    var startMinuteTo   = startMinuteFrom;
+    var arrTimeTo = [];
+
+    for (var i = startHourTo; i <= 26; i++) {
+      var value = i < 10 ? `0${i}` : i;
+      arrTimeTo.push(value + ':00',value + ':30')
+    }
+
+    if (startMinuteTo == 30 ) {
+      arrTimeTo.splice(0,1);
+    }
+
+    arrTimeTo.splice(arrTimeTo.length-1,1);
+
+    return arrTimeTo;
+  }
+
   if ($(".cast-ids-edit").length) {
     if(!localStorage.getItem("offer")){
       var arrIds = $(".cast-ids-edit").val();
@@ -131,12 +177,15 @@ $(document).ready(function(){
               offer : 1
             },
             success: function( val ) {
-              $('.show-current-point-offer').text('予定合計ポイント : ' + val + 'P~' );
-              $('#current-point-offer').val(val);
               var point = {
                 current_point: val,
               };
               updateLocalStorageValue('offer', point);
+
+              $('#current-point-offer').val(val);
+
+              val = parseInt(val).toLocaleString(undefined,{ minimumFractionDigits: 0 });
+              $('.show-current-point-offer').text('予定合計ポイント : ' + val + 'P~' );
             },
           });
         } else {
@@ -180,12 +229,13 @@ $(document).ready(function(){
             offer : 1
           },
           success: function( val ) {
-            $('.show-current-point-offer').text('予定合計ポイント : ' + val + 'P~' );
             $('#current-point-offer').val(val);
             var point = {
               current_point: val,
             };
             updateLocalStorageValue('offer', point);
+            val = parseInt(val).toLocaleString(undefined,{ minimumFractionDigits: 0 });
+            $('.show-current-point-offer').text('予定合計ポイント : ' + val + 'P~' );
           },
         });
 
@@ -225,12 +275,15 @@ $(document).ready(function(){
           offer : 1
         },
         success: function( val ) {
-          $('.show-current-point-offer').text('予定合計ポイント : ' + val + 'P~' );
           $('#current-point-offer').val(val);
           var point = {
             current_point: val,
           };
           updateLocalStorageValue('offer', point);
+
+          val = parseInt(val).toLocaleString(undefined,{ minimumFractionDigits: 0 });
+
+          $('.show-current-point-offer').text('予定合計ポイント : ' + val + 'P~' );
         },
       });
 
@@ -239,6 +292,8 @@ $(document).ready(function(){
             class_id: classId
           };
     }
+
+    $(".cast-ids-offer").val(arrIds.toString());
 
     updateLocalStorageValue('offer', params);
 
@@ -291,12 +346,14 @@ $(document).ready(function(){
             offer : 1
           },
           success: function( val ) {
-            $('.show-current-point-offer').text('予定合計ポイント : ' + val + 'P~' );
             $('#current-point-offer').val(val);
             var point = {
               current_point: val,
             };
             updateLocalStorageValue('offer', point);
+
+            val = parseInt(val).toLocaleString(undefined,{ minimumFractionDigits: 0 });
+            $('.show-current-point-offer').text('予定合計ポイント : ' + val + 'P~' );
           },
         });
 
@@ -358,12 +415,14 @@ $(document).ready(function(){
               offer : 1
             },
             success: function( val ) {
-              $('.show-current-point-offer').text('予定合計ポイント : ' + val + 'P~' );
               $('#current-point-offer').val(val);
               var point = {
                 current_point: val,
               };
               updateLocalStorageValue('offer', point);
+
+              val = parseInt(val).toLocaleString(undefined,{ minimumFractionDigits: 0 });
+              $('.show-current-point-offer').text('予定合計ポイント : ' + val + 'P~' );
             },
           });
         }
@@ -401,15 +460,15 @@ $(document).ready(function(){
       $('.total-cast-offer').text('現在選択しているキャスト: ' + arrIds.length + '名');
 
       if(offer.arrIds.length){
-
+        $(".cast-ids-offer").val(offer.arrIds.toString());
         $.each(cbCastOffer,function(index,val){
           if (arrIds.indexOf(val.value) >-1) {
             $(this).prop('checked', true);
             $(this).parent().addClass('checked');
           }
         })
-
-        $('.show-current-point-offer').text('予定合計ポイント : ' + offer.current_point + 'P~' );
+        pointOffer = parseInt(offer.current_point).toLocaleString(undefined,{ minimumFractionDigits: 0 });
+        $('.show-current-point-offer').text('予定合計ポイント : ' + pointOffer + 'P~' );
         $('#current-point-offer').val(offer.current_point);
         $('.class-id-offer').val(offer.class_id);
       }
@@ -438,6 +497,17 @@ $(document).ready(function(){
           $(this).prop('selected',true);
         }
       })
+
+      var startTimeFrom = offer.start_time;
+
+      var startTimeTo = getStartTimeTo(startTimeFrom);
+      var html ='';
+      for (var i = 0; i < startTimeTo.length; i++) {
+         html += `<option value="${startTimeTo[i]}">${startTimeTo[i]}</option>`;
+      }
+
+      $('#end_time_offer').html(html);
+
     }
 
     //end_time

@@ -35,13 +35,13 @@
             <div class="clearfix"></div>
           </div>
           <div class="col-lg-12 wrap-qr-code">
-            <label for="comment-offer" class="lb-comment-offer">訴求コメントを入力する</label>
+            <label for="comment-offer" class="lb-comment-offer">訴求コメント</label>
             <div class="col-sm-12 ">
-              <p class="confirm-message-offer" style="font-size: 12px">{{ $data['comment_offer'] }}</p>
+              <p class="confirm-message-offer">{{ $data['comment_offer'] }}</p>
             </div>
           </div>
           <div class="col-lg-12 wrap-qr-code">
-            <label class="lb-date-offer">訴求コメントを入力する</label>
+            <label class="lb-date-offer">開始日時</label>
           </div>
           <div class="col-lg-12 wrap-qr-code">
             <div class="col-sm-2 ">
@@ -53,7 +53,7 @@
             </div>
           </div>
           <div class="col-lg-12 wrap-qr-code lb-date-offer">
-            <label class="">ギャラ飲みの時間を選択する</label>
+            <label class="">ギャラ飲みの時間</label>
           </div>
           <div class="col-lg-12 wrap-qr-code">
             <div class="col-sm-4 ">
@@ -61,7 +61,7 @@
             </div>
           </div>
           <div class="col-lg-12 wrap-qr-code lb-date-offer">
-            <label class="">エリアを選択する</label>
+            <label class="">エリア</label>
           </div>
           <div class="col-lg-12 wrap-qr-code">
             <div class="col-sm-4 ">
@@ -88,7 +88,7 @@
                 <button class="btn btn-accept"><a href="{{ route('admin.offers.create' ) }}" style="color: white">戻る</a></button>
                 @endif
                 <button data-toggle="modal" data-target="#save_url" class="btn btn-accept" style="color: white">URL発行する</button>
-                <button data-toggle="modal" data-target="#save_temporarily" class="btn btn-accept" style="color: white">確認画面へ</button>
+                <button data-toggle="modal" data-target="#save_temporarily" class="btn btn-accept" style="color: white">仮保存する</button>
             </div>
           </div>
         </div>
@@ -118,7 +118,7 @@
     <div class="modal-dialog" role="document">
       <div class="modal-content">
         <div class="modal-body">
-          <p>チェックした予約を無効しますか？</p>
+          <p>仮保存しますか？</p>
         </div>
         <form action="{{ route('admin.offers.store') }}" method="POST">
           {{ csrf_field() }}

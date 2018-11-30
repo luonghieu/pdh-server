@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Cast;
 use App\CastClass;
+use App\Enums\OfferStatus;
 use App\Enums\OrderPaymentStatus;
 use App\Enums\OrderStatus;
 use App\Enums\OrderType;
@@ -956,9 +957,13 @@ class OrderController extends Controller
     {
         try {
             $id = $request->id;
-            $offer = Offer::find($id);
+            $offer = Offer::where('id', $id)->whereIn('status', [OfferStatus::ACTIVE, OfferStatus::DONE])->first();
 
-            $casts = Cast::whereIn('id', $offer->cast_ids)->with(['job', 'castClass'])->get();
+            if (!isset($offer)) {
+                return redirect()->route('web.index');
+            }
+
+            $casts = Cast::whereIn('id', $offer->cast_ids)->with('castClass')->get();
         } catch (\Exception $e) {
             LogService::writeErrorLog($e);
             abort(500);

@@ -21,7 +21,48 @@ class OfferController extends Controller
 {
     public function index(Request $request)
     {
-        $offers = Offer::with('order')->orderByDesc('created_at')->paginate($request->limit ?: 10);
+        $offers = Offer::with('order');
+
+        $keyword = $request->search;
+
+        if ($request->has('from_date') && !empty($request->from_date)) {
+            $fromDate = Carbon::parse($request->from_date)->startOfDay();
+            $offers->where(function ($query) use ($fromDate) {
+                $query->whereDate('date', '>=', $fromDate);
+            });
+        }
+
+        if ($request->has('to_date') && !empty($request->to_date)) {
+            $toDate = Carbon::parse($request->to_date)->endOfDay();
+            $offers->where(function ($query) use ($toDate) {
+                $query->whereDate('date', '<=', $toDate);
+            });
+        }
+
+        $offers = $offers->orderByDesc('created_at')->get();
+
+        if ($keyword) {
+            $offers = $offers->filter(function ($offer) use ($keyword) {
+                $casts = $offer->casts;
+                $castsNickname = $casts->reject(function ($cast) use ($keyword) {
+                    return str_is('*' . strtolower($keyword) . '*', strtolower($cast->nickname)) === false;
+                });
+
+                $offerId = strpos($offer->id, $keyword) !== false;
+
+                $castId = in_array($keyword, $offer->cast_ids) !== false;
+
+                $orderId = strpos($offer->order['id'], $keyword) !== false;
+
+                return $castsNickname->count() > 0 || $offerId || $castId || $orderId;
+            });
+        }
+
+        $total = $offers->count();
+        $offers = $offers->forPage($request->page, $request->limit ?: 10);
+
+        $offers = new LengthAwarePaginator($offers, $total, $request->limit ?: 10);
+        $offers = $offers->withPath('');
 
         return view('admin.offers.index', compact('offers'));
     }
@@ -49,6 +90,7 @@ class OfferController extends Controller
             'page' => $request->get('page', 1),
             'latest' => 1,
             'class_id' => $classId,
+            'per_page' => 18,
         ];
 
         if ($request->search) {
@@ -80,12 +122,14 @@ class OfferController extends Controller
 
     public function confirm(Request $request)
     {
-        $data['cast_ids'] = $request->casts_offer;
-        if (!isset($data['cast_ids'])) {
+
+        if (!isset($request->cast_ids_offer)) {
             $request->session()->flash('cast_not_found', 'cast_not_found');
 
             return redirect()->route('admin.offers.create');
         }
+
+        $data['cast_ids'] = explode(",", trim($request->cast_ids_offer, ","));
 
         $data['comment_offer'] = $request->comment_offer;
         if (!isset($data['comment_offer'])) {
@@ -94,7 +138,7 @@ class OfferController extends Controller
             return redirect()->route('admin.offers.create');
         }
 
-        if (80 < strlen($data['comment_offer'])) {
+        if (80 < mb_strlen($data['comment_offer'], 'UTF-8')) {
             $request->session()->flash('message_invalid', 'message_invalid');
 
             return redirect()->route('admin.offers.create');
@@ -222,10 +266,31 @@ class OfferController extends Controller
             $offer = new Offer;
         }
 
+        $startTimeTo = explode(":", $data['end_time']);
+        if (23 < $startTimeTo[0]) {
+            switch ($startTimeTo[0]) {
+                case 24:
+                    $hour = '00';
+                    break;
+                case 25:
+                    $hour = '01';
+                    break;
+                case 26:
+                    $hour = '02';
+                    break;
+            }
+
+            $time = $hour . ':' . $startTimeTo[1];
+        } else {
+            $time = $data['end_time'];
+        }
+
+        $offer->start_time_to = $data['end_time'];
+
         $offer->comment = $data['comment_offer'];
         $offer->date = $data['date_offer'];
         $offer->start_time_from = $data['start_time'];
-        $offer->start_time_to = $data['end_time'];
+        $offer->start_time_to = $time;
         $offer->duration = $data['duration_offer'];
         $offer->total_cast = count($data['cast_ids']);
         $offer->prefecture_id = 13;
@@ -287,6 +352,7 @@ class OfferController extends Controller
             'page' => $request->get('page', 1),
             'latest' => 1,
             'class_id' => $classId,
+            'per_page' => 18,
         ];
 
         if ($request->search) {

@@ -20,7 +20,7 @@
                     <label for="order-offer-popup" class="close_button  left">キャンセル</label>
                 </div>
                 <div class="close_button-block" id="lb-order-offer">
-                    <label class="close_button right">購入する</label>
+                    <label class="close_button right">確定する</label>
                 </div>
             </div>
         </div>
@@ -41,17 +41,27 @@
   </div>
 </div>
 
+<div class="modal_wrap">
+  <input id="timeout-offer" type="checkbox">
+  <div class="modal_overlay">
+    <label for="err-offer" id="lb-err-offer"></label>
+    <div class="modal_content modal_content-btn1">
+      <div class="text-box" id="timeout-offer-message">
+        <h2></h2>
+      </div>
+      <label for="" class="close_button" id="close-offer">OK</label>
+    </div>
+  </div>
+</div>
+
 @endsection
 @section('web.content')
-    <a href="javascript:void(0)" id="confirm-order-offer-submit" class="gtm-hidden-btn" onclick="dataLayer.push({
-        'userId': '<?php echo Auth::user()->id; ?>',
-        'event': 'nominationbooking_complete'
-    });"></a>
       <form>
         <div class="cast-list">
           <div class="cast-head">
           <div class="cast-body">
             <input type="hidden" value="{{ $offer->id }}" class="offer-id">
+            <input type="hidden" value="{{ $offer->status }}" class="offer-status">
             @if(count($casts))
             <input type="hidden" value="{{ implode(",", $offer->cast_ids) }}" id="current-cast-id-offer">
             <input type="hidden" value="{{ $offer->class_id }}" id="current-class-id-offer">
@@ -83,7 +93,7 @@
                   @endif
                   <div class="info">
                     <span class="tick {{ $cast->is_online ? 'tick-online' : 'tick-offline' }}"></span>
-                    <span class="title-info">{{ $cast->job->name }}  {{ $cast->age }}歳</span>
+                    <span id="title-info">{{ str_limit($cast->nickname, 8) }} {{ $cast->age }}歳</span>
                     <div class="wrap-description">
                       <p class="description">{{ $cast->intro ? $cast->intro : '...' }}</p>
                     </div>
@@ -153,8 +163,8 @@
           <div class="form-grpup"><!-- フォーム内容 -->
             <label class="date-input d-flex-end">
               <p class="date-input__text">
-                <span>{{ Carbon\Carbon::parse($offer->date)->format('Y年m月d日') }}</span>&nbsp&nbsp&nbsp
-                <span class='time-offer'>{{ Carbon\Carbon::parse($offer->start_time_from)->format('H:i') }}~</span>
+                <span id="temp-date-offer">{{ Carbon\Carbon::parse($offer->date)->format('Y年m月d日') }}</span>&nbsp&nbsp&nbsp
+                <span class='time-offer' id='temp-time-offer'>{{ Carbon\Carbon::parse($offer->start_time_from)->format('H:i') }}~</span>
               </p>
             </label>
           </div>
@@ -229,28 +239,26 @@
             $startHour = (int)Carbon\Carbon::parse($offer->start_time_from)->format('H');
             $endHour = (int)Carbon\Carbon::parse($offer->start_time_to)->format('H');
 
-            $startMinute =  (int)Carbon\Carbon::parse($offer->start_time_from)->format('i');
-
-            $arrHour = [];
-            $check = true;
-            while($check){
-              if ($startHour == 24 ) {
-                $startHour = 0;
+            if ($endHour < $startHour) {
+              switch ($endHour) {
+                case 0:
+                    $endHour = 24;
+                    break;
+                case 1:
+                    $endHour = 25;
+                    break;
+                case 2:
+                    $endHour = 26;
+                    break;
               }
-
-              array_push($arrHour, $startHour);
-
-              if ($startHour == $endHour) {
-                $check = false;
-              }
-
-              $startHour+=1;
             }
+
+            $startMinute =  (int)Carbon\Carbon::parse($offer->start_time_from)->format('i');
           @endphp
            <select class="select-hour-offer" name="select_hour_offer">
-              @foreach($arrHour as $hour)
-                <option value="{{ ($hour <10) ? '0'.$hour : $hour }}" {{ $hour == $startHour ? 'selected' : '' }}>{{ ($hour <10 && $hour>=0 ) ? '0'.$hour : $hour }}時</option>
-              @endforeach
+              @for($i = $startHour; $i <= $endHour; $i++)
+                <option value="{{ ($i <10) ? '0'.$i : $i }}" {{ $i == $startHour ? 'selected' : '' }}>{{ ($i <10) ? '0'.$i : $i }}時</option>
+              @endfor
            </select>
            <select class="select-minute-offer" name="select_minute_offer">
               @foreach(range($startMinute, 59) as $minute)
@@ -276,13 +284,15 @@ window.onload = function () {
   if ($('.two-item').length) {
     var width = $('.two-item').width();
     var height = width+50;
-    $('.two-item').css("height",height+"px");
-    $('.cast-body').css('overflow','hidden')
+    $('.two-item').css("height", height+"px");
+    $('.cast-body').css('overflow','hidden');
+    $('.img-offer img').css("height", (height-51)+"px");
 
   } else {
     var width = $('.cast-item-offer').width();
     var height = width+50;
     $('.cast-item-offer').css("height",height+"px");
+    $('.img-offer img').css("height", (height-51)+"px");
   }
 
 };

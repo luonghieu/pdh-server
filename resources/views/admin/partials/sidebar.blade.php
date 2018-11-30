@@ -141,7 +141,7 @@ $routes = [
             'value' => '新規オファー作成',
             'url' => route('admin.offers.index'),
             'submenu' => [
-              'admin.offers.create',
+              'admin.offers.create','admin.offers.detail','admin.offers.confirm','admin.offers.edit',
             ],
         ],
     ],

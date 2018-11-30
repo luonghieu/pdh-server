@@ -35,13 +35,34 @@
                 <input type="hidden" value="{{ $offer->id }}" name="offer_id">
                 <input type="hidden" value="{{ $offer->date }}" class="date-offer-edit">
                 <input type="hidden" value="{{ Carbon\Carbon::parse($offer->start_time_from)->format('H:i') }}" class="start_time_from-edit">
-                <input type="hidden" value="{{ Carbon\Carbon::parse($offer->start_time_to)->format('H:i') }} }}" class="start_time_to-edit">
+                @php
+                  $startTimeFrom = explode(":", $offer->start_time_from);
+                  $startTimeTo = explode(":", $offer->start_time_to);
+                  if ($startTimeFrom[0] > $startTimeTo[0]) {
+                      switch ($startTimeTo[0]) {
+                          case 0:
+                              $hour = 24;
+                              break;
+                          case 1:
+                              $hour = 25;
+                              break;
+                          case 2:
+                              $hour = 26;
+                              break;
+                      }
+
+                      $time = $hour . ':' . $startTimeTo[1];
+                  } else {
+                      $time = Carbon\Carbon::parse($offer->start_time_to)->format('H:i');
+                  }
+                @endphp
+                <input type="hidden" value="{{ $time }}" class="start_time_to-edit">
                 <input type="hidden" value="{{ $offer->duration }}" class="duration-edit">
                 <input type="hidden" value="{{ $offer->comment }}" class="comment-edit">
 
                 @foreach($casts as $cast)
                 <div class="list-avatar icon-cast">
-                <a href="{{ route('admin.users.show', ['id' => $cast['id'] ]) }}" class="cast-link cast-detail">
+                <a href="{{ route('admin.users.show', ['id' => $cast['id'] ]) }}" class="cast-link cast-detail" target = "_blank">
                   @if (@getimagesize($cast['avatars'][0]['thumbnail']))
                     <img src="{{ $cast['avatars'][0]['thumbnail'] }}" alt="">
                     @else
@@ -49,14 +70,17 @@
                   @endif
                 </a>
                 <p>ユーザーID: {{ $cast['id'] }}</p>
-                <p>{{ $cast['nickname']}}</p>
+                <p class="nickname-offer">{{ $cast['nickname'] ? $cast['nickname'] : '...' }}</p>
                 <div class="custom-checkbox">
                   <input type="checkbox" name="casts_offer[]" data-id='{{ $cast['class_id'] }}' value="{{ $cast['id'] }}" id="{{ $cast['id'] }}" class="cb-casts-offer">
                 </div>
                 </div>
                 @endforeach
+              @else
+                {{ trans('messages.cast_not_found') }}
               @endif
               <input type="hidden" value="" name="class_id_offer" class="class-id-offer">
+              <input type="hidden" value="" name="cast_ids_offer" class="cast-ids-offer">
               <div class="pagination-outter">
                 <ul class="pagination">
                   {{ $casts->appends(request()->all())->links() }}
@@ -131,7 +155,7 @@
                       $data['year'] = (int)Carbon\Carbon::now()->format('Y');
                     @endphp
                     @foreach(listDate($data) as $date)
-                    <option value="{{ $data['year']. '-' .$month . '-' . $date }}" data-name ="{{ $data['year'] }}年{{ $month }}月{{ $date }}日" >{{ $data['year'] }}年{{ $month }}月{{ $date }}日</option>
+                    <option value="{{ $data['year']. '-' .(($month < 10) ? '0'.$month : $month) . '-' . (($date < 10) ? '0'.$date : $date) }}" >{{ $data['year'] }}年{{ (($month < 10) ? '0'.$month : $month) }}月{{ (($date < 10) ? '0'.$date : $date) }}日</option>
                     @endforeach
                   @endforeach
 
@@ -141,7 +165,9 @@
                       $data['year'] = (int)Carbon\Carbon::now()->format('Y') +1;
                     @endphp
                     @foreach(listDate($data) as $date)
-                    <option value="{{ $data['year']. '-' .$month . '-' . $date }}" data-name ="{{ $data['year'] }}年{{ $month }}月{{ $date }}日" >{{ $data['year'] }}年{{ $month }}月{{ $date }}日</option>
+                    @php
+                    @endphp
+                    <option value="{{ $data['year']. '-' .(($month < 10) ? '0'.$month : $month) . '-' . (($date < 10) ? '0'.$date : $date) }}" >{{ $data['year'] }}年{{ (($month < 10) ? '0'.$month : $month) }}月{{ (($date < 10) ? '0'.$date : $date) }}日</option>
                     @endforeach
                   @endforeach
                 </select>
@@ -163,13 +189,18 @@
               <div class="col-sm-6 col-sm-offset-1">
                 <select id="start_time_offer" name="start_time_offer" class="form-control select-time select-time-offer">
                   @foreach ($arrTime as $time)
-                    <option value="{{ $time }}" >{{ $time }}</option>
+                    <option value="{{ $time }}">{{ $time }}</option>
                   @endforeach
                 </select>
                 &nbsp;&nbsp;&nbsp; ~ &nbsp;&nbsp;&nbsp;
                 <select id="end_time_offer" name="end_time_offer" class="form-control select-time select-time-offer">
                   @foreach ($arrTime as $time)
-                    <option value="{{ $time }}" >{{ $time }}</option>
+                    @if($time != '00:00' && $time != '00:30')
+                    <option value="{{ $time }}">{{ $time }}</option>
+                    @endif
+                  @endforeach
+                  @foreach (['24:00', '24:30','25:00', '25:30', '26:00'] as $time)
+                    <option value="{{ $time }}">{{ $time }}</option>
                   @endforeach
                 </select>
               </div>

@@ -15,6 +15,10 @@ class Offer extends Model
         'cast_ids' => 'array',
     ];
 
+    protected $appends = [
+        'casts',
+    ];
+
     protected $fillable = [
         'prefecture_id',
         'comment',
@@ -32,5 +36,10 @@ class Offer extends Model
     public function order()
     {
         return $this->hasOne(Order::class);
+    }
+
+    public function getCastsAttribute()
+    {
+        return Cast::whereIn('id', $this->cast_ids)->get();
     }
 }
