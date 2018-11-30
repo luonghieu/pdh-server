@@ -957,11 +957,12 @@ class OrderController extends Controller
     {
         try {
             $id = $request->id;
-            $offer = Offer::where('id', $id)->where('status', OfferStatus::ACTIVE)->first();
+            $offer = Offer::where('id', $id)->whereIn('status', [OfferStatus::ACTIVE, OfferStatus::DONE])->first();
 
             if (!isset($offer)) {
                 return redirect()->route('web.index');
             }
+
             $casts = Cast::whereIn('id', $offer->cast_ids)->with('castClass')->get();
         } catch (\Exception $e) {
             LogService::writeErrorLog($e);
