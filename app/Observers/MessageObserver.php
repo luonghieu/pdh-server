@@ -56,7 +56,7 @@ class MessageObserver
             $admin->notify((new MessageCreatedLineNotify($room->id))->delay($delay));
         }
 
-        if (RoomType::SYSTEM == $room->type && $message->user_id == 1) {
+        if (RoomType::SYSTEM == $room->type && $message->user_id == 1 && $message->is_manual) {
             $user = $room->users->except([$message->user_id])->first();
             $user->notify(new MessageCreatedFromAdmin($room->id));
         }

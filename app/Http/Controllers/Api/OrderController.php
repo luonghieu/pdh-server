@@ -14,6 +14,7 @@ use App\Http\Resources\OrderResource;
 use App\Notifications\CallOrdersCreated;
 use App\Notifications\CreateNominatedOrdersForCast;
 use App\Notifications\CreateNominationOrdersForCast;
+use App\Notifications\AcceptedOffer;
 use App\Offer;
 use App\Order;
 use App\Room;
@@ -375,6 +376,7 @@ class OrderController extends ApiController
 
             if (1 == count($castIds)) {
                 $room = $this->createDirectRoom($user->id, $castIds[0]);
+                $room->users()->attach([1]);
             } else {
                 $room = new Room;
                 $room->order_id = $order->id;
@@ -384,7 +386,7 @@ class OrderController extends ApiController
 
                 $casts = $order->casts()->get();
 
-                $data = [$order->user_id];
+                $data = [$order->user_id, 1];
                 foreach ($casts as $cast) {
                     $data = array_merge($data, [$cast->pivot->user_id]);
                 }
@@ -397,7 +399,7 @@ class OrderController extends ApiController
 
             $offer->status = OfferStatus::DONE;
             $offer->update();
-
+            $order->user->notify(new AcceptedOffer($order->id));
             DB::commit();
 
             return $this->respondWithData(new OrderResource($order));
