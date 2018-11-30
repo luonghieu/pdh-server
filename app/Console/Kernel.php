@@ -28,6 +28,7 @@ class Kernel extends ConsoleKernel
         Commands\DeleteUnusedPointAfter180Days::class,
         Commands\IncativeChatRoomWhenOrderCanceled::class,
         Commands\NotificationSchedules::class,
+        Commands\SetTimeOutForOffer::class,
     ];
 
     /**
@@ -53,6 +54,7 @@ class Kernel extends ConsoleKernel
         $schedule->command('cheers:delete_unused_point_after_180_days')->hourly()->onOneServer()->runInBackground();
         $schedule->command('cheers:inactive_chatroom_when_order_canceled')->hourlyAt(5)->onOneServer()->runInBackground();
         $schedule->command('cheers:notification_schedules')->everyMinute()->onOneServer()->runInBackground();
+        $schedule->command('cheers:set_timeout_for_offer')->everyMinute()->onOneServer()->runInBackground();
     }
 
     /**
