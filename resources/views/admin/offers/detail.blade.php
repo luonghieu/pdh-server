@@ -37,7 +37,7 @@
           <div class="col-lg-12 wrap-qr-code">
             <label for="comment-offer" class="lb-comment-offer">訴求コメント</label>
             <div class="col-sm-12 ">
-              <p class="confirm-message-offer" >{{ $offer->comment }}</p>
+              <p class="confirm-message-offer" >{!! str_replace(["\r\n", "\n\r", "\r", "\n"], "<br>", $offer->comment) !!}</p>
             </div>
           </div>
           <div class="col-lg-12 wrap-qr-code">
