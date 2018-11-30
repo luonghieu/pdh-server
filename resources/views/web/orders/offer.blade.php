@@ -44,12 +44,12 @@
 <div class="modal_wrap">
   <input id="timeout-offer" type="checkbox">
   <div class="modal_overlay">
-    <label for="err-offer" class="modal_trigger" id="lb-err-offer"></label>
+    <label for="err-offer" id="lb-err-offer"></label>
     <div class="modal_content modal_content-btn1">
       <div class="text-box" id="timeout-offer-message">
         <h2></h2>
       </div>
-      <label for="err-offer" class="close_button" id="close-offer">OK</label>
+      <label for="" class="close_button" id="close-offer">OK</label>
     </div>
   </div>
 </div>
