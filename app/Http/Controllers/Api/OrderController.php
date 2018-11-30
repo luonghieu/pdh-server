@@ -14,6 +14,7 @@ use App\Http\Resources\OrderResource;
 use App\Notifications\CallOrdersCreated;
 use App\Notifications\CreateNominatedOrdersForCast;
 use App\Notifications\CreateNominationOrdersForCast;
+use App\Notifications\AcceptedOffer;
 use App\Offer;
 use App\Order;
 use App\Room;
@@ -397,7 +398,8 @@ class OrderController extends ApiController
 
             $offer->status = OfferStatus::DONE;
             $offer->update();
-
+            $delay = Carbon::now()->addSeconds(3);
+            $order->user->notify((new AcceptedOffer($order->id))->delay($delay));
             DB::commit();
 
             return $this->respondWithData(new OrderResource($order));

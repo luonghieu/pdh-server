@@ -14,7 +14,7 @@ $(document).ready(function(){
   if($('.offer-status').length) {
     $offerStatus = $('.offer-status').val();
 
-    if(3 == $offerStatus) {
+    if(3 == $offerStatus || 4 == $offerStatus) {
       $('#timeout-offer-message h2').css('font-size', '15px');
 
       $('#timeout-offer-message h2').html('この予約は募集が締め切られました');
@@ -386,10 +386,6 @@ $(document).ready(function(){
 
     $('.select-minute-offer').html(html);
   });
-
-   var add_minutes =  function (dt, minutes) {
-      return new Date(dt.getTime() + minutes*60000);
-    }
 
   //time
   $('.date-select-offer').on("click",function(){

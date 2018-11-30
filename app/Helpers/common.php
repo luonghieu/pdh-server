@@ -141,17 +141,29 @@ if (!function_exists('listDate')) {
     }
 }
 
-if ( ! function_exists('put_permanent_env')) {
+if (!function_exists('put_permanent_env')) {
     function putPermanentEnv($key, $value)
     {
         $path = app()->environmentFilePath();
 
-        $escaped = preg_quote('='.env($key), '/');
+        $escaped = preg_quote('=' . env($key), '/');
 
         file_put_contents($path, preg_replace(
             "/^{$key}{$escaped}/m",
             "{$key}={$value}",
             file_get_contents($path)
         ));
+    }
+}
+
+if (!function_exists('transferLinkMessage')) {
+    function transferLinkMessage($value)
+    {
+        $pattern = '/((([A-Za-z]{3,9}:(?:\/\/)?)(?:[\-;:&=\+\$,\w]+@)?[A-Za-z0-9\.\-]+|(?:www\.|[\-;:&=\+\$,\w]+@)[A-Za-z0-9\.\-]+)((?:\/[\+~%\/\.\w\-_]*)?\??(?:[\-\+=&;%@\.\w_]*)#?(?:[\.\!\/\w]*))?)/';
+        if (preg_match($pattern, $value, $url)) {
+            return preg_replace($pattern, '<a href="$1" target="_blank">$1</a>', $value);
+        } else {
+            return $value;
+        }
     }
 }

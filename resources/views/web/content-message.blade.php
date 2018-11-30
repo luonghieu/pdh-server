@@ -50,14 +50,7 @@
             <div class="text">
               <div class="text-wrapper">
                 <p>
-                  @php
-                  $reg_exUrl = " /((([A-Za-z]{3,9}:(?:\/\/)?)(?:[\-;:&=\+\$,\w]+@)?[A-Za-z0-9\.\-]+|(?:www\.|[\-;:&=\+\$,\w]+@)[A-Za-z0-9\.\-]+)((?:\/[\+~%\/\.\w\-_]*)?\??(?:[\-\+=&;%@\.\w_]*)#?(?:[\.\!\/\\\w]*))?)/";
-                  @endphp
-                  @if (preg_match($reg_exUrl, $element['message'], $url))
-                    {!! nl2br(preg_replace($reg_exUrl, '<a href='. $url[0].' target="_blank">'. $url[0].'</a>' , $element['message'])) !!}
-                  @else
-                  {!! nl2br($element['message']) !!}
-                  @endif
+                  {!! nl2br(transferLinkMessage($element['message'])) !!}
                 </p>
               </div>
             </div>
@@ -76,14 +69,7 @@
                 <p class="msg-system" data-id='{{ $element['order_id'] }}'>{!! nl2br($element['message']) !!}</p>
                 @else
                 <p>
-                  @php
-                    $reg_exUrl = "/(http|https|ftp|ftps)\:\/\/[a-zA-Z0-9\-\.]+\.[a-zA-Z]{2,3}(\/\S*)?/";
-                  @endphp
-                  @if (preg_match($reg_exUrl, $element['message'], $url))
-                    {!! nl2br(preg_replace($reg_exUrl, '<a href='. $url[0].' target="_blank">'. $url[0].'</a>' , $element['message'])) !!}
-                  @else
-                  {!! nl2br($element['message']) !!}
-                  @endif
+                  {!! nl2br(transferLinkMessage($element['message'])) !!}
                 </p>
                 @endif
               </div>

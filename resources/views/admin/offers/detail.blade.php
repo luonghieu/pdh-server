@@ -7,7 +7,7 @@
         <div class="panel-body handling">
           <div class="search">
             <label style="margin-left: 30px">選択しているキャスト</label>
-              <span class="total-cast-offer" style="font-size: 12px">現在選択しているキャスト: {{ count($offer->cast_ids) }} 名</span>
+              <span class="total-cast-offer">現在選択しているキャスト: {{ count($offer->cast_ids) }} 名</span>
           </div>
         </div>
         <div class="clearfix"></div>
@@ -37,7 +37,7 @@
           <div class="col-lg-12 wrap-qr-code">
             <label for="comment-offer" class="lb-comment-offer">訴求コメント</label>
             <div class="col-sm-12 ">
-              <p class="confirm-message-offer" >{{ $offer->comment }}</p>
+              <p class="confirm-message-offer" >{!! nl2br($offer->comment) !!}</p>
             </div>
           </div>
           <div class="col-lg-12 wrap-qr-code">
@@ -83,10 +83,10 @@
           <div class="col-lg-12">
             <div class="col-sm-4 col-sm-offset-8" style="text-align: center;">
                 <button class="btn btn-accept"><a href="{{ route('admin.offers.index') }}" style="color: white">戻る</a></button>
-                @if(App\Enums\OfferStatus::INACTIVE == $offer->status)
-                  <button class="btn btn-accept"><a href="{{ route('admin.offers.edit', $offer->id ) }}" style="color: white">編集する</a></button>
-                  <button data-toggle="modal" data-target="#delete-offer" class="btn btn-accept" style="color: white">削除する</button>
+                @if(App\Enums\OfferStatus::TIMEOUT != $offer->status)
+                    <button class="btn btn-accept"><a href="{{ route('admin.offers.edit', $offer->id ) }}" style="color: white">編集する</a></button>
                 @endif
+                <button data-toggle="modal" data-target="#delete-offer" class="btn btn-accept" style="color: white">削除する</button>
             </div>
           </div>
         </div>

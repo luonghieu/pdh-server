@@ -9,6 +9,7 @@ final class OfferStatus extends Enum
     const INACTIVE = 1;
     const ACTIVE = 2;
     const DONE = 3;
+    const TIMEOUT = 4;
 
     /**
      * Get the description for an enum value
@@ -27,6 +28,9 @@ final class OfferStatus extends Enum
                 break;
             case self::DONE:
                 return '予約確定';
+                break;
+            case self::TIMEOUT:
+                return 'マッチング不成立';
                 break;
 
             default:break;

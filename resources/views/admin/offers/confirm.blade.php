@@ -7,7 +7,7 @@
         <div class="panel-body handling">
           <div class="search">
             <label style="margin-left: 30px">選択しているキャスト</label>
-              <span class="total-cast-offer" style="font-size: 12px">現在選択しているキャスト: 0名</span>
+              <span class="total-cast-offer" >現在選択しているキャスト: 0名</span>
           </div>
         </div>
         <div class="clearfix"></div>
@@ -37,7 +37,7 @@
           <div class="col-lg-12 wrap-qr-code">
             <label for="comment-offer" class="lb-comment-offer">訴求コメント</label>
             <div class="col-sm-12 ">
-              <p class="confirm-message-offer">{{ $data['comment_offer'] }}</p>
+              <p class="confirm-message-offer">{!! nl2br($data['comment_offer']) !!}</p>
             </div>
           </div>
           <div class="col-lg-12 wrap-qr-code">
