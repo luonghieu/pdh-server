@@ -959,6 +959,9 @@ class OrderController extends Controller
             $id = $request->id;
             $offer = Offer::where('id', $id)->where('status', OfferStatus::ACTIVE)->first();
 
+            if (!isset($offer)) {
+                return redirect()->route('web.index');
+            }
             $casts = Cast::whereIn('id', $offer->cast_ids)->with('castClass')->get();
         } catch (\Exception $e) {
             LogService::writeErrorLog($e);
