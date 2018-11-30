@@ -51,7 +51,7 @@ class AcceptedOffer extends Notification implements ShouldQueue
         $orderStartDate = Carbon::parse($this->order->start_time);
         $content = '\\\\ おめでとうございます！マッチングが確定しました♪ //'
             . PHP_EOL . PHP_EOL . '- ご予約内容 -'
-            . PHP_EOL . '場所：渋谷'
+            . PHP_EOL . '場所：' . $this->order->address
             . PHP_EOL . '合流予定時間：' . $orderStartDate->format('H:i') . '～'
             . PHP_EOL . PHP_EOL . 'ゲストの方はキャストに来て欲しい場所の詳細をお伝えください。'
             . PHP_EOL . '尚、ご不明点がある場合は運営までお問い合わせください。'
