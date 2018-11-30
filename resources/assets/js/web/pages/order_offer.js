@@ -107,6 +107,7 @@ $(document).ready(function(){
         window.location.href = '/message/' +roomId;
       })
       .catch(function(error) {
+        console.log(error.response)
         $('#order-offer-popup').prop('checked',false);
          if (error.response.status == 401) {
             window.location = '/login/line';

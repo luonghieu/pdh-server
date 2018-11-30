@@ -62,7 +62,7 @@
 
                 @foreach($casts as $cast)
                 <div class="list-avatar icon-cast">
-                <a href="{{ route('admin.users.show', ['id' => $cast['id'] ]) }}" class="cast-link cast-detail">
+                <a href="{{ route('admin.users.show', ['id' => $cast['id'] ]) }}" class="cast-link cast-detail" target = "_blank">
                   @if (@getimagesize($cast['avatars'][0]['thumbnail']))
                     <img src="{{ $cast['avatars'][0]['thumbnail'] }}" alt="">
                     @else
