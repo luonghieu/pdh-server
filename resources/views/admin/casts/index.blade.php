@@ -88,7 +88,12 @@
                 <tr>
                   <td>{{ $casts->firstItem() + $key }}</td>
                   <td><a href="{{ route('admin.users.show', ['user' => $cast->id]) }}">{{ $cast->id }}</a></td>
-                  <td>{{ $cast->nickname }}</td>
+                  <td>
+                    @if ($cast->provider == App\Enums\ProviderType::EMAIL)
+                    <span class="color-error">★</span>
+                    @endif
+                    {{ $cast->nickname }}
+                  </td>
                   <td>{{ $cast->age }}</td>
                   <td>{{ App\Enums\UserRank::getKey($cast->rank) }}</td>
                   <td>{{ App\Enums\UserType::getDescription($cast->type) }}</td>

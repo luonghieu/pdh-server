@@ -196,6 +196,7 @@ return [
         'description' => '自己紹介',
         'type' => '口座種別',
         'bank_name' => '銀行名',
+        'branch_name' => '支店名',
         'holder_name' => '口座名義',
         'send_date' => '投稿日時',
         'title' => 'タイトル',
@@ -207,5 +208,6 @@ return [
         'firstname' => '名',
         'lastname_kana' => 'せい',
         'firstname_kana' => 'めい',
+        'account_number' => '口座番号',
     ],
 ];
