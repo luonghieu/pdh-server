@@ -326,7 +326,7 @@ class OfferController extends Controller
 
         $offer->delete();
 
-        return redirect()->route('admin.offers.create');
+        return redirect()->route('admin.offers.index');
     }
 
     public function edit(Request $request, Offer $offer)
