@@ -8,6 +8,7 @@ final class ProviderType extends Enum
 {
     const FACEBOOK = 'facebook';
     const LINE = 'line';
+    const EMAIL = 'email';
 
     /**
      * Get the description for an enum value
@@ -25,6 +26,9 @@ final class ProviderType extends Enum
             return 'Line';
         }
 
+        if ($value === self::EMAIL) {
+            return 'Email';
+        }
 
         return parent::getDescription($value);
     }

@@ -311,7 +311,7 @@
                         <td>
                           <div class="form-group">
                             <div class="col-sm-3">
-                              <label for="bank_name">銀行名</label>
+                              <label>銀行名</label>
                               <input type="text" name="bank_name" value="{{ old('bank_name') }}" >
                               @if ($errors->has('bank_name'))
                                 <div class="error pull-left">
@@ -320,7 +320,7 @@
                               @endif
                             </div>
                             <div class="col-sm-3">
-                              <label for="branch_name">支店名</label>
+                              <label>支店名</label>
                               <input type="text" name="branch_name" value="{{ old('branch_name') }}" >
                               @if ($errors->has('branch_name'))
                                 <div class="error pull-left">
@@ -329,11 +329,11 @@
                               @endif
                             </div>
                             <div class="col-sm-3">
-                              <label for="number">口座番号</label>
-                              <input type="text" name="number" value="{{ old('number') }}" >
-                              @if ($errors->has('number'))
+                              <label>口座番号</label>
+                              <input type="text" name="account_number" value="{{ old('account_number') }}" >
+                              @if ($errors->has('account_number'))
                                 <div class="error pull-left">
-                                  <span>{{ $errors->first('number') }}</span>
+                                  <span>{{ $errors->first('account_number') }}</span>
                                 </div>
                               @endif
                             </div>
