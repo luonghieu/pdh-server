@@ -40,7 +40,6 @@ class SetTimeOutForOffer extends Command
      */
     public function handle()
     {
-
         $offers = Offer::where('status', OfferStatus::ACTIVE);
 
         foreach ($offers->cursor() as $offer) {
