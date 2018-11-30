@@ -31,11 +31,8 @@ $(document).ready(function() {
   window.Echo.private('room.'+roomId)
     .listen('MessageCreated', (e) => {
       var message = e.message.message;
-      var reg_exUrl = /((([A-Za-z]{3,9}:(?:\/\/)?)(?:[\-;:&=\+\$,\w]+@)?[A-Za-z0-9\.\-]+|(?:www\.|[\-;:&=\+\$,\w]+@)[A-Za-z0-9\.\-]+)((?:\/[\+~%\/\.\w\-_]*)?\??(?:[\-\+=&;%@\.\w_]*)#?(?:[\.\!\/\\\w]*))?)/;
-      var find = message.match(reg_exUrl);
-      if (find) {
-        message = message.replace(find[0], '<a href="'+find[0]+'" target="_blank">'+find[0]+'</a>');
-      }
+      var reg_exUrl = /((([A-Za-z]{3,9}:(?:\/\/)?)(?:[\-;:&=\+\$,\w]+@)?[A-Za-z0-9\.\-]+|(?:www\.|[\-;:&=\+\$,\w]+@)[A-Za-z0-9\.\-]+)((?:\/[\+~%\/\.\w\-_]*)?\??(?:[\-\+=&;%@\.\w_]*)#?(?:[\.\!\/\\\w]*))?)/g;
+          message = message.replace(reg_exUrl, '<a href="$1" target="_blank">$1</a>')
 
       var createdAt = e.message.created_at;
       var pattern = /([0-9]{2}):([0-9]{2}):/g;
@@ -191,12 +188,8 @@ $(document).ready(function() {
 
         if(response.data.data.type == 2) {
           var message = response.data.data.message;
-          var reg_exUrl = /((([A-Za-z]{3,9}:(?:\/\/)?)(?:[\-;:&=\+\$,\w]+@)?[A-Za-z0-9\.\-]+|(?:www\.|[\-;:&=\+\$,\w]+@)[A-Za-z0-9\.\-]+)((?:\/[\+~%\/\.\w\-_]*)?\??(?:[\-\+=&;%@\.\w_]*)#?(?:[\.\!\/\\\w]*))?)/;
-          var find = message.match(reg_exUrl);
-
-          if (find) {
-            message = message.replace(find[0], '<a href="'+find[0]+'" target="_blank">'+find[0]+'</a>');
-          }
+          var reg_exUrl = /((([A-Za-z]{3,9}:(?:\/\/)?)(?:[\-;:&=\+\$,\w]+@)?[A-Za-z0-9\.\-]+|(?:www\.|[\-;:&=\+\$,\w]+@)[A-Za-z0-9\.\-]+)((?:\/[\+~%\/\.\w\-_]*)?\??(?:[\-\+=&;%@\.\w_]*)#?(?:[\.\!\/\\\w]*))?)/g;
+          message = message.replace(reg_exUrl, '<a href="$1" target="_blank">$1</a>')
 
           $("#message-box").append(`
             <div class="msg-right msg-wrap">
