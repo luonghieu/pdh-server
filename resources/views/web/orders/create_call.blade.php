@@ -103,7 +103,11 @@
         <input type="hidden" value="{{ $orderOptions['max_casts'] }}" id="max_casts">
         @endif
       </div>
-      @if(Auth::user()->is_guest && Auth::user()->is_verified && !Auth::user()->campaign_participated)
+      @php
+        $campaignFrom = Carbon\Carbon::parse('2018-11-28');
+        $campaignTo = Carbon\Carbon::parse('2018-11-30 23:59:59');
+      @endphp
+      @if(Auth::user()->is_guest && Auth::user()->is_verified && !Auth::user()->campaign_participated && now()->between($campaignFrom, $campaignTo))
         <div class="notify-campaign-over">
           <span>※3名はキャンペーン対象外です</span>
         </div>
@@ -169,7 +173,7 @@
           @endforeach
         @endif
       </div>
-      @if(Auth::user()->is_guest && Auth::user()->is_verified && !Auth::user()->campaign_participated)
+      @if(Auth::user()->is_guest && Auth::user()->is_verified && !Auth::user()->campaign_participated && now()->between($campaignFrom, $campaignTo))
         <div class="notify-campaign-over-cast-class">
           <span>※3名はキャンペーン対象外です</span>
         </div>
