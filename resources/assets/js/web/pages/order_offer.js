@@ -11,6 +11,25 @@ $(document).ready(function(){
       }
     };
 
+  if($('.offer-status').length) {
+    $offerStatus = $('.offer-status').val();
+
+    if(3 == $offerStatus) {
+      $('#timeout-offer-message h2').css('width', '250px');
+
+      $('#timeout-offer-message h2').html('この予約は募集が締め切られました');
+
+      $('#close-offer').addClass('mypage');
+
+      $('#timeout-offer').prop('checked',true);
+
+      $('.mypage').on("click",function(event){
+        window.location = '/mypage';
+      })
+    }
+
+  }
+
   $(".checked-order-offer").on("change",function(event){
     if ($(this).is(':checked')) {
       var area = $("input:radio[name='offer_area']:checked").val();

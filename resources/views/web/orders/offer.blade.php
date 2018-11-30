@@ -41,6 +41,19 @@
   </div>
 </div>
 
+<div class="modal_wrap">
+  <input id="timeout-offer" type="checkbox">
+  <div class="modal_overlay">
+    <label for="err-offer" class="modal_trigger" id="lb-err-offer"></label>
+    <div class="modal_content modal_content-btn1">
+      <div class="text-box" id="timeout-offer-message">
+        <h2></h2>
+      </div>
+      <label for="err-offer" class="close_button" id="close-offer">OK</label>
+    </div>
+  </div>
+</div>
+
 @endsection
 @section('web.content')
       <form>
@@ -48,6 +61,7 @@
           <div class="cast-head">
           <div class="cast-body">
             <input type="hidden" value="{{ $offer->id }}" class="offer-id">
+            <input type="hidden" value="{{ $offer->status }}" class="offer-status">
             @if(count($casts))
             <input type="hidden" value="{{ implode(",", $offer->cast_ids) }}" id="current-cast-id-offer">
             <input type="hidden" value="{{ $offer->class_id }}" id="current-class-id-offer">
