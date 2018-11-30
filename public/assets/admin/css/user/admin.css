@@ -1505,6 +1505,10 @@ tbody td {
   text-overflow: ellipsis;
 }
 
+.show-current-point-offer {
+  font-weight: bold;
+}
+
 .custom-checkbox .icheckbox_square-blue {
   left: 34%;
 }
