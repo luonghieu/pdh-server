@@ -949,6 +949,7 @@ tbody td {
 
 .cast-confirm {
   text-align: right;
+  margin-right: 8%;
 }
 
 .coupon-confirm a{
@@ -1454,9 +1455,12 @@ tbody td {
 }
 
 .error {
-  color: red;
   margin-bottom: 1rem;
   float: right;
+}
+
+.error, .color-error {
+  color: red;
 }
 
 .p-0 {

@@ -47,6 +47,10 @@
               </tr>
               @if ($user->is_cast)
                 <tr>
+                  <th>メールアドレス</th>
+                  <td>{{ $user->email }}</td>
+                </tr>
+                <tr>
                   <th>氏名</th>
                   <td>{{ $user->fullname }}</td>
                 </tr>
