@@ -130,12 +130,13 @@ class RoomController extends ApiController
 
     public function getAdminUnreadMessages()
     {
-        $messages = Message::whereHas('recipients', function ($q) {
-            $q->where('user_id', 1)
-                ->where('is_show', true)
-                ->whereNull('read_at');
-        })->select('room_id', DB::raw('count(*) as total'))->groupBy('room_id')->get();
+        $messages = DB::table('message_recipient')
+            ->where('user_id', 1)
+            ->where('is_show', true)
+            ->whereNull('read_at')
+            ->select('room_id', DB::raw('count(*) as total'))
+            ->groupBy('room_id')->get();
 
-        return $messages;
+        return response()->json($messages, 200);
     }
 }
