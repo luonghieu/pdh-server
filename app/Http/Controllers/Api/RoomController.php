@@ -137,6 +137,6 @@ class RoomController extends ApiController
             ->select('room_id', DB::raw('count(*) as total'))
             ->groupBy('room_id')->get();
 
-        return response()->json($messages);
+        return response()->json($messages, 200);
     }
 }
