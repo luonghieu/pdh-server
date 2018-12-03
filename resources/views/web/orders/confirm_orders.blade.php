@@ -62,7 +62,7 @@
         <div class="details-list__content show">
           <div class="details-list-box">
             <div class="details-list-box">
-                <p>{{ count($data['casts']) }}</p>
+                <p>{{ count(explode(',', $data['cast_ids'])) }}</p>
                 <ul class="details-list-box__pic">
                   @foreach($casts as $cast)
                   <li>

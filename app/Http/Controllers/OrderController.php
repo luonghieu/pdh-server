@@ -286,11 +286,7 @@ class OrderController extends Controller
 
         $data = Session::get('data');
 
-        if (isset($request->cast_ids)) {
-            $data['casts'] = explode(",", $request->cast_ids);
-        } else {
-            $data['casts'] = [];
-        }
+        $data['cast_ids'] = $request->cast_ids;
 
         Session::put('data', $data);
 
@@ -350,7 +346,7 @@ class OrderController extends Controller
 
     public function confirm(Request $request)
     {
-        if (!$request->session()->has('data') || !isset(Session::get('data')['casts'])) {
+        if (!$request->session()->has('data')) {
             return redirect()->route('guest.orders.call');
         }
 
@@ -371,19 +367,26 @@ class OrderController extends Controller
 
         $tags = Tag::whereIn('id', array_merge($desires, $situations))->get();
 
-        if (count($data['casts'])) {
-            $casts = Cast::whereIn('id', $data['casts'])->get();
+        if (isset($data['cast_ids'])) {
+            $castIds = $data['cast_ids'];
+            $castIdsArray = explode(',', $castIds);
 
-            if (count($data['casts']) == $data['cast_numbers']) {
-                $type = OrderType::NOMINATED_CALL;
+            if (count($castIdsArray)) {
+                $casts = Cast::whereIn('id', $castIdsArray)->get();
+
+                if (count($castIdsArray) == $data['cast_numbers']) {
+                    $type = OrderType::NOMINATED_CALL;
+                } else {
+                    $type = OrderType::HYBRID;
+                }
+                $nomineeIds = implode(',', $castIdsArray);
             } else {
-                $type = OrderType::HYBRID;
+                $casts = [];
+                $type = OrderType::CALL;
+                $nomineeIds = '';
             }
-            $nomineeIds = implode(',', $data['casts']);
         } else {
-            $casts = [];
-            $type = OrderType::CALL;
-            $nomineeIds = '';
+            // return redirect()->route('guest.orders.call');
         }
 
         $data['type'] = $type;
@@ -498,7 +501,7 @@ class OrderController extends Controller
                 'address' => $area,
                 'class_id' => $data['cast_class'],
                 'duration' => $data['duration'],
-                'nominee_ids' => implode(',', $data['casts']),
+                'nominee_ids' => $data['cast_ids'],
                 'date' => $startDate,
                 'start_time' => $startTime,
                 'total_cast' => $data['cast_numbers'],
