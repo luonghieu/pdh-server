@@ -126,7 +126,18 @@
                     @endif
                   </td>
                   <td>{{ $orders->firstItem() + $key }}</td>
-                  <td><a href="{{ route('admin.users.show', ['user' => $order->user_id]) }}">{{ $order->user_id }}</a></td>
+                  <td><a href="{{ route('admin.users.show', ['user' => $order->user_id]) }}">
+                    @if (
+                      $order->total_cast == 1
+                      && App\Enums\OrderType::CALL != $order->type
+                      && $order->nominees->count() <= 1
+                      && $order->user->type == App\Enums\UserType::CAST
+                      && $order->user->provider == App\Enums\ProviderType::EMAIL
+                      )
+                      <span class="color-error">★</span>
+                    @endif
+                    {{ $order->user_id }}
+                  </a></td>
                   <td>{{ $order->user ? $order->user->nickname : '' }}</td>
                   <td>{{ $order->id }}</td>
                   <td>{{ App\Enums\OrderType::getDescription($order->type) }}</td>

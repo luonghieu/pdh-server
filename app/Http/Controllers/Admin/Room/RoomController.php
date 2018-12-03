@@ -14,7 +14,7 @@ class RoomController extends Controller
     {
         $keyword = $request->search;
 
-        $messages = $room->messages()->with('user');
+        $messages = $room->messages()->whereHas('user');
 
         if ($request->has('from_date') && !empty($request->from_date)) {
             $fromDate = Carbon::parse($request->from_date)->startOfDay();
@@ -57,7 +57,7 @@ class RoomController extends Controller
     {
         $keyword = $request->search;
 
-        $rooms = Room::where('type', '<>', RoomType::SYSTEM)->with('users');
+        $rooms = Room::where('type', '<>', RoomType::SYSTEM)->whereHas('users');
 
         if ($request->from_date) {
             $fromDate = Carbon::parse($request->from_date)->startOfDay();
