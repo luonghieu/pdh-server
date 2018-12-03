@@ -387,10 +387,6 @@ $(document).ready(function(){
     $('.select-minute-offer').html(html);
   });
 
-   var add_minutes =  function (dt, minutes) {
-      return new Date(dt.getTime() + minutes*60000);
-    }
-
   //time
   $('.date-select-offer').on("click",function(){
     var hour = $(".select-hour-offer option:selected").val();
