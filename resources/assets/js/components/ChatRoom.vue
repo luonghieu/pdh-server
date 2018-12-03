@@ -105,7 +105,21 @@ export default {
         this.realtime_message = e.message.message;
         this.realtime_roomId = e.message.room_id;
         if (this.realtime_roomId) {
-          this.getRoom();
+            if (this.realtime_roomId != this.roomId) {
+                const roomIndex = this.users.findIndex(i => i.id == this.realtime_roomId);
+                const room = this.users[roomIndex];
+                this.users.splice(roomIndex, 1);
+                this.users.unshift(room);
+
+                const index = this.unreadMessage.findIndex(i => i.id == this.realtime_roomId);
+                if (index != -1) {
+                    this.unreadMessage[index].count += 1;
+                    this.messageUnread_index = this.unreadMessage[index].count;
+                } else {
+                    this.messageUnread_index = 1;
+                    this.unreadMessage.push({ id: this.realtime_roomId, count: 1 });
+                }
+            }
         }
         this.list_messages.push(e.message);
       });
@@ -243,7 +257,6 @@ export default {
           if (this.image) {
             this.removeImage().click();
           }
-          this.getRoom();
         });
 
       const scroll = $(".msg_history")[0].scrollHeight;
