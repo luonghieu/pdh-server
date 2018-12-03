@@ -7,8 +7,10 @@ use App\Cast;
 use App\CastClass;
 use App\Enums\PointCorrectionType;
 use App\Enums\PointType;
+use App\Enums\ProviderType;
 use App\Enums\Status;
 use App\Enums\UserType;
+use App\Room;
 use App\Http\Controllers\Controller;
 use App\Notifications\CreateCast;
 use App\Prefecture;
@@ -32,14 +34,14 @@ class CastController extends Controller
 
         if ($request->has('from_date') && !empty($request->from_date)) {
             $fromDate = Carbon::parse($request->from_date)->startOfDay();
-            $casts->where(function ($query) use ($fromDate, $toDate) {
+            $casts->where(function ($query) use ($fromDate) {
                 $query->where('created_at', '>=', $fromDate);
             });
         }
 
         if ($request->has('to_date') && !empty($request->to_date)) {
             $toDate = Carbon::parse($request->to_date)->endOfDay();
-            $casts->where(function ($query) use ($fromDate, $toDate) {
+            $casts->where(function ($query) use ($toDate) {
                 $query->where('created_at', '<=', $toDate);
             });
         }
@@ -415,24 +417,28 @@ class CastController extends Controller
     public function store(Request $request)
     {
         try {
+            DB::beginTransaction();
+
             $maxYear = Carbon::parse(now())->subYear(52)->format('Y');
             $minYear = Carbon::parse(now())->subYear(20)->format('Y');
 
             $rules = [
-                'email' => 'nullable|string|email|max:255|unique:users',
-                'password' => 'string|min:6|required_if:email,!=,null',
+                'email' => 'required|string|email|max:255|unique:users',
+                'password' => 'required|string|min:6',
                 'gender' => 'required',
                 'lastname' => 'required|string',
                 'firstname' => 'required|string',
-                'last_name_kana' => 'required|string',
-                'first_name_kana' => 'required|string',
-                'nickname' => 'required|string',
-                'phone' => 'required|regex:/^[0-9]+$/|unique:users',
-                'line' => 'required|string',
-                'number' => 'nullable|numeric|digits:7',
+                'lastname_kana' => 'required|string',
+                'firstname_kana' => 'required|string',
+                'nickname' => 'required|string|max:20',
+                'phone' => 'required|regex:/^[0-9]+$/|digits_between:10,11|unique:users',
+                'line_id' => 'required|string',
                 'front_side' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:5120',
                 'back_side' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:5120',
                 'date_of_birth' => 'required|date|after:'. $maxYear.'|before:'.$minYear,
+                'account_number' => 'nullable|numeric|digits:7|required_with:bank_name,branch_name',
+                'bank_name' => 'required_with:branch_name,account_number',
+                'branch_name' => 'required_with:bank_name,account_number',
             ];
 
             $validator = validator($request->all(), $rules);
@@ -441,7 +447,7 @@ class CastController extends Controller
                 return back()->withErrors($validator->errors())->withInput();
             }
 
-            $castClass = CastClass::where('id', $request->cast_class)->first();
+            $castClass = CastClass::where('id', $request->class_id)->first();
 
             $year = $request->year;
             $month = $request->month;
@@ -452,8 +458,10 @@ class CastController extends Controller
                 'password' => Hash::make($request->password),
                 'lastname' => $request->lastname,
                 'firstname' => $request->firstname,
+                'fullname' => $request->lastname . $request->firstname,
                 'lastname_kana' => $request->lastname_kana,
                 'firstname_kana' => $request->firstname_kana,
+                'fullname_kana' => $request->lastname_kana . $request->firstname_kana,
                 'nickname' => $request->nickname,
                 'phone' => $request->phone,
                 'line_id' => $request->line_id,
@@ -467,6 +475,7 @@ class CastController extends Controller
                 'type' => UserType::CAST,
                 'prefecture_id' => $request->prefecture,
                 'rank' => $request->cast_rank,
+                'provider' => ProviderType::EMAIL,
             ];
 
             $frontImage = request()->file('front_side');
@@ -484,20 +493,31 @@ class CastController extends Controller
             }
 
             $user = new Cast;
-            $user->create($input);
+            $user = $user->create($input);
 
-            if (isset($request->bank_name)) {
+            if ($request->bank_name && $request->branch_name && $request->account_number) {
                 BankAccount::create([
                     'user_id' => $user->id,
                     'bank_name' => $request->bank_name,
                     'branch_name' => $request->branch_name,
-                    'number' => $request->number,
+                    'number' => $request->account_number,
                 ]);
             }
 
+            $room = Room::create([
+                'owner_id' => $user->id
+            ]);
+
+            $room->users()->attach([1, $user->id]);
+            $user->notify(new CreateCast());
+
+            DB::commit();
+
             return redirect()->route('admin.casts.index');
         } catch (\Exception $e) {
+            DB::rollBack();
             LogService::writeErrorLog($e);
+
             return back();
         }
     }

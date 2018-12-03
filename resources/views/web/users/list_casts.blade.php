@@ -7,7 +7,11 @@
 
 @section('web.extra')
 @if (Auth::check())
-  @if(Auth::user()->is_guest && Auth::user()->is_verified && !Auth::user()->campaign_participated)
+  @php
+    $campaignFrom = Carbon\Carbon::parse('2018-11-28');
+    $campaignTo = Carbon\Carbon::parse('2018-11-30 23:59:59');
+  @endphp
+  @if(Auth::user()->is_guest && Auth::user()->is_verified && !Auth::user()->campaign_participated && now()->between($campaignFrom, $campaignTo))
     @include('web.users.popup')
   @endif
 @endif

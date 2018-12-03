@@ -40,6 +40,7 @@ class SetTimeOutForOffer extends Command
      */
     public function handle()
     {
+        $now = Carbon::now()->second(0);
         $offers = Offer::where('status', OfferStatus::ACTIVE);
 
         foreach ($offers->cursor() as $offer) {

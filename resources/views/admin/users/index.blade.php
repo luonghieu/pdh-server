@@ -84,7 +84,12 @@
                 <tr>
                   <td>{{ $users->firstItem() +$key }}</td>
                   <td>{{ $user->id }}</td>
-                  <td>{{ $user->nickname }}</td>
+                  <td>
+                    @if ($user->provider == App\Enums\ProviderType::EMAIL)
+                    <span class="color-error">★</span>
+                    @endif
+                    {{ $user->nickname }}
+                  </td>
                   <td>{{ $user->age }}</td>
                   <td>{{ App\Enums\UserType::getDescription($user->type) }}</td>
                   <td>{{ App\Enums\Status::getDescription($user->status) }}</td>

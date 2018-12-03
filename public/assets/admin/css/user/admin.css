@@ -50,6 +50,10 @@ td {
   width: 200px;
 }
 
+.logout-device {
+  display: none;
+}
+
 .change-active-room {
   position: relative;
 }
@@ -60,9 +64,7 @@ td {
 }
 
 .inactive-room {
-  display: inline-block;
-  position: absolute;
-  right: 15px;
+  text-align: right;
 }
 
 .cast-class {
@@ -255,7 +257,9 @@ td {
 .notify {
   display: inline-block;
   float: right;
-  margin: 0px 30px;
+  position: absolute;
+  top: 0;
+  right: 120px;
 }
 
 .smallstat {
@@ -773,11 +777,11 @@ tbody td {
   background: #39afea;
 }
 
-.export-csv {
+  .export-csv {
     display: inline-block;
     position: absolute;
     right: 0;
-}
+  }
 
 #verifications_modal {
   margin-left: 20px;
@@ -949,6 +953,7 @@ tbody td {
 
 .cast-confirm {
   text-align: right;
+  margin-right: 8%;
 }
 
 .coupon-confirm a{
@@ -1238,10 +1243,6 @@ tbody td {
     background:transparent;
   }
 
-  .btn-search {
-    display: none;
-  }
-
   .search {
     margin-left: 0;
   }
@@ -1404,26 +1405,125 @@ tbody td {
   }
 
   .order-nominee-started-time {
-    bottom: 20px;
-    left: 86px;
-    width: 160px;
+    bottom: 1px;
+    right: 0px;
   }
 
   .order-nominee-stopped-time {
-    left: 84px;
-    width: 159px !important;
-    height: 36px;
-    top: 100px;
+    left: 0;
+    right: 0;
+    top: 95px;
   }
 
   .start-time {
     top: 95px;
-    right: 90px;
+    right: 8%;
   }
 
   .stopped-time {
     top: 95px;
-    right: 90px;
+    right: 8%;
+  }
+
+  .limit-page {
+    margin-left: 0;
+  }
+
+  .btn-delete-order {
+    top: 250px;
+  }
+
+  .report {
+    top: 200px;
+  }
+
+  .btn-change-report {
+    top: 250px;
+  }
+
+  .search-point-type {
+    margin-top: 10px;
+    margin-left: 0;
+  }
+
+  .transfer-search {
+    margin-left: 0;
+    margin-top: 10px;
+  }
+
+  .device-height-search {
+    height: 300px;
+  }
+
+  .position-device {
+    top: 295px !important;
+    margin-right: 120px;
+  }
+
+  .export-csv {
+    margin-top: 10px;
+  }
+
+  .btn-info {
+    margin-top: 5px;
+    margin-right: 2%;
+  }
+
+  .current_point {
+    display: inline-block;
+    margin-left: 15px;
+    position: inherit;
+    width: 50%;
+  }
+
+  .logout-device {
+    display: block;
+    position: absolute;
+    width: 35px;
+    height: 35px;
+    border: 1px solid #524c4c;
+    padding: 6px 10px;
+    border-radius: 50%;
+    top: 14px;
+    right: 70px;
+  }
+
+  .row.login {
+    margin-left: 0;
+    margin-right: 0;
+  }
+
+  .login-box {
+    width: 100%;
+  }
+
+  .row.login .input-group {
+    display: block;
+  }
+
+  .btn-search {
+    margin-top: 10px;
+    width: 100%;
+    border-radius: 0;
+  }
+
+  .transfered {
+    right: 120px;
+    top: 295px;
+  }
+
+  .search-point-type {
+    width: 100% !important;
+  }
+
+  .search-user-type {
+    width: 100% !important;
+    margin-left: 0;
+    margin-top: 10px;
+  }
+
+  .device-height-search-heighest {
+    height: 340px;
   }
 }
 
@@ -1454,9 +1554,12 @@ tbody td {
 }
 
 .error {
-  color: red;
   margin-bottom: 1rem;
   float: right;
+}
+
+.error, .color-error {
+  color: red;
 }
 
 .p-0 {

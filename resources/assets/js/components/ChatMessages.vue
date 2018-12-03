@@ -261,7 +261,8 @@ export default {
       if (data) {
         return "<a  href=" + data[0] + "> " + data[0] + "</a>";
       }
-      return isLinkMessage;
+
+      return isLinkMessage.replace(/\n/g, "<br />");
     }
   }
 };
