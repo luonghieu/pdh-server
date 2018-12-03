@@ -5,9 +5,11 @@ namespace App\Http\Controllers\Api;
 use App\Enums\RoomType;
 use App\Enums\UserType;
 use App\Http\Resources\RoomResource;
+use App\Message;
 use App\Room;
 use App\Services\LogService;
 use App\User;
+use DB;
 use Illuminate\Http\Request;
 
 class RoomController extends ApiController
@@ -123,6 +125,17 @@ class RoomController extends ApiController
             $query->whereNotIn('type', [Usertype::ADMIN]);
         }])->orderBy('updated_at', 'DESC')->get();
 
-        return $this->respondWithData(RoomResource::collection($rooms));
+        return $this->respondWithData($rooms);
+    }
+
+    public function getAdminUnreadMessages()
+    {
+        $messages = Message::whereHas('recipients', function ($q) {
+            $q->where('user_id', 1)
+                ->where('is_show', true)
+                ->whereNull('read_at');
+        })->select('room_id', DB::raw('count(*) as total'))->groupBy('room_id')->get();
+
+        return $messages;
     }
 }
