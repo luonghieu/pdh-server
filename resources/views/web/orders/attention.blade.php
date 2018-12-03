@@ -46,6 +46,12 @@
     <h2>オートチャージ</h2>
     <p>ご利用後、評価と決済確定作業を行っていただいておりますが、決済確定作業を行われなかった場合は、ポイントの不足分をご登録いただいたクレジットカードから、自動決済させていただきます。(1P = 1.1円)</p>
   </div>
+  @if(session()->has('data'))
+    @php
+    $data = Session::get('data');
+    @endphp
+  @endif
+  <input type="hidden" value="{{ implode(',', $data['casts']) }}">
   <div class="create-call-form" >
     <button type="button" class="form_footer ct-button" onclick="window.location.href='{{ route('guest.orders.confirm') }}'">次に進む(4/4)</button>
   </div>
