@@ -165,15 +165,18 @@ $(document).ready(function(){
 
   //textArea
   $("input:text[name='other_area_offer']").on('change', function(e) {
+    var offerId = $('.offer-id').val();
     var params = {
       text_area: $(this).val(),
     };
-    helper.updateLocalStorageValue('order_offer', params);
+
+    helper.updateLocalStorageKey('order_offer', params, offerId);
   });
 
   //area
   var area = $("input:radio[name='offer_area']");
   area.on("change",function(){
+    var offerId = $('.offer-id').val();
     var areaOffer = $("input:radio[name='offer_area']:checked").val();
 
     if('その他'== areaOffer){
@@ -188,9 +191,10 @@ $(document).ready(function(){
 
     var params = {
       select_area: areaOffer,
-    };
+    }
 
-    helper.updateLocalStorageValue('order_offer', params);
+    helper.updateLocalStorageKey('order_offer', params, offerId);
+
   })
 
   //duration
@@ -212,11 +216,12 @@ $(document).ready(function(){
     }
     var minute = $(".select-minute-offer option:selected").val();
     var duration = $("input:radio[name='time_set_offer']:checked").val();
+    var offerId = $('.offer-id').val();
 
     var params = {
       current_duration: duration,
     };
-    helper.updateLocalStorageValue('order_offer', params);
+    helper.updateLocalStorageKey('order_offer', params, offerId);
 
 
     if('other_time_set' == duration) {
@@ -226,7 +231,7 @@ $(document).ready(function(){
 
       duration = $('.select-duration-offer option:selected').val();
 
-      helper.updateLocalStorageValue('order_offer', selectDuration);
+      helper.updateLocalStorageKey('order_offer', selectDuration, offerId);
     }
 
     var castIds = $('#current-cast-id-offer').val();
@@ -269,7 +274,7 @@ $(document).ready(function(){
         $('.total-amount').text(totalPoint +'P~');
 
 
-        helper.updateLocalStorageValue('order_offer', params);
+        helper.updateLocalStorageKey('order_offer', params, offerId);
       }).catch(function(error) {
         console.log(error);
         if (error.response.status == 401) {
@@ -296,12 +301,13 @@ $(document).ready(function(){
     }
     var minute = $(".select-minute-offer option:selected").val();
     var duration = $(this).val();
+    var offerId = $('.offer-id').val();
 
     var params = {
         select_duration: duration,
       };
 
-    helper.updateLocalStorageValue('order_offer', params);
+    helper.updateLocalStorageKey('order_offer', params, offerId);
 
     var castIds = $('#current-cast-id-offer').val();
     var totalCast = castIds.split(',');
@@ -343,7 +349,7 @@ $(document).ready(function(){
         $('.total-amount').text(totalPoint +'P~');
 
 
-        helper.updateLocalStorageValue('order_offer', params);
+        helper.updateLocalStorageKey('order_offer', params, offerId);
       }).catch(function(error) {
         console.log(error);
         if (error.response.status == 401) {
@@ -397,6 +403,8 @@ $(document).ready(function(){
     var hour = $(".select-hour-offer option:selected").val();
     var minute = $(".select-minute-offer option:selected").val();
     var currentDate = $('#current-date-offer').val();
+    var offerId = $('.offer-id').val();
+
     currentDate = currentDate.split('-');
 
      var params = {
@@ -404,7 +412,7 @@ $(document).ready(function(){
         minute : minute,
       };
 
-    helper.updateLocalStorageValue('order_offer', params);
+    helper.updateLocalStorageKey('order_offer', params, offerId);
 
     if (23<hour) {
       switch(hour) {
@@ -452,7 +460,7 @@ $(document).ready(function(){
       current_date : time,
     }
 
-    helper.updateLocalStorageValue('order_offer', params);
+    helper.updateLocalStorageKey('order_offer', params, offerId);
 
 
     if ($("input:radio[name='time_set_offer']:checked").length) {
@@ -488,7 +496,7 @@ $(document).ready(function(){
           $('.total-amount').text(totalPoint +'P~');
 
 
-          helper.updateLocalStorageValue('order_offer', params);
+          helper.updateLocalStorageKey('order_offer', params, offerId);
         }).catch(function(error) {
           console.log(error);
           if (error.response.status == 401) {
@@ -501,111 +509,116 @@ $(document).ready(function(){
   if($('#temp-point-offer').length) {
 
     if(localStorage.getItem("order_offer")){
+      var offerId = $('.offer-id').val();
       var orderOffer = JSON.parse(localStorage.getItem("order_offer"));
 
-      if(orderOffer.current_total_point){
-        totalPoint = parseInt(orderOffer.current_total_point).toLocaleString(undefined,{ minimumFractionDigits: 0 });
-        $('.total-amount').text(totalPoint +'P~');
-        $('#temp-point-offer').val(orderOffer.current_total_point);
-      }
+      if(orderOffer[offerId]) {
+        orderOffer = orderOffer[offerId];
 
-      if(orderOffer.current_date) {
-        currentDate = orderOffer.current_date.split('-');
-        $('#temp-date-offer').text(currentDate[0]+'年'+currentDate[1]+'月'+currentDate[2]+'日');
-      }
-        //area
-      if(orderOffer.select_area){
-       if('その他'== orderOffer.select_area){
-          $('.area-offer').css('display', 'flex')
-          $("input:text[name='other_area_offer']").val(orderOffer.text_area);
+        if(orderOffer.current_total_point){
+          totalPoint = parseInt(orderOffer.current_total_point).toLocaleString(undefined,{ minimumFractionDigits: 0 });
+          $('.total-amount').text(totalPoint +'P~');
+          $('#temp-point-offer').val(orderOffer.current_total_point);
         }
 
-        const inputArea = $(".input-area-offer");
-        inputArea.parent().removeClass('active');
-
-        $.each(inputArea,function(index,val){
-          if (val.value == orderOffer.select_area) {
-            $(this).prop('checked', true);
-            $(this).parent().addClass('active');
-          }
-        })
-      }
-
-      //duration
-      if(orderOffer.current_duration){
-          $('.time-input-offer').css('display','none');
-        if('other_time_set' == orderOffer.current_duration) {
-          $('.time-input-offer').css('display','flex');
+        if(orderOffer.current_date) {
+          currentDate = orderOffer.current_date.split('-');
+          $('#temp-date-offer').text(currentDate[0]+'年'+currentDate[1]+'月'+currentDate[2]+'日');
         }
-
-        const inputDuration = $(".input-duration-offer");
-        inputDuration.parent().removeClass('active');
-        $.each(inputDuration,function(index,val){
-          if (val.value == orderOffer.current_duration) {
-            $(this).prop('checked', true);
-            $(this).parent().addClass('active');
+          //area
+        if(orderOffer.select_area){
+         if('その他'== orderOffer.select_area){
+            $('.area-offer').css('display', 'flex')
+            $("input:text[name='other_area_offer']").val(orderOffer.text_area);
           }
-        })
 
-        if(orderOffer.select_duration) {
-          const inputDuration = $('select[name=sl_duration_offer] option');
-          $.each(inputDuration,function(index,val){
-            if(val.value == orderOffer.select_duration) {
-              $(this).prop('selected',true);
+          const inputArea = $(".input-area-offer");
+          inputArea.parent().removeClass('active');
+
+          $.each(inputArea,function(index,val){
+            if (val.value == orderOffer.select_area) {
+              $(this).prop('checked', true);
+              $(this).parent().addClass('active');
             }
           })
         }
-      }
 
-      //time
-      if(orderOffer.hour){
-        var hour = orderOffer.hour;
-        const inputHour = $('select[name=select_hour_offer] option');
-        $.each(inputHour,function(index,val){
-          if(val.value == hour) {
-            $(this).prop('selected',true);
+        //duration
+        if(orderOffer.current_duration){
+            $('.time-input-offer').css('display','none');
+          if('other_time_set' == orderOffer.current_duration) {
+            $('.time-input-offer').css('display','flex');
           }
-        })
 
-        if (23<hour) {
-          switch(hour) {
-            case '24':
-                hour = '00';
-                break;
-            case '25':
-                hour = '01';
-                break;
-            case '26':
-                hour = '02';
-                break;
+          const inputDuration = $(".input-duration-offer");
+          inputDuration.parent().removeClass('active');
+          $.each(inputDuration,function(index,val){
+            if (val.value == orderOffer.current_duration) {
+              $(this).prop('checked', true);
+              $(this).parent().addClass('active');
+            }
+          })
+
+          if(orderOffer.select_duration) {
+            const inputDuration = $('select[name=sl_duration_offer] option');
+            $.each(inputDuration,function(index,val){
+              if(val.value == orderOffer.select_duration) {
+                $(this).prop('selected',true);
+              }
+            })
           }
         }
 
-        $('.time-offer').text(hour + ":" + orderOffer.minute + '~');
+        //time
+        if(orderOffer.hour){
+          var hour = orderOffer.hour;
+          const inputHour = $('select[name=select_hour_offer] option');
+          $.each(inputHour,function(index,val){
+            if(val.value == hour) {
+              $(this).prop('selected',true);
+            }
+          })
+
+          if (23<hour) {
+            switch(hour) {
+              case '24':
+                  hour = '00';
+                  break;
+              case '25':
+                  hour = '01';
+                  break;
+              case '26':
+                  hour = '02';
+                  break;
+            }
+          }
+
+          $('.time-offer').text(hour + ":" + orderOffer.minute + '~');
 
 
-        var startTimeFrom = $('#start-time-from-offer').val();
-        startTimeFrom = startTimeFrom.split(":");
-        var startHourFrom = startTimeFrom[0];
-        var startMinuteFrom = startTimeFrom[1];
+          var startTimeFrom = $('#start-time-from-offer').val();
+          startTimeFrom = startTimeFrom.split(":");
+          var startHourFrom = startTimeFrom[0];
+          var startMinuteFrom = startTimeFrom[1];
 
-        var startTimeTo = $('#start-time-to-offer').val();
-        startTimeTo = startTimeTo.split(":");
-        var startHourTo = startTimeTo[0];
-        var startMinuteTo = startTimeTo[1];
-        var html = '';
+          var startTimeTo = $('#start-time-to-offer').val();
+          startTimeTo = startTimeTo.split(":");
+          var startHourTo = startTimeTo[0];
+          var startMinuteTo = startTimeTo[1];
+          var html = '';
 
-        startMinuteFrom = orderOffer.hour == startHourFrom ? startMinuteFrom : 0;
-        startMinuteTo   = orderOffer.hour == startHourTo   ? startMinuteTo   : 59;
+          startMinuteFrom = orderOffer.hour == startHourFrom ? startMinuteFrom : 0;
+          startMinuteTo   = orderOffer.hour == startHourTo   ? startMinuteTo   : 59;
 
-        for (var i = startMinuteFrom; i <= startMinuteTo; i++) {
-          var value = i < 10 ? `0${i}` : i;
-          var selected = i == orderOffer.minute ? 'selected' : '';
+          for (var i = startMinuteFrom; i <= startMinuteTo; i++) {
+            var value = i < 10 ? `0${i}` : i;
+            var selected = i == orderOffer.minute ? 'selected' : '';
 
-          html += `<option value="${value}" ${selected}>${value}分</option>`;
+            html += `<option value="${value}" ${selected}>${value}分</option>`;
+          }
+
+          $('.select-minute-offer').html(html);
         }
-
-        $('.select-minute-offer').html(html);
       }
     }
   }
