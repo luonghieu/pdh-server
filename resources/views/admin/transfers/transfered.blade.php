@@ -6,7 +6,7 @@
       <div class="panel panel-default">
         @include('admin.partials.menu-tab-transfer')
         <div class="panel-body handling device-height-search">
-          <div class="search wrap-transfers">
+          <div class="search">
             <form class="navbar-form navbar-left form-search" action="{{ route('admin.transfers.transfered') }}" method="GET">
               <label for="">From date: </label>
               <input type="text" class="form-control date-picker input-search" name="from_date" id="date01" data-date-format="yyyy/mm/dd" value="{{ request()->from_date }}" placeholder="yyyy/mm/dd" />
