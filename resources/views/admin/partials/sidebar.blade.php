@@ -21,7 +21,9 @@ $routes = [
             'name' => 'admin.request_transfer.index',
             'value' => 'キャスト新規申請',
             'url' => route('admin.request_transfer.index'),
-            'submenu' => [],
+            'submenu' => [
+              'admin.request_transfer.show',
+            ],
         ],
     ],
 
