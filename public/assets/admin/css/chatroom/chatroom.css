@@ -641,5 +641,8 @@ img {
   font-size: 11px;
 }
 
-
-
+@media (max-width: 799px) {
+  .write_msg {
+    width: 55%;
+  }
+}
