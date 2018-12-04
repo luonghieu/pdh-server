@@ -23,8 +23,7 @@
 @section('web.content')
   <h2>指名したいキャストがいる場合は選択してください</h2>
   <p class="message">※ご希望に<span>添えない可能性</span>もございます。<br/>※指名料が1人あたり15分毎に500Pが別途発生します。</p>
-  <form action="{{ route('guest.orders.post_step3') }}" method="POST" class="create-call-form" id="" name="select_casts_form">
-    {{ csrf_field() }}
+
     <div class="">
       <div class="form-grpup" id="list-cast-order"><!-- フォーム内容 -->
         @if(isset($casts['data']))
@@ -39,8 +38,9 @@
       @endif
       <input type="hidden" value="" class="cast-ids" name="cast_ids">
     </div>
-    <button type="submit" class="form_footer ct-button" id="sb-select-casts">指名せずに進む(3/4)</button>
-  </form>
+    <div class="create-call-form" id="" name="select_casts_form">
+      <button type="button" class="form_footer ct-button" id="sb-select-casts"><a href="{{ route('guest.orders.get_step4') }}">指名せずに進む(3/4)</a></button>
+    </form>
 @endsection
 
 @section('web.script')
