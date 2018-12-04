@@ -99,7 +99,7 @@
                   <td>{{ $user->last_active }}</td>
                   @endif
                   <td>{{ Carbon\Carbon::parse($user->created_at)->format('Y/m/d H:i') }}</td>
-                  <td><a href="{{ route('admin.users.show', ['user' => $user->id]) }}" class="btn-detail">詳細</a></td>
+                  <td><a href="{{ route('admin.users.show', ['user' => $user->id]) }}" class=" btn btn-detail">詳細</a></td>
                 </tr>
                 @endforeach
               @endif
