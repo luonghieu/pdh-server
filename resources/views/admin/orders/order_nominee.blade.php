@@ -37,7 +37,11 @@
               </tr>
               <tr>
                 <th>指名キャスト名</th>
-                <td>{{ (count($order->castOrder) > 0) ? $order->castOrder[0]->nickname : '' }}</td>
+                <td>
+                  @if (count($order->castOrder) > 0 && $order->castOrder[0]->provider == App\Enums\ProviderType::EMAIL)
+                  <span class="color-error">★</span>
+                  @endif
+                  {{ (count($order->castOrder) > 0) ? $order->castOrder[0]->nickname : '' }}</td>
               </tr>
               <tr>
                 <th>予約区分</th>
