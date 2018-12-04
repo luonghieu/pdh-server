@@ -149,7 +149,11 @@
                     @if ($order->candidates->count() > 1)
                       <td><a href="{{ route('admin.orders.candidates', ['order' => $order->id]) }}">{{ $order->candidates->count() }} 名</a></td>
                     @else
-                    <td><a href="{{ $order->candidates->first() ? route('admin.users.show', ['user' => $order->candidates->first()->id]) : '#' }}">{{ $order->candidates->first() ? $order->candidates->first()->id : "" }}</a></td>
+                    <td><a href="{{ $order->candidates->first() ? route('admin.users.show', ['user' => $order->candidates->first()->id]) : '#' }}">
+                      @if ($order->candidates->first() && $order->candidates->first()->provider == App\Enums\ProviderType::EMAIL)
+                      <span class="color-error">★</span>
+                      @endif
+                      {{ $order->candidates->first() ? $order->candidates->first()->id : "" }}</a></td>
                     @endif
                   @endif
                   <td>

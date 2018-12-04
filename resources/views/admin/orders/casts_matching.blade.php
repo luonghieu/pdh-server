@@ -30,7 +30,12 @@
               <tr>
                 <td>{{ $i++ }}</td>
                 <td><a href="{{ route('admin.users.show', ['user' => $cast->id]) }}">{{ $cast->id }}</a></td>
-                <td>{{ $cast->nickname }}</td>
+                <td>
+                  @if ($cast->provider == App\Enums\ProviderType::EMAIL)
+                  <span class="color-error">★</span>
+                  @endif
+                  {{ $cast->nickname }}
+                </td>
                 <td>{{ Carbon\Carbon::parse($cast->pivot->created_at)->format('Y/m/d H:i') }}</td>
               </tr>
               @endforeach

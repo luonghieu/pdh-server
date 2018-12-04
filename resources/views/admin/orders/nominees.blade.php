@@ -23,23 +23,34 @@
               </tr>
             </thead>
             <tbody>
-              @foreach ($casts as $key => $cast)
-              <tr>
-                <td>{{ $casts->firstItem() +$key }}</td>
-                <td><a href="{{ route('admin.users.show', ['user' => $cast->id]) }}">{{ $cast->id }}</a></td>
-                <td>{{ $cast->nickname }}</td>
-                <td>
-                  @if (App\Enums\CastOrderStatus::OPEN == $cast->pivot->status)
-                  提案中
-                  @endif
-                  @if (in_array($cast->pivot->status, [App\Enums\CastOrderStatus::ACCEPTED, App\Enums\CastOrderStatus::PROCESSING, App\Enums\CastOrderStatus::DONE]))
-                  承諾済み
-                  @endif
-                  @if (in_array($cast->pivot->status, [App\Enums\CastOrderStatus::DENIED, App\Enums\CastOrderStatus::CANCELED, App\Enums\CastOrderStatus::TIMEOUT]))
-                  キャンセル
-                  @endif
-              </tr>
-              @endforeach
+              @if (empty($casts->count()))
+                <tr>
+                  <td colspan="4">{{ trans('messages.results_not_found') }}</td>
+                </tr>
+              @else
+                @foreach ($casts as $key => $cast)
+                <tr>
+                  <td>{{ $casts->firstItem() +$key }}</td>
+                  <td><a href="{{ route('admin.users.show', ['user' => $cast->id]) }}">{{ $cast->id }}</a></td>
+                  <td>
+                    @if ($cast->provider == App\Enums\ProviderType::EMAIL)
+                    <span class="color-error">★</span>
+                    @endif
+                    {{ $cast->nickname }}
+                  </td>
+                  <td>
+                    @if (App\Enums\CastOrderStatus::OPEN == $cast->pivot->status)
+                    提案中
+                    @endif
+                    @if (in_array($cast->pivot->status, [App\Enums\CastOrderStatus::ACCEPTED, App\Enums\CastOrderStatus::PROCESSING, App\Enums\CastOrderStatus::DONE]))
+                    承諾済み
+                    @endif
+                    @if (in_array($cast->pivot->status, [App\Enums\CastOrderStatus::DENIED, App\Enums\CastOrderStatus::CANCELED, App\Enums\CastOrderStatus::TIMEOUT]))
+                    キャンセル
+                    @endif
+                </tr>
+                @endforeach
+              @endif
             </tbody>
           </table>
             </div>
