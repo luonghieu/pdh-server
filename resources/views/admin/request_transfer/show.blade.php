@@ -33,6 +33,14 @@
                 <td>{{ $cast->nickname }}</td>
               </tr>
               <tr>
+                <th>お名前(ふりがな)</th>
+                <td>{{ $cast->fullname_kana }}</td>
+              </tr>
+              <tr>
+                <th>稼働希望エリア</th>
+                <td>{{ $cast->prefecture ? $cast->prefecture->name:'' }}</td>
+              </tr>
+              <tr>
                 <th>性別</th>
                 <td>{{ App\Enums\UserGender::getDescription($cast->gender) }}</td>
               </tr>
