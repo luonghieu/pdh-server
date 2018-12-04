@@ -18,7 +18,7 @@ class CardController extends Controller
         }
 
         $backUrl = \URL::previous();
-        $urlCreateOrder = route('guest.orders.get_confirm');
+        $urlCreateOrder = route('guest.orders.confirm');
         $urlPoint = route('purchase.index');
         $urlNominate = route('guest.orders.nominate');
 
