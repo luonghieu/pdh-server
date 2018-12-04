@@ -30,7 +30,7 @@
               </tr>
               <tr>
                 <th>お名前</th>
-                <td>{{ $cast->nickname }}</td>
+                <td>{{ $cast->fullname }}</td>
               </tr>
               <tr>
                 <th>お名前(ふりがな)</th>
