@@ -61,7 +61,7 @@
               })
 
               $(".cast-ids").val(arrIds.toString());
-              $('#sb-select-casts').text('次に進む(3/4)');
+              $('#sb-select-casts a').text('次に進む(3/4)');
             }
           }
         }
