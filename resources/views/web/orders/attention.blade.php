@@ -48,6 +48,23 @@
   </div>
   <form action="{{ route('guest.orders.post_confirm') }}" method="POST" class="create-call-form" id="" name="attention_form">
     {{ csrf_field() }}
+      <input type="hidden" value="" name="cast_ids" id="cast-ids-nominate">
     <button type="submit" class="form_footer ct-button">次に進む(4/4)</button>
   </form>
+
+@endsection
+
+@section('web.script')
+  <script>
+    $(function () {
+      if(localStorage.getItem("order_call")){
+        var arrIds = JSON.parse(localStorage.getItem("order_call")).arrIds;
+        if(arrIds) {
+          if(arrIds.length) {
+            $("#cast-ids-nominate").val(arrIds.toString());
+          }
+        }
+      }
+    })
+  </script>
 @endsection

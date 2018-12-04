@@ -11,6 +11,7 @@
   @php
   $data = Session::get('data');
   @endphp
+  @endif
   <form action="{{ route('guest.orders.add') }}"  method="POST" class="create-call-form" id="add-orders" name="confirm_orders_form">
     {{ csrf_field() }}
     <div class="settlement-confirm">
@@ -27,7 +28,7 @@
               </li>
               <li><i><img src="{{ asset('assets/web/images/common/glass.svg') }}"></i><p>{{ $data['duration'] }}時間</p></li>
               <li><i><img src="{{ asset('assets/web/images/common/diamond.svg') }}"></i>
-                <p>{{ $data['obj_cast_class']->name }} {{ $data['cast_numbers'] .'名' }}
+                <p>{{ $castClass->name }} {{ $data['cast_numbers'] .'名' }}
                 </p>
               </li>
             </ul>
@@ -42,7 +43,7 @@
         <div class="details-list__content show">
           <div class="details-list-box">
             <ul class="details-info-list">
-              @foreach($data['obj_tags'] as $tag)
+              @foreach($tags as $tag)
               <li class="details-info-list_kibun">{{ $tag->name }}</li>
               @endforeach
             </ul>
@@ -59,12 +60,12 @@
         <div class="details-list__content show">
           <div class="details-list-box">
             <div class="details-list-box">
-                <p>{{ count($data['obj_casts']) }}</p>
+                <p>{{ count($casts) }}</p>
                 <ul class="details-list-box__pic">
-                  @foreach($data['obj_casts'] as $casts)
+                  @foreach($casts as $cast)
                   <li>
-                    @if (@getimagesize($casts->avatars[0]->thumbnail))
-                      <img src="{{ $casts->avatars[0]->thumbnail }}">
+                    @if (@getimagesize($cast->avatars[0]->thumbnail))
+                      <img src="{{ $cast->avatars[0]->thumbnail }}">
                     @else
                       <img src="{{ asset('assets/web/images/gm1/ic_default_avatar@3x.png') }}" alt="">
                     @endif
@@ -90,7 +91,7 @@
           $campaignTo = Carbon\Carbon::parse('2018-11-30 23:59:59');
         @endphp
         @if(Auth::user()->is_guest && Auth::user()->is_verified && !Auth::user()->campaign_participated && now()->between($campaignFrom, $campaignTo))
-          @if ($data['cast_numbers'] < 3 && $data['obj_cast_class']->id < 2)
+          @if ($data['cast_numbers'] < 3 && $castClass->id < 2)
             <div class="notify-campaign-confirm">
               <span>※キャンペーン適用の場合、キャストと合流後に無料時間分のポイントを付与いたします</span>
             </div>
@@ -139,8 +140,6 @@
     </section>
   </form>
   @endif
-
-@endif
 @endsection
 
 @section('web.extra')
