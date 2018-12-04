@@ -224,6 +224,7 @@ class OrderController extends Controller
         $input['cast_class'] = $castClass;
 
         Session::put('data', $input);
+        Session::save();
 
         return redirect()->route('guest.orders.get_step2');
     }
@@ -274,6 +275,7 @@ class OrderController extends Controller
         $data['situations'] = $request->situations;
 
         Session::put('data', $data);
+        Session::save();
 
         return redirect()->route('guest.orders.get_step3');
     }
@@ -289,6 +291,7 @@ class OrderController extends Controller
         $data['cast_ids'] = $request->cast_ids;
 
         Session::put('data', $data);
+        Session::save();
 
         return redirect()->route('guest.orders.get_step4');
     }
@@ -385,11 +388,9 @@ class OrderController extends Controller
                 $type = OrderType::CALL;
                 $nomineeIds = '';
             }
-        } else {
-            // return redirect()->route('guest.orders.call');
-        }
 
-        $data['type'] = $type;
+            $data['type'] = $type;
+        }
 
         if (isset($data['otherTime'])) {
             $startDate = Carbon::parse($data['otherTime'])->format('Y-m-d');
@@ -436,6 +437,7 @@ class OrderController extends Controller
         $data['temp_point'] = $tempPoint;
 
         Session::put('data', $data);
+        Session::save();
 
         return view('web.orders.confirm_orders', compact('user', 'casts', 'tags', 'tempPoint', 'castClass'));
     }
@@ -447,7 +449,7 @@ class OrderController extends Controller
 
     public function add(Request $request)
     {
-        if (!$request->session()->has('data') || !isset(Session::get('data')['casts'])) {
+        if (!$request->session()->has('data') || !isset(Session::get('data')['cast_ids'])) {
             return redirect()->route('guest.orders.call');
         }
 
