@@ -289,7 +289,7 @@ class OrderController extends Controller
         if (isset($request->cast_ids)) {
             $data['casts'] = explode(",", $request->cast_ids);
         } else {
-            $data['casts'] = [];
+            $data['casts'] = null;
         }
 
         Session::put('data', $data);
@@ -333,9 +333,20 @@ class OrderController extends Controller
 
         $casts = $casts['data'];
 
+        $currentCasts = null;
+        if (isset(Session::get('data')['casts'])) {
+            $currentCasts = Session::get('data')['casts'];
+        }
+
         $castNumbers = $data['cast_numbers'];
 
-        return view('web.orders.select_casts', compact('casts', 'castNumbers'));
+        if (isset($data['casts'])) {
+            $castIds = implode(',', $data['casts']);
+        } else {
+            $castIds = null;
+        }
+
+        return view('web.orders.select_casts', compact('casts', 'currentCasts', 'castNumbers', 'castIds'));
     }
 
     public function attention(Request $request)
@@ -348,9 +359,10 @@ class OrderController extends Controller
         return view('web.orders.nominate_attention');
     }
 
-    public function confirm(Request $request)
+    public function getConfirm(Request $request)
     {
-        if (!$request->session()->has('data') || !isset(Session::get('data')['casts'])) {
+        $data = Session::get('data');
+        if (!$request->session()->has('data')) {
             return redirect()->route('guest.orders.call');
         }
 
@@ -371,7 +383,7 @@ class OrderController extends Controller
 
         $tags = Tag::whereIn('id', array_merge($desires, $situations))->get();
 
-        if (count($data['casts'])) {
+        if (isset($data['casts'])) {
             $casts = Cast::whereIn('id', $data['casts'])->get();
 
             if (count($data['casts']) == $data['cast_numbers']) {
@@ -387,6 +399,7 @@ class OrderController extends Controller
         }
 
         $data['type'] = $type;
+        $data['nomineeIds'] = $nomineeIds;
 
         if (isset($data['otherTime'])) {
             $startDate = Carbon::parse($data['otherTime'])->format('Y-m-d');
@@ -431,10 +444,23 @@ class OrderController extends Controller
         $tempPoint = $tempPoint['data'];
 
         $data['temp_point'] = $tempPoint;
-
+        $data['obj_tags'] = $tags;
+        $data['obj_casts'] = $casts;
+        $data['obj_cast_class'] = $castClass;
         Session::put('data', $data);
 
-        return view('web.orders.confirm_orders', compact('user', 'casts', 'tags', 'tempPoint', 'castClass'));
+        return redirect()->route('guest.orders.get_confirm');
+    }
+
+    public function confirm(Request $request)
+    {
+        if (!$request->session()->has('data') || !isset(Session::get('data')['obj_casts'])) {
+            return redirect()->route('guest.orders.call');
+        }
+
+        $user = \Auth::user();
+
+        return view('web.orders.confirm_orders', compact('user'));
     }
 
     public function cancel()
@@ -444,7 +470,7 @@ class OrderController extends Controller
 
     public function add(Request $request)
     {
-        if (!$request->session()->has('data') || !isset(Session::get('data')['casts'])) {
+        if (!$request->session()->has('data') || !isset(Session::get('data')['obj_casts'])) {
             return redirect()->route('guest.orders.call');
         }
 
@@ -471,15 +497,17 @@ class OrderController extends Controller
             $area = $data['other_area'];
         }
 
-        if (isset($data['desires'])) {
-            $desires = $data['desires'];
-        }
+        if (isset($data['obj_tags'])) {
+            $tags = [];
 
-        if (isset($data['situations'])) {
-            $situations = $data['situations'];
-        }
+            foreach ($data['obj_tags'] as $val) {
+                array_push($tags, $val->name);
+            }
 
-        $tags = implode(',', array_merge($desires, $situations));
+            $tags = implode(',', $tags);
+        } else {
+            $tags = '';
+        }
 
         $client = new Client(['base_uri' => config('common.api_url')]);
         $user = Auth::user();
@@ -498,7 +526,7 @@ class OrderController extends Controller
                 'address' => $area,
                 'class_id' => $data['cast_class'],
                 'duration' => $data['duration'],
-                'nominee_ids' => implode(',', $data['casts']),
+                'nominee_ids' => $data['nomineeIds'],
                 'date' => $startDate,
                 'start_time' => $startTime,
                 'total_cast' => $data['cast_numbers'],
@@ -512,12 +540,12 @@ class OrderController extends Controller
 
             $request->session()->flash('statusCode', $statusCode);
 
-            return redirect()->route('guest.orders.confirm');
+            return redirect()->route('guest.orders.get_confirm');
         }
 
         $request->session()->flash('order_done', 'done');
 
-        return redirect()->route('guest.orders.confirm');
+        return redirect()->route('guest.orders.get_confirm');
     }
 
     public function history(Request $request, $orderId)
@@ -874,9 +902,14 @@ class OrderController extends Controller
             $casts = json_decode(($casts->getBody())->getContents(), JSON_NUMERIC_CHECK);
             $casts = $casts['data'];
 
+            $currentCasts = null;
+            if (isset(Session::get('data')['casts'])) {
+                $currentCasts = Session::get('data')['casts'];
+            }
+
             return [
                 'next_page' => $casts['next_page_url'],
-                'view' => view('web.orders.load_more_list_casts', compact('casts'))->render(),
+                'view' => view('web.orders.load_more_list_casts', compact('casts', 'currentCasts'))->render(),
             ];
         } catch (\Exception $e) {
             LogService::writeErrorLog($e);

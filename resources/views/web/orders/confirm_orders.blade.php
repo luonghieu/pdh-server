@@ -8,10 +8,9 @@
             'event': 'callbooking_complete'
             });"></a>
   @if(session()->has('data'))
-    @php
-    $data = Session::get('data');
-    @endphp
-  @endif
+  @php
+  $data = Session::get('data');
+  @endphp
   <form action="{{ route('guest.orders.add') }}"  method="POST" class="create-call-form" id="add-orders" name="confirm_orders_form">
     {{ csrf_field() }}
     <div class="settlement-confirm">
@@ -28,7 +27,7 @@
               </li>
               <li><i><img src="{{ asset('assets/web/images/common/glass.svg') }}"></i><p>{{ $data['duration'] }}時間</p></li>
               <li><i><img src="{{ asset('assets/web/images/common/diamond.svg') }}"></i>
-                <p>{{ $castClass->name }} {{ $data['cast_numbers'] .'名' }}
+                <p>{{ $data['obj_cast_class']->name }} {{ $data['cast_numbers'] .'名' }}
                 </p>
               </li>
             </ul>
@@ -43,11 +42,9 @@
         <div class="details-list__content show">
           <div class="details-list-box">
             <ul class="details-info-list">
-              @if(count($tags))
-              @foreach($tags as $tag)
+              @foreach($data['obj_tags'] as $tag)
               <li class="details-info-list_kibun">{{ $tag->name }}</li>
               @endforeach
-              @endif
             </ul>
             <div class="btn2-s"><a href="{{ route('guest.orders.get_step2') }}">変更</a></div>
           </div>
@@ -62,12 +59,12 @@
         <div class="details-list__content show">
           <div class="details-list-box">
             <div class="details-list-box">
-                <p>{{ count($data['casts']) }}</p>
+                <p>{{ count($data['obj_casts']) }}</p>
                 <ul class="details-list-box__pic">
-                  @foreach($casts as $cast)
+                  @foreach($data['obj_casts'] as $casts)
                   <li>
-                    @if (@getimagesize($cast->avatars[0]->thumbnail))
-                      <img src="{{ $cast->avatars[0]->thumbnail }}">
+                    @if (@getimagesize($casts->avatars[0]->thumbnail))
+                      <img src="{{ $casts->avatars[0]->thumbnail }}">
                     @else
                       <img src="{{ asset('assets/web/images/gm1/ic_default_avatar@3x.png') }}" alt="">
                     @endif
@@ -142,6 +139,8 @@
     </section>
   </form>
   @endif
+
+@endif
 @endsection
 
 @section('web.extra')
