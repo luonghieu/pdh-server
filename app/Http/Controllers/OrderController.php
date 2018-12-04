@@ -366,7 +366,7 @@ class OrderController extends Controller
         }
 
         $request->session()->put('cast_ids', $cast_ids);
-        $request->session()->migrate();
+        $request->session()->save();
 
         return redirect()->route('guest.orders.confirm');
     }
