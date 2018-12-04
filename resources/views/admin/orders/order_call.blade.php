@@ -84,7 +84,14 @@
                   @if ($order->nominees->count() > 1)
                   <td><a href="{{ route('admin.orders.nominees', ['order' => $order->id]) }}">{{ $order->nominees->count().'名' }}</a></td>
                   @else
-                  <td><a href="{{ route('admin.users.show', ['user' => $order->nominees[0]->id]) }}">{{ $order->nominees[0]->id }}</a></td>
+                  <td>
+                    <a href="{{ route('admin.users.show', ['user' => $order->nominees[0]->id]) }}">
+                      @if ($order->nominees[0]->provider == App\Enums\ProviderType::EMAIL)
+                      <span class="color-error">★</span>
+                      @endif
+                      {{ $order->nominees[0]->id }}
+                    </a>
+                  </td>
                   @endif
                 @else
                 <td></td>
@@ -96,7 +103,14 @@
                   @if ($order->candidates->count() > 1)
                   <td><a href="{{ route('admin.orders.candidates', ['order' => $order->id]) }}">{{ $order->candidates->count().'名' }}</a></td>
                   @else
-                  <td><a href="{{ route('admin.users.show', ['user' => $order->candidates[0]->id]) }}">{{ $order->candidates[0]->id }}</a></td>
+                  <td>
+                    <a href="{{ route('admin.users.show', ['user' => $order->candidates[0]->id]) }}">
+                      @if ($order->candidates[0]->provider == App\Enums\ProviderType::EMAIL)
+                      <span class="color-error">★</span>
+                      @endif
+                      {{ $order->candidates[0]->id }}
+                    </a>
+                  </td>
                   @endif
                 @else
                 <td></td>
