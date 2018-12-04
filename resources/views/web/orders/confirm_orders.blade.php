@@ -8,9 +8,9 @@
             'event': 'callbooking_complete'
             });"></a>
   @if(session()->has('data'))
-    @php
-    $data = Session::get('data');
-    @endphp
+  @php
+  $data = Session::get('data');
+  @endphp
   @endif
   <form action="{{ route('guest.orders.add') }}"  method="POST" class="create-call-form" id="add-orders" name="confirm_orders_form">
     {{ csrf_field() }}
@@ -43,11 +43,9 @@
         <div class="details-list__content show">
           <div class="details-list-box">
             <ul class="details-info-list">
-              @if(count($tags))
               @foreach($tags as $tag)
               <li class="details-info-list_kibun">{{ $tag->name }}</li>
               @endforeach
-              @endif
             </ul>
             <div class="btn2-s"><a href="{{ route('guest.orders.get_step2') }}">変更</a></div>
           </div>
@@ -93,7 +91,7 @@
           $campaignTo = Carbon\Carbon::parse('2018-11-30 23:59:59');
         @endphp
         @if(Auth::user()->is_guest && Auth::user()->is_verified && !Auth::user()->campaign_participated && now()->between($campaignFrom, $campaignTo))
-          @if ($data['cast_numbers'] < 3 && $data['obj_cast_class']->id < 2)
+          @if ($data['cast_numbers'] < 3 && $castClass->id < 2)
             <div class="notify-campaign-confirm">
               <span>※キャンペーン適用の場合、キャストと合流後に無料時間分のポイントを付与いたします</span>
             </div>

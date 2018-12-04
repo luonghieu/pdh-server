@@ -62,43 +62,43 @@ class OrderController extends Controller
     public function call(Request $request)
     {
         $currentArea = null;
-        if (isset(Session::get('data')['area'])) {
-            $currentArea = Session::get('data')['area'];
+        if (isset($request->session()->get('data')['area'])) {
+            $currentArea = $request->session()->get('data')['area'];
         }
 
         $currentOtherArea = null;
-        if (isset(Session::get('data')['other_area'])) {
-            $currentOtherArea = Session::get('data')['other_area'];
+        if (isset($request->session()->get('data')['other_area'])) {
+            $currentOtherArea = $request->session()->get('data')['other_area'];
         }
 
         $currentTime = null;
-        if (isset(Session::get('data')['time'])) {
-            $currentTime = Session::get('data')['time'];
+        if (isset($request->session()->get('data')['time'])) {
+            $currentTime = $request->session()->get('data')['time'];
         }
 
         $currentDuration = null;
-        if (isset(Session::get('data')['duration'])) {
-            $currentDuration = Session::get('data')['duration'];
+        if (isset($request->session()->get('data')['duration'])) {
+            $currentDuration = $request->session()->get('data')['duration'];
         }
 
         $currentOtherDuration = null;
-        if (isset(Session::get('data')['other_duration'])) {
-            $currentOtherDuration = Session::get('data')['other_duration'];
+        if (isset($request->session()->get('data')['other_duration'])) {
+            $currentOtherDuration = $request->session()->get('data')['other_duration'];
         }
 
         $currentCastNumbers = null;
-        if (isset(Session::get('data')['cast_numbers'])) {
-            $currentCastNumbers = Session::get('data')['cast_numbers'];
+        if (isset($request->session()->get('data')['cast_numbers'])) {
+            $currentCastNumbers = $request->session()->get('data')['cast_numbers'];
         }
 
         $currentCastClass = null;
-        if (isset(Session::get('data')['cast_class'])) {
-            $currentCastClass = Session::get('data')['cast_class'];
+        if (isset($request->session()->get('data')['cast_class'])) {
+            $currentCastClass = $request->session()->get('data')['cast_class'];
         }
 
         $timeDetail = null;
-        if (isset(Session::get('data')['time_detail'])) {
-            $timeDetail = Session::get('data')['time_detail'];
+        if (isset($request->session()->get('data')['time_detail'])) {
+            $timeDetail = $request->session()->get('data')['time_detail'];
         }
 
         $client = new Client(['base_uri' => config('common.api_url')]);
@@ -223,8 +223,8 @@ class OrderController extends Controller
 
         $input['cast_class'] = $castClass;
 
-        Session::put('data', $input);
-        Session::save();
+        $request->session()->put('data', $input);
+        $request->session()->save();
 
         return redirect()->route('guest.orders.get_step2');
     }
@@ -251,13 +251,13 @@ class OrderController extends Controller
         }
 
         $currentDesires = null;
-        if (isset(Session::get('data')['desires'])) {
-            $currentDesires = Session::get('data')['desires'];
+        if (isset($request->session()->get('data')['desires'])) {
+            $currentDesires = $request->session()->get('data')['desires'];
         }
 
         $currentSituations = null;
-        if (isset(Session::get('data')['situations'])) {
-            $currentSituations = Session::get('data')['situations'];
+        if (isset($request->session()->get('data')['situations'])) {
+            $currentSituations = $request->session()->get('data')['situations'];
         }
 
         return view('web.orders.set_tags', compact('desires', 'situations', 'currentDesires', 'currentSituations'));
@@ -268,14 +268,14 @@ class OrderController extends Controller
         if (!$request->session()->has('data')) {
             return redirect()->route('guest.orders.call');
         }
-        $data = Session::get('data');
+        $data = $request->session()->get('data');
 
         $data['desires'] = $request->desires;
 
         $data['situations'] = $request->situations;
 
-        Session::put('data', $data);
-        Session::save();
+        $request->session()->put('data', $data);
+        $request->session()->save();
 
         return redirect()->route('guest.orders.get_step3');
     }
@@ -286,12 +286,16 @@ class OrderController extends Controller
             return redirect()->route('guest.orders.call');
         }
 
-        $data = Session::get('data');
+        $data = $request->session()->get('data');
 
-        $data['cast_ids'] = $request->cast_ids;
+        if ($request->cast_ids) {
+            $data['cast_ids'] = $request->cast_ids;
+        } else {
+            $data['cast_ids'] = '';
+        }
 
-        Session::put('data', $data);
-        Session::save();
+        $request->session()->put('data', $data);
+        $request->session()->save();
 
         return redirect()->route('guest.orders.get_step4');
     }
@@ -302,7 +306,7 @@ class OrderController extends Controller
             return redirect()->route('guest.orders.call');
         }
 
-        $data = Session::get('data');
+        $data = $request->session()->get('data');
 
         $client = new Client(['base_uri' => config('common.api_url')]);
         $user = Auth::user();
@@ -349,11 +353,11 @@ class OrderController extends Controller
 
     public function confirm(Request $request)
     {
-        if (!$request->session()->has('data')) {
+        if (!$request->session()->has('data') || !isset($request->session()->get('data')['cast_ids'])) {
             return redirect()->route('guest.orders.call');
         }
 
-        $data = Session::get('data');
+        $data = $request->session()->get('data');
 
         $castClass = CastClass::findOrFail($data['cast_class']);
 
@@ -436,8 +440,8 @@ class OrderController extends Controller
 
         $data['temp_point'] = $tempPoint;
 
-        Session::put('data', $data);
-        Session::save();
+        $request->session()->put('data', $data);
+        $request->session()->save();
 
         return view('web.orders.confirm_orders', compact('user', 'casts', 'tags', 'tempPoint', 'castClass'));
     }
@@ -449,11 +453,11 @@ class OrderController extends Controller
 
     public function add(Request $request)
     {
-        if (!$request->session()->has('data') || !isset(Session::get('data')['cast_ids'])) {
+        if (!$request->session()->has('data') || !isset($request->session()->get('data')['cast_ids'])) {
             return redirect()->route('guest.orders.call');
         }
 
-        $data = Session::get('data');
+        $data = $request->session()->get('data');
 
         if (isset($data['otherTime'])) {
             $startDate = Carbon::parse($data['otherTime'])->format('Y-m-d');
