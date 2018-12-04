@@ -122,9 +122,12 @@ class OfferController extends Controller
 
     public function confirm(Request $request)
     {
-
         if (!isset($request->cast_ids_offer)) {
             $request->session()->flash('cast_not_found', 'cast_not_found');
+
+            if (isset($request->offer_id)) {
+                return redirect()->route('admin.offers.edit', ['offer' => $request->offer_id]);
+            }
 
             return redirect()->route('admin.offers.create');
         }
@@ -135,11 +138,19 @@ class OfferController extends Controller
         if (!isset($data['comment_offer'])) {
             $request->session()->flash('message_exits', 'message_exits');
 
+            if (isset($request->offer_id)) {
+                return redirect()->route('admin.offers.edit', ['offer' => $request->offer_id]);
+            }
+
             return redirect()->route('admin.offers.create');
         }
 
         if (80 < mb_strlen($data['comment_offer'], 'UTF-8')) {
             $request->session()->flash('message_invalid', 'message_invalid');
+
+            if (isset($request->offer_id)) {
+                return redirect()->route('admin.offers.edit', ['offer' => $request->offer_id]);
+            }
 
             return redirect()->route('admin.offers.create');
         }
