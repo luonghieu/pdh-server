@@ -357,6 +357,14 @@ class OrderController extends Controller
             return redirect()->route('guest.orders.call');
         }
 
+        if ($request->session()->has('statusCode')) {
+            $statusCode = $request->session()->get('statusCode');
+
+            $request->session()->forget('statusCode');
+        } else {
+            $statusCode = null;
+        }
+
         $data = $request->session()->get('data');
 
         $castClass = CastClass::findOrFail($data['cast_class']);
@@ -443,7 +451,7 @@ class OrderController extends Controller
         $request->session()->put('data', $data);
         $request->session()->save();
 
-        return view('web.orders.confirm_orders', compact('user', 'casts', 'tags', 'tempPoint', 'castClass'));
+        return view('web.orders.confirm_orders', compact('user', 'casts', 'tags', 'tempPoint', 'castClass', 'statusCode'));
     }
 
     public function cancel()
@@ -524,7 +532,7 @@ class OrderController extends Controller
             return redirect()->route('guest.orders.confirm');
         }
 
-        $request->session()->flash('order_done', 'done');
+        $request->session()->flash('statusCode', 'done');
 
         return redirect()->route('guest.orders.confirm');
     }

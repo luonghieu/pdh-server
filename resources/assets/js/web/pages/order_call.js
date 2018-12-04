@@ -592,7 +592,4 @@ $(document).ready(function(){
 
   $('.checked-order').prop('checked',false);
 
-  $('.error-code').on("click",function(){
-    window.location.reload();
-  })
 });
