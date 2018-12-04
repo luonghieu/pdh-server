@@ -1019,6 +1019,7 @@ tbody td {
   border: none;
   border-bottom: 1px solid #5C5C5C;
   outline: 0;
+  text-align: center;
 }
 
 .link-change-point {
@@ -1367,6 +1368,7 @@ tbody td {
   }
 }
 
+<<<<<<< HEAD
 @media (max-width: 799px) {
   .image-verified {
     float: right;
@@ -1428,6 +1430,8 @@ tbody td {
   }
 }
 
+=======
+>>>>>>> 1d33d0ae... [MIK-1269] Fix some IU in admin
 .init-inline-flex {
   display: inline-flex;
 }
@@ -1682,6 +1686,10 @@ tbody td {
 
   .export-csv {
     margin-top: 60px;
+  }
+
+  .wrap-transfers .export-csv {
+    margin-top: 10px;
   }
 
   .btn-info {
