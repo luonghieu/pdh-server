@@ -73,7 +73,12 @@
                 <tr>
                   <td>{{ $messages->firstItem() +$key }}</td>
                   <td>{{ $message->user ? App\Enums\UserType::getDescription($message->user->type) : "" }}</td>
-                  <td><a href="{{ $message->user ? route('admin.users.show', ['user' => $message->user->id]) : '#' }}">{{ $message->user ? $message->user->fullname : ""}}</a></td>
+                  <td><a href="{{ $message->user ? route('admin.users.show', ['user' => $message->user->id]) : '#' }}">
+                    @if ($message->user->type == App\Enums\UserType::CAST && $message->user->provider == App\Enums\ProviderType::EMAIL)
+                    <span class="color-error">★</span>
+                    @endif
+                    {{ $message->user ? $message->user->fullname : ""}}
+                  </a></td>
                   @if (empty($message->message))
                   <td class="long-text"><img src="{{ $message->image }}" alt="" class="image-message"></td>
                   @else

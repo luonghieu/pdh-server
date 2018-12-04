@@ -23,14 +23,25 @@
                   </tr>
                 </thead>
                 <tbody>
-                  @foreach ($casts as $key => $cast)
-                  <tr>
-                    <td>{{ $casts->firstItem() +$key }}</td>
-                    <td><a href="{{ route('admin.users.show', ['user' => $cast->id]) }}">{{ $cast->id }}</a></td>
-                    <td>{{ $cast->nickname }}</td>
-                    <td>{{ Carbon\Carbon::parse($cast->pivot->created_at)->format('Y/m/d H:i') }}</td>
-                  </tr>
-                  @endforeach
+                  @if (empty($casts->count()))
+                    <tr>
+                      <td colspan="4">{{ trans('messages.results_not_found') }}</td>
+                    </tr>
+                  @else
+                    @foreach ($casts as $key => $cast)
+                    <tr>
+                      <td>{{ $casts->firstItem() +$key }}</td>
+                      <td><a href="{{ route('admin.users.show', ['user' => $cast->id]) }}">{{ $cast->id }}</a></td>
+                      <td>
+                        @if ($cast->provider == App\Enums\ProviderType::EMAIL)
+                        <span class="color-error">★</span>
+                        @endif
+                        {{ $cast->nickname }}
+                      </td>
+                      <td>{{ Carbon\Carbon::parse($cast->pivot->created_at)->format('Y/m/d H:i') }}</td>
+                    </tr>
+                    @endforeach
+                  @endif
                 </tbody>
               </table>
             </div>
