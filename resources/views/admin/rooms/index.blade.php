@@ -71,14 +71,9 @@
                     {{ $room->owner_id }}
                     @else
                       @if (
-                        ($room->users[0]->id == $room->owner_id
-                        && $room->users[0]->provider == App\Enums\ProviderType::EMAIL
-                        && $room->users[0]->type == App\Enums\UserType::CAST
-                        )
-                        ||
-                        ($room->users[1]->id == $room->owner_id
-                        && $room->users[1]->provider == App\Enums\ProviderType::EMAIL
-                        && $room->users[1]->type == App\Enums\UserType::CAST)
+                        $room->owner->id == $room->owner_id
+                        && $room->owner->provider == App\Enums\ProviderType::EMAIL
+                        && $room->owner->type == App\Enums\UserType::CAST
                         )
                         <span class="color-error">★</span>
                       @endif
