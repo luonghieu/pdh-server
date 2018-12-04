@@ -79,6 +79,7 @@ Route::group(['middleware' => ['auth', 'guest', 'check_info'], 'as' => 'guest.']
         Route::get('/call/step4', ['as' => 'get_step4', 'uses' => 'OrderController@attention']);
         Route::get('/cancellation_policies', ['as' => 'cancel', 'uses' => 'OrderController@cancel']);
         Route::get('/call/confirm', ['as' => 'confirm', 'uses' => 'OrderController@confirm']);
+        Route::post('/call/confirm', ['as' => 'post_confirm', 'uses' => 'OrderController@getConfirm']);
         Route::post('/call/add', ['as' => 'add', 'uses' => 'OrderController@add']);
         Route::get('/nominate', ['as' => 'nominate', 'uses' => 'OrderController@nominate']);
         Route::post('/nominate', ['as' => 'post_nominate', 'uses' => 'OrderController@createNominate']);

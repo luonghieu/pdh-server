@@ -289,12 +289,12 @@ class OrderController extends Controller
         $data = $request->session()->get('data');
 
         if ($request->cast_ids) {
-            $castIds = $request->cast_ids;
+            $data['cast_ids'] = $request->cast_ids;
         } else {
-            $castIds = '';
+            $data['cast_ids'] = '';
         }
 
-        $request->session()->put('cast_ids', $castIds);
+        $request->session()->put('data', $data);
         $request->session()->save();
 
         return redirect()->route('guest.orders.get_step4');
@@ -351,9 +351,29 @@ class OrderController extends Controller
         return view('web.orders.nominate_attention');
     }
 
+    public function getConfirm(Request $request)
+    {
+        if (!$request->session()->has('data') || !isset($request->session()->get('data')['cast_ids'])) {
+            return redirect()->route('guest.orders.call');
+        }
+
+        $data = $request->session()->get('data');
+
+        if ($request->cast_ids) {
+            $data['cast_ids'] = $request->cast_ids;
+        } else {
+            $data['cast_ids'] = '';
+        }
+
+        $request->session()->put('data', $data);
+        $request->session()->save();
+
+        return redirect()->route('guest.orders.confirm');
+    }
+
     public function confirm(Request $request)
     {
-        if (!$request->session()->has('data') || !$request->session()->has('cast_ids')) {
+        if (!$request->session()->has('data') || !isset($request->session()->get('data')['cast_ids'])) {
             return redirect()->route('guest.orders.call');
         }
 
@@ -374,19 +394,19 @@ class OrderController extends Controller
 
         $tags = Tag::whereIn('id', array_merge($desires, $situations))->get();
 
-        $castIds = $request->session()->get('cast_ids');
-        if (isset($castIds)) {
-            $castIds = explode(',', $castIds);
+        if (isset($data['cast_ids'])) {
+            $castIds = $data['cast_ids'];
+            $castIdsArray = explode(',', $castIds);
 
-            if (count($castIds)) {
-                $casts = Cast::whereIn('id', $castIds)->get();
+            if (count($castIdsArray)) {
+                $casts = Cast::whereIn('id', $castIdsArray)->get();
 
-                if (count($castIds) == $data['cast_numbers']) {
+                if (count($castIdsArray) == $data['cast_numbers']) {
                     $type = OrderType::NOMINATED_CALL;
                 } else {
                     $type = OrderType::HYBRID;
                 }
-                $nomineeIds = implode(',', $castIds);
+                $nomineeIds = implode(',', $castIdsArray);
             } else {
                 $casts = [];
                 $type = OrderType::CALL;
@@ -453,7 +473,7 @@ class OrderController extends Controller
 
     public function add(Request $request)
     {
-        if (!$request->session()->has('data') || !$request->session()->has('cast_ids')) {
+        if (!$request->session()->has('data') || !isset($request->session()->get('data')['cast_ids'])) {
             return redirect()->route('guest.orders.call');
         }
 
@@ -501,15 +521,13 @@ class OrderController extends Controller
             'allow_redirects' => false,
         ];
 
-        $castIds = $request->session()->get('cast_ids');
-
         try {
             $order = $client->post(route('orders.create', [
                 'prefecture_id' => 13,
                 'address' => $area,
                 'class_id' => $data['cast_class'],
                 'duration' => $data['duration'],
-                'nominee_ids' => $castIds,
+                'nominee_ids' => $data['cast_ids'],
                 'date' => $startDate,
                 'start_time' => $startTime,
                 'total_cast' => $data['cast_numbers'],
