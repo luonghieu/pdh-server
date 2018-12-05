@@ -53,7 +53,7 @@
                     <span>{{ $errors->first('content') }}</span>
                   </div>
                 @endif
-                <div class="col-sm-12 p-0">
+                <div class="col-sm-12 p-0 wrap-input-info-send-push">
                   <div class="init-m">
                     <label class="css-m-auto">ステータスを変更: </label>
                     <select name="status">
@@ -68,8 +68,7 @@
                       @endforeach
                     </select>
                   </div>
-                </div>
-                <div class="col-sm-12 p-0">
+                  <div class="clearfix"></div>
                   <div class="init-m">
                     <label class="css-m-auto">送信先: </label>
                     <select name="send_to">
@@ -96,6 +95,7 @@
                   </div>
                 </div>
               </form>
+              <div class="clearfix"></div>
               <div class="col-sm-12 p-0">
                 <div class="init-m init-pull-left">
                   <a href="javascript:void(0)" class="btn btn-danger" id="link-del-notification-schedule" data-id="{{ $notificationSchedule->id }}" data-toggle="modal" data-target="#delNotificationSchedule">削除する</a>

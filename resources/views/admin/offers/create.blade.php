@@ -28,18 +28,32 @@
               @if(count($casts))
                 @foreach($casts as $cast)
                 <div class="list-avatar icon-cast">
-                <a href="{{ route('admin.users.show', ['id' => $cast['id'] ]) }}" class="cast-link cast-detail" target = "_blank">
+                  <a href="{{ route('admin.users.show', ['id' => $cast['id'] ]) }}" class="cast-link cast-detail" target = "_blank">
                   @if (@getimagesize($cast['avatars'][0]['thumbnail']))
                     <img src="{{ $cast['avatars'][0]['thumbnail'] }}" alt="" class="adaf">
                     @else
                     <img src="{{ asset('assets/web/images/gm1/ic_default_avatar@3x.png') }}" alt="">
                   @endif
-                </a>
-                <p>ユーザーID: {{ $cast['id'] }}</p>
-                <p class="nickname-offer">{{ $cast['nickname'] ? $cast['nickname'] : '...' }}</p>
-                <div class="custom-checkbox">
-                  <input type="checkbox" name="casts_offer[]" data-id='{{ $cast['class_id'] }}' value="{{ $cast['id'] }}" id="{{ $cast['id'] }}" class="cb-casts-offer">
+                  </a>
+                  <p>ユーザーID: {{ $cast['id'] }}</p>
+                  <p class="nickname-offer">{{ $cast['nickname'] ? $cast['nickname'] : '...' }}</p>
+                  <div class="custom-checkbox">
+                    <input type="checkbox" name="casts_offer[]" data-id='{{ $cast['class_id'] }}' value="{{ $cast['id'] }}" id="{{ $cast['id'] }}" class="cb-casts-offer">
+                  </div>
                 </div>
+                <div class="list-avatar icon-cast">
+                  <a href="{{ route('admin.users.show', ['id' => $cast['id'] ]) }}" class="cast-link cast-detail" target = "_blank">
+                  @if (@getimagesize($cast['avatars'][0]['thumbnail']))
+                    <img src="{{ $cast['avatars'][0]['thumbnail'] }}" alt="" class="adaf">
+                    @else
+                    <img src="{{ asset('assets/web/images/gm1/ic_default_avatar@3x.png') }}" alt="">
+                  @endif
+                  </a>
+                  <p>ユーザーID: {{ $cast['id'] }}</p>
+                  <p class="nickname-offer">{{ $cast['nickname'] ? $cast['nickname'] : '...' }}</p>
+                  <div class="custom-checkbox">
+                    <input type="checkbox" name="casts_offer[]" data-id='{{ $cast['class_id'] }}' value="{{ $cast['id'] }}" id="{{ $cast['id'] }}" class="cb-casts-offer">
+                  </div>
                 </div>
                 @endforeach
               @else
@@ -105,7 +119,7 @@
               <label class="lb-date-offer">開始日時を選択する</label>
             </div>
             <div class="col-lg-12 wrap-qr-code">
-              <div class="col-sm-2 ">
+              <div class="col-sm-2 wrap-input-date-offer">
                   @php
                   $arrMonth = [];
                   $currentYear = (int)Carbon\Carbon::now()->format('Y');
