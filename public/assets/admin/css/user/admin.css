@@ -202,6 +202,7 @@ td {
 .list-avatar ul li {
   margin-bottom: 10px;
 }
+
 .list-avatar img {
   width: 140px;
   margin: 0.5%;
@@ -1756,5 +1757,21 @@ tbody td {
 
   .correction-type {
     margin-left: 10%;
+  }
+
+  .icon-cast {
+    width: calc((100% / 3.5));
+  }
+
+  .wrap-input-date-offer {
+    margin-bottom: 10px;
+  }
+
+  .wrap-input-info-send-push {
+    margin-bottom: 10%;
+  }
+
+  .list-avatar img {
+    height: 95px;
   }
 }
