@@ -12,7 +12,6 @@ class RoomController extends Controller
 {
     public function getMessageByRoom(Room $room, Request $request)
     {
-        $keyword = $request->search;
 
         $messages = $room->messages()->with('user');
 
@@ -32,7 +31,9 @@ class RoomController extends Controller
             });
         }
 
-        if ($request->has('search')) {
+        if ($request->search) {
+            $keyword = $request->search;
+
             $messages->whereHas('user', function ($query) use ($keyword) {
                 $query->where('id', "$keyword")
                     ->orWhere('fullname', 'like', "%$keyword%");
