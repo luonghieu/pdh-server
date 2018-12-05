@@ -532,7 +532,7 @@ class OrderController extends Controller
             return redirect()->route('guest.orders.confirm');
         }
 
-        $request->session()->flash('statusCode', 'done');
+        $request->session()->flash('statusCode', 200);
 
         return redirect()->route('guest.orders.confirm');
     }

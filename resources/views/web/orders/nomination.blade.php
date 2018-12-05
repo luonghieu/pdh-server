@@ -217,29 +217,9 @@
     @php
       $statusCode = Session::get('status_code');
     @endphp
-    @if(406 == $statusCode)
-      <form action="{{ route('credit_card.index') }}" method="GET" class="form-expired-card">
-        <section class="button-box">
-          <label for="{{ $statusCode }}" class="status-code-nomination"></label>
-        </section>
-      </form>
-    @else
       <section class="button-box">
         <label for="{{ $statusCode }}" class="status-code-nomination"></label>
       </section>
-    @endif
-  @endif
-
-  @if($user->card)
-  <section class="button-box">
-      <label for="md-success-card" class="sm-form"></label>
-  </section>
-  @else
-  <form action="{{ route('credit_card.index') }}" method="GET" class="register-card">
-    <section class="button-box">
-      <label for="md-require-card" class="lable-register-card"></label>
-    </section>
-  </form>
   @endif
 
 @endsection
@@ -280,7 +260,7 @@
 
       if (406 == $statusCode) {
         $button = 'クレジットカード情報を更新する';
-        $triggerClass = 'expired-card';
+        $triggerClass = 'lable-register-card';
         $content = '予約日までにクレジットカードの <br> 有効期限が切れます <br><br> 予約を完了するには <br> カード情報を更新してください';
       }
 

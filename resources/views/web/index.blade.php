@@ -243,10 +243,6 @@
       }
     })
 
-    if(localStorage.getItem("back_link")){
-      localStorage.removeItem("back_link");
-    }
-
     if(localStorage.getItem("order_call")){
       localStorage.removeItem("order_call");
     }
