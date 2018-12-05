@@ -66,7 +66,20 @@
                 <tr>
                   <td>{{ $rooms->firstItem() +$key }}</td>
                   <td><a href="{{ route('admin.rooms.messages_by_room', ['room' => $room->id]) }}">{{ $room->id }}</td>
-                  <td><a href="{{ route('admin.users.show', ['user' => $room->owner_id]) }}">{{ $room->owner_id }}</a></td>
+                  <td><a href="{{ route('admin.users.show', ['user' => $room->owner_id]) }}">
+                    @if ($room->is_group)
+                    {{ $room->owner_id }}
+                    @else
+                      @if (
+                        $room->owner->id == $room->owner_id
+                        && $room->owner->provider == App\Enums\ProviderType::EMAIL
+                        && $room->owner->type == App\Enums\UserType::CAST
+                        )
+                        <span class="color-error">★</span>
+                      @endif
+                      {{ $room->owner_id }}
+                    @endif
+                  </a></td>
                   <td>{{ $room->is_group ? 'グループ' : '個別' }}</td>
                   <td>
                     @if ($room->is_group)
@@ -76,6 +89,18 @@
                     @else
                     <a href="{{ route('admin.users.show',
                     ['user' => ($room->users[0]->id == $room->owner_id) ? $room->users[1]->id : $room->users[0]->id]) }}">
+                      @if (
+                        ($room->users[0]->provider == App\Enums\ProviderType::EMAIL
+                        && $room->users[0]->id != $room->owner_id
+                        && $room->users[0]->type == App\Enums\UserType::CAST
+                        )
+                        ||
+                        ($room->users[1]->provider == App\Enums\ProviderType::EMAIL
+                        && $room->users[1]->id != $room->owner_id
+                        && $room->users[1]->type == App\Enums\UserType::CAST)
+                        )
+                        <span class="color-error">★</span>
+                      @endif
                       {{ ($room->users[0]->id == $room->owner_id) ? $room->users[1]->id : $room->users[0]->id }}
                     </a>
                     @endif

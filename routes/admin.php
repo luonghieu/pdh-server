@@ -36,6 +36,8 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.'], function () {
 
     Route::group(['namespace' => 'Cast', 'prefix' => 'casts', 'as' => 'casts.', 'middleware' => 'is_admin'], function () {
         Route::get('/', ['as' => 'index', 'uses' => 'CastController@index']);
+        Route::get('create', ['as' => 'create', 'uses' => 'CastController@create']);
+        Route::post('/', ['as' => 'store', 'uses' => 'CastController@store']);
         Route::get('{user}/register', ['as' => 'register', 'uses' => 'CastController@registerCast']);
         Route::post('{user}/confirm', ['as' => 'confirm', 'uses' => 'CastController@confirmRegister']);
         Route::post('{user}/save', ['as' => 'save', 'uses' => 'CastController@saveCast']);

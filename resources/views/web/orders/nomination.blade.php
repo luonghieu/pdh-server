@@ -214,28 +214,12 @@
     <label for="orders-nominate" class="lb-orders-nominate"></label>
   </section>
   @if((Session::has('status_code')))
-    @if(406 == Session::get('status_code'))
-      <form action="{{ route('credit_card.index') }}" method="GET" class="form-expired-card">
-        <section class="button-box">
-          <label for="{{ Session::get('status_code') }}" class="status-code-nomination"></label>
-        </section>
-      </form>
-    @else
+    @php
+      $statusCode = Session::get('status_code');
+    @endphp
       <section class="button-box">
-        <label for="{{ Session::get('status_code') }}" class="status-code-nomination"></label>
+        <label for="{{ $statusCode }}" class="status-code-nomination"></label>
       </section>
-    @endif
-  @endif
-  @if($user->card)
-  <section class="button-box">
-      <label for="md-success-card" class="sm-form"></label>
-  </section>
-  @else
-  <form action="{{ route('credit_card.index') }}" method="GET" class="register-card">
-    <section class="button-box">
-      <label for="md-require-card" class="lable-register-card"></label>
-    </section>
-  </form>
   @endif
 
 @endsection
@@ -253,69 +237,65 @@
   @endconfirm
 
   @if(!$user->card)
-    @modal(['triggerId' => 'md-require-card', 'triggerClass' =>'lable-register-card','button' =>'クレジットカードを登録する
-'])
-      @slot('title')
-        クレジットカードを <br>登録してください
-      @endslot
-
-      @slot('content')
-      ※キャストと合流するまで <br>料金は発生しません
-      @endslot
-    @endmodal
-  @else
-    @modal(['triggerId' => 'md-success-card', 'triggerClass' =>'sm-form'])
-      @slot('title')
-        予約が完了しました
-      @endslot
-
-      @slot('content')
-      ただいまキャストの調整中です
-      予約状況はホーム画面の予約一覧をご確認ください
-      @endslot
-    @endmodal
+    <div class="modal_wrap">
+      <input id="md-require-card" type="checkbox">
+      <div class="modal_overlay">
+        <label for="md-require-card" class="modal_trigger"></label>
+        <div class="modal_content modal_content-btn1">
+          <div class="text-box">
+            <h2>クレジットカードを <br>登録してください</h2>
+            <p>※キャストと合流するまで <br>料金は発生しません</p>
+          </div>
+          <label for="md-require-card" class="close_button lable-register-card">クレジットカードを登録する</label>
+        </div>
+      </div>
+    </div>
   @endif
 
-  @if((Session::has('status_code')) && 406 == Session::get('status_code'))
-    @modal(['triggerId' => Session::get('status_code'), 'button' =>'クレジットカード情報を更新する', 'triggerClass' =>'expired-card'])
-      @slot('title')
-      @endslot
+  @if(Session::has('status_code'))
+    @php
+      $statusCode = Session::get('status_code');
+      $triggerId = $statusCode;
+      $label = $statusCode;
 
-      @slot('content')
-      予約日までにクレジットカードの <br> 有効期限が切れます <br><br> 予約を完了するには <br> カード情報を更新してください
-      @endslot
-    @endmodal
-  @else
-    @if((Session::has('status_code')))
-      @modal(['triggerId' => Session::get('status_code'), 'triggerClass' =>'error-code'])
-        @slot('title')
-        @endslot
+      if (406 == $statusCode) {
+        $button = 'クレジットカード情報を更新する';
+        $triggerClass = 'lable-register-card';
+        $content = '予約日までにクレジットカードの <br> 有効期限が切れます <br><br> 予約を完了するには <br> カード情報を更新してください';
+      }
 
-        @if(Session::get('status_code') ==400)
-          @slot('content')
-          開始時間は現在以降の時間を指定してください
-          @endslot
-        @endif
+      if (400 == $statusCode) {
+        $content = '開始時間は現在以降の時間を指定してください';
+      }
 
-        @if(Session::get('status_code') ==409)
-          @slot('content')
-          すでに予約があります
-          @endslot
-        @endif
+      if (409 == $statusCode) {
+        $content = 'すでに予約があります';
+      }
 
-        @if(Session::get('status_code') ==422)
-          @slot('content')
-          この操作は実行できません
-          @endslot
-        @endif
+      if (422 == $statusCode) {
+        $content = 'この操作は実行できません';
+      }
 
-        @if(Session::get('status_code') ==500)
-          @slot('content')
-          サーバーエラーが発生しました
-          @endslot
-        @endif
-      @endmodal
-    @endif
+      if (500 == $statusCode) {
+        $content = 'サーバーエラーが発生しました';
+      }
+
+    @endphp
+
+    <div class="modal_wrap">
+      <input id="{{ $triggerId }}" type="checkbox">
+      <div class="modal_overlay">
+        <label for="{{ $label or '' }}" class="modal_trigger"></label>
+        <div class="modal_content modal_content-btn1">
+          <div class="text-box">
+            <h2>{!! $title or '' !!}</h2>
+            <p>{!! $content or '' !!}</p>
+          </div>
+          <label for="{{ $triggerId }}" class="close_button {{ $triggerClass or '' }}">{{ $button or 'OK'}}</label>
+        </div>
+      </div>
+    </div>
+
   @endif
 
 @endsection

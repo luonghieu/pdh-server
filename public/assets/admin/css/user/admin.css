@@ -949,6 +949,7 @@ tbody td {
 
 .cast-confirm {
   text-align: right;
+  margin-right: 8%;
 }
 
 .coupon-confirm a{
@@ -1454,9 +1455,12 @@ tbody td {
 }
 
 .error {
-  color: red;
   margin-bottom: 1rem;
   float: right;
+}
+
+.error, .color-error {
+  color: red;
 }
 
 .p-0 {
@@ -1564,6 +1568,17 @@ tbody td {
   margin-top: -40px;
   width: 95%
 }
+
 .delete-user {
   margin-top: 20px;
+}
+
+.coupon input[type=password],
+.coupon input[type=email] {
+  text-indent: 1rem;
+  border: 1px solid #A6A6A6;
+  border-radius: 3px;
+  width: 100%;
+  height: 45px;
+  margin: 10px 0px 10px;
 }

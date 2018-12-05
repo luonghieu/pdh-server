@@ -140,7 +140,12 @@
                     @if ($order->nominees->count() > 1)
                       <td><a href="{{ route('admin.orders.nominees', ['order' => $order->id]) }}">{{ $order->nominees->count() }} 名</a></td>
                     @else
-                    <td><a href="{{ $order->nominees->first() ? route('admin.users.show', ['user' => $order->nominees->first()->id]) : '#' }}">{{ $order->nominees->first() ? $order->nominees->first()->id : "" }}</a></td>
+                    <td><a href="{{ $order->nominees->first() ? route('admin.users.show', ['user' => $order->nominees->first()->id]) : '#' }}">
+                      @if ($order->nominees->first() && $order->nominees->first()->provider == App\Enums\ProviderType::EMAIL)
+                      <span class="color-error">★</span>
+                      @endif
+                      {{ $order->nominees->first() ? $order->nominees->first()->id : "" }}
+                    </a></td>
                     @endif
                   @endif
                   @if (App\Enums\OrderType::NOMINATION == $order->type)
@@ -149,7 +154,11 @@
                     @if ($order->candidates->count() > 1)
                       <td><a href="{{ route('admin.orders.candidates', ['order' => $order->id]) }}">{{ $order->candidates->count() }} 名</a></td>
                     @else
-                    <td><a href="{{ $order->candidates->first() ? route('admin.users.show', ['user' => $order->candidates->first()->id]) : '#' }}">{{ $order->candidates->first() ? $order->candidates->first()->id : "" }}</a></td>
+                    <td><a href="{{ $order->candidates->first() ? route('admin.users.show', ['user' => $order->candidates->first()->id]) : '#' }}">
+                      @if ($order->candidates->first() && $order->candidates->first()->provider == App\Enums\ProviderType::EMAIL)
+                      <span class="color-error">★</span>
+                      @endif
+                      {{ $order->candidates->first() ? $order->candidates->first()->id : "" }}</a></td>
                     @endif
                   @endif
                   <td>
