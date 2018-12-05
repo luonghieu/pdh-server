@@ -338,22 +338,12 @@ $(document).ready(function(){
     }
   });
 
-  if($("label").hasClass("order-done")){
-    $('.order-done').click();
-  }
-
-  $('.modal-redirect').on('click',function(){
-   $('#redirect-index').submit();
+  $('.order-done').on('click',function(){
+    window.location.href = '/mypage';
   });
 
   $('.lable-register-card').on('click',function(){
-    $('.register-card').submit();
-  });
-
-  $('.expired-card').on('click',function(){
-    var backLink = window.location.href;
-    localStorage.setItem('back_link', backLink);
-    $('.form-expired-card').submit();
+    window.location.href = '/credit_card';
   });
 
   var area = $("input:radio[name='area']:checked").val();
