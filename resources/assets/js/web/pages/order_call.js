@@ -107,8 +107,8 @@ $(document).ready(function(){
     utc = currentDate.getTime() + (currentDate.getTimezoneOffset() * 60000);
     nd = new Date(utc + (3600000*9));
 
-    if(add_minutes(nd,60) > selectDate) {
-      selectDate = add_minutes(nd,60);
+    if(add_minutes(nd, 30) > selectDate) {
+      selectDate = add_minutes(nd, 30);
       date = selectDate.getDate();
       month = selectDate.getMonth() +1;
 
