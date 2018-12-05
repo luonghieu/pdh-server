@@ -11,6 +11,7 @@
   @php
   $data = Session::get('data');
   @endphp
+  @endif
   <form action="{{ route('guest.orders.add') }}"  method="POST" class="create-call-form" id="add-orders" name="confirm_orders_form">
     {{ csrf_field() }}
     <div class="settlement-confirm">
@@ -27,7 +28,7 @@
               </li>
               <li><i><img src="{{ asset('assets/web/images/common/glass.svg') }}"></i><p>{{ $data['duration'] }}時間</p></li>
               <li><i><img src="{{ asset('assets/web/images/common/diamond.svg') }}"></i>
-                <p>{{ $data['obj_cast_class']->name }} {{ $data['cast_numbers'] .'名' }}
+                <p>{{ $castClass->name }} {{ $data['cast_numbers'] .'名' }}
                 </p>
               </li>
             </ul>
@@ -42,7 +43,7 @@
         <div class="details-list__content show">
           <div class="details-list-box">
             <ul class="details-info-list">
-              @foreach($data['obj_tags'] as $tag)
+              @foreach($tags as $tag)
               <li class="details-info-list_kibun">{{ $tag->name }}</li>
               @endforeach
             </ul>
@@ -59,12 +60,12 @@
         <div class="details-list__content show">
           <div class="details-list-box">
             <div class="details-list-box">
-                <p>{{ count($data['obj_casts']) }}</p>
+                <p>{{ count($casts) }}</p>
                 <ul class="details-list-box__pic">
-                  @foreach($data['obj_casts'] as $casts)
+                  @foreach($casts as $cast)
                   <li>
-                    @if (@getimagesize($casts->avatars[0]->thumbnail))
-                      <img src="{{ $casts->avatars[0]->thumbnail }}">
+                    @if (@getimagesize($cast->avatars[0]->thumbnail))
+                      <img src="{{ $cast->avatars[0]->thumbnail }}">
                     @else
                       <img src="{{ asset('assets/web/images/gm1/ic_default_avatar@3x.png') }}" alt="">
                     @endif
@@ -90,7 +91,7 @@
           $campaignTo = Carbon\Carbon::parse('2018-11-30 23:59:59');
         @endphp
         @if(Auth::user()->is_guest && Auth::user()->is_verified && !Auth::user()->campaign_participated && now()->between($campaignFrom, $campaignTo))
-          @if ($data['cast_numbers'] < 3 && $data['obj_cast_class']->id < 2)
+          @if ($data['cast_numbers'] < 3 && $castClass->id < 2)
             <div class="notify-campaign-confirm">
               <span>※キャンペーン適用の場合、キャストと合流後に無料時間分のポイントを付与いたします</span>
             </div>
@@ -111,115 +112,126 @@
   <section class="button-box">
     <label for="orders" class="lb-orders"></label>
   </section>
-  @if((Session::has('order_done')))
-    <section class="button-box">
-      <label for="{{ Session::get('order_done') }}" class="order-done"></label>
-    </section>
-  <form action="{{ route('web.index') }}" method="GET" id="redirect-index">
-  </form>
-  @endif
+  @if(($statusCode))
+    @if('done' == $statusCode)
+      <section class="button-box">
+        <label for="{{ $statusCode }}" class="order-done"></label>
+      </section>
+    <form action="{{ route('web.index') }}" method="GET" id="redirect-index">
+    </form>
+    @endif
 
-  @if((Session::has('statusCode')))
-    @if(406 == Session::get('statusCode'))
+    @if(406 == $statusCode)
       <form action="{{ route('credit_card.index') }}" method="GET" class="form-expired-card">
         <section class="button-box">
-          <label for="{{ Session::get('statusCode') }}" class="status-code"></label>
+          <label for="{{ $statusCode }}" class="status-code"></label>
         </section>
       </form>
     @else
       <section class="button-box">
-        <label for="{{ Session::get('statusCode') }}" class="status-code"></label>
+        <label for="{{ $statusCode }}" class="status-code"></label>
       </section>
     @endif
   @endif
-  @if(!$user->card)
-  <form action="{{ route('credit_card.index') }}" method="GET" class="register-card">
-    <section class="button-box">
-      <label for="md-require-card" class="lable-register-card"></label>
-    </section>
-  </form>
-  @endif
 
-@endif
+  @if(!$user->card)
+    <form action="{{ route('credit_card.index') }}" method="GET" class="register-card">
+      <section class="button-box">
+        <label for="md-require-card" class="lable-register-card"></label>
+      </section>
+    </form>
+  @endif
 @endsection
 
 @section('web.extra')
-  @confirm(['triggerId' => 'orders', 'triggerCancel' =>'', 'buttonLeft' =>'キャンセル',
-   'buttonRight' =>'確定する','triggerSuccess' =>'right sb-form-orders'])
 
-    @slot('title')
-      予約を確定しますか？
-    @endslot
+  <div class="modal_wrap">
+    <input id="orders" type="checkbox">
+    <div class="modal_overlay">
+      <label for="orders" class="modal_trigger"></label>
+      <div class="modal_content modal_content-btn2">
+        <div class="text-box">
+          <h2>予約を確定しますか？</h2>
+        </div>
+        <div class="close_button-box">
+          <div class="close_button-block">
+            <label for="orders" class="close_button  left ">キャンセル</label>
+          </div>
+          <div class="close_button-block">
+            <label for="orders" class="close_button right sb-form-orders">確定する</label>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
 
-    @slot('content')
-    @endslot
-  @endconfirm
   @if(!$user->card)
-    @modal(['triggerId' => 'md-require-card', 'triggerClass' =>'lable-register-card','button' =>'クレジットカードを登録する
-'])
-      @slot('title')
-        クレジットカードを <br>登録してください
-      @endslot
-
-      @slot('content')
-      ※キャストと合流するまで <br>料金は発生しません
-      @endslot
-    @endmodal
+    <div class="modal_wrap">
+      <input id="md-require-card" type="checkbox">
+      <div class="modal_overlay">
+        <label for="md-require-card" class="modal_trigger"></label>
+        <div class="modal_content modal_content-btn1">
+          <div class="text-box">
+            <h2>クレジットカードを <br>登録してください</h2>
+            <p>※キャストと合流するまで <br>料金は発生しません</p>
+          </div>
+          <label for="md-require-card" class="close_button lable-register-card">クレジットカードを登録する</label>
+        </div>
+      </div>
+    </div>
   @endif
 
-  @if((Session::has('order_done')))
-    @modal(['triggerId' => Session::get('order_done'), 'triggerClass' =>'modal-redirect'])
-      @slot('title')
-        予約が完了しました
-      @endslot
+  @if(($statusCode))
+    @php
+      $statusCode = $statusCode;
 
-      @slot('content')
-      ただいまキャストの調整中です
-      予約状況はホーム画面の予約一覧をご確認ください
-      @endslot
-    @endmodal
+      $triggerId = $statusCode;
+      $label = $statusCode;
+
+      if('done' == $statusCode) {
+        $triggerClass = 'modal-redirect';
+        $title = '予約が完了しました';
+        $content = 'ただいまキャストの調整中です<br>予約状況はホーム画面の予約一覧をご確認ください';
+      }
+
+      if (406 == $statusCode) {
+        $button = 'クレジットカード情報を更新する';
+        $triggerClass = 'expired-card';
+        $content = '予約日までにクレジットカードの <br> 有効期限が切れます <br><br> 予約を完了するには <br> カード情報を更新してください';
+      }
+
+      if (400 == $statusCode) {
+        $content = '開始時間は現在以降の時間を指定してください';
+      }
+
+      if (409 == $statusCode) {
+        $content = 'すでに予約があります';
+      }
+
+      if (422 == $statusCode) {
+        $content = 'この操作は実行できません';
+      }
+
+      if (500 == $statusCode) {
+        $content = 'サーバーエラーが発生しました';
+      }
+    @endphp
+
+  <div class="modal_wrap">
+    <input id="{{ $triggerId }}" type="checkbox">
+    <div class="modal_overlay">
+      <label for="{{ $label or '' }}" class="modal_trigger"></label>
+      <div class="modal_content modal_content-btn1">
+        <div class="text-box">
+          <h2>{!! $title or '' !!}</h2>
+          <p>{!! $content or '' !!}</p>
+        </div>
+        <label for="{{ $triggerId }}" class="close_button {{ $triggerClass or '' }}">{{ $button or 'OK'}}</label>
+      </div>
+    </div>
+  </div>
   @endif
-  @if((Session::has('statusCode')) && 406 == Session::get('statusCode'))
-    @modal(['triggerId' => Session::get('statusCode'), 'button' =>'クレジットカード情報を更新する', 'triggerClass' =>'expired-card'])
-      @slot('title')
-      @endslot
 
-      @slot('content')
-      予約日までにクレジットカードの <br> 有効期限が切れます <br><br> 予約を完了するには <br> カード情報を更新してください
-      @endslot
-    @endmodal
-  @else
-    @if((Session::has('statusCode')))
-      @modal(['triggerId' => Session::get('statusCode'), 'triggerClass' =>'error-code'])
-        @slot('title')
-        @endslot
-
-        @if(Session::get('statusCode') ==400)
-          @slot('content')
-          開始時間は現在以降の時間を指定してください
-          @endslot
-        @endif
-
-        @if(Session::get('statusCode') ==409)
-          @slot('content')
-          すでに予約があります
-          @endslot
-        @endif
-
-        @if(Session::get('statusCode') ==422)
-          @slot('content')
-          この操作は実行できません
-          @endslot
-        @endif
-
-        @if(Session::get('statusCode') ==500)
-          @slot('content')
-          サーバーエラーが発生しました
-          @endslot
-        @endif
-      @endmodal
-    @endif
-  @endif
 @endsection
 
 

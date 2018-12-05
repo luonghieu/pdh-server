@@ -200,9 +200,9 @@ $(document).ready(function(){
             }
 
           if(arrIds.length) {
-            $('#sb-select-casts').text('次に進む(3/4)');
+            $('#sb-select-casts a').text('次に進む(3/4)');
           } else {
-            $('#sb-select-casts').text('指名せずに進む(3/4)');
+            $('#sb-select-casts a').text('指名せずに進む(3/4)');
           }
 
           } else {
@@ -238,9 +238,9 @@ $(document).ready(function(){
             }
 
             if(arrIds.length) {
-              $('#sb-select-casts').text('次に進む(3/4)');
+              $('#sb-select-casts a').text('次に進む(3/4)');
             } else {
-              $('#sb-select-casts').text('指名せずに進む(3/4)');
+              $('#sb-select-casts a').text('指名せずに進む(3/4)');
             }
           }
         }
@@ -592,7 +592,4 @@ $(document).ready(function(){
 
   $('.checked-order').prop('checked',false);
 
-  $('.error-code').on("click",function(){
-    window.location.reload();
-  })
 });
