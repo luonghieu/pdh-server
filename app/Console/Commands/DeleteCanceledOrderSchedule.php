@@ -42,7 +42,7 @@ class DeleteCanceledOrderSchedule extends Command
     {
         $today = Carbon::now();
 
-        Order::whereIn('status', [OrderStatus::DENIED, OrderStatus::TIMEOUT])
+        Order::whereIn('status', [OrderStatus::DENIED, OrderStatus::TIMEOUT, OrderStatus::CANCELED])
             ->where('canceled_at', '<', $today->subDays(1))
             ->delete();
     }
