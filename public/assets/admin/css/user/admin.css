@@ -1573,6 +1573,10 @@ tbody td {
   margin: 10px 0px 10px;
 }
 
+.content-msg {
+  word-break: break-all;
+}
+
 @media (max-width: 799px) {
   .image-verified {
     float: right;

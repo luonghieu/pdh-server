@@ -82,7 +82,7 @@
                   @if (empty($message->message))
                   <td class="long-text"><img src="{{ $message->image }}" alt="" class="image-message"></td>
                   @else
-                  <td class="long-text">{{ $message->message }}</td>
+                  <td class="long-text content-msg">{{ $message->message }}</td>
                   @endif
                   <td>{{ Carbon\Carbon::parse($message->created_at)->format('Y/m/d H:i') }}</td>
                 </tr>
