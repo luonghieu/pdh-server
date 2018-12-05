@@ -4,6 +4,7 @@ namespace App\Observers;
 
 use App\Enums\MessageType;
 use App\Enums\RoomType;
+use App\Enums\UserType;
 use App\Events\MessageCreated as BroadcastMessage;
 use App\Message;
 use App\Notifications\DirectMessageNotifyToLine;
@@ -58,7 +59,11 @@ class MessageObserver
 
         if (RoomType::SYSTEM == $room->type && $message->user_id == 1 && $message->is_manual) {
             $user = $room->users->except([$message->user_id])->first();
-            $user->notify(new MessageCreatedFromAdmin($room->id));
+            if ($user->type == UserType::GUEST) {
+                $user->notify(new MessageCreatedFromAdmin($room->id));
+            } else {
+                $user->notify(new MessageCreated($message->id));
+            }
         }
     }
 }
