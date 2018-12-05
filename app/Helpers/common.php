@@ -61,7 +61,7 @@ if (!function_exists('getPrefectureName')) {
 if (!function_exists('getDay')) {
     function getDay($data = null)
     {
-        $date = \Carbon\Carbon::now()->addMinutes(60);
+        $date = \Carbon\Carbon::now()->addMinutes(30);
         $dayOfWeek = ['日', '月', '火', '水', '木', '金', '土'];
 
         if (!isset($data['month'])) {
