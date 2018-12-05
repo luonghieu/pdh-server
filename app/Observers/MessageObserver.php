@@ -59,11 +59,7 @@ class MessageObserver
 
         if (RoomType::SYSTEM == $room->type && $message->user_id == 1 && $message->is_manual) {
             $user = $room->users->except([$message->user_id])->first();
-            if ($user->type == UserType::GUEST) {
-                $user->notify(new MessageCreatedFromAdmin($room->id));
-            } else {
-                $user->notify(new MessageCreated($message->id));
-            }
+            $user->notify(new MessageCreatedFromAdmin($room->id));
         }
     }
 }
