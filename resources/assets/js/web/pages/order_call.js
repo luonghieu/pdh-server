@@ -200,9 +200,9 @@ $(document).ready(function(){
             }
 
           if(arrIds.length) {
-            $('#sb-select-casts').text('次に進む(3/4)');
+            $('#sb-select-casts a').text('次に進む(3/4)');
           } else {
-            $('#sb-select-casts').text('指名せずに進む(3/4)');
+            $('#sb-select-casts a').text('指名せずに進む(3/4)');
           }
 
           } else {
@@ -238,9 +238,9 @@ $(document).ready(function(){
             }
 
             if(arrIds.length) {
-              $('#sb-select-casts').text('次に進む(3/4)');
+              $('#sb-select-casts a').text('次に進む(3/4)');
             } else {
-              $('#sb-select-casts').text('指名せずに進む(3/4)');
+              $('#sb-select-casts a').text('指名せずに進む(3/4)');
             }
           }
         }
@@ -338,22 +338,12 @@ $(document).ready(function(){
     }
   });
 
-  if($("label").hasClass("order-done")){
-    $('.order-done').click();
-  }
-
-  $('.modal-redirect').on('click',function(){
-   $('#redirect-index').submit();
+  $('.order-done').on('click',function(){
+    window.location.href = '/mypage';
   });
 
   $('.lable-register-card').on('click',function(){
-    $('.register-card').submit();
-  });
-
-  $('.expired-card').on('click',function(){
-    var backLink = window.location.href;
-    localStorage.setItem('back_link', backLink);
-    $('.form-expired-card').submit();
+    window.location.href = '/credit_card';
   });
 
   var area = $("input:radio[name='area']:checked").val();
@@ -592,7 +582,4 @@ $(document).ready(function(){
 
   $('.checked-order').prop('checked',false);
 
-  $('.error-code').on("click",function(){
-    window.location.reload();
-  })
 });

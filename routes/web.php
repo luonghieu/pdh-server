@@ -75,10 +75,9 @@ Route::group(['middleware' => ['auth', 'guest', 'check_info'], 'as' => 'guest.']
         Route::get('/call/step2', ['as' => 'get_step2', 'uses' => 'OrderController@selectTags']);
         Route::post('/call/step2', ['as' => 'post_step2', 'uses' => 'OrderController@getTags']);
         Route::get('/call/step3', ['as' => 'get_step3', 'uses' => 'OrderController@selectCasts']);
-        Route::post('/call/step3', ['as' => 'post_step3', 'uses' => 'OrderController@getSelectCasts']);
         Route::get('/call/step4', ['as' => 'get_step4', 'uses' => 'OrderController@attention']);
         Route::get('/cancellation_policies', ['as' => 'cancel', 'uses' => 'OrderController@cancel']);
-        Route::get('/call/confirm', ['as' => 'get_confirm', 'uses' => 'OrderController@confirm']);
+        Route::get('/call/confirm', ['as' => 'confirm', 'uses' => 'OrderController@confirm']);
         Route::post('/call/confirm', ['as' => 'post_confirm', 'uses' => 'OrderController@getConfirm']);
         Route::post('/call/add', ['as' => 'add', 'uses' => 'OrderController@add']);
         Route::get('/nominate', ['as' => 'nominate', 'uses' => 'OrderController@nominate']);
@@ -86,8 +85,12 @@ Route::group(['middleware' => ['auth', 'guest', 'check_info'], 'as' => 'guest.']
         Route::get('/nominate/step2', ['as' => 'nominate_step2', 'uses' => 'OrderController@nominateAttention']);
         Route::get('/orders/load_more', ['as' => 'orders_load_more', 'uses' => 'OrderController@loadMoreListOrder']);
         Route::get('/step3/load_more', ['as' => 'step3_load_more', 'uses' => 'OrderController@loadMoreListCast']);
-        Route::get('/cast/{id}/call', ['as' => 'cast_detail', 'uses' => 'OrderController@castDetail'])->where('id', '[0-9]+');;
+        Route::get('/cast/{id}/call', ['as' => 'cast_detail', 'uses' => 'OrderController@castDetail'])->where('id', '[0-9]+');
     });
+});
+Route::group(['middleware' => ['auth'], 'as' => 'guest.'], function () {
+    Route::get('/offers/{id}', ['as' => 'orders.offers', 'uses' => 'OrderController@offer'])->where('id', '[0-9]+');
+    Route::get('/offers/attention', ['as' => 'orders.offers_attention', 'uses' => 'OrderController@offerAttention'])->where('id', '[0-9]+');
 });
 
 Route::group(['middleware' => ['auth', 'guest', 'check_info']], function () {
