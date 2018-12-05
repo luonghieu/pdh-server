@@ -113,33 +113,9 @@
     <label for="orders" class="lb-orders"></label>
   </section>
   @if(($statusCode))
-    @if('done' == $statusCode)
-      <section class="button-box">
-        <label for="{{ $statusCode }}" class="order-done"></label>
-      </section>
-    <form action="{{ route('web.index') }}" method="GET" id="redirect-index">
-    </form>
-    @endif
-
-    @if(406 == $statusCode)
-      <form action="{{ route('credit_card.index') }}" method="GET" class="form-expired-card">
-        <section class="button-box">
-          <label for="{{ $statusCode }}" class="status-code"></label>
-        </section>
-      </form>
-    @else
-      <section class="button-box">
-        <label for="{{ $statusCode }}" class="status-code"></label>
-      </section>
-    @endif
-  @endif
-
-  @if(!$user->card)
-    <form action="{{ route('credit_card.index') }}" method="GET" class="register-card">
-      <section class="button-box">
-        <label for="md-require-card" class="lable-register-card"></label>
-      </section>
-    </form>
+    <section class="button-box">
+      <label for="{{ $statusCode }}" class="status-code"></label>
+    </section>
   @endif
 @endsection
 
@@ -188,15 +164,15 @@
       $triggerId = $statusCode;
       $label = $statusCode;
 
-      if('done' == $statusCode) {
-        $triggerClass = 'modal-redirect';
+      if(200 == $statusCode) {
+        $triggerClass = 'order-done';
         $title = '予約が完了しました';
         $content = 'ただいまキャストの調整中です<br>予約状況はホーム画面の予約一覧をご確認ください';
       }
 
       if (406 == $statusCode) {
         $button = 'クレジットカード情報を更新する';
-        $triggerClass = 'expired-card';
+        $triggerClass = 'lable-register-card';
         $content = '予約日までにクレジットカードの <br> 有効期限が切れます <br><br> 予約を完了するには <br> カード情報を更新してください';
       }
 

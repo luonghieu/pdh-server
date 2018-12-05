@@ -55,17 +55,3 @@
   </form>
 </div>
 @endsection
-
-<script>
-  if(localStorage.getItem("back_link")){
-    var backLink = localStorage.getItem("back_link");
-    if (window.history && window.history.pushState) {
-      window.history.pushState(null, null, null);
-
-      window.onpopstate = function(event) {
-       window.location.replace(backLink);
-       localStorage.removeItem("back_link");
-      }
-    }
-  }
-</script>

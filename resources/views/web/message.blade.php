@@ -255,9 +255,5 @@
   if(localStorage.getItem("order_offer")){
     localStorage.removeItem("order_offer");
   }
-
-  if(localStorage.getItem("back_link")){
-    localStorage.removeItem("back_link");
-  }
 </script>
 @stop

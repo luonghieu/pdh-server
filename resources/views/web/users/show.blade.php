@@ -171,10 +171,6 @@
  if(localStorage.getItem("order_params")){
     localStorage.removeItem("order_params");
   }
-
-  if(localStorage.getItem("back_link")){
-    localStorage.removeItem("back_link");
-  }
 </script>
 
 <script>
