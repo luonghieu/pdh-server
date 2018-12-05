@@ -4,6 +4,7 @@ namespace App\Observers;
 
 use App\Enums\MessageType;
 use App\Enums\RoomType;
+use App\Enums\UserType;
 use App\Events\MessageCreated as BroadcastMessage;
 use App\Message;
 use App\Notifications\DirectMessageNotifyToLine;
