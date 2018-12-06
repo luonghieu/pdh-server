@@ -2,6 +2,7 @@
 
 namespace App\Console\Commands;
 
+use App\Enums\UserType;
 use App\User;
 use Carbon\Carbon;
 use Illuminate\Console\Command;
@@ -44,7 +45,7 @@ class MarketingOperation extends Command
         $guests = User::where(function($q) use ($startDate, $endDate) {
             $q->where('created_at', '>=', $startDate)
                 ->where('created_at', '<=', $endDate);
-        })->where('campaign_participated', false)->get();
+        })->where('campaign_participated', false)->where('type', UserType::GUEST)->get();
 
         \Notification::send($guests, new \App\Notifications\MarketingOperation());
     }
