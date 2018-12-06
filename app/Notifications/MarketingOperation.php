@@ -46,19 +46,6 @@ class MarketingOperation extends Notification implements ShouldQueue
 
     public function lineBotPushData($notifiable)
     {
-        $pricesSrc = Storage::url('add_friend_price_063112.png');
-        $bannerSrc = Storage::url('add_friend_banner_063112.jpg');
-        if (!@getimagesize($pricesSrc)) {
-            $fileContents = Storage::disk('local')->get("system_images/add_friend_price_063112.png");
-            $fileName = 'add_friend_price_063112.png';
-            Storage::put($fileName, $fileContents, 'public');
-        }
-        if (!@getimagesize($bannerSrc)) {
-            $fileContents = Storage::disk('local')->get("system_images/add_friend_banner_063112.jpg");
-            $fileName = 'add_friend_banner_063112.jpg';
-            Storage::put($fileName, $fileContents, 'public');
-        }
-
         if ($this->isDayFive) {
             $message = '【キャンペーン終了まで残り2日😳💦】'
                 . PHP_EOL . 'Cheersにご登録いただいてから1週間以内のゲスト様限定で、1時間無料キャンペーンを実施中！✨'
@@ -86,17 +73,6 @@ class MarketingOperation extends Notification implements ShouldQueue
             [
                 'type' => 'text',
                 'text' => $message
-            ],
-            [
-                'type' => 'image',
-                'originalContentUrl' => $pricesSrc,
-                'previewImageUrl' => $pricesSrc
-
-            ],
-            [
-                'type' => 'image',
-                'originalContentUrl' => $bannerSrc,
-                'previewImageUrl' => $bannerSrc
             ]
         ];
     }

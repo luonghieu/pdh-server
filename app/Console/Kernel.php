@@ -59,8 +59,8 @@ class Kernel extends ConsoleKernel
         $schedule->command('cheers:set_timeout_for_offer')->everyMinute()->onOneServer()->runInBackground();
         $schedule->command('cheers:marketing')->dailyAt('12:00')->when(function() {
             $now = Carbon::now();
-            $startDate = Carbon::parse('2018-12-01')->startOfDay();
-            $endDate = Carbon::parse('2018-12-04')->endOfDay();
+            $startDate = Carbon::parse(env('CAMPAIGN_FROM'))->startOfDay();
+            $endDate = Carbon::parse(env('CAMPAIGN_TO'))->endOfDay();
             return $now->between($startDate, $endDate);
         })->onOneServer()->runInBackground();
     }

@@ -40,8 +40,8 @@ class MarketingOperation extends Command
      */
     public function handle()
     {
-        $startDate = Carbon::parse('2018-12-06')->startOfDay();
-        $endDate = Carbon::parse('2018-12-31')->endOfDay();
+        $startDate = Carbon::parse(env('CAMPAIGN_FROM'))->startOfDay();
+        $endDate = Carbon::parse(env('CAMPAIGN_TO'))->endOfDay();
         $guests = User::where(function($q) use ($startDate, $endDate) {
             $q->where('created_at', '>=', $startDate)
                 ->where('created_at', '<=', $endDate);
