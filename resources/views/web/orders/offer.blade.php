@@ -1,4 +1,4 @@
-@section('title', 'キャスト予約')
+@section('title', 'キャストからのギャラ飲みオファー')
 @section('screen.id', 'ge2-1-x')
 @section('web.extra_css')
 <link rel="stylesheet" href="{{ mix('assets/web/css/cast.min.css') }}">
