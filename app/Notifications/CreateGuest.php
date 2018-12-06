@@ -184,21 +184,19 @@ class CreateGuest extends Notification implements ShouldQueue
 
     private function limitedMessages($notifiable, $room)
     {
-        $limitedStartTime = Carbon::parse('2018-11-22');
-        $limitedEndTime = Carbon::parse('2018-11-30');
+        $limitedStartTime = Carbon::parse('2018-12-06')->startOfDay();
+        $limitedEndTime = Carbon::parse('2018-12-31')->endOfDay();
         $now = Carbon::now()->startOfDay();
         if ($now->between($limitedStartTime, $limitedEndTime)) {
-            $opContent = '【1時間無料でギャラ飲み体験🥂💓】'
-                . PHP_EOL . '11月中にご利用いただいた方限定で、30分〜1時間無料でギャラ飲みができるキャンペーン（最大11,000円OFF）を実施します✨'
-                . PHP_EOL . PHP_EOL . '※対象の予約は下記の通りとなります'
-                . PHP_EOL . PHP_EOL . 'コール予約の場合：ブロンズクラスのキャスト2名まで'
-                . PHP_EOL . PHP_EOL . '指名予約の場合：ブロンズクラスのキャストを指名（ただし、キャストによってポイントが異なるため、最大11,000円分OFFとなります。）'
-                . PHP_EOL . PHP_EOL . '1時間ご予約の場合、30分無料'
-                . PHP_EOL . PHP_EOL . '2時間以上のご予約の場合、1時間無料'
-                . PHP_EOL . PHP_EOL . '無料体験ができるのは11月の今だけ！'
-                . PHP_EOL . 'この機会にぜひご利用ください🌷🌷'
-                . PHP_EOL . PHP_EOL . '詳しくは、下記の金額早見表からご確認ください♩'
-                . PHP_EOL . '不明点は、メッセージ内の運営者チャットからご連絡ください。';
+            $opContent = '【新規ユーザー様限定！ギャラ飲み1時間無料🥂💕】'
+                . PHP_EOL . PHP_EOL . 'Cheersにご登録いただいてから1週間以内のゲスト様限定で、1時間無料キャンペーンを実施中！✨'
+                . PHP_EOL . PHP_EOL . '※予約方法は、コール予約、指名予約問いません。'
+                . PHP_EOL . '2時間以上のご予約で1時間無料となります（最大11,000円OFF）'
+                . PHP_EOL . PHP_EOL . 'ギャラ飲み初めての方も安心！'
+                . PHP_EOL . 'Cheersのキャストが盛り上げます🙋‍♀️❤️'
+                . PHP_EOL . '忘年会の季節に、キャストを呼んで飲み会や接待を盛り上げませんか？'
+                . PHP_EOL . PHP_EOL . 'ご登録から1週間を超えてしまうとキャンペーン対象外となりますのでお早めにご予約ください。'
+                . PHP_EOL . PHP_EOL . 'ご不明点はメッセージ内の運営者チャットからご連絡ください！';
 
             $roomMessage = $room->messages()->create([
                 'user_id' => 1,
@@ -209,24 +207,24 @@ class CreateGuest extends Notification implements ShouldQueue
             ]);
             $roomMessage->recipients()->attach($notifiable->id, ['room_id' => $room->id]);
 
-            $pricesSrc = Storage::url('add_friend_prices_v3_223011.png');
-            $bannerSrc = Storage::url('add_friend_banner_v2_223011.png');
+            $pricesSrc = Storage::url('add_friend_price_063112.png');
+            $bannerSrc = Storage::url('add_friend_banner_063112.jpg');
 
             if (!@getimagesize($pricesSrc)) {
-                $fileContents = Storage::disk('local')->get("system_images/add_friend_prices_v3_223011.png");
-                $fileName = 'add_friend_prices_v3_223011.png';
+                $fileContents = Storage::disk('local')->get("system_images/add_friend_price_063112.png");
+                $fileName = 'add_friend_price_063112.png';
                 Storage::put($fileName, $fileContents, 'public');
             }
             if (!@getimagesize($bannerSrc)) {
-                $fileContents = Storage::disk('local')->get("system_images/add_friend_banner_v2_223011.jpg");
-                $fileName = 'add_friend_banner_v2_223011.png';
+                $fileContents = Storage::disk('local')->get("system_images/add_friend_banner_063112.jpg");
+                $fileName = 'add_friend_banner_063112.jpg';
                 Storage::put($fileName, $fileContents, 'public');
             }
 
             $priceImgMessge = $room->messages()->create([
                 'user_id' => 1,
                 'type' => MessageType::IMAGE,
-                'image' => 'add_friend_prices_v3_223011.png',
+                'image' => 'add_friend_price_063112.png',
                 'system_type' => SystemMessageType::NORMAL,
                 'created_at' => now()->copy()->addSeconds(2)
             ]);
@@ -235,7 +233,7 @@ class CreateGuest extends Notification implements ShouldQueue
             $bannerImgMessage = $room->messages()->create([
                 'user_id' => 1,
                 'type' => MessageType::IMAGE,
-                'image' => 'add_friend_banner_v2_223011.png',
+                'image' => 'add_friend_banner_063112.jpg',
                 'system_type' => SystemMessageType::NORMAL,
                 'created_at' => now()->copy()->addSeconds(3)
             ]);
