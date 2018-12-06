@@ -87,15 +87,13 @@
           <div class="details-total__marks">{{ number_format($data['temp_point']) .'P' }}</div>
         </div>
         @php
-          $campaignFrom = Carbon\Carbon::parse('2018-11-28');
-          $campaignTo = Carbon\Carbon::parse('2018-11-30 23:59:59');
+          $campaignFrom = Carbon\Carbon::parse(env('CAMPAIGN_FROM'));
+          $campaignTo = Carbon\Carbon::parse(env('CAMPAIGN_TO'));
         @endphp
         @if(Auth::user()->is_guest && Auth::user()->is_verified && !Auth::user()->campaign_participated && now()->between($campaignFrom, $campaignTo))
-          @if ($data['cast_numbers'] < 3 && $castClass->id < 2)
-            <div class="notify-campaign-confirm">
-              <span>※キャンペーン適用の場合、キャストと合流後に無料時間分のポイントを付与いたします</span>
-            </div>
-          @endif
+          <div class="notify-campaign-confirm">
+            <span>※キャンペーンが適用される場合、キャストと合流後に無料時間分のポイントが付与され、解散後に不足分のポイントのみが決済されます。</span>
+          </div>
         @endif
       </section>
     </div>
