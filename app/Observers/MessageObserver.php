@@ -32,7 +32,7 @@ class MessageObserver
                     \Notification::send($users, new MessageCreated($message->id));
 
                     $other = $users->first();
-                    if ($other->line_user_id != null) {
+                    if ($other->line_user_id != null && $other->type == UserType::GUEST) {
                         $other->notify(new DirectMessageNotifyToLine($message->id));
                     }
                 }
