@@ -232,8 +232,8 @@ class LineController extends Controller
         ];
 
         $now = Carbon::now()->startOfDay();
-        $limitedMessageFromDate = Carbon::parse('2018-12-06')->startOfDay();
-        $limitedMessageToDate = Carbon::parse('2018-12-31')->endOfDay();
+        $limitedMessageFromDate = Carbon::parse(env('CAMPAIGN_FROM'))->startOfDay();
+        $limitedMessageToDate = Carbon::parse(env('CAMPAIGN_TO'))->endOfDay();
         if ($now->between($limitedMessageFromDate, $limitedMessageToDate)) {
 
             $pricesSrc = Storage::url('add_friend_price_063112.png');
