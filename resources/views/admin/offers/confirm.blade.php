@@ -81,7 +81,7 @@
           </div>
           <div class="clear_fix"></div>
           <div class="col-lg-12">
-            <div class="col-sm-4 col-sm-offset-8" style="text-align: center;">
+            <div class="col-sm-4 col-sm-offset-8 button-confirm-offer" style="text-align: center;" >
                 @if(isset($data['offer_id']))
                 <button class="btn btn-accept"><a href="{{ route('admin.offers.edit', $data['offer_id'] ) }}" style="color: white">戻る</a></button>
                 @else
