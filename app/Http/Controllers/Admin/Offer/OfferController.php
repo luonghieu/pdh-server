@@ -6,9 +6,12 @@ use App\Cast;
 use App\CastClass;
 use App\Enums\OfferStatus;
 use App\Enums\OrderType;
+use App\Enums\UserType;
 use App\Http\Controllers\Controller;
+use App\Notifications\OfferMessageNotifyToLine;
 use App\Offer;
 use App\Services\LogService;
+use App\User;
 use Auth;
 use Carbon\Carbon;
 use GuzzleHttp\Client;
@@ -316,6 +319,11 @@ class OfferController extends Controller
         }
 
         $offer->save();
+
+        if (isset($request->line_offer)) {
+            $guests = User::where('type', UserType::GUEST)->get();
+            \Notification::send($guests, new OfferMessageNotifyToLine($offer->id));
+        }
 
         if ($request->session()->has('offer')) {
             $request->session()->forget('offer');
