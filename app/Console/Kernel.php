@@ -39,7 +39,7 @@ class Kernel extends ConsoleKernel
      */
     protected function schedule(Schedule $schedule)
     {
-        $schedule->command('cheers:update_cast_ranking')->dailyAt(5)->onOneServer()->runInBackground();
+        $schedule->command('cheers:update_cast_ranking')->hourly()->between('4:00', '7:00')->onOneServer()->runInBackground();
         $schedule->command('cheers:reset_working_today')->dailyAt(5)->onOneServer()->runInBackground();
         $schedule->command('cheers:update_nominated_call')->everyMinute()->onOneServer()->runInBackground();
         $schedule->command('cheers:set_timeout_for_call_order')->everyMinute()->onOneServer()->runInBackground();

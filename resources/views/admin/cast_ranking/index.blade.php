@@ -41,7 +41,7 @@
                                         <td>{{ $cast->castRanking->ranking }}位</td>
                                         <td>
                                             <img width="100"
-                                                 src="{{$cast->avatars[0]->path}}"
+                                                 src="{{$cast->avatars->first() ? $cast->avatars[0]->path : '/assets/admin/img/default_avatar.png'}}"
                                                  alt="avatar">
                                         </td>
                                         <td>{{ $cast->id}}</td>
