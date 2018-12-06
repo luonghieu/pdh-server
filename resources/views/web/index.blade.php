@@ -40,10 +40,12 @@
 
   @if (Auth::check())
     @php
-      $campaignFrom = Carbon\Carbon::parse('2018-11-28');
-      $campaignTo = Carbon\Carbon::parse('2018-11-30 23:59:59');
+      $campaignFrom = Carbon\Carbon::parse(env('CAMPAIGN_FROM'));
+      $campaignTo = Carbon\Carbon::parse(env('CAMPAIGN_TO'));
     @endphp
-    @if(Auth::user()->is_guest && Auth::user()->is_verified && Auth::user()->date_of_birth && !Auth::user()->campaign_participated && now()->between($campaignFrom, $campaignTo))
+    @if (Auth::user()->is_guest && Auth::user()->is_verified && Auth::user()->date_of_birth
+        && !Auth::user()->campaign_participated && now()->between($campaignFrom, $campaignTo)
+        && Auth::user()->created_at >= $campaignFrom)
       @include('web.users.popup')
     @endif
   @endif
