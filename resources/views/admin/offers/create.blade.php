@@ -41,20 +41,6 @@
                     <input type="checkbox" name="casts_offer[]" data-id='{{ $cast['class_id'] }}' value="{{ $cast['id'] }}" id="{{ $cast['id'] }}" class="cb-casts-offer">
                   </div>
                 </div>
-                <div class="list-avatar icon-cast">
-                  <a href="{{ route('admin.users.show', ['id' => $cast['id'] ]) }}" class="cast-link cast-detail" target = "_blank">
-                  @if (@getimagesize($cast['avatars'][0]['thumbnail']))
-                    <img src="{{ $cast['avatars'][0]['thumbnail'] }}" alt="" class="adaf">
-                    @else
-                    <img src="{{ asset('assets/web/images/gm1/ic_default_avatar@3x.png') }}" alt="">
-                  @endif
-                  </a>
-                  <p>ユーザーID: {{ $cast['id'] }}</p>
-                  <p class="nickname-offer">{{ $cast['nickname'] ? $cast['nickname'] : '...' }}</p>
-                  <div class="custom-checkbox">
-                    <input type="checkbox" name="casts_offer[]" data-id='{{ $cast['class_id'] }}' value="{{ $cast['id'] }}" id="{{ $cast['id'] }}" class="cb-casts-offer">
-                  </div>
-                </div>
                 @endforeach
               @else
                   {{ trans('messages.cast_not_found') }}
