@@ -184,8 +184,8 @@ class CreateGuest extends Notification implements ShouldQueue
 
     private function limitedMessages($notifiable, $room)
     {
-        $limitedStartTime = Carbon::parse('2018-12-06')->startOfDay();
-        $limitedEndTime = Carbon::parse('2018-12-31')->endOfDay();
+        $limitedStartTime = Carbon::parse(env('CAMPAIGN_FROM'))->startOfDay();
+        $limitedEndTime = Carbon::parse(env('CAMPAIGN_TO'))->endOfDay();
         $now = Carbon::now()->startOfDay();
         if ($now->between($limitedStartTime, $limitedEndTime)) {
             $opContent = '【新規ユーザー様限定！ギャラ飲み1時間無料🥂💕】'
