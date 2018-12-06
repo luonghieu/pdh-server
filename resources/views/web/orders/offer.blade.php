@@ -175,7 +175,7 @@
 
         <div class="reservation-item">
           <div class="caption"><!-- 見出し用div -->
-            <h2>キャストとを呼ぶ時間</h2>
+            <h2>キャストを呼ぶ時間</h2>
           </div>
           <div class="form-grpup"><!-- フォーム内容 -->
             @for($i=1; $i<4; $i++)
