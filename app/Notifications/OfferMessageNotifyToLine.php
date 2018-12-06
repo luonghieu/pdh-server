@@ -35,7 +35,9 @@ class OfferMessageNotifyToLine extends Notification implements ShouldQueue
 
     public function lineBotPushData($notifiable)
     {
-        $content = $notifiable->nickname . 'さんにキャストから' . PHP_EOL . 'オファーが届きました！';
+
+        $content = $notifiable->nickname . 'さんにキャストから' . PHP_EOL . 'ギャラ飲みのオファーが届きました！'
+            . PHP_EOL . 'オファーを受ける際は下記のボタンから' . PHP_EOL . '①時間と場所を指定して' . PHP_EOL . '②セッティングボタンを押してください。';
         $page = env('LINE_LIFF_REDIRECT_PAGE') . '?page=offers&offer_id=' . $this->offerId;
 
         return [
