@@ -87,6 +87,7 @@
                 @else
                 <button class="btn btn-accept"><a href="{{ route('admin.offers.create' ) }}" style="color: white">戻る</a></button>
                 @endif
+                <button data-toggle="modal" data-target="#line_url" class="btn btn-accept" style="color: white">LINEへ送信する</button>
                 <button data-toggle="modal" data-target="#save_url" class="btn btn-accept" style="color: white">URL発行する</button>
                 <button data-toggle="modal" data-target="#save_temporarily" class="btn btn-accept" style="color: white">仮保存する</button>
             </div>
@@ -105,6 +106,24 @@
         </div>
         <form action="{{ route('admin.offers.store') }}" method="POST">
           {{ csrf_field() }}
+          <div class="modal-footer" style="text-align: center;">
+            <button type="button" class="btn btn-canceled" data-dismiss="modal">いいえ</button>
+            <button type="submit" class="btn btn-accept del-order">はい</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal fade" id="line_url" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-body">
+          <p>LINEへ送信しますか？</p>
+        </div>
+        <form action="{{ route('admin.offers.store') }}" method="POST">
+          {{ csrf_field() }}
+          <input type="hidden" value="1" name="line_offer">
           <div class="modal-footer" style="text-align: center;">
             <button type="button" class="btn btn-canceled" data-dismiss="modal">いいえ</button>
             <button type="submit" class="btn btn-accept del-order">はい</button>
