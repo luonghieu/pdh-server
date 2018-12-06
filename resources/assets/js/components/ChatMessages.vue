@@ -256,13 +256,16 @@ export default {
       });
     },
 
-    isLinkMessage(isLinkMessage) {
-      let data = isLinkMessage.match(/\bhttps?:\/\/\S+/gi);
+    isLinkMessage(message) {
+      let data = message.match(/\bhttps?:\/\/\S+/gi);
       if (data) {
-        return "<a  href=" + data[0] + "> " + data[0] + "</a>";
+        data.forEach(link => {
+            message = message.replace(link, "<a  href=" + link + ">" + link + "</a>");
+        });
+        return message.replace(/\n/g, "<br />");
       }
 
-      return isLinkMessage.replace(/\n/g, "<br />");
+      return message.replace(/\n/g, "<br />");
     }
   }
 };
