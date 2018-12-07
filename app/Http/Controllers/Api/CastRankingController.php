@@ -12,7 +12,7 @@ class CastRankingController extends ApiController
     {
         $castRankings = CastRanking::get()->pluck('user_id');
         $users = User::whereIn('id', $castRankings)
-            ->orderBy('point', 'desc')
+            ->orderBy('total_point', 'desc')
             ->orderBy('created_at', 'asc')
             ->get();
         return $this->respondWithData(CastRankingResource::collection($users));
