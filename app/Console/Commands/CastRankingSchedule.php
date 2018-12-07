@@ -51,8 +51,8 @@ class CastRankingSchedule extends Command
             }
 
             CastRanking::truncate();
-            $users = Cast::select('id', 'point')
-                ->orderBy('point', 'desc')
+            $users = Cast::select('id', 'total_point')
+                ->orderBy('total_point', 'desc')
                 ->orderBy('created_at', 'asc')
                 ->take(10)
                 ->get();
@@ -62,7 +62,7 @@ class CastRankingSchedule extends Command
                 $data[] = [
                     'user_id' => $user->id,
                     'ranking' => $ranking++,
-                    'point' => $user->point,
+                    'point' => $user->total_point,
                     'created_at' => Carbon::now(),
                     'updated_at' => Carbon::now(),
                 ];
