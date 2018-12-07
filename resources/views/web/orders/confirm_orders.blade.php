@@ -89,8 +89,11 @@
         @php
           $campaignFrom = Carbon\Carbon::parse(env('CAMPAIGN_FROM'));
           $campaignTo = Carbon\Carbon::parse(env('CAMPAIGN_TO'));
+          $timeCreateGuest = Carbon\Carbon::parse(Auth::user()->created_at);
+          $timeDisplay = now()->subDay(7);
         @endphp
-        @if(Auth::user()->is_guest && Auth::user()->is_verified && !Auth::user()->campaign_participated && now()->between($campaignFrom, $campaignTo))
+        @if (Auth::user()->is_guest && Auth::user()->is_verified && !Auth::user()->campaign_participated
+          && now()->between($campaignFrom, $campaignTo) && $timeCreateGuest > $timeDisplay)
           <div class="notify-campaign-confirm">
             <span>※キャンペーンが適用される場合、キャストと合流後に無料時間分のポイントが付与され、解散後に不足分のポイントのみが決済されます。</span>
           </div>
