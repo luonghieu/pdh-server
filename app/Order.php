@@ -148,6 +148,7 @@ class Order extends Model
             );
             if (OrderType::NOMINATION == $this->type) {
                 $this->status = OrderStatus::DENIED;
+                $this->canceled_at = Carbon::now();
                 $this->save();
 
                 $cast = User::find($userId);
@@ -173,6 +174,7 @@ class Order extends Model
                 false
             );
             $this->status = OrderStatus::DENIED;
+            $this->canceled_at = Carbon::now();
             $this->save();
 
             $cast = User::find($userId);
