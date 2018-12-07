@@ -66,7 +66,7 @@ class OrderController extends ApiController
         $start_time = Carbon::parse($request->date . ' ' . $request->start_time);
         $end_time = $start_time->copy()->addHours($input['duration']);
 
-        if (now()->second(0)->diffInMinutes($start_time, false) < 59) {
+        if (now()->second(0)->diffInMinutes($start_time, false) < 29) {
             return $this->respondErrorMessage(trans('messages.time_invalid'), 400);
         }
 

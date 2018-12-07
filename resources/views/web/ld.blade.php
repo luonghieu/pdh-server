@@ -66,6 +66,7 @@
 
     .modal img {
       margin: 0 auto;
+      width: 100vw;
     }
 
     /* The Close Button */
@@ -97,13 +98,13 @@
 
 <body class="home blog">
   @php
-    $campaignFrom = Carbon\Carbon::parse('2018-11-28');
-    $campaignTo = Carbon\Carbon::parse('2018-11-30 23:59:59');
+    $campaignFrom = Carbon\Carbon::parse(env('CAMPAIGN_FROM'));
+    $campaignTo = Carbon\Carbon::parse(env('CAMPAIGN_TO'));
   @endphp
   @if (now()->between($campaignFrom, $campaignTo))
   <div id="campaign-modal" class="modal">
     <span class="close">&times;</span>
-    <img src="/ld/images/guest/lp_campaign.png" class="modal-content">
+    <img src="/ld/images/guest/campaign_12.png" class="modal-content">
   </div>
   @endif
   <!-- Google Tag Manager (noscript) -->
