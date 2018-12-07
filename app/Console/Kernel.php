@@ -57,7 +57,7 @@ class Kernel extends ConsoleKernel
         $schedule->command('cheers:inactive_chatroom_when_order_canceled')->hourlyAt(5)->onOneServer()->runInBackground();
         $schedule->command('cheers:notification_schedules')->everyMinute()->onOneServer()->runInBackground();
         $schedule->command('cheers:set_timeout_for_offer')->everyMinute()->onOneServer()->runInBackground();
-        $schedule->command('cheers:marketing')->dailyAt('12:00')->when(function() {
+        $schedule->command('cheers:marketing')->dailyAt(env('CAMPAIGN_SEND_TIME'))->when(function () {
             $now = Carbon::now();
             $startDate = Carbon::parse(env('CAMPAIGN_FROM'))->startOfDay();
             $endDate = Carbon::parse(env('CAMPAIGN_TO'))->endOfDay();
