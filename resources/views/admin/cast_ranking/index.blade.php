@@ -38,7 +38,7 @@
                                 @foreach ($casts as $key => $cast)
                                     <tr>
                                         <td>{{ $casts->firstItem() + $key }}</td>
-                                        <td>{{ $cast->castRanking->ranking }}位</td>
+                                        <td>{{ $loop->index + 1 }}位</td>
                                         <td>
                                             <img width="100"
                                                  src="{{$cast->avatars->first() ? $cast->avatars[0]->path : '/assets/admin/img/default_avatar.png'}}"
@@ -48,7 +48,7 @@
                                         <td>
                                             <a href="{{ route('admin.users.show', ['user' => $cast->id]) }}">{{ $cast->nickname }}</a>
                                         </td>
-                                        <td>￥{{ number_format($cast->total_point) }}</td>
+                                        <td>￥{{ number_format($cast->total_point + $cast->point) }}</td>
                                     </tr>
                                 @endforeach
                             @endif

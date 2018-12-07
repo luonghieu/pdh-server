@@ -24,7 +24,7 @@ class CastRankingController extends Controller
         }
 
         $casts = $casts
-            ->select('users.id', 'users.nickname', 'users.total_point')
+            ->select('users.id', 'users.nickname', 'users.total_point', 'users.point')
             ->selectRaw('cast_rankings.ranking as rank')
             ->join('cast_rankings', 'users.id', '=', 'cast_rankings.user_id')
             ->orderBy('rank', 'asc')

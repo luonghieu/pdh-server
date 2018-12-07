@@ -51,11 +51,12 @@ class CastRankingSchedule extends Command
             }
 
             CastRanking::truncate();
-            $users = Cast::select('id', 'total_point')
-                ->orderBy('total_point', 'desc')
-                ->orderBy('created_at', 'asc')
-                ->take(10)
-                ->get();
+            $users = Cast::select('id')
+                ->selectRaw('(IFNULL(total_point, 0) + IFNULL(point, 0)) as total_point')
+                ->get()
+                ->sortByDesc('total_point')
+                ->take(10);
+
             $ranking = 1;
 
             foreach ($users as $user) {
