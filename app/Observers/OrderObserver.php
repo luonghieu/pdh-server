@@ -2,16 +2,17 @@
 
 namespace App\Observers;
 
-use App\Enums\OrderPaymentStatus;
+use App\User;
+use App\Order;
 use App\Enums\OrderType;
 use App\Enums\ProviderType;
+use App\Enums\OrderPaymentStatus;
 use App\Notifications\CompletedPayment;
-use App\Notifications\CreateNominatedOrdersForGuest;
-use App\Notifications\CreateOrdersForLineGuest;
+use App\Notifications\ApproveNominatedOrders;
 use App\Notifications\OrderCreatedLineNotify;
+use App\Notifications\CreateOrdersForLineGuest;
 use App\Notifications\OrderCreatedNotifyToAdmin;
-use App\Order;
-use App\User;
+use App\Notifications\CreateNominatedOrdersForGuest;
 
 class OrderObserver
 {
@@ -26,9 +27,22 @@ class OrderObserver
         }
 
         if (ProviderType::LINE == $order->user->provider) {
-            $order->user->notify(
-                (new CreateOrdersForLineGuest($order->id))->delay(now()->addSeconds(3))
-            );
+            if ($order->offer_id) {
+                $users = [$order->user];
+                $casts = $order->casts()->get();
+                foreach ($casts as $cast) {
+                    $users[] = $cast;
+                }
+
+                \Notification::send(
+                    $users,
+                    (new ApproveNominatedOrders($order))->delay(now()->addSeconds(3))
+                );
+            } else {
+                $order->user->notify(
+                    (new CreateOrdersForLineGuest($order->id))->delay(now()->addSeconds(3))
+                );
+            }
         }
 
         $admin = User::find(1);
