@@ -34,8 +34,8 @@ class MarketingOperation extends Notification implements ShouldQueue
     {
         $now = Carbon::now();
         $createdAt = Carbon::parse($notifiable->created_at);
-        $dayFive = $createdAt->copy()->addDays(6)->startOfDay();
-        $daySix = $createdAt->copy()->addDays(7)->endOfDay();
+        $dayFive = $createdAt->copy()->addDays(5)->startOfDay();
+        $daySix = $createdAt->copy()->addDays(6)->endOfDay();
         if ($now->between($dayFive, $daySix)) {
             $this->isDayFive = $now->between($dayFive, $dayFive->copy()->endOfDay()) ? true : false;
             return [LineBotNotificationChannel::class];
