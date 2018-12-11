@@ -50,7 +50,7 @@ export default {
     ChatMessages,
     ListUsers
   },
-
+  props: ['rooms', 'unReads'],
   data() {
     return {
       message: "",
@@ -195,23 +195,17 @@ export default {
 
     getRoom() {
       this.unreadMessage = [];
-      window.axios.get("/api/v1/rooms/admin/get_users").then(response => {
-        const rooms = response.data.data;
-        this.users = rooms;
-        let unreads = [];
-        window.axios.get("/api/v1/rooms/admin/unread_messages").then(unreadResponse => {
-            unreads = unreadResponse.data;
-            for (let i of unreads) {
-                for (let room of this.users) {
-                    if (i.room_id == room.id) {
-                        this.messageUnread_index = i.total;
-                        this.unreadMessage.push({ id: room.id, count: i.total });
-                        break;
-                    }
+        this.users = JSON.parse(this.rooms);
+        let unreads = JSON.parse(this.unReads);
+        for (let i of unreads) {
+            for (let room of this.users) {
+                if (i.room_id == room.id) {
+                    this.messageUnread_index = i.total;
+                    this.unreadMessage.push({ id: room.id, count: i.total });
+                    break;
                 }
             }
-        });
-      });
+        }
     },
 
     sendMessage() {
