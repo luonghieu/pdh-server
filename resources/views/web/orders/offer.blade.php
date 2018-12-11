@@ -47,19 +47,16 @@
     <label for="show-attention" class="modal_trigger" id="lb-show-attention"></label>
     <div class="modal_content modal_content-btn1">
       <div class="text-box" id="show-attention-message">
-        <div class="ge2-4-block">
-          <h2>延長料金</h2>
+        <div class="ge2-4-block popup-attention">
+          <h2>延長料金について</h2>
           <p>キャストとの合流後、終了予定時刻を過ぎた場合は自動的に延長となり延長料金が15分単位で発生します。延長料金は下記のとおりです。</p>
-        </div>
-        <div class="ge2-4-block">
-          <p>コール予約の場合</p>
+          <p>1人あたりの延長料金</p>
           <ul>
             <li><span>ダイヤモンド</span><span>8750P/15分</span></li>
             <li><span>プラチナ</span><span>3500P/15分</span></li>
             <li><span>ブロンズ</span><span>1750P/15分</span></li>
           </ul>
         </div>
-        <p></p>
       </div>
       <label for="show-attention" class="close_button">OK</label>
     </div>
@@ -205,7 +202,7 @@
             上記の開始時間から<span style="font-weight: bold;">{{ $offer->duration }}時間</span>
           </div>
           <div class="form-grpup">
-            <div class="attention-offer"><a href="javascript::void(0)" style="margin: 10px 0px -7px">延長時間について</a></div>
+            <div class="attention-offer"><a href="javascript::void(0)" style="margin: 5px 6px -7px">延長時間について</a></div>
           </div>
         </div>
 

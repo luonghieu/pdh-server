@@ -1353,6 +1353,46 @@ div.user-data span.total-point-cast{
   color: #00C3C3;
 }
 
+.popup-attention {
+  padding: 0 10px 0px 10px;
+}
+.popup-attention p {
+  text-align: left;
+}
+
+.popup-attention ul {
+  width: 100%;
+  background-image: linear-gradient(to right, #CCC, #CCC 5px, transparent 1px, transparent 9px);
+  background-size: 10px 1px;
+  background-position: top;
+  background-repeat: repeat-x;
+}
+
+.popup-attention ul li {
+  padding: 0 10px;
+  background-image: linear-gradient(to right, #CCC, #CCC 5px, transparent 1px, transparent 9px);
+  background-size: 10px 1px;
+  background-position: bottom;
+  background-repeat: repeat-x;
+  padding-left: 30px;
+}
+
+.popup-attention ul li span {
+  display: inline-block;
+  font-size: 13px;
+  width: 50%;
+  line-height: 3em;
+  text-align: left;
+}
+
+.popup-attention ul li span:last-child {
+  text-align: right;
+}
+
+.popup-attention ul li:last-child {
+  margin-bottom : 35px;
+}
+
 @media (max-width: 360px) {
   .gn-1 .list_wrap .list_item .btn_wrap .btn-cancel {
     text-align: center;
