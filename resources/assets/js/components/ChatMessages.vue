@@ -35,7 +35,7 @@
                         <div style="clear:both"></div>
                         <!-- <confirm-delete :delete="selectedMessage" v-if='confirmModal' @confirm="deleteMessage"
                                         @cancel="cancelDelete" @close="closePopup"></confirm-delete> -->
-                        <span class="time_date" v-if="message.created_at">{{message.created_at.substr(6,10)}}</span>
+                        <span class="time_date" v-if="message.created_at">{{message.created_at}}</span>
                         </div>
                     </div>
                 </div>
@@ -58,7 +58,7 @@
                                 <img width="100" :src="message.image"/>
                             </div>
                             <p :id="message.room_id" ref="linkIncom" v-if="message.message" v-html="isLinkMessage(message.message)"></p>
-                            <span class="time_incom" v-if="message.created_at">{{message.created_at.substr(6,10)}}</span>
+                            <span class="time_incom" v-if="message.created_at">{{message.created_at}}</span>
                         </div>
                 </div>
             </div>
@@ -256,12 +256,16 @@ export default {
       });
     },
 
-    isLinkMessage(isLinkMessage) {
-      let data = isLinkMessage.match(/\bhttps?:\/\/\S+/gi);
+    isLinkMessage(message) {
+      let data = message.match(/\bhttps?:\/\/\S+/gi);
       if (data) {
-        return "<a  href=" + data[0] + "> " + data[0] + "</a>";
+        data.forEach(link => {
+            message = message.replace(link, "<a  href=" + link + ">" + link + "</a>");
+        });
+        return message.replace(/\n/g, "<br />");
       }
-      return isLinkMessage;
+
+      return message.replace(/\n/g, "<br />");
     }
   }
 };

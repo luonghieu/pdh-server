@@ -80,7 +80,7 @@
                     <td>{{ number_format($user->negativePoints($user->points)) }}</td>
                     <td>{{ number_format($user->totalBalance($user->points)) }}</td>
                     <td>
-                      <a href="{{ route('admin.users.show', ['user' => $user->id]) }}" class="btn-detail">詳細</a>
+                      <a href="{{ route('admin.users.show', ['user' => $user->id]) }}" class="btn btn-detail">詳細</a>
                     </td>
                   </tr>
                   @php

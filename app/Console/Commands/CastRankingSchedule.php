@@ -3,10 +3,10 @@
 namespace App\Console\Commands;
 
 use App\Cast;
-use Illuminate\Console\Command;
-use App\Services\LogService;
 use App\CastRanking;
+use App\Services\LogService;
 use Carbon\Carbon;
+use Illuminate\Console\Command;
 
 class CastRankingSchedule extends Command
 {
@@ -42,22 +42,33 @@ class CastRankingSchedule extends Command
     public function handle()
     {
         try {
+            $castRanking = CastRanking::first();
+
+            if ($castRanking) {
+                if (Carbon::parse($castRanking->created_at)->format('Y/m/d') == Carbon::parse(now())->format('Y/m/d')) {
+                    return;
+                }
+            }
+
             CastRanking::truncate();
-            $users = Cast::select('id', 'point')
-                ->orderBy('point', 'desc')
-                ->orderBy('created_at', 'asc')
-                ->take(10)
-                ->get();
+            $users = Cast::select('id')
+                ->selectRaw('(IFNULL(total_point, 0) + IFNULL(point, 0)) as total_point')
+                ->get()
+                ->sortByDesc('total_point')
+                ->take(10);
+
             $ranking = 1;
+
             foreach ($users as $user) {
                 $data[] = [
                     'user_id' => $user->id,
                     'ranking' => $ranking++,
-                    'point' => $user->point,
+                    'point' => $user->total_point,
                     'created_at' => Carbon::now(),
-                    'updated_at' => Carbon::now()
+                    'updated_at' => Carbon::now(),
                 ];
             }
+
             \DB::table('cast_rankings')->insert($data);
         } catch (\Exception $e) {
             LogService::writeErrorLog($e);

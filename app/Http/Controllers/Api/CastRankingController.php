@@ -11,10 +11,12 @@ class CastRankingController extends ApiController
     public function index()
     {
         $castRankings = CastRanking::get()->pluck('user_id');
+        $ids = implode(',', $castRankings->toArray());
+
         $users = User::whereIn('id', $castRankings)
-            ->orderBy('point', 'desc')
-            ->orderBy('created_at', 'asc')
+            ->orderByRaw(\DB::raw("FIELD(id, $ids)"))
             ->get();
+
         return $this->respondWithData(CastRankingResource::collection($users));
     }
 }
