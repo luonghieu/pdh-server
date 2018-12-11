@@ -27,18 +27,7 @@ class OrderObserver
         }
 
         if (ProviderType::LINE == $order->user->provider) {
-            if ($order->offer_id) {
-                $users = [$order->user];
-                $casts = $order->casts()->get();
-                foreach ($casts as $cast) {
-                    $users[] = $cast;
-                }
-
-                \Notification::send(
-                    $users,
-                    (new ApproveNominatedOrders($order))->delay(now()->addSeconds(3))
-                );
-            } else {
+            if (!$order->offer_id) {
                 $order->user->notify(
                     (new CreateOrdersForLineGuest($order->id))->delay(now()->addSeconds(3))
                 );
@@ -61,6 +50,20 @@ class OrderObserver
             if (OrderPaymentStatus::PAYMENT_FINISHED == $order->payment_status) {
                 $order->user->notify(new CompletedPayment($order));
             }
+        }
+
+        // Order offer created.
+        if ($order->getOriginal('room_id') != $order->room_id && $order->offer_id) {
+            $users = [$order->user];
+            $casts = $order->casts;
+            foreach ($casts as $cast) {
+                $users[] = $cast;
+            }
+
+            \Notification::send(
+                $users,
+                (new ApproveNominatedOrders($order))->delay(now()->addSeconds(3))
+            );
         }
     }
 }
