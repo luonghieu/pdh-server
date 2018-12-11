@@ -50,6 +50,10 @@ td {
   width: 200px;
 }
 
+.logout-device {
+  display: none;
+}
+
 .change-active-room {
   position: relative;
 }
@@ -60,9 +64,7 @@ td {
 }
 
 .inactive-room {
-  display: inline-block;
-  position: absolute;
-  right: 15px;
+  text-align: right;
 }
 
 .cast-class {
@@ -256,7 +258,9 @@ td {
 .notify {
   display: inline-block;
   float: right;
-  margin: 0px 30px;
+  position: absolute;
+  top: 0;
+  right: 120px;
 }
 
 .smallstat {
@@ -774,11 +778,11 @@ tbody td {
   background: #39afea;
 }
 
-.export-csv {
+  .export-csv {
     display: inline-block;
     position: absolute;
     right: 0;
-}
+  }
 
 #verifications_modal {
   margin-left: 20px;
@@ -1241,10 +1245,6 @@ tbody td {
     background:transparent;
   }
 
-  .btn-search {
-    display: none;
-  }
-
   .search {
     margin-left: 0;
   }
@@ -1369,70 +1369,6 @@ tbody td {
   }
 }
 
-<<<<<<< HEAD
-@media (max-width: 799px) {
-  .image-verified {
-    float: right;
-    margin-right: 8px;
-  }
-
-  .change-active {
-    margin-top: 7%;
-    margin-left: 40%;
-  }
-
-  .wrap-status {
-    height: 153px;
-  }
-
-  .wrap-status span {
-
-  }
-
-  .wrap-status .btn-nominee {
-    top: 90px;
-    left: 40px;
-    width: 170px;
-  }
-
-  .wrap-status .btn-order-call {
-    top: 90px;
-    left: 40px;
-    width: 170px;
-  }
-
-  .btn-pay-point {
-    width: 160px;
-    right: 10px;
-    top: 7px;
-  }
-
-  .order-nominee-started-time {
-    bottom: 20px;
-    left: 86px;
-    width: 160px;
-  }
-
-  .order-nominee-stopped-time {
-    left: 84px;
-    width: 159px !important;
-    height: 36px;
-    top: 100px;
-  }
-
-  .start-time {
-    top: 95px;
-    right: 90px;
-  }
-
-  .stopped-time {
-    top: 95px;
-    right: 90px;
-  }
-}
-
-=======
->>>>>>> 1d33d0ae... [MIK-1269] Fix some IU in admin
 .init-inline-flex {
   display: inline-flex;
 }
@@ -1494,10 +1430,64 @@ tbody td {
   border: 1px solid #a49c9c;
 }
 
+.icon-cast img {
+  width: 100%;
+  border-radius: 8px;
+  margin-bottom: 5px;
+  float: none !important;
+}
+
+.icon-cast {
+  display: inline-block;
+  width: calc((100% / 10) - 4px);
+  margin: 0 2px 40px;
+  vertical-align: top;
+}
+
+.nickname-offer {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.show-current-point-offer {
+  font-weight: bold;
+}
+
+.custom-checkbox .icheckbox_square-blue {
+  left: 34%;
+}
+
+.total-cast-offer {
+  margin-left: 30px;
+}
+
+.lb-comment-offer {
+  margin-bottom: 15px;
+}
+
+.lb-date-offer {
+  margin: 50px 0px 15px;
+}
+
+.date-offer {
+  width: 166px !important;
+}
+
+.select-time-offer {
+  display: inline-block;
+  width: 80px !important;
+}
+
+.button-confirm-offer button{
+  margin-bottom: 10px;
+}
+
 .cast-rank {
   width: 150px !important;
   border: 1px solid #A6A6A6 !important;
 }
+
 .list-avatar img {
   height: 140px;
   margin: 0 10px 10px 0;
