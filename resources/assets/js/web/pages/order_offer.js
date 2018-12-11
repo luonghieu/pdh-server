@@ -59,6 +59,10 @@ $(document).ready(function(){
     $('#order-offer-popup').prop('checked',true);
   })
 
+  $('.attention-offer').on("click",function(event){
+    $('#show-attention').prop('checked',true);
+  })
+
   $('#lb-order-offer').on("click",function(event){
     var area = $("input:radio[name='offer_area']:checked").val();
     if('その他'== area){
@@ -94,11 +98,7 @@ $(document).ready(function(){
       var date = $('#current-date-offer').val();
     }
 
-    var duration = $("input:radio[name='time_set_offer']:checked").val();
-    if('other_time_set' == duration) {
-      duration = $('.select-duration-offer option:selected').val();
-    }
-
+    var duration = $("#duration-offer").val();
     var classId = $('#current-class-id-offer').val();
     var castIds = $('#current-cast-id-offer').val();
     var totalCast = castIds.split(',').length;
@@ -195,167 +195,6 @@ $(document).ready(function(){
 
     helper.updateLocalStorageKey('order_offer', params, offerId);
 
-  })
-
-  //duration
-  var timeSet = $("input:radio[name='time_set_offer']");
-  timeSet.on("change",function(){
-    var hour = $(".select-hour-offer option:selected").val();
-    if (23<hour) {
-      switch(hour) {
-        case '24':
-            hour = '00';
-            break;
-        case '25':
-            hour = '01';
-            break;
-        case '26':
-            hour = '02';
-            break;
-      }
-    }
-    var minute = $(".select-minute-offer option:selected").val();
-    var duration = $("input:radio[name='time_set_offer']:checked").val();
-    var offerId = $('.offer-id').val();
-
-    var params = {
-      current_duration: duration,
-    };
-    helper.updateLocalStorageKey('order_offer', params, offerId);
-
-
-    if('other_time_set' == duration) {
-      var selectDuration = {
-        select_duration: $('.select-duration-offer option:selected').val(),
-      };
-
-      duration = $('.select-duration-offer option:selected').val();
-
-      helper.updateLocalStorageKey('order_offer', selectDuration, offerId);
-    }
-
-    var castIds = $('#current-cast-id-offer').val();
-    var totalCast = castIds.split(',');
-
-    if(localStorage.getItem("order_offer")){
-      var orderOffer = JSON.parse(localStorage.getItem("order_offer"));
-      if(orderOffer.current_date) {
-        var date = orderOffer.current_date;
-      } else {
-        var date = $('#current-date-offer').val();
-      }
-    } else {
-      var date = $('#current-date-offer').val();
-    }
-
-    var time = hour + ':' + minute;
-    var classId = $('#current-class-id-offer').val();
-
-    var input = {
-      date : date,
-      start_time : time,
-      type :2,
-      duration :duration,
-      total_cast :totalCast.length,
-      nominee_ids : castIds,
-      class_id :classId,
-      offer : 1
-    };
-
-    window.axios.post('/api/v1/orders/price',input)
-      .then(function(response) {
-        totalPoint = response.data['data'];
-        $('#temp-point-offer').val(totalPoint);
-        var params = {
-          current_total_point: totalPoint,
-        };
-
-        totalPoint = parseInt(totalPoint).toLocaleString(undefined,{ minimumFractionDigits: 0 });
-        $('.total-amount').text(totalPoint +'P~');
-
-
-        helper.updateLocalStorageKey('order_offer', params, offerId);
-      }).catch(function(error) {
-        console.log(error);
-        if (error.response.status == 401) {
-          window.location = '/login/line';
-        }
-      });
-  })
-
-  //other-duration
-  $('.select-duration-offer').on("change",function(){
-    var hour = $(".select-hour-offer option:selected").val();
-    if (23<hour) {
-      switch(hour) {
-        case '24':
-            hour = '00';
-            break;
-        case '25':
-            hour = '01';
-            break;
-        case '26':
-            hour = '02';
-            break;
-      }
-    }
-    var minute = $(".select-minute-offer option:selected").val();
-    var duration = $(this).val();
-    var offerId = $('.offer-id').val();
-
-    var params = {
-        select_duration: duration,
-      };
-
-    helper.updateLocalStorageKey('order_offer', params, offerId);
-
-    var castIds = $('#current-cast-id-offer').val();
-    var totalCast = castIds.split(',');
-
-    if(localStorage.getItem("order_offer")){
-      var orderOffer = JSON.parse(localStorage.getItem("order_offer"));
-      if(orderOffer.current_date) {
-        var date = orderOffer.current_date;
-      } else {
-        var date = $('#current-date-offer').val();
-      }
-    } else {
-      var date = $('#current-date-offer').val();
-    }
-
-    var time = hour + ':' + minute;
-    var classId = $('#current-class-id-offer').val();
-
-    var input = {
-      date : date,
-      start_time : time,
-      type :2,
-      duration :duration,
-      total_cast :totalCast.length,
-      nominee_ids : castIds,
-      class_id : classId,
-      offer : 1
-    };
-
-    window.axios.post('/api/v1/orders/price',input)
-      .then(function(response) {
-        totalPoint = response.data['data'];
-        $('#temp-point-offer').val(totalPoint);
-        var params = {
-            current_total_point: totalPoint,
-          };
-
-        totalPoint = parseInt(totalPoint).toLocaleString(undefined,{ minimumFractionDigits: 0 });
-        $('.total-amount').text(totalPoint +'P~');
-
-
-        helper.updateLocalStorageKey('order_offer', params, offerId);
-      }).catch(function(error) {
-        console.log(error);
-        if (error.response.status == 401) {
-          window.location = '/login/line';
-        }
-      });
   })
 
   $('.select-hour-offer').on('change', function (e) {
@@ -462,48 +301,41 @@ $(document).ready(function(){
 
     helper.updateLocalStorageKey('order_offer', params, offerId);
 
+    var duration = $("#duration-offer").val();
 
-    if ($("input:radio[name='time_set_offer']:checked").length) {
-      var duration = $("input:radio[name='time_set_offer']:checked").val();
+    var castIds = $('#current-cast-id-offer').val();
+    var totalCast = castIds.split(',');
+    var classId = $('#current-class-id-offer').val();
+    var params = {
+      date : time,
+      start_time : hour + ':' + minute,
+      type :2,
+      duration :duration,
+      total_cast :totalCast.length,
+      nominee_ids : castIds,
+      class_id : classId,
+      offer : 1
+    };
 
-      if('other_time_set' == duration) {
-        duration = $('.select-duration-offer option:selected').val();
-      }
+    window.axios.post('/api/v1/orders/price',params)
+      .then(function(response) {
+        totalPoint = response.data['data'];
+        $('#temp-point-offer').val(totalPoint);
+        var params = {
+          current_total_point: totalPoint,
+        };
 
-      var castIds = $('#current-cast-id-offer').val();
-      var totalCast = castIds.split(',');
-      var classId = $('#current-class-id-offer').val();
-      var params = {
-        date : time,
-        start_time : hour + ':' + minute,
-        type :2,
-        duration :duration,
-        total_cast :totalCast.length,
-        nominee_ids : castIds,
-        class_id : classId,
-        offer : 1
-      };
-
-      window.axios.post('/api/v1/orders/price',params)
-        .then(function(response) {
-          totalPoint = response.data['data'];
-          $('#temp-point-offer').val(totalPoint);
-          var params = {
-            current_total_point: totalPoint,
-          };
-
-          totalPoint = parseInt(totalPoint).toLocaleString(undefined,{ minimumFractionDigits: 0 });
-          $('.total-amount').text(totalPoint +'P~');
+        totalPoint = parseInt(totalPoint).toLocaleString(undefined,{ minimumFractionDigits: 0 });
+        $('.total-amount').text(totalPoint +'P~');
 
 
-          helper.updateLocalStorageKey('order_offer', params, offerId);
-        }).catch(function(error) {
-          console.log(error);
-          if (error.response.status == 401) {
-            window.location = '/login/line';
-          }
-      });
-    }
+        helper.updateLocalStorageKey('order_offer', params, offerId);
+      }).catch(function(error) {
+        console.log(error);
+        if (error.response.status == 401) {
+          window.location = '/login/line';
+        }
+    });
   })
 
   if($('#temp-point-offer').length) {
@@ -541,32 +373,6 @@ $(document).ready(function(){
               $(this).parent().addClass('active');
             }
           })
-        }
-
-        //duration
-        if(orderOffer.current_duration){
-            $('.time-input-offer').css('display','none');
-          if('other_time_set' == orderOffer.current_duration) {
-            $('.time-input-offer').css('display','flex');
-          }
-
-          const inputDuration = $(".input-duration-offer");
-          inputDuration.parent().removeClass('active');
-          $.each(inputDuration,function(index,val){
-            if (val.value == orderOffer.current_duration) {
-              $(this).prop('checked', true);
-              $(this).parent().addClass('active');
-            }
-          })
-
-          if(orderOffer.select_duration) {
-            const inputDuration = $('select[name=sl_duration_offer] option');
-            $.each(inputDuration,function(index,val){
-              if(val.value == orderOffer.select_duration) {
-                $(this).prop('selected',true);
-              }
-            })
-          }
         }
 
         //time

@@ -42,6 +42,31 @@
 </div>
 
 <div class="modal_wrap">
+  <input id="show-attention" type="checkbox">
+  <div class="modal_overlay">
+    <label for="show-attention" class="modal_trigger" id="lb-show-attention"></label>
+    <div class="modal_content modal_content-btn1">
+      <div class="text-box" id="show-attention-message">
+        <div class="ge2-4-block">
+          <h2>延長料金</h2>
+          <p>キャストとの合流後、終了予定時刻を過ぎた場合は自動的に延長となり延長料金が15分単位で発生します。延長料金は下記のとおりです。</p>
+        </div>
+        <div class="ge2-4-block">
+          <p>コール予約の場合</p>
+          <ul>
+            <li><span>ダイヤモンド</span><span>8750P/15分</span></li>
+            <li><span>プラチナ</span><span>3500P/15分</span></li>
+            <li><span>ブロンズ</span><span>1750P/15分</span></li>
+          </ul>
+        </div>
+        <p></p>
+      </div>
+      <label for="show-attention" class="close_button">OK</label>
+    </div>
+  </div>
+</div>
+
+<div class="modal_wrap">
   <input id="timeout-offer" type="checkbox">
   <div class="modal_overlay">
     <label for="err-offer" id="lb-err-offer"></label>
@@ -160,6 +185,7 @@
           <div class="caption"><!-- 見出し用div -->
             <h2>ギャラ飲みの開始時間</h2>
           </div>
+          <div class="text-time">※希望の開始時間を選択してください</div>
           <div class="form-grpup"><!-- フォーム内容 -->
             <label class="date-input d-flex-end">
               <p class="date-input__text">
@@ -174,31 +200,12 @@
         </div>
 
         <div class="reservation-item">
-          <div class="caption"><!-- 見出し用div -->
-            <h2>キャストを呼ぶ時間</h2>
+          <input type="hidden" id="duration-offer" value="{{ $offer->duration }}">
+          <div class="text-duration">
+            上記の開始時間から<span style="font-weight: bold;">{{ $offer->duration }}時間</span>
           </div>
-          <div class="form-grpup"><!-- フォーム内容 -->
-            @for($i=1; $i<4; $i++)
-            <label class="button button--green time {{ $i == $offer->duration ? 'active' : '' }}">
-              <input class="input-duration-offer" type="radio" name="time_set_offer" value="{{ $i }}" {{ $i == $offer->duration ? 'checked' : '' }} >
-              {{ $i }}時間
-            </label>
-            @endfor
-            <label id="time-input" class="button button--green time {{ $offer->duration > 3 ? 'active' : '' }}">
-              <input class="input-duration-offer" type="radio" name="time_set_offer" value="other_time_set"  {{ $offer->duration > 3 ? 'checked' : '' }}>
-              4時間以上
-            </label>
-            <label class="time-input time-input-offer" style="{{  $offer->duration > 3 ? 'display: flex;' : '' }}">
-              <span>呼ぶ時間</span>
-              <div class="selectbox">
-                <select class="select-duration-offer" name="sl_duration_offer">
-                  @for ($i=4; $i <11; $i++)
-                  <option value="{{ $i }}" {{ $i == $offer->duration ? 'selected' : '' }}>{{ $i }}時間</option>
-                  @endfor
-                </select>
-                <i></i>
-              </div>
-            </label>
+          <div class="form-grpup">
+            <div class="attention-offer"><a href="javascript::void(0)" style="margin: 10px 0px -7px">延長時間について</a></div>
           </div>
         </div>
 

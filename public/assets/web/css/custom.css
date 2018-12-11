@@ -1332,6 +1332,27 @@ div.user-data span.total-point-cast{
   height: 100%;
 }
 
+.text-time {
+  margin-bottom: -25px;
+  margin-top: 2px;
+}
+
+.text-duration {
+  text-align: right;
+  margin-right: 8px;
+  margin-top: -12px;
+  font-size: 17px;
+}
+
+.attention-offer {
+  font-size: 12px;
+  text-align: right;
+}
+
+.attention-offer a {
+  color: #00C3C3;
+}
+
 @media (max-width: 360px) {
   .gn-1 .list_wrap .list_item .btn_wrap .btn-cancel {
     text-align: center;
