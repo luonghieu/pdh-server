@@ -59,3 +59,23 @@ export function updateLocalStorageValue(key, data) {
     localStorage.setItem(key, JSON.stringify(newData));
   }
 
+export function updateLocalStorageKey(key, data, ids) {
+    var oldData = JSON.parse(localStorage.getItem(key));
+    var newData = {};
+
+    if (oldData) {
+      if(oldData[ids]) {
+        oldData[ids] = Object.assign({}, oldData[ids], data);
+        newData = oldData;
+      } else {
+        oldData[ids] = data;
+        newData = oldData;
+      }
+    } else {
+      newData[ids] = data;
+    }
+
+    localStorage.setItem(key, JSON.stringify(newData));
+  }
+
+
