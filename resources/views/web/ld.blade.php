@@ -49,64 +49,17 @@
       padding: 0 !important;
     }
 
-    /* The Modal (background) */
-    .modal {
-      display: block; /* Hidden by default */
-      position: fixed; /* Stay in place */
-      z-index: 100; /* Sit on top */
-      padding-top: 100px; /* Location of the box */
-      left: 0;
-      top: 0;
-      width: 100%; /* Full width */
-      height: 100vh; /* Full height */
-      overflow: auto; /* Enable scroll if needed */
-      background-color: rgb(0,0,0); /* Fallback color */
-      background-color: rgba(0,0,0,0.9); /* Black w/ opacity */
+    .guest01-saitan.font-w {
+      margin-top: 55px;
     }
 
-    .modal img {
-      margin: 0 auto;
+    .img-campaign img {
       width: 100vw;
-    }
-
-    /* The Close Button */
-    .close {
-      position: absolute;
-      top: 15px;
-      right: 35px;
-      color: #f1f1f1;
-      font-size: 40px;
-      font-weight: bold;
-      transition: 0.3s;
-    }
-
-    .close:hover,
-    .close:focus {
-      color: #bbb;
-      text-decoration: none;
-      cursor: pointer;
-    }
-
-    /* 100% Image Width on Smaller Screens */
-    @media only screen and (max-width: 700px) {
-      .modal-content {
-        width: 100%;
-      }
     }
   </style>
 </head>
 
 <body class="home blog">
-  @php
-    $campaignFrom = Carbon\Carbon::parse(env('CAMPAIGN_FROM'));
-    $campaignTo = Carbon\Carbon::parse(env('CAMPAIGN_TO'));
-  @endphp
-  @if (now()->between($campaignFrom, $campaignTo))
-  <div id="campaign-modal" class="modal">
-    <span class="close">&times;</span>
-    <img src="/ld/images/guest/campaign_12.png" class="modal-content">
-  </div>
-  @endif
   <!-- Google Tag Manager (noscript) -->
   <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-NKVKVFK"
   height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
@@ -174,6 +127,15 @@
       </div>
     </div>
   </header>
+  @php
+    $campaignFrom = Carbon\Carbon::parse(env('CAMPAIGN_FROM'));
+    $campaignTo = Carbon\Carbon::parse(env('CAMPAIGN_TO'));
+  @endphp
+  @if (now()->between($campaignFrom, $campaignTo))
+  <div class="img-campaign">
+    <img src="/ld/images/guest/dec_campaign.png">
+  </div>
+  @endif
   <main id="cheers_guest">
     <section class="guest01">
       <div class="g-inner guest01-main">
