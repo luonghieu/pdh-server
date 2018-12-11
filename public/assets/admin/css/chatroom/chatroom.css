@@ -641,5 +641,26 @@ img {
   font-size: 11px;
 }
 
+@media (max-width: 799px) {
+  .write_msg {
+    width: 55%;
+  }
 
+  .sent_msg p {
+    width: 80%;
+  }
 
+  .file_send_btn i {
+    position: absolute;
+    left: 35%;
+    top: 25%;
+  }
+
+  .search_name{
+    left: 5px;
+  }
+
+  .input_search{
+    text-indent: 15%;
+  }
+}

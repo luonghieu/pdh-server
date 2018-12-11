@@ -13,9 +13,6 @@ $(document).ready(function() {
 
   var roomId = $("#room-id").val();
   var orderId = $("#order-id").val();
-  var formData = new FormData();
-  var currentDate = new Date();
-  var time = currentDate.getHours()+':'+currentDate.getMinutes();
   window.Echo.private('room.'+roomId)
     .listen('MessageCreated', (e) => {
       var message = e.message.message;
@@ -144,7 +141,15 @@ $(document).ready(function() {
   function sendMessage(formData) {
     axios.post(`/api/v1/rooms/${roomId}/messages`, formData)
     .then(function (response) {
+      var currentDate = new Date();
+      if (currentDate.getMinutes() < 10) {
+        var minute = '0'+currentDate.getMinutes();
+      } else {
+        var minute = currentDate.getMinutes();
+      }
+      var time = currentDate.getHours()+':'+minute;
       var avatar = response.data.data.user.avatars[0]['path'];
+
       isValidImage(avatar, function (isValid) {
         if (isValid) {
           avatar = avatar;

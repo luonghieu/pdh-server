@@ -14,7 +14,11 @@
                             <a name="bottom"></a>
                             <div v-if="!image">
                                 <textarea name="mess" v-model="message" class="write_msg"
-                                          placeholder="メッセージを入力してください*"></textarea>
+                                          placeholder="メッセージを入力してください*"
+                                          @keydown.enter.exact.prevent
+                                          @keyup.enter.exact="sendMessage"
+                                          @keydown.enter.shift.exact="newline"
+                                          ></textarea>
                                 <input id="fileUpload" name="image" type="file" accept="image/*" style="display: none"
                                        @change="onFileChange">
                                 <p style="color: red" v-for="(error, index) in errors" :key="index">{{error}}</p>
@@ -101,12 +105,28 @@ export default {
         this.realtime_message = e.message.message;
         this.realtime_roomId = e.message.room_id;
         if (this.realtime_roomId) {
-          this.getRoom();
+            if (this.realtime_roomId != this.roomId) {
+                const roomIndex = this.users.findIndex(i => i.id == this.realtime_roomId);
+                const room = this.users[roomIndex];
+                this.users.splice(roomIndex, 1);
+                this.users.unshift(room);
+
+                const index = this.unreadMessage.findIndex(i => i.id == this.realtime_roomId);
+                if (index != -1) {
+                    this.unreadMessage[index].count += 1;
+                    this.messageUnread_index = this.unreadMessage[index].count;
+                } else {
+                    this.messageUnread_index = 1;
+                    this.unreadMessage.push({ id: this.realtime_roomId, count: 1 });
+                }
+            }
         }
         this.list_messages.push(e.message);
       });
     },
-
+    newline() {
+        this.message = `${this.message}\n`;
+    },
     getToken() {
       const access_token = document.getElementById("token").value;
       this.user_id = document.getElementById("userId").value;
@@ -178,11 +198,18 @@ export default {
       window.axios.get("/api/v1/rooms/admin/get_users").then(response => {
         const rooms = response.data.data;
         this.users = rooms;
-        this.users.forEach(items => {
-          if (items.unread_count > 0) {
-            this.messageUnread_index = items.unread_count;
-          }
-          this.unreadMessage.push({ id: items.id, count: items.unread_count });
+        let unreads = [];
+        window.axios.get("/api/v1/rooms/admin/unread_messages").then(unreadResponse => {
+            unreads = unreadResponse.data;
+            for (let i of unreads) {
+                for (let room of this.users) {
+                    if (i.room_id == room.id) {
+                        this.messageUnread_index = i.total;
+                        this.unreadMessage.push({ id: room.id, count: i.total });
+                        break;
+                    }
+                }
+            }
         });
       });
     },
@@ -230,7 +257,6 @@ export default {
           if (this.image) {
             this.removeImage().click();
           }
-          this.getRoom();
         });
 
       const scroll = $(".msg_history")[0].scrollHeight;

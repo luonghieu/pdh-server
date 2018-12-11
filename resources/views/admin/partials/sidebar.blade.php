@@ -8,7 +8,10 @@ $routes = [
             'value' => '全アカウント管理',
             'url' => route('admin.users.index'),
             'submenu' => [
-                'admin.users.show', 'admin.users.orders_history', 'admin.users.cast_ratings', 'admin.users.points_history'
+                'admin.users.show',
+                'admin.users.orders_history',
+                'admin.users.cast_ratings',
+                'admin.users.points_history'
             ],
         ],
     ],
@@ -40,7 +43,7 @@ $routes = [
 
     'ranking' => [
         [
-            'name' => '',
+            'name' => 'admin.cast_rankings.index',
             'value' => 'キャストランキング管理',
             'url' => route('admin.cast_rankings.index'),
             'submenu' => [],
@@ -53,14 +56,18 @@ $routes = [
             'value' => '予約管理',
             'url' => route('admin.orders.index'),
             'submenu' => [
-              'admin.orders.nominees', 'admin.orders.candidates','admin.orders.call', 'admin.orders.casts_matching', 'admin.orders.order_nominee'
+              'admin.orders.nominees',
+              'admin.orders.candidates',
+              'admin.orders.call',
+              'admin.orders.casts_matching',
+              'admin.orders.order_nominee'
             ],
         ],
     ],
 
     'chatroom' => [
         [
-            'name' => '',
+            'name' => 'admin.rooms.index',
             'value' => 'チャットルーム管理',
             'url' => route('admin.rooms.index'),
             'submenu' => [
@@ -83,7 +90,7 @@ $routes = [
 
     'chat' => [
         [
-            'name' => '',
+            'name' => 'admin.chat.index',
             'value' => '運営者専用チャット',
             'url' => route('admin.chat.index'),
             'submenu' => [],
@@ -105,7 +112,7 @@ $routes = [
             'value' => '振込管理',
             'url' =>  route('admin.transfers.non_transfers'),
             'submenu' => [
-              'admin.transfers.transfered'
+              'admin.transfers.transfered',
             ],
         ],
     ],
@@ -140,9 +147,7 @@ $routes = [
             'name' => 'admin.verifications.index',
             'value' => 'SMS認証管理',
             'url' => route('admin.verifications.index'),
-            'submenu' => [
-
-            ],
+            'submenu' => [],
         ],
     ],
 

@@ -70,9 +70,9 @@
                   <td>{{ number_format($sale->point) }}</td>
                   @if ($sale->order)
                     @if ( $sale->order->type == App\Enums\OrderType::NOMINATION)
-                    <td><a href="{{ route('admin.orders.order_nominee', ['order' => $sale->order->id]) }}" class="btn-detail">詳細</a></td>
+                    <td><a href="{{ route('admin.orders.order_nominee', ['order' => $sale->order->id]) }}" class="btn btn-detail">詳細</a></td>
                     @else
-                    <td><a href="{{ route('admin.orders.call', ['order' => $sale->order->id]) }}" class="btn-detail">詳細</a></td>
+                    <td><a href="{{ route('admin.orders.call', ['order' => $sale->order->id]) }}" class="btn btn-detail">詳細</a></td>
                     @endif
                   @else
                   <td>-</td>
