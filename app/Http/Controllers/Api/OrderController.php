@@ -11,10 +11,10 @@ use App\Enums\OrderStatus;
 use App\Enums\OrderType;
 use App\Enums\RoomType;
 use App\Http\Resources\OrderResource;
+use App\Notifications\AcceptedOffer;
 use App\Notifications\CallOrdersCreated;
 use App\Notifications\CreateNominatedOrdersForCast;
 use App\Notifications\CreateNominationOrdersForCast;
-use App\Notifications\AcceptedOffer;
 use App\Offer;
 use App\Order;
 use App\Room;
@@ -337,6 +337,18 @@ class OrderController extends ApiController
 
         if ($now->gt($start_time)) {
             return $this->respondErrorMessage(trans('messages.time_invalid'), 400);
+        }
+
+        $startHourFrom = (int) Carbon::parse($offer->start_time_from)->format('H');
+        $startHourTo = (int) Carbon::parse($offer->start_time_to)->format('H');
+
+        $startTimeTo = Carbon::createFromFormat('Y-m-d H:i:s', $offer->date . ' ' . $offer->start_time_to);
+        if ($startHourTo < $startHourFrom) {
+            $startTimeTo = $startTimeTo->copy()->addDay();
+        }
+
+        if ($now->between($startTimeTo->copy()->subMinutes(30), $startTimeTo)) {
+            return $this->respondErrorMessage(trans('messages.order_timeout'), 422);
         }
 
         $end_time = $start_time->copy()->addHours($input['duration']);

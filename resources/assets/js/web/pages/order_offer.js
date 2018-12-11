@@ -130,33 +130,47 @@ $(document).ready(function(){
          if (error.response.status == 401) {
             window.location = '/login/line';
           } else {
-            var content = '';
-            var err ='';
+            if(error.response.status == 422) {
+                $('#timeout-offer-message h2').css('font-size', '15px');
 
-            if (error.response.status == 400) {
-              var err = '開始時間は現在以降の時間を指定してください';
+                $('#timeout-offer-message h2').html('この予約は募集が締め切られました');
+
+                $('#close-offer').addClass('mypage');
+
+                $('#timeout-offer').prop('checked',true);
+
+                $('.mypage').on("click",function(event){
+                  window.location = '/mypage';
+                })
+            } else {
+              var content = '';
+              var err ='';
+
+              if (error.response.status == 400) {
+                var err = '開始時間は現在以降の時間を指定してください';
+              }
+
+              if(error.response.status == 500) {
+              var err = 'この操作は実行できません';
+              }
+
+              if(error.response.status == 404) {
+                var err = '予約が存在しません';
+              }
+
+              if(error.response.status == 409) {
+                var err = '支払い方法が未登録です';
+              }
+
+               if(error.response.status == 406) {
+                content = '予約日までにクレジットカードの <br> 1有効期限が切れます  <br> <br> 予約を完了するには  <br> カード情報を更新してください';
+              }
+
+              $('#err-offer-message h2').html(err);
+              $('#err-offer-message p').html(content);
+
+              $('#err-offer').prop('checked',true);
             }
-
-            if(error.response.status == 500) {
-            var err = 'この操作は実行できません';
-            }
-
-            if(error.response.status == 404) {
-              var err = '予約が存在しません';
-            }
-
-            if(error.response.status == 409) {
-              var err = '支払い方法が未登録です';
-            }
-
-             if(error.response.status == 406) {
-              content = '予約日までにクレジットカードの <br> 1有効期限が切れます  <br> <br> 予約を完了するには  <br> カード情報を更新してください';
-            }
-
-            $('#err-offer-message h2').html(err);
-            $('#err-offer-message p').html(content);
-
-            $('#err-offer').prop('checked',true);
           }
 
 
