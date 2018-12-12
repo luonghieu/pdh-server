@@ -5,6 +5,7 @@
                 <h3 class="text-center nickname">{{nickName}}</h3>
                 <list-users :user_id="user_id" :roomId="roomId" :realtime_message="realtime_message" :realtime_roomId="realtime_roomId"
                 @interface="handleCountMessage" :users="users" :unreadMessage="unreadMessage"
+                            :room-guests="roomGuests" :room-casts="roomCasts"
                 ></list-users>
                 <div class="mesgs">
                     <chat-messages :list_message="list_messages" :user_id="user_id" :unreadMessage="unreadMessage"
@@ -50,7 +51,7 @@ export default {
     ChatMessages,
     ListUsers
   },
-  props: ['rooms', 'unReads'],
+  props: ['rooms', 'unReads', 'roomUsers', 'avatars'],
   data() {
     return {
       message: "",
@@ -67,12 +68,14 @@ export default {
       id: "",
       realtime_message: "",
       realtime_roomId: "",
-      users: "",
+      users: [],
       messageUnread_index: "",
       list_messageData: [],
       nickName: "",
       userId: "",
-      unreadMessage: []
+      unreadMessage: [],
+      roomGuests: [],
+      roomCasts: []
     };
   },
 
@@ -106,10 +109,17 @@ export default {
         this.realtime_roomId = e.message.room_id;
         if (this.realtime_roomId) {
             if (this.realtime_roomId != this.roomId) {
-                const roomIndex = this.users.findIndex(i => i.id == this.realtime_roomId);
-                const room = this.users[roomIndex];
-                this.users.splice(roomIndex, 1);
-                this.users.unshift(room);
+                if (e.message.user.type == 1) {
+                    const roomIndex = this.roomGuests.findIndex(i => i.id == this.realtime_roomId);
+                    const room = this.roomGuests[roomIndex];
+                    this.roomGuests.splice(roomIndex, 1);
+                    this.roomGuests.unshift(room);
+                } else {
+                    const roomIndex = this.roomCasts.findIndex(i => i.id == this.realtime_roomId);
+                    const room = this.roomCasts[roomIndex];
+                    this.roomCasts.splice(roomIndex, 1);
+                    this.roomCasts.unshift(room);
+                }
 
                 const index = this.unreadMessage.findIndex(i => i.id == this.realtime_roomId);
                 if (index != -1) {
@@ -195,10 +205,14 @@ export default {
 
     getRoom() {
       this.unreadMessage = [];
+      const rooms = JSON.parse(this.rooms);
+      this.roomGuests = rooms.filter(r => r.user_type == 1);
+      this.roomCasts = rooms.filter(r => r.user_type == 2);
         this.users = JSON.parse(this.rooms);
         let unreads = JSON.parse(this.unReads);
         for (let i of unreads) {
-            for (let room of this.users) {
+            for (let j = 0; j < this.users.length; j++) {
+                const room = this.users[j];
                 if (i.room_id == room.id) {
                     this.messageUnread_index = i.total;
                     this.unreadMessage.push({ id: room.id, count: i.total });
@@ -207,7 +221,6 @@ export default {
             }
         }
     },
-
     sendMessage() {
       if (this.id) {
         this.realtime_roomId = this.id;

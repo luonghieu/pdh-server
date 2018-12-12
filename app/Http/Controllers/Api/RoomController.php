@@ -116,14 +116,14 @@ class RoomController extends ApiController
         }
     }
 
-    public function getUsers()
+    public function getUsers(Request $request)
     {
-
+        $expectIds = explode(',', $request->expect_ids);
         $rooms = Room::active()->where('type', RoomType::SYSTEM);
 
         $rooms = $rooms->with(['users' => function ($query) {
             $query->whereNotIn('type', [Usertype::ADMIN]);
-        }])->orderBy('updated_at', 'DESC')->get();
+        }])->whereNotIn('id', $expectIds)->orderBy('updated_at', 'DESC')->paginate(200);
 
         return $this->respondWithData($rooms);
     }
