@@ -39,6 +39,10 @@ class CastController extends ApiController
         $casts = Cast::query();
         foreach ($params as $key => $value) {
             if (!(3 == $request->device)) {
+                if ($request->working_today) {
+                    continue;
+                }
+
                 $casts->where($key, $value);
             }
         }
@@ -73,7 +77,7 @@ class CastController extends ApiController
             $q->where('blocked_id', $user->id);
         })->active();
 
-        if ($request->device) {
+        if ($request->device || $request->working_today) {
             $casts = $casts->orderByDesc('working_today')
                 ->orderBy('rank')
                 ->orderByDesc('created_at')
