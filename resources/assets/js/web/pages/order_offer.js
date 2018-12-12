@@ -359,7 +359,7 @@ $(document).ready(function(){
     var castIds = $('#current-cast-id-offer').val();
     var totalCast = castIds.split(',');
     var classId = $('#current-class-id-offer').val();
-    var params = {
+    var input = {
       date : time,
       start_time : hour + ':' + minute,
       type :2,
@@ -370,11 +370,11 @@ $(document).ready(function(){
       offer : 1
     };
 
-    window.axios.post('/api/v1/orders/price',params)
+    window.axios.post('/api/v1/orders/price',input)
       .then(function(response) {
         totalPoint = response.data['data'];
         $('#temp-point-offer').val(totalPoint);
-        var params = {
+        var data = {
           current_total_point: totalPoint,
         };
 
@@ -382,7 +382,7 @@ $(document).ready(function(){
         $('.total-amount').text(totalPoint +'P~');
 
 
-        helper.updateLocalStorageKey('order_offer', params, offerId);
+        helper.updateLocalStorageKey('order_offer', data, offerId);
       }).catch(function(error) {
         console.log(error);
         if (error.response.status == 401) {
