@@ -70,4 +70,5 @@ return [
     'user_verify_success' => 'Your account has been verified',
     'phone_update_success' => 'Your phone number has been updated',
     'postcode_error' => 'Address not found',
+    'payment_failed' => 'Payment failed.'
 ];

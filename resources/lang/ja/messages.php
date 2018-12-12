@@ -71,4 +71,5 @@ return [
     'user_verify_success' => '認証が完了しました',
     'phone_update_success' => '変更しました',
     'postcode_error' => '住所が見つかりません',
+    'payment_failed' => '決済に失敗しました' . PHP_EOL . '登録しているカード情報を' . PHP_EOL . '確認してください'
 ];
