@@ -345,7 +345,7 @@ class OrderController extends ApiController
             return $this->respondErrorMessage(trans('messages.card_expired'), 406);
         }
 
-        if ($now->gt($start_time) || $start_time->between($now, $now->copy()->addMinutes(30))) {
+        if ($now->gt($start_time) || $start_time->between($now, $now->copy()->addMinutes(29))) {
             return $this->respondErrorMessage(trans('messages.time_invalid'), 400);
         }
 
