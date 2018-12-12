@@ -24,7 +24,6 @@ class CastController extends ApiController
         }
 
         $params = $request->only([
-            'working_today',
             'class_id',
             'height',
             'body_type_id',
@@ -39,10 +38,6 @@ class CastController extends ApiController
         $casts = Cast::query();
         foreach ($params as $key => $value) {
             if (!(3 == $request->device)) {
-                if ($request->working_today) {
-                    continue;
-                }
-
                 $casts->where($key, $value);
             }
         }
