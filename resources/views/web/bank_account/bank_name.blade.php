@@ -24,7 +24,7 @@
       <div class="account-holder border-bottom row">
         <span class="left color-green">銀行名</span>
         <div class="right">
-          <input type="text" id="bank-name" name="bank_name" value="{{ request()->bank_name }}" placeholder="例）みずほ銀行">
+          <input type="search" id="bank-name" name="bank_name" value="{{ request()->bank_name }}" placeholder="例）みずほ">
         </div>
       </div>
       <div class="clear"></div>
