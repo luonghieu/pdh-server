@@ -331,11 +331,20 @@ class OrderController extends ApiController
             return $this->respondErrorMessage(trans('messages.order_not_found'), 404);
         }
 
+        if (!$user->cards->first()) {
+            return $this->respondErrorMessage(trans('messages.card_not_exist'), 409);
+        }
+
+        $maxTime = $end_time->copy()->addHours(10);
+        if ($maxTime->month > $user->card->exp_month && $maxTime->year == $user->card->exp_year || $maxTime->year > $user->card->exp_year) {
+            return $this->respondErrorMessage(trans('messages.card_expired'), 406);
+        }
+
         $now = Carbon::now()->second(0);
 
         $start_time = Carbon::parse($request->date . ' ' . $request->start_time);
 
-        if ($now->gt($start_time)) {
+        if ($now->gt($start_time) || $start_time->between($now, $now->copy()->addMinutes(30))) {
             return $this->respondErrorMessage(trans('messages.time_invalid'), 400);
         }
 
@@ -347,21 +356,12 @@ class OrderController extends ApiController
             $startTimeTo = $startTimeTo->copy()->addDay();
         }
 
-        if ($now->between($startTimeTo->copy()->subMinutes(30), $startTimeTo) || $start_time->between($now, $now->copy()->addMinutes(30))) {
+        if ($now->between($startTimeTo->copy()->subMinutes(30), $startTimeTo)) {
             return $this->respondErrorMessage(trans('messages.order_timeout'), 422);
         }
 
         $end_time = $start_time->copy()->addHours($input['duration']);
         $input['end_time'] = $end_time->format('H:i');
-
-        if (!$user->cards->first()) {
-            return $this->respondErrorMessage(trans('messages.card_not_exist'), 409);
-        }
-
-        $maxTime = $end_time->copy()->addHours(10);
-        if ($maxTime->month > $user->card->exp_month && $maxTime->year == $user->card->exp_year || $maxTime->year > $user->card->exp_year) {
-            return $this->respondErrorMessage(trans('messages.card_expired'), 406);
-        }
 
         $castIds = explode(",", trim($request->nominee_ids, ","));
         $input['end_time'] = $end_time->format('H:i');
