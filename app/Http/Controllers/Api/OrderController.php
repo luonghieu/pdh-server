@@ -347,7 +347,7 @@ class OrderController extends ApiController
             $startTimeTo = $startTimeTo->copy()->addDay();
         }
 
-        if ($now->between($startTimeTo->copy()->subMinutes(30), $startTimeTo)) {
+        if ($now->between($startTimeTo->copy()->subMinutes(30), $startTimeTo) || $start_time->between($now, $now->copy()->addMinutes(30))) {
             return $this->respondErrorMessage(trans('messages.order_timeout'), 422);
         }
 
