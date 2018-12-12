@@ -54,6 +54,18 @@
       </div>
   </div>
 </div>
+<div class="modal_wrap">
+  <input id="popup-error" type="checkbox">
+  <div class="modal_overlay">
+    <label for="popup-error" class="modal_trigger"></label>
+    <div class="modal_content modal_content-btn1">
+    <div class="text-box">
+      <h2>この操作は実行できません</h2>
+    </div>
+      <label for="popup-error" class="close_button">OK</label>
+    </div>
+  </div>
+</div>
 @endsection
 @section('web.content')
 @if (!$points['data'])
@@ -72,6 +84,13 @@
 @endif
 @endsection
 @section('web.script')
+<script>
+  $(function () {
+    $('body').on('click', '#popup-error-order', function () {
+      $('#popup-error').trigger('click');
+    })
+  })
+</script>
 <script>
   $(function () {
     var requesting = false;
