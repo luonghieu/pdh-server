@@ -44,9 +44,17 @@ class SetTimeOutForOffer extends Command
         $offers = Offer::where('status', OfferStatus::ACTIVE);
 
         foreach ($offers->cursor() as $offer) {
+            $startHourFrom = (int) Carbon::parse($offer->start_time_from)->format('H');
+            $startHourTo = (int) Carbon::parse($offer->start_time_to)->format('H');
+
+            $startTimeTo = Carbon::createFromFormat('Y-m-d H:i:s', $offer->date . ' ' . $offer->start_time_to)->subMinutes(30);
+            if ($startHourTo < $startHourFrom) {
+                $startTimeTo = $startTimeTo->copy()->addDay();
+            }
+
             $date = Carbon::createFromFormat('Y-m-d H:i:s', $offer->date . ' ' . '00:00:00')->addDay();
 
-            if ($now->gte($date)) {
+            if ($now->gte($date) || $now->gte($startTimeTo)) {
                 $offer->status = OfferStatus::TIMEOUT;
             }
 
