@@ -88,8 +88,10 @@ $(document).ready(function(){
     var time = hour + ':' + minute;
 
     if(localStorage.getItem("order_offer")){
+      var offerId = $('.offer-id').val();
       var orderOffer = JSON.parse(localStorage.getItem("order_offer"));
-      if(orderOffer.current_date) {
+      if(orderOffer[offerId]) {
+        orderOffer = orderOffer[offerId];
         var date = orderOffer.current_date;
       } else {
         var date = $('#current-date-offer').val();
@@ -259,7 +261,7 @@ $(document).ready(function(){
     var offerId = $('.offer-id').val();
 
     currentDate = currentDate.split('-');
-    
+
     var now = new Date();
     var check = hour;
 
@@ -283,7 +285,7 @@ $(document).ready(function(){
         var checkDate = new Date(currentDate[0] +'-' +currentDate[1]+'-'+currentDate[2] +' ' +check +':' +minute);
       }
 
-      checkDate.setDate(checkDate.getDate() + 1);    
+      checkDate.setDate(checkDate.getDate() + 1);
     }else {
       if (checkApp.isAppleDevice()) {
         var checkDate = new Date(currentDate[1] +'/' +currentDate[2]+'/'+currentDate[0] +' ' +check +':' +minute);
@@ -298,7 +300,7 @@ $(document).ready(function(){
 
     utc = now.getTime() + (now.getTimezoneOffset() * 60000);
     nd = new Date(utc + (3600000*9));
-    
+
     if (add_minutes(nd, 30) > checkDate) {
       checkDate = add_minutes(nd, 30);
     }
@@ -318,7 +320,7 @@ $(document).ready(function(){
     if (hourOffer<10) {
       hourOffer = '0'+hourOffer;
     }
-    
+
 
     var minuteOffer = checkDate.getMinutes();
     if (minuteOffer<10) {
@@ -328,6 +330,8 @@ $(document).ready(function(){
 
     $('#temp-date-offer').text(yearOffer+'年'+monthOffer+'月'+dateOffer+'日');
     $('.time-offer').text(hourOffer + ':' + minuteOffer +'~');
+
+    check = hourOffer;
 
     if (currentDate[2] != dateOffer) {
       switch(hourOffer) {
@@ -361,7 +365,7 @@ $(document).ready(function(){
     var classId = $('#current-class-id-offer').val();
     var input = {
       date : time,
-      start_time : hour + ':' + minute,
+      start_time : check + ':' + minuteOffer,
       type :2,
       duration :duration,
       total_cast :totalCast.length,
