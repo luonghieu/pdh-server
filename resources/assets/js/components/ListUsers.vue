@@ -11,7 +11,7 @@
             </ul>
         </div>
         <div class="inbox_chat inbox_cast" id="cast">
-            <div v-for="(room, index) in mutableRoomCasts" :key="index">
+            <div v-for="(room, index) in filteredCasts" :key="index">
                     <router-link :to="{ name: 'ChatRoom', params: { id: room.id }}" v-on:click.native="setRoomId(room)">
                             <div class="chat_list">
                                 <div class="chat_people">
@@ -52,7 +52,7 @@
             <!--</div>-->
         <!--</div>-->
         <div class="inbox_chat inbox_guest" id="guest">
-            <div v-for="(room, index) in mutableRoomGuests" :key="index">
+            <div v-for="(room, index) in filteredGuests" :key="index">
                 <div v-bind:class="(room_id == room.id || room.id == roomId) ? 'active_chat ' : ''">
                     <router-link :to="{ name: 'ChatRoom', params: { id: room.id }}" v-on:click.native="setRoomId(room)">
                         <div class="chat_list">
@@ -85,7 +85,6 @@ export default {
     "roomId",
     "realtime_message",
     "realtime_roomId",
-    "users",
     "unreadMessage",
     "getRoom",
     'roomGuests',
@@ -104,83 +103,28 @@ export default {
       unRead: 0,
       mutableRoomGuests: [],
       mutableRoomCasts: [],
-      currentTab: 1
+      currentTab: 1,
+      unreads: []
     };
   },
   created() {
       this.mutableRoomGuests = this.roomGuests;
       this.mutableRoomCasts = this.roomCasts;
   },
-    watch: {
-        searchName: function(val, oldVal) {
-            let searchName = this.searchName;
-            this.mutableRoomGuests = this.roomGuests;
-            this.mutableRoomCasts = this.roomCasts;
-            searchName = searchName.trim().toLowerCase();
-            if (val) {
-                if (this.currentTab == 1) {
-                    this.mutableRoomGuests = this.mutableRoomGuests.filter(item => {
-                        const nickname = item.nickname.trim().toLowerCase();
-                        return nickname.indexOf(searchName) > -1 || item.id.toString().indexOf(searchName) > -1;
-                    });
-                } else {
-                    this.mutableRoomCasts = this.mutableRoomCasts.filter(item => {
-                        const nickname = item.nickname.trim().toLowerCase();
-                        return nickname.indexOf(searchName) > -1 || item.id.toString().indexOf(searchName) > -1;
-                    });
-                }
-            } else {
-                this.mutableRoomGuests = this.roomGuests;
-                this.mutableRoomCasts = this.roomCasts;
-            }
-        }
-    },
   methods: {
-  //   setRoomId(roomID, unReadCount, user) {
-  //     this.room_id = null;
-  //     this.Id = roomID;
-  //     if (unReadCount > 0) {
-  //       this.setUnread = 0;
-  //     }
-  //     user.forEach(item => {
-  //       this.nickName = item.nickname;
-  //     });
-  //
-  //     this.unRead = 0;
-  //     let index = this.unreadMessage.findIndex(function(object) {
-  //       return object.id === roomID;
-  //     });
-  //     this.$emit("interface", index);
-  //
-  //     if (this.unRead == 0) {
-  //       this.$emit("interface", this.nickName);
-  //     }
-  //   }
-  // },
-    setRoomId(room, unReadCount, user) {
+    setRoomId(room) {
         this.room_id = room.id;
-        // if (unReadCount > 0) {
-        //     this.setUnread = 0;
-        // }
-        // user.forEach(item => {
-        //     this.nickName = item.nickname;
-        // });
-
-        // this.unRead = 0;
-        // let index = this.unreadMessage.findIndex(function(object) {
-        //     return object.id === room;
-        // });
-        // this.$emit("interface", index);
-        //
-        // if (this.unRead == 0) {
-        //     this.$emit("interface", this.nickName);
-        // }
+        this.$emit('updateUnreadMessage', this.room_id);
     }
   },
+  watch: {
+      unreadMessage(newVal, oldVal) {
+          console.log('Prop changed: ', newVal, ' | was: ', oldVal)
+      }
+  },
   computed: {
-    filteredData: function() {
-        console.log('123123');
-      let search_array = this.users;
+    filteredGuests() {
+      let search_array = this.roomGuests;
       let searchName = this.searchName;
 
       if (!searchName) {
@@ -190,17 +134,26 @@ export default {
       searchName = searchName.trim().toLowerCase();
 
       search_array = search_array.filter(item => {
-        for (let value in item.users) {
-          let userId = item.users[value].id.toString();
-          if (
-            item.users[value].nickname.toLowerCase().indexOf(searchName) !==
-              -1 ||
-            userId.toLowerCase().indexOf(searchName) !== -1
-          ) {
-            return true;
-          }
-        }
+          const nickname = item.nickname.trim().toLowerCase();
+          return nickname.indexOf(searchName) > -1 || item.id.toString().indexOf(searchName) > -1;
       });
+
+      return search_array;
+    },
+    filteredCasts () {
+      let search_array = this.roomCasts;
+      let searchName = this.searchName;
+      if (!searchName) {
+        return search_array;
+      }
+
+      searchName = searchName.trim().toLowerCase();
+
+      search_array = search_array.filter(item => {
+        const nickname = item.nickname.trim().toLowerCase();
+        return nickname.indexOf(searchName) > -1 || item.id.toString().indexOf(searchName) > -1;
+      });
+
       return search_array;
     }
   }

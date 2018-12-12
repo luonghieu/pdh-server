@@ -4,8 +4,8 @@
             <div class="inbox_msg">
                 <h3 class="text-center nickname">{{nickName}}</h3>
                 <list-users :user_id="user_id" :roomId="roomId" :realtime_message="realtime_message" :realtime_roomId="realtime_roomId"
-                @interface="handleCountMessage" :users="users" :unreadMessage="unreadMessage"
-                            :room-guests="roomGuests" :room-casts="roomCasts"
+                @interface="handleCountMessage" :unreadMessage="unreadMessage"
+                            :room-guests="roomGuests" :room-casts="roomCasts" @updateUnreadMessage="onRoomJoined"
                 ></list-users>
                 <div class="mesgs">
                     <chat-messages :list_message="list_messages" :user_id="user_id" :unreadMessage="unreadMessage"
@@ -206,20 +206,24 @@ export default {
     getRoom() {
       this.unreadMessage = [];
       const rooms = JSON.parse(this.rooms);
-      this.roomGuests = rooms.filter(r => r.user_type == 1);
-      this.roomCasts = rooms.filter(r => r.user_type == 2);
-        this.users = JSON.parse(this.rooms);
-        let unreads = JSON.parse(this.unReads);
-        for (let i of unreads) {
-            for (let j = 0; j < this.users.length; j++) {
-                const room = this.users[j];
-                if (i.room_id == room.id) {
-                    this.messageUnread_index = i.total;
-                    this.unreadMessage.push({ id: room.id, count: i.total });
-                    break;
-                }
+      const cloneRooms = rooms;
+      let unreads = JSON.parse(this.unReads);
+      for (let i of unreads) {
+          for (let j = 0; j < cloneRooms.length; j++) {
+              const room = cloneRooms[j];
+              if (i.room_id == room.id) {
+                this.messageUnread_index = i.total;
+                this.unreadMessage.push({ id: room.id, count: i.total });
+                const tempRoom = cloneRooms[j];
+                  rooms.splice(j, 1);
+                  rooms.unshift(tempRoom);
+                  break;
+              }
             }
         }
+
+        this.roomGuests = rooms.filter(r => r.user_type == 1);
+        this.roomCasts = rooms.filter(r => r.user_type == 2);
     },
     sendMessage() {
       if (this.id) {
@@ -339,6 +343,13 @@ export default {
 
     handleNewMessage(event) {
       this.realtime_roomId = event;
+    },
+    onRoomJoined(event) {
+      const index = this.unreadMessage.findIndex(i => i.id = event);
+      if (index > -1) {
+          this.unreadMessage.splice(index , 1);
+          console.log(this.unreadMessage);
+      }
     }
   }
 };
