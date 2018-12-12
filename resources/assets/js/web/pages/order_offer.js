@@ -259,7 +259,6 @@ $(document).ready(function(){
     var minute = $(".select-minute-offer option:selected").val();
     var currentDate = $('#current-date-offer').val();
     var offerId = $('.offer-id').val();
-
     currentDate = currentDate.split('-');
 
     var now = new Date();
@@ -303,6 +302,34 @@ $(document).ready(function(){
 
     if (add_minutes(nd, 30) > checkDate) {
       checkDate = add_minutes(nd, 30);
+    }
+
+    var startTimeTo = $('#start-time-to-offer').val();
+    startTimeTo = startTimeTo.split(":");
+    var startHourTo = startTimeTo[0];
+    var startMinuteTo = startTimeTo[1];
+    var startTimeFrom = $('#start-time-from-offer').val();
+    startTimeFrom = startTimeFrom.split(":");
+    var startHourFrom = startTimeFrom[0];
+
+    if (startHourTo <= startHourFrom) {
+      if (checkApp.isAppleDevice()) {
+        var timeTo = new Date(currentDate[1] +'/' +currentDate[2]+'/'+currentDate[0] +' ' +startHourTo +':' +startMinuteTo);
+      } else {
+        var timeTo = new Date(currentDate[0] +'-' +currentDate[1]+'-'+currentDate[2] +' ' +startHourTo +':' +startMinuteTo);
+      }
+
+      timeTo.setDate(timeTo.getDate() + 1);
+    } else {
+      if (checkApp.isAppleDevice()) {
+        var timeTo = new Date(currentDate[1] +'/' +currentDate[2]+'/'+currentDate[0] +' ' +startHourTo +':' +startMinuteTo);
+      } else {
+        var timeTo = new Date(currentDate[0] +'-' +currentDate[1]+'-'+currentDate[2] +' ' +startHourTo +':' +startMinuteTo);
+      }
+    }
+    
+    if (timeTo < checkDate ) {
+      checkDate = timeTo;
     }
 
     var monthOffer = checkDate.getMonth() +1;
