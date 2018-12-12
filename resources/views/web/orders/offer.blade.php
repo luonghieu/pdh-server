@@ -180,7 +180,7 @@
 
         <div class="reservation-item">
           <div class="caption"><!-- 見出し用div -->
-            <h2>ギャラ飲みの開始時間</h2>
+            <h2>ギャラ飲みの時間</h2>
           </div>
           <div class="text-time">※希望の開始時間を選択してください</div>
           <div class="form-grpup"><!-- フォーム内容 -->

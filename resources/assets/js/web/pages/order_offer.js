@@ -259,58 +259,97 @@ $(document).ready(function(){
     var offerId = $('.offer-id').val();
 
     currentDate = currentDate.split('-');
-
-     var params = {
-        hour : hour,
-        minute : minute,
-      };
-
-    helper.updateLocalStorageKey('order_offer', params, offerId);
+    
+    var now = new Date();
+    var check = hour;
 
     if (23<hour) {
       switch(hour) {
         case '24':
-            hour = '00';
+            check = '00';
             break;
         case '25':
-            hour = '01';
+            check = '01';
             break;
         case '26':
-            hour = '02';
+            check = '02';
             break;
       }
 
 
       if (checkApp.isAppleDevice()) {
-        var selectDate = new Date(currentDate[1] +'/' +currentDate[2]+'/'+currentDate[0]);
+        var checkDate = new Date(currentDate[1] +'/' +currentDate[2]+'/'+currentDate[0] +' ' +check +':' +minute);
       } else {
-        var selectDate = new Date(currentDate[0] +'-' +currentDate[1]+'-'+currentDate[2]);
+        var checkDate = new Date(currentDate[0] +'-' +currentDate[1]+'-'+currentDate[2] +' ' +check +':' +minute);
       }
 
-      selectDate.setDate(selectDate.getDate() + 1);
-
-      var monthOffer = selectDate.getMonth() +1;
-      if (monthOffer<10) {
-        monthOffer = '0'+monthOffer;
-      }
-      var dateOffer = selectDate.getDate();
-      if (dateOffer<10) {
-        dateOffer = '0'+dateOffer;
-      }
-
-      var yearOffer = selectDate.getFullYear();
-      var time = yearOffer + '-' + monthOffer + '-' +  dateOffer;
-      $('#temp-date-offer').text(yearOffer+'年'+monthOffer+'月'+dateOffer+'日');
+      checkDate.setDate(checkDate.getDate() + 1);    
     }else {
-      var time = $('#current-date-offer').val();
-      $('#temp-date-offer').text(currentDate[0]+'年'+currentDate[1]+'月'+currentDate[2]+'日');
+      if (checkApp.isAppleDevice()) {
+        var checkDate = new Date(currentDate[1] +'/' +currentDate[2]+'/'+currentDate[0] +' ' +check +':' +minute);
+      } else {
+        var checkDate = new Date(currentDate[0] +'-' +currentDate[1]+'-'+currentDate[2] +' ' +check +':' +minute);
+      }
     }
 
+    var add_minutes =  function (dt, minutes) {
+      return new Date(dt.getTime() + minutes*60000);
+    }
 
-    $('.time-offer').text(hour + ':' + minute +'~');
+    utc = now.getTime() + (now.getTimezoneOffset() * 60000);
+    nd = new Date(utc + (3600000*9));
+    
+    if (add_minutes(nd, 30) > checkDate) {
+      checkDate = add_minutes(nd, 30);
+    }
+
+    var monthOffer = checkDate.getMonth() +1;
+    if (monthOffer<10) {
+      monthOffer = '0'+monthOffer;
+    }
+    var dateOffer = checkDate.getDate();
+    if (dateOffer<10) {
+      dateOffer = '0'+dateOffer;
+    }
+
+    var yearOffer = checkDate.getFullYear();
+
+    var hourOffer = checkDate.getHours();
+    if (hourOffer<10) {
+      hourOffer = '0'+hourOffer;
+    }
+    
+
+    var minuteOffer = checkDate.getMinutes();
+    if (minuteOffer<10) {
+      minuteOffer = '0'+minuteOffer;
+    }
+    var time = yearOffer + '-' + monthOffer + '-' +  dateOffer;
+
+    $('#temp-date-offer').text(yearOffer+'年'+monthOffer+'月'+dateOffer+'日');
+    $('.time-offer').text(hourOffer + ':' + minuteOffer +'~');
+
+    if (currentDate[2] != dateOffer) {
+      switch(hourOffer) {
+        case '00':
+        hourOffer = '24';
+            break;
+        case '01':
+        hourOffer = '25';
+            break;
+        case '02':
+        hourOffer = '26';
+            break;
+      }
+    }
+
+    $('.select-hour-offer').val(hourOffer);
+    $('.select-minute-offer').val(minuteOffer);
 
     var params = {
       current_date : time,
+      hour : hourOffer,
+      minute : minuteOffer,
     }
 
     helper.updateLocalStorageKey('order_offer', params, offerId);
