@@ -3,6 +3,6 @@
     <div id="chatroom">
         <input type="hidden" value="{{$token}}" id="token">
         <input type="hidden" value="{{$userId}}" id="userId">
-        <chat-room rooms="{{ $rooms }}" un-reads="{{ $unReads }}" avatars="{{ $avatars }}" room-users="{{ $users }}"></chat-room>
+        <chat-room rooms="{{ $rooms }}" un-reads="{{ $unReads }}"></chat-room>
     </div>
 @endsection

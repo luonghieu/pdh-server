@@ -4,8 +4,7 @@
             <div class="inbox_msg">
                 <h3 class="text-center nickname">{{nickName}}</h3>
                 <list-users :user_id="user_id" :roomId="roomId" :realtime_message="realtime_message" :realtime_roomId="realtime_roomId"
-                @interface="handleCountMessage" :unreadMessage="unreadMessage"
-                            :room-guests="roomGuests" :room-casts="roomCasts" @updateUnreadMessage="onRoomJoined"
+                :unreadMessage="unreadMessage" :room-guests="roomGuests" :room-casts="roomCasts" @updateUnreadMessage="onRoomJoined"
                 ></list-users>
                 <div class="mesgs">
                     <chat-messages :list_message="list_messages" :user_id="user_id" :unreadMessage="unreadMessage"
@@ -108,7 +107,7 @@ export default {
         this.realtime_message = e.message.message;
         this.realtime_roomId = e.message.room_id;
         if (this.realtime_roomId) {
-            if (this.realtime_roomId != this.roomId) {
+            if (this.realtime_roomId != this.$route.params.id) {
                 if (e.message.user.type == 1) {
                     const roomIndex = this.roomGuests.findIndex(i => i.id == this.realtime_roomId);
                     const room = this.roomGuests[roomIndex];
@@ -329,26 +328,14 @@ export default {
     removeImage: function(e) {
       this.image = "";
     },
-
-    handleCountMessage(event) {
-      if (event >= 0) {
-        this.unreadMessage.splice(event, 1, {
-          id: this.$route.params.id,
-          count: 0
-        });
-      } else {
-        this.nickName = event;
-      }
-    },
-
     handleNewMessage(event) {
       this.realtime_roomId = event;
     },
     onRoomJoined(event) {
-      const index = this.unreadMessage.findIndex(i => i.id = event);
-      if (index > -1) {
+      this.roomId = event;
+      const index = this.unreadMessage.findIndex(i => i.id == event);
+      if (index != -1) {
           this.unreadMessage.splice(index , 1);
-          console.log(this.unreadMessage);
       }
     }
   }

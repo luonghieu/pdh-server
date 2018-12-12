@@ -23,7 +23,7 @@
                                         <h5 class="chat_nickname"><i v-bind:class="room.gender == 2 ? 'fa fa-female' : 'fa fa-male' "></i> {{room.nickname}}</h5>
                                     </div>
                                 </div>
-                            <span v-for="(unread, index) in unreadMessage" :key="index" v-if="unread.id ==
+                            <span v-for="(unread, index) in unreads" :key="index" v-if="unread.id ==
                                 room.id && unread.count > 0" v-bind:class="unread.count == 0 || room.id == room_id ||
                                 room.id == roomId  ? 'notification' : 'notify-chat'">{{unread.count}}</span>
                             </div>
@@ -66,7 +66,7 @@
                                 'fa fa-male' "></i> {{room.nickname}}</h5>
                                 </div>
                             </div>
-                            <span v-for="(unread, index) in unreadMessage" :key="index" v-if="unread.id ==
+                            <span v-for="(unread, index) in unreads" :key="index" v-if="unread.id ==
                             room.id && unread.count > 0" v-bind:class="unread.count == 0 || room.id == room_id ||
                             room.id == roomId  ? 'notification' : 'notify-chat'">{{unread.count}}</span>
                         </div>
@@ -110,6 +110,7 @@ export default {
   created() {
       this.mutableRoomGuests = this.roomGuests;
       this.mutableRoomCasts = this.roomCasts;
+      this.unreads = this.unreadMessage;
   },
   methods: {
     setRoomId(room) {
@@ -119,7 +120,7 @@ export default {
   },
   watch: {
       unreadMessage(newVal, oldVal) {
-          console.log('Prop changed: ', newVal, ' | was: ', oldVal)
+          this.unreads = newVal;
       }
   },
   computed: {

@@ -37,22 +37,8 @@ class ChatRoomController extends Controller
             })
             ->select('rooms.*', 'users.type As user_type', 'users.gender', 'users.nickname', 'avatars.thumbnail')
             ->orderBy('users.updated_at', 'DESC')->get();
-//        $unReads = DB::table('message_recipient')
-//            ->where('user_id', 1)
-//            ->where('is_show', true)
-//            ->whereNull('read_at')
-//            ->select('room_id', DB::raw('count(*) as total'))
-//            ->groupBy('room_id')->get();
-//
-//        $rooms = DB::table('rooms')->where('is_active', true)->where('type', RoomType::SYSTEM)
-//            ->orderBy('updated_at', 'DESC')->get();
-//
-//        $users = DB::table('users')->where('id', '<>', 1)->get();
-//        $avatars = DB::table('avatars')->where('is_default', true)->get();
 
-        $users = null;
-        $avatars = null;
-        return view('admin.chatroom.index', compact('token', 'userId', 'rooms', 'unReads', 'users', 'avatars'));
+        return view('admin.chatroom.index', compact('token', 'userId', 'rooms', 'unReads'));
     }
 
 
