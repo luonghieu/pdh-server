@@ -2,12 +2,16 @@
 
 namespace App\Http\Controllers\Api;
 
-use App\Notifications\ResendVerificationCodeLineNotify;
 use App\User;
 use App\Enums\Status;
+use App\Enums\UserType;
+use App\Enums\DeviceType;
+use App\Enums\ProviderType;
 use Illuminate\Http\Request;
+use Tymon\JWTAuth\Facades\JWTAuth;
 use App\Notifications\SendVerificationCode;
 use App\Notifications\ResendVerificationCode;
+use App\Notifications\ResendVerificationCodeLineNotify;
 
 class VerificationController extends ApiController
 {
@@ -91,6 +95,35 @@ class VerificationController extends ApiController
         $user->save();
 
         if (!$isVerified) {
+            if ($request->device_type == DeviceType::IOS) {
+                $cast = User::where('type', UserType::CAST)
+                    ->where('phone', $verification->phone)
+                    ->first();
+
+                if ($cast) {
+                    $cast->provider = ProviderType::LINE;
+                    $cast->line_user_id = $user->line_user_id;
+                    $cast->is_verified = true;
+                    $cast->save();
+
+                    $user->delete();
+
+                    $cast = $cast->refresh();
+
+                    $token = JWTAuth::fromUser($cast);
+
+                    return $this->respondWithData([
+                        'is_existed' => 1,
+                        'data' => $this->respondWithToken($token, $cast)->getData()
+                    ]);
+                } else {
+                    return $this->respondWithData([
+                        'is_existed' => 0,
+                        'data' => []
+                    ]);
+                }
+            }
+
             return $this->respondWithNoData(trans('messages.user_verify_success'));
         }
 
