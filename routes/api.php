@@ -93,6 +93,8 @@ Route::group(['prefix' => 'v1'], function () {
         Route::get('/payments', ['as' => 'payments', 'uses' => 'Cast\PaymentController@payments']);
         Route::patch('/confirm_transfer', ['as' => 'confirm_transfer', 'uses' => 'Cast\CastController@confirmTransfer']);
 
+        Route::get('/points', ['as' => 'points', 'uses' => 'Cast\PointController@points']);
+
         Route::group(['prefix' => 'bank_accounts', 'as' => 'bank_accounts.'], function () {
             Route::post('/{id}', ['as' => 'update', 'uses' => 'Cast\BankAccountController@update']);
             Route::post('/', ['as' => 'bank_accounts', 'uses' => 'Cast\BankAccountController@create']);
