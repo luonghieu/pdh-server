@@ -18,7 +18,8 @@
         "lodash": "^4.17.4",
         "popper.js": "^1.12",
         "vue": "^2.5.16",
-        "vue-template-compiler": "^2.5.16"
+        "vue-template-compiler": "^2.5.16",
+        "vue-loader": "^13.7.1"
     },
     "dependencies": {
         "laravel-echo": "^1.4.0",
