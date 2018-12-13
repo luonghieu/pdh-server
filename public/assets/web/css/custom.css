@@ -2521,3 +2521,7 @@ padding-top: 65px !important;
   padding-top: 50px;
 }
 
+#card-index .date-select select {
+  background-image: none;
+  width: 50px;
+}
