@@ -80,6 +80,10 @@ Route::group(['prefix' => 'v1'], function () {
             Route::get('/{id}/payment_requests', ['as' => 'get_payment_requests',
                 'uses' => 'Guest\PaymentRequestController@getPaymentRequest']);
         });
+
+        Route::group(['prefix' => 'point_settement', 'as' => 'point_settement.'], function () {
+            Route::post('/{orderId}', ['as' => 'create', 'uses' => 'Guest\OrderController@pointSettlement']);
+        });
     });
 
     Route::group(['middleware' => ['auth:api', 'cast'], 'prefix' => 'cast', 'as' => 'cast.'], function () {

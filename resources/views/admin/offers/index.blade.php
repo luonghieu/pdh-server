@@ -46,7 +46,7 @@
             <thead>
               <tr>
                 <th>No.</th>
-                <th>予約ID</th>
+                <th>オファーID</th>
                 <th>キャスト情報</th>
                 <th>ギャラ飲み予定開始日時</th>
                 <th>ギャラ飲みの時間</th>

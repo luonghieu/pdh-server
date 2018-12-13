@@ -24,7 +24,6 @@ class CastController extends ApiController
         }
 
         $params = $request->only([
-            'working_today',
             'class_id',
             'height',
             'body_type_id',
@@ -73,7 +72,7 @@ class CastController extends ApiController
             $q->where('blocked_id', $user->id);
         })->active();
 
-        if ($request->device) {
+        if ($request->device || $request->working_today) {
             $casts = $casts->orderByDesc('working_today')
                 ->orderBy('rank')
                 ->orderByDesc('created_at')

@@ -20,6 +20,12 @@
 
 @endsection
 @section('web.content')
+<div class="title">
+  <div class="btn-back">
+    <a href="{{ URL::previous() }}" class="prev"><i><img src="/assets/web/images/common/prev.svg" alt=""></i></a>
+  </div>
+  <div class="title-name">振込履歴</div>
+</div>
 <div class="list_wrap" id="list-payment">
     <div class="point_list_wrap">
         @if (!empty($payments['data']))
