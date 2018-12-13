@@ -207,24 +207,25 @@
             }
 
             $currentTime = Carbon\Carbon::now()->second(0);
-
+            $date = $offer->date;
             $startHourFrom = Carbon\Carbon::parse($offer->start_time_from)->format('H:i');
             $startMinute =  (int)Carbon\Carbon::parse($offer->start_time_from)->format('i');
 
-            if($currentTime->between($startTimeFrom,$startTimeTo)) {
+            if($currentTime->copy()->addMinutes(30)->between($startTimeFrom,$startTimeTo)) {
               $startHour = (int)$currentTime->copy()->addMinutes(30)->format('H');
               $startHourFrom =$currentTime->copy()->addMinutes(30)->format('H:i');
               $startMinute =  (int)$currentTime->copy()->addMinutes(30)->format('i');
+              $date = $currentTime->copy()->addMinutes(30)->format('Y-m-d');
             }
           @endphp
             <label class="date-input d-flex-end">
               <p class="date-input__text">
-                <span id="temp-date-offer">{{ Carbon\Carbon::parse($offer->date)->format('Y年m月d日') }}</span>&nbsp&nbsp&nbsp
+                <span id="temp-date-offer">{{ Carbon\Carbon::parse($date)->format('Y年m月d日') }}</span>&nbsp&nbsp&nbsp
                 <span class='time-offer' id='temp-time-offer'>{{ $startHourFrom }}~</span>
               </p>
             </label>
           </div>
-          <input type="hidden" name="current_date_offer" value="{{ $offer->date }}" id="current-date-offer">
+          <input type="hidden" name="current_date_offer" value="{{ $date }}" id="current-date-offer">
           <input type="hidden" name="start_time_from_offer" value="{{ Carbon\Carbon::parse($offer->start_time_from)->format('H:i') }}" id="start-time-from-offer">
           <input type="hidden" name="start_time_to_offer" value="{{ Carbon\Carbon::parse($offer->start_time_to)->format('H:i') }}" id="start-time-to-offer">
         </div>

@@ -263,7 +263,7 @@ $(document).ready(function(){
 
     var now = new Date();
     var check = hour;
-
+    
     if (23<hour) {
       switch(hour) {
         case '24':
