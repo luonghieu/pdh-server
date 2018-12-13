@@ -30,27 +30,6 @@
                     </router-link>
             </div>
         </div>
-        <!--<div class="inbox_chat inbox_guest" id="guest">-->
-            <!--<div v-for="(value, index) in filteredData" :key="index">-->
-                    <!--<router-link :to="{ name: 'ChatRoom', params: { id: value.id }}" v-on:click.native="setRoomId(value.id, value.unread_count, value.users)">-->
-                        <!--<div v-bind:class="value.id == Id || value.id == room_id ? 'active_chat ' : ''">-->
-                            <!--<div class="chat_list" v-for="(userDetail, index) in value.users" v-if="userDetail.type == guest" :key="index">-->
-                                <!--<div class="chat_people">-->
-                                    <!--<div class="chat_img" v-if=userDetail.avatars><img-->
-                                            <!--class="img_avatar"-->
-                                            <!--:src="userDetail.avatars[0] ? userDetail.avatars[0].thumbnail : ''">-->
-                                    <!--</div>-->
-                                    <!--<div class="chat_ib">-->
-                                        <!--<h5 class="chat_id fa fa-id-badge"> {{userDetail.id}}</h5>-->
-                                        <!--<h5 class="chat_nickname"><i v-bind:class="userDetail.gender == 2 ? 'fa fa-female' : 'fa fa-male' "></i> {{userDetail.nickname}}</h5>-->
-                                    <!--</div>-->
-                                <!--</div>-->
-                                <!--<span v-for="(unread, index) in unreadMessage" :key="index" v-if="unread.id == value.id && unread.count > 0" v-bind:class="unread.count == 0 || value.id == Id || value.id == room_id  ? 'notification' : 'notify-chat'">{{unread.count}}</span>-->
-                            <!--</div>-->
-                        <!--</div>-->
-                    <!--</router-link>-->
-            <!--</div>-->
-        <!--</div>-->
         <div class="inbox_chat inbox_guest" id="guest">
             <div v-for="(room, index) in filteredGuests" :key="index">
                 <div v-bind:class="(room_id == room.id || room.id == roomId) ? 'active_chat ' : ''">
@@ -116,7 +95,7 @@ export default {
     setRoomId(room) {
         this.room_id = room.id;
         this.$emit('updateUnreadMessage', this.room_id);
-    }
+    },
   },
   watch: {
       unreadMessage(newVal, oldVal) {

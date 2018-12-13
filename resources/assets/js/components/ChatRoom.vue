@@ -74,7 +74,7 @@ export default {
       userId: "",
       unreadMessage: [],
       roomGuests: [],
-      roomCasts: []
+      roomCasts: [],
     };
   },
 

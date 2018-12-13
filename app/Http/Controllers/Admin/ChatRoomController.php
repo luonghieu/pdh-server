@@ -35,11 +35,10 @@ class ChatRoomController extends Controller
                 $j->on('avatars.user_id', '=', 'users.id')
                     ->where('is_default', true);
             })
+            ->where('users.deleted_at', null)
             ->select('rooms.*', 'users.type As user_type', 'users.gender', 'users.nickname', 'avatars.thumbnail')
             ->orderBy('users.updated_at', 'DESC')->get();
 
         return view('admin.chatroom.index', compact('token', 'userId', 'rooms', 'unReads'));
     }
-
-
 }
