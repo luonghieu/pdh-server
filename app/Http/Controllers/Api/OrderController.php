@@ -346,7 +346,7 @@ class OrderController extends ApiController
         }
 
         if ($now->second(0)->diffInMinutes($start_time, false) < 29) {
-            return $this->respondErrorMessage(trans('messages.order_timeout'), 422);
+            return $this->respondErrorMessage(trans('messages.time_invalid'), 400);
         }
 
         $startHourFrom = (int) Carbon::parse($offer->start_time_from)->format('H');
