@@ -4,8 +4,8 @@
             <div class="inbox_msg">
                 <h3 class="text-center nickname">{{nickName}}</h3>
                 <list-users :user_id="user_id" :roomId="roomId" :realtime_message="realtime_message" :realtime_roomId="realtime_roomId"
-                :unreadMessage="unreadMessage" :room-guests="roomGuests" :room-casts="roomCasts"
-                            @updateUnreadMessage="onRoomJoined" :storage-path="imgPath"
+                :unreadMessage="unreadMessage" :room-guests="roomGuests" :room-casts="roomCasts" @updateUnreadMessage="onRoomJoined" :storage-path="imgPath"
+                @loadMore="onLoadMore" @filterRoom="onFilterRoom" :roomGuestsFiltered="roomGuestsFiltered" :roomCastsFiltered="roomCastsFiltered"
                 ></list-users>
                 <div class="mesgs">
                     <chat-messages :list_message="list_messages" :user_id="user_id" :unreadMessage="unreadMessage"
@@ -76,7 +76,10 @@ export default {
       unreadMessage: [],
       roomGuests: [],
       roomCasts: [],
-      imgPath: ''
+      roomGuestsFiltered: [],
+      roomCastsFiltered: [],
+      imgPath: '',
+      renewRoom: ''
     };
   },
 
@@ -111,6 +114,8 @@ export default {
         this.realtime_roomId = e.message.room_id;
         if (this.realtime_roomId) {
             if (this.realtime_roomId != this.$route.params.id) {
+                console.log('123123');
+                this.getRoomDetail(this.realtime_roomId);
                 if (e.message.user.type == 1) {
                     const roomIndex = this.roomGuests.findIndex(i => i.id == this.realtime_roomId);
                     const room = this.roomGuests[roomIndex];
@@ -340,6 +345,36 @@ export default {
       if (index != -1) {
           this.unreadMessage.splice(index , 1);
       }
+    },
+    arrayUnique(array) {
+      const a = array.concat();
+      for(let i=0; i < a.length; ++i) {
+        for(let j=i+1; j < a.length; ++j) {
+          if(a[i] === a[j])
+            a.splice(j--, 1);
+          }
+        }
+
+          return a;
+      },
+    onLoadMore(data) {
+      const roomGuests = data.filter(r => r.user_type == 1);
+      const roomCasts = data.filter(r => r.user_type == 2);
+      this.roomGuests = [...new Set([...this.roomGuests ,...roomGuests])];
+      this.roomCasts = [...new Set([...this.roomCasts ,...roomCasts])];
+    },
+    onFilterRoom(data) {
+        const roomGuests = data.filter(r => r.user_type == 1);
+        const roomCasts = data.filter(r => r.user_type == 2);
+        this.roomGuestsFiltered = roomGuests;
+        this.roomCastsFiltered = roomCasts;
+    },
+    getRoomDetail(id) {
+        window.axios.get('/api/v1/rooms/admin/room_detail/' + id).then(response => {
+            const data = response.data;
+        }).catch(e => {
+            console.log(e);
+        });
     }
   }
 };

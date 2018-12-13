@@ -37,8 +37,9 @@ class ChatRoomController extends Controller
             })
             ->where('users.deleted_at', null)
             ->select('rooms.*', 'users.type As user_type', 'users.gender', 'users.nickname', 'avatars.thumbnail')
-            ->orderBy('users.updated_at', 'DESC')->get();
+            ->orderBy('users.type', 'DESC')->orderBy('users.updated_at', 'DESC')->paginate(100);
 
+        $rooms = json_encode($rooms->items());
         $storagePath = \Storage::url(null);
 
         return view('admin.chatroom.index', compact('token', 'userId', 'rooms', 'unReads', 'storagePath'));

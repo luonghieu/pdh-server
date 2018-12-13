@@ -116,16 +116,61 @@ class RoomController extends ApiController
         }
     }
 
-    public function getUsers(Request $request)
+    public function getRooms(Request $request)
     {
-        $expectIds = explode(',', $request->expect_ids);
-        $rooms = Room::active()->where('type', RoomType::SYSTEM);
+        if ($request->search) {
+            $search = $request->search;
+            $rooms = DB::table('rooms')->where('is_active', true)
+                ->where('rooms.type', RoomType::SYSTEM)
+                ->join('users', function ($j) use ($search) {
+                    $j->on('rooms.owner_id', '=', 'users.id')
+                        ->where(function ($w) use ($search) {
+                            $w->Where('users.id', 'like', '%' . $search . '%')
+                                ->orWhere('users.nickname', 'like', '%' . $search . '%');
+                        });
+                })
+                ->join('avatars', function ($j) {
+                    $j->on('avatars.user_id', '=', 'users.id')
+                        ->where('is_default', true);
+                })
+                ->where('users.deleted_at', null)
+                ->select('rooms.*', 'users.type As user_type', 'users.gender', 'users.nickname', 'avatars.thumbnail')
+                ->orderBy('users.type', 'DESC')->orderBy('users.updated_at', 'DESC')
+                ->get();
+        } else {
+            $rooms = DB::table('rooms')->where('is_active', true)
+                ->where('rooms.type', RoomType::SYSTEM)
+                ->join('users', 'rooms.owner_id', '=', 'users.id')
+                ->join('avatars', function ($j) {
+                    $j->on('avatars.user_id', '=', 'users.id')
+                        ->where('is_default', true);
+                })
+                ->where('users.deleted_at', null)
+                ->select('rooms.*', 'users.type As user_type', 'users.gender', 'users.nickname', 'avatars.thumbnail')
+                ->orderBy('users.type', 'DESC')->orderBy('users.updated_at', 'DESC')
+                ->paginate(100)->appends($request->query());
+        }
 
-        $rooms = $rooms->with(['users' => function ($query) {
-            $query->whereNotIn('type', [Usertype::ADMIN]);
-        }])->whereNotIn('id', $expectIds)->orderBy('updated_at', 'DESC')->paginate(200);
 
-        return $this->respondWithData($rooms);
+        return response()->json($rooms, 200);
+    }
+
+    public function getRoom(Request $request) {
+        $id = $request->id;
+        $room = DB::table('rooms')->where('is_active', true)
+            ->where('rooms.type', RoomType::SYSTEM)
+            ->where('rooms.id', $id)
+            ->join('users', 'rooms.owner_id', '=', 'users.id')
+            ->join('avatars', function ($j) {
+                $j->on('avatars.user_id', '=', 'users.id')
+                    ->where('is_default', true);
+            })
+            ->where('users.deleted_at', null)
+            ->select('rooms.*', 'users.type As user_type', 'users.gender', 'users.nickname', 'avatars.thumbnail')
+            ->orderBy('users.type', 'DESC')->orderBy('users.updated_at', 'DESC')
+            ->first();
+
+        return response()->json($room, 200);
     }
 
     public function getAdminUnreadMessages()
