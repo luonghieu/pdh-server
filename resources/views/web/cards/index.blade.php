@@ -1,5 +1,6 @@
 @section('title', 'クレジットカード登録')
 @section('screen.id', 'gl1')
+@section('controller.id', 'card-index')
 @extends('layouts.web')
 @section('web.content')
 <div class="title">
