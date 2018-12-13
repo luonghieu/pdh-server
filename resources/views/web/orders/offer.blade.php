@@ -290,9 +290,10 @@
            <select class="select-minute-offer" name="select_minute_offer">
              @php 
                $time =  isset($endMinute) ? $endMinute : 59 ;
+               $check = isset($endMinute) ? $endMinute : $startMinute ;
              @endphp
               @foreach(range($startMinute, $time) as $minute)
-                <option value="{{ $minute<10 ? '0'.$minute : $minute }}" {{ $startMinute == $minute ? 'selected' : '' }}>
+                <option value="{{ $minute<10 ? '0'.$minute : $minute }}" {{ $check == $minute ? 'selected' : '' }}>
                   {{ $minute<10 ? '0'.$minute : $minute }}分
                 </option>
               @endforeach
