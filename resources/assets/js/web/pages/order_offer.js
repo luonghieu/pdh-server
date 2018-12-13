@@ -92,9 +92,11 @@ $(document).ready(function(){
       var orderOffer = JSON.parse(localStorage.getItem("order_offer"));
       if(orderOffer[offerId]) {
         orderOffer = orderOffer[offerId];
-        var date = orderOffer.current_date;
-      } else {
-        var date = $('#current-date-offer').val();
+        if(orderOffer.current_date) {
+          var date = orderOffer.current_date;
+        }else {
+          var date = $('#current-date-offer').val();
+        }
       }
     } else {
       var date = $('#current-date-offer').val();
@@ -174,8 +176,6 @@ $(document).ready(function(){
               $('#err-offer').prop('checked',true);
             }
           }
-
-
       })
   })
 
