@@ -16,7 +16,7 @@
                             <div class="chat_list">
                                 <div class="chat_people">
                                     <div class="chat_img">
-                                        <img class="img_avatar" :src="room.thumbnail" @error="onImageError">
+                                        <img class="img_avatar" :src="getImgUrl(room.thumbnail)">
                                     </div>
                                     <div class="chat_ib">
                                         <h5 class="chat_id fa fa-id-badge"> {{room.owner_id}}</h5>
@@ -88,7 +88,6 @@ export default {
     };
   },
   created() {
-      console.log(this.storagePath);
       this.mutableRoomGuests = this.roomGuests;
       this.mutableRoomCasts = this.roomCasts;
       this.unreads = this.unreadMessage;
@@ -98,11 +97,14 @@ export default {
         this.room_id = room.id;
         this.$emit('updateUnreadMessage', this.room_id);
     },
-    onImageError(e) {
-        // const src = this.storagePath + e.target.getAttribute('src');
-        // e.target.src = src;
-        // event.target.src = this.storagePath + event.target.getAttribute('src');
-    }
+    getImgUrl(thumbnail) {
+      const pattern = /(http|https):?/;
+      if(!pattern.test(thumbnail)) {
+        return this.storagePath + thumbnail;
+      }
+
+      return thumbnail;
+    },
   },
   watch: {
       unreadMessage(newVal, oldVal) {
