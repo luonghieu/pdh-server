@@ -187,7 +187,7 @@
           @php
             $startHour = (int)Carbon\Carbon::parse($offer->start_time_from)->format('H');
             $endHour = (int)Carbon\Carbon::parse($offer->start_time_to)->format('H');
-            $date = $offer->date;
+
             $startTimeFrom = Carbon\Carbon::createFromFormat('Y-m-d H:i:s', $offer->date . ' ' . $offer->start_time_from);
             $startTimeTo = Carbon\Carbon::createFromFormat('Y-m-d H:i:s', $offer->date . ' ' . $offer->start_time_to);
 
@@ -207,25 +207,16 @@
             }
 
             $currentTime = Carbon\Carbon::now()->second(0);
-
+            $date = $offer->date;
             $startHourFrom = Carbon\Carbon::parse($offer->start_time_from)->format('H:i');
             $startMinute =  (int)Carbon\Carbon::parse($offer->start_time_from)->format('i');
-            
-            if ($currentTime->copy()->addMinutes(30)->gte($startTimeTo)) {
-              $startHour = (int)$startTimeTo->copy()->format('H');
-              $startHourFrom =$startTimeTo->copy()->format('H:i');
-              $startMinute =  0;
-              $endMinute = (int)$startTimeTo->copy()->format('i');
-              $date = $startTimeTo->copy()->format('Y-m-d');
-            } else {
-              if($currentTime->between($startTimeFrom,$startTimeTo)) {
-                $startHour = (int)$currentTime->copy()->addMinutes(30)->format('H');
-                $startHourFrom =$currentTime->copy()->addMinutes(30)->format('H:i');
-                $startMinute =  (int)$currentTime->copy()->addMinutes(30)->format('i');
-                $date = $currentTime->copy()->addMinutes(30)->format('Y-m-d');
-              }
-            }
 
+            if($currentTime->copy()->addMinutes(30)->between($startTimeFrom,$startTimeTo)) {
+              $startHour = (int)$currentTime->copy()->addMinutes(30)->format('H');
+              $startHourFrom =$currentTime->copy()->addMinutes(30)->format('H:i');
+              $startMinute =  (int)$currentTime->copy()->addMinutes(30)->format('i');
+              $date = $currentTime->copy()->addMinutes(30)->format('Y-m-d');
+            }
           @endphp
             <label class="date-input d-flex-end">
               <p class="date-input__text">
@@ -288,12 +279,8 @@
               @endfor
            </select>
            <select class="select-minute-offer" name="select_minute_offer">
-             @php 
-               $time =  isset($endMinute) ? $endMinute : 59 ;
-               $check = isset($endMinute) ? $endMinute : $startMinute ;
-             @endphp
-              @foreach(range($startMinute, $time) as $minute)
-                <option value="{{ $minute<10 ? '0'.$minute : $minute }}" {{ $check == $minute ? 'selected' : '' }}>
+              @foreach(range($startMinute, 59) as $minute)
+                <option value="{{ $minute<10 ? '0'.$minute : $minute }}" {{ $startMinute == $minute ? 'selected' : '' }}>
                   {{ $minute<10 ? '0'.$minute : $minute }}分
                 </option>
               @endforeach
