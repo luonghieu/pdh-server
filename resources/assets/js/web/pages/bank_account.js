@@ -140,7 +140,8 @@ $(document).ready(function(){
       window.location = '/cast_mypage/bank_account';
     })
     .catch(function (error) {
-      console.log(error);
+      $('#create_bank_accounts-content').text(error.response.data.error);
+      $('#create_bank_accounts-error').trigger('click');
     });
   });
 
@@ -173,7 +174,8 @@ $(document).ready(function(){
         window.location = '/cast_mypage/bank_account';
       })
       .catch(function (error) {
-        console.log(error);
+        $('#edit_bank_accounts-content').text(error.response.data.error);
+        $('#edit_bank_accounts-error').trigger('click');
       });
     }
   });

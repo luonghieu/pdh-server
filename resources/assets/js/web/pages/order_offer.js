@@ -92,9 +92,11 @@ $(document).ready(function(){
       var orderOffer = JSON.parse(localStorage.getItem("order_offer"));
       if(orderOffer[offerId]) {
         orderOffer = orderOffer[offerId];
-        var date = orderOffer.current_date;
-      } else {
-        var date = $('#current-date-offer').val();
+        if(orderOffer.current_date) {
+          var date = orderOffer.current_date;
+        }else {
+          var date = $('#current-date-offer').val();
+        }
       }
     } else {
       var date = $('#current-date-offer').val();
@@ -149,7 +151,7 @@ $(document).ready(function(){
               var err ='';
 
               if (error.response.status == 400) {
-                var err = '開始時間は現在以降の時間を指定してください';
+                var err = '開始時間は現在時刻から30分以降の時間を選択してください';
               }
 
               if(error.response.status == 500) {
@@ -174,8 +176,6 @@ $(document).ready(function(){
               $('#err-offer').prop('checked',true);
             }
           }
-
-
       })
   })
 

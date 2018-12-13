@@ -3,7 +3,7 @@
     <div class="h-logo">
       <a href="{{ route('web.index') }}"><img src="{{ asset('assets/web/images/common/logo.svg') }}" alt="cheers"></a>
     </div>
-    @if (Auth::check() && Auth::user()->status && Auth::user()->is_guest)
+    @if (Auth::check() && Auth::user()->status)
       <a href="#menu" class="hamburger"><span></span></a>
     @endif
   </div>
@@ -11,6 +11,7 @@
 <nav id="menu">
   <ul>
     @if (Auth::check())
+      @if (Auth::user()->is_guest)
       <li><a href="{{ route('web.index') }}"><i><img src="{{ asset('assets/web/images/common/man.svg') }}"></i>マイページ</a></li>
       <li><a href="{{ route('guest.orders.call') }}"><i><img src="{{ asset('assets/web/images/common/woman.svg') }}"></i>今すぐキャストを呼ぶ</a></li>
       <li><a href="{{ route('cast.list_casts') }}"><i><img src="{{ asset('assets/web/images/common/seach2.svg') }}"></i>キャストをさがす</a></li>
@@ -30,7 +31,15 @@
           <li><a href="{{ route('web.logout') }}">ログアウト</a></li>
         </ul>
       </li>
-      @else
+      @endif
+      @if (Auth::user()->is_cast)
+      <li><a href="{{ route('web.index') }}"><i><img src="{{ asset('assets/web/images/common/man.svg') }}"></i>マイページ</a></li>
+      <li><a href="{{ route('cast_mypage.bank_account.index') }}"><i><img src="{{ asset('assets/web/images/common/icon-cash-bk.png') }}"></i>振込口座</a></li>
+      <li><a href="{{ route('cast.transfer_history') }}"><i><img src="{{ asset('assets/web/images/common/icon-point-bk.png') }}"></i>振込履歴</a></li>
+      <li><a href="<?php echo env('APP_URL') . '/service/cast_qa' ?>"><i><img src="{{ asset('assets/web/images/common/icon-question-wt-bk.png') }}"></i>よくある質問</a></li>
+      <li><a href="{{ route('web.logout') }}"><i><img src="{{ asset('assets/web/images/common/logout.jpeg') }}"></i>ログアウト</a></li>
+      @endif
+    @else
       <li><span><i><img src="{{ asset('assets/web/images/common/help.svg') }}"></i>ヘルプ</span>
         <ul>
           <li><a href="{{ url('/service/guest_qa') }}">よくある質問</a></li>
