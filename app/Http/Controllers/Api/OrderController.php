@@ -328,7 +328,7 @@ class OrderController extends ApiController
         $offer = Offer::find($request->offer_id);
 
         if (!$offer || OfferStatus::ACTIVE != $offer->status) {
-            return $this->respondErrorMessage(trans('messages.order_not_found'), 404);
+            return $this->respondErrorMessage(trans('messages.order_timeout'), 422);
         }
 
         if (!$user->cards->first()) {
@@ -345,8 +345,8 @@ class OrderController extends ApiController
             return $this->respondErrorMessage(trans('messages.card_expired'), 406);
         }
 
-        if ($now->gt($start_time) || $start_time->between($now, $now->copy()->addMinutes(29))) {
-            return $this->respondErrorMessage(trans('messages.time_invalid'), 400);
+        if ($now->second(0)->diffInMinutes($start_time, false) < 29) {
+            return $this->respondErrorMessage(trans('messages.order_timeout'), 422);
         }
 
         $startHourFrom = (int) Carbon::parse($offer->start_time_from)->format('H');
@@ -355,10 +355,6 @@ class OrderController extends ApiController
         $startTimeTo = Carbon::createFromFormat('Y-m-d H:i:s', $offer->date . ' ' . $offer->start_time_to);
         if ($startHourTo < $startHourFrom) {
             $startTimeTo = $startTimeTo->copy()->addDay();
-        }
-
-        if ($now->between($startTimeTo->copy()->subMinutes(30), $startTimeTo)) {
-            return $this->respondErrorMessage(trans('messages.order_timeout'), 422);
         }
 
         $input['end_time'] = $end_time->format('H:i');

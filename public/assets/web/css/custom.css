@@ -1335,6 +1335,7 @@ div.user-data span.total-point-cast{
 .text-time {
   margin-bottom: -25px;
   margin-top: 2px;
+  font-size: 14px;
 }
 
 .text-duration {

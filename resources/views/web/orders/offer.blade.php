@@ -187,7 +187,7 @@
           @php
             $startHour = (int)Carbon\Carbon::parse($offer->start_time_from)->format('H');
             $endHour = (int)Carbon\Carbon::parse($offer->start_time_to)->format('H');
-
+            $date = $offer->date;
             $startTimeFrom = Carbon\Carbon::createFromFormat('Y-m-d H:i:s', $offer->date . ' ' . $offer->start_time_from);
             $startTimeTo = Carbon\Carbon::createFromFormat('Y-m-d H:i:s', $offer->date . ' ' . $offer->start_time_to);
 
@@ -210,21 +210,31 @@
 
             $startHourFrom = Carbon\Carbon::parse($offer->start_time_from)->format('H:i');
             $startMinute =  (int)Carbon\Carbon::parse($offer->start_time_from)->format('i');
-
-            if($currentTime->between($startTimeFrom,$startTimeTo)) {
-              $startHour = (int)$currentTime->copy()->addMinutes(30)->format('H');
-              $startHourFrom =$currentTime->copy()->addMinutes(30)->format('H:i');
-              $startMinute =  (int)$currentTime->copy()->addMinutes(30)->format('i');
+            
+            if ($currentTime->copy()->addMinutes(30)->gte($startTimeTo)) {
+              $startHour = (int)$startTimeTo->copy()->format('H');
+              $startHourFrom =$startTimeTo->copy()->format('H:i');
+              $startMinute =  0;
+              $endMinute = (int)$startTimeTo->copy()->format('i');
+              $date = $startTimeTo->copy()->format('Y-m-d');
+            } else {
+              if($currentTime->between($startTimeFrom,$startTimeTo)) {
+                $startHour = (int)$currentTime->copy()->addMinutes(30)->format('H');
+                $startHourFrom =$currentTime->copy()->addMinutes(30)->format('H:i');
+                $startMinute =  (int)$currentTime->copy()->addMinutes(30)->format('i');
+                $date = $currentTime->copy()->addMinutes(30)->format('Y-m-d');
+              }
             }
+
           @endphp
             <label class="date-input d-flex-end">
               <p class="date-input__text">
-                <span id="temp-date-offer">{{ Carbon\Carbon::parse($offer->date)->format('Y年m月d日') }}</span>&nbsp&nbsp&nbsp
+                <span id="temp-date-offer">{{ Carbon\Carbon::parse($date)->format('Y年m月d日') }}</span>&nbsp&nbsp&nbsp
                 <span class='time-offer' id='temp-time-offer'>{{ $startHourFrom }}~</span>
               </p>
             </label>
           </div>
-          <input type="hidden" name="current_date_offer" value="{{ $offer->date }}" id="current-date-offer">
+          <input type="hidden" name="current_date_offer" value="{{ $date }}" id="current-date-offer">
           <input type="hidden" name="start_time_from_offer" value="{{ Carbon\Carbon::parse($offer->start_time_from)->format('H:i') }}" id="start-time-from-offer">
           <input type="hidden" name="start_time_to_offer" value="{{ Carbon\Carbon::parse($offer->start_time_to)->format('H:i') }}" id="start-time-to-offer">
         </div>
@@ -278,7 +288,10 @@
               @endfor
            </select>
            <select class="select-minute-offer" name="select_minute_offer">
-              @foreach(range($startMinute, 59) as $minute)
+             @php 
+               $time =  isset($endMinute) ? $endMinute : 59 ;
+             @endphp
+              @foreach(range($startMinute, $time) as $minute)
                 <option value="{{ $minute<10 ? '0'.$minute : $minute }}" {{ $startMinute == $minute ? 'selected' : '' }}>
                   {{ $minute<10 ? '0'.$minute : $minute }}分
                 </option>
