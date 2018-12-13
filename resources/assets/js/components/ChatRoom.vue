@@ -4,7 +4,8 @@
             <div class="inbox_msg">
                 <h3 class="text-center nickname">{{nickName}}</h3>
                 <list-users :user_id="user_id" :roomId="roomId" :realtime_message="realtime_message" :realtime_roomId="realtime_roomId"
-                :unreadMessage="unreadMessage" :room-guests="roomGuests" :room-casts="roomCasts" @updateUnreadMessage="onRoomJoined"
+                :unreadMessage="unreadMessage" :room-guests="roomGuests" :room-casts="roomCasts"
+                            @updateUnreadMessage="onRoomJoined" :storage-path="imgPath"
                 ></list-users>
                 <div class="mesgs">
                     <chat-messages :list_message="list_messages" :user_id="user_id" :unreadMessage="unreadMessage"
@@ -50,7 +51,7 @@ export default {
     ChatMessages,
     ListUsers
   },
-  props: ['rooms', 'unReads', 'roomUsers', 'avatars'],
+  props: ['rooms', 'unReads', 'roomUsers', 'avatars', 'storagePath'],
   data() {
     return {
       message: "",
@@ -75,6 +76,7 @@ export default {
       unreadMessage: [],
       roomGuests: [],
       roomCasts: [],
+      imgPath: ''
     };
   },
 
@@ -89,6 +91,7 @@ export default {
   },
 
   created() {
+    this.imgPath = this.storagePath;
     this.getToken();
     this.getRoom();
     this.init();

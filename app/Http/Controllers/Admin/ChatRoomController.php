@@ -39,6 +39,8 @@ class ChatRoomController extends Controller
             ->select('rooms.*', 'users.type As user_type', 'users.gender', 'users.nickname', 'avatars.thumbnail')
             ->orderBy('users.updated_at', 'DESC')->get();
 
-        return view('admin.chatroom.index', compact('token', 'userId', 'rooms', 'unReads'));
+        $storagePath = \Storage::url(null);
+
+        return view('admin.chatroom.index', compact('token', 'userId', 'rooms', 'unReads', 'storagePath'));
     }
 }
