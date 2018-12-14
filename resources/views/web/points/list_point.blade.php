@@ -50,7 +50,7 @@
     @elseif ($pointView <= 0)
       <div class="item_right">
         <div class="">
-          @if (isset($point['order']))
+          @if ($point['order_id'])
           <a href="{{ route('history.show', $point['order_id']) }}"><img src="{{ asset('assets/web/images/gl2-1/arrow.svg') }}" alt=">"></a></div>
           @else
           <a href="javascript:void(0)" id="popup-error-order"><img src="{{ asset('assets/web/images/gl2-1/arrow.svg') }}" alt=">"></a></div>
