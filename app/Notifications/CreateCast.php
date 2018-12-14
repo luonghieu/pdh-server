@@ -63,7 +63,7 @@ class CreateCast extends Notification implements ShouldQueue
             . PHP_EOL .'今日からCheers familyです☆'
             . PHP_EOL . '一緒に盛り上げていきましょう！'
             . PHP_EOL . PHP_EOL . 'お手数ですが、こちらから必ず「キャスト専用LINE」のお友達登録をおねがいします。'
-            . PHP_EOL . 'https://line.me/R/ti/p/@' . env('LINE_ID')
+            . PHP_EOL . 'https://line.me/R/ti/p/@' . env('LINE_CFC_ID')
             . PHP_EOL . '今後、キャスト向けの連絡はこちらで行いますので、ご質問等がございましたらこちらのLINEにお送りください。'
             . PHP_EOL . PHP_EOL . '不安なこと、分からないことがあればいつでもCheers運営側にお問い合わせくださいね♪';
 

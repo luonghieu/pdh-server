@@ -34,6 +34,7 @@ class CastResource extends Resource
             'email' => $this->email,
             'nickname' => $this->nickname,
             'fullname' => $this->fullname,
+            'fullname_kana' => $this->fullname_kana,
             'phone' => $this->phone,
             'gender' => $this->gender,
             'date_of_birth' => $this->date_of_birth,

@@ -81,6 +81,10 @@ Route::group(['prefix' => 'v1'], function () {
             Route::get('/{id}/payment_requests', ['as' => 'get_payment_requests',
                 'uses' => 'Guest\PaymentRequestController@getPaymentRequest']);
         });
+
+        Route::group(['prefix' => 'point_settement', 'as' => 'point_settement.'], function () {
+            Route::post('/{orderId}', ['as' => 'create', 'uses' => 'Guest\OrderController@pointSettlement']);
+        });
     });
 
     Route::group(['middleware' => ['auth:api', 'cast'], 'prefix' => 'cast', 'as' => 'cast.'], function () {
@@ -89,6 +93,8 @@ Route::group(['prefix' => 'v1'], function () {
         Route::delete('/order/{id}', ['as' => 'index', 'uses' => 'Cast\OrderController@delete']);
         Route::get('/payments', ['as' => 'payments', 'uses' => 'Cast\PaymentController@payments']);
         Route::patch('/confirm_transfer', ['as' => 'confirm_transfer', 'uses' => 'Cast\CastController@confirmTransfer']);
+
+        Route::get('/points', ['as' => 'points', 'uses' => 'Cast\PointController@points']);
 
         Route::group(['prefix' => 'bank_accounts', 'as' => 'bank_accounts.'], function () {
             Route::post('/{id}', ['as' => 'update', 'uses' => 'Cast\BankAccountController@update']);

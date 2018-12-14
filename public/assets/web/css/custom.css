@@ -1332,6 +1332,68 @@ div.user-data span.total-point-cast{
   height: 100%;
 }
 
+.text-time {
+  margin-bottom: -25px;
+  margin-top: 2px;
+  font-size: 14px;
+}
+
+.text-duration {
+  text-align: right;
+  margin-right: 8px;
+  margin-top: -12px;
+  font-size: 17px;
+}
+
+.attention-offer {
+  font-size: 12px;
+  text-align: right;
+}
+
+.attention-offer a {
+  color: #00C3C3;
+}
+
+.popup-attention {
+  padding: 0 10px 0px 10px;
+}
+.popup-attention p {
+  text-align: left;
+}
+
+.popup-attention ul {
+  width: 100%;
+  background-image: linear-gradient(to right, #CCC, #CCC 5px, transparent 1px, transparent 9px);
+  background-size: 10px 1px;
+  background-position: top;
+  background-repeat: repeat-x;
+}
+
+.popup-attention ul li {
+  padding: 0 10px;
+  background-image: linear-gradient(to right, #CCC, #CCC 5px, transparent 1px, transparent 9px);
+  background-size: 10px 1px;
+  background-position: bottom;
+  background-repeat: repeat-x;
+  padding-left: 30px;
+}
+
+.popup-attention ul li span {
+  display: inline-block;
+  font-size: 13px;
+  width: 50%;
+  line-height: 3em;
+  text-align: left;
+}
+
+.popup-attention ul li span:last-child {
+  text-align: right;
+}
+
+.popup-attention ul li:last-child {
+  margin-bottom : 35px;
+}
+
 @media (max-width: 360px) {
   .gn-1 .list_wrap .list_item .btn_wrap .btn-cancel {
     text-align: center;
@@ -1390,7 +1452,7 @@ div.user-data span.total-point-cast{
   text-align: center;
 }
 
-#ci7 .title {
+.title {
   position: fixed;
   background-color: #fff;
   width: 100%;
@@ -1399,22 +1461,19 @@ div.user-data span.total-point-cast{
   height: 50px;
   border-bottom: 1px solid #E4E4E4;
 }
-
-#bank_accounts #ci7 .account-type .right span {
+.account-type .right span {
   font-size: 15px;
   position: absolute;
   right: 0;
   bottom: 10px;
 }
-
-#bank_accounts #ci7 .account-number .right span {
+.account-number .right span {
   font-size: 15px;
   position: absolute;
   right: 0;
   bottom: 5px;
 }
-
-#bank_accounts #ci7 .account-holder .right span {
+.account-holder .right span {
   font-size: 15px;
   position: absolute;
   right: 0;
@@ -1426,7 +1485,7 @@ div.user-data span.total-point-cast{
   text-align: right;
 }
 
-#ci7 .title-name {
+.title-name {
   display: inline-block;
   font-family: NotoSansCJKjp;
   font-size: 15px;
@@ -2454,4 +2513,13 @@ padding-top: 65px !important;
 #chat .msg-left .text-wrapper p a {
   color: rgb(80, 80, 80);;
   text-decoration:underline;
+}
+
+#gl4 .list_wrap {
+  padding-top: 50px;
+}
+
+#card-index .date-select select {
+  background-image: none;
+  width: 50px;
 }

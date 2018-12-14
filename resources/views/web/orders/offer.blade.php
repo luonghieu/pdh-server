@@ -42,6 +42,28 @@
 </div>
 
 <div class="modal_wrap">
+  <input id="show-attention" type="checkbox">
+  <div class="modal_overlay">
+    <label for="show-attention" class="modal_trigger" id="lb-show-attention"></label>
+    <div class="modal_content modal_content-btn1">
+      <div class="text-box" id="show-attention-message">
+        <div class="ge2-4-block popup-attention">
+          <h2>延長料金について</h2>
+          <p>キャストとの合流後、終了予定時刻を過ぎた場合は自動的に延長となり延長料金が15分単位で発生します。延長料金は下記のとおりです。</p>
+          <p>1人あたりの延長料金</p>
+          <ul>
+            <li><span>ダイヤモンド</span><span>8750P/15分</span></li>
+            <li><span>プラチナ</span><span>3500P/15分</span></li>
+            <li><span>ブロンズ</span><span>1750P/15分</span></li>
+          </ul>
+        </div>
+      </div>
+      <label for="show-attention" class="close_button">OK</label>
+    </div>
+  </div>
+</div>
+
+<div class="modal_wrap">
   <input id="timeout-offer" type="checkbox">
   <div class="modal_overlay">
     <label for="err-offer" id="lb-err-offer"></label>
@@ -158,47 +180,63 @@
 
         <div class="reservation-item">
           <div class="caption"><!-- 見出し用div -->
-            <h2>ギャラ飲みの開始時間</h2>
+            <h2>ギャラ飲みの時間</h2>
           </div>
+          <div class="text-time">※希望の開始時間を選択してください</div>
           <div class="form-grpup"><!-- フォーム内容 -->
+          @php
+            $startHour = (int)Carbon\Carbon::parse($offer->start_time_from)->format('H');
+            $endHour = (int)Carbon\Carbon::parse($offer->start_time_to)->format('H');
+
+            $startTimeFrom = Carbon\Carbon::createFromFormat('Y-m-d H:i:s', $offer->date . ' ' . $offer->start_time_from);
+            $startTimeTo = Carbon\Carbon::createFromFormat('Y-m-d H:i:s', $offer->date . ' ' . $offer->start_time_to);
+
+            if ($endHour < $startHour) {
+              $startTimeTo = Carbon\Carbon::createFromFormat('Y-m-d H:i:s', $offer->date . ' ' . $offer->start_time_to)->addDay();
+              switch ($endHour) {
+                case 0:
+                    $endHour = 24;
+                    break;
+                case 1:
+                    $endHour = 25;
+                    break;
+                case 2:
+                    $endHour = 26;
+                    break;
+              }
+            }
+
+            $currentTime = Carbon\Carbon::now()->second(0);
+            $date = $offer->date;
+            $startHourFrom = Carbon\Carbon::parse($offer->start_time_from)->format('H:i');
+            $startMinute =  (int)Carbon\Carbon::parse($offer->start_time_from)->format('i');
+
+            if($currentTime->copy()->addMinutes(30)->between($startTimeFrom,$startTimeTo)) {
+              $startHour = (int)$currentTime->copy()->addMinutes(30)->format('H');
+              $startHourFrom =$currentTime->copy()->addMinutes(30)->format('H:i');
+              $startMinute =  (int)$currentTime->copy()->addMinutes(30)->format('i');
+              $date = $currentTime->copy()->addMinutes(30)->format('Y-m-d');
+            }
+          @endphp
             <label class="date-input d-flex-end">
               <p class="date-input__text">
-                <span id="temp-date-offer">{{ Carbon\Carbon::parse($offer->date)->format('Y年m月d日') }}</span>&nbsp&nbsp&nbsp
-                <span class='time-offer' id='temp-time-offer'>{{ Carbon\Carbon::parse($offer->start_time_from)->format('H:i') }}~</span>
+                <span id="temp-date-offer">{{ Carbon\Carbon::parse($date)->format('Y年m月d日') }}</span>&nbsp&nbsp&nbsp
+                <span class='time-offer' id='temp-time-offer'>{{ $startHourFrom }}~</span>
               </p>
             </label>
           </div>
-          <input type="hidden" name="current_date_offer" value="{{ $offer->date }}" id="current-date-offer">
+          <input type="hidden" name="current_date_offer" value="{{ $date }}" id="current-date-offer">
           <input type="hidden" name="start_time_from_offer" value="{{ Carbon\Carbon::parse($offer->start_time_from)->format('H:i') }}" id="start-time-from-offer">
           <input type="hidden" name="start_time_to_offer" value="{{ Carbon\Carbon::parse($offer->start_time_to)->format('H:i') }}" id="start-time-to-offer">
         </div>
 
         <div class="reservation-item">
-          <div class="caption"><!-- 見出し用div -->
-            <h2>キャストを呼ぶ時間</h2>
+          <input type="hidden" id="duration-offer" value="{{ $offer->duration }}">
+          <div class="text-duration">
+            上記の開始時間から<span style="font-weight: bold;">{{ $offer->duration }}時間</span>
           </div>
-          <div class="form-grpup"><!-- フォーム内容 -->
-            @for($i=1; $i<4; $i++)
-            <label class="button button--green time {{ $i == $offer->duration ? 'active' : '' }}">
-              <input class="input-duration-offer" type="radio" name="time_set_offer" value="{{ $i }}" {{ $i == $offer->duration ? 'checked' : '' }} >
-              {{ $i }}時間
-            </label>
-            @endfor
-            <label id="time-input" class="button button--green time {{ $offer->duration > 3 ? 'active' : '' }}">
-              <input class="input-duration-offer" type="radio" name="time_set_offer" value="other_time_set"  {{ $offer->duration > 3 ? 'checked' : '' }}>
-              4時間以上
-            </label>
-            <label class="time-input time-input-offer" style="{{  $offer->duration > 3 ? 'display: flex;' : '' }}">
-              <span>呼ぶ時間</span>
-              <div class="selectbox">
-                <select class="select-duration-offer" name="sl_duration_offer">
-                  @for ($i=4; $i <11; $i++)
-                  <option value="{{ $i }}" {{ $i == $offer->duration ? 'selected' : '' }}>{{ $i }}時間</option>
-                  @endfor
-                </select>
-                <i></i>
-              </div>
-            </label>
+          <div class="form-grpup">
+            <div class="attention-offer"><a href="javascript::void(0)" style="margin: 5px 6px -7px">延長時間について</a></div>
           </div>
         </div>
 
@@ -235,26 +273,6 @@
     <div class="overlay">
       <div class="date-select">
         <div class="date-select__content">
-          @php
-            $startHour = (int)Carbon\Carbon::parse($offer->start_time_from)->format('H');
-            $endHour = (int)Carbon\Carbon::parse($offer->start_time_to)->format('H');
-
-            if ($endHour < $startHour) {
-              switch ($endHour) {
-                case 0:
-                    $endHour = 24;
-                    break;
-                case 1:
-                    $endHour = 25;
-                    break;
-                case 2:
-                    $endHour = 26;
-                    break;
-              }
-            }
-
-            $startMinute =  (int)Carbon\Carbon::parse($offer->start_time_from)->format('i');
-          @endphp
            <select class="select-hour-offer" name="select_hour_offer">
               @for($i = $startHour; $i <= $endHour; $i++)
                 <option value="{{ ($i <10) ? '0'.$i : $i }}" {{ $i == $startHour ? 'selected' : '' }}>{{ ($i <10) ? '0'.$i : $i }}時</option>
