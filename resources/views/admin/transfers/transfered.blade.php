@@ -42,7 +42,7 @@
         </div>
         <form action="{{ route('admin.transfers.change_transfers') }}" method="POST" id="form-transfer">
           {{ csrf_field() }}
-          <div class="btn-change-report report">
+          <div class="btn-change-report report transfered">
             <button type="button" class="submit-transfer">
               <p>
                 未振込に変更する

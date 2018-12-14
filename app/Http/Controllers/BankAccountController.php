@@ -80,7 +80,7 @@ class BankAccountController extends Controller
         $branchName = $request->branch_name;
         $bankCode = $request->bank_code;
 
-        if (empty($bankCode)) {
+        if (empty($bankCode) && Auth::user()->bankAccount) {
             $bankCode = Auth::user()->bankAccount->bank_code;
         }
 
@@ -91,7 +91,7 @@ class BankAccountController extends Controller
             'branch_name' => $request->branch_name,
         ];
 
-        if (preg_match('/[\'^£$%&*()}{@#~?><>,|=_+¬-]/', $branchName)) {
+        if (preg_match('/[\'^£$%&*()}{@#~?><>,|=_+¬-]/', $branchName) || (!$bankCode)) {
             $listResult = collect();
         } else {
             $client = new \GuzzleHttp\Client();

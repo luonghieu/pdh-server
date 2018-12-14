@@ -3,7 +3,7 @@
     <div class="h-logo">
       <a href="{{ route('web.index') }}"><img src="{{ asset('assets/web/images/common/logo.svg') }}" alt="cheers"></a>
     </div>
-    @if (Auth::check() && Auth::user()->status)
+    @if (Auth::check() && Auth::user()->status && Auth::user()->is_guest)
       <a href="#menu" class="hamburger"><span></span></a>
     @endif
   </div>

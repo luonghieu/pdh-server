@@ -30,7 +30,15 @@
               </tr>
               <tr>
                 <th>お名前</th>
-                <td>{{ $cast->nickname }}</td>
+                <td>{{ $cast->fullname }}</td>
+              </tr>
+              <tr>
+                <th>お名前(ふりがな)</th>
+                <td>{{ $cast->fullname_kana }}</td>
+              </tr>
+              <tr>
+                <th>稼働希望エリア</th>
+                <td>{{ $cast->prefecture ? $cast->prefecture->name:'' }}</td>
               </tr>
               <tr>
                 <th>性別</th>

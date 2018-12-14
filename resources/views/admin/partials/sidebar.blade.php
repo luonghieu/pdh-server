@@ -21,7 +21,9 @@ $routes = [
             'name' => 'admin.request_transfer.index',
             'value' => 'キャスト新規申請',
             'url' => route('admin.request_transfer.index'),
-            'submenu' => [],
+            'submenu' => [
+              'admin.request_transfer.show',
+            ],
         ],
     ],
 
@@ -138,6 +140,20 @@ $routes = [
             'submenu' => [
               'admin.notification_schedules.create',
               'admin.notification_schedules.edit',
+            ],
+        ],
+    ],
+
+    'offer' => [
+        [
+            'name' => 'admin.offers.index',
+            'value' => '新規オファー作成',
+            'url' => route('admin.offers.index'),
+            'submenu' => [
+              'admin.offers.create',
+              'admin.offers.detail',
+              'admin.offers.confirm',
+              'admin.offers.edit',
             ],
         ],
     ],

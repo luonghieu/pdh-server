@@ -1106,6 +1106,10 @@ title {
   padding: 3% 3% 0 3%;
 }
 
+#chat .msg-input button {
+  width: 30px;
+}
+
 #chat .text-wrapper {
   word-break: break-all;
 }
@@ -1328,6 +1332,68 @@ div.user-data span.total-point-cast{
   height: 100%;
 }
 
+.text-time {
+  margin-bottom: -25px;
+  margin-top: 2px;
+  font-size: 14px;
+}
+
+.text-duration {
+  text-align: right;
+  margin-right: 8px;
+  margin-top: -12px;
+  font-size: 17px;
+}
+
+.attention-offer {
+  font-size: 12px;
+  text-align: right;
+}
+
+.attention-offer a {
+  color: #00C3C3;
+}
+
+.popup-attention {
+  padding: 0 10px 0px 10px;
+}
+.popup-attention p {
+  text-align: left;
+}
+
+.popup-attention ul {
+  width: 100%;
+  background-image: linear-gradient(to right, #CCC, #CCC 5px, transparent 1px, transparent 9px);
+  background-size: 10px 1px;
+  background-position: top;
+  background-repeat: repeat-x;
+}
+
+.popup-attention ul li {
+  padding: 0 10px;
+  background-image: linear-gradient(to right, #CCC, #CCC 5px, transparent 1px, transparent 9px);
+  background-size: 10px 1px;
+  background-position: bottom;
+  background-repeat: repeat-x;
+  padding-left: 30px;
+}
+
+.popup-attention ul li span {
+  display: inline-block;
+  font-size: 13px;
+  width: 50%;
+  line-height: 3em;
+  text-align: left;
+}
+
+.popup-attention ul li span:last-child {
+  text-align: right;
+}
+
+.popup-attention ul li:last-child {
+  margin-bottom : 35px;
+}
+
 @media (max-width: 360px) {
   .gn-1 .list_wrap .list_item .btn_wrap .btn-cancel {
     text-align: center;
@@ -1386,7 +1452,7 @@ div.user-data span.total-point-cast{
   text-align: center;
 }
 
-#ci7 .title {
+.title {
   position: fixed;
   background-color: #fff;
   width: 100%;
@@ -1395,22 +1461,19 @@ div.user-data span.total-point-cast{
   height: 50px;
   border-bottom: 1px solid #E4E4E4;
 }
-
-#bank_accounts #ci7 .account-type .right span {
+.account-type .right span {
   font-size: 15px;
   position: absolute;
   right: 0;
   bottom: 10px;
 }
-
-#bank_accounts #ci7 .account-number .right span {
+.account-number .right span {
   font-size: 15px;
   position: absolute;
   right: 0;
   bottom: 5px;
 }
-
-#bank_accounts #ci7 .account-holder .right span {
+.account-holder .right span {
   font-size: 15px;
   position: absolute;
   right: 0;
@@ -1422,7 +1485,7 @@ div.user-data span.total-point-cast{
   text-align: right;
 }
 
-#ci7 .title-name {
+.title-name {
   display: inline-block;
   font-family: NotoSansCJKjp;
   font-size: 15px;
@@ -1828,7 +1891,7 @@ div.user-data span.total-point-cast{
   background-color: white;
   bottom: 0;
   min-width: 92%;
-  height: 45px;
+  height: 60px;
   position: fixed;
   padding: 7px 15px;
 }
@@ -1857,7 +1920,7 @@ padding-top: 65px !important;
   width: calc(100% - 60px);
 }
 
-.ge2-1-b .reservation-attention {
+.reservation-attention {
   width: 100%;
   height: auto;
   margin-bottom: 8px;
@@ -1866,13 +1929,13 @@ padding-top: 65px !important;
   box-sizing: border-box;
 }
 
-.ge2-1-b .reservation-attention a {
+.reservation-attention a {
   color: #00C3C3;
   font-size: 12px;
   text-align: right;
 }
 
-.ge2-1-b .reservation-attention a:before {
+.reservation-attention a:before {
   content: "";
   display: inline-block;
   width: 1.5em;
@@ -1983,7 +2046,7 @@ padding-top: 65px !important;
   background-image: none;
 }
 
-#top .cast-list .cast-body .cast-class_b {
+.cast-list .cast-body .cast-class_b {
   position: absolute;
   top: 3px;
   left: 3px;
@@ -1996,11 +2059,11 @@ padding-top: 65px !important;
   line-height: 24px;
   text-align: center;
   letter-spacing: 0;
-  background-image: linear-gradient(-33deg, #AF9292 0%, #5C4646 100%);
+  background-image: linear-gradient(-33deg, #AF9292 0%, #5C4646 100%) !important;
   opacity: .9;
 }
 
-#top .cast-list .cast-body .cast-class_p {
+.cast-list .cast-body .cast-class_p {
   position: absolute;
   top: 3px;
   left: 3px;
@@ -2013,11 +2076,11 @@ padding-top: 65px !important;
   line-height: 24px;
   text-align: center;
   letter-spacing: 0;
-  background-image: linear-gradient(-34deg, #A6A6A6 0%, #525252 100%);
+  background-image: linear-gradient(-34deg, #A6A6A6 0%, #525252 100%) !important;
   opacity: .9;
 }
 
-#top .cast-list .cast-body .cast-class_d {
+.cast-list .cast-body .cast-class_d {
   position: absolute;
   top: 3px;
   left: 3px;
@@ -2030,7 +2093,7 @@ padding-top: 65px !important;
   line-height: 24px;
   text-align: center;
   letter-spacing: 0;
-  background-image: linear-gradient(-35deg, #32EABF 0%, #00BBD7 100%);
+  background-image: linear-gradient(-35deg, #32EABF 0%, #00BBD7 100%) !important;
   opacity: .9;
 }
 
@@ -2360,8 +2423,9 @@ padding-top: 65px !important;
   word-break: break-all;
 }
 
-#chat .msg-input {
-  bottom: 10px;
+#chat .msg-wrap figure img {
+  -o-object-fit: cover;
+  object-fit: cover;
 }
 
 .modal_wrap .modal_content .wrap-banner {
@@ -2439,4 +2503,23 @@ padding-top: 65px !important;
 
 .ge2-4-block .text-ge-2-4 .ml-p {
   margin-left: 10px;
+}
+
+#chat .msg-right .text-wrapper p a {
+  color: #fff;
+  text-decoration:underline;
+}
+
+#chat .msg-left .text-wrapper p a {
+  color: rgb(80, 80, 80);;
+  text-decoration:underline;
+}
+
+#gl4 .list_wrap {
+  padding-top: 50px;
+}
+
+#card-index .date-select select {
+  background-image: none;
+  width: 50px;
 }

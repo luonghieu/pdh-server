@@ -45,7 +45,7 @@ class CancelOrderFromCast extends Notification implements ShouldQueue
                 return [PushNotificationChannel::class];
             }
 
-            if ($notifiable->device_type == DeviceType::WEB) {
+            if ($notifiable->device_type == DeviceType::WEB && $notifiable->type == UserType::GUEST) {
                 return [LineBotNotificationChannel::class];
             } else {
                 return [PushNotificationChannel::class];
