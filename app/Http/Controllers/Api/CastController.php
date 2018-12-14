@@ -24,7 +24,6 @@ class CastController extends ApiController
         }
 
         $params = $request->only([
-            'working_today',
             'class_id',
             'height',
             'body_type_id',
@@ -53,6 +52,14 @@ class CastController extends ApiController
             });
         }
 
+        if ($request->search) {
+            $search = $request->search;
+            $casts->where(function ($query) use ($search) {
+                $query->where('nickname', 'like', "%$search%")
+                    ->orWhere('users.id', $search);
+            });
+        }
+
         if (isset($request->min_point) && isset($request->max_point)) {
             $min = $request->min_point;
             $max = $request->max_point;
@@ -65,12 +72,17 @@ class CastController extends ApiController
             $q->where('blocked_id', $user->id);
         })->active();
 
-        if ($request->device) {
+        if ($request->device || $request->working_today) {
             $casts = $casts->orderByDesc('working_today')
                 ->orderBy('rank')
                 ->orderByDesc('created_at')
-                ->orderByDesc('last_active_at')
-                ->limit(10)->get();
+                ->orderByDesc('last_active_at');
+
+            if ($request->device == 3) {
+                $casts = $casts->limit(10)->get();
+            } else {
+                $casts = $casts->paginate(10)->appends($request->query());
+            }
         } elseif ($request->latest) {
             $casts = $casts->orderBy('rank')
                 ->orderByDesc('users.created_at')

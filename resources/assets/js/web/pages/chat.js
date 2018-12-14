@@ -311,6 +311,14 @@ $(document).ready(function() {
   });
 
   $('.cancel-order').click(function(event) {
+    var currentDate = new Date();
+    if (currentDate.getMinutes() < 10) {
+      var minute = '0'+currentDate.getMinutes();
+    } else {
+      var minute = currentDate.getMinutes();
+    }
+    var time = currentDate.getHours()+':'+minute;
+
     axios.post(`/api/v1/orders/`+orderId+`/cancel`)
     .then(function (response) {
       var message = response.data.message;

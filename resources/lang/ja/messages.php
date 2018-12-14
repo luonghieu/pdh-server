@@ -38,7 +38,7 @@ return [
     'order_is_rated' => "既に評価は完了しています",
     'send_message_thanks' => "送信が完了しました",
     'create_payment_request_success' => "申請が完了しました",
-    'time_invalid' => "開始時間は現在以降の時間を指定してください",
+    'time_invalid' => "開始時間は現在時刻から30分以降の時間を選択してください",
     'receipt_not_found' => '領収書が存在しません',
     'point_not_found' => '取引はありません',
     'receipt_exists' => '領収書が存在しません',
@@ -71,4 +71,6 @@ return [
     'user_verify_success' => '認証が完了しました',
     'phone_update_success' => '変更しました',
     'postcode_error' => '住所が見つかりません',
+    'order_timeout' => 'この予約は募集が締め切られました',
+    'payment_failed' => '決済に失敗しました' . PHP_EOL . '登録しているカード情報を' . PHP_EOL . '確認してください',
 ];

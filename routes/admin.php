@@ -121,4 +121,15 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.'], function () {
         Route::get('/guest', ['as' => 'guest', 'uses' => 'FavoriteController@guest']);
         Route::get('/cast', ['as' => 'cast', 'uses' => 'FavoriteController@cast']);
     });
+
+    Route::group(['namespace' => 'Offer', 'prefix' => 'offers', 'as' => 'offers.', 'middleware' => 'is_admin'], function () {
+        Route::get('/', ['as' => 'index', 'uses' => 'OfferController@index']);
+        Route::get('/create', ['as' => 'create', 'uses' => 'OfferController@create']);
+        Route::post('/', ['as' => 'store', 'uses' => 'OfferController@store']);
+        Route::post('/confirm', ['as' => 'confirm', 'uses' => 'OfferController@confirm']);
+        Route::post('/price', ['as' => 'price', 'uses' => 'OfferController@price']);
+        Route::get('/{offer}', ['as' => 'detail', 'uses' => 'OfferController@detail'])->where('offer', '[0-9]+');
+        Route::delete('/{offer}', ['as' => 'delete', 'uses' => 'OfferController@delete'])->where('offer', '[0-9]+');
+        Route::get('/edit/{offer}', ['as' => 'edit', 'uses' => 'OfferController@edit'])->where('offer', '[0-9]+');
+    });
 });

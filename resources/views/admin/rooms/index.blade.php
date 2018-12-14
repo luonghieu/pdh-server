@@ -107,8 +107,10 @@
                   </td>
                   <td>{{ Carbon\Carbon::parse($room->created_at)->format('Y/m/d H:i') }}</td>
                   <td>
-                    @if ($room->is_direct && $room->checkBlocked(($room->users[0]->id == $room->owner_id) ? $room->users[1]->id : $room->users[0]->id))
-                    'ブロック中'
+                    @if ($room->is_direct && $room->users->count() >= 2)
+                      @if ($room->checkBlocked(($room->users[0]->id == $room->owner_id) ? $room->users[1]->id : $room->users[0]->id))
+                      'ブロック中'
+                      @endif
                     @else
                     {{ App\Enums\Status::getDescription($room->is_active) }}
                     @endif

@@ -40,7 +40,7 @@
         {{ \Carbon\Carbon::parse($point['created_at'])->format('H:i') }}
       </span>
       <span class="item_status">{{ $type }}</span>
-      <span class="item_point {{ ($pointView >= 0) ? "point-plus" : "init-point-minus" }}">
+      <span class="item_point {{ ($pointView > 0) ? "point-plus" : "init-point-minus" }}">
         {{ number_format($pointView) }}P
       </span>
     </div>
@@ -49,7 +49,12 @@
       </div>
     @elseif ($pointView <= 0)
       <div class="item_right">
-        <div class=""><a href="{{ route('history.show', $point['order_id']) }}"><img src="{{ asset('assets/web/images/gl2-1/arrow.svg') }}" alt=">"></a></div>
+        <div class="">
+          @if ($point['order_id'])
+          <a href="{{ route('history.show', $point['order_id']) }}"><img src="{{ asset('assets/web/images/gl2-1/arrow.svg') }}" alt=">"></a></div>
+          @else
+          <a href="javascript:void(0)" id="popup-error-order"><img src="{{ asset('assets/web/images/gl2-1/arrow.svg') }}" alt=">"></a></div>
+          @endif
       </div>
     @else
       <div class="item_right" id="point-{{ $point['id'] }}-btn">

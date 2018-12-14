@@ -64,7 +64,7 @@ if (!function_exists('getDay')) {
         $date = \Carbon\Carbon::now()->addMinutes(30);
         $dayOfWeek = ['日', '月', '火', '水', '木', '金', '土'];
 
-        if (!$data['month']) {
+        if (!isset($data['month'])) {
             $data['month'] = $date->month;
         }
 
@@ -108,18 +108,62 @@ if (!function_exists('linkExtractor')) {
     }
 }
 
-if ( ! function_exists('put_permanent_env'))
-{
+if (!function_exists('listDate')) {
+    function listDate($data = null)
+    {
+        $currentDate = \Carbon\Carbon::now();
+        $currentMonth = $currentDate->format('m');
+        $currentDay = $currentDate->format('d');
+
+        if (!isset($data['month'])) {
+            $data['month'] = $currentDate->month;
+        }
+
+        if (!isset($data['year'])) {
+            $data['year'] = $currentDate->year;
+        }
+
+        $days = [];
+
+        $number = cal_days_in_month(CAL_GREGORIAN, $data['month'], $data['year']);
+
+        foreach (range(01, $number) as $val) {
+            if ($data['month'] == $currentMonth && $currentDay <= $val) {
+                $days[$val] = $val;
+            } else {
+                if ($data['month'] != $currentMonth) {
+                    $days[$val] = $val;
+                }
+            }
+        }
+
+        return $days;
+    }
+}
+
+if (!function_exists('put_permanent_env')) {
     function putPermanentEnv($key, $value)
     {
         $path = app()->environmentFilePath();
 
-        $escaped = preg_quote('='.env($key), '/');
+        $escaped = preg_quote('=' . env($key), '/');
 
         file_put_contents($path, preg_replace(
             "/^{$key}{$escaped}/m",
             "{$key}={$value}",
             file_get_contents($path)
         ));
+    }
+}
+
+if (!function_exists('transferLinkMessage')) {
+    function transferLinkMessage($value)
+    {
+        $pattern = '/((([A-Za-z]{3,9}:(?:\/\/)?)(?:[\-;:&=\+\$,\w]+@)?[A-Za-z0-9\.\-]+|(?:www\.|[\-;:&=\+\$,\w]+@)[A-Za-z0-9\.\-]+)((?:\/[\+~%\/\.\w\-_]*)?\??(?:[\-\+=&;%@\.\w_]*)#?(?:[\.\!\/\w]*))?)/';
+        if (preg_match($pattern, $value, $url)) {
+            return preg_replace($pattern, '<a href="$1" target="_blank">$1</a>', $value);
+        } else {
+            return $value;
+        }
     }
 }

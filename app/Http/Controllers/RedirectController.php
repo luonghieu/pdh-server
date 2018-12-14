@@ -30,7 +30,7 @@ class RedirectController extends Controller
                     }
                 }
 
-                if ($order->payment_status == OrderPaymentStatus::PAYMENT_FINISHED && $rated) {
+                if (OrderPaymentStatus::PAYMENT_FINISHED == $order->payment_status && $rated) {
                     return \Redirect::to(route('history.show', ['orderId' => $request->order_id]));
                 }
 
@@ -42,6 +42,8 @@ class RedirectController extends Controller
                 return \Redirect::to(route('credit_card.update'));
             case 'cast':
                 return \Redirect::to(route('cast.show', ['id' => $request->cast_id]));
+            case 'offers':
+                return \Redirect::to(route('guest.orders.offers', ['id' => $request->offer_id]));
             default:
                 return \Redirect::to(route('web.index'));
         }

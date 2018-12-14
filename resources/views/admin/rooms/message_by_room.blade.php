@@ -33,11 +33,6 @@
               </div>
             </div>
           </form>
-        </div>
-        <div class="panel-body change-active-room">
-          <div class="display-title">
-            <p><b>ルームID:</b> {{ $room->id }}</p>
-          </div>
           <div class="inactive-room">
               @php
                 if($room->is_active == true) {
@@ -49,6 +44,11 @@
                 }
               @endphp
             <button class="btn btn-info" data-toggle="modal" data-target="{{ $nameId }}">{{ $title }}</button>
+          </div>
+        </div>
+        <div class="panel-body change-active-room">
+          <div class="display-title">
+            <p><b>ルームID:</b> {{ $room->id }}</p>
           </div>
         </div>
         <div class="panel-body">
