@@ -170,41 +170,6 @@
                     this.mutableRoomCasts = newVal;
                 }
             }
-        },
-        computed: {
-            filteredGuests() {
-                let search_array = this.roomGuests;
-                let searchName = this.searchName;
-
-                if (!searchName) {
-                    return search_array;
-                }
-
-                searchName = searchName.trim().toLowerCase();
-
-                search_array = search_array.filter(item => {
-                    const nickname = item.nickname.trim().toLowerCase();
-                    return nickname.indexOf(searchName) > -1 || item.id.toString().indexOf(searchName) > -1;
-                });
-
-                return search_array;
-            },
-            filteredCasts() {
-                let search_array = this.roomCasts;
-                let searchName = this.searchName;
-                if (!searchName) {
-                    return search_array;
-                }
-
-                searchName = searchName.trim().toLowerCase();
-
-                search_array = search_array.filter(item => {
-                    const nickname = item.nickname.trim().toLowerCase();
-                    return nickname.indexOf(searchName) > -1 || item.id.toString().indexOf(searchName) > -1;
-                });
-
-                return search_array;
-            }
         }
     };
 </script>
