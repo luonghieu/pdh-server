@@ -79,7 +79,7 @@ export default {
       roomGuestsFiltered: [],
       roomCastsFiltered: [],
       imgPath: '',
-      renewRoom: ''
+      allRooms: []
     };
   },
 
@@ -95,6 +95,7 @@ export default {
 
   created() {
     this.imgPath = this.storagePath;
+    this.allRooms = JSON.parse(this.rooms);
     this.getToken();
     this.getRoom();
     this.init();
@@ -114,13 +115,15 @@ export default {
         this.realtime_roomId = e.message.room_id;
         if (this.realtime_roomId) {
             if (this.realtime_roomId != this.$route.params.id) {
-                console.log('123123');
-                this.getRoomDetail(this.realtime_roomId);
                 if (e.message.user.type == 1) {
                     const roomIndex = this.roomGuests.findIndex(i => i.id == this.realtime_roomId);
-                    const room = this.roomGuests[roomIndex];
-                    this.roomGuests.splice(roomIndex, 1);
-                    this.roomGuests.unshift(room);
+                    if (roomIndex == -1) {
+                        this.getRoomDetail(this.realtime_roomId);
+                    } else {
+                        const room = this.roomGuests[roomIndex];
+                        this.roomGuests.splice(roomIndex, 1);
+                        this.roomGuests.unshift(room);
+                    }
                 } else {
                     const roomIndex = this.roomCasts.findIndex(i => i.id == this.realtime_roomId);
                     const room = this.roomCasts[roomIndex];
@@ -212,7 +215,7 @@ export default {
 
     getRoom() {
       this.unreadMessage = [];
-      const rooms = JSON.parse(this.rooms);
+      const rooms = this.allRooms;
       const cloneRooms = rooms;
       let unreads = JSON.parse(this.unReads);
       for (let i of unreads) {
@@ -369,9 +372,10 @@ export default {
         this.roomGuestsFiltered = roomGuests;
         this.roomCastsFiltered = roomCasts;
     },
-    getRoomDetail(id) {
-        window.axios.get('/api/v1/rooms/admin/room_detail/' + id).then(response => {
-            const data = response.data;
+    async getRoomDetail(id) {
+        const data = await window.axios.get('/api/v1/rooms/admin/room_detail/' + id).then(response => {
+            this.roomGuests.unshift(response.data);
+            return response.data;
         }).catch(e => {
             console.log(e);
         });

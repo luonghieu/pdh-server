@@ -129,7 +129,7 @@ class RoomController extends ApiController
                                 ->orWhere('users.nickname', 'like', '%' . $search . '%');
                         });
                 })
-                ->join('avatars', function ($j) {
+                ->leftJoin('avatars', function ($j) {
                     $j->on('avatars.user_id', '=', 'users.id')
                         ->where('is_default', true);
                 })
@@ -141,7 +141,7 @@ class RoomController extends ApiController
             $rooms = DB::table('rooms')->where('is_active', true)
                 ->where('rooms.type', RoomType::SYSTEM)
                 ->join('users', 'rooms.owner_id', '=', 'users.id')
-                ->join('avatars', function ($j) {
+                ->leftJoin('avatars', function ($j) {
                     $j->on('avatars.user_id', '=', 'users.id')
                         ->where('is_default', true);
                 })
