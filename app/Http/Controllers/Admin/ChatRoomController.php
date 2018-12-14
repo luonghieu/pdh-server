@@ -8,6 +8,7 @@ use App\Http\Controllers\Controller;
 use App\Room;
 use App\User;
 use DB;
+use http\Url;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Tymon\JWTAuth\Facades\JWTAuth;
@@ -41,7 +42,9 @@ class ChatRoomController extends Controller
             ->paginate(100);
 
         $rooms = json_encode($rooms->items());
+        $storagePath = \Storage::url(null);
+        $baseUrl = \URL::to('/');
 
-        return view('admin.chatroom.index', compact('token', 'userId', 'rooms', 'unReads'));
+        return view('admin.chatroom.index', compact('token', 'userId', 'rooms', 'unReads', 'storagePath', 'baseUrl'));
     }
 }

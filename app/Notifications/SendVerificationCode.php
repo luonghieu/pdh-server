@@ -7,6 +7,7 @@ use Illuminate\Bus\Queueable;
 use Illuminate\Notifications\Notification;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
+use NotificationChannels\Twilio\TwilioCallMessage;
 use NotificationChannels\Twilio\TwilioChannel;
 use NotificationChannels\Twilio\TwilioSmsMessage;
 
@@ -39,7 +40,7 @@ class SendVerificationCode extends Notification implements ShouldQueue
 
     public function toTwilio($notifiable)
     {
-        return (new TwilioSmsMessage())
+        return (new TwilioCallMessage())
             ->content("[Cheers]認証コード：{$this->verification->code} \nこの番号をWebサイトの画面で入力してください。");
     }
 }

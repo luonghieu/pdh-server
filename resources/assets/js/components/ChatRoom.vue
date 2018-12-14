@@ -6,6 +6,7 @@
                 <list-users :user_id="user_id" :roomId="roomId" :realtime_message="realtime_message" :realtime_roomId="realtime_roomId"
                     :unreadMessage="unreadMessage" :room-guests="roomGuests" :room-casts="roomCasts" @updateUnreadMessage="onRoomJoined"
                     @loadMore="onLoadMore" @filterRoom="onFilterRoom" :roomGuestsFiltered="roomGuestsFiltered" :roomCastsFiltered="roomCastsFiltered"
+                    :storage-path="imgPath" :base-url="base_url"
                 ></list-users>
                 <div class="mesgs">
                     <chat-messages :list_message="list_messages" :user_id="user_id" :unreadMessage="unreadMessage"
@@ -51,7 +52,7 @@ export default {
     ChatMessages,
     ListUsers
   },
-  props: ['rooms', 'unReads', 'roomUsers', 'avatars'],
+  props: ['rooms', 'unReads', 'roomUsers', 'avatars', 'storagePath', 'baseUrl'],
   data() {
     return {
       message: "",
@@ -80,7 +81,7 @@ export default {
       roomCastsFiltered: [],
       imgPath: '',
       allRooms: [],
-      storagePath: ''
+      base_url: ''
     };
   },
 
@@ -95,7 +96,8 @@ export default {
   },
 
   created() {
-    this.imgPath = window.App.storage_path;
+    this.imgPath = this.storagePath;
+    this.base_url = this.baseUrl;
     this.allRooms = JSON.parse(this.rooms);
     this.getToken();
     this.getRoom();

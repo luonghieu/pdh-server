@@ -74,7 +74,9 @@
             'roomGuests',
             'roomCasts',
             'roomGuestsFiltered',
-            'roomCastsFiltered'
+            'roomCastsFiltered',
+            'storagePath',
+            'baseUrl'
         ],
         data() {
             return {
@@ -92,13 +94,9 @@
                 currentTab: 1,
                 unreads: [],
                 page: 1,
-                baseUrl: '',
-                storagePath: ''
             };
         },
         created() {
-            this.baseUrl = window.App.base_url;
-            this.storagePath = window.App.storage_path;
             this.mutableRoomGuests = this.roomGuests;
             this.mutableRoomCasts = this.roomCasts;
             this.unreads = this.unreadMessage;
