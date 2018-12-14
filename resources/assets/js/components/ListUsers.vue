@@ -40,7 +40,7 @@
                         <div class="chat_list">
                             <div class="chat_people">
                                 <div class="chat_img">
-                                    <img class="img_avatar" :src="room.thumbnail">
+                                    <img class="img_avatar" :src="getImgUrl(room.thumbnail)">
                                 </div>
                                 <div class="chat_ib">
                                     <h5 class="chat_id fa fa-id-badge"> {{room.owner_id}}</h5>
@@ -110,7 +110,7 @@
                 const pattern = /(http|https):?/;
                 if (thumbnail) {
                     if (!pattern.test(thumbnail)) {
-                        return this.storagePath.slice(0, -1) + thumbnail;
+                        return this.storagePath + thumbnail;
                     }
 
                     return thumbnail;
