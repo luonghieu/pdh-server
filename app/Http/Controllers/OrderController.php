@@ -939,6 +939,11 @@ class OrderController extends Controller
 
     public function offer(Request $request)
     {
+        $user = Auth::user();
+        if ($user->is_cast) {
+            abort(500);
+        }
+
         try {
             $id = $request->id;
             $offer = Offer::where('id', $id)->whereIn('status', [OfferStatus::ACTIVE, OfferStatus::DONE, OfferStatus::TIMEOUT])->first();

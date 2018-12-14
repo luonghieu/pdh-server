@@ -22,7 +22,8 @@
       <span class="indicator">{{ count($notifications) }}</span>
       </a>
     </div>
-      <div class="clearfix"></div>
+
+    <div class="clearfix"></div>
   </div>
 </div>
 <div class="col-lg-2 col-sm-6 col-xs-6 col-xxs-12 notifications" >
@@ -41,3 +42,7 @@
   </div>
 </div><!--/col-->
 <!-- end: Header -->
+<div class="logout-device">
+  <a  class='bag' href="{{ route('admin.logout') }}">
+  <i class="fa fa-power-off"></i></a>
+</div>

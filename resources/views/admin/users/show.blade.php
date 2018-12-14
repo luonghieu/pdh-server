@@ -181,7 +181,7 @@
               </tr>
               <tr>
                 <th>基本情報：居住地</th>
-                <td>{{ $user->prefecture ? $user->prefecture->name : "" }}</td>
+                <td>{{ ($user->prefecture_id) ? $user->prefecture->name : "" }}</td>
               </tr>
               <tr>
                 <th>基本情報：出身地</th>
@@ -232,10 +232,11 @@
             </table>
           </div>
           <div class="col-lg-9">
+            @if (!$user->deleted_at)
             <div class="delete-user pull-left">
-              <button type="button" class="btn btn-danger" data-toggle="modal"
-                      data-target="#delete_user">アカウントを削除する</button>
+              <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#delete_user">アカウントを削除する</button>
             </div>
+            @endif
             <div class="active-user pull-right">
               @php
                 if($user->status == App\Enums\Status::ACTIVE) {
@@ -246,18 +247,18 @@
                   $title = "凍結を解除する";
                 }
               @endphp
-                @if($user->is_guest)
-                  <button type="button" class="btn {{ !$user->campaign_participated ? 'btn-info' : 'btn-default' }}"
-                    data-toggle="modal" data-target="#campaign_participated" {{ !$user->campaign_participated ?: 'disabled' }}>
-                    11月キャンペーン利用完了
-                  </button>
-                  <button type="button" class="btn btn-info" data-toggle="modal" data-target="#register_cast">キャストへ変更する</button>
-                @endif
-                @if($user->is_cast)
-                  <button type="button" class="btn btn-info" data-toggle="modal" data-target="#register_guest">ゲストに変更する</button>
-                @endif
+              @if($user->is_guest)
+                <button type="button" class="btn {{ !$user->campaign_participated ? 'btn-info' : 'btn-default' }}"
+                  data-toggle="modal" data-target="#campaign_participated" {{ !$user->campaign_participated ?: 'disabled' }}>
+                  11月キャンペーン利用完了
+                </button>
+                <button type="button" class="btn btn-info" data-toggle="modal" data-target="#register_cast">キャストへ変更する</button>
+              @endif
+              @if($user->is_cast)
+                <button type="button" class="btn btn-info" data-toggle="modal" data-target="#register_guest">ゲストに変更する</button>
+              @endif
 
-                <button type="submit" class="btn btn-info" data-toggle="modal" data-target="{{ $nameId }}">{{ $title }}</button>
+              <button type="submit" class="btn btn-info" data-toggle="modal" data-target="{{ $nameId }}">{{ $title }}</button>
             </div>
           </div>
         </div>

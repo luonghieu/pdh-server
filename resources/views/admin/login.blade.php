@@ -1,6 +1,6 @@
 @extends('layouts.auth')
 @section('auth.content')
-<div class="row">
+<div class="row login">
   <div id="content" class="col-sm-12 full">
     <div class="row">
       <div class="login-box">

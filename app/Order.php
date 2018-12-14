@@ -41,6 +41,7 @@ class Order extends Model
         'temp_point',
         'class_id',
         'type',
+        'offer_id',
         'status',
         'canceled_at',
         'is_changed',
@@ -48,7 +49,7 @@ class Order extends Model
 
     public function user()
     {
-        return $this->belongsTo(User::class);
+        return $this->belongsTo(User::class)->withTrashed();
     }
 
     public function casts()
@@ -130,6 +131,11 @@ class Order extends Model
     public function transfers()
     {
         return $this->hasMany(Transfer::class);
+    }
+
+    public function offer()
+    {
+        return $this->hasOne(Offer::class, 'id', 'offer_id');
     }
 
     public function deny($userId)
@@ -554,15 +560,7 @@ class Order extends Model
 
         if ($user->point < $this->total_point) {
             $subPoint = $this->total_point - $user->point;
-
-            if (ProviderType::LINE == $user->provider) {
-                $pointAmount = $subPoint;
-            } else {
-                $autoChargePoint = config('common.autocharge_point');
-
-                $pointAmount = ceil($subPoint / $autoChargePoint) * $autoChargePoint;
-            }
-
+            $pointAmount = $subPoint;
             $point = $user->autoCharge($pointAmount);
 
             if (!$point) {

@@ -38,7 +38,7 @@ class AutoChargeFailedWorkchatNotify extends Notification implements ShouldQueue
         if (OrderType::NOMINATION != $this->order->type) {
             $link = route('admin.orders.call', ['order' => $this->order->id]);
         } else {
-            $link = route('admin.orders.order_nominee', ['room' => $this->order->id]);
+            $link = route('admin.orders.order_nominee', ['order' => $this->order->id]);
         }
 
         return [

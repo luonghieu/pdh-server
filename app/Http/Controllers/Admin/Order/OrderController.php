@@ -15,6 +15,7 @@ use App\Services\LogService;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Session;
 
 class OrderController extends Controller
 {

@@ -49,7 +49,9 @@
             @if (in_array($element['type'], [App\Enums\MessageType::MESSAGE, App\Enums\MessageType::THANKFUL]))
             <div class="text">
               <div class="text-wrapper">
-                <p>{!! nl2br($element['message']) !!}</p>
+                <p>
+                  {!! nl2br(transferLinkMessage($element['message'])) !!}
+                </p>
               </div>
             </div>
             @endif
@@ -66,7 +68,9 @@
                 @if ($element['order_id'])
                 <p class="msg-system" data-id='{{ $element['order_id'] }}'>{!! nl2br($element['message']) !!}</p>
                 @else
-                <p>{!!nl2br($element['message']) !!}</p>
+                <p>
+                  {!! nl2br(transferLinkMessage($element['message'])) !!}
+                </p>
                 @endif
               </div>
             </div>

@@ -87,7 +87,7 @@
                 <tr>
                   <td>{{ $casts->firstItem() + $key }}</td>
                   <td>{{ $cast->id }}</td>
-                  <td>{{ $cast->nickname }}</td>
+                  <td>{{ $cast->fullname }}</td>
                   <td>{{ $cast->age }}</td>
                   <td>{{ $cast->job ? $cast->job->name : ""}}</td>
                   <td>{{ Carbon\Carbon::parse($cast->request_transfer_date)->format('Y/m/d H:i') }}</td>
