@@ -28,7 +28,9 @@
     <![endif]-->
     <script>
       window.App = {!! json_encode([
-        'api_url' => config('common.api_url')
+        'api_url' => config('common.api_url'),
+        'base_url' => URL::to('/'),
+        'storage_path' => Storage::url('')
       ]) !!};
     </script>
   </head>

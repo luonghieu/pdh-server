@@ -4,8 +4,8 @@
             <div class="inbox_msg">
                 <h3 class="text-center nickname">{{nickName}}</h3>
                 <list-users :user_id="user_id" :roomId="roomId" :realtime_message="realtime_message" :realtime_roomId="realtime_roomId"
-                :unreadMessage="unreadMessage" :room-guests="roomGuests" :room-casts="roomCasts" @updateUnreadMessage="onRoomJoined" :storage-path="imgPath"
-                @loadMore="onLoadMore" @filterRoom="onFilterRoom" :roomGuestsFiltered="roomGuestsFiltered" :roomCastsFiltered="roomCastsFiltered"
+                    :unreadMessage="unreadMessage" :room-guests="roomGuests" :room-casts="roomCasts" @updateUnreadMessage="onRoomJoined"
+                    @loadMore="onLoadMore" @filterRoom="onFilterRoom" :roomGuestsFiltered="roomGuestsFiltered" :roomCastsFiltered="roomCastsFiltered"
                 ></list-users>
                 <div class="mesgs">
                     <chat-messages :list_message="list_messages" :user_id="user_id" :unreadMessage="unreadMessage"
@@ -51,7 +51,7 @@ export default {
     ChatMessages,
     ListUsers
   },
-  props: ['rooms', 'unReads', 'roomUsers', 'avatars', 'storagePath'],
+  props: ['rooms', 'unReads', 'roomUsers', 'avatars'],
   data() {
     return {
       message: "",
@@ -79,7 +79,8 @@ export default {
       roomGuestsFiltered: [],
       roomCastsFiltered: [],
       imgPath: '',
-      allRooms: []
+      allRooms: [],
+      storagePath: ''
     };
   },
 
@@ -94,7 +95,7 @@ export default {
   },
 
   created() {
-    this.imgPath = this.storagePath;
+    this.imgPath = window.App.storage_path;
     this.allRooms = JSON.parse(this.rooms);
     this.getToken();
     this.getRoom();
@@ -118,17 +119,21 @@ export default {
                 if (e.message.user.type == 1) {
                     const roomIndex = this.roomGuests.findIndex(i => i.id == this.realtime_roomId);
                     if (roomIndex == -1) {
-                        this.getRoomDetail(this.realtime_roomId);
+                        this.getRoomDetail(this.realtime_roomId, e.message.user.type);
                     } else {
                         const room = this.roomGuests[roomIndex];
                         this.roomGuests.splice(roomIndex, 1);
                         this.roomGuests.unshift(room);
                     }
                 } else {
-                    const roomIndex = this.roomCasts.findIndex(i => i.id == this.realtime_roomId);
-                    const room = this.roomCasts[roomIndex];
-                    this.roomCasts.splice(roomIndex, 1);
-                    this.roomCasts.unshift(room);
+                    if (roomIndex == -1) {
+                        this.getRoomDetail(this.realtime_roomId, e.message.user.type);
+                    } else {
+                        const roomIndex = this.roomCasts.findIndex(i => i.id == this.realtime_roomId);
+                        const room = this.roomCasts[roomIndex];
+                        this.roomCasts.splice(roomIndex, 1);
+                        this.roomCasts.unshift(room);
+                    }
                 }
 
                 const index = this.unreadMessage.findIndex(i => i.id == this.realtime_roomId);
@@ -372,10 +377,14 @@ export default {
         this.roomGuestsFiltered = roomGuests;
         this.roomCastsFiltered = roomCasts;
     },
-    async getRoomDetail(id) {
-        const data = await window.axios.get('/api/v1/rooms/admin/room_detail/' + id).then(response => {
-            this.roomGuests.unshift(response.data);
-            return response.data;
+    getRoomDetail(id, type) {
+        window.axios.get('/api/v1/rooms/admin/room_detail/' + id).then(response => {
+            this.allRooms.push(response.data);
+            if (type == 1) {
+                this.roomGuests.unshift(response.data);
+            } else {
+                this.roomCasts.unshift(response.data);
+            }
         }).catch(e => {
             console.log(e);
         });

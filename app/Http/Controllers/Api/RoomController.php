@@ -151,7 +151,6 @@ class RoomController extends ApiController
                 ->paginate(100)->appends($request->query());
         }
 
-
         return response()->json($rooms, 200);
     }
 
@@ -161,7 +160,7 @@ class RoomController extends ApiController
             ->where('rooms.type', RoomType::SYSTEM)
             ->where('rooms.id', $id)
             ->join('users', 'rooms.owner_id', '=', 'users.id')
-            ->join('avatars', function ($j) {
+            ->leftJoin('avatars', function ($j) {
                 $j->on('avatars.user_id', '=', 'users.id')
                     ->where('is_default', true);
             })

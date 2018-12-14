@@ -73,7 +73,6 @@
             "getRoom",
             'roomGuests',
             'roomCasts',
-            'storagePath',
             'roomGuestsFiltered',
             'roomCastsFiltered'
         ],
@@ -93,9 +92,13 @@
                 currentTab: 1,
                 unreads: [],
                 page: 1,
+                baseUrl: '',
+                storagePath: ''
             };
         },
         created() {
+            this.baseUrl = window.App.base_url;
+            this.storagePath = window.App.storage_path;
             this.mutableRoomGuests = this.roomGuests;
             this.mutableRoomCasts = this.roomCasts;
             this.unreads = this.unreadMessage;
@@ -107,11 +110,14 @@
             },
             getImgUrl(thumbnail) {
                 const pattern = /(http|https):?/;
-                if (!pattern.test(thumbnail)) {
-                    return this.storagePath + thumbnail;
+                if (thumbnail) {
+                    if (!pattern.test(thumbnail)) {
+                        return this.storagePath + thumbnail;
+                    }
+                    return thumbnail;
                 }
 
-                return thumbnail;
+                return this.baseUrl + '/assets/web/images/gm1/ic_default_avatar@3x.png';
             },
             loadMore() {
                 this.page += 1;
@@ -142,7 +148,7 @@
                     this.mutableRoomGuests = this.roomGuests;
                     this.mutableRoomCasts = this.roomCasts;
                 }
-            }, 1000)
+            }, 500)
         },
         watch: {
             unreadMessage(newVal, oldVal) {
