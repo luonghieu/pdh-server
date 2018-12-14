@@ -110,8 +110,9 @@
                 const pattern = /(http|https):?/;
                 if (thumbnail) {
                     if (!pattern.test(thumbnail)) {
-                        return this.storagePath + '/' + thumbnail;
+                        return this.storagePath.slice(0, -1) + thumbnail;
                     }
+
                     return thumbnail;
                 }
 
