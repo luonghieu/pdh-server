@@ -44,7 +44,7 @@ class PointSettlementSchedule extends Command
     {
         $now = Carbon::now();
 
-        $lineOrders = Order::where(function ($query) {
+        $orders = Order::where(function ($query) {
             $query->where('payment_status', OrderPaymentStatus::REQUESTING)
                 ->orWhere('payment_status', OrderPaymentStatus::PAYMENT_FAILED);
         })
@@ -57,7 +57,7 @@ class PointSettlementSchedule extends Command
             })
             ->get();
 
-        foreach ($lineOrders as $order) {
+        foreach ($orders as $order) {
             PointSettlement::dispatchNow($order->id);
         }
     }

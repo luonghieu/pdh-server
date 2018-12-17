@@ -61,38 +61,17 @@ class CancelFeeSettlement extends Command
                 $query->where('payment_status', null)
                     ->orWhere('payment_status', OrderPaymentStatus::PAYMENT_FAILED);
             })
-            ->where('canceled_at', '<=', $now->copy()->subHours(24))
+            ->where('canceled_at', '<=', $now->copy()->subHours(3))
             ->where('cancel_fee_percent', '>', 0)
             ->whereHas('user', function ($q) {
                 $q->where(function ($query1) {
                     $query1->where('payment_suspended', false)
                         ->orWhere('payment_suspended', null);
-                })
-                    ->where(function ($query) {
-                        $query->where('provider', '<>', ProviderType::LINE)
-                            ->orWhere('provider', null);
-                    });
+                });
             })
             ->get();
 
         foreach ($orders as $order) {
-            $this->processPayment($order, $now);
-        }
-
-        $lineOrders = Order::where('status', OrderStatus::CANCELED)
-            ->where(function ($query) {
-                $query->orWhere('payment_status', null)
-                    ->orWhere('payment_status', OrderPaymentStatus::PAYMENT_FAILED);
-            })
-            ->where('canceled_at', '<=', $now->copy()->subHours(3))
-            ->where('cancel_fee_percent', '>', 0)->whereHas('user', function ($q) {
-            $q->where('provider', ProviderType::LINE)->where(function ($query) {
-                $query->where('payment_suspended', false)
-                    ->orWhere('payment_suspended', null);
-            });
-        })->get();
-
-        foreach ($lineOrders as $order) {
             $this->processPayment($order, $now);
         }
     }
