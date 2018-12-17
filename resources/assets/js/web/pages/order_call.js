@@ -216,6 +216,7 @@ $(document).ready(function(){
             $(this).prop('checked',true);
             $(this).parent().find('.cast-link').addClass('cast-detail');
             $('.label-select-casts[for='+  id  +']').text('指名中');
+            $('#sb-select-casts a').text('次に進む(3/4)');
           }
         } else {
           var arrIds = [];
@@ -582,4 +583,14 @@ $(document).ready(function(){
 
   $('.checked-order').prop('checked',false);
 
+  if ($("#cast-ids-nominate").length) {
+    if(localStorage.getItem("order_call")){
+      var arrIds = JSON.parse(localStorage.getItem("order_call")).arrIds;
+      if(arrIds) {
+        if(arrIds.length) {
+          $("#cast-ids-nominate").val(arrIds.toString());
+        }
+      }
+    }   
+  }
 });

@@ -465,6 +465,12 @@ class OrderController extends Controller
             return redirect()->route('guest.orders.call');
         }
 
+        if ($request->cast_ids) {
+            $nomineeIds = $request->cast_ids;
+        } else {
+            $nomineeIds = '';
+        }
+
         $data = $request->session()->get('data');
 
         if (isset($data['otherTime'])) {
@@ -515,7 +521,7 @@ class OrderController extends Controller
                 'address' => $area,
                 'class_id' => $data['cast_class'],
                 'duration' => $data['duration'],
-                'nominee_ids' => $data['cast_ids'],
+                'nominee_ids' => $nomineeIds,
                 'date' => $startDate,
                 'start_time' => $startTime,
                 'total_cast' => $data['cast_numbers'],
