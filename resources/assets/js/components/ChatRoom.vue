@@ -132,7 +132,6 @@ export default {
                     if (roomIndex == -1) {
                         this.getRoomDetail(this.realtime_roomId, e.message.user.type);
                     } else {
-                        const roomIndex = this.roomCasts.findIndex(i => i.id == this.realtime_roomId);
                         const room = this.roomCasts[roomIndex];
                         this.roomCasts.splice(roomIndex, 1);
                         this.roomCasts.unshift(room);
