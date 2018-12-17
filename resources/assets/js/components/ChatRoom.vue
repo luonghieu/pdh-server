@@ -128,6 +128,7 @@ export default {
                         this.roomGuests.unshift(room);
                     }
                 } else {
+                    const roomIndex = this.roomCasts.findIndex(i => i.id == this.realtime_roomId);
                     if (roomIndex == -1) {
                         this.getRoomDetail(this.realtime_roomId, e.message.user.type);
                     } else {
