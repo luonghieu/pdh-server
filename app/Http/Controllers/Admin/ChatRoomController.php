@@ -42,8 +42,13 @@ class ChatRoomController extends Controller
             ->paginate(100);
 
         $rooms = json_encode($rooms->items(), true);
-        $storagePath = substr(\Storage::url('/'),0, -1);
         $baseUrl = \URL::to('/');
+
+        if (env('APP_ENV') == 'production') {
+            $storagePath = substr(\Storage::url('/'),0, -1);
+        } else {
+            $storagePath = \Storage::url(null);
+        }
 
         return view('admin.chatroom.index', compact('token', 'userId', 'rooms', 'unReads', 'storagePath', 'baseUrl'));
     }

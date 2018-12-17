@@ -18,8 +18,8 @@
                                 <textarea name="mess" v-model="message" class="write_msg"
                                           placeholder="メッセージを入力してください*"
                                           @keydown.enter.exact.prevent
-                                          @keyup.enter.exact="sendMessage"
-                                          @keydown.enter.shift.exact="newline"
+                                          @keyup.enter.exact="newline"
+                                          @keydown.enter.ctrl.exact="sendMessage"
                                           ></textarea>
                                 <input id="fileUpload" name="image" type="file" accept="image/*" style="display: none"
                                        @change="onFileChange">
