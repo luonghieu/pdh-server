@@ -1486,7 +1486,6 @@ div.user-data span.total-point-cast{
 }
 
 .title-name {
-  display: inline-block;
   font-family: NotoSansCJKjp;
   font-size: 15px;
   font-weight: bold;
@@ -1496,7 +1495,10 @@ div.user-data span.total-point-cast{
   letter-spacing: normal;
   text-align: center;
   color: #30ccc3;
-  margin-top: 14px;
+}
+
+.title-name p {
+  margin-top: 12px;
 }
 
 #ci7 .btn-register {

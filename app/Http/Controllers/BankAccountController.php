@@ -44,7 +44,7 @@ class BankAccountController extends Controller
 
     public function bankName(Request $request)
     {
-
+        $prevUrl = $request->back_url;
         $bankName = $request->bank_name;
         $infoBank = [
             'bank_code' => $request->bank_code,
@@ -61,7 +61,7 @@ class BankAccountController extends Controller
             $listResult = collect(json_decode($res->getBody()->getContents())->data);
         }
 
-        return view('web.bank_account.bank_name', compact('listResult', 'infoBank'));
+        return view('web.bank_account.bank_name', compact('listResult', 'infoBank', 'prevUrl'));
     }
 
     public function searchBranchBankName(Request $request)
@@ -72,11 +72,13 @@ class BankAccountController extends Controller
         if ($backUrl == $urlEdit) {
             $request->session()->put('backUrl', $backUrl);
         }
+
         return view('web.bank_account.branch_bank_name');
     }
 
     public function branchBankName(Request $request)
     {
+        $prevUrl = $request->back_url;
         $branchName = $request->branch_name;
         $bankCode = $request->bank_code;
 
@@ -99,6 +101,6 @@ class BankAccountController extends Controller
             $listResult = collect(json_decode($res->getBody()->getContents())->data);
         }
 
-        return view('web.bank_account.branch_bank_name', compact('listResult', 'infoBank'));
+        return view('web.bank_account.branch_bank_name', compact('listResult', 'infoBank', 'prevUrl'));
     }
 }

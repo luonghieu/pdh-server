@@ -73,4 +73,5 @@ return [
     'postcode_error' => '住所が見つかりません',
     'order_timeout' => 'この予約は募集が締め切られました',
     'payment_failed' => '決済に失敗しました' . PHP_EOL . '登録しているカード情報を' . PHP_EOL . '確認してください',
+    'data_not_found' => 'データが見つかりません',
 ];

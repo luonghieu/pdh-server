@@ -31,14 +31,9 @@
   @yield('web.extra')
   <div id="page">
     @if (Auth::check())
-      @if(Auth::user()->is_admin || Auth::user()->is_guest)
-        @include('web.partials.header')
-      @endif
-    @else
       @include('web.partials.header')
     @endif
-    <main id="@yield('screen.id')" class="@yield('screen.class')
-    {{ Auth::check() && Auth::user()->is_cast ? 'main-cast' : '' }} ">
+    <main id="@yield('screen.id')" class="@yield('screen.class')">
       @yield('web.content')
     </main>
 
