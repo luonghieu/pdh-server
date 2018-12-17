@@ -77,8 +77,27 @@
                   <td>{{ count($offer->cast_ids) }}名</td>
                   <td>
                     {{ Carbon\Carbon::parse($offer->date)->format('Y/m/d') }}
+                  @php
+                    $startHour = (int)Carbon\Carbon::parse($offer->start_time_from)->format('H');
+                    $endHour = (int)Carbon\Carbon::parse($offer->start_time_to)->format('H');
+                    $endMinute = (int)Carbon\Carbon::parse($offer->start_time_to)->format('i');
+
+                    if ($endHour < $startHour) {
+                      switch ($endHour) {
+                      case 0:
+                      $endHour = 24;
+                      break;
+                      case 1:
+                      $endHour = 25;
+                      break;
+                      case 2:
+                      $endHour = 26;
+                      break;
+                      }
+                    }
+                  @endphp
                     {{ Carbon\Carbon::parse($offer->start_time_from)->format('H:i') }} ~
-                    {{ Carbon\Carbon::parse($offer->start_time_to)->format('H:i') }}
+                    {{ $endHour . ':' . $endMinute }}
                   </td>
                   <td>{{ $offer->duration }}時間</td>
                   <td>{{ getPrefectureName($offer->prefecture_id) }}</td>

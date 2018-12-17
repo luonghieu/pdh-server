@@ -49,7 +49,27 @@
                <p class="confirm-date-offer"></p>
             </div>
             <div class="col-sm-4">
-              {{ Carbon\Carbon::parse($offer->start_time_from)->format('H:i') }} &nbsp ~ &nbsp {{ Carbon\Carbon::parse($offer->start_time_to)->format('H:i') }}
+              {{ Carbon\Carbon::parse($offer->start_time_from)->format('H:i') }} &nbsp ~ &nbsp
+              @php
+                $startHour = (int)Carbon\Carbon::parse($offer->start_time_from)->format('H');
+                $endHour = (int)Carbon\Carbon::parse($offer->start_time_to)->format('H');
+                $endMinute = (int)Carbon\Carbon::parse($offer->start_time_to)->format('i');
+
+                if ($endHour < $startHour) {
+                  switch ($endHour) {
+                  case 0:
+                  $endHour = 24;
+                  break;
+                  case 1:
+                  $endHour = 25;
+                  break;
+                  case 2:
+                  $endHour = 26;
+                  break;
+                  }
+                }
+              @endphp
+                {{ $endHour . ':' . $endMinute }}
             </div>
           </div>
           <div class="col-lg-12 wrap-qr-code lb-date-offer">

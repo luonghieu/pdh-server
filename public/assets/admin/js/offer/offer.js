@@ -125,7 +125,7 @@ $(document).ready(function(){
         //isset arrIds
         var arrIds = offer.arrIds;
 
-        if(4 > arrIds.length && arrIds.length >= 0) {
+        if(6 > arrIds.length && arrIds.length >= 0) {
           if(checkedId) {
             if (offer.class_id == classId) {
               $(this).css('opacity', 0);
