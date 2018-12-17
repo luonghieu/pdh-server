@@ -44,10 +44,10 @@ class ChatRoomController extends Controller
         $rooms = json_encode($rooms->items(), true);
         $baseUrl = \URL::to('/');
 
-        if (env('APP_ENV') == 'production') {
-            $storagePath = substr(\Storage::url('/'),0, -1);
-        } else {
+        if (env('APP_ENV') == 'local') {
             $storagePath = \Storage::url(null);
+        } else {
+            $storagePath = substr(\Storage::url('/'),0, -1);
         }
 
         return view('admin.chatroom.index', compact('token', 'userId', 'rooms', 'unReads', 'storagePath', 'baseUrl'));
