@@ -1586,8 +1586,8 @@ tbody td {
   width: 60%;
   height: 200px;
   margin: 1%;
-  -o-object-fit: cover;
-  object-fit: cover;
+  -o-object-fit: fill;
+  object-fit: fill;
 }
 
 #btn-id-image {
