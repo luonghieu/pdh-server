@@ -4,7 +4,9 @@
             <div class="inbox_msg">
                 <h3 class="text-center nickname">{{nickName}}</h3>
                 <list-users :user_id="user_id" :roomId="roomId" :realtime_message="realtime_message" :realtime_roomId="realtime_roomId"
-                @interface="handleCountMessage" :users="users" :unreadMessage="unreadMessage"
+                    :unreadMessage="unreadMessage" :room-guests="roomGuests" :room-casts="roomCasts" @updateUnreadMessage="onRoomJoined"
+                    @loadMore="onLoadMore" @filterRoom="onFilterRoom" :roomGuestsFiltered="roomGuestsFiltered" :roomCastsFiltered="roomCastsFiltered"
+                    :storage-path="imgPath" :base-url="base_url"
                 ></list-users>
                 <div class="mesgs">
                     <chat-messages :list_message="list_messages" :user_id="user_id" :unreadMessage="unreadMessage"
@@ -16,8 +18,9 @@
                                 <textarea name="mess" v-model="message" class="write_msg"
                                           placeholder="メッセージを入力してください*"
                                           @keydown.enter.exact.prevent
-                                          @keyup.enter.exact="sendMessage"
-                                          @keydown.enter.shift.exact="newline"
+                                          @keydown.enter.shift.prevent
+                                          @keyup.enter.exact="newline"
+                                          @keydown.enter.shift.exact="sendMessage"
                                           ></textarea>
                                 <input id="fileUpload" name="image" type="file" accept="image/*" style="display: none"
                                        @change="onFileChange">
@@ -50,7 +53,7 @@ export default {
     ChatMessages,
     ListUsers
   },
-
+  props: ['rooms', 'unReads', 'roomUsers', 'avatars', 'storagePath', 'baseUrl'],
   data() {
     return {
       message: "",
@@ -67,12 +70,19 @@ export default {
       id: "",
       realtime_message: "",
       realtime_roomId: "",
-      users: "",
+      users: [],
       messageUnread_index: "",
       list_messageData: [],
       nickName: "",
       userId: "",
-      unreadMessage: []
+      unreadMessage: [],
+      roomGuests: [],
+      roomCasts: [],
+      roomGuestsFiltered: [],
+      roomCastsFiltered: [],
+      imgPath: '',
+      allRooms: [],
+      base_url: ''
     };
   },
 
@@ -87,6 +97,9 @@ export default {
   },
 
   created() {
+    this.imgPath = this.storagePath;
+    this.base_url = this.baseUrl;
+    this.allRooms = JSON.parse(this.rooms);
     this.getToken();
     this.getRoom();
     this.init();
@@ -105,11 +118,26 @@ export default {
         this.realtime_message = e.message.message;
         this.realtime_roomId = e.message.room_id;
         if (this.realtime_roomId) {
-            if (this.realtime_roomId != this.roomId) {
-                const roomIndex = this.users.findIndex(i => i.id == this.realtime_roomId);
-                const room = this.users[roomIndex];
-                this.users.splice(roomIndex, 1);
-                this.users.unshift(room);
+            if (this.realtime_roomId != this.$route.params.id) {
+                if (e.message.user.type == 1) {
+                    const roomIndex = this.roomGuests.findIndex(i => i.id == this.realtime_roomId);
+                    if (roomIndex == -1) {
+                        this.getRoomDetail(this.realtime_roomId, e.message.user.type);
+                    } else {
+                        const room = this.roomGuests[roomIndex];
+                        this.roomGuests.splice(roomIndex, 1);
+                        this.roomGuests.unshift(room);
+                    }
+                } else {
+                    const roomIndex = this.roomCasts.findIndex(i => i.id == this.realtime_roomId);
+                    if (roomIndex == -1) {
+                        this.getRoomDetail(this.realtime_roomId, e.message.user.type);
+                    } else {
+                        const room = this.roomCasts[roomIndex];
+                        this.roomCasts.splice(roomIndex, 1);
+                        this.roomCasts.unshift(room);
+                    }
+                }
 
                 const index = this.unreadMessage.findIndex(i => i.id == this.realtime_roomId);
                 if (index != -1) {
@@ -195,25 +223,26 @@ export default {
 
     getRoom() {
       this.unreadMessage = [];
-      window.axios.get("/api/v1/rooms/admin/get_users").then(response => {
-        const rooms = response.data.data;
-        this.users = rooms;
-        let unreads = [];
-        window.axios.get("/api/v1/rooms/admin/unread_messages").then(unreadResponse => {
-            unreads = unreadResponse.data;
-            for (let i of unreads) {
-                for (let room of this.users) {
-                    if (i.room_id == room.id) {
-                        this.messageUnread_index = i.total;
-                        this.unreadMessage.push({ id: room.id, count: i.total });
-                        break;
-                    }
-                }
+      const rooms = this.allRooms;
+      const cloneRooms = rooms;
+      let unreads = JSON.parse(this.unReads);
+      for (let i of unreads) {
+          for (let j = 0; j < cloneRooms.length; j++) {
+              const room = cloneRooms[j];
+              if (i.room_id == room.id) {
+                this.messageUnread_index = i.total;
+                this.unreadMessage.push({ id: room.id, count: i.total });
+                const tempRoom = cloneRooms[j];
+                  rooms.splice(j, 1);
+                  rooms.unshift(tempRoom);
+                  break;
+              }
             }
-        });
-      });
-    },
+        }
 
+        this.roomGuests = rooms.filter(r => r.user_type == 1);
+        this.roomCasts = rooms.filter(r => r.user_type == 2);
+    },
     sendMessage() {
       if (this.id) {
         this.realtime_roomId = this.id;
@@ -318,20 +347,50 @@ export default {
     removeImage: function(e) {
       this.image = "";
     },
-
-    handleCountMessage(event) {
-      if (event >= 0) {
-        this.unreadMessage.splice(event, 1, {
-          id: this.$route.params.id,
-          count: 0
-        });
-      } else {
-        this.nickName = event;
-      }
-    },
-
     handleNewMessage(event) {
       this.realtime_roomId = event;
+    },
+    onRoomJoined(event) {
+      this.roomId = event;
+      const index = this.unreadMessage.findIndex(i => i.id == event);
+      if (index != -1) {
+          this.unreadMessage.splice(index , 1);
+      }
+    },
+    arrayUnique(array) {
+      const a = array.concat();
+      for(let i=0; i < a.length; ++i) {
+        for(let j=i+1; j < a.length; ++j) {
+          if(a[i] === a[j])
+            a.splice(j--, 1);
+          }
+        }
+
+          return a;
+      },
+    onLoadMore(data) {
+      const roomGuests = data.filter(r => r.user_type == 1);
+      const roomCasts = data.filter(r => r.user_type == 2);
+      this.roomGuests = [...new Set([...this.roomGuests ,...roomGuests])];
+      this.roomCasts = [...new Set([...this.roomCasts ,...roomCasts])];
+    },
+    onFilterRoom(data) {
+        const roomGuests = data.filter(r => r.user_type == 1);
+        const roomCasts = data.filter(r => r.user_type == 2);
+        this.roomGuestsFiltered = roomGuests;
+        this.roomCastsFiltered = roomCasts;
+    },
+    getRoomDetail(id, type) {
+        window.axios.get('/api/v1/rooms/admin/room_detail/' + id).then(response => {
+            this.allRooms.push(response.data);
+            if (type == 1) {
+                this.roomGuests.unshift(response.data);
+            } else {
+                this.roomCasts.unshift(response.data);
+            }
+        }).catch(e => {
+            console.log(e);
+        });
     }
   }
 };
