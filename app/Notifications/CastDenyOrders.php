@@ -11,7 +11,6 @@ use App\Traits\DirectRoom;
 use Illuminate\Bus\Queueable;
 use Illuminate\Notifications\Notification;
 use Illuminate\Contracts\Queue\ShouldQueue;
-use Illuminate\Notifications\Messages\MailMessage;
 
 class CastDenyOrders extends Notification implements ShouldQueue
 {
