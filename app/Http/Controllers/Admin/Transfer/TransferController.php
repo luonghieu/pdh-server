@@ -22,22 +22,25 @@ class TransferController extends Controller
         $adminType = UserType::ADMIN;
         $keyword = $request->search;
 
-        $transfers = Point::with('user', 'order')->where('type', PointType::TRANSFER)
+        $transfers = Point::with('user', 'order')->where('type', PointType::RECEIVE)
             ->whereHas('user', function ($query) use ($adminType) {
                 $query->where('users.type', '!=', $adminType);
             })
-            ->orderBy('updated_at', 'DESC');
+            ->where('is_transfered', true)->orderBy('created_at', 'DESC');
+
         if ($request->from_date) {
             $fromDate = Carbon::parse($request->from_date)->startOfDay();
-            $transfers->where(function ($query) use ($fromDate) {
-                $query->where('updated_at', '>=', $fromDate);
+            $toDate = Carbon::parse($request->to_date)->endOfDay();
+            $transfers->where(function ($query) use ($fromDate, $toDate) {
+                $query->where('created_at', '>=', $fromDate);
             });
         }
 
         if ($request->to_date) {
+            $fromDate = Carbon::parse($request->from_date)->startOfDay();
             $toDate = Carbon::parse($request->to_date)->endOfDay();
-            $transfers->where(function ($query) use ($toDate) {
-                $query->where('updated_at', '<=', $toDate);
+            $transfers->where(function ($query) use ($fromDate, $toDate) {
+                $query->where('created_at', '<=', $toDate);
             });
         }
 
@@ -58,7 +61,7 @@ class TransferController extends Controller
             $data = collect($transfers)->map(function ($item) {
                 return [
                     $item->order_id,
-                    Carbon::parse($item->updated_at)->format('Y年m月d日'),
+                    Carbon::parse($item->created_at)->format('Y年m月d日'),
                     $item->user_id,
                     $item->user->nickname,
                     '¥ ' . $item->point,
@@ -110,19 +113,21 @@ class TransferController extends Controller
             ->whereHas('user', function ($query) use ($adminType) {
                 $query->where('users.type', '!=', $adminType);
             })
-            ->orderBy('updated_at', 'DESC');
+            ->where('is_transfered', false)->orderBy('created_at', 'DESC');
 
         if ($request->from_date) {
             $fromDate = Carbon::parse($request->from_date)->startOfDay();
-            $transfers->where(function ($query) use ($fromDate) {
-                $query->where('updated_at', '>=', $fromDate);
+            $toDate = Carbon::parse($request->to_date)->endOfDay();
+            $transfers->where(function ($query) use ($fromDate, $toDate) {
+                $query->where('created_at', '>=', $fromDate);
             });
         }
 
         if ($request->to_date) {
+            $fromDate = Carbon::parse($request->from_date)->startOfDay();
             $toDate = Carbon::parse($request->to_date)->endOfDay();
-            $transfers->where(function ($query) use ($toDate) {
-                $query->where('updated_at', '<=', $toDate);
+            $transfers->where(function ($query) use ($fromDate, $toDate) {
+                $query->where('created_at', '<=', $toDate);
             });
         }
 
@@ -205,13 +210,16 @@ class TransferController extends Controller
         if ($request->has('transfer_ids')) {
             $transferIds = $request->transfer_ids;
 
-            $checkTransferExist = Point::whereIn('id', $transferIds)->where('type', PointType::RECEIVE)->where('is_transfered', false)->exists();
+            $checkTransferExist = Poi {
+            $transferIds = $request->transfer_ids;
+
+           nt::whereIn('id', $transferIds)->where('type', PointType::RECEIVE)->where('is_transfered', false)->exists();
 
             try {
                 if ($checkTransferExist) {
                     \DB::beginTransaction();
                     $transfers = Point::whereIn('id', $transferIds);
-                    $transfers->update(['type' => PointType::TRANSFER, 'is_transfered' => true]);
+                    $transfers->update(['is_transfered' => true]);
 
                     $transfers = $transfers->groupBy('user_id')->selectRaw('id, sum(point) as sum, user_id');
 
@@ -221,12 +229,14 @@ class TransferController extends Controller
                         $user->point -= $transfer->sum;
                         $user->save();
 
-                        Point::where('id', $transfer->id)->update([
-                            'point' => -$transfer->sum,
-                            'balance' => $user->point,
-                            'status' => true,
+                        $data['point'] = -$transfer->sum;
+                        $data['balance'] = $user->point;
+                        $data['user_id'] = $transfer->user_id;
+                        $data['type'] = PointType::TRANSFER;
 
-                        ]);
+                        $point = new Point;
+
+                        $point->createPoint($data, true);
                     }
 
                     \DB::commit();
@@ -235,8 +245,8 @@ class TransferController extends Controller
                 } else {
                     \DB::beginTransaction();
                     $transfers = Point::whereIn('id', $transferIds);
-                    $transfers->update(['type' => PointType::RECEIVE, 'is_transfered' => false]);
-                    $transfers = $transfers->groupBy('user_id')->selectRaw('id, sum(point) as sum, user_id');
+                    $transfers->update(['is_transfered' => false]);
+                    $transfers = $transfers->groupBy('user_id')->selectRaw('sum(point) as sum, user_id');
 
                     foreach ($transfers->cursor() as $transfer) {
                         $user = $transfer->user;
@@ -244,12 +254,13 @@ class TransferController extends Controller
                         $user->point += $transfer->sum;
                         $user->save();
 
-                        Point::where('id', $transfer->id)->update([
-                            'point' => $transfer->sum,
-                            'balance' => $user->point,
-                            'status' => true,
+                        $data['point'] = $transfer->sum;
+                        $data['balance'] = $user->point;
+                        $data['user_id'] = $transfer->user_id;
+                        $data['type'] = PointType::ADJUSTED;
 
-                        ]);
+                        $point = new Point;
+                        $point->createPoint($data, true);
                     }
 
                     \DB::commit();

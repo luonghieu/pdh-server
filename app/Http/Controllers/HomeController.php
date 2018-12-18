@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use App\Cast;
 use App\Enums\OrderStatus;
-use App\Enums\UserType;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\OrderResource;
 use App\Order;
@@ -90,7 +89,7 @@ class HomeController extends Controller
             $token = '';
             $token = JWTAuth::fromUser($user);
 
-            if (UserType::CAST == $user->type) {
+            if ($user->is_cast) {
                 return view('web.cast.index', compact('token', 'user'));
             } else {
                 return redirect()->route('web.login');

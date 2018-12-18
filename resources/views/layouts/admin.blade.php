@@ -29,6 +29,9 @@
     <![endif]-->
   </head>
   <body>
+    <div class="wrap-modal">
+        @yield('admin.modal')
+    </div>
     @include ('admin.partials.header')
     <div class="container-fluid content">
       <div class="row">
