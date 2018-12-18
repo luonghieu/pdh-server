@@ -90,17 +90,6 @@ class HomeController extends Controller
             $token = JWTAuth::fromUser($user);
 
             if ($user->is_cast) {
-                $client = new Client(['base_uri' => config('common.api_url')]);
-                $option = [
-                    'headers' => ['Authorization' => 'Bearer ' . $token],
-                    'form_params' => [],
-                    'allow_redirects' => false,
-                ];
-
-                $response = $client->get(route('auth.me'), $option);
-                $getContents = json_decode($response->getBody()->getContents());
-                $user = $getContents->data;
-
                 return view('web.cast.index', compact('token', 'user'));
             } else {
                 return redirect()->route('web.login');
