@@ -26,7 +26,7 @@ class TransferController extends Controller
             ->whereHas('user', function ($query) use ($adminType) {
                 $query->where('users.type', '!=', $adminType);
             })
-            ->where('is_transfered', true)->orderBy('updated_at', 'DESC');
+            ->orderBy('updated_at', 'DESC');
         if ($request->from_date) {
             $fromDate = Carbon::parse($request->from_date)->startOfDay();
             $transfers->where(function ($query) use ($fromDate) {
@@ -110,7 +110,7 @@ class TransferController extends Controller
             ->whereHas('user', function ($query) use ($adminType) {
                 $query->where('users.type', '!=', $adminType);
             })
-            ->where('is_transfered', false)->orderBy('updated_at', 'DESC');
+            ->orderBy('updated_at', 'DESC');
 
         if ($request->from_date) {
             $fromDate = Carbon::parse($request->from_date)->startOfDay();
@@ -213,13 +213,20 @@ class TransferController extends Controller
                     $transfers = Point::whereIn('id', $transferIds);
                     $transfers->update(['type' => PointType::TRANSFER, 'is_transfered' => true]);
 
-                    $transfers = $transfers->groupBy('user_id')->selectRaw('sum(point) as sum, user_id');
+                    $transfers = $transfers->groupBy('user_id')->selectRaw('id, sum(point) as sum, user_id');
 
                     foreach ($transfers->cursor() as $transfer) {
                         $user = $transfer->user;
                         $user->total_point += $transfer->sum;
                         $user->point -= $transfer->sum;
                         $user->save();
+
+                        Point::where('id', $transfer->id)->update([
+                            'point' => -$transfer->sum,
+                            'balance' => $user->point,
+                            'status' => true,
+
+                        ]);
                     }
 
                     \DB::commit();
@@ -229,13 +236,20 @@ class TransferController extends Controller
                     \DB::beginTransaction();
                     $transfers = Point::whereIn('id', $transferIds);
                     $transfers->update(['type' => PointType::RECEIVE, 'is_transfered' => false]);
-                    $transfers = $transfers->groupBy('user_id')->selectRaw('sum(point) as sum, user_id');
+                    $transfers = $transfers->groupBy('user_id')->selectRaw('id, sum(point) as sum, user_id');
 
                     foreach ($transfers->cursor() as $transfer) {
                         $user = $transfer->user;
                         $user->total_point -= $transfer->sum;
                         $user->point += $transfer->sum;
                         $user->save();
+
+                        Point::where('id', $transfer->id)->update([
+                            'point' => $transfer->sum,
+                            'balance' => $user->point,
+                            'status' => true,
+
+                        ]);
                     }
 
                     \DB::commit();
