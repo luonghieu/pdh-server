@@ -46,6 +46,19 @@ class User extends Authenticatable implements JWTSubject
         return $query->where('users.status', true);
     }
 
+    public function getFrontIdImageAttribute($value)
+    {
+        if (empty($value)) {
+            return '';
+        }
+
+        if (strpos($value, 'https') !== false) {
+            return $value;
+        }
+
+        return Storage::url($value);
+    }
+
     public function getAgeAttribute($value)
     {
         if ($this->date_of_birth) {
