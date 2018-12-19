@@ -2525,3 +2525,25 @@ padding-top: 65px !important;
   background-image: none;
   width: 50px;
 }
+.request-send-code .wrap-link {
+  margin: 0;
+}
+.request-send-code .wrap-link h6:first-child {
+  margin: 15px 0;
+}
+.request-send-code h6 {
+  display: block;
+  margin: 0 0 10px;
+}
+.request-send-code h6 {
+  text-align: center;
+}
+.request-send-code h6 a {
+  border: 1px solid #3fcaca;
+  border-radius: 50px;
+  padding: 5px 0;
+  text-decoration: none;
+  width: 200px;
+  display: block;
+  margin: 0 auto;
+}
