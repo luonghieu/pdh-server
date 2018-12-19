@@ -22,9 +22,9 @@ class TransferResource extends JsonResource
             'id' => $this->id,
             'order_id' => $this->order_id,
             'user_id' => $this->user_id,
-            'amount' => -$this->point,
+            'amount' => $this->point,
             'status' => $this->status,
-            'transfered_at' => $this->created_at,
+            'transfered_at' => $this->updated_at,
             'user' => UserResource::make($this->whenLoaded('user')),
             'order' => OrderResource::make($this->whenLoaded('order')),
         ]);

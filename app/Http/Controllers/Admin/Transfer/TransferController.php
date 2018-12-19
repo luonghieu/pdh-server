@@ -26,20 +26,19 @@ class TransferController extends Controller
             ->whereHas('user', function ($query) use ($adminType) {
                 $query->where('users.type', '!=', $adminType);
             })
-            ->where('is_transfered', true)->orderBy('created_at', 'DESC');
+            ->where('is_transfered', true)->orderBy('updated_at', 'DESC');
+
         if ($request->from_date) {
             $fromDate = Carbon::parse($request->from_date)->startOfDay();
-            $toDate = Carbon::parse($request->to_date)->endOfDay();
-            $transfers->where(function ($query) use ($fromDate, $toDate) {
-                $query->where('created_at', '>=', $fromDate);
+            $transfers->where(function ($query) use ($fromDate) {
+                $query->where('updated_at', '>=', $fromDate);
             });
         }
 
         if ($request->to_date) {
-            $fromDate = Carbon::parse($request->from_date)->startOfDay();
             $toDate = Carbon::parse($request->to_date)->endOfDay();
-            $transfers->where(function ($query) use ($fromDate, $toDate) {
-                $query->where('created_at', '<=', $toDate);
+            $transfers->where(function ($query) use ($toDate) {
+                $query->where('updated_at', '<=', $toDate);
             });
         }
 
@@ -60,7 +59,7 @@ class TransferController extends Controller
             $data = collect($transfers)->map(function ($item) {
                 return [
                     $item->order_id,
-                    Carbon::parse($item->created_at)->format('Y年m月d日'),
+                    Carbon::parse($item->updated_at)->format('Y年m月d日'),
                     $item->user_id,
                     $item->user->nickname,
                     '¥ ' . $item->point,
@@ -112,21 +111,19 @@ class TransferController extends Controller
             ->whereHas('user', function ($query) use ($adminType) {
                 $query->where('users.type', '!=', $adminType);
             })
-            ->where('is_transfered', false)->orderBy('created_at', 'DESC');
+            ->where('is_transfered', false)->orderBy('updated_at', 'DESC');
 
         if ($request->from_date) {
             $fromDate = Carbon::parse($request->from_date)->startOfDay();
-            $toDate = Carbon::parse($request->to_date)->endOfDay();
-            $transfers->where(function ($query) use ($fromDate, $toDate) {
-                $query->where('created_at', '>=', $fromDate);
+            $transfers->where(function ($query) use ($fromDate) {
+                $query->where('updated_at', '>=', $fromDate);
             });
         }
 
         if ($request->to_date) {
-            $fromDate = Carbon::parse($request->from_date)->startOfDay();
             $toDate = Carbon::parse($request->to_date)->endOfDay();
-            $transfers->where(function ($query) use ($fromDate, $toDate) {
-                $query->where('created_at', '<=', $toDate);
+            $transfers->where(function ($query) use ($toDate) {
+                $query->where('updated_at', '<=', $toDate);
             });
         }
 
