@@ -131,6 +131,23 @@
     </div>
   </div>
 </div>
+<div class="modal fade" id="btn-id-image" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-body">
+        @if (!$user->front_id_image)
+        <p>画像が見つかりません</p>
+        @else
+          @if (@getimagesize($user->front_id_image))
+          <img src="{{ $user->front_id_image }}" alt="">
+          @else
+          <p>エラーが発生しました</p>
+          @endif
+        @endif
+      </div>
+    </div>
+  </div>
+</div>
 <div class="modal fade" id="delete_user" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
   <div class="modal-dialog" role="document">
     <div class="modal-content">
@@ -184,6 +201,7 @@
             @if ($user->is_cast)
             <div class="btn-qr">
               <button type="button" data-toggle="modal" data-target="#btn-qr-code" class="btn-detail">QRコードを表示する</button>
+              <button type="button" data-toggle="modal" data-target="#btn-id-image" class="btn-detail">身分証明書を表示する</button>
             </div>
             @endif
           </div>

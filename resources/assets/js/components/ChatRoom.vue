@@ -17,9 +17,8 @@
                             <div v-if="!image">
                                 <textarea name="mess" v-model="message" class="write_msg"
                                           placeholder="メッセージを入力してください*"
-                                          @keydown.enter.exact.prevent
+                                          autofocus
                                           @keydown.enter.shift.prevent
-                                          @keyup.enter.exact="newline"
                                           @keydown.enter.shift.exact="sendMessage"
                                           ></textarea>
                                 <input id="fileUpload" name="image" type="file" accept="image/*" style="display: none"
