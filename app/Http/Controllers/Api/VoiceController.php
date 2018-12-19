@@ -9,8 +9,9 @@ class VoiceController extends Controller
 {
     public function code(Request $request)
     {
+        $codes = str_split($request->code);
         return response()->view('voices.verification', [
-            'code' => $request->code,
+            'codes' => $codes,
         ])->header('Content-Type', 'text/xml');
     }
 }
