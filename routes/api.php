@@ -12,6 +12,7 @@ Route::group(['prefix' => 'v1'], function () {
     Route::get('glossaries', ['as' => 'glossaries', 'uses' => 'GlossaryController@glossary']);
     Route::post('/get_day', ['as' => 'get_day', 'uses' => 'OrderController@getDayOfMonth']);
     Route::get('post_code', ['as' => 'post_code', 'uses' => 'PostCodeController@find']);
+    Route::get('voices/code', ['as' => 'voice_code', 'uses' => 'VoiceController@code']);
 
     Route::group(['prefix' => 'auth', 'as' => 'auth.'], function () {
         Route::post('login', ['as' => 'login', 'uses' => 'AuthController@login']);
@@ -27,6 +28,7 @@ Route::group(['prefix' => 'v1'], function () {
             Route::post('/verify_code', ['as' => 'code', 'uses' => 'VerificationController@code']);
             Route::post('/resend_code', ['as' => 'resend', 'uses' => 'VerificationController@resend']);
             Route::post('/verify', ['as' => 'verify', 'uses' => 'VerificationController@verify']);
+            Route::post('/send_code_by_call', ['as' => 'send_code_by_call', 'uses' => 'VerificationController@sendCodeByCall']);
         });
     });
 

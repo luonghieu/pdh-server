@@ -6,11 +6,10 @@ use App\Verification;
 use Illuminate\Bus\Queueable;
 use Illuminate\Notifications\Notification;
 use Illuminate\Contracts\Queue\ShouldQueue;
-use Illuminate\Notifications\Messages\MailMessage;
+use NotificationChannels\Twilio\TwilioCallMessage;
 use NotificationChannels\Twilio\TwilioChannel;
-use NotificationChannels\Twilio\TwilioSmsMessage;
 
-class ResendVerificationCode extends Notification implements ShouldQueue
+class VoiceCallVerification extends Notification implements ShouldQueue
 {
     use Queueable;
 
@@ -19,7 +18,7 @@ class ResendVerificationCode extends Notification implements ShouldQueue
     /**
      * Create a new notification instance.
      *
-     * @return void
+     * @param $verificationId
      */
     public function __construct($verificationId)
     {
@@ -39,7 +38,8 @@ class ResendVerificationCode extends Notification implements ShouldQueue
 
     public function toTwilio($notifiable)
     {
-        return (new TwilioSmsMessage())
-            ->content("[Cheers]認証コード：{$this->verification->code} \nこの番号をWebサイトの画面で入力してください。");
+        $url = route('voice_code', ['code' => $this->verification->code]);
+        return (new TwilioCallMessage())
+            ->url($url)->method('GET');
     }
 }
