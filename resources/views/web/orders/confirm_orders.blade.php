@@ -84,7 +84,7 @@
         <div class="details-list__header">
           <div class="details-header__title">合計</div>
         </div>
-          <div class="details-total__marks">{{ number_format($data['temp_point']) .'P' }}</div>
+          <div class="details-total__marks">{{ number_format($tempPoint) .'P' }}</div>
         </div>
         @php
           $campaignFrom = Carbon\Carbon::parse(env('CAMPAIGN_FROM'));
@@ -110,6 +110,7 @@
     </div>
     <input type="hidden" value="" name="cast_ids" id="cast-ids-nominate">
     <input type="hidden" value="{{ $type }}" name="type_order">
+    <input type="hidden" value="{{ $tempPoint }}" name="temp_point_order">
     <button type="button" class="form_footer ct-button disable" id="btn-confirm-orders" disabled="disabled">予約リクエストを確定する</button>
   </form>
   <section class="button-box">

@@ -531,24 +531,7 @@ class OrderController extends Controller
         if (isset($data['temp_point'])) {
             $tempPoint = $data['temp_point'];
         } else {
-            try {
-                $tempPoint = $client->post(route('orders.price', [
-                    'type' => $type,
-                    'class_id' => $data['cast_class'],
-                    'duration' => $data['duration'],
-                    'nominee_ids' => $nomineeIds,
-                    'date' => $startDate,
-                    'start_time' => $startTime,
-                    'total_cast' => $data['cast_numbers'],
-                ]), $option);
-
-                $tempPoint = json_decode(($tempPoint->getBody())->getContents(), JSON_NUMERIC_CHECK);
-            } catch (\Exception $e) {
-                LogService::writeErrorLog($e);
-                abort(500);
-            }
-
-            $tempPoint = $tempPoint['data'];
+            $tempPoint = $request->temp_point_order;
         }
 
         try {
