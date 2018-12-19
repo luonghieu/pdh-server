@@ -19,8 +19,8 @@
                                           placeholder="メッセージを入力してください*"
                                           @keydown.enter.exact.prevent
                                           @keydown.enter.shift.prevent
-                                          @keyup.enter.exact="newline"
-                                          @keydown.enter.shift.exact="sendMessage"
+                                          @keydown.enter.shift.exact="newline"
+                                          @keydown.enter.ctrl.exact="sendMessage"
                                           ></textarea>
                                 <input id="fileUpload" name="image" type="file" accept="image/*" style="display: none"
                                        @change="onFileChange">
