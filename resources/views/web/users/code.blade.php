@@ -49,6 +49,18 @@
       </div>
     </div>
   </div>
+  <div class="modal_wrap">
+    <input id="trigger-alert-resend-code-voice" type="checkbox">
+    <div class="modal_overlay">
+      <label for="trigger" class="modal_trigger"></label>
+      <div class="modal_content modal_content-btn1">
+        <div class="text-box notify-resend-success">
+          <h2>電話番号認証を承りました</h2>
+        </div>
+        <label for="trigger-alert-resend-code-voice" class="close_button" id="resend-success">OK</label>
+      </div>
+    </div>
+  </div>
   <div class="modal_wrap" id="accept-resend-code">
     <input id="triggerAcceptResenCode" type="checkbox">
     <div class="modal_overlay">
@@ -68,6 +80,28 @@
       </div>
     </div>
   </div>
+
+  <div class="modal_wrap" id="accept-resend-code-voice">
+    <input id="triggerAcceptResenCodeVoice" type="checkbox">
+    <div class="modal_overlay">
+      <label for="trigger" class="modal_trigger"></label>
+      <div class="modal_content modal_content-btn2">
+        <div class="text-box">
+          <h2>電話番号による認証を行いますか？</h2>
+          <p>電話にて認証番号をお伝えします <br/> "はい"をタップし、しばらくお待ちください</p>
+        </div>
+        <div class="close_button-box">
+          <div class="close_button-block">
+            <label for="triggerAcceptResenCodeVoice" class="close_button left" id="deny-resend">いいえ</label>
+          </div>
+          <div class="close_button-block">
+            <label id="resend-code-voice" class="close_button right">再送する</label>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
 
   <div class="page-header sms-header">
     <h1 class="text-bold">本人確認</h1>

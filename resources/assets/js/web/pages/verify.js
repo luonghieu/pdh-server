@@ -112,6 +112,19 @@ $(document).ready(function() {
     });
   });
 
+  $('#resend-code-voice').click(function() {
+    window.axios.post(`/api/v1/auth/send_code_by_call`)
+      .then(function (response) {
+        $('#accept-resend-code-voice').css({
+          display: 'none',
+        });
+        $('#trigger-alert-resend-code-voice').trigger('click');
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
+  });
+
   $('#code-number-1').on('keyup', function(event) {
     if (event.keyCode != 8 && event.keyCode != 32) {
       $('#code-number-2').focus();
@@ -177,6 +190,10 @@ $(document).ready(function() {
 
   $('#request-resend-code').click(function(event) {
     $('#triggerAcceptResenCode').trigger('click');
+  });
+
+  $('#request-resend-code-voice').click(function(event) {
+      $('#triggerAcceptResenCodeVoice').trigger('click');
   });
 
   $('#deny-resend').click(function(event) {
