@@ -95,10 +95,11 @@
     </section>
   </div>
 
-  <div class="page-header sms-header">
+  <div class="page-header sms-header request-send-code">
     <h5>SMSが届かない場合</h5>
     <div class="wrap-link">
       <h6 id="request-resend-code" class="text-verify"><a href="javascript:void(0)">SMSを再送する</a></h6>
+      <h6 id="request-resend-code-voice" class="text-verify"><a href="javascript:void(0)">電話番号で認証する</a></h6>
       <h6 class="text-verify"><a href="/service/contact">運営に問い合わせる</a></h6>
     </div>
   </div>
