@@ -24,9 +24,4 @@
         です
         <break strength="x-strong"/>
     </Say>
-    <Gather action="{{ $repeatUrl }}" timeout="10" numDigits="1" method="GET">
-        <Say language="ja-jp" voice="alice">
-            もう一度お聞きになりたいばあいは1をおしてください
-        </Say>
-    </Gather>
 </Response>
