@@ -30,7 +30,7 @@ class PointCastResource extends Resource
             'point' => $this->point,
             'type' => $this->type,
             'date' => $this->is_adjusted ? Carbon::parse($this->created_at)->format('Y-m-d') : Carbon::parse($order->resource->date)->format('Y-m-d'),
-            'order' => is_null($order->resource) ? '' : $order,
+            'order' => $order,
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
         ]);
