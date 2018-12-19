@@ -109,6 +109,7 @@
       </label>
     </div>
     <input type="hidden" value="" name="cast_ids" id="cast-ids-nominate">
+    <input type="hidden" value="{{ $type }}" name="type_order">
     <button type="button" class="form_footer ct-button disable" id="btn-confirm-orders" disabled="disabled">予約リクエストを確定する</button>
   </form>
   <section class="button-box">

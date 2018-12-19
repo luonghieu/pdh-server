@@ -340,13 +340,12 @@ class OrderController extends Controller
         $data = $request->session()->get('data');
 
         if ($request->cast_ids) {
-            $data['cast_ids'] = $request->cast_ids;
+            $castIds = $request->cast_ids;
         } else {
-            $data['cast_ids'] = '';
+            $castIds = '';
         }
 
-        $request->session()->put('data', $data);
-        $request->session()->save();
+        $request->session()->flash('cast_ids', $castIds);
 
         return redirect()->route('guest.orders.confirm');
     }
@@ -357,6 +356,38 @@ class OrderController extends Controller
             return redirect()->route('guest.orders.call');
         }
 
+        $data = $request->session()->get('data');
+
+        if ($request->session()->has('cast_ids')) {
+            $castIds = $request->session()->get('cast_ids');
+            $data['cast_ids'] = $castIds;
+
+            $request->session()->forget('cast_ids');
+        } else {
+            if (isset($data['cast_ids'])) {
+                $castIds = $data['cast_ids'];
+            } else {
+                return redirect()->route('guest.orders.call');
+            }
+        }
+
+        $castIdsArray = explode(',', $castIds);
+
+        if (count($castIdsArray)) {
+            $casts = Cast::whereIn('id', $castIdsArray)->get();
+
+            if (count($castIdsArray) == $data['cast_numbers']) {
+                $type = OrderType::NOMINATED_CALL;
+            } else {
+                $type = OrderType::HYBRID;
+            }
+        } else {
+            $casts = [];
+            $type = OrderType::CALL;
+        }
+
+        $data['type'] = $type;
+
         if ($request->session()->has('statusCode')) {
             $statusCode = $request->session()->get('statusCode');
 
@@ -364,8 +395,6 @@ class OrderController extends Controller
         } else {
             $statusCode = null;
         }
-
-        $data = $request->session()->get('data');
 
         $castClass = CastClass::findOrFail($data['cast_class']);
 
@@ -381,28 +410,6 @@ class OrderController extends Controller
         }
 
         $tags = Tag::whereIn('id', array_merge($desires, $situations))->get();
-
-        if (isset($data['cast_ids'])) {
-            $castIds = $data['cast_ids'];
-            $castIdsArray = explode(',', $castIds);
-
-            if (count($castIdsArray)) {
-                $casts = Cast::whereIn('id', $castIdsArray)->get();
-
-                if (count($castIdsArray) == $data['cast_numbers']) {
-                    $type = OrderType::NOMINATED_CALL;
-                } else {
-                    $type = OrderType::HYBRID;
-                }
-                $nomineeIds = $data['cast_ids'];
-            } else {
-                $casts = [];
-                $type = OrderType::CALL;
-                $nomineeIds = '';
-            }
-
-            $data['type'] = $type;
-        }
 
         if (isset($data['otherTime'])) {
             $startDate = Carbon::parse($data['otherTime'])->format('Y-m-d');
@@ -432,7 +439,7 @@ class OrderController extends Controller
                 'type' => $type,
                 'class_id' => $data['cast_class'],
                 'duration' => $data['duration'],
-                'nominee_ids' => $nomineeIds,
+                'nominee_ids' => $castIds,
                 'date' => $startDate,
                 'start_time' => $startTime,
                 'total_cast' => $data['cast_numbers'],
@@ -451,7 +458,7 @@ class OrderController extends Controller
         $request->session()->put('data', $data);
         $request->session()->save();
 
-        return view('web.orders.confirm_orders', compact('user', 'casts', 'tags', 'tempPoint', 'castClass', 'statusCode'));
+        return view('web.orders.confirm_orders', compact('user', 'casts', 'tags', 'tempPoint', 'castClass', 'statusCode', 'type'));
     }
 
     public function cancel()
@@ -515,6 +522,35 @@ class OrderController extends Controller
             'allow_redirects' => false,
         ];
 
+        if (isset($data['type'])) {
+            $type = $data['type'];
+        } else {
+            $type = $request->type_order;
+        }
+
+        if (isset($data['temp_point'])) {
+            $tempPoint = $data['temp_point'];
+        } else {
+            try {
+                $tempPoint = $client->post(route('orders.price', [
+                    'type' => $type,
+                    'class_id' => $data['cast_class'],
+                    'duration' => $data['duration'],
+                    'nominee_ids' => $nomineeIds,
+                    'date' => $startDate,
+                    'start_time' => $startTime,
+                    'total_cast' => $data['cast_numbers'],
+                ]), $option);
+
+                $tempPoint = json_decode(($tempPoint->getBody())->getContents(), JSON_NUMERIC_CHECK);
+            } catch (\Exception $e) {
+                LogService::writeErrorLog($e);
+                abort(500);
+            }
+
+            $tempPoint = $tempPoint['data'];
+        }
+
         try {
             $order = $client->post(route('orders.create', [
                 'prefecture_id' => 13,
@@ -525,8 +561,8 @@ class OrderController extends Controller
                 'date' => $startDate,
                 'start_time' => $startTime,
                 'total_cast' => $data['cast_numbers'],
-                'temp_point' => $data['temp_point'],
-                'type' => $data['type'],
+                'temp_point' => $tempPoint,
+                'type' => $type,
                 'tags' => $tags,
             ]), $option);
         } catch (\Exception $e) {
