@@ -19,6 +19,7 @@
                                           placeholder="メッセージを入力してください*"
                                           @keydown.enter.exact.prevent
                                           @keydown.enter.shift.prevent
+                                          @keydown.enter.ctrl.prevent
                                           @keydown.enter.shift.exact="newline"
                                           @keydown.enter.ctrl.exact="sendMessage"
                                           ></textarea>
