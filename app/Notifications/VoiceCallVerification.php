@@ -38,7 +38,7 @@ class VoiceCallVerification extends Notification implements ShouldQueue
 
     public function toTwilio($notifiable)
     {
-        $url = route('voice_code', ['code' => $this->verification->code]);
+        $url = route('voice_code', ['code' => $this->verification->code, 'phone' => $notifiable->phone]);
         return (new TwilioCallMessage())
             ->url($url)->method('GET');
     }

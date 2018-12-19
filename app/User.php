@@ -264,8 +264,12 @@ class User extends Authenticatable implements JWTSubject
 
     public function generateVerifyCode($phone, $isResend = false)
     {
+        do {
+            $code = rand(1000, 9999);
+        } while((strpos($code, '0') !== false) || (strpos($code, '7') !== false));
+
         $data = [
-            'code' => rand(1000, 9999),
+            'code' => $code,
             'phone' => $phone,
             'is_resend' => $isResend,
         ];
