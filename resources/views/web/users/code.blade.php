@@ -49,6 +49,7 @@
       </div>
     </div>
   </div>
+
   <div class="modal_wrap">
     <input id="trigger-alert-resend-code-voice" type="checkbox">
     <div class="modal_overlay">
@@ -61,6 +62,7 @@
       </div>
     </div>
   </div>
+
   <div class="modal_wrap" id="accept-resend-code">
     <input id="triggerAcceptResenCode" type="checkbox">
     <div class="modal_overlay">
