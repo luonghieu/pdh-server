@@ -17,7 +17,8 @@ class PaymentController extends ApiController
         $payments = Point::where('user_id', $user->id)
             ->where('type', PointType::RECEIVE)
             ->where('is_transfered', true)
-            ->groupBy('updated_at')->selectRaw('sum(point) as point, updated_at');
+            ->groupBy('updated_at')->selectRaw('sum(point) as point, updated_at')
+            ->orderByDesc('updated_at');
 
         $payments = $payments->latest()->paginate($request->per_page)->appends($request->query());
 
