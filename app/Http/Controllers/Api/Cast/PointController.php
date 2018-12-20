@@ -16,7 +16,12 @@ class PointController extends ApiController
 
         $points = Point::where('user_id', $user->id)
             ->whereIn('type', [PointType::RECEIVE, PointType::ADJUSTED])
-            ->with('order.casts');
+            ->with([
+                'order.casts',
+                'order.paymentRequests' => function ($query) use ($user) {
+                    return $query->where('cast_id', $user->id);
+                }
+            ]);
 
         $nickName = $request->nickname;
         if ($nickName) {
