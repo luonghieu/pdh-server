@@ -7,11 +7,11 @@
         </Say>
     @endforeach
     <Say language="ja-jp" voice="alice">
-        からのちゃくしん
+        からのちゃくしん。
         <break strength="x-strong"/>
-        こちらはチアーズ うんえいきょくです
+        こちらはチアーズうんえいきょくです。
         <break strength="x-strong"/>
-        おきゃくさまの認証コードは
+        おきゃくさまの認証コードは。
         <break strength="x-strong"/>
     </Say>
     @foreach($codes as $code)
@@ -21,12 +21,12 @@
         </Say>
     @endforeach
     <Say language="ja-jp" voice="alice">
-        です
+        です。
         <break strength="x-strong"/>
     </Say>
     <Gather action="{{ $repeatUrl }}" timeout="10" numDigits="1" method="GET">
         <Say language="ja-jp" voice="alice">
-            もう一度お聞きになりたいばあいは1をおしてください
+            もう一度お聞きになりたいばあいは、1をおしてください。
         </Say>
     </Gather>
 </Response>

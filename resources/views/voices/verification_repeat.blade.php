@@ -7,11 +7,11 @@
         </Say>
     @endforeach
     <Say language="ja-jp" voice="alice">
-        からのちゃくしん
+        からのちゃくしん。
         <break strength="x-strong"/>
-        こちらはチアーズ うんえいきょくです
+        こちらはチアーズうんえいきょくです。
         <break strength="x-strong"/>
-        おきゃくさまの認証コードは
+        おきゃくさまの認証コードは。
         <break strength="x-strong"/>
     </Say>
     @foreach($codes as $code)
@@ -21,7 +21,7 @@
         </Say>
     @endforeach
     <Say language="ja-jp" voice="alice">
-        です
+        です。
         <break strength="x-strong"/>
     </Say>
 </Response>
