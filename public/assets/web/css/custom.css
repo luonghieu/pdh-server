@@ -2173,7 +2173,7 @@ padding-top: 65px !important;
 .sms-header h5 {
   text-align: center;
   margin-top: 30px;
-  font-size: 12px;
+  font-size: 14px;
   color: #999999;
   margin-bottom: 4px;
 }
@@ -2358,6 +2358,7 @@ padding-top: 65px !important;
   outline: 0;
   background: none;
 }
+
 #code-verify a.green-button i.arrow::after {
   pointer-events: none;
   position: absolute;
@@ -2375,6 +2376,11 @@ padding-top: 65px !important;
   -ms-transform: translateY(-50%) translateX(-2px) rotate(-135deg);
   transform: translateY(-50%) translateX(-2px) rotate(-135deg);
 }
+
+#code-verify footer {
+  display: none;
+}
+
 .modal_overlay {
   top: 0;
   bottom: 0;
