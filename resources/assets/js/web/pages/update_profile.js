@@ -1,4 +1,15 @@
 $(document).ready(function() {
+  var userAgent = navigator.userAgent || navigator.vendor || window.opera;
+
+  // iOS detection
+  if (/iPad|iPhone|iPod/.test(userAgent) && !window.MSStream) {
+    $('#gm1.gm1-edit .phone.arrow:after').css({
+      '-webkit-transform': 'translateY(-60%) translateX(-2px) rotate(404deg)',
+      '-ms-transform': 'translateY(-60%) translateX(-2px) rotate(404deg)',
+      'transform': 'translateY(-60%) translateX(-2px) rotate(404deg)',
+    });
+  }
+
   var maxYear = $('#date-of-birth').attr('max');
 
   $("#date-of-birth").on("change", function() {

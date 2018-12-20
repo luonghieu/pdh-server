@@ -2273,9 +2273,9 @@ padding-top: 65px !important;
   border-right: 1px solid #222222;
   -webkit-box-sizing: border-box;
   box-sizing: border-box;
-  -webkit-transform: translateY(-50%) translateX(-2px) rotate(404deg);
-  -ms-transform: translateY(-50%) translateX(-2px) rotate(404deg);
-  transform: translateY(-50%) translateX(-2px) rotate(404deg);
+  -webkit-transform: translateY(-10%) translateX(-2px) rotate(404deg);
+  -ms-transform: translateY(-10%) translateX(-2px) rotate(404deg);
+  transform: translateY(-10%) translateX(-2px) rotate(404deg);
 }
 
 #gm1.gm1-edit .phone.arrow.init-m:after {
