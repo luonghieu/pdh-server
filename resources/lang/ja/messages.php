@@ -69,7 +69,7 @@ return [
     'verification_code_sent' => '認証コードを送信しました',
     'verification_code_is_wrong' => '認証コードが間違っています',
     'user_verify_success' => '認証が完了しました',
-    'phone_update_success' => '変更しました',
+    'phone_update_success' => '変更が完了しました',
     'postcode_error' => '住所が見つかりません',
     'order_timeout' => 'この予約は募集が締め切られました',
     'payment_failed' => '決済に失敗しました' . PHP_EOL . '登録しているカード情報を' . PHP_EOL . '確認してください',
