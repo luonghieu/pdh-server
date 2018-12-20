@@ -35,10 +35,6 @@ class HomeController extends Controller
                 return redirect()->route('verify.code');
             }
 
-            if (!$user->status) {
-                return view('web.users.verification', compact('token'));
-            }
-
             if ($user->is_guest) {
                 $order = Order::with('casts')
                     ->where('user_id', Auth::user()->id)
@@ -65,7 +61,7 @@ class HomeController extends Controller
                     'allow_redirects' => false,
                 ];
 
-                $response = $client->get(route('casts.index', ['working_today' => 1, 'device' => 3]), $option);
+                $response = $client->get(route('casts.index', ['working_today' => 1, 'device' => 3, 'is_web' => 1]), $option);
                 $getContents = json_decode($response->getBody()->getContents());
                 $casts = $getContents->data;
 
