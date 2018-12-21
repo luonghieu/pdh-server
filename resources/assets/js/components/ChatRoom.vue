@@ -225,22 +225,47 @@ export default {
       const rooms = this.allRooms;
       const cloneRooms = rooms;
       let unreads = JSON.parse(this.unReads);
+      let unreadIds = '';
       for (let i of unreads) {
-          for (let j = 0; j < cloneRooms.length; j++) {
-              const room = cloneRooms[j];
-              if (i.room_id == room.id) {
-                this.messageUnread_index = i.total;
-                this.unreadMessage.push({ id: room.id, count: i.total });
-                const tempRoom = cloneRooms[j];
-                  rooms.splice(j, 1);
-                  rooms.unshift(tempRoom);
-                  break;
-              }
-            }
+        if (rooms.findIndex(item => item.id == i.room_id) == -1) {
+          unreadIds += i.room_id + ',';
+          continue;
         }
 
+        for (let j = 0; j < cloneRooms.length; j++) {
+          const room = cloneRooms[j];
+          if (i.room_id == room.id) {
+            this.messageUnread_index = i.total;
+            this.unreadMessage.push({ id: room.id, count: i.total });
+            const tempRoom = cloneRooms[j];
+            rooms.splice(j, 1);
+            rooms.unshift(tempRoom);
+            break;
+          }
+        }
+      }
+
+      if (unreadIds) {
+        window.axios.get('/api/v1/rooms/admin/room_load', {
+          params: {
+            ids: unreadIds
+          }
+        }).then(response => {
+          const data = response.data;
+          data.forEach(i => {
+              const unreadItem = unreads.find(unread => unread.room_id == i.id);
+              this.unreadMessage.push({ id: unreadItem.room_id, count: unreadItem.total });
+              this.allRooms.unshift(i);
+          });
+          this.roomGuests = this.allRooms.filter(r => r.user_type == 1);
+          this.roomCasts = this.allRooms.filter(r => r.user_type == 2);
+        }).catch(e => {
+          console.log(e);
+        });
+      } else {
         this.roomGuests = rooms.filter(r => r.user_type == 1);
         this.roomCasts = rooms.filter(r => r.user_type == 2);
+      }
     },
     sendMessage() {
       if (this.id) {

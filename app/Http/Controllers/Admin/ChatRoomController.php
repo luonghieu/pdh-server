@@ -29,19 +29,38 @@ class ChatRoomController extends Controller
             ->select('room_id', DB::raw('count(*) as total'))
             ->groupBy('room_id')->get();
 
-        $rooms = DB::table('rooms')->where('is_active', true)
+        $roomGuests = DB::table('rooms')->where('is_active', true)
             ->where('rooms.type', RoomType::SYSTEM)
-            ->join('users', 'rooms.owner_id', '=', 'users.id')
+            ->join('users', function ($j) {
+                $j->on('rooms.owner_id', '=', 'users.id')
+                    ->where('users.type', UserType::GUEST);
+            })
             ->leftJoin('avatars', function ($j) {
                 $j->on('avatars.user_id', '=', 'users.id')
                     ->where('is_default', true);
             })
             ->where('users.deleted_at', null)
             ->select('rooms.*', 'users.type As user_type', 'users.gender', 'users.nickname', 'avatars.thumbnail')
-            ->orderBy('users.type', 'DESC')->orderBy('users.updated_at', 'DESC')
+            ->orderBy('users.updated_at', 'DESC')
             ->paginate(100);
 
-        $rooms = json_encode($rooms->items(), true);
+        $roomCasts = DB::table('rooms')->where('is_active', true)
+            ->where('rooms.type', RoomType::SYSTEM)
+            ->join('users', function ($j) {
+                $j->on('rooms.owner_id', '=', 'users.id')
+                    ->where('users.type', UserType::CAST);
+            })
+            ->leftJoin('avatars', function ($j) {
+                $j->on('avatars.user_id', '=', 'users.id')
+                    ->where('is_default', true);
+            })
+            ->where('users.deleted_at', null)
+            ->select('rooms.*', 'users.type As user_type', 'users.gender', 'users.nickname', 'avatars.thumbnail')
+            ->orderBy('users.updated_at', 'DESC')
+            ->paginate(100);
+
+        $rooms = array_merge($roomGuests->items(), $roomCasts->items());
+        $rooms = json_encode($rooms, true);
         $baseUrl = \URL::to('/');
 
         if (env('APP_ENV') == 'local') {
