@@ -11,7 +11,7 @@
                 <li class="casts"><a data-toggle="tab" href="#cast">キャスト</a></li>
             </ul>
         </div>
-        <div class="inbox_chat inbox_cast" id="cast">
+        <div class="inbox_chat inbox_cast" id="cast" v-scroll-loadmore='loadMore'>
             <div v-for="(room, index) in mutableRoomCasts" :key="index">
                 <router-link :to="{ name: 'ChatRoom', params: { id: room.id }}" v-on:click.native="setRoomId(room)">
                     <div class="chat_list">
@@ -125,7 +125,7 @@
                         page: this.page
                     }
                 }).then(response => {
-                    const data = response.data.data;
+                    const data = response.data;
                     this.$emit('loadMore', data);
                 }).catch(e => {
                     console.log(e);
