@@ -59,16 +59,26 @@ if (!function_exists('getPrefectureName')) {
 }
 
 if (!function_exists('getDay')) {
-    function getDay($data = null)
+    function getDay($data = null, $month = null)
     {
         $date = \Carbon\Carbon::now()->addMinutes(30);
         $dayOfWeek = ['日', '月', '火', '水', '木', '金', '土'];
 
-        if (!isset($data['month'])) {
-            $data['month'] = $date->month;
-            $year = $date->year;
+        if (isset($month)) {
+            $checkMonth = $month;
         } else {
             $checkMonth = $date->month;
+        }
+
+        if (!isset($data['month'])) {
+            $data['month'] = $checkMonth;
+
+            if ($date->month > $checkMonth) {
+                $year = $date->year + 1;
+            } else {
+                $year = $date->year;
+            }
+        } else {
             if ($checkMonth > $data['month']) {
                 $year = $date->year + 1;
             } else {
