@@ -147,6 +147,13 @@ class OrderController extends Controller
 
         if ('other_time' == $request->time_join) {
             $timeDetail = [];
+            $checkMonth = $now->month;
+
+            if ($checkMonth > $request->sl_month) {
+                $year = $now->year + 1;
+            } else {
+                $year = $now->year;
+            }
 
             if ($request->sl_month < 10) {
                 $month = '0' . $request->sl_month;
@@ -182,7 +189,7 @@ class OrderController extends Controller
 
             $input['time_detail'] = $timeDetail;
 
-            $timeJoin = $now->year . '-' . $month . '-' . $date . ' ' . $hour . ':' . $minute;
+            $timeJoin = $year . '-' . $month . '-' . $date . ' ' . $hour . ':' . $minute;
             $input['otherTime'] = $timeJoin;
         } else {
             $timeJoin = $request->time_join;
@@ -222,7 +229,6 @@ class OrderController extends Controller
         }
 
         $input['cast_class'] = $castClass;
-
         $request->session()->put('data', $input);
         $request->session()->save();
 
@@ -754,6 +760,13 @@ class OrderController extends Controller
 
         $now = Carbon::now();
         if ('other_time' == $request->time_join_nomination) {
+            $checkMonth = $now->month;
+            if ($checkMonth > $request->sl_month) {
+                $year = $now->year + 1;
+            } else {
+                $year = $now->year;
+            }
+
             if ($request->sl_month_nomination < 10) {
                 $month = '0' . $request->sl_month_nomination;
             } else {
@@ -778,7 +791,7 @@ class OrderController extends Controller
                 $minute = $request->sl_minute_nomination;
             }
 
-            $date = $now->year . '-' . $month . '-' . $date;
+            $date = $year . '-' . $month . '-' . $date;
             $time = $hour . ':' . $minute;
         } else {
             $now->addMinutes($request->time_join_nomination);

@@ -94,9 +94,9 @@ $(document).ready(function(){
     };
 
     if (app.isAppleDevice()) {
-      var selectDate = new Date(month +'/' +date+'/'+year +' ' +hour +':' +minute);
+      var selectDate = new Date(month +'/' + date +'/'+ year +' ' + hour +':' + minute);
     } else {
-      var selectDate = new Date(year +'-' +month+'-'+date +' ' +hour +':' +minute);
+      var selectDate = new Date(year +'-' + month +'-'+ date +' ' + hour +':' + minute);
     }
 
 
@@ -107,26 +107,30 @@ $(document).ready(function(){
     utc = currentDate.getTime() + (currentDate.getTimezoneOffset() * 60000);
     nd = new Date(utc + (3600000*9));
 
-    if(add_minutes(nd, 30) > selectDate) {
-      selectDate = add_minutes(nd, 30);
-      date = selectDate.getDate();
-      month = selectDate.getMonth() +1;
+    var checkMonth = currentDate.getMonth();
 
-      hour = selectDate.getHours();
-      if(hour<10) {
-        hour = '0' +hour;
+    if (month > checkMonth) {
+      if(add_minutes(nd, 30) > selectDate) {
+        selectDate = add_minutes(nd, 30);
+        date = selectDate.getDate();
+        month = selectDate.getMonth() +1;
+
+        hour = selectDate.getHours();
+        if(hour<10) {
+          hour = '0' +hour;
+        }
+
+        minute = selectDate.getMinutes();
+        if(minute<10) {
+          minute = '0' +minute;
+        }
+
+        time = hour + ':' + minute;
+        $('.select-month').val(month);
+        $('.select-date').val(date);
+        $('.select-hour').val(selectDate.getHours());
+        $('.select-minute').val(selectDate.getMinutes());
       }
-
-      minute = selectDate.getMinutes();
-      if(minute<10) {
-        minute = '0' +minute;
-      }
-
-      time = hour + ':' + minute;
-      $('.select-month').val(month);
-      $('.select-date').val(date);
-      $('.select-hour').val(selectDate.getHours());
-      $('.select-minute').val(selectDate.getMinutes());
     }
 
     $('.sp-date').text(date +'日');

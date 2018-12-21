@@ -114,6 +114,7 @@
                   for ($i = $currentMonth; $i <=12; $i++) {
                     array_push($arrMonth, $i);
                   }
+
                   @endphp
                 <select name="date_offer" class="form-control select-time date-offer" id="select-date-offer">
                   @foreach ($arrMonth as $month)

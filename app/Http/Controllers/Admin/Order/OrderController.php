@@ -405,7 +405,10 @@ class OrderController extends Controller
                 $paymentRequest->old_extra_time = $paymentRequest->extra_time;
                 $paymentRequest->extra_point = $input['extra_point'];
                 $paymentRequest->total_point = $input['total_point'];
-                $paymentRequest->status = PaymentRequestStatus::CONFIRM;
+                if ((OrderPaymentStatus::EDIT_REQUESTING == $order->payment_status) && (in_array($paymentRequest->status, [PaymentRequestStatus::REQUESTED, PaymentRequestStatus::UPDATED]))) {
+                    $paymentRequest->status = PaymentRequestStatus::CONFIRM;
+                }
+
                 $paymentRequest->save();
             }
 
