@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Notifications\VoiceCallVerification;
 use App\User;
 use App\Enums\Status;
 use App\Enums\UserType;
@@ -51,13 +52,26 @@ class VerificationController extends ApiController
 
         $newVerification = $user->generateVerifyCode($verification->phone, true);
         $delay = now()->addSeconds(3);
-        $admin = User::find(1);
-        $admin->notify(
+        $user->notify(
             (new ResendVerificationCode($newVerification->id))->delay($delay)
         );
-        $admin->notify(
-            (new ResendVerificationCodeLineNotify($newVerification->id))->delay($delay)
-        );
+
+        return $this->respondWithNoData(trans('messages.verification_code_sent'));
+    }
+
+    public function sendCodeByCall()
+    {
+        $user = $this->guard()->user();
+        $verification = $user->verification;
+
+        if (!$verification) {
+            return $this->respondErrorMessage(trans('messages.action_not_performed'), 422);
+        }
+
+        $newVerification = $user->generateVerifyCode($verification->phone, true);
+        $delay = now()->addSeconds(3);
+        $user->notify((new VoiceCallVerification($newVerification->id))->delay($delay));
+
         return $this->respondWithNoData(trans('messages.verification_code_sent'));
     }
 

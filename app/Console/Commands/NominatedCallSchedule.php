@@ -6,12 +6,9 @@ use App\Cast;
 use App\Enums\CastOrderStatus;
 use App\Enums\OrderStatus;
 use App\Enums\OrderType;
-use App\Enums\UserType;
 use App\Notifications\CallOrdersCreated;
-use App\Notifications\CastDenyOrders;
 use App\Order;
 use App\Services\LogService;
-use App\User;
 use Carbon\Carbon;
 use DB;
 use Illuminate\Console\Command;
@@ -63,7 +60,6 @@ class NominatedCallSchedule extends Command
             $nominees = $order->nominees()
                 ->where('cast_order.status', CastOrderStatus::OPEN)
                 ->get();
-            $owner = $order->user;
             $nomineeIds = [];
             try {
                 DB::beginTransaction();
@@ -79,7 +75,6 @@ class NominatedCallSchedule extends Command
                         false
                     );
                     $nomineeIds[] = $nominee->id;
-                    $owner->notify(new CastDenyOrders($order, $nominee));
                 }
 
                 $castsCount = $order->casts->count();

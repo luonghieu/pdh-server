@@ -1486,7 +1486,6 @@ div.user-data span.total-point-cast{
 }
 
 .title-name {
-  display: inline-block;
   font-family: NotoSansCJKjp;
   font-size: 15px;
   font-weight: bold;
@@ -1496,7 +1495,10 @@ div.user-data span.total-point-cast{
   letter-spacing: normal;
   text-align: center;
   color: #30ccc3;
-  margin-top: 14px;
+}
+
+.title-name p {
+  margin-top: 12px;
 }
 
 #ci7 .btn-register {
@@ -2171,7 +2173,7 @@ padding-top: 65px !important;
 .sms-header h5 {
   text-align: center;
   margin-top: 30px;
-  font-size: 12px;
+  font-size: 14px;
   color: #999999;
   margin-bottom: 4px;
 }
@@ -2271,9 +2273,9 @@ padding-top: 65px !important;
   border-right: 1px solid #222222;
   -webkit-box-sizing: border-box;
   box-sizing: border-box;
-  -webkit-transform: translateY(-50%) translateX(-2px) rotate(404deg);
-  -ms-transform: translateY(-50%) translateX(-2px) rotate(404deg);
-  transform: translateY(-50%) translateX(-2px) rotate(404deg);
+  -webkit-transform: translateY(-10%) translateX(-2px) rotate(404deg);
+  -ms-transform: translateY(-10%) translateX(-2px) rotate(404deg);
+  transform: translateY(-10%) translateX(-2px) rotate(404deg);
 }
 
 #gm1.gm1-edit .phone.arrow.init-m:after {
@@ -2356,6 +2358,7 @@ padding-top: 65px !important;
   outline: 0;
   background: none;
 }
+
 #code-verify a.green-button i.arrow::after {
   pointer-events: none;
   position: absolute;
@@ -2373,6 +2376,11 @@ padding-top: 65px !important;
   -ms-transform: translateY(-50%) translateX(-2px) rotate(-135deg);
   transform: translateY(-50%) translateX(-2px) rotate(-135deg);
 }
+
+#code-verify footer {
+  display: none;
+}
+
 .modal_overlay {
   top: 0;
   bottom: 0;
@@ -2522,4 +2530,27 @@ padding-top: 65px !important;
 #card-index .date-select select {
   background-image: none;
   width: 50px;
+}
+.request-send-code .wrap-link {
+  margin: 0;
+}
+.request-send-code .wrap-link h6:first-child {
+  margin: 15px 0;
+}
+.request-send-code h6 {
+  display: block;
+  margin: 0 0 10px;
+}
+.request-send-code h6 {
+  text-align: center;
+}
+.request-send-code h6 a {
+  border: 1px solid #3fcaca;
+  border-radius: 50px;
+  padding: 5px 0;
+  text-decoration: none;
+  width: 200px;
+  display: block;
+  margin: 0 auto;
+  color: #505050;
 }

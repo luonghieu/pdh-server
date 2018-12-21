@@ -12,6 +12,8 @@ Route::group(['prefix' => 'v1'], function () {
     Route::get('glossaries', ['as' => 'glossaries', 'uses' => 'GlossaryController@glossary']);
     Route::post('/get_day', ['as' => 'get_day', 'uses' => 'OrderController@getDayOfMonth']);
     Route::get('post_code', ['as' => 'post_code', 'uses' => 'PostCodeController@find']);
+    Route::get('voices/code', ['as' => 'voice_code', 'uses' => 'VoiceController@code']);
+    Route::get('voices/code_repeat', ['as' => 'voice_code_repeat', 'uses' => 'VoiceController@repeat']);
 
     Route::group(['prefix' => 'auth', 'as' => 'auth.'], function () {
         Route::post('login', ['as' => 'login', 'uses' => 'AuthController@login']);
@@ -27,6 +29,7 @@ Route::group(['prefix' => 'v1'], function () {
             Route::post('/verify_code', ['as' => 'code', 'uses' => 'VerificationController@code']);
             Route::post('/resend_code', ['as' => 'resend', 'uses' => 'VerificationController@resend']);
             Route::post('/verify', ['as' => 'verify', 'uses' => 'VerificationController@verify']);
+            Route::post('/send_code_by_call', ['as' => 'send_code_by_call', 'uses' => 'VerificationController@sendCodeByCall']);
         });
     });
 
@@ -66,7 +69,8 @@ Route::group(['prefix' => 'v1'], function () {
         Route::post('/', ['as' => 'create', 'uses' => 'RoomController@store']);
         Route::get('/{id}', ['as' => 'index', 'uses' => 'MessageController@index']);
         Route::post('{id}/messages', ['as' => 'store', 'uses' => 'MessageController@store']);
-        Route::get('admin/get_users', ['as' => 'getUsers', 'uses' => 'RoomController@getUsers']);
+        Route::get('admin/room_load', ['as' => 'roomLoad', 'uses' => 'RoomController@getRooms']);
+        Route::get('admin/room_detail/{id}', ['as' => 'room_detail', 'uses' => 'RoomController@getRoom']);
         Route::get('admin/unread_messages', ['as' => 'admin_unread_messages', 'uses' => 'RoomController@getAdminUnreadMessages']);
     });
 

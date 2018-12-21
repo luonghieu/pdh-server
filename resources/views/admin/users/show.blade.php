@@ -1,4 +1,171 @@
 @extends('layouts.admin')
+@section('admin.modal')
+<div class="modal fade" id="popup-img" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <a href="#" class="init-close" data-dismiss="modal">&times;</a>
+      <div class="clearfix"></div>
+      <div class="mt-btn">
+        <!-- set avatar default -->
+        <form action="" method="POST" id="set-avatar-default">
+          {{ csrf_field() }}
+          {{ method_field('PATCH') }}
+          <div class="modal-body">
+            <button type="submit" class="btn btn-default init-w-default" data-toggle="modal"><span>メインにする</span></button>
+          </div>
+        </form><!--  -->
+        <!-- delete avatar -->
+        <form action="" method="POST" id="delete-avatar">
+          {{ csrf_field() }}
+          {{ method_field('DELETE') }}
+          <div class="modal-body">
+            <button type="submit" class="btn btn-default init-w-default" data-toggle="modal"><span>削除する</span></button>
+          </div>
+        </form><!--  -->
+        <!-- update avatar -->
+        <div class="modal-body">
+          <label class="img-default btn btn-default init-w-default">
+            <span>変更する</span>
+            <input type="file" data-toggle="modal" name="image" id="update-avatar" accept="image/*" style="display: none">
+          </label>
+          <div class="popup-error-message"></div>
+        </div><!--  -->
+      </div>
+    </div>
+  </div>
+</div>
+<div class="modal fade" id="campaign_participated" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-body">
+        <p>このゲストは11月キャンペーンを利用しましたか？</p>
+        <p>「はい」をタップすると、キャンペーン告知のポップアップが表示されなくなります。</p>
+      </div>
+      <div class="modal-footer">
+        <form action="{{ route('admin.users.campaign_participated',['user' => $user->id]) }}" method="post">
+          {{ csrf_field() }}
+          <button type="button" class="btn btn-canceled" data-dismiss="modal">キャンセル</button>
+          <button type="submit" class="btn btn-accept">はい</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="modal fade" id="register_cast" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-body">
+        <p>このゲストを、キャストへ変更しますか？</p>
+      </div>
+      <div class="modal-footer">
+        <form action="{{ route('admin.casts.register',['user' => $user->id]) }}" method="get">
+          <button type="button" class="btn btn-canceled" data-dismiss="modal">キャンセル</button>
+          <button type="submit" class="btn btn-accept">はい</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="modal fade" id="register_guest" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-body">
+        <p>このユーザーのステータスをゲストに変更しますか？</p>
+      </div>
+      <div class="modal-footer">
+        <form action="{{ route('admin.users.register_guest',['user' => $user->id]) }}" method="post">
+          {{ csrf_field() }}
+          {{ method_field('PUT') }}
+          <button type="button" class="btn btn-canceled" data-dismiss="modal">キャンセル</button>
+          <button type="submit" class="btn btn-accept">はい</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="modal fade" id="inactiveModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-body">
+        <p>本当にこのアカウントを凍結しますか？</p>
+        <p>実行すると、アプリ上で予約機能を使うことができなくなります</p>
+      </div>
+      <div class="modal-footer">
+        <form action="" method="POST">
+          <button type="button" class="btn btn-canceled" data-dismiss="modal">キャンセル</button>
+          {{ csrf_field() }}
+          {{ method_field('PUT') }}
+          <button type="submit" class="btn btn-accept">はい</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="modal fade" id="activeModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-body">
+        <p>本当にこのアカウントの凍結を解除しますか？</p>
+      </div>
+      <div class="modal-footer">
+        <form action="" method="POST">
+          <button type="button" class="btn btn-canceled" data-dismiss="modal">キャンセル</button>
+          {{ csrf_field() }}
+          {{ method_field('PUT') }}
+          <button type="submit" class="btn btn-accept">はい</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="modal fade" id="btn-qr-code" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-body">
+        @if ($user->line_qr)
+        <img src="{{ $user->line_qr}}" alt="">
+        @else
+        <p>QRコードが登録されていません</p>
+        @endif
+      </div>
+    </div>
+  </div>
+</div>
+<div class="modal fade" id="btn-id-image" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-body">
+        @if (!$user->front_id_image)
+        <p>画像が見つかりません</p>
+        @else
+          @if (@getimagesize($user->front_id_image))
+          <img src="{{ $user->front_id_image }}" alt="">
+          @else
+          <p>エラーが発生しました</p>
+          @endif
+        @endif
+      </div>
+    </div>
+  </div>
+</div>
+<div class="modal fade" id="delete_user" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-body">
+        <p>本当にこのアカウントを削除しますか</p>
+      </div>
+      <div class="modal-footer">
+        <form action="{{ route('admin.users.delete',['user' => $user->id]) }}" method="POST">
+          {{ csrf_field() }}
+          {{ method_field('DELETE') }}
+          <button type="button" class="btn btn-canceled" data-dismiss="modal">キャンセル</button>
+          <button type="submit" class="btn btn-accept">はい</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+@stop
 @section('admin.content')
 <div class="col-md-10 col-sm-11 main">
   @if(Session::has('error'))
@@ -34,6 +201,7 @@
             @if ($user->is_cast)
             <div class="btn-qr">
               <button type="button" data-toggle="modal" data-target="#btn-qr-code" class="btn-detail">QRコードを表示する</button>
+              <button type="button" data-toggle="modal" data-target="#btn-id-image" class="btn-detail">身分証明書を表示する</button>
             </div>
             @endif
           </div>
@@ -262,155 +430,7 @@
             </div>
           </div>
         </div>
-        <div class="modal fade" id="popup-img" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-          <div class="modal-dialog" role="document">
-            <div class="modal-content">
-              <a href="#" class="init-close" data-dismiss="modal">&times;</a>
-              <div class="clearfix"></div>
-              <div class="mt-btn">
-                <!-- set avatar default -->
-                <form action="" method="POST" id="set-avatar-default">
-                  {{ csrf_field() }}
-                  {{ method_field('PATCH') }}
-                  <div class="modal-body">
-                    <button type="submit" class="btn btn-default init-w-default" data-toggle="modal"><span>メインにする</span></button>
-                  </div>
-                </form><!--  -->
-                <!-- delete avatar -->
-                <form action="" method="POST" id="delete-avatar">
-                  {{ csrf_field() }}
-                  {{ method_field('DELETE') }}
-                  <div class="modal-body">
-                    <button type="submit" class="btn btn-default init-w-default" data-toggle="modal"><span>削除する</span></button>
-                  </div>
-                </form><!--  -->
-                <!-- update avatar -->
-                <div class="modal-body">
-                  <label class="img-default btn btn-default init-w-default">
-                    <span>変更する</span>
-                    <input type="file" data-toggle="modal" name="image" id="update-avatar" accept="image/*" style="display: none">
-                  </label>
-                  <div class="popup-error-message"></div>
-                </div><!--  -->
-              </div>
-            </div>
-          </div>
-        </div>
-        <div class="modal fade" id="campaign_participated" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-          <div class="modal-dialog" role="document">
-            <div class="modal-content">
-              <div class="modal-body">
-                <p>このゲストは11月キャンペーンを利用しましたか？</p>
-                <p>「はい」をタップすると、キャンペーン告知のポップアップが表示されなくなります。</p>
-              </div>
-              <div class="modal-footer">
-                <form action="{{ route('admin.users.campaign_participated',['user' => $user->id]) }}" method="post">
-                  {{ csrf_field() }}
-                  <button type="button" class="btn btn-canceled" data-dismiss="modal">キャンセル</button>
-                  <button type="submit" class="btn btn-accept">はい</button>
-                </form>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div class="modal fade" id="register_cast" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-          <div class="modal-dialog" role="document">
-            <div class="modal-content">
-              <div class="modal-body">
-                <p>このゲストを、キャストへ変更しますか？</p>
-              </div>
-              <div class="modal-footer">
-                <form action="{{ route('admin.casts.register',['user' => $user->id]) }}" method="get">
-                  <button type="button" class="btn btn-canceled" data-dismiss="modal">キャンセル</button>
-                  <button type="submit" class="btn btn-accept">はい</button>
-                </form>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div class="modal fade" id="register_guest" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-          <div class="modal-dialog" role="document">
-            <div class="modal-content">
-              <div class="modal-body">
-                <p>このユーザーのステータスをゲストに変更しますか？</p>
-              </div>
-              <div class="modal-footer">
-                <form action="{{ route('admin.users.register_guest',['user' => $user->id]) }}" method="post">
-                  {{ csrf_field() }}
-                  {{ method_field('PUT') }}
-                  <button type="button" class="btn btn-canceled" data-dismiss="modal">キャンセル</button>
-                  <button type="submit" class="btn btn-accept">はい</button>
-                </form>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div class="modal fade" id="inactiveModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-          <div class="modal-dialog" role="document">
-            <div class="modal-content">
-              <div class="modal-body">
-                <p>本当にこのアカウントを凍結しますか？</p>
-                <p>実行すると、アプリ上で予約機能を使うことができなくなります</p>
-              </div>
-              <div class="modal-footer">
-                <form action="" method="POST">
-                  <button type="button" class="btn btn-canceled" data-dismiss="modal">キャンセル</button>
-                  {{ csrf_field() }}
-                  {{ method_field('PUT') }}
-                  <button type="submit" class="btn btn-accept">はい</button>
-                </form>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div class="modal fade" id="activeModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-          <div class="modal-dialog" role="document">
-            <div class="modal-content">
-              <div class="modal-body">
-                <p>本当にこのアカウントの凍結を解除しますか？</p>
-              </div>
-              <div class="modal-footer">
-                <form action="" method="POST">
-                  <button type="button" class="btn btn-canceled" data-dismiss="modal">キャンセル</button>
-                  {{ csrf_field() }}
-                  {{ method_field('PUT') }}
-                  <button type="submit" class="btn btn-accept">はい</button>
-                </form>
-              </div>
-            </div>
-          </div>
-        </div>
-        <div class="modal fade" id="btn-qr-code" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-          <div class="modal-dialog" role="document">
-            <div class="modal-content">
-              <div class="modal-body">
-                @if ($user->line_qr)
-                <img src="{{ $user->line_qr}}" alt="">
-                @else
-                <p>QRコードが登録されていません</p>
-                @endif
-              </div>
-            </div>
-          </div>
-        </div>
-        <div class="modal fade" id="delete_user" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
-               aria-hidden="true">
-            <div class="modal-dialog" role="document">
-              <div class="modal-content">
-                <div class="modal-body">
-                  <p>本当にこのアカウントを削除しますか</p>
-                </div>
-                <div class="modal-footer">
-                  <form action="{{ route('admin.users.delete',['user' => $user->id]) }}" method="POST">
-                    {{ csrf_field() }}
-                    {{ method_field('DELETE') }}
-                    <button type="button" class="btn btn-canceled" data-dismiss="modal">キャンセル</button>
-                    <button type="submit" class="btn btn-accept">はい</button>
-                  </form>
-                </div>
-              </div>
-            </div>
-      </div>
+
       </div>
     </div>
     <!--/col-->
