@@ -66,12 +66,20 @@ if (!function_exists('getDay')) {
 
         if (!isset($data['month'])) {
             $data['month'] = $date->month;
+            $year = $date->year;
+        } else {
+            $checkMonth = $date->month;
+            if ($checkMonth > $data['month']) {
+                $year = $date->year + 1;
+            } else {
+                $year = $date->year;
+            }
         }
 
-        $number = cal_days_in_month(CAL_GREGORIAN, $data['month'], $date->year);
+        $number = cal_days_in_month(CAL_GREGORIAN, $data['month'], $year);
         $days = [];
         foreach (range(01, $number) as $val) {
-            $days[$val] = $val . '日' . '(' . $dayOfWeek[Carbon\Carbon::parse($date->year . '-' . $data['month'] . '-' . $val)->dayOfWeek] . ')';
+            $days[$val] = $val . '日' . '(' . $dayOfWeek[Carbon\Carbon::parse($year . '-' . $data['month'] . '-' . $val)->dayOfWeek] . ')';
         }
 
         return $days;
