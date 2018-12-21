@@ -16,7 +16,9 @@ class IsActive
      */
     public function handle($request, Closure $next)
     {
-        $user = Auth::user();
+        if (!Auth::check()) {
+            return redirect()->route('web.login');
+        }
 
         if (!Auth::user()->status) {
             return redirect()->route('web.index');
