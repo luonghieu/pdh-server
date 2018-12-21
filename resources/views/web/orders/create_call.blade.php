@@ -207,9 +207,17 @@
             </option>
           @endforeach
          </select>
-         <select class="select-date" name="sl_date">
-            @foreach(getDay() as $key => $val)
+            @php
+              if(session()->has('data')) {
+                $data = Session::get('data');
+                $month = $data['time_detail']['month'];
+              } else {
+                $month = null;
+              }
+            @endphp
 
+         <select class="select-date" name="sl_date">
+            @foreach(getDay(null, $month) as $key => $val)
             @php
               if(isset($timeDetail)) {
                 $checkedDate = ($timeDetail['date'] ==$key )  ? 'selected' : '';

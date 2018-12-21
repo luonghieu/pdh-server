@@ -229,7 +229,6 @@ class OrderController extends Controller
         }
 
         $input['cast_class'] = $castClass;
-
         $request->session()->put('data', $input);
         $request->session()->save();
 
