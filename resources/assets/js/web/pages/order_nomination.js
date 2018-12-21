@@ -93,6 +93,11 @@ $(document).ready(function(){
       var year = currentDate.getFullYear();
       if ((time == 'other_time')) {
         var month = $('.select-month').val();
+        var checkMonth = currentDate.getMonth();
+
+        if (month <= checkMonth) {
+          var year = currentDate.getFullYear() + 1;
+        }
 
         if(month<10) {
           month = '0'+month;
@@ -207,8 +212,14 @@ $(document).ready(function(){
     if(time) {
       var currentDate = new Date();
       var year = currentDate.getFullYear();
+
       if (time == 'other_time') {
         var month = $('.select-month').val();
+        var checkMonth = currentDate.getMonth();
+
+        if (month <= checkMonth) {
+          var year = currentDate.getFullYear() + 1;
+        }
 
         if(month<10) {
           month = '0'+month;
@@ -320,6 +331,11 @@ $(document).ready(function(){
       var year = currentDate.getFullYear();
       if ((time == 'other_time')) {
         var month = $('.select-month').val();
+        var checkMonth = currentDate.getMonth();
+
+        if (month <= checkMonth) {
+          var year = currentDate.getFullYear() + 1;
+        }
 
         if(month<10) {
           month = '0'+month;
@@ -509,6 +525,11 @@ $(document).ready(function(){
       var year = currentDate.getFullYear();
       if (time == 'other_time') {
         var month = $('.select-month').val();
+        var checkMonth = currentDate.getMonth();
+
+        if (month <= checkMonth) {
+          var year = currentDate.getFullYear() + 1;
+        }
 
         if(month<10) {
           month = '0'+month;
