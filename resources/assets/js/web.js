@@ -62,3 +62,4 @@ require('./web/pages/bank_account');
 require('./web/pages/create_room');
 require('./web/pages/verify');
 require('./web/pages/order_offer');
+require('./web/pages/menu');

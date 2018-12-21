@@ -7,6 +7,7 @@ use App\Cast;
 use App\Http\Controllers\Api\ApiController;
 use App\Http\Resources\BankAccountResource;
 use App\Services\LogService;
+use GuzzleHttp\Client;
 use Illuminate\Http\Request;
 
 class BankAccountController extends ApiController
@@ -45,8 +46,16 @@ class BankAccountController extends ApiController
             'branch_name',
             'branch_code',
         ]);
-
         try {
+            $bankCode = $input['bank_code'];
+            $branchName = $input['branch_name'];
+            $client = new \GuzzleHttp\Client();
+            $res = $client->request('GET', "https://bankcode-api.appspot.com/api/bank/JP/$bankCode?name=$branchName");
+            $listResult = collect(json_decode($res->getBody()->getContents())->data);
+            if (!$listResult->first()) {
+                return $this->respondErrorMessage(trans('messages.data_not_found'));
+            }
+
             $account = $user->bankAccount()->create($input);
         } catch (\Exception $e) {
             LogService::writeErrorLog($e);
@@ -90,8 +99,15 @@ class BankAccountController extends ApiController
             'branch_name',
             'branch_code',
         ]);
-
         try {
+            $bankCode = $input['bank_code'];
+            $branchName = $input['branch_name'];
+            $client = new \GuzzleHttp\Client();
+            $res = $client->request('GET', "https://bankcode-api.appspot.com/api/bank/JP/$bankCode?name=$branchName");
+            $listResult = collect(json_decode($res->getBody()->getContents())->data);
+            if (!$listResult->first()) {
+                return $this->respondErrorMessage(trans('messages.data_not_found'));
+            }
             $cast->bankAccount()->update($input);
         } catch (\Exception $e) {
             LogService::writeErrorLog($e);

@@ -3,11 +3,24 @@
 @section('controller.id', 'create_bank_accounts')
 @extends('layouts.web')
 @section('web.content')
+<div class="modal_wrap">
+  <input id="create_bank_accounts-error" type="checkbox">
+  <div class="modal_overlay">
+      <label for="create_bank_accounts-error" class="modal_trigger" id="rating-alert-label"></label>
+      <div class="modal_content modal_content-btn3">
+          <div class="content-in">
+              <h2 id="create_bank_accounts-content"></h2>
+          </div>
+      </div>
+  </div>
+</div>
 <div class="title">
   <div class="btn-back">
     <a href="{{ route('web.index') }}" class="prev"><i><img src="/assets/web/images/common/prev.svg" alt=""></i></a>
   </div>
-  <div class="title-name">振込口座登録</div>
+  <div class="title-name">
+    <p>振込口座登録</p>
+  </div>
   <div class="btn-register header-item">
     <a id="btn-create-bank-info" class="btn-submit-bank" >完了</a>
   </div>

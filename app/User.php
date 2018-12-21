@@ -46,6 +46,19 @@ class User extends Authenticatable implements JWTSubject
         return $query->where('users.status', true);
     }
 
+    public function getFrontIdImageAttribute($value)
+    {
+        if (empty($value)) {
+            return '';
+        }
+
+        if (strpos($value, 'https') !== false) {
+            return $value;
+        }
+
+        return Storage::url($value);
+    }
+
     public function getAgeAttribute($value)
     {
         if ($this->date_of_birth) {
@@ -251,8 +264,12 @@ class User extends Authenticatable implements JWTSubject
 
     public function generateVerifyCode($phone, $isResend = false)
     {
+        do {
+            $code = rand(1000, 9999);
+        } while((strpos($code, '0') !== false) || (strpos($code, '7') !== false));
+
         $data = [
-            'code' => rand(1000, 9999),
+            'code' => $code,
             'phone' => $phone,
             'is_resend' => $isResend,
         ];

@@ -7,7 +7,9 @@
   <div class="btn-back">
     <a href="{{ route('web.index') }}" class="prev"><i><img src="/assets/web/images/common/prev.svg" alt=""></i></a>
   </div>
-  <div class="title-name">振込口座登録</div>
+  <div class="title-name">
+    <p>振込口座登録</p>
+  </div>
   <div class="btn-register header-item">
     <a href="{{ route('cast_mypage.bank_account.edit') }}" class="btn-update-bank">編集</a>
   </div>

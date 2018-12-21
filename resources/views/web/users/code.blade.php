@@ -34,21 +34,32 @@
       </div>
     </div>
   </div>
+
   <div class="modal_wrap">
     <input id="trigger-alert-resend-code" type="checkbox">
     <div class="modal_overlay">
-      <label for="trigger" class="modal_trigger"></label>
-      <div class="modal_content modal_content-btn1">
-        <div class="text-box notify-resend-success">
-          <h2>SMS認証を承りました</h2>
-          <p>24時間以内に認証番号を</p>
-          <p>お送りいたしますので</p>
-          <p>しばらくお待ち下さい</p>
+      <label for="trigger-alert-resend-code" class="modal_trigger" id="resend-success"></label>
+      <div class="modal_content modal_content-btn3">
+        <div class="content-in">
+          <h2>SMSを再送しました</h2>
         </div>
-        <label for="trigger-alert-resend-code" class="close_button" id="resend-success">OK</label>
       </div>
     </div>
   </div>
+
+  <div class="modal_wrap">
+    <input id="trigger-alert-resend-code-voice" type="checkbox">
+    <div class="modal_overlay">
+      <label for="trigger-alert-resend-code-voice" class="modal_trigger" id="resend-success"></label>
+      <div class="modal_content modal_content-btn3">
+        <div class="content-in">
+          <h2>電話番号認証を承りました</h2>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
   <div class="modal_wrap" id="accept-resend-code">
     <input id="triggerAcceptResenCode" type="checkbox">
     <div class="modal_overlay">
@@ -68,6 +79,28 @@
       </div>
     </div>
   </div>
+
+  <div class="modal_wrap" id="accept-resend-code-voice">
+    <input id="triggerAcceptResenCodeVoice" type="checkbox">
+    <div class="modal_overlay">
+      <label for="trigger" class="modal_trigger"></label>
+      <div class="modal_content modal_content-btn2">
+        <div class="text-box">
+          <h2>電話番号による認証を行いますか？</h2>
+          <p>電話にて認証番号をお伝えします <br/> "はい"をタップし、しばらくお待ちください</p>
+        </div>
+        <div class="close_button-box">
+          <div class="close_button-block">
+            <label for="triggerAcceptResenCodeVoice" class="close_button left" id="deny-resend">キャンセル</label>
+          </div>
+          <div class="close_button-block">
+            <label id="resend-code-voice" class="close_button right">はい</label>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
 
   <div class="page-header sms-header">
     <h1 class="text-bold">本人確認</h1>
@@ -95,10 +128,11 @@
     </section>
   </div>
 
-  <div class="page-header sms-header">
+  <div class="page-header sms-header request-send-code">
     <h5>SMSが届かない場合</h5>
     <div class="wrap-link">
       <h6 id="request-resend-code" class="text-verify"><a href="javascript:void(0)">SMSを再送する</a></h6>
+      <h6 id="request-resend-code-voice" class="text-verify"><a href="javascript:void(0)">電話番号で認証する</a></h6>
       <h6 class="text-verify"><a href="/service/contact">運営に問い合わせる</a></h6>
     </div>
   </div>

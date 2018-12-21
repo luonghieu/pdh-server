@@ -5,9 +5,16 @@
 @section('web.content')
 <div class="title">
   <div class="btn-back">
-    <a href="{{ URL::previous() }}" class="prev"><i><img src="/assets/web/images/common/prev.svg" alt=""></i></a>
+    @php
+      if(!isset($prevUrl)) {
+        $prevUrl = \URL::previous();
+      }
+    @endphp
+    <a href="{{ $prevUrl }}" class="prev"><i><img src="/assets/web/images/common/prev.svg" alt=""></i></a>
   </div>
-  <div class="title-name">銀行名</div>
+  <div class="title-name">
+    <p>銀行名</p>
+  </div>
   <div class="btn-register header-item">
     <a id="btn-create"></a>
   </div>
@@ -19,6 +26,7 @@
       <input type="hidden" name="branch_name"  value="{{ request()->branch_name }}">
       <input type="hidden" name="branch_code"  value="{{ request()->branch_code }}">
       <input type="hidden" name="type"  value="{{ request()->type }}">
+      <input type="hidden" name="back_url" value="{{ $prevUrl }}">
     {{ csrf_field() }}
     <div class="result-bank-name">
       <div class="account-holder border-bottom row">

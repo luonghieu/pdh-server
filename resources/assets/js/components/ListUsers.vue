@@ -1,7 +1,8 @@
 <template>
     <div class="inbox_people">
         <div class="panel-body handling">
-            <input type="text" class="form-control input_search" placeholder="ユーザーID,名前" v-model="searchName">
+            <input type="text" class="form-control input_search" placeholder="ユーザーID,名前" @input="debounceInput"
+                   v-model="searchName">
             <i class="fa fa-search search_name" aria-hidden="true"></i>
         </div>
         <div class="chat_tab">
@@ -11,128 +12,165 @@
             </ul>
         </div>
         <div class="inbox_chat inbox_cast" id="cast">
-            <div v-for="(value, index) in filteredData" :key="index">
-                    <router-link :to="{ name: 'ChatRoom', params: { id: value.id }}" v-on:click.native="setRoomId(value.id, value.unread_count, value.users)">
-                        <div v-bind:class="value.id == Id || value.id == room_id  ? 'active_chat' : ''">
-                            <div class="chat_list" v-for="(userDetail, index) in value.users" :key="index"
-                                 v-if="userDetail.type == cast">
-                                <div class="chat_people">
-                                    <div class="chat_img" v-if=userDetail.avatars><img
-                                            class="img_avatar"
-                                            :src="userDetail.avatars[0] ? userDetail.avatars[0].thumbnail : ''">
-                                    </div>
-                                    <div class="chat_ib">
-                                        <h5 class="chat_id fa fa-id-badge"> {{userDetail.id}}</h5>
-                                        <h5 class="chat_nickname"><i v-bind:class="userDetail.gender == 2 ? 'fa fa-female' : 'fa fa-male' "></i> {{userDetail.nickname}}</h5>
-                                    </div>
-                                </div>
-                                <span v-for="(unread, index) in unreadMessage" :key="index" v-if="unread.id == value.id && unread.count > 0" v-bind:class="unread.count == 0 || value.id == Id || value.id == room_id  ? 'notification' : 'notify-chat'">{{unread.count}}</span>
+            <div v-for="(room, index) in mutableRoomCasts" :key="index">
+                <router-link :to="{ name: 'ChatRoom', params: { id: room.id }}" v-on:click.native="setRoomId(room)">
+                    <div class="chat_list">
+                        <div class="chat_people">
+                            <div class="chat_img">
+                                <img class="img_avatar" :src="getImgUrl(room.thumbnail)">
+                            </div>
+                            <div class="chat_ib">
+                                <h5 class="chat_id fa fa-id-badge"> {{room.owner_id}}</h5>
+                                <h5 class="chat_nickname"><i
+                                        v-bind:class="room.gender == 2 ? 'fa fa-female' : 'fa fa-male' "></i>
+                                    {{room.nickname}}</h5>
                             </div>
                         </div>
-                    </router-link>
+                        <span v-for="(unread, index) in unreads" :key="index" v-if="unread.id ==
+                                room.id && unread.count > 0" v-bind:class="unread.count == 0 || room.id == room_id ||
+                                room.id == roomId  ? 'notification' : 'notify-chat'">{{unread.count}}</span>
+                    </div>
+                </router-link>
             </div>
         </div>
-        <div class="inbox_chat inbox_guest" id="guest">
-            <div v-for="(value, index) in filteredData" :key="index">
-                    <router-link :to="{ name: 'ChatRoom', params: { id: value.id }}" v-on:click.native="setRoomId(value.id, value.unread_count, value.users)">
-                        <div v-bind:class="value.id == Id || value.id == room_id ? 'active_chat ' : ''">
-                            <div class="chat_list" v-for="(userDetail, index) in value.users" v-if="userDetail.type == guest" :key="index">
-                                <div class="chat_people">
-                                    <div class="chat_img" v-if=userDetail.avatars><img
-                                            class="img_avatar"
-                                            :src="userDetail.avatars[0] ? userDetail.avatars[0].thumbnail : ''">
-                                    </div>
-                                    <div class="chat_ib">
-                                        <h5 class="chat_id fa fa-id-badge"> {{userDetail.id}}</h5>
-                                        <h5 class="chat_nickname"><i v-bind:class="userDetail.gender == 2 ? 'fa fa-female' : 'fa fa-male' "></i> {{userDetail.nickname}}</h5>
-                                    </div>
+        <div class="inbox_chat inbox_guest" id="guest" v-scroll-loadmore='loadMore'>
+            <div v-for="(room, index) in mutableRoomGuests" :key="index">
+                <div v-bind:class="(room_id == room.id || room.id == roomId) ? 'active_chat ' : ''">
+                    <router-link :to="{ name: 'ChatRoom', params: { id: room.id }}" v-on:click.native="setRoomId(room)">
+                        <div class="chat_list">
+                            <div class="chat_people">
+                                <div class="chat_img">
+                                    <img class="img_avatar" :src="getImgUrl(room.thumbnail)">
                                 </div>
-                                <span v-for="(unread, index) in unreadMessage" :key="index" v-if="unread.id == value.id && unread.count > 0" v-bind:class="unread.count == 0 || value.id == Id || value.id == room_id  ? 'notification' : 'notify-chat'">{{unread.count}}</span>
+                                <div class="chat_ib">
+                                    <h5 class="chat_id fa fa-id-badge"> {{room.owner_id}}</h5>
+                                    <h5 class="chat_nickname"><i v-bind:class="room.gender == 2 ? 'fa fa-female' :
+                                'fa fa-male' "></i> {{room.nickname}}</h5>
+                                </div>
                             </div>
+                            <span v-for="(unread, index) in unreads" :key="index" v-if="unread.id ==
+                            room.id && unread.count > 0" v-bind:class="unread.count == 0 || room.id == room_id ||
+                            room.id == roomId  ? 'notification' : 'notify-chat'">{{unread.count}}</span>
                         </div>
                     </router-link>
+                </div>
             </div>
         </div>
     </div>
 </template>
 
 <script>
-export default {
-  name: "ListUsers",
-  props: [
-    "user_id",
-    "roomId",
-    "realtime_message",
-    "realtime_roomId",
-    "users",
-    "unreadMessage",
-    "getRoom"
-  ],
-  data() {
-    return {
-      cast: 2,
-      guest: 1,
-      isActive: true,
-      searchName: "",
-      Id: "",
-      room_id: this.roomId,
-      setUnread: 1,
-      count: this.unreadMessage,
-      nickName: "",
-      unRead: 0
-    };
-  },
+    import _ from 'lodash';
 
-  methods: {
-    setRoomId(roomID, unReadCount, user) {
-      this.room_id = null;
-      this.Id = roomID;
-      if (unReadCount > 0) {
-        this.setUnread = 0;
-      }
-      user.forEach(item => {
-        this.nickName = item.nickname;
-      });
+    export default {
+        name: "ListUsers",
+        props: [
+            "user_id",
+            "roomId",
+            "realtime_message",
+            "realtime_roomId",
+            "unreadMessage",
+            "getRoom",
+            'roomGuests',
+            'roomCasts',
+            'roomGuestsFiltered',
+            'roomCastsFiltered',
+            'storagePath',
+            'baseUrl'
+        ],
+        data() {
+            return {
+                cast: 2,
+                guest: 1,
+                isActive: true,
+                searchName: "",
+                room_id: this.roomId,
+                setUnread: 1,
+                count: this.unreadMessage,
+                nickName: "",
+                unRead: 0,
+                mutableRoomGuests: [],
+                mutableRoomCasts: [],
+                currentTab: 1,
+                unreads: [],
+                page: 1,
+            };
+        },
+        created() {
+            this.mutableRoomGuests = this.roomGuests;
+            this.mutableRoomCasts = this.roomCasts;
+            this.unreads = this.unreadMessage;
+        },
+        methods: {
+            setRoomId(room) {
+                this.room_id = room.id;
+                this.$emit('updateUnreadMessage', this.room_id);
+            },
+            getImgUrl(thumbnail) {
+                const pattern = /(http|https):?/;
+                if (thumbnail) {
+                    if (!pattern.test(thumbnail)) {
+                        return this.storagePath + thumbnail;
+                    }
 
-      this.unRead = 0;
-      let index = this.unreadMessage.findIndex(function(object) {
-        return object.id === roomID;
-      });
-      this.$emit("interface", index);
+                    return thumbnail;
+                }
 
-      if (this.unRead == 0) {
-        this.$emit("interface", this.nickName);
-      }
-    }
-  },
-
-  computed: {
-    filteredData: function() {
-      let search_array = this.users;
-      let searchName = this.searchName;
-
-      if (!searchName) {
-        return search_array;
-      }
-
-      searchName = searchName.trim().toLowerCase();
-
-      search_array = search_array.filter(item => {
-        for (let value in item.users) {
-          let userId = item.users[value].id.toString();
-          if (
-            item.users[value].nickname.toLowerCase().indexOf(searchName) !==
-              -1 ||
-            userId.toLowerCase().indexOf(searchName) !== -1
-          ) {
-            return true;
-          }
+                return this.baseUrl + '/assets/web/images/gm1/ic_default_avatar@3x.png';
+            },
+            loadMore() {
+                this.page += 1;
+                window.axios.get('/api/v1/rooms/admin/room_load', {
+                    params: {
+                        page: this.page
+                    }
+                }).then(response => {
+                    const data = response.data.data;
+                    this.$emit('loadMore', data);
+                }).catch(e => {
+                    console.log(e);
+                });
+            },
+            debounceInput: _.debounce(function (e) {
+                if (e.target.value) {
+                    window.axios.get('/api/v1/rooms/admin/room_load', {
+                        params: {
+                            search: e.target.value
+                        }
+                    }).then(response => {
+                        const data = response.data;
+                        this.$emit('filterRoom', data);
+                    }).catch(e => {
+                        console.log(e);
+                    });
+                } else {
+                    this.mutableRoomGuests = this.roomGuests;
+                    this.mutableRoomCasts = this.roomCasts;
+                }
+            }, 500)
+        },
+        watch: {
+            unreadMessage(newVal, oldVal) {
+                this.unreads = newVal;
+            },
+            roomGuests(newVal, oldVal) {
+                this.mutableRoomGuests = newVal;
+            },
+            roomCasts(newVal, oldVal) {
+                this.mutableRoomCasts = newVal;
+            },
+            roomGuestsFiltered(newVal, oldVal) {
+                if (newVal) {
+                    this.mutableRoomGuests = newVal;
+                }
+            },
+            roomCastsFiltered(newVal, oldVal) {
+                if (newVal) {
+                    this.mutableRoomCasts = newVal;
+                }
+            }
         }
-      });
-      return search_array;
-    }
-  }
-};
+    };
 </script>
 
 <style scoped>

@@ -9,24 +9,23 @@
       <img src="{{ asset('images/btn_login_base.png') }}" alt="">
     </a>
   @endif
-
   <section class="button-box" style="display: none;">
     <label for="trigger" class="open_button button-settlement"></label>
   </section>
   <div class="top-header" id="top-header-cast">
     <div class="user-data">
       <span class="total-point-title">あなたの売上合計</span>
-      <span class="total-point-cast">{{ number_format($user->total_point) }}P</span>
+      <span class="total-point-cast">{{ number_format($user->total_point + $user->point) }}P</span>
       <div class="user-icon init-image-radius" id="cast-icon">
-        @if (Auth::user()->avatars && !empty($user->avatars->first()->thumbnail))
+        @if ($user->avatars && !empty($user->avatars->first()->thumbnail))
           <img src="{{ $user->avatars->first()->thumbnail }}" alt="">
         @else
           <img src="{{ asset('assets/web/images/ge1/user_icon.svg') }}" alt="">
         @endif
       </div>
     </div>
-    @if (Auth::user()->nickname)
-    <span class="user-name">{{ Auth::user()->nickname }}</span>
+    @if ($user->nickname)
+    <span class="user-name">{{ $user->nickname }}</span>
     @endif
   </div>
   <div class="cast-call point-transfer">

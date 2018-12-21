@@ -1582,6 +1582,15 @@ tbody td {
   word-break: break-all;
 }
 
+#btn-id-image img {
+  width: 60%;
+  margin: 1%;
+}
+
+#btn-id-image {
+  margin-top: 15%;
+}
+
 @media (max-width: 799px) {
   .image-verified {
     float: right;

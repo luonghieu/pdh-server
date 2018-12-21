@@ -116,16 +116,60 @@ class RoomController extends ApiController
         }
     }
 
-    public function getUsers()
+    public function getRooms(Request $request)
     {
+        if ($request->search) {
+            $search = $request->search;
+            $rooms = DB::table('rooms')->where('is_active', true)
+                ->where('rooms.type', RoomType::SYSTEM)
+                ->join('users', function ($j) use ($search) {
+                    $j->on('rooms.owner_id', '=', 'users.id')
+                        ->where(function ($w) use ($search) {
+                            $w->Where('users.id', 'like', '%' . $search . '%')
+                                ->orWhere('users.nickname', 'like', '%' . $search . '%');
+                        });
+                })
+                ->leftJoin('avatars', function ($j) {
+                    $j->on('avatars.user_id', '=', 'users.id')
+                        ->where('is_default', true);
+                })
+                ->where('users.deleted_at', null)
+                ->select('rooms.*', 'users.type As user_type', 'users.gender', 'users.nickname', 'avatars.thumbnail')
+                ->orderBy('users.type', 'DESC')->orderBy('users.updated_at', 'DESC')
+                ->get();
+        } else {
+            $rooms = DB::table('rooms')->where('is_active', true)
+                ->where('rooms.type', RoomType::SYSTEM)
+                ->join('users', 'rooms.owner_id', '=', 'users.id')
+                ->leftJoin('avatars', function ($j) {
+                    $j->on('avatars.user_id', '=', 'users.id')
+                        ->where('is_default', true);
+                })
+                ->where('users.deleted_at', null)
+                ->select('rooms.*', 'users.type As user_type', 'users.gender', 'users.nickname', 'avatars.thumbnail')
+                ->orderBy('users.type', 'DESC')->orderBy('users.updated_at', 'DESC')
+                ->paginate(100)->appends($request->query());
+        }
 
-        $rooms = Room::active()->where('type', RoomType::SYSTEM);
+        return response()->json($rooms, 200);
+    }
 
-        $rooms = $rooms->with(['users' => function ($query) {
-            $query->whereNotIn('type', [Usertype::ADMIN]);
-        }])->orderBy('updated_at', 'DESC')->get();
+    public function getRoom(Request $request) {
+        $id = $request->id;
+        $room = DB::table('rooms')->where('is_active', true)
+            ->where('rooms.type', RoomType::SYSTEM)
+            ->where('rooms.id', $id)
+            ->join('users', 'rooms.owner_id', '=', 'users.id')
+            ->leftJoin('avatars', function ($j) {
+                $j->on('avatars.user_id', '=', 'users.id')
+                    ->where('is_default', true);
+            })
+            ->where('users.deleted_at', null)
+            ->select('rooms.*', 'users.type As user_type', 'users.gender', 'users.nickname', 'avatars.thumbnail')
+            ->orderBy('users.type', 'DESC')->orderBy('users.updated_at', 'DESC')
+            ->first();
 
-        return $this->respondWithData($rooms);
+        return response()->json($room, 200);
     }
 
     public function getAdminUnreadMessages()

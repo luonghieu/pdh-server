@@ -72,4 +72,5 @@ return [
     'postcode_error' => 'Address not found',
     'order_timeout' => 'The order is expired',
     'payment_failed' => 'Payment failed.',
+    'data_not_found' => 'Data not found',
 ];

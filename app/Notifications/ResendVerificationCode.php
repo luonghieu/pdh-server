@@ -7,6 +7,8 @@ use Illuminate\Bus\Queueable;
 use Illuminate\Notifications\Notification;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
+use NotificationChannels\Twilio\TwilioChannel;
+use NotificationChannels\Twilio\TwilioSmsMessage;
 
 class ResendVerificationCode extends Notification implements ShouldQueue
 {
@@ -32,15 +34,12 @@ class ResendVerificationCode extends Notification implements ShouldQueue
      */
     public function via($notifiable)
     {
-        return [RocketChatNotificationChannel::class];
+        return [TwilioChannel::class];
     }
 
-    public function rocketChatPushData($notifiable)
+    public function toTwilio($notifiable)
     {
-        $link = route('admin.verifications.index', ['search' => $this->verification->phone]);
-
-        return [
-            'text' => "新着のSMS認証依頼が届きました。[Link]($link)"
-        ];
+        return (new TwilioSmsMessage())
+            ->content("[Cheers]認証コード：{$this->verification->code} \nこの番号をWebサイトの画面で入力してください。");
     }
 }
