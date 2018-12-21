@@ -267,9 +267,6 @@ export default {
         this.roomCasts = rooms.filter(r => r.user_type == 2);
       }
     },
-    unreadIncome() {
-
-    },
     sendMessage() {
       if (this.id) {
         this.realtime_roomId = this.id;
