@@ -25,7 +25,7 @@ Route::group(['middleware' => 'auth'], function () {
             Route::get('/', ['as' => 'index', 'uses' => 'PointController@index']);
         });
 
-        Route::group(['prefix' => 'message', 'as' => 'message.'], function () {
+        Route::group(['middleware' => 'is_active', 'prefix' => 'message', 'as' => 'message.'], function () {
             Route::get('/', ['as' => 'index', 'uses' => 'RoomController@index']);
 
             Route::get('{room}', ['as' => 'messages', 'uses' => 'MessageController@message'])->where('room', '[0-9]+');
