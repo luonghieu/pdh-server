@@ -115,9 +115,7 @@ $(document).ready(function() {
   $('#resend-code-voice').click(function() {
     window.axios.post(`/api/v1/auth/send_code_by_call`)
       .then(function (response) {
-        $('#accept-resend-code-voice').css({
-          display: 'none',
-        });
+        $('#triggerAcceptResenCodeVoice').trigger('click');
         $('#trigger-alert-resend-code-voice').trigger('click');
       })
       .catch(function (error) {

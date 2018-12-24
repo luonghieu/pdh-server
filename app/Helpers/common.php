@@ -59,19 +59,37 @@ if (!function_exists('getPrefectureName')) {
 }
 
 if (!function_exists('getDay')) {
-    function getDay($data = null)
+    function getDay($data = null, $month = null)
     {
         $date = \Carbon\Carbon::now()->addMinutes(30);
         $dayOfWeek = ['日', '月', '火', '水', '木', '金', '土'];
 
-        if (!isset($data['month'])) {
-            $data['month'] = $date->month;
+        if (isset($month)) {
+            $checkMonth = $month;
+        } else {
+            $checkMonth = $date->month;
         }
 
-        $number = cal_days_in_month(CAL_GREGORIAN, $data['month'], $date->year);
+        if (!isset($data['month'])) {
+            $data['month'] = $checkMonth;
+
+            if ($date->month > $checkMonth) {
+                $year = $date->year + 1;
+            } else {
+                $year = $date->year;
+            }
+        } else {
+            if ($checkMonth > $data['month']) {
+                $year = $date->year + 1;
+            } else {
+                $year = $date->year;
+            }
+        }
+
+        $number = cal_days_in_month(CAL_GREGORIAN, $data['month'], $year);
         $days = [];
         foreach (range(01, $number) as $val) {
-            $days[$val] = $val . '日' . '(' . $dayOfWeek[Carbon\Carbon::parse($date->year . '-' . $data['month'] . '-' . $val)->dayOfWeek] . ')';
+            $days[$val] = $val . '日' . '(' . $dayOfWeek[Carbon\Carbon::parse($year . '-' . $data['month'] . '-' . $val)->dayOfWeek] . ')';
         }
 
         return $days;

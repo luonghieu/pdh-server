@@ -189,35 +189,67 @@
             $currentDate = $now->format('d');
             $currentHour = $now->format('H');
             $currentMinute = $now->format('i');
-          @endphp
-         <select class="select-month" name="sl_month">
-          @foreach(range(1, 12) as $month)
-           <option value="{{ $month }}"
-           {{ (isset($timeDetail) && $timeDetail['month'] ==$month ) ? 'selected' : $currentMonth == $month ? 'selected' : '' }}>
-           {{ $month }}月
-       </option>
-          @endforeach
-         </select>
-         <select class="select-date" name="sl_date">
-            @foreach(getDay() as $key => $val)
-             <option value="{{ $key }}"
-              {{ (isset($timeDetail) && $timeDetail['date'] ==$key ) ? 'selected' : $currentDate == $key ? 'selected' : '' }}
-              >
 
-             {{ $val }}
-             </option>
+          @endphp
+          <select class="select-month" name="sl_month">
+          @foreach(range(1, 12) as $month)
+            @php
+            if(isset($timeDetail)) {
+              $checkedMonth = ($timeDetail['month'] ==$month)  ? 'selected' : '';
+            } else {
+              $checkedMonth = $currentMonth == $month ? 'selected' : '' ;
+            }
+            @endphp
+
+            <option value="{{ $month }}" {{ $checkedMonth }}>{{ $month }}月</option>
+          @endforeach
+          </select>
+          @php
+            if(isset($timeDetail)) {
+              $month = $timeDetail['month'];
+            } else {
+              $month = null ;
+            }
+          @endphp
+
+          <select class="select-date" name="sl_date">
+            @foreach(getDay(null, $month) as $key => $val)
+            @php
+              if(isset($timeDetail)) {
+                $checkedDate = ($timeDetail['date'] ==$key )  ? 'selected' : '';
+              } else {
+                $checkedDate = $currentDate == $key ? 'selected' : '' ;
+              }
+
+            @endphp
+             <option value="{{ $key }}" {{ $checkedDate }}>{{ $val }}</option>
             @endforeach
-         </select>
+          </select>
          <select class="select-hour" name="sl_hour">
           @foreach(range(00, 23) as $hour)
-           <option value="{{ $hour }}" {{ (isset($timeDetail) && $timeDetail['hour'] ==$hour ) ? 'selected' : $currentHour == $hour ? 'selected' : '' }}>
+            @php
+              if(isset($timeDetail)) {
+                $checkedHour = ((int)$timeDetail['hour'] == $hour )  ? 'selected' : '';
+              } else {
+                $checkedHour = $currentHour == $hour ? 'selected' : '' ;
+              }
+            @endphp
+
+           <option value="{{ $hour }}" {{ $checkedHour }}>
                 {{ $hour<10 ? '0'.$hour : $hour }}時
           </option>
           @endforeach
          </select>
          <select class="select-minute" name="sl_minute">
            @foreach(range(00, 59) as $minute)
-           <option value="{{ $minute }}" {{ (isset($timeDetail) && $timeDetail['minute'] ==$minute ) ? 'selected' : $currentMinute == $minute ? 'selected' : '' }}>
+            @php
+              if(isset($timeDetail)) {
+                $checkedMinute = ((int)$timeDetail['minute'] == $minute )  ? 'selected' : '';
+              } else {
+                $checkedMinute = $currentMinute == $minute ? 'selected' : '' ;
+              }
+            @endphp
+           <option value="{{ $minute }}" {{ $checkedMinute }}>
                 {{ $minute<10 ? '0'.$minute : $minute }}分
           </option>
           @endforeach
