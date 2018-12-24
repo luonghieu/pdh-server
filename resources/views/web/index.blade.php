@@ -73,6 +73,19 @@
     </div>
   </div>
   @endif
+
+  <div class="modal_wrap">
+    <input id="trigger-freezed-account" type="checkbox">
+    <div class="modal_overlay">
+      <label for="trigger-freezed-account" class="modal_trigger"></label>
+      <div class="modal_content modal_content-btn1">
+        <div class="text-box">
+          <h2>{{ trans('messages.freezing_account') }}</h2>
+        </div>
+        <label for="trigger-freezed-account" class="close_button">OK</label>
+      </div>
+    </div>
+  </div>
 @endsection
 @section('web.content')
   @if (!Auth::check())
@@ -153,35 +166,46 @@
         @endforeach
       </ul>
       <div class="btn-m cast-message">
+        @if (Auth::user()->status)
         <a href="{{ route('message.messages', $order->room_id) }}">メッセージを確認する</a>
+        @else
+        <a href="javascript:void(0)" id="popup-freezed-account">メッセージを確認する</a>
+        @endif
       </div>
     </div>
   </div>
   @endif
+  @if (Auth::user()->status)
   <a href="{{ route('guest.orders.call') }}" class="cast-call">今すぐキャストを呼ぶ<span>最短20分で合流!</span></a>
+  @else
+  <a href="javascript:void(0)" class="cast-call" id="popup-freezed-account">今すぐキャストを呼ぶ<span>最短20分で合流!</span></a>
+  @endif
   <div class="cast-list">
     <div class="cast-head">
       <h2>在籍中のキャスト</h2>
+      @if (Auth::user()->status)
       <a href="{{ route('cast.list_casts') }}"><h2>一覧</h2></a>
+      @else
+      <a href="javascript:void(0)" id="popup-freezed-account"><h2>一覧</h2></a>
+      @endif
     </div>
 
     <div class="cast-body">
       @foreach ($casts as $cast)
         <div class="cast-item">
-          <a href="{{ route('cast.show', ['id' => $cast->id]) }}">
+          <a href="{{ Auth::user()->status ? route('cast.show', ['id' => $cast->id]) : 'javascript:void(0)' }}" id="{{ Auth::user()->status ? '' : 'popup-freezed-account' }}">
             @php
-              if($cast->class_id == 1) {
+              if ($cast->class_id == 1) {
                 $class = 'cast-class_b';
               }
 
-              if($cast->class_id == 2) {
+              if ($cast->class_id == 2) {
                 $class = 'cast-class_p';
               }
 
-              if($cast->class_id == 3) {
+              if ($cast->class_id == 3) {
                 $class = 'cast-class_d';
               }
-
             @endphp
             <span class="tag {{ $class }}">{{ $cast->class }}</span>
             <img src="{{ ($cast->avatars && @getimagesize($cast->avatars[0]->thumbnail)) ? $cast->avatars[0]->thumbnail :'/assets/web/images/gm1/ic_default_avatar@3x.png' }}">
@@ -195,8 +219,11 @@
           </a>
         </div>
       @endforeach
-
+      @if (Auth::user()->status)
       <a href="{{ route('cast.list_casts') }}" class="cast-item import"></a>
+      @else
+      <a href="javascript:void(0)" class="cast-item import" id="popup-freezed-account"></a>
+      @endif
     </div>
   </div>
 <!-- Timeline -->
@@ -209,7 +236,9 @@
     @foreach ($newIntros as $intro)
       <div class="tl-item">
         <div class="tl-item_avatar">
-          <a href="{{ route('cast.show', ['id' => $intro->id]) }}"><img src="{{ ($intro->avatars && @getimagesize($intro->avatars[0]->thumbnail)) ? $intro->avatars[0]->thumbnail :'/assets/web/images/gm1/ic_default_avatar@3x.png' }}" alt="avatar" class="image-intro"></a>
+          <a href="{{ Auth::user()->status ? route('cast.show', ['id' => $intro->id]) : 'javascript:void(0)' }}" id="{{ Auth::user()->status ? '' : 'popup-freezed-account' }}">
+            <img src="{{ ($intro->avatars && @getimagesize($intro->avatars[0]->thumbnail)) ? $intro->avatars[0]->thumbnail :'/assets/web/images/gm1/ic_default_avatar@3x.png' }}" alt="avatar" class="image-intro">
+          </a>
         </div>
 
         <div class="tl-item_info">
@@ -230,6 +259,13 @@
       });
     </script>
   @endif
+  <script>
+    jQuery(document).ready(function($) {
+      $('body').on('click', '#popup-freezed-account', function () {
+        $('#trigger-freezed-account').trigger('click');
+      })
+    })
+  </script>
   <script>
     $(function () {
       var popup_mypage = window.sessionStorage.getItem('popup_mypage');

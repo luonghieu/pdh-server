@@ -31,7 +31,7 @@ class CastController extends ApiController
         ]);
 
         $user = $this->guard()->user();
-        if (!$user->status) {
+        if (!$user->status && !$request->device) {
             return $this->respondErrorMessage(trans('messages.freezing_account'), 403);
         }
 

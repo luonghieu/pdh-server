@@ -68,7 +68,7 @@ Route::group(['middleware' => 'auth', 'prefix' => 'verify', 'as' => 'verify.'], 
 });
 
 Route::group(['middleware' => ['auth', 'guest', 'check_info'], 'as' => 'guest.'], function () {
-    Route::group(['as' => 'orders.'], function () {
+    Route::group(['middleware' => 'is_active', 'as' => 'orders.'], function () {
         Route::get('/reserve', ['as' => 'reserve', 'uses' => 'OrderController@index']);
         Route::get('/call', ['as' => 'call', 'uses' => 'OrderController@call']);
         Route::post('/call', ['as' => 'post_call', 'uses' => 'OrderController@getParams']);
@@ -93,7 +93,7 @@ Route::group(['middleware' => ['auth'], 'as' => 'guest.'], function () {
     Route::get('/offers/attention', ['as' => 'orders.offers_attention', 'uses' => 'OrderController@offerAttention'])->where('id', '[0-9]+');
 });
 
-Route::group(['middleware' => ['auth', 'guest', 'check_info']], function () {
+Route::group(['middleware' => ['auth', 'guest', 'check_info', 'is_active']], function () {
     Route::group(['prefix' => 'cast', 'as' => 'cast.'], function () {
         Route::get('/', ['as' => 'list_casts', 'uses' => 'UserController@listCasts']);
         Route::get('/list/more', ['as' => 'list.more', 'uses' => 'UserController@loadMoreListCasts']);
