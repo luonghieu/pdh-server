@@ -23,3 +23,19 @@
 <!-- Improve load list image -->
 <script src="{{ asset('assets/web/js/lazy/jquery.lazy.min.js') }}"></script>
 <script src="{{ mix('assets/web/js/lazy/loading_image.min.js') }}"></script>
+<script>
+  jQuery(document).ready(function($) {
+    var MenuAPI = $("#menu").data('mmenu');
+    $('body').on('click', '#menu-freezed-account', function () {
+      MenuAPI.close();
+
+      setTimeout(function () {
+        $('#trigger-freezed-account').trigger('click');
+      }, 500)
+    })
+
+    $('body').on('click', '.redirect-top', function () {
+      window.location = '/mypage';
+    })
+  })
+</script>
