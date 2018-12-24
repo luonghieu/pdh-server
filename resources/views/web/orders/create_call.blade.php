@@ -220,20 +220,36 @@
               } else {
                 $checkedDate = $currentDate == $key ? 'selected' : '' ;
               }
+
             @endphp
              <option value="{{ $key }}" {{ $checkedDate }}>{{ $val }}</option>
             @endforeach
           </select>
          <select class="select-hour" name="sl_hour">
           @foreach(range(00, 23) as $hour)
-           <option value="{{ $hour }}" {{ (isset($timeDetail) && $timeDetail['hour'] ==$hour ) ? 'selected' : $currentHour == $hour ? 'selected' : '' }}>
+            @php
+              if(isset($timeDetail)) {
+                $checkedHour = ((int)$timeDetail['hour'] == $hour )  ? 'selected' : '';
+              } else {
+                $checkedHour = $currentHour == $hour ? 'selected' : '' ;
+              }
+            @endphp
+
+           <option value="{{ $hour }}" {{ $checkedHour }}>
                 {{ $hour<10 ? '0'.$hour : $hour }}時
           </option>
           @endforeach
          </select>
          <select class="select-minute" name="sl_minute">
            @foreach(range(00, 59) as $minute)
-           <option value="{{ $minute }}" {{ (isset($timeDetail) && $timeDetail['minute'] ==$minute ) ? 'selected' : $currentMinute == $minute ? 'selected' : '' }}>
+            @php
+              if(isset($timeDetail)) {
+                $checkedMinute = ((int)$timeDetail['minute'] == $minute )  ? 'selected' : '';
+              } else {
+                $checkedMinute = $currentMinute == $minute ? 'selected' : '' ;
+              }
+            @endphp
+           <option value="{{ $minute }}" {{ $checkedMinute }}>
                 {{ $minute<10 ? '0'.$minute : $minute }}分
           </option>
           @endforeach
