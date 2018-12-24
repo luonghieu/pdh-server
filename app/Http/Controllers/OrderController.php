@@ -761,7 +761,7 @@ class OrderController extends Controller
         $now = Carbon::now();
         if ('other_time' == $request->time_join_nomination) {
             $checkMonth = $now->month;
-            if ($checkMonth > $request->sl_month) {
+            if ($checkMonth > $request->sl_month_nomination) {
                 $year = $now->year + 1;
             } else {
                 $year = $now->year;
