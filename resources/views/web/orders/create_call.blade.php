@@ -191,9 +191,8 @@
             $currentMinute = $now->format('i');
 
           @endphp
-         <select class="select-month" name="sl_month">
+          <select class="select-month" name="sl_month">
           @foreach(range(1, 12) as $month)
-
             @php
             if(isset($timeDetail)) {
               $checkedMonth = ($timeDetail['month'] ==$month)  ? 'selected' : '';
@@ -202,21 +201,18 @@
             }
             @endphp
 
-            <option value="{{ $month }}" {{ $checkedMonth }}>
-              {{ $month }}月
-            </option>
+            <option value="{{ $month }}" {{ $checkedMonth }}>{{ $month }}月</option>
           @endforeach
-         </select>
-            @php
-              if(session()->has('data')) {
-                $data = Session::get('data');
-                $month = $data['time_detail']['month'];
-              } else {
-                $month = null;
-              }
-            @endphp
+          </select>
+          @php
+            if(isset($timeDetail)) {
+              $month = $timeDetail['month'];
+            } else {
+              $month = null ;
+            }
+          @endphp
 
-         <select class="select-date" name="sl_date">
+          <select class="select-date" name="sl_date">
             @foreach(getDay(null, $month) as $key => $val)
             @php
               if(isset($timeDetail)) {
@@ -227,7 +223,7 @@
             @endphp
              <option value="{{ $key }}" {{ $checkedDate }}>{{ $val }}</option>
             @endforeach
-         </select>
+          </select>
          <select class="select-hour" name="sl_hour">
           @foreach(range(00, 23) as $hour)
            <option value="{{ $hour }}" {{ (isset($timeDetail) && $timeDetail['hour'] ==$hour ) ? 'selected' : $currentHour == $hour ? 'selected' : '' }}>
