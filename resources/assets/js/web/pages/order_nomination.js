@@ -634,119 +634,142 @@ $(document).ready(function(){
       }
   });
 
-  if(localStorage.getItem("order_params")){
-    var orderParams = JSON.parse(localStorage.getItem("order_params"));
-  }
-
-  if(orderParams){
-    if(orderParams.current_total_point){
-        $('.total-point').text(orderParams.current_total_point +'P~');
+  if ($('#create-nomination-form').length) {
+    if(localStorage.getItem("order_params")){
+      var orderParams = JSON.parse(localStorage.getItem("order_params"));
     }
 
-      //area
-    if(orderParams.select_area){
-     if('その他'== orderParams.select_area){
-        $('.area-nomination').css('display', 'flex')
-        $("input:text[name='other_area_nomination']").val(orderParams.text_area);
+    if(orderParams){
+      if(orderParams.current_total_point){
+          $('.total-point').text(orderParams.current_total_point +'P~');
       }
 
-      const inputArea = $(".input-area");
-      $.each(inputArea,function(index,val){
-        if (val.value == orderParams.select_area) {
-          $(this).prop('checked', true);
-          $(this).parent().addClass('active');
+        //area
+      if(orderParams.select_area){
+       if('その他'== orderParams.select_area){
+          $('.area-nomination').css('display', 'flex')
+          $("input:text[name='other_area_nomination']").val(orderParams.text_area);
         }
-      })
-    }
 
-      //duration
-    var cost = $('.cost-order').val();
-    if(orderParams.current_duration){
-      if('other_time_set' == orderParams.current_duration) {
-        var chooseDuration = orderParams.select_duration;
-        $('.time-input-nomination').css('display','flex');
-      } else {
-        var chooseDuration = orderParams.current_duration;
-      }
-
-      cost = parseInt(cost).toLocaleString(undefined,{ minimumFractionDigits: 0 });
-
-      $('.reservation-total__text').text('内訳：'+cost+ '(キャストP/30分)✖'+chooseDuration+'時間');
-
-      const inputDuration = $(".input-duration");
-
-      $.each(inputDuration,function(index,val){
-        if (val.value == orderParams.current_duration) {
-          $(this).prop('checked', true);
-          $(this).parent().addClass('active');
-        }
-      })
-
-      if(orderParams.select_duration) {
-        const inputDuration = $('select[name=sl_duration_nominition] option');
-        $.each(inputDuration,function(index,val){
-          if(val.value == orderParams.select_duration) {
-            $(this).prop('selected',true);
+        const inputArea = $(".input-area");
+        $.each(inputArea,function(index,val){
+          if (val.value == orderParams.select_area) {
+            $(this).prop('checked', true);
+            $(this).parent().addClass('active');
           }
         })
       }
-    }
 
-    //current_time_set
-    if(orderParams.current_time_set){
-      $(".input-time-join").parent().removeClass('active');
-      if('other_time'== orderParams.current_time_set){
-        $('.date-input-nomination').css('display', 'flex')
-
-        if(orderParams.current_month){
-         const inputMonth = $('select[name=sl_month_nomination] option');
-          $.each(inputMonth,function(index,val){
-            if(val.value == orderParams.current_month) {
-              $(this).prop('selected',true);
-            }
-          })
-
-          $('.month-nomination').text(orderParams.current_month +'月');
+        //duration
+      var cost = $('.cost-order').val();
+      if(orderParams.current_duration){
+        if('other_time_set' == orderParams.current_duration) {
+          var chooseDuration = orderParams.select_duration;
+          $('.time-input-nomination').css('display','flex');
+        } else {
+          var chooseDuration = orderParams.current_duration;
         }
 
-        if(orderParams.current_date){
-          const inputDate = $('select[name=sl_date_nomination] option');
-          $.each(inputDate,function(index,val){
-            if(val.value == orderParams.current_date) {
+        cost = parseInt(cost).toLocaleString(undefined,{ minimumFractionDigits: 0 });
+
+        $('.reservation-total__text').text('内訳：'+cost+ '(キャストP/30分)✖'+chooseDuration+'時間');
+
+        const inputDuration = $(".input-duration");
+
+        $.each(inputDuration,function(index,val){
+          if (val.value == orderParams.current_duration) {
+            $(this).prop('checked', true);
+            $(this).parent().addClass('active');
+          }
+        })
+
+        if(orderParams.select_duration) {
+          const inputDuration = $('select[name=sl_duration_nominition] option');
+          $.each(inputDuration,function(index,val){
+            if(val.value == orderParams.select_duration) {
               $(this).prop('selected',true);
             }
           })
-          $('.date-nomination').text(orderParams.current_date +'日');
         }
-
-        if(orderParams.current_hour) {
-          const inputHour = $('select[name=sl_hour_nomination] option');
-          $.each(inputHour,function(index,val){
-            if(val.value == orderParams.current_hour) {
-              $(this).prop('selected',true);
-            }
-          })
-
-          const inputMinute = $('select[name=sl_minute_nomination] option');
-          $.each(inputMinute,function(index,val){
-            if(val.value == orderParams.current_minute) {
-              $(this).prop('selected',true);
-            }
-          })
-
-          var currentTime =orderParams.current_hour + ":" + orderParams.current_minute;
-        }
-
-        $('.time-nomination').text(currentTime);
       }
 
-      const inputTimeSet = $(".input-time-join");
-      $.each(inputTimeSet,function(index,val){
-        if (val.value == orderParams.current_time_set) {
-          $(this).prop('checked', true);
-          $(this).parent().addClass('active');
+      //current_time_set
+      if(orderParams.current_time_set){
+        $(".input-time-join").parent().removeClass('active');
+        if('other_time'== orderParams.current_time_set){
+          $('.date-input-nomination').css('display', 'flex')
+
+          if(orderParams.current_month){
+            var month = parseInt(orderParams.current_month);
+
+            window.axios.post('/api/v1/get_day', {month})
+              .then(function(response) {
+                var html = '';
+                Object.keys(response.data).forEach(function (key) {
+                  if(key!='debug') {
+                  html +='<option value="'+key+'">'+ response.data[key] +'</option>';
+                  }
+                })
+              $('.select-date').html(html);
+              if(orderParams.current_date){
+                var currentDate = parseInt(orderParams.current_date);
+                const inputDate = $('select[name=sl_date_nomination] option');
+
+                $.each(inputDate,function(index,val){
+                  if(val.value == currentDate) {
+                    $(this).prop('selected',true);
+                  }
+                })
+
+                $('.date-nomination').text(currentDate +'日');
+              }
+              })
+              .catch(function (error) {
+                console.log(error);
+              });
+
+            const inputMonth = $('select[name=sl_month_nomination] option');
+            $.each(inputMonth,function(index,val){
+              if(val.value == month) {
+                $(this).prop('selected',true);
+              }
+            })
+
+            $('.month-nomination').text(month +'月');
+          }
+
+          if(orderParams.current_hour) {
+            var currentHour = parseInt(orderParams.current_hour);
+            var currentMinute = parseInt(orderParams.current_minute);
+
+            const inputHour = $('select[name=sl_hour_nomination] option');
+            $.each(inputHour,function(index,val){
+              if(val.value == currentHour) {
+                $(this).prop('selected',true);
+              }
+            })
+
+            const inputMinute = $('select[name=sl_minute_nomination] option');
+            $.each(inputMinute,function(index,val){
+              if(val.value == currentMinute) {
+                $(this).prop('selected',true);
+              }
+            })
+
+            var currentTime =orderParams.current_hour + ":" + orderParams.current_minute;
+          }
+
+          $('.time-nomination').text(currentTime);
         }
-      })
+
+        const inputTimeSet = $(".input-time-join");
+        $.each(inputTimeSet,function(index,val){
+          if (val.value == orderParams.current_time_set) {
+            $(this).prop('checked', true);
+            $(this).parent().addClass('active');
+          }
+        })
+      }
     }
   }
 
