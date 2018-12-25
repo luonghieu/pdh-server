@@ -10,6 +10,25 @@
     </div>
   </div>
 </div>
+<div class="modal_wrap">
+  <input id="confirm-logout" type="checkbox">
+  <div class="modal_overlay">
+    <label for="confirm-logout" class="modal_trigger"></label>
+    <div class="modal_content modal_content-btn2">
+      <div class="text-box">
+        <h2>ログアウトしますか？</h2>
+      </div>
+      <div class="close_button-box">
+        <div class="close_button-block">
+          <label for="confirm-logout" class="close_button left">キャンセル</label>
+        </div>
+        <div class="close_button-block">
+          <a href="{{ route('web.logout') }}"><label class="close_button right">ログアウトする</label></a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
 <header class="header">
   <div class="h-wrapper">
     <div class="h-logo">
@@ -71,7 +90,7 @@
           <li><a href="{{ url('/service/sct_law') }}">特定商取引法に基づく表記について</a></li>
           <li><a href="{{ url('/service/guest_ht') }}">ご利用方法</a></li>
           <li><a href="{{ url('/service/contact') }}">お問い合わせ</a></li>
-          <li><a href="{{ route('web.logout') }}">ログアウト</a></li>
+          <li class="logout-web"><a href="javascript:void(0)">ログアウト</a></li>
         </ul>
       </li>
       @endif
@@ -96,22 +115,3 @@
     @endif
   </ul>
 </nav>
-<div class="modal_wrap">
-  <input id="confirm-logout" type="checkbox">
-  <div class="modal_overlay">
-    <label for="trigger2" class="modal_trigger"></label>
-    <div class="modal_content modal_content-btn2">
-      <div class="text-box">
-        <h2>ログアウトしますか？</h2>
-      </div>
-      <div class="close_button-box">
-        <div class="close_button-block">
-          <label for="confirm-logout" class="close_button  left">キャンセル</label>
-        </div>
-        <div class="close_button-block">
-          <a href="{{ route('web.logout') }}"><label class="close_button right">ログアウトする</label></a>
-        </div>
-      </div>
-    </div>
-  </div>
-</div>
