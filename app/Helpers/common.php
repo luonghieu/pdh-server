@@ -62,26 +62,24 @@ if (!function_exists('getDay')) {
     function getDay($month = null)
     {
         $date = \Carbon\Carbon::now()->addMinutes(30);
-        $dayOfWeek = ['日', '月', '火', '水', '木', '金', '土'];
+        $dayOfWeek = dayOfWeek();
 
-        if (isset($month)) {
-            $checkMonth = $month;
-        } else {
-            $checkMonth = $date->month;
+        if (!isset($month)) {
+            $month = $date->month;
         }
 
         $currentMonth = $date->month;
 
-        if ($currentMonth > $checkMonth) {
+        if ($currentMonth > $month) {
             $year = $date->year + 1;
         } else {
             $year = $date->year;
         }
 
-        $number = cal_days_in_month(CAL_GREGORIAN, $checkMonth, $year);
+        $number = cal_days_in_month(CAL_GREGORIAN, $month, $year);
         $days = [];
         foreach (range(01, $number) as $val) {
-            $days[$val] = $val . '日' . '(' . $dayOfWeek[Carbon\Carbon::parse($year . '-' . $checkMonth . '-' . $val)->dayOfWeek] . ')';
+            $days[$val] = $val . '日' . '(' . $dayOfWeek[Carbon\Carbon::parse($year . '-' . $month . '-' . $val)->dayOfWeek] . ')';
         }
 
         return $days;

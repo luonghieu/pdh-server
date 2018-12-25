@@ -467,9 +467,7 @@ $(document).ready(function(){
     if('other_time' == time) {
       if(localStorage.getItem("order_params")){
         var orderParams = JSON.parse(localStorage.getItem("order_params"));
-      }
 
-      if(orderParams){
         if('other_time'== orderParams.current_time_set){
           if(orderParams.current_month){
            const inputMonth = $('select[name=sl_month_nomination] option');

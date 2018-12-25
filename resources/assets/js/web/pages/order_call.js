@@ -129,6 +129,8 @@ $(document).ready(function(){
         $('.select-hour').val(selectDate.getHours());
         $('.select-minute').val(selectDate.getMinutes());
       }
+    } else {
+      year +=1;
     }
 
     var time = hour +':' +minute;
@@ -139,6 +141,15 @@ $(document).ready(function(){
 
     if (date <10) {
       date = '0'+date;
+    }
+
+    if($("input:radio[name='area']").length) {
+      var params = {
+            current_date: year + '-' + month + '-' +date,
+            current_time : time,
+          };
+
+      helper.updateLocalStorageValue('order_call', params);
     }
 
     $('.sp-date').text(date +'日');
@@ -370,8 +381,31 @@ $(document).ready(function(){
     $("button[type='submit'][name='sb_create']").prop('disabled', false);
   }
 
+//area
   var buttonGreen = $(".button--green.area");
   buttonGreen.on("change",function(){
+
+    if ($("input:radio[name='area']").length) {
+      var areaCall = $("input:radio[name='area']:checked").val();
+
+      if('その他'== areaCall){
+        if(localStorage.getItem("order_call")){
+          var orderParams = JSON.parse(localStorage.getItem("order_call"));
+
+          if(orderParams.text_area){
+            $("input:text[name='other_area']").val(orderParams.text_area);
+          }
+        }
+
+      }
+
+      var params = {
+        select_area: areaCall,
+      };
+
+      helper.updateLocalStorageValue('order_call', params);
+    }
+
     $("#ge2-1-x input:radio[name='area']").parent().removeClass("active");
     $("#ge2-1-x input:radio[name='area']:checked").parent().addClass("active");
 
@@ -394,7 +428,17 @@ $(document).ready(function(){
   });
 
   var dateButton = $(".button--green.date");
-    dateButton.on("change",function(){
+  dateButton.on("change",function(){
+    var time = $("input:radio[name='time_join']:checked").val();
+
+    if ($("input:radio[name='time_join']").length) {
+      var updateTime = {
+            current_time_set: time,
+          };
+
+      helper.updateLocalStorageValue('order_call', updateTime);
+    }
+
     $("#ge2-1-x input:radio[name='time_join']").parent().removeClass("active");
     $("#ge2-1-x input:radio[name='time_join']:checked").parent().addClass("active");
 
@@ -403,7 +447,6 @@ $(document).ready(function(){
     var castClass = $("input:radio[name='cast_class']:checked").val();
     var duration = $("input:radio[name='time_set']:checked").val();
     var totalCast = $("input[type='text'][name='txtCast_Number']").val();
-    var time = $("input:radio[name='time_join']:checked").val();
     var date = $('.sp-date').text();
 
     if((!area || (area=='その他' && !otherArea)) || !castClass ||
@@ -418,6 +461,13 @@ $(document).ready(function(){
 
   var txtArea = $("input:text[name='other_area']");
   txtArea.on("input",function(){
+    //text-area
+    var params = {
+      text_area: $(this).val(),
+    };
+
+    helper.updateLocalStorageValue('order_call', params);
+
     var otherArea = $(this).val();
     var time = $("input:radio[name='time_join']:checked").val();
     var area = $("input:radio[name='area']:checked").val();
@@ -439,13 +489,22 @@ $(document).ready(function(){
   //duration
   var timeButton = $(".button--green.time");
   timeButton.on("change",function(){
+    var duration = $("input:radio[name='time_set']:checked").val();
+
+    if ($("input:radio[name='time_set']").length) {
+      var params = {
+        current_duration: duration,
+      };
+
+      helper.updateLocalStorageValue('order_call', params);
+    }
+
     $("#ge2-1-x input:radio[name='time_set']").parent().removeClass("active");
     $("#ge2-1-x input:radio[name='time_set']:checked").parent().addClass("active");
 
     var area = $("input:radio[name='area']:checked").val();
     var otherArea = $("input:text[name='other_area']").val();
     var castClass = $("input:radio[name='cast_class']:checked").val();
-    var duration = $("input:radio[name='time_set']:checked").val();
     var totalCast = $("input[type='text'][name='txtCast_Number']").val();
     var time = $("input:radio[name='time_join']:checked").val();
     var date = $('.sp-date').text();
@@ -461,9 +520,29 @@ $(document).ready(function(){
 
   })
 
+  //select-duration 
+  
+  $('#select-duration-call').on("change",function(){
+    var duration = $('#select-duration-call option:selected').val();
+
+    var params = {
+        select_duration: duration,
+      };
+
+    helper.updateLocalStorageValue('order_call', params);
+  })
+
   var castClass = $("input:radio[name='cast_class']");
   castClass.on("change",function(){
+
     var castClass = $("input:radio[name='cast_class']:checked").val();
+
+    var params = {
+      cast_class: castClass,
+    };
+
+    helper.updateLocalStorageValue('order_call', params);
+    
     if (castClass == 3) {
       $('.notify-campaign-over-cast-class span').text('※”ダイヤモンド”はキャンペーン対象外です');
       $('.notify-campaign-over-cast-class').css('display','block');
@@ -556,6 +635,13 @@ $(document).ready(function(){
       number_val = number_val + 1;
       $(".cast-number__value input").val(number_val);
     }
+
+    var params = {
+      cast_number : number_val,
+    };
+
+    helper.updateLocalStorageValue('order_call', params);
+
   })
 
   $(".cast-number__button-minus").on("click",function(){
@@ -587,6 +673,12 @@ $(document).ready(function(){
       $(".cast-number__button-plus").css({"border": "1.5px #00c3c3 solid"});
       $(".cast-number__value input").val(number_val)
     }
+
+    var params = {
+      cast_number : number_val,
+    };
+
+    helper.updateLocalStorageValue('order_call', params);
   })
 
   if($("label").hasClass("status-code")){

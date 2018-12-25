@@ -138,7 +138,7 @@
       <label class="time-input" style="{{ (isset($currentOtherDuration)) ? 'display: flex;' : '' }}">
         <span>呼ぶ時間</span>
         <div class="selectbox">
-          <select class="" name="sl_duration">
+          <select id="select-duration-call" name="sl_duration">
             <option value="4" {{ (isset($currentDuration) && $currentDuration == 4) ? 'selected' : '' }}>4時間</option>
             <option value="5" {{ (isset($currentDuration) && $currentDuration == 5) ? 'selected' : '' }}>5時間</option>
             <option value="6" {{ (isset($currentDuration) && $currentDuration == 6) ? 'selected' : '' }}>6時間</option>
