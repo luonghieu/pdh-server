@@ -206,7 +206,7 @@ $(document).ready(function(){
           if(arrIds.length) {
             $('#sb-select-casts a').text('次に進む(3/4)');
           } else {
-            $('#sb-select-casts a').text('指名せずに進む(3/4)');
+            $('#sb-select-casts a').text('希望リクエストせずに進む(3/4)');
           }
 
           } else {
@@ -245,14 +245,14 @@ $(document).ready(function(){
             if(arrIds.length) {
               $('#sb-select-casts a').text('次に進む(3/4)');
             } else {
-              $('#sb-select-casts a').text('指名せずに進む(3/4)');
+              $('#sb-select-casts a').text('希望リクエストせずに進む(3/4)');
             }
           }
         }
 
         $(this).prop('checked',false);
         $(this).parent().find('.cast-link').removeClass('cast-detail');
-        $('.label-select-casts[for='+  id  +']').text('指名する');
+        $('.label-select-casts[for='+  id  +']').text('リクエストする');
       }
     }
 

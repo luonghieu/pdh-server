@@ -55,7 +55,7 @@
       <section class="details-list details-shimei">
         <div class="details-list__line"><p></p></div>
         <div class="details-list__header">
-          <div class="details-header__title">指名リクエスト</div>
+          <div class="details-header__title">希望しているキャスト</div>
         </div>
         <div class="details-list__content show">
           <div class="details-list-box">
