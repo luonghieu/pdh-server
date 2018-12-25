@@ -1,7 +1,7 @@
 <?php echo '<?xml version="1.0" encoding="UTF-8"?>' ?>
 <Response>
     <Say language="ja-jp" voice="alice">
-        こちらはチアーズ うんえいきょくです。
+        こちらはチアーズ、うんえいきょくです。
         <break strength="x-strong"/>
         おきゃくさまの認証コードは。
         <break strength="x-strong"/>
