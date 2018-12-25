@@ -47,11 +47,12 @@ $(document).ready(function(){
     if('その他'== areaNomination){
       if(localStorage.getItem("order_params")){
         var orderParams = JSON.parse(localStorage.getItem("order_params"));
+
+        if(orderParams.text_area){
+          $("input:text[name='other_area_nomination']").val(orderParams.text_area);
+        }
       }
 
-      if(orderParams.text_area){
-        $("input:text[name='other_area_nomination']").val(orderParams.text_area);
-      }
     }
 
     var params = {
@@ -637,9 +638,7 @@ $(document).ready(function(){
   if ($('#create-nomination-form').length) {
     if(localStorage.getItem("order_params")){
       var orderParams = JSON.parse(localStorage.getItem("order_params"));
-    }
 
-    if(orderParams){
       if(orderParams.current_total_point){
           $('.total-point').text(orderParams.current_total_point +'P~');
       }
@@ -700,6 +699,7 @@ $(document).ready(function(){
           $('.date-input-nomination').css('display', 'flex')
 
           if(orderParams.current_month){
+            $('.month-nomination').text(orderParams.current_month +'月');
             var month = parseInt(orderParams.current_month);
 
             window.axios.post('/api/v1/get_day', {month})
@@ -712,6 +712,7 @@ $(document).ready(function(){
                 })
               $('.select-date').html(html);
               if(orderParams.current_date){
+                $('.date-nomination').text(orderParams.current_date +'日');
                 var currentDate = parseInt(orderParams.current_date);
                 const inputDate = $('select[name=sl_date_nomination] option');
 
@@ -720,8 +721,6 @@ $(document).ready(function(){
                     $(this).prop('selected',true);
                   }
                 })
-
-                $('.date-nomination').text(currentDate +'日');
               }
               })
               .catch(function (error) {
@@ -734,8 +733,6 @@ $(document).ready(function(){
                 $(this).prop('selected',true);
               }
             })
-
-            $('.month-nomination').text(month +'月');
           }
 
           if(orderParams.current_hour) {

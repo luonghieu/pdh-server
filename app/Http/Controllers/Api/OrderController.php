@@ -304,9 +304,8 @@ class OrderController extends ApiController
     public function getDayOfMonth(Request $request)
     {
         $month = $request->month;
-        $data['month'] = $month;
 
-        return getDay($data);
+        return getDay($month);
     }
 
     public function createOrderOffer(Request $request)

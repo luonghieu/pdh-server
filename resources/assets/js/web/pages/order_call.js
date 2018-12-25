@@ -63,8 +63,8 @@ $(document).ready(function(){
   });
 
   $(".date-select__ok").on("click",function(){
-      var month = $('.select-month').val();
-      var date = $('.select-date').val();
+    var month = $('.select-month').val();
+    var date = $('.select-date').val();
 
     if ($('.select-hour').val() <10) {
       var hour = '0'+$('.select-hour').val();
@@ -78,7 +78,6 @@ $(document).ready(function(){
       var minute = $('.select-minute').val();
     }
 
-    var time = hour +':' +minute;
 
     var currentDate = new Date();
     var year = currentDate.getFullYear();
@@ -125,12 +124,21 @@ $(document).ready(function(){
           minute = '0' +minute;
         }
 
-        time = hour + ':' + minute;
         $('.select-month').val(month);
         $('.select-date').val(date);
         $('.select-hour').val(selectDate.getHours());
         $('.select-minute').val(selectDate.getMinutes());
       }
+    }
+
+    var time = hour +':' +minute;
+    
+    if (month <10) {
+      month = '0'+month;
+    }
+
+    if (date <10) {
+      date = '0'+date;
     }
 
     $('.sp-date').text(date +'日');

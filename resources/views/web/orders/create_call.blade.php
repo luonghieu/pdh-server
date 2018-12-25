@@ -208,12 +208,12 @@
             if(isset($timeDetail)) {
               $month = $timeDetail['month'];
             } else {
-              $month = null ;
+              $month = $currentMonth ;
             }
           @endphp
 
           <select class="select-date" name="sl_date">
-            @foreach(getDay(null, $month) as $key => $val)
+            @foreach(getDay($month) as $key => $val)
             @php
               if(isset($timeDetail)) {
                 $checkedDate = ($timeDetail['date'] ==$key )  ? 'selected' : '';
