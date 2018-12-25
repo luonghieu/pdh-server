@@ -13,6 +13,7 @@ final class PointType extends Enum
     const RECEIVE = 5;
     const TRANSFER = 6;
     const EVICT = 7;
+    const TEMP = 8;
 
     /**
      * Get the description for an enum value
