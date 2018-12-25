@@ -115,7 +115,7 @@
               <ul class="detail d-btm">
                 @php
                   $tempPoint = 0;
-                  if($messages['order']['type'] == App\Enums\OrderType::CALL) {
+                  if($messages['order']['type'] != App\Enums\OrderType::NOMINATION) {
                     foreach ($messages['order']['casts'] as $cast) {
                       $tempPoint += $cast['cast_order']['temp_point'];
                     }
