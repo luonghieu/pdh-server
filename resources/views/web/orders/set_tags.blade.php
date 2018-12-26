@@ -26,8 +26,8 @@
     <div class="form-grpup"><!-- フォーム内容 -->
       @if(count($desires['data']))
        @foreach($desires['data'] as $tag)
-       <label class="button button--green checkbox-tags {{ (isset($currentDesires) && in_array($tag['id'], $currentDesires) ) ? 'active' : '' }}">
-       <input type="checkbox" name="desires[]" value="{{ $tag['id'] }}" class="tags-name" {{ (isset($currentDesires) && in_array($tag['id'], $currentDesires) ) ? 'checked="checked"' : '' }}>{{ $tag['name'] }}</label>
+       <label class="button button--green checkbox-tags">
+       <input type="checkbox" name="desires[]" value="{{ $tag['id'] }}" class="tags-name">{{ $tag['name'] }}</label>
        @endforeach
       @endif
     </div>
@@ -40,8 +40,8 @@
     <div class="form-grpup"><!-- フォーム内容 -->
       @if(count($situations['data']))
        @foreach($situations['data'] as $tag)
-       <label class="button button--green checkbox-tags {{ (isset($currentSituations) && in_array($tag['id'], $currentSituations) ) ? 'active' : '' }}">
-        <input type="checkbox" name="situations[]" value="{{ $tag['id'] }}" {{ (isset($currentSituations) && in_array($tag['id'], $currentSituations) ) ? 'checked="checked"' : '' }} class="tags-name">{{ $tag['name'] }}</label>
+       <label class="button button--green checkbox-tags ">
+        <input type="checkbox" name="situations[]" value="{{ $tag['id'] }}" class="tags-name">{{ $tag['name'] }}</label>
        @endforeach
       @endif
     </div>

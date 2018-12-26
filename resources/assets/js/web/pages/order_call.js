@@ -1,9 +1,5 @@
 $(document).ready(function(){
   const helper = require('./helper');
-  if($("#ge2-1-x input:radio[name='area']:checked").length){
-    $("#ge2-1-x input:radio[name='area']:checked").parent().addClass("active");
-  }
-
   if($("#ge2-1-x input:radio[name='cast_class']:checked").length){
     $("#ge2-1-x input:radio[name='cast_class']:checked").parent().addClass("active");
     var castClass = $("#ge2-1-x input:radio[name='cast_class']:checked").val();
@@ -29,20 +25,6 @@ $(document).ready(function(){
 
   if($("#ge2-1-x input:radio[name='time_join']:checked").length){
     $("#ge2-1-x input:radio[name='time_join']:checked").parent().addClass("active");
-  }
-
-  if($("#ge2-1-x .form-grpup .checkbox-tags input:checkbox[name='desires[]']:checked").length){
-    const checkedDesires = $("#ge2-1-x .form-grpup .checkbox-tags input:checkbox[name='desires[]']:checked");
-    $.each(checkedDesires,function(index,val){
-      $(this).parent().addClass('active');
-    })
-  }
-
-  if($("#ge2-1-x .form-grpup .checkbox-tags input:checkbox[name='situations[]']:checked").length){
-    const checkedSituations = $("#ge2-1-x .form-grpup .checkbox-tags input:checkbox[name='situations[]']:checked");
-    $.each(checkedSituations,function(index,val){
-      $(this).parent().addClass('active');
-    })
   }
 
   $('.select-month').on('change', function (e) {
@@ -177,10 +159,25 @@ $(document).ready(function(){
   });
 
   $(".form-grpup .checkbox-tags").on("change",function(event){
+    var id = $(this).children().val();
     var activeSum = $(".active").length;
     if ($(this).hasClass("active")) {
       $(this).children().prop('checked',false);
       $(this).removeClass('active');
+
+      if(localStorage.getItem("order_call")){
+        var tags = JSON.parse(localStorage.getItem("order_call")).tags;
+        if(tags) {
+          if(tags.indexOf(id) > -1) {
+            tags.splice(tags.indexOf(id), 1);
+          }
+
+          var params = {
+            tags: tags,
+          };
+
+        }
+      }
     } else {
       if(activeSum >= 5) {
         $('#max-tags').prop('checked', true);
@@ -189,7 +186,33 @@ $(document).ready(function(){
       } else {
         $(this).children().prop('checked',true);
         $(this).addClass('active');
+
+        if(localStorage.getItem("order_call")){
+          var tags = JSON.parse(localStorage.getItem("order_call")).tags;
+          if(tags) {
+            tags.push(id);
+
+            var params = {
+              tags: tags,
+            };
+            
+          } else {
+            var tags = [id];
+            var params = {
+              tags: tags,
+            };
+          }
+        } else {
+          var tags = [id];
+          var params = {
+              tags: tags,
+            };
+        }
       }
+    }
+
+    if(params) {
+      helper.updateLocalStorageValue('order_call', params);
     }
   });
 
@@ -222,15 +245,14 @@ $(document).ready(function(){
               $(this).prop('checked',false);
             }
 
-          if(arrIds.length) {
-            $('#sb-select-casts a').text('次に進む(3/4)');
-          } else {
-            $('#sb-select-casts a').text('指名せずに進む(3/4)');
-          }
+            if(arrIds.length) {
+              $('#sb-select-casts a').text('次に進む(3/4)');
+            } else {
+              $('#sb-select-casts a').text('指名せずに進む(3/4)');
+            }
 
           } else {
-            var arrIds = [];
-            arrIds.push(id);
+            var arrIds = [id];
 
             var params = {
                 arrIds: arrIds
@@ -242,8 +264,7 @@ $(document).ready(function(){
             $('#sb-select-casts a').text('次に進む(3/4)');
           }
         } else {
-          var arrIds = [];
-          arrIds.push(id);
+          var arrIds = [id];
 
           var params = {
               arrIds: arrIds
@@ -370,17 +391,6 @@ $(document).ready(function(){
     window.location.href = '/credit_card';
   });
 
-  var area = $("input:radio[name='area']:checked").val();
-  var otherArea = $("input:text[name='other_area']").val();
-  var time = $("input:radio[name='time_join']:checked").val();
-  var castClass = $("input:radio[name='cast_class']:checked").val();
-  var duration = $("input:radio[name='time_set']:checked").val();
-
-   if((area || (area=='その他' && otherArea)) && time && castClass && duration) {
-    $("button[type='submit'][name='sb_create']").removeClass('disable');
-    $("button[type='submit'][name='sb_create']").prop('disabled', false);
-  }
-
 //area
   var buttonGreen = $(".button--green.area");
   buttonGreen.on("change",function(){
@@ -390,10 +400,10 @@ $(document).ready(function(){
 
       if('その他'== areaCall){
         if(localStorage.getItem("order_call")){
-          var orderParams = JSON.parse(localStorage.getItem("order_call"));
+          var orderCall = JSON.parse(localStorage.getItem("order_call"));
 
-          if(orderParams.text_area){
-            $("input:text[name='other_area']").val(orderParams.text_area);
+          if(orderCall.text_area){
+            $("input:text[name='other_area']").val(orderCall.text_area);
           }
         }
 
@@ -574,37 +584,6 @@ $(document).ready(function(){
     }
   })
 
-  var checkNumber = parseInt( $(".cast-number__value input").val());
-  var maxCasts = parseInt( $("#max_casts").val());
-
-  if(!maxCasts) {
-    maxCasts =10;
-  }
-
-  if (checkNumber > 2) {
-    if (checkNumber == 3) {
-      $('.notify-campaign-over span').text('※3名はキャンペーン対象外です');
-    }
-
-    if (checkNumber == 4) {
-      $('.notify-campaign-over span').text('※4名はキャンペーン対象外です');
-    }
-
-    $('.notify-campaign-over').css('display','block');
-  }
-
-  if (checkNumber>1) {
-    if (checkNumber==maxCasts) {
-      $(".cast-number__button-plus").prop('disabled', false);
-      $(".cast-number__button-plus").css({"border": "1.5px #cccccc solid"});
-      $(".cast-number__button-plus").addClass('active');
-    }
-
-    $(".cast-number__button-minus").addClass('active');
-    $(".cast-number__button-minus").css({"border": "1.5px #00c3c3 solid"});
-    $(".cast-number__button-minus").prop('disabled', false);
-  }
-
   $(".cast-number__button-plus").on("click",function(){
     var number_val = parseInt( $(".cast-number__value input").val());
 
@@ -696,5 +675,202 @@ $(document).ready(function(){
         }
       }
     }   
+  }
+
+  if(localStorage.getItem("order_call")){
+    var orderCall = JSON.parse(localStorage.getItem("order_call"));
+
+    if($('.tags-name').length) {
+      if(orderCall.tags) {
+        var tags = orderCall.tags;
+        const inputTags = $("#ge2-1-x .form-grpup .tags-name");
+
+        $.each(inputTags,function(index,val){
+          if (tags.indexOf(val.value) > -1) {
+            $(this).prop('checked', true);
+            $(this).parent().addClass('active');
+          }
+        })
+      }
+    }
+
+    if($('#create-order-call').length) {
+
+      //cast-number
+      if(orderCall.cast_number) {
+        $('#cast-number-call').val(orderCall.cast_number);
+      } else {
+        $('#cast-number-call').val(1);
+      }
+
+      if(orderCall.cast_class) {
+        const castClass = $('.grade-radio');
+        $.each(castClass,function(index,val){
+          if (val.value == orderCall.cast_class) {
+            $(this).prop('checked', true);
+          }
+        })
+      }
+
+        //area
+      if(orderCall.select_area){
+        const inputArea = $("#ge2-1-x input:radio[name='area']");
+        if('その他'== orderCall.select_area){
+          $('.area-call').css('display', 'flex')
+          $("input:text[name='other_area']").val(orderCall.text_area);
+        }
+
+        $.each(inputArea,function(index,val){
+          if (val.value == orderCall.select_area) {
+            $(this).prop('checked', true);
+            $(this).parent().addClass('active');
+          }
+        })
+      }
+
+      //duration     
+      if(orderCall.current_duration){
+        const inputDuration = $("input[name=time_set]");
+        $.each(inputDuration,function(index,val){
+          if (val.value == orderCall.current_duration) {
+            $(this).prop('checked', true);
+            $(this).parent().addClass('active');
+          }
+        })
+
+        if('other_duration' == orderCall.current_duration) {
+          $('.time-input').css('display','flex');
+        }
+
+        if (orderCall.select_duration) {
+          const selectDuration = $('select[name=sl_duration] option');
+          $.each(selectDuration,function(index,val){
+            if(val.value == orderCall.select_duration) {
+              $(this).prop('selected',true);
+            }
+          })
+        }
+      }
+
+      //current_time_set
+      if(orderCall.current_time_set){
+        $(".time-join-call").parent().removeClass('active');
+
+        if('other_time'== orderCall.current_time_set){
+          $('.date-input-call').css('display', 'flex')
+
+          if(orderCall.current_date){
+            var day = orderCall.current_date;
+            day = day.split('-');
+
+            var time = orderCall.current_time;
+            $('.time-call').text(time);
+            time = time.split(':');
+            
+            var month = day[1];
+            var date = day[2];
+            var hour = time[0];
+            var minute = time[1];
+            $('.month-call').text(month +'月');
+            $('.date-call').text(date +'日');
+            
+            month = parseInt(month);
+
+            window.axios.post('/api/v1/get_day', {month})
+              .then(function(response) {
+                var html = '';
+                Object.keys(response.data).forEach(function (key) {
+                  if(key!='debug') {
+                  html +='<option value="'+key+'">'+ response.data[key] +'</option>';
+                  }
+                })
+              $('.select-date').html(html);
+
+              const inputDate = $('select[name=sl_date] option');
+
+              $.each(inputDate,function(index,val){
+                if(val.value == parseInt(date)) {
+                  $(this).prop('selected',true);
+                }
+              })
+              })
+              .catch(function (error) {
+                console.log(error);
+              });
+
+            const inputMonth = $('select[name=sl_month] option');
+            $.each(inputMonth,function(index,val){
+              if(val.value == month) {
+                $(this).prop('selected',true);
+              }
+            })
+          }
+
+          const inputHour = $('select[name=sl_hour] option');
+          $.each(inputHour,function(index,val){
+            if(val.value == parseInt(hour)) {
+              $(this).prop('selected',true);
+            }
+          })
+
+          const inputMinute = $('select[name=sl_minute] option');
+          $.each(inputMinute,function(index,val){
+            if(val.value == parseInt(minute)) {
+              $(this).prop('selected',true);
+            }
+          })
+        }
+
+        const inputTimeSet = $(".time-join-call");
+        $.each(inputTimeSet,function(index,val){
+          if (val.value == orderCall.current_time_set) {
+            $(this).prop('checked', true);
+            $(this).parent().addClass('active');
+          }
+        })
+      }
+
+      var area = $("input:radio[name='area']:checked").val();
+      var otherArea = $("input:text[name='other_area']").val();
+      var time = $("input:radio[name='time_join']:checked").val();
+      var castClass = $("input:radio[name='cast_class']:checked").val();
+      var duration = $("input:radio[name='time_set']:checked").val();
+
+       if((area || (area=='その他' && otherArea)) && time && castClass && duration) {
+        $("button[type='submit'][name='sb_create']").removeClass('disable');
+        $("button[type='submit'][name='sb_create']").prop('disabled', false);
+      }
+    }
+  }
+
+  var checkNumber = parseInt( $(".cast-number__value input").val());
+  var maxCasts = parseInt( $("#max_casts").val());
+
+  if(!maxCasts) {
+    maxCasts =10;
+  }
+
+  if (checkNumber > 2) {
+    if (checkNumber == 3) {
+      $('.notify-campaign-over span').text('※3名はキャンペーン対象外です');
+    }
+
+    if (checkNumber == 4) {
+      $('.notify-campaign-over span').text('※4名はキャンペーン対象外です');
+    }
+
+    $('.notify-campaign-over').css('display','block');
+  }
+
+  if (checkNumber>1) {
+    if (checkNumber==maxCasts) {
+      $(".cast-number__button-plus").prop('disabled', false);
+      $(".cast-number__button-plus").css({"border": "1.5px #cccccc solid"});
+      $(".cast-number__button-plus").addClass('active');
+    }
+
+    $(".cast-number__button-minus").addClass('active');
+    $(".cast-number__button-minus").css({"border": "1.5px #00c3c3 solid"});
+    $(".cast-number__button-minus").prop('disabled', false);
   }
 });
