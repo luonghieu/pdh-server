@@ -27,7 +27,7 @@
       @if(count($desires['data']))
        @foreach($desires['data'] as $tag)
        <label class="button button--green checkbox-tags">
-       <input type="checkbox" name="desires[]" value="{{ $tag['id'] }}" class="tags-name">{{ $tag['name'] }}</label>
+       <input type="checkbox" name="desires[]" value="{{ $tag['name'] }}" class="tags-name">{{ $tag['name'] }}</label>
        @endforeach
       @endif
     </div>
@@ -46,6 +46,7 @@
       @endif
     </div>
   </div>
+  <input type="hidden" value="" name="cast_class" class="cast-class-id">
   <button type="submit" class="form_footer ct-button">次に進む　(2/4)</button>
 </form>
 

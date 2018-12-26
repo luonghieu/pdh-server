@@ -2,8 +2,6 @@
 @section('screen.id', 'ge2-1-x')
 @extends('layouts.web')
 @section('web.content')
-<form action="{{ route('guest.orders.post_call') }}" method="POST" class="create-call-form" id="create-order-call" name="create_call_form">
-  {{ csrf_field() }}
   <div class="reservation-item">
     <div class="caption"><!-- 見出し用div -->
       <h2>キャストを呼ぶ場所</h2>
@@ -221,8 +219,9 @@
       </div>
     </div>
   </div>
-  <button type="submit" class="form_footer ct-button disable" name="sb_create" disabled>次に進む (1/4)</button>
-</form>
+  <button type="button" class="form_footer ct-button disable" name="sb_create" disabled>
+    <a href="{{ route('guest.orders.get_step2') }}">次に進む (1/4)</a>
+  </button>
 @endsection
 
 @section('web.extra')
@@ -249,12 +248,5 @@
       window.location.replace(window.location.href);
     }
   });
-
-  // if(localStorage.getItem("order_call")){
-  //   var arrIds = JSON.parse(localStorage.getItem("order_call")).arrIds;
-  //   if(arrIds) {
-
-  //   }
-  // }
 </script>
 @endsection

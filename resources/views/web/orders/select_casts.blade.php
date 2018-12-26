@@ -33,14 +33,11 @@
           @endif
         @endif
       </div>
-      @if(isset($castNumbers))
-      <input type="hidden" value="{{ $castNumbers }}" class="cast-numbers">
-      @endif
       <input type="hidden" value="" class="cast-ids" name="cast_ids">
     </div>
     <div class="create-call-form" id="" name="select_casts_form">
       <button type="button" class="form_footer ct-button" id="sb-select-casts"><a href="{{ route('guest.orders.get_step4') }}">指名せずに進む(3/4)</a></button>
-    </form>
+    </div>
 @endsection
 
 @section('web.script')

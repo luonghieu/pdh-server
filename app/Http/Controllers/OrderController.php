@@ -61,46 +61,6 @@ class OrderController extends Controller
 
     public function call(Request $request)
     {
-        $currentArea = null;
-        if (isset($request->session()->get('data')['area'])) {
-            $currentArea = $request->session()->get('data')['area'];
-        }
-
-        $currentOtherArea = null;
-        if (isset($request->session()->get('data')['other_area'])) {
-            $currentOtherArea = $request->session()->get('data')['other_area'];
-        }
-
-        $currentTime = null;
-        if (isset($request->session()->get('data')['time'])) {
-            $currentTime = $request->session()->get('data')['time'];
-        }
-
-        $currentDuration = null;
-        if (isset($request->session()->get('data')['duration'])) {
-            $currentDuration = $request->session()->get('data')['duration'];
-        }
-
-        $currentOtherDuration = null;
-        if (isset($request->session()->get('data')['other_duration'])) {
-            $currentOtherDuration = $request->session()->get('data')['other_duration'];
-        }
-
-        $currentCastNumbers = null;
-        if (isset($request->session()->get('data')['cast_numbers'])) {
-            $currentCastNumbers = $request->session()->get('data')['cast_numbers'];
-        }
-
-        $currentCastClass = null;
-        if (isset($request->session()->get('data')['cast_class'])) {
-            $currentCastClass = $request->session()->get('data')['cast_class'];
-        }
-
-        $timeDetail = null;
-        if (isset($request->session()->get('data')['time_detail'])) {
-            $timeDetail = $request->session()->get('data')['time_detail'];
-        }
-
         $client = new Client(['base_uri' => config('common.api_url')]);
         $user = Auth::user();
 
@@ -122,125 +82,11 @@ class OrderController extends Controller
         $orderOptions = json_decode(($orderOptions->getBody())->getContents(), JSON_NUMERIC_CHECK);
         $orderOptions = $orderOptions['data']['order_options'];
 
-        return view('web.orders.create_call', compact('currentArea', 'currentTime', 'currentDuration', 'currentCastNumbers', 'currentCastClass', 'timeDetail', 'currentOtherArea', 'currentOtherDuration', 'orderOptions'));
-    }
-
-    public function getParams(Request $request)
-    {
-        $input = [];
-        $now = Carbon::now();
-        $area = $request->area;
-        $otherArea = $request->other_area;
-        if (!$area && !$otherArea) {
-            return redirect()->route('guest.orders.call');
-        }
-
-        if ('その他' == $area && $request->other_area) {
-            $input['other_area'] = $otherArea;
-        } else {
-            $input['area'] = $area;
-        }
-
-        if (!$request->time_join) {
-            return redirect()->route('guest.orders.call');
-        }
-
-        if ('other_time' == $request->time_join) {
-            $timeDetail = [];
-            $checkMonth = $now->month;
-
-            if ($checkMonth > $request->sl_month) {
-                $year = $now->year + 1;
-            } else {
-                $year = $now->year;
-            }
-
-            if ($request->sl_month < 10) {
-                $month = '0' . $request->sl_month;
-            } else {
-                $month = $request->sl_month;
-            }
-
-            $timeDetail['month'] = $month;
-
-            if ($request->sl_date < 10) {
-                $date = '0' . $request->sl_date;
-            } else {
-                $date = $request->sl_date;
-            }
-
-            $timeDetail['date'] = $date;
-
-            if ($request->sl_hour < 10) {
-                $hour = '0' . $request->sl_hour;
-            } else {
-                $hour = $request->sl_hour;
-            }
-
-            if ($request->sl_minute < 10) {
-                $minute = '0' . $request->sl_minute;
-            } else {
-                $minute = $request->sl_minute;
-            }
-
-            $timeDetail['hour'] = $hour;
-
-            $timeDetail['minute'] = $minute;
-
-            $input['time_detail'] = $timeDetail;
-
-            $timeJoin = $year . '-' . $month . '-' . $date . ' ' . $hour . ':' . $minute;
-            $input['otherTime'] = $timeJoin;
-        } else {
-            $timeJoin = $request->time_join;
-            if (!$timeJoin) {
-                $timeJoin = 30;
-            }
-
-            $input['time'] = $timeJoin;
-        }
-
-        $duration = $request->time_set;
-
-        if (!$duration || ('other_duration' != $duration && $duration <= 0)) {
-            return redirect()->route('guest.orders.call');
-        }
-
-        if ('other_duration' == $duration) {
-            if ($request->sl_duration < 0) {
-                return redirect()->back();
-            }
-            $input['other_duration'] = $duration;
-
-            $duration = $request->sl_duration;
-        }
-
-        $input['duration'] = $duration;
-
-        $castNumbers = $request->txtCast_Number;
-        if (!$castNumbers || $castNumbers <= 0) {
-            return redirect()->route('guest.orders.call');
-        }
-        $input['cast_numbers'] = $castNumbers;
-
-        $castClass = $request->cast_class;
-        if (!$castClass) {
-            return redirect()->route('guest.orders.call');
-        }
-
-        $input['cast_class'] = $castClass;
-        $request->session()->put('data', $input);
-        $request->session()->save();
-
-        return redirect()->route('guest.orders.get_step2');
+        return view('web.orders.create_call', compact('orderOptions'));
     }
 
     public function selectTags(Request $request)
     {
-        if (!$request->session()->has('data')) {
-            return redirect()->route('guest.orders.call');
-        }
-
         $client = new Client(['base_uri' => config('common.api_url')]);
 
         try {
@@ -256,31 +102,14 @@ class OrderController extends Controller
             abort(500);
         }
 
-        $currentDesires = null;
-        if (isset($request->session()->get('data')['desires'])) {
-            $currentDesires = $request->session()->get('data')['desires'];
-        }
-
-        $currentSituations = null;
-        if (isset($request->session()->get('data')['situations'])) {
-            $currentSituations = $request->session()->get('data')['situations'];
-        }
-
-        return view('web.orders.set_tags', compact('desires', 'situations', 'currentDesires', 'currentSituations'));
+        return view('web.orders.set_tags', compact('desires', 'situations'));
     }
 
     public function getTags(Request $request)
     {
-        if (!$request->session()->has('data')) {
-            return redirect()->route('guest.orders.call');
-        }
-        $data = $request->session()->get('data');
+        $castClassId = $request->cast_class;
 
-        $data['desires'] = $request->desires;
-
-        $data['situations'] = $request->situations;
-
-        $request->session()->put('data', $data);
+        $request->session()->put('cast_class', $castClassId);
         $request->session()->save();
 
         return redirect()->route('guest.orders.get_step3');
@@ -288,11 +117,11 @@ class OrderController extends Controller
 
     public function selectCasts(Request $request)
     {
-        if (!$request->session()->has('data')) {
+        if (!$request->session()->has('cast_class')) {
             return redirect()->route('guest.orders.call');
         }
 
-        $data = $request->session()->get('data');
+        $castClassId = $request->session()->get('cast_class');
 
         $client = new Client(['base_uri' => config('common.api_url')]);
         $user = Auth::user();
@@ -307,7 +136,7 @@ class OrderController extends Controller
 
         try {
             $params = [
-                'class_id' => $data['cast_class'],
+                'class_id' => $castClassId,
                 'latest' => 1,
                 'order' => 1,
             ];
@@ -322,9 +151,7 @@ class OrderController extends Controller
 
         $casts = $casts['data'];
 
-        $castNumbers = $data['cast_numbers'];
-
-        return view('web.orders.select_casts', compact('casts', 'castNumbers'));
+        return view('web.orders.select_casts', compact('casts'));
     }
 
     public function attention(Request $request)
@@ -337,26 +164,12 @@ class OrderController extends Controller
         return view('web.orders.nominate_attention');
     }
 
-    public function getConfirm(Request $request)
+    public function confirm(Request $request)
     {
-        if (!$request->session()->has('data')) {
-            return redirect()->route('guest.orders.call');
-        }
-
-        $data = $request->session()->get('data');
-
-        if ($request->cast_ids) {
-            $castIds = $request->cast_ids;
-        } else {
-            $castIds = '';
-        }
-
-        $request->session()->flash('cast_ids', $castIds);
-
-        return redirect()->route('guest.orders.confirm');
+        return view('web.orders.confirm_orders');
     }
 
-    public function confirm(Request $request)
+    public function getconfirm(Request $request)
     {
         if (!$request->session()->has('data')) {
             return redirect()->route('guest.orders.call');

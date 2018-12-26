@@ -46,10 +46,8 @@
     <h2>オートチャージ</h2>
     <p>ご利用後、評価と決済確定作業を行っていただいておりますが、決済確定作業を行われなかった場合は、ポイントの不足分をご登録いただいたクレジットカードから、自動決済させていただきます。(1P = 1.1円)</p>
   </div>
-  <form action="{{ route('guest.orders.post_confirm') }}" method="POST" class="create-call-form" id="" name="attention_form">
-    {{ csrf_field() }}
-    <input type="hidden" value="" name="cast_ids" id="cast-ids-nominate">
-    <button type="submit" class="form_footer ct-button">次に進む(4/4)</button>
-  </form>
+    <button type="button" class="form_footer ct-button">
+      <a href="{{ route('guest.orders.confirm') }}">次に進む(4/4)</a>
+    </button>
 
 @endsection

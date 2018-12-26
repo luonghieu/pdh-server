@@ -19,14 +19,13 @@
         <div class="details-header__title">予約内容</div>
           <div class="details-list-box">
             <ul class="details-header__list">
-              <li><i><img src="{{ asset('assets/web/images/common/map.svg') }}"></i><p class="word18">{{ $data['area'] or $data['other_area'] }}</p></li>
+              <li><i><img src="{{ asset('assets/web/images/common/map.svg') }}"></i><p class="word18"></p></li>
               <li><i><img src="{{ asset('assets/web/images/common/clock.svg') }}"></i>
-                <p>
-                {{ isset($data['time']) ? $data['time'].'分後' : Carbon\Carbon::parse($data['otherTime'])->format('Y年m月d日') }}
-                {{ (isset($data['time_detail'])) ? $data['time_detail']['hour'].':'.$data['time_detail']['minute'] : ''}}
-                </p>
+                <p class="time-detail-call"></p>
               </li>
-              <li><i><img src="{{ asset('assets/web/images/common/glass.svg') }}"></i><p>{{ $data['duration'] }}時間</p></li>
+              <li><i><img src="{{ asset('assets/web/images/common/glass.svg') }}"></i>
+                <p class="duration-call"></p>
+              </li>
               <li><i><img src="{{ asset('assets/web/images/common/diamond.svg') }}"></i>
                 <p>{{ $castClass->name }} {{ $data['cast_numbers'] .'名' }}
                 </p>
@@ -42,11 +41,7 @@
         </div>
         <div class="details-list__content show">
           <div class="details-list-box">
-            <ul class="details-info-list">
-              @foreach($tags as $tag)
-              <li class="details-info-list_kibun">{{ $tag->name }}</li>
-              @endforeach
-            </ul>
+            <ul class="details-info-list"></ul>
             <div class="btn2-s"><a href="{{ route('guest.orders.get_step2') }}">変更</a></div>
           </div>
         </div>
