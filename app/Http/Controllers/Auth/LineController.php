@@ -148,15 +148,7 @@ class LineController extends Controller
 
     protected function findOrCreate($lineResponse)
     {
-        $user = User::where('line_user_id', $lineResponse->id)->first();
-
-        if (!$user) {
-            $email = $lineResponse->email;
-
-            if ($email) {
-                $user = User::where('email', $email)->first();
-            }
-        }
+        $user = User::where('line_user_id', $lineResponse->id)->where('provider', ProviderType::LINE)->first();
 
         if (!$user) {
             $data = [
