@@ -23,28 +23,27 @@
 @section('web.content')
   <h2>ご希望のキャストがいる場合は選択してください。</h2>
   <p class="message">
-    ※選択したキャストには、優先的に希望リクエストが送られます。
-  　ご希望のキャストが参加できない場合は、自動的に無指名のご予約に切り替わります。<br/>
+    ※選択したキャストには、優先的に希望リクエストが送られます。<br>※ご希望のキャストが参加できない場合は、自動的に無指名のご予約に切り替わります。<br/>
     ※希望したキャストとマッチングした場合は、1人あたり15分毎に別途500Pが発生します。
   </p>
 
-    <div class="">
-      <div class="form-grpup" id="list-cast-order"><!-- フォーム内容 -->
-        @if(isset($casts['data']))
-          @if(count($casts['data']))
-            @include('web.orders.load_more_list_casts', compact('casts'))
-            <input type="hidden" id="next_page" value="{{ $casts['next_page_url'] }}">
-          @endif
+  <div class="">
+    <div class="form-grpup" id="list-cast-order"><!-- フォーム内容 -->
+      @if(isset($casts['data']))
+        @if(count($casts['data']))
+          @include('web.orders.load_more_list_casts', compact('casts'))
+          <input type="hidden" id="next_page" value="{{ $casts['next_page_url'] }}">
         @endif
-      </div>
-      @if(isset($castNumbers))
-      <input type="hidden" value="{{ $castNumbers }}" class="cast-numbers">
       @endif
-      <input type="hidden" value="" class="cast-ids" name="cast_ids">
     </div>
-    <div class="create-call-form" id="" name="select_casts_form">
-      <button type="button" class="form_footer ct-button" id="sb-select-casts"><a href="{{ route('guest.orders.get_step4') }}">希望リクエストせずに進む(3/4)</a></button>
-    </form>
+    @if(isset($castNumbers))
+    <input type="hidden" value="{{ $castNumbers }}" class="cast-numbers">
+    @endif
+    <input type="hidden" value="" class="cast-ids" name="cast_ids">
+  </div>
+  <div class="create-call-form" id="" name="select_casts_form">
+    <button type="button" class="form_footer ct-button" id="sb-select-casts"><a href="{{ route('guest.orders.get_step4') }}">希望リクエストせずに進む(3/4)</a></button>
+  </div>
 @endsection
 
 @section('web.script')
