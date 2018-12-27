@@ -195,7 +195,7 @@ $(document).ready(function(){
 
               $(this).prop('checked',true);
               $(this).parent().find('.cast-link').addClass('cast-detail');
-              $('.label-select-casts[for='+  id  +']').text('指名中');
+              $('.label-select-casts[for='+  id  +']').text('リクエスト中');
             } else {
               var text = ' 指名できるキャストは'+ countIds + '名です';
               $('#content-message h2').text(text);
@@ -219,7 +219,7 @@ $(document).ready(function(){
 
             $(this).prop('checked',true);
             $(this).parent().find('.cast-link').addClass('cast-detail');
-            $('.label-select-casts[for='+  id  +']').text('指名中');
+            $('.label-select-casts[for='+  id  +']').text('リクエスト中');
             $('#sb-select-casts a').text('次に進む(3/4)');
           }
         } else {

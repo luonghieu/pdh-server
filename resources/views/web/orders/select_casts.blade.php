@@ -59,7 +59,7 @@
                 if(arrIds.indexOf(val.value) > -1) {
                   $(this).prop('checked',true);
                   $(this).parent().find('.cast-link').addClass('cast-detail');
-                  $('.label-select-casts[for='+  val.value  +']').text('指名中');
+                  $('.label-select-casts[for='+  val.value  +']').text('リクエスト中');
                 }
               })
 
