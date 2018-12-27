@@ -78,7 +78,7 @@ class CastController extends ApiController
                 ->orderByDesc('created_at')
                 ->orderByDesc('last_active_at');
 
-            if ($request->device == 3) {
+            if (3 == $request->device) {
                 $casts = $casts->limit(10)->get();
             } else {
                 $casts = $casts->paginate(10)->appends($request->query());
@@ -98,6 +98,14 @@ class CastController extends ApiController
                 ->paginate($request->per_page)
                 ->appends($request->query());
         }
+
+        return $this->respondWithData(CastResource::collection($casts));
+    }
+
+    public function listCasts(Request $request)
+    {
+        $listNomineeIds = explode(",", trim($request->nominee_ids, ","));
+        $casts = Cast::whereIn('id', $listNomineeIds)->get();
 
         return $this->respondWithData(CastResource::collection($casts));
     }

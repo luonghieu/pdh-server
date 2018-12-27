@@ -7,11 +7,6 @@
             'userId': '<?php echo Auth::user()->id; ?>',
             'event': 'callbooking_complete'
             });"></a>
-  @if(session()->has('data'))
-  @php
-  $data = Session::get('data');
-  @endphp
-  @endif
   <form action="{{ route('guest.orders.add') }}"  method="POST" class="create-call-form" id="add-orders" name="confirm_orders_form">
     {{ csrf_field() }}
     <div class="settlement-confirm">
@@ -27,8 +22,7 @@
                 <p class="duration-call"></p>
               </li>
               <li><i><img src="{{ asset('assets/web/images/common/diamond.svg') }}"></i>
-                <p>{{ $castClass->name }} {{ $data['cast_numbers'] .'名' }}
-                </p>
+                <p class="cast-numbers-call"></p>
               </li>
             </ul>
             <div class="btn2-s"><a href="{{ route('guest.orders.call') }}">変更</a></div>
@@ -55,18 +49,8 @@
         <div class="details-list__content show">
           <div class="details-list-box">
             <div class="details-list-box">
-                <p>{{ count($casts) }}</p>
-                <ul class="details-list-box__pic">
-                  @foreach($casts as $cast)
-                  <li>
-                    @if (@getimagesize($cast->avatars[0]->thumbnail))
-                      <img src="{{ $cast->avatars[0]->thumbnail }}">
-                    @else
-                      <img src="{{ asset('assets/web/images/gm1/ic_default_avatar@3x.png') }}" alt="">
-                    @endif
-                  </li>
-                  @endforeach
-                </ul>
+                <p class="total-nominated-call"></p>
+                <ul class="details-list-box__pic"></ul>
             </div>
             <div class="btn2-s"><a href="{{ route('guest.orders.get_step3') }}">変更</a></div>
           </div>
@@ -79,7 +63,7 @@
         <div class="details-list__header">
           <div class="details-header__title">合計</div>
         </div>
-          <div class="details-total__marks">{{ number_format($tempPoint) .'P' }}</div>
+          <div class="details-total__marks"></div>
         </div>
         @php
           $campaignFrom = Carbon\Carbon::parse(env('CAMPAIGN_FROM'));
@@ -103,19 +87,11 @@
         に同意する
       </label>
     </div>
-    <input type="hidden" value="" name="cast_ids" id="cast-ids-nominate">
-    <input type="hidden" value="{{ $type }}" name="type_order">
-    <input type="hidden" value="{{ $tempPoint }}" name="temp_point_order">
     <button type="button" class="form_footer ct-button disable" id="btn-confirm-orders" disabled="disabled">予約リクエストを確定する</button>
   </form>
   <section class="button-box">
     <label for="orders" class="lb-orders"></label>
   </section>
-  @if(($statusCode))
-    <section class="button-box">
-      <label for="{{ $statusCode }}" class="status-code"></label>
-    </section>
-  @endif
 @endsection
 
 @section('web.extra')
@@ -140,7 +116,7 @@
     </div>
   </div>
 
-  @if(!$user->card)
+ {{--  @if(!$user->card)
     <div class="modal_wrap">
       <input id="md-require-card" type="checkbox">
       <div class="modal_overlay">
@@ -154,9 +130,9 @@
         </div>
       </div>
     </div>
-  @endif
+  @endif --}}
 
-  @if(($statusCode))
+  {{-- @if(($statusCode))
     @php
       $statusCode = $statusCode;
 
@@ -205,14 +181,17 @@
       </div>
     </div>
   </div>
-  @endif
+  @endif --}}
+  <script>
+    var avatarsDefault = "<?php echo asset('assets/web/images/gm1/ic_default_avatar@3x.png'); ?>";
+  </script>
 
 @endsection
-
 
 @section('web.script')
   <script>
     $(function(){
+
       var $setElm = $('.word18');
       var cutFigure = '17'; // カットする文字数
       var afterTxt = ' …'; // 文字カット後に表示するテキスト

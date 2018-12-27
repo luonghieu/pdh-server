@@ -161,7 +161,7 @@
               <img src="{{ asset($castClass['url_image']) }}" alt="">
               <span class="cast_class" id="cast_class" >{{ $castClass['name'] }}</span>
               <span class="cast_price">{{ number_format($castClass['cost']) }}P/30分</span>
-              <input type="radio" name="cast_class" class="grade-radio" value="{{ $castClass['id'] }}">
+              <input type="radio" name="cast_class" class="grade-radio" value="{{ $castClass['id'] }}" data-name = "{{ $castClass['name'] }}" >
             </label>
           @endforeach
         @endif

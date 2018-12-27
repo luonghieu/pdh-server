@@ -127,14 +127,10 @@ $(document).ready(function(){
           utc = currentDate.getTime() + (currentDate.getTimezoneOffset() * 60000);
           nd = new Date(utc + (3600000*9));
 
-          var add_minutes =  function (dt, minutes) {
-            return new Date(dt.getTime() + minutes*60000);
-          }
+          var selectDate = helper.add_minutes(nd,time);
 
-          var selectDate = add_minutes(nd,time);
-
-          if (add_minutes(nd, 30) > selectDate) {
-            selectDate = add_minutes(nd, 30);
+          if (helper.add_minutes(nd, 30) > selectDate) {
+            selectDate = helper.add_minutes(nd, 30);
           }
 
           var day = selectDate.getDate();
@@ -249,13 +245,10 @@ $(document).ready(function(){
           utc = currentDate.getTime() + (currentDate.getTimezoneOffset() * 60000);
           nd = new Date(utc + (3600000*9));
 
-          var add_minutes =  function (dt, minutes) {
-            return new Date(dt.getTime() + minutes*60000);
-          }
-          var selectDate = add_minutes(nd,time);
+          var selectDate = helper.add_minutes(nd,time);
 
-          if (add_minutes(nd, 30) > selectDate) {
-            selectDate = add_minutes(nd, 30);
+          if (helper.add_minutes(nd, 30) > selectDate) {
+            selectDate = helper.add_minutes(nd, 30);
           }
 
           var day = selectDate.getDate();
@@ -374,14 +367,10 @@ $(document).ready(function(){
         utc = currentDate.getTime() + (currentDate.getTimezoneOffset() * 60000);
         nd = new Date(utc + (3600000*9));
 
-        var add_minutes =  function (dt, minutes) {
-          return new Date(dt.getTime() + minutes*60000);
-        }
+        var selectDate = helper.add_minutes(nd,time);
 
-        var selectDate = add_minutes(nd,time);
-
-        if (add_minutes(nd, 30) > selectDate) {
-          selectDate = add_minutes(nd, 30);
+        if (helper.add_minutes(nd, 30) > selectDate) {
+          selectDate = helper.add_minutes(nd, 30);
         }
 
         var day = selectDate.getDate();
@@ -557,13 +546,10 @@ $(document).ready(function(){
           utc = currentDate.getTime() + (currentDate.getTimezoneOffset() * 60000);
           nd = new Date(utc + (3600000*9));
 
-          var add_minutes =  function (dt, minutes) {
-            return new Date(dt.getTime() + minutes*60000);
-          }
-          var selectDate = add_minutes(nd,time);
+          var selectDate = helper.add_minutes(nd,time);
 
-          if (add_minutes(nd, 30) > selectDate) {
-            selectDate = add_minutes(nd, 30);
+          if (helper.add_minutes(nd, 30) > selectDate) {
+            selectDate = helper.add_minutes(nd, 30);
           }
 
           var day = selectDate.getDate();

@@ -72,19 +72,14 @@ $(document).ready(function(){
       var selectDate = new Date(year +'-' + month +'-'+ date +' ' + hour +':' + minute);
     }
 
-
-    var add_minutes =  function (dt, minutes) {
-        return new Date(dt.getTime() + minutes*60000);
-    }
-
     utc = currentDate.getTime() + (currentDate.getTimezoneOffset() * 60000);
     nd = new Date(utc + (3600000*9));
 
     var checkMonth = currentDate.getMonth();
 
     if (month > checkMonth) {
-      if(add_minutes(nd, 30) > selectDate) {
-        selectDate = add_minutes(nd, 30);
+      if(helper.add_minutes(nd, 30) > selectDate) {
+        selectDate = helper.add_minutes(nd, 30);
         date = selectDate.getDate();
         month = selectDate.getMonth() +1;
 
@@ -358,15 +353,6 @@ $(document).ready(function(){
     $('.lb-orders').click();
   });
 
-  $('.sb-form-orders').on('click',function(){
-    if($('#md-require-card').length){
-      $('#md-require-card').click();
-    }else {
-      document.getElementById('confirm-order-submit').click();
-      $('#add-orders').submit();
-    }
-  });
-
   $('.order-done').on('click',function(){
     window.location.href = '/mypage';
   });
@@ -528,11 +514,13 @@ $(document).ready(function(){
 
   var castClass = $("input:radio[name='cast_class']");
   castClass.on("change",function(){
-
     var castClass = $("input:radio[name='cast_class']:checked").val();
+
+    var className = $("input:radio[name='cast_class']:checked").data('name');
 
     var params = {
       cast_class: castClass,
+      class_name: className,
     };
 
     helper.updateLocalStorageValue('order_call', params);
@@ -687,14 +675,6 @@ $(document).ready(function(){
   if(localStorage.getItem("order_call")){
     var orderCall = JSON.parse(localStorage.getItem("order_call"));
     var arrIds = JSON.parse(localStorage.getItem("order_call")).arrIds;
-
-    if ($("#cast-ids-nominate").length) {
-      if(arrIds) {
-        if(arrIds.length) {
-          $("#cast-ids-nominate").val(arrIds.toString());
-        }
-      }
-    }
 
     if($('.tags-name').length) {
       if(orderCall.tags) {

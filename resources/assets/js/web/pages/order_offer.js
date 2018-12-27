@@ -293,15 +293,11 @@ $(document).ready(function(){
       }
     }
 
-    var add_minutes =  function (dt, minutes) {
-      return new Date(dt.getTime() + minutes*60000);
-    }
-
     utc = now.getTime() + (now.getTimezoneOffset() * 60000);
     nd = new Date(utc + (3600000*9));
 
-    if (add_minutes(nd, 30) > checkDate) {
-      checkDate = add_minutes(nd, 30);
+    if (helper.add_minutes(nd, 30) > checkDate) {
+      checkDate = helper.add_minutes(nd, 30);
     }
 
     var startTimeTo = $('#start-time-to-offer').val();

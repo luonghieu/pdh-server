@@ -41,7 +41,7 @@
       @if(count($situations['data']))
        @foreach($situations['data'] as $tag)
        <label class="button button--green checkbox-tags ">
-        <input type="checkbox" name="situations[]" value="{{ $tag['id'] }}" class="tags-name">{{ $tag['name'] }}</label>
+        <input type="checkbox" name="situations[]" value="{{ $tag['name'] }}" class="tags-name">{{ $tag['name'] }}</label>
        @endforeach
       @endif
     </div>
