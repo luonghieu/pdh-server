@@ -10,7 +10,6 @@ use App\Order;
 use GuzzleHttp\Client;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Session;
 use Tymon\JWTAuth\Facades\JWTAuth;
 
 class HomeController extends Controller
@@ -22,9 +21,6 @@ class HomeController extends Controller
 
     public function index(Request $request)
     {
-        if ($request->session()->has('data')) {
-            $request->session()->forget('data');
-        }
         if (Auth::check()) {
             $user = Auth::user();
             $token = '';

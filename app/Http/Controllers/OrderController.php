@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\Cast;
-use App\CastClass;
 use App\Enums\OfferStatus;
 use App\Enums\OrderPaymentStatus;
 use App\Enums\OrderStatus;
@@ -18,7 +17,6 @@ use App\Offer;
 use App\Order;
 use App\Point;
 use App\Services\LogService;
-use App\Tag;
 use App\Transfer;
 use App\User;
 use Auth;
@@ -107,21 +105,14 @@ class OrderController extends Controller
 
     public function getTags(Request $request)
     {
-        $castClassId = $request->cast_class;
+        $cast_class = $request->cast_class;
 
-        $request->session()->put('cast_class', $castClassId);
-        $request->session()->save();
-
-        return redirect()->route('guest.orders.get_step3');
+        return redirect()->route('guest.orders.get_step3', compact('cast_class'));
     }
 
     public function selectCasts(Request $request)
     {
-        if (!$request->session()->has('cast_class')) {
-            return redirect()->route('guest.orders.call');
-        }
-
-        $castClassId = $request->session()->get('cast_class');
+        $castClassId = $request->cast_class;
 
         $client = new Client(['base_uri' => config('common.api_url')]);
         $user = Auth::user();
@@ -169,216 +160,9 @@ class OrderController extends Controller
         return view('web.orders.confirm_orders');
     }
 
-    public function getconfirm(Request $request)
-    {
-        if (!$request->session()->has('data')) {
-            return redirect()->route('guest.orders.call');
-        }
-
-        $data = $request->session()->get('data');
-
-        if ($request->session()->has('cast_ids')) {
-            $castIds = $request->session()->get('cast_ids');
-            $data['cast_ids'] = $castIds;
-
-            $request->session()->forget('cast_ids');
-        } else {
-            if (isset($data['cast_ids'])) {
-                $castIds = $data['cast_ids'];
-            } else {
-                return redirect()->route('guest.orders.call');
-            }
-        }
-
-        $castIdsArray = explode(',', $castIds);
-
-        if (count($castIdsArray)) {
-            $casts = Cast::whereIn('id', $castIdsArray)->get();
-
-            if (count($castIdsArray) == $data['cast_numbers']) {
-                $type = OrderType::NOMINATED_CALL;
-            } else {
-                $type = OrderType::HYBRID;
-            }
-        } else {
-            $casts = [];
-            $type = OrderType::CALL;
-        }
-
-        $data['type'] = $type;
-
-        if ($request->session()->has('statusCode')) {
-            $statusCode = $request->session()->get('statusCode');
-
-            $request->session()->forget('statusCode');
-        } else {
-            $statusCode = null;
-        }
-
-        $castClass = CastClass::findOrFail($data['cast_class']);
-
-        $desires = [];
-        $situations = [];
-
-        if (isset($data['desires'])) {
-            $desires = $data['desires'];
-        }
-
-        if (isset($data['situations'])) {
-            $situations = $data['situations'];
-        }
-
-        $tags = Tag::whereIn('id', array_merge($desires, $situations))->get();
-
-        if (isset($data['otherTime'])) {
-            $startDate = Carbon::parse($data['otherTime'])->format('Y-m-d');
-            $startTime = Carbon::parse($data['otherTime'])->format('H:i');
-        }
-
-        if (isset($data['time'])) {
-            $timeOrder = Carbon::now()->addMinutes($data['time']);
-
-            $startDate = Carbon::parse($timeOrder)->format('Y-m-d');
-            $startTime = Carbon::parse($timeOrder)->format('H:i');
-        }
-
-        $client = new Client(['base_uri' => config('common.api_url')]);
-        $user = Auth::user();
-
-        $accessToken = JWTAuth::fromUser($user);
-
-        $option = [
-            'headers' => ['Authorization' => 'Bearer ' . $accessToken],
-            'form_params' => [],
-            'allow_redirects' => false,
-        ];
-
-        try {
-            $tempPoint = $client->post(route('orders.price', [
-                'type' => $type,
-                'class_id' => $data['cast_class'],
-                'duration' => $data['duration'],
-                'nominee_ids' => $castIds,
-                'date' => $startDate,
-                'start_time' => $startTime,
-                'total_cast' => $data['cast_numbers'],
-            ]), $option);
-
-            $tempPoint = json_decode(($tempPoint->getBody())->getContents(), JSON_NUMERIC_CHECK);
-        } catch (\Exception $e) {
-            LogService::writeErrorLog($e);
-            abort(500);
-        }
-
-        $tempPoint = $tempPoint['data'];
-
-        $data['temp_point'] = $tempPoint;
-
-        $request->session()->put('data', $data);
-        $request->session()->save();
-
-        return view('web.orders.confirm_orders', compact('user', 'casts', 'tags', 'tempPoint', 'castClass', 'statusCode', 'type'));
-    }
-
     public function cancel()
     {
         return view('web.orders.cancel');
-    }
-
-    public function add(Request $request)
-    {
-        if (!$request->session()->has('data')) {
-            return redirect()->route('guest.orders.call');
-        }
-
-        if ($request->cast_ids) {
-            $nomineeIds = $request->cast_ids;
-        } else {
-            $nomineeIds = '';
-        }
-
-        $data = $request->session()->get('data');
-
-        if (isset($data['otherTime'])) {
-            $startDate = Carbon::parse($data['otherTime'])->format('Y-m-d');
-            $startTime = Carbon::parse($data['otherTime'])->format('H:i');
-        }
-
-        if (isset($data['time'])) {
-            $timeOrder = Carbon::now()->addMinutes($data['time']);
-
-            $startDate = Carbon::parse($timeOrder)->format('Y-m-d');
-            $startTime = Carbon::parse($timeOrder)->format('H:i');
-        }
-
-        $desires = [];
-        $situations = [];
-
-        if (isset($data['area'])) {
-            $area = $data['area'];
-        } else {
-            $area = $data['other_area'];
-        }
-
-        if (isset($data['desires'])) {
-            $desires = $data['desires'];
-        }
-
-        if (isset($data['situations'])) {
-            $situations = $data['situations'];
-        }
-
-        $tags = implode(',', array_merge($desires, $situations));
-
-        $client = new Client(['base_uri' => config('common.api_url')]);
-        $user = Auth::user();
-
-        $accessToken = JWTAuth::fromUser($user);
-
-        $option = [
-            'headers' => ['Authorization' => 'Bearer ' . $accessToken],
-            'form_params' => [],
-            'allow_redirects' => false,
-        ];
-
-        if (isset($data['type'])) {
-            $type = $data['type'];
-        } else {
-            $type = $request->type_order;
-        }
-
-        if (isset($data['temp_point'])) {
-            $tempPoint = $data['temp_point'];
-        } else {
-            $tempPoint = $request->temp_point_order;
-        }
-
-        try {
-            $order = $client->post(route('orders.create', [
-                'prefecture_id' => 13,
-                'address' => $area,
-                'class_id' => $data['cast_class'],
-                'duration' => $data['duration'],
-                'nominee_ids' => $nomineeIds,
-                'date' => $startDate,
-                'start_time' => $startTime,
-                'total_cast' => $data['cast_numbers'],
-                'temp_point' => $tempPoint,
-                'type' => $type,
-                'tags' => $tags,
-            ]), $option);
-        } catch (\Exception $e) {
-            LogService::writeErrorLog($e);
-            $statusCode = $e->getResponse()->getStatusCode();
-
-            $request->session()->flash('statusCode', $statusCode);
-
-            return redirect()->route('guest.orders.confirm');
-        }
-
-        $request->session()->flash('statusCode', 200);
-
-        return redirect()->route('guest.orders.confirm');
     }
 
     public function history(Request $request, $orderId)

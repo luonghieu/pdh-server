@@ -189,9 +189,50 @@ $(document).ready(function(){
           temp_point : orderCall.total_point
         };
 
-        console.log(params)
-      });
+        window.axios.post('/api/v1/orders', params)
+        .then(function(response) {
+          $('#orders').prop('checked',false);
+          $('#order-done').prop('checked',true);
+        })
+        .catch(function(error) {
+          $('#order-call-popup').prop('checked',false);
+            if (error.response.status == 401) {
+              window.location = '/login/line';
+            } else {
+              if(error.response.status == 404) {
+                $('#md-require-card').prop('checked',true);
+              } else {
+                if(error.response.status == 406) {
+                  $('.card-expired h2').text('');
+                  var content = '予約日までにクレジットカードの <br> 1有効期限が切れます  <br> <br> 予約を完了するには  <br> カード情報を更新してください';
+                  $('.card-expired p').html(content);
+                  $('.lable-register-card').text('クレジットカード情報を更新する');
+                  $('#md-require-card').prop('checked',true);
+                } else {
+                  if (error.response.status == 400) {
+                    var title = '開始時間は現在時刻から30分以降の時間を選択してください';
+                  }
 
+                  if(error.response.status == 422) {
+                  var title = 'この操作は実行できません';
+                  }
+
+                  if(error.response.status == 500) {
+                  var title = 'サーバーエラーが発生しました';
+                  }
+
+                  if(error.response.status == 409) {
+                    var title = 'すでに予約があります';
+                  }
+
+                  $('.show-message-order-call h2').html(title);
+
+                  $('#order-call-popup').prop('checked',true);
+                }
+              }
+            }
+        })
+      });
     } else {
       window.location.href = '/mypage';
     }

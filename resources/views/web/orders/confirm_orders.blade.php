@@ -96,6 +96,7 @@
 
 @section('web.extra')
 
+
   <div class="modal_wrap">
     <input id="orders" type="checkbox">
     <div class="modal_overlay">
@@ -116,72 +117,48 @@
     </div>
   </div>
 
- {{--  @if(!$user->card)
-    <div class="modal_wrap">
-      <input id="md-require-card" type="checkbox">
-      <div class="modal_overlay">
-        <label for="md-require-card" class="modal_trigger"></label>
-        <div class="modal_content modal_content-btn1">
-          <div class="text-box">
-            <h2>クレジットカードを <br>登録してください</h2>
-            <p>※キャストと合流するまで <br>料金は発生しません</p>
-          </div>
-          <label for="md-require-card" class="close_button lable-register-card">クレジットカードを登録する</label>
-        </div>
-      </div>
-    </div>
-  @endif --}}
-
-  {{-- @if(($statusCode))
-    @php
-      $statusCode = $statusCode;
-
-      $triggerId = $statusCode;
-      $label = $statusCode;
-
-      if(200 == $statusCode) {
-        $triggerClass = 'order-done';
-        $title = '予約が完了しました';
-        $content = 'ただいまキャストの調整中です<br>予約状況はホーム画面の予約一覧をご確認ください';
-      }
-
-      if (406 == $statusCode) {
-        $button = 'クレジットカード情報を更新する';
-        $triggerClass = 'lable-register-card';
-        $content = '予約日までにクレジットカードの <br> 有効期限が切れます <br><br> 予約を完了するには <br> カード情報を更新してください';
-      }
-
-      if (400 == $statusCode) {
-        $content = '開始時間は現在時刻から30分以降の時間を選択してください';
-      }
-
-      if (409 == $statusCode) {
-        $content = 'すでに予約があります';
-      }
-
-      if (422 == $statusCode) {
-        $content = 'この操作は実行できません';
-      }
-
-      if (500 == $statusCode) {
-        $content = 'サーバーエラーが発生しました';
-      }
-    @endphp
-
   <div class="modal_wrap">
-    <input id="{{ $triggerId }}" type="checkbox">
+    <input id="order-call-popup" type="checkbox">
     <div class="modal_overlay">
-      <label for="{{ $label or '' }}" class="modal_trigger"></label>
+      <label for="order-call-popup" class="modal_trigger"></label>
       <div class="modal_content modal_content-btn1">
-        <div class="text-box">
-          <h2>{!! $title or '' !!}</h2>
-          <p>{!! $content or '' !!}</p>
+        <div class="text-box show-message-order-call">
+          <h2></h2>
+          <p></p>
         </div>
-        <label for="{{ $triggerId }}" class="close_button {{ $triggerClass or '' }}">{{ $button or 'OK'}}</label>
+        <label for="order-call-popup" class="close_button" id="label-show-message">OK</label>
       </div>
     </div>
   </div>
-  @endif --}}
+
+  <div class="modal_wrap">
+    <input id="order-done" type="checkbox">
+    <div class="modal_overlay">
+      <label for="order-done" class="modal_trigger"></label>
+      <div class="modal_content modal_content-btn1">
+        <div class="text-box show-message-order-call">
+          <h2>予約が完了しました</h2>
+          <p>ただいまキャストの調整中です<br>予約状況はホーム画面の予約一覧をご確認ください</p>
+        </div>
+        <label for="order-done" class="close_button order-done">OK</label>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal_wrap">
+    <input id="md-require-card" type="checkbox">
+    <div class="modal_overlay">
+      <label for="md-require-card" class="modal_trigger"></label>
+      <div class="modal_content modal_content-btn1">
+        <div class="text-box card-expired">
+          <h2>クレジットカードを <br>登録してください</h2>
+          <p>※キャストと合流するまで <br>料金は発生しません</p>
+        </div>
+        <label for="md-require-card" class="close_button lable-register-card">クレジットカードを登録する</label>
+      </div>
+    </div>
+  </div>
+
   <script>
     var avatarsDefault = "<?php echo asset('assets/web/images/gm1/ic_default_avatar@3x.png'); ?>";
   </script>
