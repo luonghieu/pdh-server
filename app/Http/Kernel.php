@@ -65,5 +65,6 @@ class Kernel extends HttpKernel
         'cast' => \App\Http\Middleware\RestrictToCastOnly::class,
         'guest' => \App\Http\Middleware\RestrictToGuestOnly::class,
         'check_info' => \App\Http\Middleware\CheckInfo::class,
+        'is_active' => \App\Http\Middleware\IsActive::class,
     ];
 }

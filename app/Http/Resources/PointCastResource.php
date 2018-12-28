@@ -27,6 +27,7 @@ class PointCastResource extends Resource
         return $this->filterNull([
             'id' => $this->id,
             'cast_id' => $this->user_id,
+            'guest_id' => $order->user_id ?? '',
             'order_id' => $this->order_id,
             'is_admin' => $this->is_adjusted ? 1 : 0,
             'order_time' => $paymentRequests ? $paymentRequests['order_time'] : '',
@@ -39,6 +40,7 @@ class PointCastResource extends Resource
             'nickname' => $this->is_adjusted ? 'Cheers運営局' : $order->user->nickname,
             'type' => $this->type,
             'date' => $this->is_adjusted ? Carbon::parse($this->created_at)->format('Y-m-d') : Carbon::parse($order->date)->format('Y-m-d'),
+            'status' => $paymentRequests['status'] ?? '',
             'order' => OrderResource::make($order),
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,

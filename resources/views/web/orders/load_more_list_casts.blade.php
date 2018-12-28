@@ -13,6 +13,6 @@
       </p>
     </div>
     <span class="sp-name-cast text-ellipsis text-nickname">{{ $cast['nickname'] .'('. $cast['age'] .')' }}</span>
-    <label for="{{ $cast['id'] }}" class="label-select-casts">指名する</label>
+    <label for="{{ $cast['id'] }}" class="label-select-casts">リクエストする</label>
   </div>
 @endforeach

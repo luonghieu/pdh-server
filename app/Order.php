@@ -316,6 +316,9 @@ class Order extends Model
             $paymentRequest->total_point = $totalPoint;
             $paymentRequest->save();
 
+            // Create TEMP point
+            $this->createTempPoint($paymentRequest);
+
             \DB::commit();
 
             StopOrder::dispatchNow($this->id, $cast);
@@ -327,6 +330,23 @@ class Order extends Model
 
             return false;
         }
+    }
+
+    public function createTempPoint($paymentRequest)
+    {
+        $castPercent = config('common.cast_percent');
+
+        $point = new Point;
+        $point->point = $paymentRequest->total_point * $castPercent;
+        $point->user_id = $paymentRequest->cast_id;
+        $point->order_id = $this->id;
+        $point->payment_request_id = $paymentRequest->id;
+        $point->type = PointType::TEMP;
+        $point->status = true;
+        $point->save();
+
+        // SoftDelete TEMP point
+        $point->delete();
     }
 
     public function start($userId)
@@ -567,6 +587,9 @@ class Order extends Model
                 throw new \Exception('Auto charge failed');
             }
         }
+
+        // Hard delete TEMP point
+        $tempPoints = Point::withTrashed()->where('order_id', $this->id)->where('type', PointType::TEMP)->forceDelete();
 
         $point = new Point;
         $point->point = -$this->total_point;

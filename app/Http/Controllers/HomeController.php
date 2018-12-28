@@ -35,7 +35,7 @@ class HomeController extends Controller
                 return redirect()->route('verify.code');
             }
 
-            if (!$user->status) {
+            if (!$user->is_verified && !$user->status) {
                 return view('web.users.verification', compact('token'));
             }
 

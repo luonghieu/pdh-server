@@ -1,4 +1,4 @@
-@section('title', 'キャストを指名しますか?')
+@section('title', 'ご希望のキャストを選択しますか？')
 @section('screen.class', 'ge2-3')
 @extends('layouts.web')
 @section('web.extra_css')
@@ -21,26 +21,29 @@
 @endsection
 
 @section('web.content')
-  <h2>指名したいキャストがいる場合は選択してください</h2>
-  <p class="message">※ご希望に<span>添えない可能性</span>もございます。<br/>※指名料が1人あたり15分毎に500Pが別途発生します。</p>
+  <h2>ご希望のキャストがいる場合は選択してください。</h2>
+  <p class="message">
+    ※選択したキャストには希望リクエストが送られますが、ご希望のキャストが参加できない場合は、自動的に無指名のご予約に切り替わります。（マッチング確定後のキャストの変更はできかねます）<br/>
+    ※希望したキャストとマッチングした場合は、1人あたり15分毎に別途500Pが発生します。
+  </p>
 
-    <div class="">
-      <div class="form-grpup" id="list-cast-order"><!-- フォーム内容 -->
-        @if(isset($casts['data']))
-          @if(count($casts['data']))
-            @include('web.orders.load_more_list_casts', compact('casts'))
-            <input type="hidden" id="next_page" value="{{ $casts['next_page_url'] }}">
-          @endif
+  <div class="">
+    <div class="form-grpup" id="list-cast-order"><!-- フォーム内容 -->
+      @if(isset($casts['data']))
+        @if(count($casts['data']))
+          @include('web.orders.load_more_list_casts', compact('casts'))
+          <input type="hidden" id="next_page" value="{{ $casts['next_page_url'] }}">
         @endif
-      </div>
-      @if(isset($castNumbers))
-      <input type="hidden" value="{{ $castNumbers }}" class="cast-numbers">
       @endif
-      <input type="hidden" value="" class="cast-ids" name="cast_ids">
     </div>
-    <div class="create-call-form" id="" name="select_casts_form">
-      <button type="button" class="form_footer ct-button" id="sb-select-casts"><a href="{{ route('guest.orders.get_step4') }}">指名せずに進む(3/4)</a></button>
-    </form>
+    @if(isset($castNumbers))
+    <input type="hidden" value="{{ $castNumbers }}" class="cast-numbers">
+    @endif
+    <input type="hidden" value="" class="cast-ids" name="cast_ids">
+  </div>
+  <div class="create-call-form" id="" name="select_casts_form">
+    <button type="button" class="form_footer ct-button" id="sb-select-casts"><a href="{{ route('guest.orders.get_step4') }}">希望リクエストせずに進む(3/4)</a></button>
+  </div>
 @endsection
 
 @section('web.script')
@@ -56,7 +59,7 @@
                 if(arrIds.indexOf(val.value) > -1) {
                   $(this).prop('checked',true);
                   $(this).parent().find('.cast-link').addClass('cast-detail');
-                  $('.label-select-casts[for='+  val.value  +']').text('指名中');
+                  $('.label-select-casts[for='+  val.value  +']').text('リクエスト中');
                 }
               })
 
