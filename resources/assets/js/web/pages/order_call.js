@@ -331,13 +331,16 @@ $(document).ready(function(){
     }
 
   $('#btn-confirm-orders').on('click',function(){
-    $('.lb-orders').click();
+    $('.modal-confirm').css('display','inline-block');
+    $('#orders').prop('checked',true);
   });
 
   $('.sb-form-orders').on('click',function(){
     if($('#md-require-card').length){
       $('#md-require-card').click();
     }else {
+      $('.modal-confirm').css('display','none');
+      $('#btn-confirm-orders').prop('disabled','disabled');
       document.getElementById('confirm-order-submit').click();
       $('#add-orders').submit();
     }

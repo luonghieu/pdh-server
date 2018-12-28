@@ -56,6 +56,7 @@ $(document).ready(function(){
 
   //order-active
   $('#confirm-orders-offer').on("click",function(event){
+    $('.modal-confirm-offer').css('display','inline-block');
     $('#order-offer-popup').prop('checked',true);
   })
 
@@ -64,6 +65,8 @@ $(document).ready(function(){
   })
 
   $('#lb-order-offer').on("click",function(event){
+    $('.modal-confirm-offer').css('display','none');
+    
     var area = $("input:radio[name='offer_area']:checked").val();
     if('その他'== area){
       area =   $("input:text[name='other_area_offer']").val();
