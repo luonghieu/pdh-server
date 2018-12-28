@@ -6,11 +6,13 @@ use App\Enums\OrderPaymentStatus;
 use App\Enums\OrderStatus;
 use App\Enums\OrderType;
 use App\Enums\PaymentRequestStatus;
+use App\Enums\PointType;
 use App\Http\Controllers\Controller;
 use App\Jobs\PointSettlement;
 use App\Notification;
 use App\Order;
 use App\PaymentRequest;
+use App\Point;
 use App\Services\LogService;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -410,6 +412,12 @@ class OrderController extends Controller
                 }
 
                 $paymentRequest->save();
+
+                $point = Point::withTrashed()->where('payment_request_id', $paymentRequest->id)->where('type', PointType::TEMP)->first();
+                if ($point) {
+                    $castPercent = config('common.cast_percent');
+                    $point->update(['point' => $paymentRequest->total_point * $castPercent]);
+                }
             }
 
             \DB::commit();
