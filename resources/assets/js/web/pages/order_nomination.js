@@ -709,6 +709,9 @@ $(document).ready(function(){
               })
               .catch(function (error) {
                 console.log(error);
+                if (error.response.status == 401) {
+                  window.location = '/login/line';
+                }
               });
 
             const inputMonth = $('select[name=sl_month_nomination] option');

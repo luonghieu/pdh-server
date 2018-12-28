@@ -17,8 +17,6 @@
     </div>
   </div>
 @endsection
-<form action="{{ route('guest.orders.post_step2') }}" method="POST" class="create-call-form" id="" name="select_tags_form">
-  {{ csrf_field() }}
   <div class="reservation-item">
     <div class="caption"><!-- 見出し用div -->
       <h2>希望するキャスト</h2>
@@ -47,7 +45,5 @@
     </div>
   </div>
   <input type="hidden" value="" name="cast_class" class="cast-class-id">
-  <button type="submit" class="form_footer ct-button">次に進む　(2/4)</button>
-</form>
-
+  <button type="button" class="form_footer ct-button"><a href="{{ route('guest.orders.get_step3') }}">次に進む　(2/4)</a></button>
 @endsection

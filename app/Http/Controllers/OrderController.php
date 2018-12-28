@@ -112,37 +112,7 @@ class OrderController extends Controller
 
     public function selectCasts(Request $request)
     {
-        $castClassId = $request->cast_class;
-
-        $client = new Client(['base_uri' => config('common.api_url')]);
-        $user = Auth::user();
-
-        $accessToken = JWTAuth::fromUser($user);
-
-        $option = [
-            'headers' => ['Authorization' => 'Bearer ' . $accessToken],
-            'form_params' => [],
-            'allow_redirects' => false,
-        ];
-
-        try {
-            $params = [
-                'class_id' => $castClassId,
-                'latest' => 1,
-                'order' => 1,
-            ];
-
-            $casts = $client->get(route('casts.index', $params), $option);
-        } catch (\Exception $e) {
-            LogService::writeErrorLog($e);
-            abort(500);
-        }
-
-        $casts = json_decode(($casts->getBody())->getContents(), JSON_NUMERIC_CHECK);
-
-        $casts = $casts['data'];
-
-        return view('web.orders.select_casts', compact('casts'));
+        return view('web.orders.select_casts');
     }
 
     public function attention(Request $request)

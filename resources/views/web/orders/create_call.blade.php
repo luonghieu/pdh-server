@@ -219,9 +219,11 @@
       </div>
     </div>
   </div>
-  <button type="button" class="form_footer ct-button disable" name="sb_create" disabled>
-    <a href="{{ route('guest.orders.get_step2') }}">次に進む (1/4)</a>
-  </button>
+  <form action="{{ route('guest.orders.get_step2') }}" method="GET">
+    <button type="submit" class="form_footer ct-button disable" id="step1-create-call" disabled>
+      次に進む (1/4)
+    </button>
+  </form>
 @endsection
 
 @section('web.extra')

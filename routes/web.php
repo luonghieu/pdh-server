@@ -72,7 +72,6 @@ Route::group(['middleware' => ['auth', 'guest', 'check_info'], 'as' => 'guest.']
         Route::get('/reserve', ['as' => 'reserve', 'uses' => 'OrderController@index']);
         Route::get('/call', ['as' => 'call', 'uses' => 'OrderController@call']);
         Route::get('/call/step2', ['as' => 'get_step2', 'uses' => 'OrderController@selectTags']);
-        Route::post('/call/step2', ['as' => 'post_step2', 'uses' => 'OrderController@getTags']);
         Route::get('/call/step3', ['as' => 'get_step3', 'uses' => 'OrderController@selectCasts']);
         Route::get('/call/step4', ['as' => 'get_step4', 'uses' => 'OrderController@attention']);
         Route::get('/cancellation_policies', ['as' => 'cancel', 'uses' => 'OrderController@cancel']);

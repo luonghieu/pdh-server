@@ -33,6 +33,9 @@ $(document).ready(function(){
       })
       .catch(function (error) {
         console.log(error);
+        if (error.response.status == 401) {
+          window.location = '/login/line';
+        }
       });
   });
 
@@ -135,11 +138,11 @@ $(document).ready(function(){
 
     if((!area || (area=='その他' && !otherArea)) || !castClass ||
      (!duration || (duration<1 && 'other_duration' != duration)) ||(!totalCast || totalCast<1) || !date) {
-      $("button[type='button'][name='sb_create']").addClass("disable");
-      $("button[type='button'][name='sb_create']").prop('disabled', true);
+      $("#step1-create-call").addClass("disable");
+      $("#step1-create-call").prop('disabled', true);
     } else {
-      $("button[type='button'][name='sb_create']").removeClass('disable');
-      $("button[type='button'][name='sb_create']").prop('disabled', false);
+      $("#step1-create-call").removeClass('disable');
+      $("#step1-create-call").prop('disabled', false);
     }
 
     $(".overlay").fadeOut();
@@ -399,11 +402,11 @@ $(document).ready(function(){
 
     if((!area || (area=='その他' && !otherArea)) || !time || !castClass ||
      (!duration || (duration<1 && 'other_duration' != duration)) ||(!totalCast || totalCast<1) || (time=='other_time' && !date)) {
-      $("button[type='button'][name='sb_create']").addClass("disable");
-      $("button[type='button'][name='sb_create']").prop('disabled', true);
+      $("#step1-create-call").addClass("disable");
+      $("#step1-create-call").prop('disabled', true);
     } else {
-      $("button[type='button'][name='sb_create']").removeClass('disable');
-      $("button[type='button'][name='sb_create']").prop('disabled', false);
+      $("#step1-create-call").removeClass('disable');
+      $("#step1-create-call").prop('disabled', false);
     }
   });
 
@@ -431,11 +434,11 @@ $(document).ready(function(){
 
     if((!area || (area=='その他' && !otherArea)) || !castClass ||
      (!duration || (duration<1 && 'other_duration' != duration)) ||(!totalCast || totalCast<1) || (time=='other_time' && !date)) {
-      $("button[type='button'][name='sb_create']").addClass("disable");
-      $("button[type='button'][name='sb_create']").prop('disabled', true);
+      $("#step1-create-call").addClass("disable");
+      $("#step1-create-call").prop('disabled', true);
     } else {
-      $("button[type='button'][name='sb_create']").removeClass('disable');
-      $("button[type='button'][name='sb_create']").prop('disabled', false);
+      $("#step1-create-call").removeClass('disable');
+      $("#step1-create-call").prop('disabled', false);
     }
   })
 
@@ -458,11 +461,11 @@ $(document).ready(function(){
 
     if( !time || (!area || (!otherArea)) || !castClass ||
      (!duration || (duration<1 && 'other_duration' != duration)) ||(!totalCast || totalCast<1) || (time=='other_time' && !date)) {
-      $("button[type='button'][name='sb_create']").addClass("disable");
-      $("button[type='button'][name='sb_create']").prop('disabled', true);
+      $("#step1-create-call").addClass("disable");
+      $("#step1-create-call").prop('disabled', true);
     } else {
-      $("button[type='button'][name='sb_create']").removeClass('disable');
-      $("button[type='button'][name='sb_create']").prop('disabled', false);
+      $("#step1-create-call").removeClass('disable');
+      $("#step1-create-call").prop('disabled', false);
     }
   })
 
@@ -491,11 +494,11 @@ $(document).ready(function(){
 
     if( !time || (!area || (area=='その他' && !otherArea)) ||
      !castClass || (!duration || (duration<1 && 'other_duration' != duration)) ||(!totalCast || totalCast<1) || (time=='other_time' && !date)) {
-      $("button[type='button'][name='sb_create']").addClass("disable");
-      $("button[type='button'][name='sb_create']").prop('disabled', true);
+      $("#step1-create-call").addClass("disable");
+      $("#step1-create-call").prop('disabled', true);
     } else {
-      $("button[type='button'][name='sb_create']").removeClass('disable');
-      $("button[type='button'][name='sb_create']").prop('disabled', false);
+      $("#step1-create-call").removeClass('disable');
+      $("#step1-create-call").prop('disabled', false);
     }
 
   })
@@ -548,11 +551,11 @@ $(document).ready(function(){
 
     if( !time || (!area || (area=='その他' && !otherArea)) || !castClass ||
      (!duration || (duration<1 && 'other_duration' != duration)) ||(!totalCast || totalCast<1) || (time=='other_time' && !date)) {
-      $("button[type='button'][name='sb_create']").addClass("disable");
-      $("button[type='button'][name='sb_create']").prop('disabled', true);
+      $("#step1-create-call").addClass("disable");
+      $("#step1-create-call").prop('disabled', true);
     } else {
-      $("button[type='button'][name='sb_create']").removeClass('disable');
-      $("button[type='button'][name='sb_create']").prop('disabled', false);
+      $("#step1-create-call").removeClass('disable');
+      $("#step1-create-call").prop('disabled', false);
     }
   })
 
@@ -638,7 +641,7 @@ $(document).ready(function(){
 
   $('.checked-order').prop('checked',false);
 
-  $("button[type='button'][name='sb_create']").on("click",function(){
+  $("#step1-create-call").on("click",function(){
     if(localStorage.getItem("order_call")) {
       var orderCall = JSON.parse(localStorage.getItem("order_call"));
 
@@ -694,7 +697,7 @@ $(document).ready(function(){
       }
     }
 
-    if($("button[type='button'][name='sb_create']").length) {
+    if($("#step1-create-call").length) {
 
       //cast-number
       if(orderCall.countIds) {
@@ -796,6 +799,9 @@ $(document).ready(function(){
               })
               .catch(function (error) {
                 console.log(error);
+                if (error.response.status == 401) {
+                  window.location = '/login/line';
+                }
               });
 
             const inputMonth = $('select[name=sl_month] option');
@@ -837,8 +843,8 @@ $(document).ready(function(){
       var duration = $("input:radio[name='time_set']:checked").val();
 
       if((area || (area=='その他' && otherArea)) && time && castClass && duration) {
-        $("button[type='button'][name='sb_create']").removeClass('disable');
-        $("button[type='button'][name='sb_create']").prop('disabled', false);
+        $("#step1-create-call").removeClass('disable');
+        $("#step1-create-call").prop('disabled', false);
       }
 
       if(arrIds) {
