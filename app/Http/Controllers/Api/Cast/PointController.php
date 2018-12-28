@@ -14,8 +14,9 @@ class PointController extends ApiController
     {
         $user = $this->guard()->user();
 
-        $points = Point::where('user_id', $user->id)
-            ->whereIn('type', [PointType::RECEIVE, PointType::ADJUSTED])
+        $points = Point::withTrashed()
+            ->where('user_id', $user->id)
+            ->whereIn('type', [PointType::RECEIVE, PointType::ADJUSTED, PointType::TEMP])
             ->with([
                 'order.casts',
                 'order.paymentRequests' => function ($query) use ($user) {

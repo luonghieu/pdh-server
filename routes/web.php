@@ -25,7 +25,7 @@ Route::group(['middleware' => 'auth'], function () {
             Route::get('/', ['as' => 'index', 'uses' => 'PointController@index']);
         });
 
-        Route::group(['prefix' => 'message', 'as' => 'message.'], function () {
+        Route::group(['middleware' => 'is_active', 'prefix' => 'message', 'as' => 'message.'], function () {
             Route::get('/', ['as' => 'index', 'uses' => 'RoomController@index']);
 
             Route::get('{room}', ['as' => 'messages', 'uses' => 'MessageController@message'])->where('room', '[0-9]+');
@@ -88,7 +88,7 @@ Route::group(['middleware' => ['auth', 'guest', 'check_info'], 'as' => 'guest.']
         Route::get('/cast/{id}/call', ['as' => 'cast_detail', 'uses' => 'OrderController@castDetail'])->where('id', '[0-9]+');
     });
 });
-Route::group(['middleware' => ['auth'], 'as' => 'guest.'], function () {
+Route::group(['middleware' => ['auth', 'is_active'], 'as' => 'guest.'], function () {
     Route::get('/offers/{id}', ['as' => 'orders.offers', 'uses' => 'OrderController@offer'])->where('id', '[0-9]+');
     Route::get('/offers/attention', ['as' => 'orders.offers_attention', 'uses' => 'OrderController@offerAttention'])->where('id', '[0-9]+');
 });

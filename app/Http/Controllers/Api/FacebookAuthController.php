@@ -65,13 +65,7 @@ class FacebookAuthController extends ApiController
     protected function findOrCreate($fbResponse, $avatar, $deviceType = null)
     {
         $email = (isset($fbResponse['email'])) ? $fbResponse['email'] : null;
-        $user = User::query();
-
-        if ($email) {
-            $user = $user->where('email', $email);
-        }
-
-        $user = $user->orWhere('facebook_id', $fbResponse['id'])->first();
+        $user = User::where('facebook_id', $fbResponse['id'])->where('provider', ProviderType::FACEBOOK)->first();
 
         if (!$user) {
             $data = [

@@ -9,6 +9,7 @@ use App\Enums\UserType;
 use App\Notifications\CreateGuest;
 use App\Services\LogService;
 use App\User;
+use Illuminate\Contracts\Auth\UserProvider;
 use Illuminate\Http\Request;
 use Socialite;
 use Tymon\JWTAuth\Facades\JWTAuth;
@@ -48,13 +49,7 @@ class LineAuthController extends ApiController
 
     protected function findOrCreate($lineResponse, $deviceType = null)
     {
-        $email = $lineResponse->email;
-        $user = User::query();
-
-        if ($email) {
-            $user = $user->where('email', $email);
-        }
-        $user = $user->orWhere('line_user_id', $lineResponse->id)->first();
+        $user = User::where('line_user_id', $lineResponse->id)->where('provider', ProviderType::LINE)->first();
 
         if (!$user) {
             $data = [
