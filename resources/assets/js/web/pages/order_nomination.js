@@ -631,6 +631,7 @@ $(document).ready(function(){
         $('#md-require-card').click();
       }else {
         $('.modal-confirm-nominate').css('display','none');
+        $('#confirm-orders-nomination').prop('disabled','disabled');
         document.getElementById('confirm-order-nomination-submit').click();
         $('#create-nomination-form').submit();
       }

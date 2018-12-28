@@ -340,6 +340,7 @@ $(document).ready(function(){
       $('#md-require-card').click();
     }else {
       $('.modal-confirm').css('display','none');
+      $('#btn-confirm-orders').prop('disabled','disabled');
       document.getElementById('confirm-order-submit').click();
       $('#add-orders').submit();
     }
