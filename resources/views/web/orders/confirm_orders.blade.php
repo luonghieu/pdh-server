@@ -113,9 +113,6 @@
     <input type="hidden" value="{{ $tempPoint }}" name="temp_point_order">
     <button type="button" class="form_footer ct-button disable" id="btn-confirm-orders" disabled="disabled">予約リクエストを確定する</button>
   </form>
-  <section class="button-box">
-    <label for="orders" class="lb-orders"></label>
-  </section>
   @if(($statusCode))
     <section class="button-box">
       <label for="{{ $statusCode }}" class="status-code"></label>
@@ -125,7 +122,7 @@
 
 @section('web.extra')
 
-  <div class="modal_wrap">
+  <div class="modal_wrap modal-confirm">
     <input id="orders" type="checkbox">
     <div class="modal_overlay">
       <label for="orders" class="modal_trigger"></label>

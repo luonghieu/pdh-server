@@ -622,13 +622,15 @@ $(document).ready(function(){
   })
 
   $('#confirm-orders-nomination').on('click',function(){
-    $('.lb-orders-nominate').click();
+    $('.modal-confirm-nominate').css('display','inline-block');
+    $('#orders-nominate').prop('checked',true);
   });
 
   $('.cf-orders-nominate').on('click',function(){
       if($('#md-require-card').length){
         $('#md-require-card').click();
       }else {
+        $('.modal-confirm-nominate').css('display','none');
         document.getElementById('confirm-order-nomination-submit').click();
         $('#create-nomination-form').submit();
       }
