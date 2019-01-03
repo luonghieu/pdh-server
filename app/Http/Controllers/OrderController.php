@@ -515,7 +515,8 @@ class OrderController extends Controller
             $situations = $data['situations'];
         }
 
-        $tags = implode(',', array_merge($desires, $situations));
+        $tags = Tag::whereIn('id', array_merge($desires, $situations))->pluck('name')->toArray();
+        $tags = implode(',', $tags);
 
         $client = new Client(['base_uri' => config('common.api_url')]);
         $user = Auth::user();
