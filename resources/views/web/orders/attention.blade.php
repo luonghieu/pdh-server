@@ -51,3 +51,8 @@
     </button>
 
 @endsection
+<script>
+  if(!localStorage.getItem("order_call")){
+    window.location.href = '/mypage';
+  }
+</script>

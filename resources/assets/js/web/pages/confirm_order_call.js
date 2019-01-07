@@ -106,17 +106,18 @@ $(document).ready(function(){
           $('.total-nominated-call').text(data.length)
           if (data.length) {
 
-            var show = '';
             data.forEach(function (val) {
               var avatars = val.avatars;
-             if(avatars.length) {
-                show +='<li> <img src= "' + avatars[0].thumbnail + '" </li>';
-             } else {
-                show +='<li> <img src= "' + avatarsDefault + '" </li>';
-             }
+              if(avatars.length) {
+                if (avatars[0].path) {
+                  $('.details-list-box__pic').append('<li> <img src= "' + avatars[0].thumbnail + '"/> </li>');
+                } else {
+                  $('.details-list-box__pic').append('<li> <img src= "' + avatarsDefault + '"/> </li>');
+                }
+                } else {
+                  $('.details-list-box__pic').append('<li> <img src= "' + avatarsDefault + '"/> </li>');
+              }
             })
-
-            $('.details-list-box__pic').html(show);
           }
 
         }).catch(function(error) {
@@ -138,17 +139,11 @@ $(document).ready(function(){
 
         window.axios.post('/api/v1/orders/price',params)
         .then(function(response) {
-          totalPoint = response.data['data'];
+          var tempPoint = response.data['data'];
+          $('#temp_point_order_call').val(tempPoint);
 
-          var params = {
-            total_point: totalPoint,
-            type : type,
-          };
-
-          helper.updateLocalStorageValue('order_call', params);
-
-          totalPoint = parseInt(totalPoint).toLocaleString(undefined,{ minimumFractionDigits: 0 });
-          $('.details-total__marks').text(totalPoint +'P~');
+          tempPoint = parseInt(tempPoint).toLocaleString(undefined,{ minimumFractionDigits: 0 });
+          $('.details-total__marks').text(tempPoint +'P~');
         }).catch(function(error) {
           console.log(error);
           if (error.response.status == 401) {
@@ -159,15 +154,14 @@ $(document).ready(function(){
 
       if (orderCall.tags) {
         var tags = orderCall.tags;
-        var html = '';
         (tags).forEach(function (data) {
-          html +='<li class="details-info-list_kibun">'+data+'</li>';
+          $('.details-info-list').append('<li class="details-info-list_kibun">'+data+'</li>');
         })
-        $('.details-info-list').html(html);
       }
 
-
       $('.sb-form-orders').on('click',function(){
+        $('.modal-confirm').css('display', 'none');
+        $('#btn-confirm-orders').prop('disabled', true);
 
         if(orderCall.tags) {
           tags = orderCall.tags.toString();
@@ -186,15 +180,17 @@ $(document).ready(function(){
           type :type,
           total_cast :orderCall.countIds,
           tag : tags,
-          temp_point : orderCall.total_point
+          temp_point : $('#temp_point_order_call').val()
         };
-
+        
         window.axios.post('/api/v1/orders', params)
         .then(function(response) {
           $('#orders').prop('checked',false);
           $('#order-done').prop('checked',true);
         })
         .catch(function(error) {
+          $('.modal-confirm').css('display', 'inline-block');
+          $('#btn-confirm-orders').prop('disabled', false);
           $('#order-call-popup').prop('checked',false);
             if (error.response.status == 401) {
               window.location = '/login/line';

@@ -227,7 +227,7 @@ $(document).ready(function(){
 
               $(this).prop('checked',true);
               $(this).parent().find('.cast-link').addClass('cast-detail');
-              $('.label-select-casts[for='+  id  +']').text('指名中');
+              $('.label-select-casts[for='+  id  +']').text('リクエスト中');
             } else {
               var text = ' 指名できるキャストは'+ countIds + '名です';
               $('#content-message h2').text(text);
@@ -238,7 +238,7 @@ $(document).ready(function(){
             if(arrIds.length) {
               $('#sb-select-casts a').text('次に進む(3/4)');
             } else {
-              $('#sb-select-casts a').text('指名せずに進む(3/4)');
+              $('#sb-select-casts a').text('希望リクエストせずに進む(3/4)');
             }
 
           } else {
@@ -250,7 +250,7 @@ $(document).ready(function(){
 
             $(this).prop('checked',true);
             $(this).parent().find('.cast-link').addClass('cast-detail');
-            $('.label-select-casts[for='+  id  +']').text('指名中');
+            $('.label-select-casts[for='+  id  +']').text('リクエスト中');
             $('#sb-select-casts a').text('次に進む(3/4)');
           }
         } else {
@@ -275,14 +275,14 @@ $(document).ready(function(){
             if(arrIds.length) {
               $('#sb-select-casts a').text('次に進む(3/4)');
             } else {
-              $('#sb-select-casts a').text('指名せずに進む(3/4)');
+              $('#sb-select-casts a').text('希望リクエストせずに進む(3/4)');
             }
           }
         }
 
         $(this).prop('checked',false);
         $(this).parent().find('.cast-link').removeClass('cast-detail');
-        $('.label-select-casts[for='+  id  +']').text('指名する');
+        $('.label-select-casts[for='+  id  +']').text('リクエストする');
       }
     }
 
@@ -353,7 +353,7 @@ $(document).ready(function(){
     }
 
   $('#btn-confirm-orders').on('click',function(){
-    $('.lb-orders').click();
+    $('#orders').prop('checked', true);
   });
 
   $('.order-done').on('click',function(){

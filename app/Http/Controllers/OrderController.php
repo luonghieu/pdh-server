@@ -103,13 +103,6 @@ class OrderController extends Controller
         return view('web.orders.set_tags', compact('desires', 'situations'));
     }
 
-    public function getTags(Request $request)
-    {
-        $cast_class = $request->cast_class;
-
-        return redirect()->route('guest.orders.get_step3', compact('cast_class'));
-    }
-
     public function selectCasts(Request $request)
     {
         return view('web.orders.select_casts');

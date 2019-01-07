@@ -7,8 +7,7 @@
             'userId': '<?php echo Auth::user()->id; ?>',
             'event': 'callbooking_complete'
             });"></a>
-  <form action="{{ route('guest.orders.add') }}"  method="POST" class="create-call-form" id="add-orders" name="confirm_orders_form">
-    {{ csrf_field() }}
+  <form action=""  method="POST" class="create-call-form" id="add-orders" name="confirm_orders_form">
     <div class="settlement-confirm">
       <section class="details-list">
         <div class="details-header__title">予約内容</div>
@@ -65,6 +64,7 @@
         </div>
           <div class="details-total__marks"></div>
         </div>
+        <input type="hidden" id="temp_point_order_call" value="">
         @php
           $campaignFrom = Carbon\Carbon::parse(env('CAMPAIGN_FROM'));
           $campaignTo = Carbon\Carbon::parse(env('CAMPAIGN_TO'));
@@ -97,7 +97,7 @@
 @section('web.extra')
 
 
-  <div class="modal_wrap">
+  <div class="modal_wrap modal-confirm">
     <input id="orders" type="checkbox">
     <div class="modal_overlay">
       <label for="orders" class="modal_trigger"></label>

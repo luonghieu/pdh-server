@@ -44,6 +44,10 @@
       @endif
     </div>
   </div>
-  <input type="hidden" value="" name="cast_class" class="cast-class-id">
   <button type="button" class="form_footer ct-button"><a href="{{ route('guest.orders.get_step3') }}">次に進む　(2/4)</a></button>
 @endsection
+<script>
+    if(!localStorage.getItem("order_call")){
+      window.location.href = '/mypage';
+    }
+</script>
