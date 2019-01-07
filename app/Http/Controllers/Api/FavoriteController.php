@@ -24,8 +24,8 @@ class FavoriteController extends ApiController
 
         $user->favorites()->attach($id);
 
-        $favortedUser = User::find($id);
-        $favortedUser->notify(new FavoritedNotify($user));
+        $favoritedUser = User::find($id);
+        $favoritedUser->notify(new FavoritedNotify($user));
 
         return $this->respondWithNoData(trans('messages.favorite_success'));
     }
