@@ -84,38 +84,15 @@ class OrderController extends ApiController
             return $this->respondErrorMessage(trans('messages.card_expired'), 406);
         }
 
-        $orders = $user->orders()
-            ->whereIn('status', [OrderStatus::OPEN, OrderStatus::ACTIVE, OrderStatus::PROCESSING])
-            ->where(function ($query) use ($start_time, $end_time) {
-                $query->orWhereRaw("concat_ws(' ',`date`,`start_time`) >= '$start_time' and concat_ws(' ',`date`,`start_time`) <= '$end_time'"
-                );
-
-                $query->orWhereRaw("DATE_ADD(concat_ws(' ',`date`,`start_time`), INTERVAL `duration` HOUR) >= '$start_time' and DATE_ADD(concat_ws(' ',`date`,`start_time`), INTERVAL `duration` HOUR) <= '$end_time'"
-                );
-                $query->orWhereRaw("concat_ws(' ',`date`,`start_time`) <= '$start_time' and DATE_ADD(concat_ws(' ',`date`,`start_time`), INTERVAL `duration` HOUR) >= '$end_time'"
-                );
-            });
-        $listCastMatching = 0;
-
         if (!$request->nominee_ids) {
             $input['type'] = OrderType::CALL;
         } else {
             $listNomineeIds = explode(",", trim($request->nominee_ids, ","));
             $counter = Cast::whereIn('id', $listNomineeIds)->count();
 
-            $listCastMatching = $user->orders()->whereHas('casts', function ($q) use ($listNomineeIds) {
-                $q->whereIn('users.id', $listNomineeIds);
-            })
-                ->whereIn('status', [OrderStatus::ACTIVE, OrderStatus::PROCESSING])
-                ->count();
-
             if ($request->total_cast != $counter) {
                 $input['type'] = OrderType::HYBRID;
             }
-        }
-
-        if ($orders->count() > 0 || $listCastMatching > 0) {
-            return $this->respondErrorMessage(trans('messages.order_same_time'), 409);
         }
 
         $input['end_time'] = $end_time->format('H:i');

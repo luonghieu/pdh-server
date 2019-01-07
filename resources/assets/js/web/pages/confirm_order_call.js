@@ -163,6 +163,8 @@ $(document).ready(function(){
         $('.modal-confirm').css('display', 'none');
         $('#btn-confirm-orders').prop('disabled', true);
 
+        document.getElementById('confirm-order-submit').click();
+        
         if(orderCall.tags) {
           tags = orderCall.tags.toString();
         } else {

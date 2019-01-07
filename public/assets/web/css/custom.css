@@ -2554,3 +2554,21 @@ padding-top: 65px !important;
   margin: 0 auto;
   color: #505050;
 }
+
+@media (max-width: 375px) {
+  #accept-resend-code-voice .modal_content-btn2 h2 {
+    padding: 0 1em .8em 1em;
+  }
+  #accept-resend-code-voice .modal_content-btn2 p {
+    padding: 0 1em 1.6em 1em;
+  }
+}
+
+@media (max-width: 320px) {
+  #accept-resend-code-voice .modal_content-btn2 h2 {
+    padding: 0 0 .8em 0;
+  }
+  #accept-resend-code-voice .modal_content-btn2 p {
+    padding: 0 0 1.6em 0;
+  }
+}

@@ -210,9 +210,7 @@
     <input type="hidden" value="{{ $cast['cost'] or 0 }}" class="cost-order">
     <input type="hidden" value="{{ $cast['id'] or 0 }}" name="cast_id" class="cast-id">
   </form>
-  <section class="button-box">
-    <label for="orders-nominate" class="lb-orders-nominate"></label>
-  </section>
+
   @if((Session::has('status_code')))
     @php
       $statusCode = Session::get('status_code');
@@ -225,16 +223,26 @@
 @endsection
 
 @section('web.extra')
-  @confirm(['triggerId' => 'orders-nominate', 'triggerCancel' =>'', 'buttonLeft' =>'キャンセル',
-   'buttonRight' =>'確定する','triggerSuccess' =>'right cf-orders-nominate'])
 
-    @slot('title')
-      予約を確定しますか？
-    @endslot
-
-    @slot('content')
-    @endslot
-  @endconfirm
+  <div class="modal_wrap modal-confirm-nominate">
+    <input id="orders-nominate" type="checkbox">
+    <div class="modal_overlay">
+      <label for="orders-nominate" class="modal_trigger"></label>
+      <div class="modal_content modal_content-btn2">
+        <div class="text-box">
+          <h2>予約を確定しますか？</h2>
+        </div>
+        <div class="close_button-box">
+          <div class="close_button-block">
+            <label for="orders-nominate" class="close_button  left ">キャンセル</label>
+          </div>
+          <div class="close_button-block">
+            <label for="orders-nominate" class="close_button right cf-orders-nominate">確定する</label>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
 
   @if(!$user->card)
     <div class="modal_wrap">

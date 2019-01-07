@@ -1,4 +1,4 @@
-@section('title', 'キャストを指名しますか?')
+@section('title', 'ご希望のキャストを選択しますか？')
 @section('screen.class', 'ge2-3')
 @extends('layouts.web')
 @section('web.extra_css')
@@ -21,12 +21,15 @@
 @endsection
 
 @section('web.content')
-  <h2>指名したいキャストがいる場合は選択してください</h2>
-  <p class="message">※ご希望に<span>添えない可能性</span>もございます。<br/>※指名料が1人あたり15分毎に500Pが別途発生します。</p>
-    <div class="form-grpup" id="list-cast-order"></div>
-    <button type="button" class="form_footer ct-button" id="sb-select-casts">
-      <a href="{{ route('guest.orders.get_step4') }}">希望リクエストせずに進む(3/4)</a>
-    </button>
+  <h2>ご希望のキャストがいる場合は選択してください。</h2>
+  <p class="message">
+    ※選択したキャストには希望リクエストが送られますが、ご希望のキャストが参加できない場合は、自動的に無指名のご予約に切り替わります。（マッチング確定後のキャストの変更はできかねます）<br/>
+    ※希望したキャストとマッチングした場合は、1人あたり15分毎に別途500Pが発生します。
+  </p>
+  <div class="form-grpup" id="list-cast-order"></div>
+  <div class="create-call-form" id="" name="select_casts_form">
+    <button type="button" class="form_footer ct-button" id="sb-select-casts"><a href="{{ route('guest.orders.get_step4') }}">希望リクエストせずに進む(3/4)</a></button>
+  </div>
 @endsection
 <script>
   var avatarsDefault = "<?php echo asset('assets/web/images/gm1/ic_default_avatar@3x.png'); ?>";
@@ -35,5 +38,4 @@
 </script>
 
 @section('web.script')
-
 @endsection

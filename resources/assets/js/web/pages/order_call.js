@@ -240,7 +240,7 @@ $(document).ready(function(){
             } else {
               $('#sb-select-casts a').text('希望リクエストせずに進む(3/4)');
             }
-
+            
           } else {
             var arrIds = [id];
 
