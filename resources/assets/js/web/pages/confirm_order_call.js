@@ -214,7 +214,7 @@ $(document).ready(function(){
           start_time : time,
           type :type,
           total_cast :orderCall.countIds,
-          tag : tags,
+          tags : tags,
           temp_point : $('#temp_point_order_call').val()
         };
 
