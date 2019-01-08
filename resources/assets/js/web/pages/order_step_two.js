@@ -1,6 +1,6 @@
 const helper = require('./helper');
 
-function handelSelectedTags()
+function handlerSelectedTags()
 {
   $(".form-grpup .checkbox-tags").on("change",function(event){
     var tagName = $(this).children().val();
@@ -62,5 +62,5 @@ function handelSelectedTags()
 }
 
 $(document).ready(function () {
-  handelSelectedTags();
+  handlerSelectedTags();
 });

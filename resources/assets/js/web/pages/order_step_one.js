@@ -1,6 +1,6 @@
 const helper = require('./helper');
 
-function handleSelectedArea()
+function handlerSelectedArea()
 {
   var buttonGreen = $(".button--green.area");
   buttonGreen.on("change",function(){
@@ -47,7 +47,7 @@ function handleSelectedArea()
   });
 }
 
-function handelCustomArea()
+function handlerCustomArea()
 {
   var txtArea = $("input:text[name='other_area']");
   txtArea.on("input",function(){
@@ -77,7 +77,7 @@ function handelCustomArea()
   })
 }
 
-function handelSelectedTime()
+function handlerSelectedTime()
 {
   var dateButton = $(".button--green.date");
   dateButton.on("change",function(){
@@ -241,7 +241,7 @@ function handelSelectedTime()
   });
 }
   
-function handelSelectedDuration()
+function handlerSelectedDuration()
 {
   var timeButton = $(".button--green.time");
   timeButton.on("change",function(){
@@ -288,7 +288,7 @@ function handelSelectedDuration()
   })
 }
 
-function handelSelectedCastClass()
+function handlerSelectedCastClass()
 {
   var castClass = $("input:radio[name='cast_class']");
   castClass.on("change",function(){
@@ -335,7 +335,7 @@ function handelSelectedCastClass()
   })
 }
 
-function handelNumberCasts()
+function handlerNumberCasts()
 {
   $(".cast-number__button-plus").on("click",function(){
     var number_val = parseInt( $(".cast-number__value input").val());
@@ -445,10 +445,10 @@ function handelNumberCasts()
 }
 
 $(document).ready(function () {
-  handleSelectedArea();
-  handelCustomArea();
-  handelSelectedTime();
-  handelSelectedDuration();
-  handelSelectedCastClass();
-  handelNumberCasts();
+  handlerSelectedArea();
+  handlerCustomArea();
+  handlerSelectedTime();
+  handlerSelectedDuration();
+  handlerSelectedCastClass();
+  handlerNumberCasts();
 });

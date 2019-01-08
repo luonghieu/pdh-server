@@ -1,6 +1,6 @@
 const helper = require('./helper');
 
-function handelSelectedCasts()
+function handlerSelectedCasts()
 {
   $('#list-cast-order').on("change", ".cast_block .select-casts", function(event){
     var id = $(this).val();
@@ -124,5 +124,5 @@ function handelSelectedCasts()
 }
 
 $(document).ready(function () {
-  handelSelectedCasts();
+  handlerSelectedCasts();
 });
