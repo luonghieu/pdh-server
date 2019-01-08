@@ -1,42 +1,138 @@
-$(document).ready(function(){
-  const helper = require('./helper');
-  if($("#ge2-1-x input:radio[name='cast_class']:checked").length){
-    $("#ge2-1-x input:radio[name='cast_class']:checked").parent().addClass("active");
-    var castClass = $("#ge2-1-x input:radio[name='cast_class']:checked").val();
-    if (castClass == 3) {
-      $('.notify-campaign-over-cast-class span').text('※”ダイヤモンド”はキャンペーン対象外です');
-      $('.notify-campaign-over-cast-class').css('display','block');
+const helper = require('./helper');
+//step1
+
+//area
+function handleSelectedArea()
+{
+  var buttonGreen = $(".button--green.area");
+  buttonGreen.on("change",function(){
+
+    if ($("input:radio[name='area']").length) {
+      var areaCall = $("input:radio[name='area']:checked").val();
+
+      if('その他'== areaCall){
+        if(localStorage.getItem("order_call")){
+          var orderCall = JSON.parse(localStorage.getItem("order_call"));
+
+          if(orderCall.text_area){
+            $("input:text[name='other_area']").val(orderCall.text_area);
+          }
+        }
+      }
+
+      var params = {
+        select_area: areaCall,
+      };
+
+      helper.updateLocalStorageValue('order_call', params);
     }
 
-    if (castClass == 2) {
-      $('.notify-campaign-over-cast-class span').text('※”プラチナ”はキャンペーン対象外です');
-      $('.notify-campaign-over-cast-class').css('display','block');
+    $("#ge2-1-x input:radio[name='area']").parent().removeClass("active");
+    $("#ge2-1-x input:radio[name='area']:checked").parent().addClass("active");
+
+    var area = $("input:radio[name='area']:checked").val();
+    var otherArea = $("input:text[name='other_area']").val();
+    var time = $("input:radio[name='time_join']:checked").val();
+    var castClass = $("input:radio[name='cast_class']:checked").val();
+    var duration = $("input:radio[name='time_set']:checked").val();
+    var totalCast = $("input[type='text'][name='txtCast_Number']").val();
+    var date = $('.sp-date').text();
+
+    if((!area || (area=='その他' && !otherArea)) || !time || !castClass ||
+     (!duration || (duration<1 && 'other_duration' != duration)) ||(!totalCast || totalCast<1) || (time=='other_time' && !date)) {
+      $("#step1-create-call").addClass("disable");
+      $("#step1-create-call").prop('disabled', true);
+    } else {
+      $("#step1-create-call").removeClass('disable');
+      $("#step1-create-call").prop('disabled', false);
+    }
+  });
+}
+
+//text area
+function handelCustomArea()
+{
+  var txtArea = $("input:text[name='other_area']");
+  txtArea.on("input",function(){
+    //text-area
+    var params = {
+      text_area: $(this).val(),
+    };
+
+    helper.updateLocalStorageValue('order_call', params);
+
+    var otherArea = $(this).val();
+    var time = $("input:radio[name='time_join']:checked").val();
+    var area = $("input:radio[name='area']:checked").val();
+    var castClass = $("input:radio[name='cast_class']:checked").val();
+    var duration = $("input:radio[name='time_set']:checked").val();
+    var totalCast = $("input[type='text'][name='txtCast_Number']").val();
+    var date = $('.sp-date').text();
+
+    if( !time || (!area || (!otherArea)) || !castClass ||
+     (!duration || (duration<1 && 'other_duration' != duration)) ||(!totalCast || totalCast<1) || (time=='other_time' && !date)) {
+      $("#step1-create-call").addClass("disable");
+      $("#step1-create-call").prop('disabled', true);
+    } else {
+      $("#step1-create-call").removeClass('disable');
+      $("#step1-create-call").prop('disabled', false);
+    }
+  })
+}
+
+//date  
+function handelSelectedTime()
+{
+  var dateButton = $(".button--green.date");
+  dateButton.on("change",function(){
+    var time = $("input:radio[name='time_join']:checked").val();
+
+    if ($("input:radio[name='time_join']").length) {
+      var updateTime = {
+            current_time_set: time,
+          };
+
+      helper.updateLocalStorageValue('order_call', updateTime);
     }
 
-    if (castClass == 1) {
-      $('.notify-campaign-over-cast-class').css('display','none');
-    }
+    $("#ge2-1-x input:radio[name='time_join']").parent().removeClass("active");
+    $("#ge2-1-x input:radio[name='time_join']:checked").parent().addClass("active");
 
-  }
+    var area = $("input:radio[name='area']:checked").val();
+    var otherArea = $("input:text[name='other_area']").val();
+    var castClass = $("input:radio[name='cast_class']:checked").val();
+    var duration = $("input:radio[name='time_set']:checked").val();
+    var totalCast = $("input[type='text'][name='txtCast_Number']").val();
+    var date = $('.sp-date').text();
+
+    if((!area || (area=='その他' && !otherArea)) || !castClass ||
+     (!duration || (duration<1 && 'other_duration' != duration)) ||(!totalCast || totalCast<1) || (time=='other_time' && !date)) {
+      $("#step1-create-call").addClass("disable");
+      $("#step1-create-call").prop('disabled', true);
+    } else {
+      $("#step1-create-call").removeClass('disable');
+      $("#step1-create-call").prop('disabled', false);
+    }
+  })
 
   $('.select-month').on('change', function (e) {
-    var month = $(this).val();
-    window.axios.post('/api/v1/get_day', {month})
-      .then(function(response) {
-        var html = '';
-        Object.keys(response.data).forEach(function (key) {
-          if(key!='debug') {
-          html +='<option value="'+key+'">'+ response.data[key] +'</option>';
-          }
-        })
-      $('.select-date').html(html);
-      })
-      .catch(function (error) {
-        console.log(error);
-        if (error.response.status == 401) {
-          window.location = '/login/line';
+  var month = $(this).val();
+  window.axios.post('/api/v1/get_day', {month})
+    .then(function(response) {
+      var html = '';
+      Object.keys(response.data).forEach(function (key) {
+        if(key!='debug') {
+        html +='<option value="'+key+'">'+ response.data[key] +'</option>';
         }
-      });
+      })
+    $('.select-date').html(html);
+    })
+    .catch(function (error) {
+      console.log(error);
+      if (error.response.status == 401) {
+        window.location = '/login';
+      }
+    });
   });
 
   $(".date-select__ok").on("click",function(){
@@ -147,7 +243,215 @@ $(document).ready(function(){
 
     $(".overlay").fadeOut();
   });
+}
+  
+//duration 
+function handelSelectedDuration()
+{
+  var timeButton = $(".button--green.time");
+  timeButton.on("change",function(){
+    var duration = $("input:radio[name='time_set']:checked").val();
 
+    if ($("input:radio[name='time_set']").length) {
+      var params = {
+        current_duration: duration,
+      };
+
+      helper.updateLocalStorageValue('order_call', params);
+    }
+
+    $("#ge2-1-x input:radio[name='time_set']").parent().removeClass("active");
+    $("#ge2-1-x input:radio[name='time_set']:checked").parent().addClass("active");
+
+    var area = $("input:radio[name='area']:checked").val();
+    var otherArea = $("input:text[name='other_area']").val();
+    var castClass = $("input:radio[name='cast_class']:checked").val();
+    var totalCast = $("input[type='text'][name='txtCast_Number']").val();
+    var time = $("input:radio[name='time_join']:checked").val();
+    var date = $('.sp-date').text();
+
+    if( !time || (!area || (area=='その他' && !otherArea)) ||
+     !castClass || (!duration || (duration<1 && 'other_duration' != duration)) ||(!totalCast || totalCast<1) || (time=='other_time' && !date)) {
+      $("#step1-create-call").addClass("disable");
+      $("#step1-create-call").prop('disabled', true);
+    } else {
+      $("#step1-create-call").removeClass('disable');
+      $("#step1-create-call").prop('disabled', false);
+    }
+
+  })
+
+  //select-duration 
+  $('#select-duration-call').on("change",function(){
+    var duration = $('#select-duration-call option:selected').val();
+
+    var params = {
+        select_duration: duration,
+      };
+
+    helper.updateLocalStorageValue('order_call', params);
+  })
+}
+
+function handelSelectedCastClass()
+{
+  var castClass = $("input:radio[name='cast_class']");
+  castClass.on("change",function(){
+    var castClass = $("input:radio[name='cast_class']:checked").val();
+
+    var className = $("input:radio[name='cast_class']:checked").data('name');
+
+    var params = {
+      cast_class: castClass,
+      class_name: className,
+    };
+
+    helper.updateLocalStorageValue('order_call', params);
+    
+    if (castClass == 3) {
+      $('.notify-campaign-over-cast-class span').text('※”ダイヤモンド”はキャンペーン対象外です');
+      $('.notify-campaign-over-cast-class').css('display','block');
+    }
+
+    if (castClass == 2) {
+      $('.notify-campaign-over-cast-class span').text('※”プラチナ”はキャンペーン対象外です');
+      $('.notify-campaign-over-cast-class').css('display','block');
+    }
+
+    if (castClass == 1) {
+      $('.notify-campaign-over-cast-class').css('display','none');
+    }
+
+    var area = $("input:radio[name='area']:checked").val();
+    var otherArea = $("input:text[name='other_area']").val();
+    var duration = $("input:radio[name='time_set']:checked").val();
+    var totalCast = $("input[type='text'][name='txtCast_Number']").val();
+    var time = $("input:radio[name='time_join']:checked").val();
+    var date = $('.sp-date').text();
+
+    if( !time || (!area || (area=='その他' && !otherArea)) || !castClass ||
+     (!duration || (duration<1 && 'other_duration' != duration)) ||(!totalCast || totalCast<1) || (time=='other_time' && !date)) {
+      $("#step1-create-call").addClass("disable");
+      $("#step1-create-call").prop('disabled', true);
+    } else {
+      $("#step1-create-call").removeClass('disable');
+      $("#step1-create-call").prop('disabled', false);
+    }
+  })
+}
+
+function handelNumberCasts()
+{
+  $(".cast-number__button-plus").on("click",function(){
+    var number_val = parseInt( $(".cast-number__value input").val());
+
+    if(number_val>=1) {
+      $(".cast-number__button-minus").addClass('active');
+      $(".cast-number__button-minus").css({"border": "1.5px #00c3c3 solid"});
+      $(".cast-number__button-minus").prop('disabled', false);
+    }
+
+    if(number_val == 2 ) {
+      $('.notify-campaign-over span').text('※3名はキャンペーン対象外です');
+      $('.notify-campaign-over').css('display','block');
+    }
+
+    if (number_val >= 3 ) {
+      $('.notify-campaign-over span').text('※4名はキャンペーン対象外です');
+      $('.notify-campaign-over').css('display','block');
+    }
+
+    if(number_val==(maxCasts-1)){
+      $(this).css({"border": "1.5px #cccccc solid"});
+      $(this).addClass('active');
+    }
+
+    if(number_val>=maxCasts) {
+      $(this).attr("disabled", "disabled");
+    }else {
+      number_val = number_val + 1;
+      $(".cast-number__value input").val(number_val);
+    }
+
+    var params = {
+      countIds : number_val,
+    };
+
+    helper.updateLocalStorageValue('order_call', params);
+
+  })
+
+  $(".cast-number__button-minus").on("click",function(){
+    var number_val = parseInt( $(".cast-number__value input").val());
+    if(number_val ==1) {
+      $(this).removeClass('active');
+      $(this).attr("disabled", "disabled");
+      $(this).css({"border": "1.5px #cccccc solid"});
+    } else {
+      $(".cast-number__button-plus").prop('disabled', false);
+    }
+
+    if (number_val == 4 ) {
+      $('.notify-campaign-over span').text('※3名はキャンペーン対象外です');
+    }
+
+    if(number_val < 4 ) {
+      $('.notify-campaign-over').css('display','none');
+    }
+
+    if(number_val>0 && number_val !=1) {
+      if(number_val==2) {
+        $(this).removeClass('active');
+        $(this).css({"border": "1.5px #cccccc solid"});
+      }
+      number_val = number_val - 1;
+      $(".cast-number__button-plus").removeClass('active');
+      $(".cast-number__button-plus").css({"border": "1.5px #00c3c3 solid"});
+      $(".cast-number__value input").val(number_val)
+    }
+
+    var params = {
+      countIds : number_val,
+    };
+
+    helper.updateLocalStorageValue('order_call', params);
+  })
+
+  var checkNumber = parseInt( $(".cast-number__value input").val());
+  var maxCasts = parseInt( $("#max_casts").val());
+
+  if(!maxCasts) {
+    maxCasts =10;
+  }
+
+  if (checkNumber > 2) {
+    if (checkNumber == 3) {
+      $('.notify-campaign-over span').text('※3名はキャンペーン対象外です');
+    }
+
+    if (checkNumber == 4) {
+      $('.notify-campaign-over span').text('※4名はキャンペーン対象外です');
+    }
+
+    $('.notify-campaign-over').css('display','block');
+  }
+
+  if (checkNumber>1) {
+    if (checkNumber==maxCasts) {
+      $(".cast-number__button-plus").prop('disabled', false);
+      $(".cast-number__button-plus").css({"border": "1.5px #cccccc solid"});
+      $(".cast-number__button-plus").addClass('active');
+    }
+
+    $(".cast-number__button-minus").addClass('active');
+    $(".cast-number__button-minus").css({"border": "1.5px #00c3c3 solid"});
+    $(".cast-number__button-minus").prop('disabled', false);
+  }
+}
+
+//step2 select tags
+function handelSelectedTags()
+{
   $(".form-grpup .checkbox-tags").on("change",function(event){
     var tagName = $(this).children().val();
     var activeSum = $(".active").length;
@@ -205,7 +509,11 @@ $(document).ready(function(){
       helper.updateLocalStorageValue('order_call', params);
     }
   });
+}
 
+//step3 select casts 
+function handelSelectedCasts()
+{
   $('#list-cast-order').on("change", ".cast_block .select-casts", function(event){
     var id = $(this).val();
     var countIds = JSON.parse(localStorage.getItem("order_call")).countIds;
@@ -240,7 +548,7 @@ $(document).ready(function(){
             } else {
               $('#sb-select-casts a').text('希望リクエストせずに進む(3/4)');
             }
-            
+
           } else {
             var arrIds = [id];
 
@@ -325,6 +633,40 @@ $(document).ready(function(){
       helper.updateLocalStorageValue('order_call', params);
     }
   })
+}
+
+$(document).ready(function(){
+  if($("#ge2-1-x input:radio[name='cast_class']:checked").length){
+    $("#ge2-1-x input:radio[name='cast_class']:checked").parent().addClass("active");
+    var castClass = $("#ge2-1-x input:radio[name='cast_class']:checked").val();
+    if (castClass == 3) {
+      $('.notify-campaign-over-cast-class span').text('※”ダイヤモンド”はキャンペーン対象外です');
+      $('.notify-campaign-over-cast-class').css('display','block');
+    }
+
+    if (castClass == 2) {
+      $('.notify-campaign-over-cast-class span').text('※”プラチナ”はキャンペーン対象外です');
+      $('.notify-campaign-over-cast-class').css('display','block');
+    }
+
+    if (castClass == 1) {
+      $('.notify-campaign-over-cast-class').css('display','none');
+    }
+  }
+
+  //step1
+  handleSelectedArea();
+  handelCustomArea();
+  handelSelectedTime();
+  handelSelectedDuration();
+  handelSelectedCastClass();
+  handelNumberCasts();
+
+  //step2  select tags
+  handelSelectedTags();
+  
+  // step3 select casts
+  handelSelectedCasts();
 
   $(".cb-cancel").on("change",function(event){
     if ($(this).is(':checked')) {
@@ -363,281 +705,6 @@ $(document).ready(function(){
   $('.lable-register-card').on('click',function(){
     window.location.href = '/credit_card';
   });
-
-//area
-  var buttonGreen = $(".button--green.area");
-  buttonGreen.on("change",function(){
-
-    if ($("input:radio[name='area']").length) {
-      var areaCall = $("input:radio[name='area']:checked").val();
-
-      if('その他'== areaCall){
-        if(localStorage.getItem("order_call")){
-          var orderCall = JSON.parse(localStorage.getItem("order_call"));
-
-          if(orderCall.text_area){
-            $("input:text[name='other_area']").val(orderCall.text_area);
-          }
-        }
-
-      }
-
-      var params = {
-        select_area: areaCall,
-      };
-
-      helper.updateLocalStorageValue('order_call', params);
-    }
-
-    $("#ge2-1-x input:radio[name='area']").parent().removeClass("active");
-    $("#ge2-1-x input:radio[name='area']:checked").parent().addClass("active");
-
-    var area = $("input:radio[name='area']:checked").val();
-    var otherArea = $("input:text[name='other_area']").val();
-    var time = $("input:radio[name='time_join']:checked").val();
-    var castClass = $("input:radio[name='cast_class']:checked").val();
-    var duration = $("input:radio[name='time_set']:checked").val();
-    var totalCast = $("input[type='text'][name='txtCast_Number']").val();
-    var date = $('.sp-date').text();
-
-    if((!area || (area=='その他' && !otherArea)) || !time || !castClass ||
-     (!duration || (duration<1 && 'other_duration' != duration)) ||(!totalCast || totalCast<1) || (time=='other_time' && !date)) {
-      $("#step1-create-call").addClass("disable");
-      $("#step1-create-call").prop('disabled', true);
-    } else {
-      $("#step1-create-call").removeClass('disable');
-      $("#step1-create-call").prop('disabled', false);
-    }
-  });
-
-  var dateButton = $(".button--green.date");
-  dateButton.on("change",function(){
-    var time = $("input:radio[name='time_join']:checked").val();
-
-    if ($("input:radio[name='time_join']").length) {
-      var updateTime = {
-            current_time_set: time,
-          };
-
-      helper.updateLocalStorageValue('order_call', updateTime);
-    }
-
-    $("#ge2-1-x input:radio[name='time_join']").parent().removeClass("active");
-    $("#ge2-1-x input:radio[name='time_join']:checked").parent().addClass("active");
-
-    var area = $("input:radio[name='area']:checked").val();
-    var otherArea = $("input:text[name='other_area']").val();
-    var castClass = $("input:radio[name='cast_class']:checked").val();
-    var duration = $("input:radio[name='time_set']:checked").val();
-    var totalCast = $("input[type='text'][name='txtCast_Number']").val();
-    var date = $('.sp-date').text();
-
-    if((!area || (area=='その他' && !otherArea)) || !castClass ||
-     (!duration || (duration<1 && 'other_duration' != duration)) ||(!totalCast || totalCast<1) || (time=='other_time' && !date)) {
-      $("#step1-create-call").addClass("disable");
-      $("#step1-create-call").prop('disabled', true);
-    } else {
-      $("#step1-create-call").removeClass('disable');
-      $("#step1-create-call").prop('disabled', false);
-    }
-  })
-
-  var txtArea = $("input:text[name='other_area']");
-  txtArea.on("input",function(){
-    //text-area
-    var params = {
-      text_area: $(this).val(),
-    };
-
-    helper.updateLocalStorageValue('order_call', params);
-
-    var otherArea = $(this).val();
-    var time = $("input:radio[name='time_join']:checked").val();
-    var area = $("input:radio[name='area']:checked").val();
-    var castClass = $("input:radio[name='cast_class']:checked").val();
-    var duration = $("input:radio[name='time_set']:checked").val();
-    var totalCast = $("input[type='text'][name='txtCast_Number']").val();
-    var date = $('.sp-date').text();
-
-    if( !time || (!area || (!otherArea)) || !castClass ||
-     (!duration || (duration<1 && 'other_duration' != duration)) ||(!totalCast || totalCast<1) || (time=='other_time' && !date)) {
-      $("#step1-create-call").addClass("disable");
-      $("#step1-create-call").prop('disabled', true);
-    } else {
-      $("#step1-create-call").removeClass('disable');
-      $("#step1-create-call").prop('disabled', false);
-    }
-  })
-
-  //duration
-  var timeButton = $(".button--green.time");
-  timeButton.on("change",function(){
-    var duration = $("input:radio[name='time_set']:checked").val();
-
-    if ($("input:radio[name='time_set']").length) {
-      var params = {
-        current_duration: duration,
-      };
-
-      helper.updateLocalStorageValue('order_call', params);
-    }
-
-    $("#ge2-1-x input:radio[name='time_set']").parent().removeClass("active");
-    $("#ge2-1-x input:radio[name='time_set']:checked").parent().addClass("active");
-
-    var area = $("input:radio[name='area']:checked").val();
-    var otherArea = $("input:text[name='other_area']").val();
-    var castClass = $("input:radio[name='cast_class']:checked").val();
-    var totalCast = $("input[type='text'][name='txtCast_Number']").val();
-    var time = $("input:radio[name='time_join']:checked").val();
-    var date = $('.sp-date').text();
-
-    if( !time || (!area || (area=='その他' && !otherArea)) ||
-     !castClass || (!duration || (duration<1 && 'other_duration' != duration)) ||(!totalCast || totalCast<1) || (time=='other_time' && !date)) {
-      $("#step1-create-call").addClass("disable");
-      $("#step1-create-call").prop('disabled', true);
-    } else {
-      $("#step1-create-call").removeClass('disable');
-      $("#step1-create-call").prop('disabled', false);
-    }
-
-  })
-
-  //select-duration 
-  
-  $('#select-duration-call').on("change",function(){
-    var duration = $('#select-duration-call option:selected').val();
-
-    var params = {
-        select_duration: duration,
-      };
-
-    helper.updateLocalStorageValue('order_call', params);
-  })
-
-  var castClass = $("input:radio[name='cast_class']");
-  castClass.on("change",function(){
-    var castClass = $("input:radio[name='cast_class']:checked").val();
-
-    var className = $("input:radio[name='cast_class']:checked").data('name');
-
-    var params = {
-      cast_class: castClass,
-      class_name: className,
-    };
-
-    helper.updateLocalStorageValue('order_call', params);
-    
-    if (castClass == 3) {
-      $('.notify-campaign-over-cast-class span').text('※”ダイヤモンド”はキャンペーン対象外です');
-      $('.notify-campaign-over-cast-class').css('display','block');
-    }
-
-    if (castClass == 2) {
-      $('.notify-campaign-over-cast-class span').text('※”プラチナ”はキャンペーン対象外です');
-      $('.notify-campaign-over-cast-class').css('display','block');
-    }
-
-    if (castClass == 1) {
-      $('.notify-campaign-over-cast-class').css('display','none');
-    }
-
-    var area = $("input:radio[name='area']:checked").val();
-    var otherArea = $("input:text[name='other_area']").val();
-    var duration = $("input:radio[name='time_set']:checked").val();
-    var totalCast = $("input[type='text'][name='txtCast_Number']").val();
-    var time = $("input:radio[name='time_join']:checked").val();
-    var date = $('.sp-date').text();
-
-    if( !time || (!area || (area=='その他' && !otherArea)) || !castClass ||
-     (!duration || (duration<1 && 'other_duration' != duration)) ||(!totalCast || totalCast<1) || (time=='other_time' && !date)) {
-      $("#step1-create-call").addClass("disable");
-      $("#step1-create-call").prop('disabled', true);
-    } else {
-      $("#step1-create-call").removeClass('disable');
-      $("#step1-create-call").prop('disabled', false);
-    }
-  })
-
-  $(".cast-number__button-plus").on("click",function(){
-    var number_val = parseInt( $(".cast-number__value input").val());
-
-    if(number_val>=1) {
-      $(".cast-number__button-minus").addClass('active');
-      $(".cast-number__button-minus").css({"border": "1.5px #00c3c3 solid"});
-      $(".cast-number__button-minus").prop('disabled', false);
-    }
-
-    if(number_val == 2 ) {
-      $('.notify-campaign-over span').text('※3名はキャンペーン対象外です');
-      $('.notify-campaign-over').css('display','block');
-    }
-
-    if (number_val >= 3 ) {
-      $('.notify-campaign-over span').text('※4名はキャンペーン対象外です');
-      $('.notify-campaign-over').css('display','block');
-    }
-
-    if(number_val==(maxCasts-1)){
-      $(this).css({"border": "1.5px #cccccc solid"});
-      $(this).addClass('active');
-    }
-
-    if(number_val>=maxCasts) {
-      $(this).attr("disabled", "disabled");
-    }else {
-      number_val = number_val + 1;
-      $(".cast-number__value input").val(number_val);
-    }
-
-    var params = {
-      countIds : number_val,
-    };
-
-    helper.updateLocalStorageValue('order_call', params);
-
-  })
-
-  $(".cast-number__button-minus").on("click",function(){
-    var number_val = parseInt( $(".cast-number__value input").val());
-    if(number_val ==1) {
-      $(this).removeClass('active');
-      $(this).attr("disabled", "disabled");
-      $(this).css({"border": "1.5px #cccccc solid"});
-    } else {
-      $(".cast-number__button-plus").prop('disabled', false);
-    }
-
-    if (number_val == 4 ) {
-      $('.notify-campaign-over span').text('※3名はキャンペーン対象外です');
-    }
-
-    if(number_val < 4 ) {
-      $('.notify-campaign-over').css('display','none');
-    }
-
-
-    if(number_val>0 && number_val !=1) {
-      if(number_val==2) {
-        $(this).removeClass('active');
-        $(this).css({"border": "1.5px #cccccc solid"});
-      }
-      number_val = number_val - 1;
-      $(".cast-number__button-plus").removeClass('active');
-      $(".cast-number__button-plus").css({"border": "1.5px #00c3c3 solid"});
-      $(".cast-number__value input").val(number_val)
-    }
-
-    var params = {
-      countIds : number_val,
-    };
-
-    helper.updateLocalStorageValue('order_call', params);
-  })
-
-  if($("label").hasClass("status-code")){
-    $('.status-code').click();
-  }
 
   $('.checked-order').prop('checked',false);
 
@@ -800,7 +867,7 @@ $(document).ready(function(){
               .catch(function (error) {
                 console.log(error);
                 if (error.response.status == 401) {
-                  window.location = '/login/line';
+                  window.location = '/login';
                 }
               });
 
@@ -862,36 +929,5 @@ $(document).ready(function(){
         helper.updateLocalStorageValue('order_call', params);
       }
     }
-  }
-
-  var checkNumber = parseInt( $(".cast-number__value input").val());
-  var maxCasts = parseInt( $("#max_casts").val());
-
-  if(!maxCasts) {
-    maxCasts =10;
-  }
-
-  if (checkNumber > 2) {
-    if (checkNumber == 3) {
-      $('.notify-campaign-over span').text('※3名はキャンペーン対象外です');
-    }
-
-    if (checkNumber == 4) {
-      $('.notify-campaign-over span').text('※4名はキャンペーン対象外です');
-    }
-
-    $('.notify-campaign-over').css('display','block');
-  }
-
-  if (checkNumber>1) {
-    if (checkNumber==maxCasts) {
-      $(".cast-number__button-plus").prop('disabled', false);
-      $(".cast-number__button-plus").css({"border": "1.5px #cccccc solid"});
-      $(".cast-number__button-plus").addClass('active');
-    }
-
-    $(".cast-number__button-minus").addClass('active');
-    $(".cast-number__button-minus").css({"border": "1.5px #00c3c3 solid"});
-    $(".cast-number__button-minus").prop('disabled', false);
   }
 });

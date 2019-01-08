@@ -32,7 +32,7 @@ $(document).ready(function(){
   });
 
   //textArea
-  $("input:text[name='other_area_nomination']").on('change', function(e) {
+  $("input:text[name='other_area_nomination']").on('input', function(e) {
     var params = {
       text_area: $(this).val(),
     };
@@ -179,7 +179,7 @@ $(document).ready(function(){
         }).catch(function(error) {
           console.log(error);
           if (error.response.status == 401) {
-            window.location = '/login/line';
+            window.location = '/login';
           }
         });
       } else {
@@ -298,7 +298,7 @@ $(document).ready(function(){
         }).catch(function(error) {
           console.log(error);
           if (error.response.status == 401) {
-            window.location = '/login/line';
+            window.location = '/login';
           }
         });
       } else {
@@ -436,7 +436,7 @@ $(document).ready(function(){
         }).catch(function(error) {
           console.log(error);
           if (error.response.status == 401) {
-            window.location = '/login/line';
+            window.location = '/login';
           }
       });
     }
@@ -600,7 +600,7 @@ $(document).ready(function(){
         }).catch(function(error) {
           console.log(error);
           if (error.response.status == 401) {
-            window.location = '/login/line';
+            window.location = '/login';
           }
         });
     }
@@ -713,7 +713,7 @@ $(document).ready(function(){
               .catch(function (error) {
                 console.log(error);
                 if (error.response.status == 401) {
-                  window.location = '/login/line';
+                  window.location = '/login';
                 }
               });
 

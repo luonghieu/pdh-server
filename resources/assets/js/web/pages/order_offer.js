@@ -135,7 +135,7 @@ $(document).ready(function(){
       .catch(function(error) {
         $('#order-offer-popup').prop('checked',false);
          if (error.response.status == 401) {
-            window.location = '/login/line';
+            window.location = '/login';
           } else {
             if(error.response.status == 422) {
                 $('#timeout-offer-message h2').css('font-size', '15px');
@@ -416,7 +416,7 @@ $(document).ready(function(){
       }).catch(function(error) {
         console.log(error);
         if (error.response.status == 401) {
-          window.location = '/login/line';
+          window.location = '/login';
         }
     });
   })

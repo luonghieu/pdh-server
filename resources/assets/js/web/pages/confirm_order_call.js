@@ -123,7 +123,7 @@ $(document).ready(function(){
         }).catch(function(error) {
           console.log(error);
           if (error.response.status == 401) {
-            window.location = '/login/line';
+            window.location = '/login';
           }
         });
 
@@ -147,7 +147,7 @@ $(document).ready(function(){
         }).catch(function(error) {
           console.log(error);
           if (error.response.status == 401) {
-            window.location = '/login/line';
+            window.location = '/login';
           }
         });
       }
@@ -164,11 +164,44 @@ $(document).ready(function(){
         $('#btn-confirm-orders').prop('disabled', true);
 
         document.getElementById('confirm-order-submit').click();
-        
+
         if(orderCall.tags) {
           tags = orderCall.tags.toString();
         } else {
           tags = '';
+        }
+
+        if('other_time' != currentTime) {
+          now = new Date();
+
+          utc = now.getTime() + (now.getTimezoneOffset() * 60000);
+          nd = new Date(utc + (3600000*9));
+          var day = helper.add_minutes(nd, currentTime);
+
+          var year = day.getFullYear();
+
+          var date = day.getDate();
+          if(date<10) {
+            date = '0'+date;
+          }
+
+          var month = day.getMonth() +1;
+          if(month<10) {
+            month = '0'+month;
+          }
+
+          var hour = day.getHours();
+            if(hour<10) {
+            hour = '0' +hour;
+          }
+
+          var minute = day.getMinutes();
+          if(minute<10) {
+            minute = '0' +minute;
+          }
+
+          currentDate = year + '-' + month + '-' + date;
+          time = hour + ':' + minute;
         }
 
         var params = {
@@ -184,7 +217,7 @@ $(document).ready(function(){
           tag : tags,
           temp_point : $('#temp_point_order_call').val()
         };
-        
+
         window.axios.post('/api/v1/orders', params)
         .then(function(response) {
           $('#orders').prop('checked',false);
@@ -195,7 +228,7 @@ $(document).ready(function(){
           $('#btn-confirm-orders').prop('disabled', false);
           $('#order-call-popup').prop('checked',false);
             if (error.response.status == 401) {
-              window.location = '/login/line';
+              window.location = '/login';
             } else {
               if(error.response.status == 404) {
                 $('#md-require-card').prop('checked',true);

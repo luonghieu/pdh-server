@@ -55,7 +55,7 @@ $(document).ready(function(){
       .catch(function (error) {
         console.log(error);
         if (error.response.status == 401) {
-          window.location = '/login/line';
+          window.location = '/login';
         }
       });
 
