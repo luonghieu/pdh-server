@@ -16,10 +16,14 @@
         @include('admin.partials.notification')
         <div class="clearfix"></div>
         <div class="panel-body">
-          <div class="col-lg-12">
+          <div class="col-lg-10">
+            @if ($order->status <= App\Enums\OrderStatus::PROCESSING)
+            <a href="{{ route('admin.orders.edit_order_call', ['order' => $order->id]) }}" class="btn btn-info btn-edit-order">予約内容を変更する</a>
+            @endif
           </div>
           <div class="clearfix"></div>
           <div class="info-table col-lg-10">
+
             <table class="table table-bordered change-width-th">
               <!--  table-striped -->
               <tr>

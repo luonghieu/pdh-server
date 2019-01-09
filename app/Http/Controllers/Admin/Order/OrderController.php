@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Admin\Order;
 
+use App\CastClass;
 use App\Enums\OrderPaymentStatus;
 use App\Enums\OrderStatus;
 use App\Enums\OrderType;
@@ -162,6 +163,14 @@ class OrderController extends Controller
         $order = $order->load('candidates', 'nominees', 'user', 'castClass', 'room', 'casts', 'tags');
 
         return view('admin.orders.order_call', compact('order'));
+    }
+
+    public function editOrderCall(Order $order)
+    {
+        $castClasses = CastClass::all();
+        $castsMatching = $order->casts;
+
+        return view('admin.orders.order_call_edit', compact('order', 'castClasses', 'castsMatching'));
     }
 
     public function castsMatching($order)
