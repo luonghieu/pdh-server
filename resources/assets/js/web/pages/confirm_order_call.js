@@ -114,8 +114,8 @@ $(document).ready(function(){
                 } else {
                   $('.details-list-box__pic').append('<li> <img src= "' + avatarsDefault + '" class="img-detail-cast" /> </li>');
                 }
-                } else {
-                  $('.details-list-box__pic').append('<li> <img src= "' + avatarsDefault + '" class="img-detail-cast" /> </li>');
+              } else {
+                $('.details-list-box__pic').append('<li> <img src= "' + avatarsDefault + '" class="img-detail-cast" /> </li>');
               }
             })
 
