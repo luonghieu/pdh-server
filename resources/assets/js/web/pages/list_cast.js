@@ -33,12 +33,12 @@ $(document).ready(function(){
 
           if(val.avatars.length) {
             if (val.avatars[0].path) {
-              var show ='<img src= "' + val.avatars[0].thumbnail + '" >';
+              var show ='<img src= "' + val.avatars[0].thumbnail + '" class="img-cast" >';
             } else {
-              var show ='<img src= "' + avatarsDefault + '" >';
+              var show ='<img src= "' + avatarsDefault + '" class="img-cast" >';
             }
           } else {
-            var show ='<img src= "' + avatarsDefault + '" >';
+            var show ='<img src= "' + avatarsDefault + '" class="img-cast" >';
           }
 
           html +='<div class="cast_block">';
@@ -51,6 +51,9 @@ $(document).ready(function(){
 
         html += '<input type="hidden" id="next_page" value="' + data.data.next_page_url + '" />';
         $('#list-cast-order').html(html);
+        $('.img-cast').error(function(){
+          $(this).attr("src", avatarsDefault);
+        });
       })
       .catch(function (error) {
         console.log(error);

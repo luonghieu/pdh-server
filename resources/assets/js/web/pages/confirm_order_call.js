@@ -109,15 +109,19 @@ $(document).ready(function(){
             data.forEach(function (val) {
               var avatars = val.avatars;
               if(avatars.length) {
-                if (avatars[0].path) {
-                  $('.details-list-box__pic').append('<li> <img src= "' + avatars[0].thumbnail + '"/> </li>');
+                if (avatars[0].thumbnail) {
+                  $('.details-list-box__pic').append('<li> <img src= "' + avatars[0].thumbnail + '" class="img-detail-cast" /> </li>');
                 } else {
-                  $('.details-list-box__pic').append('<li> <img src= "' + avatarsDefault + '"/> </li>');
+                  $('.details-list-box__pic').append('<li> <img src= "' + avatarsDefault + '" class="img-detail-cast" /> </li>');
                 }
                 } else {
-                  $('.details-list-box__pic').append('<li> <img src= "' + avatarsDefault + '"/> </li>');
+                  $('.details-list-box__pic').append('<li> <img src= "' + avatarsDefault + '" class="img-detail-cast" /> </li>');
               }
             })
+
+            $('.img-detail-cast').error(function(){
+              $(this).attr("src", avatarsDefault);
+            });
           }
 
         }).catch(function(error) {
