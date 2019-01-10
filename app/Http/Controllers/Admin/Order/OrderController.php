@@ -178,7 +178,6 @@ class OrderController extends Controller
 
     public function getCasts(Request $request, $classId)
     {
-
         $casts = Cast::where('class_id', $classId)->whereNotIn('id', $request->listCastMatching)->get();
 
         return response()->json([
