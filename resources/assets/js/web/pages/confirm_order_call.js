@@ -12,10 +12,14 @@ $(document).ready(function(){
         }
 
         $('.word18').text(area);
+      } else {
+        window.location.href = '/mypage';
       }
 
       if (orderCall.countIds) {
         $('.cast-numbers-call').text(orderCall.class_name + ' ' + orderCall.countIds + '名');
+      } else {
+        window.location.href = '/mypage';
       }
 
       if(orderCall.current_time_set) {
@@ -154,6 +158,8 @@ $(document).ready(function(){
             window.location = '/login';
           }
         });
+      } else {
+        window.location.href = '/mypage';
       }
 
       if (orderCall.tags) {
