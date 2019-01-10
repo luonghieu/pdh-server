@@ -87,7 +87,7 @@
                 <tr>
                   <th>キャストクラス</th>
                   <td>
-                    <select class="cast-class" name="class_id">
+                    <select class="cast-class" name="class_id" id="choosen-cast-class">
                     @foreach ($castClasses as $castClass)
                     <option value="{{ $castClass->id }}" {{ ($order->castClass->id == $castClass->id) ? 'selected' : '' }}>{{ $castClass->name }}</option>
                     @endforeach
@@ -145,7 +145,7 @@
                   <p>指名中キャスト一覧</p>
                 </div>
                 <div class="display-title change-cast-order-call">
-                  <a href="javascript::void(0)" data-toggle="modal" data-target="#choose-cast-nominee">+別のキャストを追加する</a>
+                  <a href="" data-toggle="modal" data-target="#choose-cast-nominee">+別のキャストを追加する</a>
                 </div>
               </div>
               <table class="table table-striped table-bordered bootstrap-datatable">
@@ -157,12 +157,12 @@
                   </tr>
                 </thead>
                 <tbody>
-                  @if (count($order->nominees) == 0)
+                  @if (count($castsNominee) == 0)
                   <tr>
                     <td colspan="8">{{ trans('messages.cast_not_found') }}</td>
                   </tr>
                   @else
-                  @foreach ($order->nominees as $nominee)
+                  @foreach ($castsNominee as $nominee)
                   <tr>
                     <td>{{ $nominee->id }}</td>
                     <td>{{ $nominee->nickname }}</td>
@@ -177,7 +177,7 @@
                   <p>応募中キャスト一覧</p>
                 </div>
                 <div class="display-title change-cast-order-call">
-                  <a href="javascript::void(0)" data-toggle="modal" data-target="#choose-cast-candidate">+別のキャストを追加する</a>
+                  <a href="" data-toggle="modal" data-target="#choose-cast-candidate">+別のキャストを追加する</a>
                 </div>
               </div>
               <table class="table table-striped table-bordered bootstrap-datatable">
@@ -189,12 +189,12 @@
                   </tr>
                 </thead>
                 <tbody>
-                  @if (count($order->candidates) == 0)
+                  @if (count($castsCandidates) == 0)
                   <tr>
                     <td colspan="8">{{ trans('messages.cast_not_found') }}</td>
                   </tr>
                   @else
-                  @foreach ($order->candidates as $candidate)
+                  @foreach ($castsCandidates as $candidate)
                   <tr>
                     <td>{{ $candidate->id }}</td>
                     <td>{{ $candidate->nickname }}</td>
@@ -210,7 +210,7 @@
                   <p>マッチングしているキャスト一覧</p>
                 </div>
                 <div class="display-title change-cast-order-call">
-                  <a href="javascript::void(0)" data-toggle="modal" data-target="#choose-cast-matching">+別のキャストを追加する</a>
+                  <a href="" data-toggle="modal" data-target="#choose-cast-matching">+別のキャストを追加する</a>
                 </div>
               </div>
               <table class="table table-striped table-bordered bootstrap-datatable">
@@ -224,7 +224,7 @@
                 <tbody>
                   @foreach ($castsMatching as $castMatching)
                   <tr>
-                    <td>{{ $castMatching->id }}</td>
+                    <td class="cast-matching-id">{{ $castMatching->id }}</td>
                     <td>{{ $castMatching->nickname }}</td>
                     @if (!$castMatching->pivot->started_at)
                     <td><button class=" btn btn-detail">このキャストを削除する</button></td>
@@ -258,38 +258,7 @@
                             <th>キャスト名</th>
                           </tr>
                         </thead>
-                        <tbody>
-                          <tr>
-                            <td class="select-checkbox">
-                              <input class="verify-checkboxs"
-                                type="checkbox"
-                                value=""
-                                name="casts_id[]">
-                            </td>
-                            <td>1</td>
-                            <td>2</td>
-                          </tr>
-                          <tr>
-                            <td class="select-checkbox">
-                              <input class="verify-checkboxs"
-                                type="checkbox"
-                                value=""
-                                name="casts_id[]">
-                            </td>
-                            <td>1</td>
-                            <td>2</td>
-                          </tr>
-                          <tr>
-                            <td class="select-checkbox">
-                              <input class="verify-checkboxs"
-                                type="checkbox"
-                                value=""
-                                name="casts_id[]">
-                            </td>
-                            <td>1</td>
-                            <td>2</td>
-                          </tr>
-                        </tbody>
+                        <tbody></tbody>
                       </table>
                     </div>
                   </div>
@@ -319,208 +288,7 @@
                             <th>キャスト名</th>
                           </tr>
                         </thead>
-                        <tbody>
-                          <tr>
-                            <td class="select-checkbox">
-                              <input class="verify-checkboxs"
-                                type="checkbox"
-                                value=""
-                                name="casts_id[]">
-                            </td>
-                            <td>1</td>
-                            <td>2</td>
-                          </tr>
-                          <tr>
-                            <td class="select-checkbox">
-                              <input class="verify-checkboxs"
-                                type="checkbox"
-                                value=""
-                                name="casts_id[]">
-                            </td>
-                            <td>1</td>
-                            <td>2</td>
-                          </tr>
-                          <tr>
-                            <td class="select-checkbox">
-                              <input class="verify-checkboxs"
-                                type="checkbox"
-                                value=""
-                                name="casts_id[]">
-                            </td>
-                            <td>1</td>
-                            <td>2</td>
-                          </tr>
-                          <tr>
-                            <td class="select-checkbox">
-                              <input class="verify-checkboxs"
-                                type="checkbox"
-                                value=""
-                                name="casts_id[]">
-                            </td>
-                            <td>1</td>
-                            <td>2</td>
-                          </tr>
-                          <tr>
-                            <td class="select-checkbox">
-                              <input class="verify-checkboxs"
-                                type="checkbox"
-                                value=""
-                                name="casts_id[]">
-                            </td>
-                            <td>1</td>
-                            <td>2</td>
-                          </tr>
-                          <tr>
-                            <td class="select-checkbox">
-                              <input class="verify-checkboxs"
-                                type="checkbox"
-                                value=""
-                                name="casts_id[]">
-                            </td>
-                            <td>1</td>
-                            <td>2</td>
-                          </tr>
-                          <tr>
-                            <td class="select-checkbox">
-                              <input class="verify-checkboxs"
-                                type="checkbox"
-                                value=""
-                                name="casts_id[]">
-                            </td>
-                            <td>1</td>
-                            <td>2</td>
-                          </tr>
-                          <tr>
-                            <td class="select-checkbox">
-                              <input class="verify-checkboxs"
-                                type="checkbox"
-                                value=""
-                                name="casts_id[]">
-                            </td>
-                            <td>1</td>
-                            <td>2</td>
-                          </tr>
-                          <tr>
-                            <td class="select-checkbox">
-                              <input class="verify-checkboxs"
-                                type="checkbox"
-                                value=""
-                                name="casts_id[]">
-                            </td>
-                            <td>1</td>
-                            <td>2</td>
-                          </tr>
-                          <tr>
-                            <td class="select-checkbox">
-                              <input class="verify-checkboxs"
-                                type="checkbox"
-                                value=""
-                                name="casts_id[]">
-                            </td>
-                            <td>1</td>
-                            <td>2</td>
-                          </tr>
-                          <tr>
-                            <td class="select-checkbox">
-                              <input class="verify-checkboxs"
-                                type="checkbox"
-                                value=""
-                                name="casts_id[]">
-                            </td>
-                            <td>1</td>
-                            <td>2</td>
-                          </tr>
-                          <tr>
-                            <td class="select-checkbox">
-                              <input class="verify-checkboxs"
-                                type="checkbox"
-                                value=""
-                                name="casts_id[]">
-                            </td>
-                            <td>1</td>
-                            <td>2</td>
-                          </tr>
-                          <tr>
-                            <td class="select-checkbox">
-                              <input class="verify-checkboxs"
-                                type="checkbox"
-                                value=""
-                                name="casts_id[]">
-                            </td>
-                            <td>1</td>
-                            <td>2</td>
-                          </tr>
-                          <tr>
-                            <td class="select-checkbox">
-                              <input class="verify-checkboxs"
-                                type="checkbox"
-                                value=""
-                                name="casts_id[]">
-                            </td>
-                            <td>1</td>
-                            <td>2</td>
-                          </tr>
-                          <tr>
-                            <td class="select-checkbox">
-                              <input class="verify-checkboxs"
-                                type="checkbox"
-                                value=""
-                                name="casts_id[]">
-                            </td>
-                            <td>1</td>
-                            <td>2</td>
-                          </tr>
-                          <tr>
-                            <td class="select-checkbox">
-                              <input class="verify-checkboxs"
-                                type="checkbox"
-                                value=""
-                                name="casts_id[]">
-                            </td>
-                            <td>1</td>
-                            <td>2</td>
-                          </tr>
-                          <tr>
-                            <td class="select-checkbox">
-                              <input class="verify-checkboxs"
-                                type="checkbox"
-                                value=""
-                                name="casts_id[]">
-                            </td>
-                            <td>1</td>
-                            <td>2</td>
-                          </tr>
-                          <tr>
-                            <td class="select-checkbox">
-                              <input class="verify-checkboxs"
-                                type="checkbox"
-                                value=""
-                                name="casts_id[]">
-                            </td>
-                            <td>1</td>
-                            <td>2</td>
-                          </tr>
-                          <tr>
-                            <td class="select-checkbox">
-                              <input class="verify-checkboxs"
-                                type="checkbox"
-                                value=""
-                                name="casts_id[]">
-                            </td>
-                            <td>1</td>
-                            <td>2</td>
-                          </tr>
-                          <tr>
-                            <td class="select-checkbox">
-                              <input class="verify-checkboxs"
-                                type="checkbox"
-                                value=""
-                                name="casts_id[]">
-                            </td>
-                            <td>1</td>
-                            <td>2</td>
-                          </tr>
-                        </tbody>
+                        <tbody></tbody>
                       </table>
                     </div>
                   </div>
@@ -551,36 +319,6 @@
                           </tr>
                         </thead>
                         <tbody>
-                          <tr>
-                            <td class="select-checkbox">
-                              <input class="verify-checkboxs"
-                                type="checkbox"
-                                value=""
-                                name="casts_id[]">
-                            </td>
-                            <td>1</td>
-                            <td>2</td>
-                          </tr>
-                          <tr>
-                            <td class="select-checkbox">
-                              <input class="verify-checkboxs"
-                                type="checkbox"
-                                value=""
-                                name="casts_id[]">
-                            </td>
-                            <td>1</td>
-                            <td>2</td>
-                          </tr>
-                          <tr>
-                            <td class="select-checkbox">
-                              <input class="verify-checkboxs"
-                                type="checkbox"
-                                value=""
-                                name="casts_id[]">
-                            </td>
-                            <td>1</td>
-                            <td>2</td>
-                          </tr>
                         </tbody>
                       </table>
                     </div>
@@ -601,3 +339,46 @@
   <!--/row-->
 </div>
 @endsection
+@section('admin.js')
+  <script>
+    function renderListCast(classId, listCastMatching) {
+      $.ajax({
+        headers: {
+          'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+        },
+        type: "GET",
+        dataType: "html",
+        url: '/admin/orders/casts/'+classId,
+        data: {
+          'listCastMatching': listCastMatching
+        },
+        success: function(view) {
+          $('#choose-cast-matching tbody').html(view);
+          $('#choose-cast-candidate tbody').html(view);
+          $('#choose-cast-nominee tbody').html(view);
+        },
+      });
+    }
+
+    function getListCastMatching() {
+      var arrCastMatching = [];
+      $('.cast-matching-id').each(function(index, val) {
+        arrCastMatching.push($(val).html());
+      });
+
+      return arrCastMatching;
+    }
+
+    $(document).ready(function() {
+      var listCastMatching = getListCastMatching();
+      var classId = $('#choosen-cast-class').children("option:selected").val();
+
+      $('#choosen-cast-class').change(function(event) {
+        classId = $(this).children("option:selected").val();
+        renderListCast(classId, listCastMatching);
+      });
+
+      renderListCast(classId, listCastMatching);
+    });
+  </script>
+@stop
