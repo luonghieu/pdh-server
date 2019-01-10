@@ -347,15 +347,15 @@
           'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
         },
         type: "GET",
-        dataType: "html",
+        dataType: "json",
         url: '/admin/orders/casts/'+classId,
         data: {
           'listCastMatching': listCastMatching
         },
-        success: function(view) {
-          $('#choose-cast-matching tbody').html(view);
-          $('#choose-cast-candidate tbody').html(view);
-          $('#choose-cast-nominee tbody').html(view);
+        success: function(response) {
+          $('#choose-cast-matching tbody').html(response.view);
+          $('#choose-cast-candidate tbody').html(response.view);
+          $('#choose-cast-nominee tbody').html(response.view);
         },
       });
     }
