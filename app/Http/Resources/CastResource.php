@@ -91,6 +91,7 @@ class CastResource extends Resource
             'post_code' => $this->post_code,
             'address' => $this->address,
             'rank' => $this->rank,
+            'deleted_at' => $this->deleted_at,
         ]);
     }
 }
