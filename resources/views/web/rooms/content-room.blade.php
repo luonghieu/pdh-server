@@ -3,6 +3,21 @@
   $rooms = collect($rooms->data);
 @endphp
 @foreach ($rooms as $room)
+  @if ($room->type == App\Enums\RoomType::DIRECT)
+    @php
+      $roomInvalid = false;
+    @endphp
+    @foreach ($room->users as $user)
+      @if ($user->deleted_at)
+        @php
+          $roomInvalid = true;
+        @endphp
+      @endif
+    @endforeach
+    @if ($roomInvalid)
+      @continue
+    @endif
+  @endif
   @php
     $sumUser = count($room->users);
     $sumImg = 0;
