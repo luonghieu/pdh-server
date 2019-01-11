@@ -1591,6 +1591,10 @@ tbody td {
   margin-top: 15%;
 }
 
+.info-cast-detail span {
+  color: red;
+}
+
 @media (max-width: 799px) {
   .image-verified {
     float: right;
