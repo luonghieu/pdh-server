@@ -24,10 +24,8 @@ class FavoriteController extends ApiController
 
         $user->favorites()->attach($id);
 
-        if ($user->type == UserType::CAST) {
-            $guest = User::find($id);
-            $guest->notify(new FavoritedNotify($user));
-        }
+        $favoritedUser = User::find($id);
+        $favoritedUser->notify(new FavoritedNotify($user));
 
         return $this->respondWithNoData(trans('messages.favorite_success'));
     }

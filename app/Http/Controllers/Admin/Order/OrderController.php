@@ -173,8 +173,9 @@ class OrderController extends Controller
         }
 
         $casts = $order->casts;
+        $paymentRequests = $order->paymentRequests->keyBy('cast_id')->toArray();
 
-        return view('admin.orders.casts_matching', compact('casts', 'order'));
+        return view('admin.orders.casts_matching', compact('casts', 'order', 'paymentRequests'));
     }
 
     public function changeStartTimeOrderCall(Request $request)

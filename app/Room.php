@@ -114,7 +114,6 @@ class Room extends Model
                     OrderStatus::PROCESSING,
                     OrderStatus::ACTIVE,
                     OrderStatus::OPEN,
-                    OrderStatus::DONE,
                 ];
 
                 $order = Order::where('room_id', $this->id)
@@ -130,6 +129,21 @@ class Room extends Model
                     ->orderBy('date')
                     ->orderBy('start_time')
                     ->first();
+
+                if (!$order) {
+                    $order = Order::where('room_id', $this->id)
+                        ->where(function ($query) {
+                            $query->where('type', '!=', OrderType::CALL)
+                                ->orWhere(function ($query) {
+                                    $query->orWhere('type', OrderType::CALL)
+                                        ->where('status', '!=', OrderStatus::OPEN);
+                                });
+                        })
+                        ->where('status', OrderStatus::DONE)
+                        ->orderByDesc('actual_ended_at')
+                        ->first();
+                }
+
                 break;
             default:
                 break;

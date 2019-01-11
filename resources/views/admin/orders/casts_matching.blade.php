@@ -44,7 +44,11 @@
           <div class="clearfix"></div>
           @foreach ($casts as $cast)
           <div class="info-table col-lg-8">
-            <p>ユーザーID: {{ $cast->id }}　{{ $cast->firstname }} さんの稼働実績</p>
+            <p class="info-cast-detail">ユーザーID: {{ $cast->id }}　{{ $cast->firstname }} さんの稼働実績 &nbsp&nbsp&nbsp&nbsp
+              @if (isset($paymentRequests[$cast->id]) && in_array($paymentRequests[$cast->id]['status'], [App\Enums\PaymentRequestStatus::REQUESTED, App\Enums\PaymentRequestStatus::UPDATED]))
+              <span>売上申請完了</span>
+              @endif
+            </p>
             <table class="table table-bordered">
               <!--  table-striped -->
               <tr>
