@@ -3,6 +3,21 @@
   $rooms = collect($rooms->data);
 @endphp
 @foreach ($rooms as $room)
+  @if ($room->type == App\Enums\RoomType::DIRECT)
+    @php
+      $roomInvalid = false;
+    @endphp
+    @foreach ($room->users as $user)
+      @if ($user->deleted_at)
+        @php
+          $roomInvalid = true;
+        @endphp
+      @endif
+    @endforeach
+    @if ($roomInvalid)
+      @continue
+    @endif
+  @endif
   @php
     $sumUser = count($room->users);
     $sumImg = 0;
@@ -70,7 +85,7 @@
             @endif
             @if ($room->latest_message != null)
               @if ($room->latest_message->image)
-              <p class="latest-message" id="latest-message_{{ $room->id }}">{{ $room->latest_message ? $room->latest_message->user->nickname:'' }}さんが写真を送信しました</p>
+              <p class="latest-message" id="latest-message_{{ $room->id }}">{{ ($room->latest_message && $room->latest_message->user) ? $room->latest_message->user->nickname:'' }}さんが写真を送信しました</p>
               @else
               <p class="latest-message" id="latest-message_{{ $room->id }}">{{ $room->latest_message ? $room->latest_message->message:'' }}</p>
               @endif

@@ -21,7 +21,7 @@ class IsActive
         }
 
         if (!Auth::user()->status) {
-            return redirect()->route('web.index');
+            return redirect()->route('web.index')->with('no_active', true);
         }
 
         return $next($request);

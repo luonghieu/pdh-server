@@ -259,6 +259,13 @@
       });
     </script>
   @endif
+  @if (Session::has('no_active'))
+    <script>
+      jQuery(document).ready(function($) {
+        $('#trigger-freezed-account').trigger('click');
+      })
+    </script>
+  @endif
   <script>
     jQuery(document).ready(function($) {
       $('body').on('click', '#popup-freezed-account', function () {
