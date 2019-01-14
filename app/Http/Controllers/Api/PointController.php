@@ -14,7 +14,9 @@ class PointController extends ApiController
 
         $types = [PointType::BUY, PointType::PAY, PointType::AUTO_CHARGE, PointType::EVICT];
 
-        $points = $user->points()->whereIn('type', $types)
+        $points = $user->points()
+            ->whereIn('type', $types)
+            ->where('status', true)
             ->with('receipt')->latest()->paginate($request->per_page)->appends($request->query());
 
         return $this->respondWithData(PointResource::collection($points));
