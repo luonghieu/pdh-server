@@ -56,8 +56,8 @@
                 <tr>
                   <th>キャストとの合流時間</th>
                   <td>
-                    <div class="col-lg-3 input-group date edit-datetime-order-call" id="datetimepicker">
-                      <input type="text" name="date_time" class="form-control" data-date-format="YYYY/MM/DD HH:mm" placeholder="{{ Carbon\Carbon::parse($order->date.' '.$order->start_time)->format('Y/m/d H:i') }}" />
+                    <div class="col-lg-3 input-group date edit-datetime-order-call" id="orderdatetimepicker">
+                      <input type="text" name="date_time" class="form-control" data-date-format="YYYY/MM/DD HH:mm" value="{{ Carbon\Carbon::parse($order->date . ' ' . $order->start_time)->format('Y/m/d H:i') }}" placeholder="yyyy/mm/dd hh:mm" />
                       <span class="input-group-addon init-border">
                       <span class="glyphicon glyphicon-calendar init-glyphicon"></span>
                       </span>
@@ -67,7 +67,7 @@
                 <tr>
                   <th>キャストの呼ぶ人数</th>
                   <td>
-                    <select name="total_cast" id="">
+                    <select name="total_cast" id="total-cast">
                     @for ($i = 1; $i < 11; $i++)
                     <option value="{{ $i }}" {{ $i == $order->total_cast ? 'selected':''}}>{{ $i.'人' }}</option>
                     @endfor
@@ -99,10 +99,10 @@
                   <td>
                     @if (in_array($order->status, [App\Enums\OrderStatus::ACTIVE, App\Enums\OrderStatus::PROCESSING, App\Enums\OrderStatus::DONE]))
                     @php
-                    $tempPoint = 0;
-                    foreach ($order->casts as $cast) {
-                    $tempPoint+=$cast->pivot->temp_point;
-                    }
+                      $tempPoint = 0;
+                      foreach ($order->casts as $cast) {
+                        $tempPoint+=$cast->pivot->temp_point;
+                      }
                     @endphp
                     {{ number_format($tempPoint).'P' }}
                     @else
@@ -145,10 +145,10 @@
                   <p>指名中キャスト一覧</p>
                 </div>
                 <div class="display-title change-cast-order-call">
-                  <a href="" data-toggle="modal" data-target="#choose-cast-nominee">+別のキャストを追加する</a>
+                  <a href="" data-toggle="modal" data-target="#choose-cast-nominee" id="popup-cast-nominee">+別のキャストを追加する</a>
                 </div>
               </div>
-              <table class="table table-striped table-bordered bootstrap-datatable">
+              <table class="table table-striped table-bordered bootstrap-datatable" id="nomination-selected-table">
                 <thead>
                   <tr>
                     <th>ユーザーID</th>
@@ -164,9 +164,9 @@
                   @else
                   @foreach ($castsNominee as $nominee)
                   <tr>
-                    <td>{{ $nominee->id }}</td>
+                    <td class="cast-nominee-id">{{ $nominee->id }}</td>
                     <td>{{ $nominee->nickname }}</td>
-                    <td><button class=" btn btn-detail">このキャストを削除する</button></td>
+                    <td><button class=" btn btn-info">このキャストを削除する</button></td>
                   </tr>
                   @endforeach
                   @endif
@@ -177,10 +177,11 @@
                   <p>応募中キャスト一覧</p>
                 </div>
                 <div class="display-title change-cast-order-call">
-                  <a href="" data-toggle="modal" data-target="#choose-cast-candidate">+別のキャストを追加する</a>
+                  <a href="" data-toggle="modal" data-target="#choose-cast-candidate" id="popup-cast-candidate">+別のキャストを追加する</a>
                 </div>
               </div>
-              <table class="table table-striped table-bordered bootstrap-datatable">
+              <div id="list-cast"></div>
+              <table class="table table-striped table-bordered bootstrap-datatable" id="candidate-selected-table">
                 <thead>
                   <tr>
                     <th>ユーザーID</th>
@@ -196,9 +197,9 @@
                   @else
                   @foreach ($castsCandidates as $candidate)
                   <tr>
-                    <td>{{ $candidate->id }}</td>
+                    <td class="cast-candidate-id">{{ $candidate->id }}</td>
                     <td>{{ $candidate->nickname }}</td>
-                    <td><button class=" btn btn-detail">このキャストを削除する</button></td>
+                    <td><button class=" btn btn-info">このキャストを削除する</button></td>
                   </tr>
                   @endforeach
                   @endif
@@ -210,10 +211,10 @@
                   <p>マッチングしているキャスト一覧</p>
                 </div>
                 <div class="display-title change-cast-order-call">
-                  <a href="" data-toggle="modal" data-target="#choose-cast-matching">+別のキャストを追加する</a>
+                  <a href="" data-toggle="modal" data-target="#choose-cast-matching" id="popup-cast-matching">+別のキャストを追加する</a>
                 </div>
               </div>
-              <table class="table table-striped table-bordered bootstrap-datatable">
+              <table class="table table-striped table-bordered bootstrap-datatable" id="matching-selected-table">
                 <thead>
                   <tr>
                     <th>ユーザーID</th>
@@ -227,7 +228,7 @@
                     <td class="cast-matching-id">{{ $castMatching->id }}</td>
                     <td>{{ $castMatching->nickname }}</td>
                     @if (!$castMatching->pivot->started_at)
-                    <td><button class=" btn btn-detail">このキャストを削除する</button></td>
+                    <td><button class=" btn btn-info">このキャストを削除する</button></td>
                     @endif
                   </tr>
                   @endforeach
@@ -246,11 +247,13 @@
                     <p>キャストを選択してください</p>
                     <div class="panel-body handling">
                       <div class="search">
-                        <input type="text" class="form-control input-search" placeholder="ユーザーID,名前" name="search" value="">
+                        <input type="text" class="form-control input-search" placeholder="ユーザーID,名前" name="search" value="" id="search">
                       </div>
                     </div>
                     <div class="wrapper-table">
-                      <table class="table table-striped table-bordered bootstrap-datatable">
+                      <div class="cast-nominee"></div>
+                      <input type="hidden" id="cast_ids" name="cast_ids" value="{{ old('cast_ids') }}" />
+                      <table class="table table-striped table-bordered bootstrap-datatable" id="nomination-table">
                         <thead>
                           <tr>
                             <th class="column-checkbox"></th>
@@ -264,7 +267,7 @@
                   </div>
                   <div class="modal-footer">
                     <button type="button" class="btn btn-canceled" data-dismiss="modal">キャンセル</button>
-                    <button type="submit" class="btn btn-accept">このキャストを選択する</button>
+                    <button type="submit" class="btn btn-accept" id="add-cast-nominee">このキャストを選択する</button>
                   </div>
                 </div>
               </div>
@@ -276,11 +279,11 @@
                     <p>キャストを選択してください</p>
                     <div class="panel-body handling">
                       <div class="search">
-                        <input type="text" class="form-control input-search" placeholder="ユーザーID,名前" name="search" value="">
+                        <input type="text" class="form-control input-search" placeholder="ユーザーID,名前" value="">
                       </div>
                     </div>
                     <div class="wrapper-table">
-                      <table class="table table-striped table-bordered bootstrap-datatable table-sm">
+                      <table class="table table-striped table-bordered bootstrap-datatable table-sm" id="candidation-table">
                         <thead>
                           <tr>
                             <th class="column-checkbox"></th>
@@ -294,7 +297,7 @@
                   </div>
                   <div class="modal-footer">
                     <button type="button" class="btn btn-canceled" data-dismiss="modal">キャンセル</button>
-                    <button type="submit" class="btn btn-accept">このキャストを選択する</button>
+                    <button type="submit" class="btn btn-accept" id="add-cast-candidate">このキャストを選択する</button>
                   </div>
                 </div>
               </div>
@@ -310,7 +313,7 @@
                       </div>
                     </div>
                     <div class="wrapper-table">
-                      <table class="table table-striped table-bordered bootstrap-datatable">
+                      <table class="table table-striped table-bordered bootstrap-datatable" id="matching-table">
                         <thead>
                           <tr>
                             <th class="column-checkbox"></th>
@@ -325,7 +328,7 @@
                   </div>
                   <div class="modal-footer">
                     <button type="button" class="btn btn-canceled" data-dismiss="modal">キャンセル</button>
-                    <button type="submit" class="btn btn-accept">このキャストを選択する</button>
+                    <button type="submit" class="btn btn-accept" id="add-cast-matching">このキャストを選択する</button>
                   </div>
                 </div>
               </div>
@@ -340,45 +343,20 @@
 </div>
 @endsection
 @section('admin.js')
-  <script>
-    function renderListCast(classId, listCastMatching) {
-      $.ajax({
-        headers: {
-          'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-        },
-        type: "GET",
-        dataType: "json",
-        url: '/admin/orders/casts/'+classId,
-        data: {
-          'listCastMatching': listCastMatching
-        },
-        success: function(response) {
-          $('#choose-cast-matching tbody').html(response.view);
-          $('#choose-cast-candidate tbody').html(response.view);
-          $('#choose-cast-nominee tbody').html(response.view);
-        },
-      });
+<script type="text/javascript">
+  let totalCast = <?php echo $order->total_cast ?>;
+  var numOfCast = <?php echo count($castsMatching) + count($castsCandidates) + count($castsNominee) ?>;
+  
+  $('body').on('change', '#total-cast', function() {
+    var totalCast = $("#total-cast option:selected").val();
+    if (totalCast < numOfCast) {
+      alert('invalid');
+      return false;
     }
+  });
+</script>
+<script src="/assets/admin/js/pages/order_call.js"></script>
+<script>
 
-    function getListCastMatching() {
-      var arrCastMatching = [];
-      $('.cast-matching-id').each(function(index, val) {
-        arrCastMatching.push($(val).html());
-      });
-
-      return arrCastMatching;
-    }
-
-    $(document).ready(function() {
-      var listCastMatching = getListCastMatching();
-      var classId = $('#choosen-cast-class').children("option:selected").val();
-
-      $('#choosen-cast-class').change(function(event) {
-        classId = $(this).children("option:selected").val();
-        renderListCast(classId, listCastMatching);
-      });
-
-      renderListCast(classId, listCastMatching);
-    });
-  </script>
+</script>
 @stop
