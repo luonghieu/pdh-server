@@ -35,6 +35,7 @@ Route::group(['prefix' => 'v1'], function () {
 
     Route::group(['middleware' => ['auth:api'], 'prefix' => 'casts', 'as' => 'casts.'], function () {
         Route::get('/', ['as' => 'index', 'uses' => 'CastController@index']);
+        Route::post('/list_casts', ['as' => 'list_casts', 'uses' => 'CastController@listCasts']);
     });
 
     Route::group(['middleware' => ['auth:api'], 'prefix' => 'guests', 'as' => 'guests.'], function () {

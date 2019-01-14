@@ -32,7 +32,7 @@ $(document).ready(function(){
   });
 
   //textArea
-  $("input:text[name='other_area_nomination']").on('change', function(e) {
+  $("input:text[name='other_area_nomination']").on('input', function(e) {
     var params = {
       text_area: $(this).val(),
     };
@@ -47,11 +47,12 @@ $(document).ready(function(){
     if('その他'== areaNomination){
       if(localStorage.getItem("order_params")){
         var orderParams = JSON.parse(localStorage.getItem("order_params"));
+
+        if(orderParams.text_area){
+          $("input:text[name='other_area_nomination']").val(orderParams.text_area);
+        }
       }
 
-      if(orderParams.text_area){
-        $("input:text[name='other_area_nomination']").val(orderParams.text_area);
-      }
     }
 
     var params = {
@@ -126,14 +127,10 @@ $(document).ready(function(){
           utc = currentDate.getTime() + (currentDate.getTimezoneOffset() * 60000);
           nd = new Date(utc + (3600000*9));
 
-          var add_minutes =  function (dt, minutes) {
-            return new Date(dt.getTime() + minutes*60000);
-          }
+          var selectDate = helper.add_minutes(nd,time);
 
-          var selectDate = add_minutes(nd,time);
-
-          if (add_minutes(nd, 30) > selectDate) {
-            selectDate = add_minutes(nd, 30);
+          if (helper.add_minutes(nd, 30) > selectDate) {
+            selectDate = helper.add_minutes(nd, 30);
           }
 
           var day = selectDate.getDate();
@@ -182,7 +179,7 @@ $(document).ready(function(){
         }).catch(function(error) {
           console.log(error);
           if (error.response.status == 401) {
-            window.location = '/login/line';
+            window.location = '/login';
           }
         });
       } else {
@@ -248,13 +245,10 @@ $(document).ready(function(){
           utc = currentDate.getTime() + (currentDate.getTimezoneOffset() * 60000);
           nd = new Date(utc + (3600000*9));
 
-          var add_minutes =  function (dt, minutes) {
-            return new Date(dt.getTime() + minutes*60000);
-          }
-          var selectDate = add_minutes(nd,time);
+          var selectDate = helper.add_minutes(nd,time);
 
-          if (add_minutes(nd, 30) > selectDate) {
-            selectDate = add_minutes(nd, 30);
+          if (helper.add_minutes(nd, 30) > selectDate) {
+            selectDate = helper.add_minutes(nd, 30);
           }
 
           var day = selectDate.getDate();
@@ -304,7 +298,7 @@ $(document).ready(function(){
         }).catch(function(error) {
           console.log(error);
           if (error.response.status == 401) {
-            window.location = '/login/line';
+            window.location = '/login';
           }
         });
       } else {
@@ -373,14 +367,10 @@ $(document).ready(function(){
         utc = currentDate.getTime() + (currentDate.getTimezoneOffset() * 60000);
         nd = new Date(utc + (3600000*9));
 
-        var add_minutes =  function (dt, minutes) {
-          return new Date(dt.getTime() + minutes*60000);
-        }
+        var selectDate = helper.add_minutes(nd,time);
 
-        var selectDate = add_minutes(nd,time);
-
-        if (add_minutes(nd, 30) > selectDate) {
-          selectDate = add_minutes(nd, 30);
+        if (helper.add_minutes(nd, 30) > selectDate) {
+          selectDate = helper.add_minutes(nd, 30);
         }
 
         var day = selectDate.getDate();
@@ -446,7 +436,7 @@ $(document).ready(function(){
         }).catch(function(error) {
           console.log(error);
           if (error.response.status == 401) {
-            window.location = '/login/line';
+            window.location = '/login';
           }
       });
     }
@@ -466,9 +456,7 @@ $(document).ready(function(){
     if('other_time' == time) {
       if(localStorage.getItem("order_params")){
         var orderParams = JSON.parse(localStorage.getItem("order_params"));
-      }
 
-      if(orderParams){
         if('other_time'== orderParams.current_time_set){
           if(orderParams.current_month){
            const inputMonth = $('select[name=sl_month_nomination] option');
@@ -558,13 +546,10 @@ $(document).ready(function(){
           utc = currentDate.getTime() + (currentDate.getTimezoneOffset() * 60000);
           nd = new Date(utc + (3600000*9));
 
-          var add_minutes =  function (dt, minutes) {
-            return new Date(dt.getTime() + minutes*60000);
-          }
-          var selectDate = add_minutes(nd,time);
+          var selectDate = helper.add_minutes(nd,time);
 
-          if (add_minutes(nd, 30) > selectDate) {
-            selectDate = add_minutes(nd, 30);
+          if (helper.add_minutes(nd, 30) > selectDate) {
+            selectDate = helper.add_minutes(nd, 30);
           }
 
           var day = selectDate.getDate();
@@ -615,7 +600,7 @@ $(document).ready(function(){
         }).catch(function(error) {
           console.log(error);
           if (error.response.status == 401) {
-            window.location = '/login/line';
+            window.location = '/login';
           }
         });
     }
@@ -640,9 +625,7 @@ $(document).ready(function(){
   if ($('#create-nomination-form').length) {
     if(localStorage.getItem("order_params")){
       var orderParams = JSON.parse(localStorage.getItem("order_params"));
-    }
 
-    if(orderParams){
       if(orderParams.current_total_point){
           $('.total-point').text(orderParams.current_total_point +'P~');
       }
@@ -703,6 +686,7 @@ $(document).ready(function(){
           $('.date-input-nomination').css('display', 'flex')
 
           if(orderParams.current_month){
+            $('.month-nomination').text(orderParams.current_month +'月');
             var month = parseInt(orderParams.current_month);
 
             window.axios.post('/api/v1/get_day', {month})
@@ -715,6 +699,7 @@ $(document).ready(function(){
                 })
               $('.select-date').html(html);
               if(orderParams.current_date){
+                $('.date-nomination').text(orderParams.current_date +'日');
                 var currentDate = parseInt(orderParams.current_date);
                 const inputDate = $('select[name=sl_date_nomination] option');
 
@@ -723,12 +708,13 @@ $(document).ready(function(){
                     $(this).prop('selected',true);
                   }
                 })
-
-                $('.date-nomination').text(currentDate +'日');
               }
               })
               .catch(function (error) {
                 console.log(error);
+                if (error.response.status == 401) {
+                  window.location = '/login';
+                }
               });
 
             const inputMonth = $('select[name=sl_month_nomination] option');
@@ -737,8 +723,6 @@ $(document).ready(function(){
                 $(this).prop('selected',true);
               }
             })
-
-            $('.month-nomination').text(month +'月');
           }
 
           if(orderParams.current_hour) {

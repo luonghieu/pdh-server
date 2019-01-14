@@ -78,4 +78,8 @@ export function updateLocalStorageKey(key, data, ids) {
     localStorage.setItem(key, JSON.stringify(newData));
   }
 
+export  function add_minutes(dt, minutes) {
+      return new Date(dt.getTime() + minutes*60000);
+    }
+
 

@@ -71,12 +71,12 @@ class OrderController extends ApiController
         $start_time = Carbon::parse($request->date . ' ' . $request->start_time);
         $end_time = $start_time->copy()->addHours($input['duration']);
 
-        if (now()->second(0)->diffInMinutes($start_time, false) < 29) {
-            return $this->respondErrorMessage(trans('messages.time_invalid'), 400);
-        }
-
         if (!$user->cards->first()) {
             return $this->respondErrorMessage(trans('messages.card_not_exist'), 404);
+        }
+
+        if (now()->second(0)->diffInMinutes($start_time, false) < 29) {
+            return $this->respondErrorMessage(trans('messages.time_invalid'), 400);
         }
 
         $maxTime = $end_time->copy()->addHours(10);
@@ -281,9 +281,8 @@ class OrderController extends ApiController
     public function getDayOfMonth(Request $request)
     {
         $month = $request->month;
-        $data['month'] = $month;
 
-        return getDay($data);
+        return getDay($month);
     }
 
     public function createOrderOffer(Request $request)
