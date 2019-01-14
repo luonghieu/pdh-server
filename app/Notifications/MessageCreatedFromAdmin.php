@@ -7,8 +7,6 @@ use App\Enums\UserType;
 use Illuminate\Bus\Queueable;
 use Illuminate\Notifications\Notification;
 use Illuminate\Contracts\Queue\ShouldQueue;
-use NotificationChannels\Twilio\TwilioChannel;
-use NotificationChannels\Twilio\TwilioSmsMessage;
 
 class MessageCreatedFromAdmin extends Notification implements ShouldQueue
 {
