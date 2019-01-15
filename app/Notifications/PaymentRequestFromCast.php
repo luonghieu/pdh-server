@@ -27,6 +27,7 @@ class PaymentRequestFromCast extends Notification implements ShouldQueue
      *
      * @param $order
      * @param $orderPoint
+     * @param null $paymentRequest
      */
     public function __construct($order, $orderPoint)
     {
@@ -94,13 +95,18 @@ class PaymentRequestFromCast extends Notification implements ShouldQueue
             PaymentRequestStatus::UPDATED,
         ];
         $totalPoint = Order::find($this->order->id)->paymentRequests()->whereIn('status', $requestedStatuses)->sum('total_point');
-        $content = 'Cheersをご利用いただきありがとうございました♪'
-        . PHP_EOL . $orderStartDate->format('Y/m/d H:i') . '~' . 'の合計ポイントは' . number_format($totalPoint) . 'Pointです。'
-            . PHP_EOL . 'お手数ですがコチラから、本日の飲み会の評価と決済を行ってください。'
-            . PHP_EOL . '※詳細に誤りがある場合は、3時間以内に「決済ポイントの修正依頼をする」を押してください。運営から確認のご連絡を差し上げます。'
-            . PHP_EOL . '※3時間以内に決済が行われなかった場合は、不足分のポイントを自動で決済させていただきますので、ご了承ください。'
-            . PHP_EOL . PHP_EOL . 'ご不明点がございましたらいつでもお問い合わせください。'
-            . PHP_EOL . PHP_EOL . $guestNickname . 'のまたのご利用をお待ちしております♪';
+//        $content = 'Cheersをご利用いただきありがとうございました♪'
+//        . PHP_EOL . $orderStartDate->format('Y/m/d H:i') . '~' . 'の合計ポイントは' . number_format($totalPoint) . 'Pointです。'
+//            . PHP_EOL . 'お手数ですがコチラから、本日の飲み会の評価と決済を行ってください。'
+//            . PHP_EOL . '※詳細に誤りがある場合は、3時間以内に「決済ポイントの修正依頼をする」を押してください。運営から確認のご連絡を差し上げます。'
+//            . PHP_EOL . '※3時間以内に決済が行われなかった場合は、不足分のポイントを自動で決済させていただきますので、ご了承ください。'
+//            . PHP_EOL . PHP_EOL . 'ご不明点がございましたらいつでもお問い合わせください。'
+//            . PHP_EOL . PHP_EOL . $guestNickname . 'のまたのご利用をお待ちしております♪';
+        $content = '【売上申請後/延長あり】'
+            . PHP_EOL . 'Cheersをご利用いただきありがとうございました♪'
+            . PHP_EOL . $orderStartDate->format('Y/m/d H:i') . '~' . '合計ポイントは' . number_format($totalPoint) . 'Pointです。'
+            . PHP_EOL . '※詳細に誤りがある場合は、3時間以内に「決済ポイントの修正依頼をする」を押してください。'
+            . PHP_EOL . '延長料金が' . number_format($totalPoint) .'Point発生しておりますので、別途運営から決済画面をお送りいたします。';
 
         $room = $notifiable->rooms()
             ->where('rooms.type', RoomType::SYSTEM)
@@ -157,13 +163,18 @@ class PaymentRequestFromCast extends Notification implements ShouldQueue
             PaymentRequestStatus::UPDATED,
         ];
         $totalPoint = Order::find($this->order->id)->paymentRequests()->whereIn('status', $requestedStatuses)->sum('total_point');
-        $content = 'Cheersをご利用いただきありがとうございました♪'
-            . PHP_EOL . $orderStartDate->format('Y/m/d H:i') . '~' . 'の合計ポイントは' . number_format($totalPoint) . 'Pointです。'
-            . PHP_EOL . 'お手数ですがコチラから、本日の飲み会の評価と決済を行ってください。'
-            . PHP_EOL . '※詳細に誤りがある場合は、3時間以内に「決済ポイントの修正依頼をする」を押してください。運営から確認のご連絡を差し上げます。'
-            . PHP_EOL . '※3時間以内に決済が行われなかった場合は、不足分のポイントを自動で決済させていただきますので、ご了承ください。'
-            . PHP_EOL . PHP_EOL . 'ご不明点がございましたらいつでもお問い合わせください。'
-            . PHP_EOL . PHP_EOL . $guestNickname . 'のまたのご利用をお待ちしております♪';
+//        $content = 'Cheersをご利用いただきありがとうございました♪'
+//            . PHP_EOL . $orderStartDate->format('Y/m/d H:i') . '~' . 'の合計ポイントは' . number_format($totalPoint) . 'Pointです。'
+//            . PHP_EOL . 'お手数ですがコチラから、本日の飲み会の評価と決済を行ってください。'
+//            . PHP_EOL . '※詳細に誤りがある場合は、3時間以内に「決済ポイントの修正依頼をする」を押してください。運営から確認のご連絡を差し上げます。'
+//            . PHP_EOL . '※3時間以内に決済が行われなかった場合は、不足分のポイントを自動で決済させていただきますので、ご了承ください。'
+//            . PHP_EOL . PHP_EOL . 'ご不明点がございましたらいつでもお問い合わせください。'
+//            . PHP_EOL . PHP_EOL . $guestNickname . 'のまたのご利用をお待ちしております♪';
+        $content = '【売上申請後/延長あり】'
+            . PHP_EOL . 'Cheersをご利用いただきありがとうございました♪'
+            . PHP_EOL . $orderStartDate->format('Y/m/d H:i') . '~' . '合計ポイントは' . number_format($totalPoint) . 'Pointです。'
+            . PHP_EOL . '※詳細に誤りがある場合は、3時間以内に「決済ポイントの修正依頼をする」を押してください。'
+            . PHP_EOL . '延長料金が' . number_format($totalPoint) .'Point発生しておりますので、別途運営から決済画面をお送りいたします。';
 
         $room = $notifiable->rooms()
             ->where('rooms.type', RoomType::SYSTEM)
@@ -177,10 +188,17 @@ class PaymentRequestFromCast extends Notification implements ShouldQueue
         ]);
         $roomMessage->recipients()->attach($notifiable->id, ['room_id' => $room->id]);
 
-        $content = 'Cheersをご利用いただきありがとうございました♫'
-            . PHP_EOL . '「評価・決済する」をタップして、本日の飲み会の評価と決済をお願いします。'
-            . PHP_EOL . 'またのご利用をお待ちしております😁💫';
-
+//        $content = 'Cheersをご利用いただきありがとうございました♫'
+//            . PHP_EOL . '「評価・決済する」をタップして、本日の飲み会の評価と決済をお願いします。'
+//            . PHP_EOL . 'またのご利用をお待ちしております😁💫';
+        $orderEndTime = $orderStartDate->copy()->addMinutes($this->order->duration * 60);
+        $orderActualEndAt = Carbon::parse($this->order->actual_end_at);
+        if ($orderActualEndAt > $orderEndTime && $orderActualEndAt->diffInMinutes($orderEndTime) >= 15) {
+            $content = 'Cheersをご利用いただきありがとうございました♪'
+                . PHP_EOL . '延長料金が' . number_format($totalPoint) . 'Point発生しておりますので、別途運営から決済画面をお送りいたします。';
+        } else {
+            $content = '延長ありの場合は、「決済完了」ボタンをAdminで押すと、送信される';
+        }
         $page = env('LINE_LIFF_REDIRECT_PAGE') . '?page=evaluation&order_id=' . $this->order->id;
 
         return [

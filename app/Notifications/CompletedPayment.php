@@ -84,12 +84,13 @@ class CompletedPayment extends Notification
         $orderStartDate = Carbon::parse($this->order->actual_started_at);
         $orderEndDate = Carbon::parse($this->order->actual_ended_at);
         $guestNickname = $this->order->user->nickname ? $this->order->user->nickname . '様' : 'お客様';
-        $content = 'Cheersをご利用いただきありがとうございました♪'
-        . PHP_EOL . $orderStartDate->format('Y/m/d H:i') . '~' . $orderEndDate->format('H:i') . 'のご利用ポイント、' .
-        $this->order->total_point . 'Pointのご清算が完了いたしました。'
-            . PHP_EOL . PHP_EOL . 'マイページの「ポイント履歴」から領収書の発行が可能です。'
-            . PHP_EOL . PHP_EOL . $guestNickname . 'のまたのご利用をお待ちしております♪';
+//        $content = 'Cheersをご利用いただきありがとうございました♪'
+//        . PHP_EOL . $orderStartDate->format('Y/m/d H:i') . '~' . $orderEndDate->format('H:i') . 'のご利用ポイント、' .
+//        $this->order->total_point . 'Pointのご清算が完了いたしました。'
+//            . PHP_EOL . PHP_EOL . 'マイページの「ポイント履歴」から領収書の発行が可能です。'
+//            . PHP_EOL . PHP_EOL . $guestNickname . 'のまたのご利用をお待ちしております♪';
 
+        $content = '延長ありの場合は、「決済完了」ボタンをAdminで押すと、送信される';
         $room = $notifiable->rooms()
             ->where('rooms.type', RoomType::SYSTEM)
             ->where('rooms.is_active', true)->first();
@@ -140,11 +141,12 @@ class CompletedPayment extends Notification
         $orderStartDate = Carbon::parse($this->order->actual_started_at);
         $orderEndDate = Carbon::parse($this->order->actual_ended_at);
         $guestNickname = $this->order->user->nickname ? $this->order->user->nickname . '様' : 'お客様';
-        $content = 'Cheersをご利用いただきありがとうございました♪'
-            . PHP_EOL . $orderStartDate->format('Y/m/d H:i') . '~' . $orderEndDate->format('H:i') . 'のご利用ポイント、' .
-            $this->order->total_point . 'Pointのご清算が完了いたしました。'
-            . PHP_EOL . PHP_EOL . 'マイページの「ポイント履歴」から領収書の発行が可能です。'
-            . PHP_EOL . PHP_EOL . $guestNickname . 'のまたのご利用をお待ちしております♪';
+//        $content = 'Cheersをご利用いただきありがとうございました♪'
+//            . PHP_EOL . $orderStartDate->format('Y/m/d H:i') . '~' . $orderEndDate->format('H:i') . 'のご利用ポイント、' .
+//            $this->order->total_point . 'Pointのご清算が完了いたしました。'
+//            . PHP_EOL . PHP_EOL . 'マイページの「ポイント履歴」から領収書の発行が可能です。'
+//            . PHP_EOL . PHP_EOL . $guestNickname . 'のまたのご利用をお待ちしております♪';
+        $content = '延長ありの場合は、「決済完了」ボタンをAdminで押すと、送信される';
         $room = $notifiable->rooms()
             ->where('rooms.type', RoomType::SYSTEM)
             ->where('rooms.is_active', true)->first();
@@ -157,13 +159,13 @@ class CompletedPayment extends Notification
         ]);
         $roomMessage->recipients()->attach($notifiable->id, ['room_id' => $room->id]);
 
-        $content = 'Cheersをご利用いただきありがとうございました♪'
-            . PHP_EOL . $orderStartDate->format('Y/m/d H:i') . '~' . $orderEndDate->format('H:i') . 'のご利用ポイント、' .
-            number_format($this->order->total_point) . 'Point'
-            . PHP_EOL . 'のご清算が完了いたしました。'
-            . PHP_EOL . PHP_EOL . 'マイページの「ポイント履歴」から領収書の発行が可能です。'
-            . PHP_EOL . PHP_EOL . $guestNickname . 'のまたのご利用をお待ちしております♪';
-
+//        $content = 'Cheersをご利用いただきありがとうございました♪'
+//            . PHP_EOL . $orderStartDate->format('Y/m/d H:i') . '~' . $orderEndDate->format('H:i') . 'のご利用ポイント、' .
+//            number_format($this->order->total_point) . 'Point'
+//            . PHP_EOL . 'のご清算が完了いたしました。'
+//            . PHP_EOL . PHP_EOL . 'マイページの「ポイント履歴」から領収書の発行が可能です。'
+//            . PHP_EOL . PHP_EOL . $guestNickname . 'のまたのご利用をお待ちしております♪';
+        $content = '延長ありの場合は、「決済完了」ボタンをAdminで押すと、送信される';
 
         return [
             [
