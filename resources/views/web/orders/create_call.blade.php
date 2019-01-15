@@ -65,8 +65,8 @@
     <div class="form-grpup"><!-- フォーム内容 -->
       @if(isset($orderOptions['call_time']))
         @foreach($orderOptions['call_time'] as $callTime)
-        <label class="button button--green date {{ ($callTime['value'] == 30 && (!isset($currentTime) && !isset($timeDetail))) ? 'active' : '' }} {{ (isset($currentTime) && $currentTime == $callTime['value'] ) ? 'active' : '' }} {{ !$callTime['is_active'] ? 'inactive' : '' }}">
-          <input type="radio" name="time_join" value="{{ $callTime['value'] }}" {{ (isset($currentTime) && $currentTime == $callTime['value']) ? 'checked="checked"' : '' }} {{ !$callTime['is_active'] ? 'disabled' : '' }} {{ ($callTime['value'] == 30 && (!isset($currentTime) && !isset($timeDetail))) ? 'checked' : '' }}>
+        <label class="button button--green date {{ ($callTime['value'] == 60 && (!isset($currentTime) && !isset($timeDetail))) ? 'active' : '' }} {{ (isset($currentTime) && $currentTime == $callTime['value'] ) ? 'active' : '' }} {{ !$callTime['is_active'] ? 'inactive' : '' }}">
+          <input type="radio" name="time_join" value="{{ $callTime['value'] }}" {{ (isset($currentTime) && $currentTime == $callTime['value']) ? 'checked="checked"' : '' }} {{ !$callTime['is_active'] ? 'disabled' : '' }} {{ ($callTime['value'] == 60 && (!isset($currentTime) && !isset($timeDetail))) ? 'checked' : '' }}>
           {{ $callTime['name'] }}
         </label>
         @endforeach
