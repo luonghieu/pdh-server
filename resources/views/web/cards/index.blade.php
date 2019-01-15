@@ -2,11 +2,26 @@
 @section('screen.id', 'gl1')
 @section('controller.id', 'card-index')
 @extends('layouts.web')
+@section('web.extra')
+<div class="modal_wrap">
+    <input id="popup-stop-edit-card" type="checkbox">
+    <div class="modal_overlay">
+        <div class="modal_content modal_content-btn1">
+            <div class="text-box">
+                <p>*現在クレジットカード情報はシステムメンテナンスのため、編集することができません。</p>
+                <p>※只今、クレジットカードの登録なしで予約をすることができます。</p>
+                <p>※ご不明な点がある場合は、運営までお問い合わせください。</p>
+            </div>
+            <label for="popup-stop-edit-card" class="close_button">OK</label>
+        </div>
+    </div>
+</div>
+@endsection
 @section('web.content')
 <div class="title">
   <div class="title-name"></div>
   <div class="btn-register header-item">
-    <a href="{{ route('credit_card.update') }}" class="btn-redirect-edit">編集</a>
+    <a href="javascript:void(0)" class="btn-redirect-edit" id="stop-edit-card">編集</a>
   </div>
 </div>
 <div class="image-main">
@@ -55,4 +70,13 @@
   </div>
   </form>
 </div>
+@endsection
+@section('web.extra_js')
+<script>
+  $(document).ready(function() {
+    $('#stop-edit-card').click(function(event) {
+      $('#popup-stop-edit-card').trigger('click');
+    });
+  });
+</script>
 @endsection
