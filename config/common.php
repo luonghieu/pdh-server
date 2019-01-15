@@ -62,5 +62,6 @@ return [
                 'url_image' => 'assets/web/images/ge2-1-a/grade-icon_001.png',
             ],
         ],
+        'credit_card_required' => 0,
     ],
 ];
