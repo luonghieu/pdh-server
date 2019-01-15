@@ -202,8 +202,7 @@ class PaymentRequestFromCast extends Notification implements ShouldQueue
                 . PHP_EOL . '延長料金が' . number_format($extraPoint) . 'Point発生しておりますので、別途運営から決済画面をお送りいたします。';
         } else {
             $roomMessageContent = 'Cheersをご利用いただきありがとうございました♪'
-                . PHP_EOL . $orderStartDate->format('Y/m/d H:i') . 'のご利用ポイント、' . number_format($totalPoint) . 'Point 
-            のご清算が完了いたしました。'
+                . PHP_EOL . $orderStartDate->format('Y/m/d H:i') . 'のご利用ポイント、' . number_format($totalPoint) . 'Pointのご清算が完了いたしました。'
                 . PHP_EOL . ' マイページの「ポイント履歴」から領収書の発行が可能です。'
                 . PHP_EOL . $guestNickname . 'のまたのご利用をお待ちしております♪';
 
