@@ -138,9 +138,7 @@ class ApproveNominatedOrders extends Notification implements ShouldQueue
 //            . PHP_EOL . '場所：' . $this->order->address
 //            . PHP_EOL . '合流予定時間：' . $startTime->format('Y/m/d H:i') . '～'
 //            . PHP_EOL . PHP_EOL .'ゲストの方はキャストに来て欲しい場所の詳細をお伝えください。';
-        $secondMessage = '現在自動決済を停止しております。'
-            . PHP_EOL . '決済画面をお送りいたしますので、大変お手数ですが運営者チャットに、' . $notifiable->nickname . '様のメールアドレスをお送りください。'
-            . PHP_EOL . '※決済が完了するまでキャストと合流することはできません。';
+        $secondMessage = 'キャストとの合流前に決済が必要です。決済画面をお送りいたしますので、大変お手数ですが運営者チャットに、' . $notifiable->nickname . '様のメールアドレスをお送りください。';
 
         $page = env('LINE_LIFF_REDIRECT_PAGE') . '?page=room&room_id=' . $room->id;
 
