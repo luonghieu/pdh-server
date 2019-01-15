@@ -95,6 +95,7 @@ class CompletedPayment extends Notification
             PaymentRequestStatus::REQUESTED,
             PaymentRequestStatus::UPDATED,
             PaymentRequestStatus::CONFIRM,
+            PaymentRequestStatus::CLOSED
         ];
         $totalPoint = Order::find($this->order->id)->paymentRequests()->whereIn('status', $requestedStatuses)->sum('total_point');
         $content = 'Cheersをご利用いただきありがとうございました♪'
