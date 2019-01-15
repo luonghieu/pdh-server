@@ -4,6 +4,7 @@ namespace App\Notifications;
 
 use App\Enums\DeviceType;
 use App\Enums\ProviderType;
+use App\Enums\RoomType;
 use App\Enums\UserType;
 use App\Room;
 use Illuminate\Bus\Queueable;
@@ -78,7 +79,10 @@ class ApproveNominatedOrders extends Notification implements ShouldQueue
 
     public function pushData($notifiable)
     {
-        $room = Room::find($this->order->room_id);
+//        $room = Room::find($this->order->room_id);
+        $room = $notifiable->rooms()
+            ->where('rooms.type', RoomType::SYSTEM)
+            ->where('rooms.is_active', true)->first();
 
         $startTime = Carbon::parse($this->order->date . ' ' . $this->order->start_time);
 
