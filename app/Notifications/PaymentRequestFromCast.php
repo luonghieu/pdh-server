@@ -186,6 +186,7 @@ class PaymentRequestFromCast extends Notification implements ShouldQueue
                 $hasExtraTime = true;
             }
             $totalPoint+= $payment->total_point;
+            $extraPoint+= $payment->extra_point;
         }
 //        $content = 'Cheersをご利用いただきありがとうございました♪'
 //            . PHP_EOL . $orderStartDate->format('Y/m/d H:i') . '~' . 'の合計ポイントは' . number_format($totalPoint) . 'Pointです。'
