@@ -89,8 +89,8 @@
           <div class="form-grpup"><!-- フォーム内容 -->
             @if(isset($orderOptions['call_time']))
               @foreach($orderOptions['call_time'] as $callTime)
-              <label class="button button--green date {{ $callTime['value'] == 30 ? 'active' : '' }} {{ !$callTime['is_active'] ? 'inactive' : '' }}">
-                <input class="input-time-join" type="radio" name="time_join_nomination" value="{{ $callTime['value'] }}" {{ !$callTime['is_active'] ? 'disabled' : '' }} {{ $callTime['value'] == 30 ? 'checked' : '' }} >
+              <label class="button button--green date {{ $callTime['value'] == 60 ? 'active' : '' }} {{ !$callTime['is_active'] ? 'inactive' : '' }}">
+                <input class="input-time-join" type="radio" name="time_join_nomination" value="{{ $callTime['value'] }}" {{ !$callTime['is_active'] ? 'disabled' : '' }} {{ $callTime['value'] == 60 ? 'checked' : '' }} >
                 {{ $callTime['name'] }}
               </label>
               @endforeach
@@ -273,7 +273,7 @@
       }
 
       if (400 == $statusCode) {
-        $content = '開始時間は現在時刻から30分以降の時間を選択してください';
+        $content = '開始時間は現在時刻から60分以降の時間を選択してください';
       }
 
       if (409 == $statusCode) {
