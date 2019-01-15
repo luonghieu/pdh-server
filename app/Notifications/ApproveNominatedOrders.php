@@ -161,7 +161,7 @@ class ApproveNominatedOrders extends Notification implements ShouldQueue
                     'actions' => [
                         [
                             'type' => 'uri',
-                            'label' => 'メッセージを確認する',
+                            'label' => 'メールアドレスを送信する',
                             'uri' => "line://app/$page"
                         ]
                     ]
