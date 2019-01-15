@@ -144,7 +144,7 @@
 
   @if(!$user->card)
     <div class="modal_wrap">
-      <input id="md-require-card" type="checkbox">
+      {{-- <input id="md-require-card" type="checkbox"> --}}
       <div class="modal_overlay">
         <label for="md-require-card" class="modal_trigger"></label>
         <div class="modal_content modal_content-btn1">
@@ -178,7 +178,7 @@
       }
 
       if (400 == $statusCode) {
-        $content = '開始時間は現在時刻から30分以降の時間を選択してください';
+        $content = '開始時間は現在時刻から60分以降の時間を選択してください';
       }
 
       if (409 == $statusCode) {

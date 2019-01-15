@@ -194,7 +194,7 @@ class OrderController extends Controller
         } else {
             $timeJoin = $request->time_join;
             if (!$timeJoin) {
-                $timeJoin = 30;
+                $timeJoin = 60;
             }
 
             $input['time'] = $timeJoin;

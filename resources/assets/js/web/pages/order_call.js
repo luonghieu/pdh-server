@@ -110,8 +110,8 @@ $(document).ready(function(){
     var checkMonth = currentDate.getMonth();
 
     if (month > checkMonth) {
-      if(add_minutes(nd, 30) > selectDate) {
-        selectDate = add_minutes(nd, 30);
+      if(add_minutes(nd, 60) > selectDate) {
+        selectDate = add_minutes(nd, 60);
         date = selectDate.getDate();
         month = selectDate.getMonth() +1;
 
