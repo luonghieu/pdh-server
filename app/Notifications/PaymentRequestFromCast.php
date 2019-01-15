@@ -45,8 +45,6 @@ class PaymentRequestFromCast extends Notification implements ShouldQueue
             PaymentRequestStatus::CLOSED,
             PaymentRequestStatus::CONFIRM
         ];
-        $paymentRequests =  Order::find($this->order->id)->paymentRequests()->whereIn('status', $requestedStatuses)->get();
-
         $this->totalPoint = 0;
         $this->extraPoint = 0;
         $this->hasExtraTime = false;
