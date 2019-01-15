@@ -72,7 +72,6 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.'], function () {
         Route::put('{order}/point_settlement', ['as' => 'point_settlement', 'uses' => 'OrderController@pointSettlement'])->where('order', '[0-9]+');
         Route::put('change_start_time_order_nominee', ['as' => 'change_start_time_order_nominee', 'uses' => 'OrderController@changeStartTimeOrderNominee']);
         Route::put('change_stop_time_order_nominee', ['as' => 'change_stop_time_order_nominee', 'uses' => 'OrderController@changeStopTimeOrderNominee']);
-        Route::put('{order}/request_point_settlement', ['as' => 'request_point_settlement', 'uses' => 'OrderController@requestPointSettlement'])->where('order', '[0-9]+');
     });
 
     Route::group(['middleware' => 'is_admin'], function () {

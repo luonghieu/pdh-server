@@ -1236,19 +1236,6 @@ tbody td {
   width: 300px;
 }
 
-.custom-payment-request {
-  right: 182px;
-  bottom: 17px;
-}
-
-.wrap-height {
-  height: 160px;
-}
-
-.edit-requesting {
-  right: 285px;
-}
-
 @media (max-width: 767px) {
   .navbar {
     background: #20a8d817;
