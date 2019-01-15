@@ -53,6 +53,12 @@ class PointSettlement implements ShouldQueue
 
             if (!$this->setPointAdmin) {
                 $this->order->settle();
+            } else {
+                // Hard delete TEMP point
+                Point::withTrashed()
+                    ->where('order_id', $this->order->id)
+                    ->where('type', PointType::TEMP)
+                    ->forceDelete();
             }
 
             $this->order->paymentRequests()->update(['status' => PaymentRequestStatus::CLOSED]);
