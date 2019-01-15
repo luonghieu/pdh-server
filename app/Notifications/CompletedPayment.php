@@ -160,11 +160,13 @@ class CompletedPayment extends Notification
             PaymentRequestStatus::REQUESTED,
             PaymentRequestStatus::UPDATED,
             PaymentRequestStatus::CONFIRM,
+            PaymentRequestStatus::CLOSED
         ];
         $totalPoint = Order::find($this->order->id)->paymentRequests()->whereIn('status', $requestedStatuses)->sum('total_point');
         $content = 'Cheersをご利用いただきありがとうございました♪'
-            . PHP_EOL . $orderStartDate->format('Y/m/d H:i') . 'のご利用ポイント、' . number_format($totalPoint) . 'Point 
-            のご清算が完了いたしました。' . ' マイページの「ポイント履歴」から領収書の発行が可能です。' . $guestNickname . 'のまたのご利用をお待ちしております♪';
+            . PHP_EOL . $orderStartDate->format('Y/m/d H:i') . 'のご利用ポイント、' . number_format($totalPoint) . 'Pointのご清算が完了いたしました。'
+            . ' マイページの「ポイント履歴」から領収書の発行が可能です。'
+            . PHP_EOL . $guestNickname . 'のまたのご利用をお待ちしております♪';
 
         $room = $notifiable->rooms()
             ->where('rooms.type', RoomType::SYSTEM)
