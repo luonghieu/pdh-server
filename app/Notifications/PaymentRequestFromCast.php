@@ -231,8 +231,10 @@ class PaymentRequestFromCast extends Notification implements ShouldQueue
         $page = env('LINE_LIFF_REDIRECT_PAGE') . '?page=evaluation&order_id=' . $this->order->id;
 
         return [
-            'type' => 'text',
-            'text' => $lineMessageContent
+            [
+                'type' => 'text',
+                'text' => $lineMessageContent
+            ]
         ];
     }
 }
