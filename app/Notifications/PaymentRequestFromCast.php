@@ -94,7 +94,15 @@ class PaymentRequestFromCast extends Notification implements ShouldQueue
             PaymentRequestStatus::REQUESTED,
             PaymentRequestStatus::UPDATED,
         ];
-        $totalPoint = Order::find($this->order->id)->paymentRequests()->whereIn('status', $requestedStatuses)->sum('total_point');
+        $totalPoint = 0;
+        $paymentRequests =  Order::find($this->order->id)->paymentRequests()->whereIn('status', $requestedStatuses)->get();
+        $hasExtraTime = false;
+        foreach ($paymentRequests as $payment) {
+            if ($payment->extra_time) {
+                $hasExtraTime = true;
+            }
+            $totalPoint+= $payment->total_point;
+        }
 //        $content = 'Cheersをご利用いただきありがとうございました♪'
 //        . PHP_EOL . $orderStartDate->format('Y/m/d H:i') . '~' . 'の合計ポイントは' . number_format($totalPoint) . 'Pointです。'
 //            . PHP_EOL . 'お手数ですがコチラから、本日の飲み会の評価と決済を行ってください。'
@@ -102,9 +110,7 @@ class PaymentRequestFromCast extends Notification implements ShouldQueue
 //            . PHP_EOL . '※3時間以内に決済が行われなかった場合は、不足分のポイントを自動で決済させていただきますので、ご了承ください。'
 //            . PHP_EOL . PHP_EOL . 'ご不明点がございましたらいつでもお問い合わせください。'
 //            . PHP_EOL . PHP_EOL . $guestNickname . 'のまたのご利用をお待ちしております♪';
-        $orderEndDate = $orderStartDate->copy()->addMinutes($this->order->duration * 60);
-        $orderActualEndAt = Carbon::parse($this->order->actual_end_at);
-        if ($orderActualEndAt > $orderStartDate && $orderActualEndAt->diffInMinutes($orderEndDate) >= 15) {
+        if ($hasExtraTime) {
             $content = 'Cheersをご利用いただきありがとうございました♪'
                 . PHP_EOL . $orderStartDate->format('Y/m/d H:i') . '~' . 'の合計ポイントは' . number_format($totalPoint) . 'Pointです。'
                 . PHP_EOL . '※詳細に誤りがある場合は、3時間以内に「決済ポイントの修正依頼をする」を押してください。'
@@ -162,15 +168,21 @@ class PaymentRequestFromCast extends Notification implements ShouldQueue
     public function lineBotPushData($notifiable)
     {
         $orderStartDate = Carbon::parse($this->order->date . ' ' . $this->order->start_time);
-        $orderEndTime = $orderStartDate->copy()->addMinutes($this->order->duration * 60);
-        $orderActualEndAt = Carbon::parse($this->order->actual_end_at);
         $guestNickname = $this->order->user->nickname ? $this->order->user->nickname . '様' : 'お客様';
         $requestedStatuses = [
             PaymentRequestStatus::OPEN,
             PaymentRequestStatus::REQUESTED,
             PaymentRequestStatus::UPDATED,
         ];
-        $totalPoint = Order::find($this->order->id)->paymentRequests()->whereIn('status', $requestedStatuses)->sum('total_point');
+        $totalPoint = 0;
+        $paymentRequests =  Order::find($this->order->id)->paymentRequests()->whereIn('status', $requestedStatuses)->get();
+        $hasExtraTime = false;
+        foreach ($paymentRequests as $payment) {
+            if ($payment->extra_time) {
+                $hasExtraTime = true;
+            }
+            $totalPoint+= $payment->total_point;
+        }
 //        $content = 'Cheersをご利用いただきありがとうございました♪'
 //            . PHP_EOL . $orderStartDate->format('Y/m/d H:i') . '~' . 'の合計ポイントは' . number_format($totalPoint) . 'Pointです。'
 //            . PHP_EOL . 'お手数ですがコチラから、本日の飲み会の評価と決済を行ってください。'
@@ -179,7 +191,7 @@ class PaymentRequestFromCast extends Notification implements ShouldQueue
 //            . PHP_EOL . PHP_EOL . 'ご不明点がございましたらいつでもお問い合わせください。'
 //            . PHP_EOL . PHP_EOL . $guestNickname . 'のまたのご利用をお待ちしております♪';
 
-        if ($orderActualEndAt > $orderEndTime && $orderActualEndAt->diffInMinutes($orderEndTime) >= 15) {
+        if ($hasExtraTime) {
             $roomMessageContent = 'Cheersをご利用いただきありがとうございました♪'
                 . PHP_EOL . $orderStartDate->format('Y/m/d H:i') . '~' . 'の合計ポイントは' . number_format($totalPoint) . 'Pointです。'
                 . PHP_EOL . '※詳細に誤りがある場合は、3時間以内に「決済ポイントの修正依頼をする」を押してください。'
