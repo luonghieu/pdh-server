@@ -104,7 +104,7 @@ class PaymentRequestFromCast extends Notification implements ShouldQueue
 //            . PHP_EOL . PHP_EOL . $guestNickname . 'のまたのご利用をお待ちしております♪';
         $content = '【売上申請後/延長あり】'
             . PHP_EOL . 'Cheersをご利用いただきありがとうございました♪'
-            . PHP_EOL . $orderStartDate->format('Y/m/d H:i') . '~' . '合計ポイントは' . number_format($totalPoint) . 'Pointです。'
+            . PHP_EOL . $orderStartDate->format('Y/m/d H:i') . '~' . 'の合計ポイントは' . number_format($totalPoint) . 'Pointです。'
             . PHP_EOL . '※詳細に誤りがある場合は、3時間以内に「決済ポイントの修正依頼をする」を押してください。'
             . PHP_EOL . '延長料金が' . number_format($totalPoint) .'Point発生しておりますので、別途運営から決済画面をお送りいたします。';
 
@@ -172,7 +172,7 @@ class PaymentRequestFromCast extends Notification implements ShouldQueue
 //            . PHP_EOL . PHP_EOL . $guestNickname . 'のまたのご利用をお待ちしております♪';
         $content = '【売上申請後/延長あり】'
             . PHP_EOL . 'Cheersをご利用いただきありがとうございました♪'
-            . PHP_EOL . $orderStartDate->format('Y/m/d H:i') . '~' . '合計ポイントは' . number_format($totalPoint) . 'Pointです。'
+            . PHP_EOL . $orderStartDate->format('Y/m/d H:i') . '~' . 'の合計ポイントは' . number_format($totalPoint) . 'Pointです。'
             . PHP_EOL . '※詳細に誤りがある場合は、3時間以内に「決済ポイントの修正依頼をする」を押してください。'
             . PHP_EOL . '延長料金が' . number_format($totalPoint) .'Point発生しておりますので、別途運営から決済画面をお送りいたします。';
 
