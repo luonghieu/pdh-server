@@ -379,6 +379,28 @@ $(document).ready(function(){
     updateLocalStorageValue('offer', params);
   })
 
+  //expired_date_offer
+
+  $("#expired_date_offer").on("change",function(){
+    var date = $("#expired_date_offer option:selected").val();
+
+     var params = {
+        expired_date: date,
+      };
+
+    updateLocalStorageValue('offer', params);
+  })
+
+  //expired_time_offer
+  $("#expired_time_offer").on("change",function(){
+    var time = $("#expired_time_offer option:selected").val();
+
+    var params = {
+        expired_time: time,
+      };
+
+    updateLocalStorageValue('offer', params);
+  });
 
   //start_time
   $("#start_time_offer").on("change",function(){
@@ -525,6 +547,26 @@ $(document).ready(function(){
       const inputEndTime = $('select[name=date_offer] option');
       $.each(inputEndTime,function(index,val){
         if(val.value == offer.date) {
+          $(this).prop('selected',true);
+        }
+      })
+    }
+
+    //expired_date
+    if(offer.expired_date){
+      const inputEndTime = $('select[name=expired_date_offer] option');
+      $.each(inputEndTime,function(index,val){
+        if(val.value == offer.expired_date) {
+          $(this).prop('selected',true);
+        }
+      })
+    }
+
+    //expired_time
+    if(offer.expired_time){
+      const inputEndTime = $('select[name=expired_time_offer] option');
+      $.each(inputEndTime,function(index,val){
+        if(val.value == offer.expired_time) {
           $(this).prop('selected',true);
         }
       })

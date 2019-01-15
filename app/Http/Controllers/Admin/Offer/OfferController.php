@@ -161,6 +161,18 @@ class OfferController extends Controller
         $data['start_time'] = $request->start_time_offer;
         $data['end_time'] = $request->end_time_offer;
         $data['date_offer'] = $request->date_offer;
+        $data['expired_date'] = $request->expired_date_offer . ' ' . $request->expired_time_offer;
+
+        if (Carbon::now()->second(0)->addMinutes(30)->gt(Carbon::parse($data['expired_date']))) {
+            $request->session()->flash('expired_date_not_valid', 'expired_date_not_valid');
+
+            if (isset($request->offer_id)) {
+                return redirect()->route('admin.offers.edit', ['offer' => $request->offer_id]);
+            }
+
+            return redirect()->route('admin.offers.create');
+        }
+
         $data['duration_offer'] = $request->duration_offer;
         $data['area_offer'] = $request->area_offer;
         $data['current_point_offer'] = $request->current_point_offer;
@@ -311,6 +323,7 @@ class OfferController extends Controller
         $offer->temp_point = $data['current_point_offer'];
         $offer->class_id = $data['class_id_offer'];
         $offer->cast_ids = $data['cast_ids'];
+        $offer->expired_date = $data['expired_date'];
 
         if (isset($request->save_temporarily)) {
             $offer->status = OfferStatus::INACTIVE;
