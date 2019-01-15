@@ -134,7 +134,9 @@ class ApproveNominatedOrders extends Notification implements ShouldQueue
 
     public function lineBotPushData($notifiable)
     {
-        $room = Room::find($this->order->room_id);
+        $room = $notifiable->rooms()
+            ->where('rooms.type', RoomType::SYSTEM)
+            ->where('rooms.is_active', true)->first();
         $startTime = Carbon::parse($this->order->date . ' ' . $this->order->start_time);
 
         $firstMessage = '\\\\ おめでとうございます！マッチングが確定しました🎊//';
