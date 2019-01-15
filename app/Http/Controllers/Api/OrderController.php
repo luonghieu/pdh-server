@@ -308,19 +308,19 @@ class OrderController extends ApiController
             return $this->respondErrorMessage(trans('messages.order_timeout'), 422);
         }
 
-        /* if (!$user->cards->first()) {
-        return $this->respondErrorMessage(trans('messages.card_not_exist'), 409);
-        } */
+        if (!$user->cards->first()) {
+            return $this->respondErrorMessage(trans('messages.card_not_exist'), 409);
+        }
 
         $now = Carbon::now()->second(0);
 
         $start_time = Carbon::parse($request->date . ' ' . $request->start_time);
         $end_time = $start_time->copy()->addHours($input['duration']);
 
-        /* $maxTime = $end_time->copy()->addHours(10);
+        $maxTime = $end_time->copy()->addHours(10);
         if ($maxTime->month > $user->card->exp_month && $maxTime->year == $user->card->exp_year || $maxTime->year > $user->card->exp_year) {
-        return $this->respondErrorMessage(trans('messages.card_expired'), 406);
-        } */
+            return $this->respondErrorMessage(trans('messages.card_expired'), 406);
+        }
 
         if ($now->second(0)->diffInMinutes($start_time, false) < 59) {
             return $this->respondErrorMessage(trans('messages.time_invalid'), 400);
