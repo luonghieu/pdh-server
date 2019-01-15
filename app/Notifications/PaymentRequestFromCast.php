@@ -21,6 +21,10 @@ class PaymentRequestFromCast extends Notification implements ShouldQueue
 
     public $order;
     public $orderPoint;
+    public $paymentRequests;
+    public $totalPoint;
+    public $extraPoint;
+    public $hasExtraTime;
 
     /**
      * Create a new notification instance.
@@ -33,6 +37,28 @@ class PaymentRequestFromCast extends Notification implements ShouldQueue
     {
         $this->order = $order;
         $this->orderPoint = $orderPoint;
+
+        $requestedStatuses = [
+            PaymentRequestStatus::OPEN,
+            PaymentRequestStatus::REQUESTED,
+            PaymentRequestStatus::UPDATED,
+            PaymentRequestStatus::CLOSED,
+            PaymentRequestStatus::CONFIRM
+        ];
+        $paymentRequests =  Order::find($this->order->id)->paymentRequests()->whereIn('status', $requestedStatuses)->get();
+
+        $this->totalPoint = 0;
+        $this->extraPoint = 0;
+        $this->hasExtraTime = false;
+        $paymentRequests =  Order::find($this->order->id)->paymentRequests()->whereIn('status', $requestedStatuses)->get();
+        foreach ($paymentRequests as $payment) {
+            if ($payment->extra_time) {
+                $this->hasExtraTime = true;
+            }
+            $this->totalPoint += $payment->total_point;
+            $this->extraPoint += $payment->extra_point;
+        }
+
     }
 
     /**
@@ -43,22 +69,26 @@ class PaymentRequestFromCast extends Notification implements ShouldQueue
      */
     public function via($notifiable)
     {
-        if ($notifiable->provider == ProviderType::LINE) {
-            if ($notifiable->type == UserType::GUEST && $notifiable->device_type == null) {
-                return [LineBotNotificationChannel::class];
-            }
+        if ($this->hasExtraTime) {
+            if ($notifiable->provider == ProviderType::LINE) {
+                if ($notifiable->type == UserType::GUEST && $notifiable->device_type == null) {
+                    return [LineBotNotificationChannel::class];
+                }
 
-            if ($notifiable->type == UserType::CAST && $notifiable->device_type == null) {
-                return [PushNotificationChannel::class];
-            }
+                if ($notifiable->type == UserType::CAST && $notifiable->device_type == null) {
+                    return [PushNotificationChannel::class];
+                }
 
-            if ($notifiable->device_type == DeviceType::WEB) {
-                return [LineBotNotificationChannel::class];
+                if ($notifiable->device_type == DeviceType::WEB) {
+                    return [LineBotNotificationChannel::class];
+                } else {
+                    return [PushNotificationChannel::class];
+                }
             } else {
                 return [PushNotificationChannel::class];
             }
         } else {
-            return [PushNotificationChannel::class];
+            return [];
         }
     }
 
@@ -89,24 +119,6 @@ class PaymentRequestFromCast extends Notification implements ShouldQueue
     {
         $orderStartDate = Carbon::parse($this->order->date . ' ' . $this->order->start_time);
         $guestNickname = $this->order->user->nickname ? $this->order->user->nickname . '様' : 'お客様';
-        $requestedStatuses = [
-            PaymentRequestStatus::OPEN,
-            PaymentRequestStatus::REQUESTED,
-            PaymentRequestStatus::UPDATED,
-            PaymentRequestStatus::CLOSED,
-            PaymentRequestStatus::CONFIRM
-        ];
-        $totalPoint = 0;
-        $paymentRequests =  Order::find($this->order->id)->paymentRequests()->whereIn('status', $requestedStatuses)->get();
-        $extraPoint = 0;
-        $hasExtraTime = false;
-        foreach ($paymentRequests as $payment) {
-            if ($payment->extra_time) {
-                $hasExtraTime = true;
-            }
-            $totalPoint+= $payment->total_point;
-            $extraPoint += $payment->extra_point;
-        }
 //        $content = 'Cheersをご利用いただきありがとうございました♪'
 //        . PHP_EOL . $orderStartDate->format('Y/m/d H:i') . '~' . 'の合計ポイントは' . number_format($totalPoint) . 'Pointです。'
 //            . PHP_EOL . 'お手数ですがコチラから、本日の飲み会の評価と決済を行ってください。'
@@ -114,14 +126,9 @@ class PaymentRequestFromCast extends Notification implements ShouldQueue
 //            . PHP_EOL . '※3時間以内に決済が行われなかった場合は、不足分のポイントを自動で決済させていただきますので、ご了承ください。'
 //            . PHP_EOL . PHP_EOL . 'ご不明点がございましたらいつでもお問い合わせください。'
 //            . PHP_EOL . PHP_EOL . $guestNickname . 'のまたのご利用をお待ちしております♪';
-        if ($hasExtraTime) {
-            $content = 'Cheersをご利用いただきありがとうございました♪'
-                . PHP_EOL . $orderStartDate->format('Y/m/d H:i') . '~' . 'の合計ポイントは' . number_format($totalPoint) . 'Pointです。'
-                . PHP_EOL . '延長料金が' . $extraPoint . 'Point発生しておりますので、別途運営から決済画面をお送りいたします。';
-        } else {
-            $content = 'Cheersをご利用いただきありがとうございました♪' . $orderStartDate->format('Y/m/d H:i') . 'のご利用ポイント、' . number_format($totalPoint) .'Point 
-            のご清算が完了いたしました。' . ' マイページの「ポイント履歴」から領収書の発行が可能です。' . $guestNickname . 'のまたのご利用をお待ちしております♪';
-        }
+        $content = 'Cheersをご利用いただきありがとうございました♪'
+            . PHP_EOL . $orderStartDate->format('Y/m/d H:i') . '~' . 'の合計ポイントは' . number_format($this->totalPoint) . 'Pointです。'
+            . PHP_EOL . '延長料金が' . $this->extraPoint . 'Point発生しておりますので、別途運営から決済画面をお送りいたします。';
 
         $room = $notifiable->rooms()
             ->where('rooms.type', RoomType::SYSTEM)
@@ -172,24 +179,6 @@ class PaymentRequestFromCast extends Notification implements ShouldQueue
     {
         $orderStartDate = Carbon::parse($this->order->date . ' ' . $this->order->start_time);
         $guestNickname = $this->order->user->nickname ? $this->order->user->nickname . '様' : 'お客様';
-        $requestedStatuses = [
-            PaymentRequestStatus::OPEN,
-            PaymentRequestStatus::REQUESTED,
-            PaymentRequestStatus::UPDATED,
-            PaymentRequestStatus::CLOSED,
-            PaymentRequestStatus::CONFIRM
-        ];
-        $totalPoint = 0;
-        $paymentRequests =  Order::find($this->order->id)->paymentRequests()->whereIn('status', $requestedStatuses)->get();
-        $extraPoint = 0;
-        $hasExtraTime = false;
-        foreach ($paymentRequests as $payment) {
-            if ($payment->extra_time) {
-                $hasExtraTime = true;
-            }
-            $totalPoint+= $payment->total_point;
-            $extraPoint+= $payment->extra_point;
-        }
 //        $content = 'Cheersをご利用いただきありがとうございました♪'
 //            . PHP_EOL . $orderStartDate->format('Y/m/d H:i') . '~' . 'の合計ポイントは' . number_format($totalPoint) . 'Pointです。'
 //            . PHP_EOL . 'お手数ですがコチラから、本日の飲み会の評価と決済を行ってください。'
@@ -198,24 +187,13 @@ class PaymentRequestFromCast extends Notification implements ShouldQueue
 //            . PHP_EOL . PHP_EOL . 'ご不明点がございましたらいつでもお問い合わせください。'
 //            . PHP_EOL . PHP_EOL . $guestNickname . 'のまたのご利用をお待ちしております♪';
 
-        if ($hasExtraTime) {
-            $roomMessageContent = 'Cheersをご利用いただきありがとうございました♪'
-                . PHP_EOL . $orderStartDate->format('Y/m/d H:i') . '~' . 'の合計ポイントは' . number_format($totalPoint) . 'Point です。'
-                . PHP_EOL . '延長料金が' . $extraPoint . 'Point発生しておりますので、別途運営から決済画面をお送りいたします。';
+        $roomMessageContent = 'Cheersをご利用いただきありがとうございました♪'
+            . PHP_EOL . $orderStartDate->format('Y/m/d H:i') . '~' . 'の合計ポイントは' . number_format($this->totalPoint) . 'Point です。'
+            . PHP_EOL . '延長料金が' . $this->extraPoint . 'Point発生しておりますので、別途運営から決済画面をお送りいたします。';
 
-            $lineMessageContent = 'Cheersをご利用いただきありがとうございました♪'
-                . PHP_EOL . '延長料金が' . number_format($extraPoint) . 'Point 発生しておりますので、別途運営から決済画面をお送りいたします。';
-        } else {
-            $roomMessageContent = 'Cheersをご利用いただきありがとうございました♪'
-                . PHP_EOL . $orderStartDate->format('Y/m/d H:i') . 'のご利用ポイント、' . number_format($totalPoint) . 'Point のご清算が完了いたしました。'
-                . PHP_EOL . ' マイページの「ポイント履歴」から領収書の発行が可能です。'
-                . PHP_EOL . $guestNickname . 'のまたのご利用をお待ちしております♪';
+        $lineMessageContent = 'Cheersをご利用いただきありがとうございました♪'
+            . PHP_EOL . '延長料金が' . number_format($this->extraPoint) . 'Point 発生しておりますので、別途運営から決済画面をお送りいたします。';
 
-            $lineMessageContent = 'Cheersをご利用いただきありがとうございました♪'
-                . PHP_EOL . $orderStartDate->format('Y/m/d H:i') . 'のご利用ポイント、' . number_format($totalPoint) . 'Point のご清算が完了いたしました。'
-                . PHP_EOL . 'マイページの「ポイント履歴」から領収書の発行が可能です。'
-                . PHP_EOL . $guestNickname . 'のまたのご利用をお待ちしております♪';
-        }
 
         $room = $notifiable->rooms()
             ->where('rooms.type', RoomType::SYSTEM)
