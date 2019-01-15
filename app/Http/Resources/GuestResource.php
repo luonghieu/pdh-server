@@ -2,15 +2,16 @@
 
 namespace App\Http\Resources;
 
+use App\Card;
+use App\Enums\SmokingType;
+use App\Enums\SiblingsType;
 use App\Enums\CohabitantType;
 use App\Enums\DrinkVolumeType;
-use App\Enums\SiblingsType;
-use App\Enums\SmokingType;
-use App\Repositories\BodyTypeRepository;
-use App\Repositories\JobRepository;
-use App\Repositories\PrefectureRepository;
-use App\Repositories\SalaryRepository;
 use App\Traits\ResourceResponse;
+use App\Repositories\JobRepository;
+use App\Repositories\SalaryRepository;
+use App\Repositories\BodyTypeRepository;
+use App\Repositories\PrefectureRepository;
 use Illuminate\Http\Resources\Json\Resource;
 
 class GuestResource extends Resource
@@ -72,7 +73,7 @@ class GuestResource extends Resource
             'is_online' => $this->is_online,
             'rating_score' => $this->rating_score,
             'room_id' => $this->room_id,
-            'card' => CardResource::make($this->whenLoaded('card')),
+            'card' => CardResource::make(new Card),
             'line_qr' => $this->line_qr,
             'post_code' => $this->post_code,
             'address' => $this->address,
