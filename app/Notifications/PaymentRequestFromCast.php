@@ -96,12 +96,14 @@ class PaymentRequestFromCast extends Notification implements ShouldQueue
         ];
         $totalPoint = 0;
         $paymentRequests =  Order::find($this->order->id)->paymentRequests()->whereIn('status', $requestedStatuses)->get();
+        $extraPoint = 0;
         $hasExtraTime = false;
         foreach ($paymentRequests as $payment) {
             if ($payment->extra_time) {
                 $hasExtraTime = true;
             }
             $totalPoint+= $payment->total_point;
+            $extraPoint += $payment->extra_point;
         }
 //        $content = 'Cheersをご利用いただきありがとうございました♪'
 //        . PHP_EOL . $orderStartDate->format('Y/m/d H:i') . '~' . 'の合計ポイントは' . number_format($totalPoint) . 'Pointです。'
@@ -113,8 +115,7 @@ class PaymentRequestFromCast extends Notification implements ShouldQueue
         if ($hasExtraTime) {
             $content = 'Cheersをご利用いただきありがとうございました♪'
                 . PHP_EOL . $orderStartDate->format('Y/m/d H:i') . '~' . 'の合計ポイントは' . number_format($totalPoint) . 'Pointです。'
-                . PHP_EOL . '※詳細に誤りがある場合は、3時間以内に「決済ポイントの修正依頼をする」を押してください。'
-                . PHP_EOL . '延長料金が' . number_format($totalPoint) .'Point発生しておりますので、別途運営から決済画面をお送りいたします。';
+                . PHP_EOL . '延長料金が' . $extraPoint . 'Point発生しておりますので、別途運営から決済画面をお送りいたします。';
         } else {
             $content = 'Cheersをご利用いただきありがとうございました♪' . $orderStartDate->format('Y/m/d H:i') . 'のご利用ポイント、' . number_format($totalPoint) .'Point 
             のご清算が完了いたしました。' . ' マイページの「ポイント履歴」から領収書の発行が可能です。' . $guestNickname . 'のまたのご利用をお待ちしております♪';
@@ -176,6 +177,7 @@ class PaymentRequestFromCast extends Notification implements ShouldQueue
         ];
         $totalPoint = 0;
         $paymentRequests =  Order::find($this->order->id)->paymentRequests()->whereIn('status', $requestedStatuses)->get();
+        $extraPoint = 0;
         $hasExtraTime = false;
         foreach ($paymentRequests as $payment) {
             if ($payment->extra_time) {
@@ -194,15 +196,16 @@ class PaymentRequestFromCast extends Notification implements ShouldQueue
         if ($hasExtraTime) {
             $roomMessageContent = 'Cheersをご利用いただきありがとうございました♪'
                 . PHP_EOL . $orderStartDate->format('Y/m/d H:i') . '~' . 'の合計ポイントは' . number_format($totalPoint) . 'Pointです。'
-                . PHP_EOL . '※詳細に誤りがある場合は、3時間以内に「決済ポイントの修正依頼をする」を押してください。'
-                . PHP_EOL . '延長料金が' . number_format($totalPoint) .'Point発生しておりますので、別途運営から決済画面をお送りいたします。';
+                . PHP_EOL . '延長料金が' . $extraPoint . 'Point発生しておりますので、別途運営から決済画面をお送りいたします。';
 
             $lineMessageContent = 'Cheersをご利用いただきありがとうございました♪'
-                . PHP_EOL . '延長料金が' . number_format($totalPoint) . 'Point発生しておりますので、別途運営から決済画面をお送りいたします。';
+                . PHP_EOL . '延長料金が' . number_format($extraPoint) . 'Point発生しておりますので、別途運営から決済画面をお送りいたします。';
         } else {
             $roomMessageContent = 'Cheersをご利用いただきありがとうございました♪'
                 . PHP_EOL . $orderStartDate->format('Y/m/d H:i') . 'のご利用ポイント、' . number_format($totalPoint) . 'Point 
-            のご清算が完了いたしました。' . ' マイページの「ポイント履歴」から領収書の発行が可能です。' . $guestNickname . 'のまたのご利用をお待ちしております♪';
+            のご清算が完了いたしました。'
+                . PHP_EOL . ' マイページの「ポイント履歴」から領収書の発行が可能です。'
+                . PHP_EOL . $guestNickname . 'のまたのご利用をお待ちしております♪';
 
             $lineMessageContent = 'Cheersをご利用いただきありがとうございました♪'
                 . PHP_EOL . $orderStartDate->format('Y/m/d H:i') . 'のご利用ポイント、' . number_format($totalPoint) . 'Pointのご清算が完了いたしました。'
