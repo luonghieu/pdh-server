@@ -149,6 +149,8 @@ class CompletedPayment extends Notification
 //            . PHP_EOL . PHP_EOL . 'マイページの「ポイント履歴」から領収書の発行が可能です。'
 //            . PHP_EOL . PHP_EOL . $guestNickname . 'のまたのご利用をお待ちしております♪';
         $requestedStatuses = [
+            PaymentRequestStatus::REQUESTED,
+            PaymentRequestStatus::UPDATED,
             PaymentRequestStatus::CONFIRM,
         ];
         $totalPoint = Order::find($this->order->id)->paymentRequests()->whereIn('status', $requestedStatuses)->sum('total_point');
