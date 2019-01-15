@@ -102,11 +102,17 @@ class PaymentRequestFromCast extends Notification implements ShouldQueue
 //            . PHP_EOL . '※3時間以内に決済が行われなかった場合は、不足分のポイントを自動で決済させていただきますので、ご了承ください。'
 //            . PHP_EOL . PHP_EOL . 'ご不明点がございましたらいつでもお問い合わせください。'
 //            . PHP_EOL . PHP_EOL . $guestNickname . 'のまたのご利用をお待ちしております♪';
-        $content = '【売上申請後/延長あり】'
-            . PHP_EOL . 'Cheersをご利用いただきありがとうございました♪'
-            . PHP_EOL . $orderStartDate->format('Y/m/d H:i') . '~' . '合計ポイントは' . number_format($totalPoint) . 'Pointです。'
-            . PHP_EOL . '※詳細に誤りがある場合は、3時間以内に「決済ポイントの修正依頼をする」を押してください。'
-            . PHP_EOL . '延長料金が' . number_format($totalPoint) .'Point発生しておりますので、別途運営から決済画面をお送りいたします。';
+        $orderEndDate = $orderStartDate->copy()->addMinutes($this->order->duration * 60);
+        $orderActualEndAt = Carbon::parse($this->order->actual_end_at);
+        if ($orderActualEndAt > $orderStartDate && $orderActualEndAt->diffInMinutes($orderEndDate) >= 15) {
+            $content = 'Cheersをご利用いただきありがとうございました♪'
+                . PHP_EOL . $orderStartDate->format('Y/m/d H:i') . '~' . 'の合計ポイントは' . number_format($totalPoint) . 'Pointです。'
+                . PHP_EOL . '※詳細に誤りがある場合は、3時間以内に「決済ポイントの修正依頼をする」を押してください。'
+                . PHP_EOL . '延長料金が' . number_format($totalPoint) .'Point発生しておりますので、別途運営から決済画面をお送りいたします。';
+        } else {
+            $content = 'Cheersをご利用いただきありがとうございました♪' . $orderStartDate->format('Y/m/d H:i') . 'のご利用ポイント、15,000Point 
+            のご清算が完了いたしました。' . ' マイページの「ポイント履歴」から領収書の発行が可能です。' . $guestNickname . 'のまたのご利用をお待ちしております♪';
+        }
 
         $room = $notifiable->rooms()
             ->where('rooms.type', RoomType::SYSTEM)
@@ -156,6 +162,8 @@ class PaymentRequestFromCast extends Notification implements ShouldQueue
     public function lineBotPushData($notifiable)
     {
         $orderStartDate = Carbon::parse($this->order->date . ' ' . $this->order->start_time);
+        $orderEndTime = $orderStartDate->copy()->addMinutes($this->order->duration * 60);
+        $orderActualEndAt = Carbon::parse($this->order->actual_end_at);
         $guestNickname = $this->order->user->nickname ? $this->order->user->nickname . '様' : 'お客様';
         $requestedStatuses = [
             PaymentRequestStatus::OPEN,
@@ -170,11 +178,25 @@ class PaymentRequestFromCast extends Notification implements ShouldQueue
 //            . PHP_EOL . '※3時間以内に決済が行われなかった場合は、不足分のポイントを自動で決済させていただきますので、ご了承ください。'
 //            . PHP_EOL . PHP_EOL . 'ご不明点がございましたらいつでもお問い合わせください。'
 //            . PHP_EOL . PHP_EOL . $guestNickname . 'のまたのご利用をお待ちしております♪';
-        $content = '【売上申請後/延長あり】'
-            . PHP_EOL . 'Cheersをご利用いただきありがとうございました♪'
-            . PHP_EOL . $orderStartDate->format('Y/m/d H:i') . '~' . '合計ポイントは' . number_format($totalPoint) . 'Pointです。'
-            . PHP_EOL . '※詳細に誤りがある場合は、3時間以内に「決済ポイントの修正依頼をする」を押してください。'
-            . PHP_EOL . '延長料金が' . number_format($totalPoint) .'Point発生しておりますので、別途運営から決済画面をお送りいたします。';
+
+        if ($orderActualEndAt > $orderEndTime && $orderActualEndAt->diffInMinutes($orderEndTime) >= 15) {
+            $roomMessageContent = 'Cheersをご利用いただきありがとうございました♪'
+                . PHP_EOL . $orderStartDate->format('Y/m/d H:i') . '~' . 'の合計ポイントは' . number_format($totalPoint) . 'Pointです。'
+                . PHP_EOL . '※詳細に誤りがある場合は、3時間以内に「決済ポイントの修正依頼をする」を押してください。'
+                . PHP_EOL . '延長料金が' . number_format($totalPoint) .'Point発生しておりますので、別途運営から決済画面をお送りいたします。';
+
+            $lineMessageContent = 'Cheersをご利用いただきありがとうございました♪'
+                . PHP_EOL . '延長料金が' . number_format($totalPoint) . 'Point発生しておりますので、別途運営から決済画面をお送りいたします。';
+        } else {
+            $roomMessageContent = 'Cheersをご利用いただきありがとうございました♪'
+                . PHP_EOL . $orderStartDate->format('Y/m/d H:i') . 'のご利用ポイント、' . number_format($totalPoint) . 'Point 
+            のご清算が完了いたしました。' . ' マイページの「ポイント履歴」から領収書の発行が可能です。' . $guestNickname . 'のまたのご利用をお待ちしております♪';
+
+            $lineMessageContent = 'Cheersをご利用いただきありがとうございました♪'
+                . PHP_EOL . $orderStartDate->format('Y/m/d H:i') . 'のご利用ポイント、' . number_format($totalPoint) . 'Pointのご清算が完了いたしました。'
+                . PHP_EOL . 'マイページの「ポイント履歴」から領収書の発行が可能です。'
+                . PHP_EOL . $guestNickname . 'のまたのご利用をお待ちしております♪';
+        }
 
         $room = $notifiable->rooms()
             ->where('rooms.type', RoomType::SYSTEM)
@@ -182,7 +204,7 @@ class PaymentRequestFromCast extends Notification implements ShouldQueue
         $roomMessage = $room->messages()->create([
             'user_id' => 1,
             'type' => MessageType::SYSTEM,
-            'message' => $content,
+            'message' => $roomMessageContent,
             'system_type' => SystemMessageType::NORMAL,
             'order_id' => $this->order->id,
         ]);
@@ -191,33 +213,11 @@ class PaymentRequestFromCast extends Notification implements ShouldQueue
 //        $content = 'Cheersをご利用いただきありがとうございました♫'
 //            . PHP_EOL . '「評価・決済する」をタップして、本日の飲み会の評価と決済をお願いします。'
 //            . PHP_EOL . 'またのご利用をお待ちしております😁💫';
-        $orderEndTime = $orderStartDate->copy()->addMinutes($this->order->duration * 60);
-        $orderActualEndAt = Carbon::parse($this->order->actual_end_at);
-        if ($orderActualEndAt > $orderEndTime && $orderActualEndAt->diffInMinutes($orderEndTime) >= 15) {
-            $content = 'Cheersをご利用いただきありがとうございました♪'
-                . PHP_EOL . '延長料金が' . number_format($totalPoint) . 'Point発生しておりますので、別途運営から決済画面をお送りいたします。';
-        } else {
-            $content = '延長ありの場合は、「決済完了」ボタンをAdminで押すと、送信される';
-        }
         $page = env('LINE_LIFF_REDIRECT_PAGE') . '?page=evaluation&order_id=' . $this->order->id;
 
         return [
-            [
-                'type' => 'template',
-                'altText' => $content,
-                'text' => $content,
-                'template' => [
-                    'type' => 'buttons',
-                    'text' => $content,
-                    'actions' => [
-                        [
-                            'type' => 'uri',
-                            'label' => '評価・決済する ',
-                            'uri' => "line://app/$page"
-                        ]
-                    ]
-                ]
-            ]
+            'type' => 'text',
+            'text' => $lineMessageContent
         ];
     }
 }
