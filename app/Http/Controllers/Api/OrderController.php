@@ -76,12 +76,12 @@ class OrderController extends ApiController
         }
 
         /* if (!$user->cards->first()) {
-            return $this->respondErrorMessage(trans('messages.card_not_exist'), 404);
+        return $this->respondErrorMessage(trans('messages.card_not_exist'), 404);
         }
 
         $maxTime = $end_time->copy()->addHours(10);
         if ($maxTime->month > $user->card->exp_month && $maxTime->year == $user->card->exp_year || $maxTime->year > $user->card->exp_year) {
-            return $this->respondErrorMessage(trans('messages.card_expired'), 406);
+        return $this->respondErrorMessage(trans('messages.card_expired'), 406);
         } */
 
         if (!$request->nominee_ids) {
@@ -309,7 +309,7 @@ class OrderController extends ApiController
         }
 
         /* if (!$user->cards->first()) {
-            return $this->respondErrorMessage(trans('messages.card_not_exist'), 409);
+        return $this->respondErrorMessage(trans('messages.card_not_exist'), 409);
         } */
 
         $now = Carbon::now()->second(0);
@@ -319,10 +319,10 @@ class OrderController extends ApiController
 
         /* $maxTime = $end_time->copy()->addHours(10);
         if ($maxTime->month > $user->card->exp_month && $maxTime->year == $user->card->exp_year || $maxTime->year > $user->card->exp_year) {
-            return $this->respondErrorMessage(trans('messages.card_expired'), 406);
+        return $this->respondErrorMessage(trans('messages.card_expired'), 406);
         } */
 
-        if ($now->second(0)->diffInMinutes($start_time, false) < 29) {
+        if ($now->second(0)->diffInMinutes($start_time, false) < 59) {
             return $this->respondErrorMessage(trans('messages.time_invalid'), 400);
         }
 
