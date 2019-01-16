@@ -227,7 +227,7 @@
 
                 <select name="expired_date_offer" class="form-control select-time date-offer" id="expired_date_offer">
                     @php
-                      while(!$start_date->eq($end_date))
+                      while(!$start_date->gt($end_date))
                       {
                     @endphp
                     <option value="{{ $start_date->format('Y-m-d') }}" >
