@@ -84,6 +84,30 @@ function renderListCast(classId, listCastMatching, listCastNominees, listCastCan
         },
     });
 }
+function price() {
+    const totalCast = $("#total-cast option:selected").val();
+    const type = orderType;
+    const duration = $('#order-duration').val();
+    const date = $('#order-date').val().substring(0, 10);
+    const start_time = $('#order-date').val().substring(11);
+    const classId = $('#choosen-cast-class').val();
+    let nomineIds = [];
+
+    return $.ajax({
+        url: '/admin/orders/price',
+        method: 'POST',
+        data: {
+            _token: $('meta[name="csrf-token"]').attr('content'),
+            date: date,
+            start_time: start_time,
+            type: type,
+            class_id: classId,
+            duration: duration,
+            total_cast: totalCast,
+            nominee_ids: castIds.toString(),
+        }
+    });
+}
 
 function caculateTempPoint(type, cast) {
     let cost = 0;
@@ -129,9 +153,6 @@ jQuery(document).ready(function($) {
           </button></td>
           </tr>`;
         $('#nomination-selected-table').append(element);
-        const tempPoint = caculateTempPoint(1, cast);
-        $('#total-point').text(tempPoint);
-        console.log(tempPoint);
         }
       });
     });

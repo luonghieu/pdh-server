@@ -57,7 +57,9 @@
                   <th>キャストとの合流時間</th>
                   <td>
                     <div class="col-lg-3 input-group date edit-datetime-order-call" id="orderdatetimepicker">
-                      <input type="text" name="date_time" class="form-control" data-date-format="YYYY/MM/DD HH:mm" value="{{ Carbon\Carbon::parse($order->date . ' ' . $order->start_time)->format('Y/m/d H:i') }}" placeholder="yyyy/mm/dd hh:mm" />
+                      <input type="text" id="order-date" name="date_time" class="form-control"
+                             data-date-format="YYYY/MM/DD HH:mm"
+                             value="{{ Carbon\Carbon::parse($order->date . ' ' . $order->start_time)->format('Y/m/d H:i') }}" placeholder="yyyy/mm/dd hh:mm" />
                       <span class="input-group-addon init-border">
                       <span class="glyphicon glyphicon-calendar init-glyphicon"></span>
                       </span>
@@ -354,7 +356,7 @@
   let totalPoint = Number('<?php echo $tempPoint; ?>');
   let orderDuration = '<?php echo $order->duration?>';
   let orderStartTime = '<?php echo $order->date . ' ' . $order->start_time ?>';
-
+  let orderType = '<?php echo $order->type ?>';
   $('body').on('change', '#total-cast', function() {
     let totalCast = $("#total-cast option:selected").val();
     if (totalCast < numOfCast) {
