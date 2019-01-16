@@ -173,8 +173,8 @@ function handlerSelectedTime()
     var checkMonth = currentDate.getMonth();
 
     if (month > checkMonth) {
-      if(helper.add_minutes(nd, 30) > selectDate) {
-        selectDate = helper.add_minutes(nd, 30);
+      if(helper.add_minutes(nd, 60) > selectDate) {
+        selectDate = helper.add_minutes(nd, 60);
         date = selectDate.getDate();
         month = selectDate.getMonth() +1;
 
@@ -239,6 +239,131 @@ function handlerSelectedTime()
 
     $(".overlay").fadeOut();
   });
+
+  //select-time order 1-1
+   $('.choose-time').on("click",function(){
+    var cost = $('.cost-order').val();
+    var time = $("input:radio[name='time_join_nomination']:checked").val();
+    var currentDate = new Date();
+    var year = currentDate.getFullYear();
+    if ((time == 'other_time')) {
+      var month = $('.select-month').val();
+      var checkMonth = currentDate.getMonth();
+
+      if (month <= checkMonth) {
+        var year = currentDate.getFullYear() + 1;
+      }
+
+      if(month<10) {
+        month = '0'+month;
+      }
+
+      var day = $('.select-date').val();
+
+      if(day<10) {
+        day = '0'+day;
+      }
+
+      var hour = $('.select-hour').val();
+
+      if(hour<10) {
+        hour = '0'+hour;
+      }
+
+      var minute = $('.select-minute').val();
+      if(minute<10) {
+        minute = '0'+minute;
+      }
+
+    var updateOtherTime = {
+        current_month: month,
+        current_date: day,
+        current_hour: hour,
+        current_minute: minute,
+      };
+
+    helper.updateLocalStorageValue('order_params', updateOtherTime);
+
+    var date = year+'-'+month+'-'+day;
+    var time = hour+':'+minute;
+  } else{
+      utc = currentDate.getTime() + (currentDate.getTimezoneOffset() * 60000);
+      nd = new Date(utc + (3600000*9));
+
+      var selectDate = helper.add_minutes(nd,time);
+
+      if (helper.add_minutes(nd, 60) > selectDate) {
+        selectDate = helper.add_minutes(nd, 60);
+      }
+
+      var day = selectDate.getDate();
+      if(day<10) {
+        day = '0'+day;
+      }
+
+      var month = selectDate.getMonth() +1;
+      if(month<10) {
+        month = '0'+month;
+      }
+      var hour = selectDate.getHours();
+      if(hour<10) {
+        hour = '0'+hour;
+      }
+
+      var minute = selectDate.getMinutes();
+      if(minute<10) {
+        minute = '0'+minute;
+      }
+
+      var date = year+'-'+month+'-'+day;
+      var time = hour+':'+minute;
+
+      var updateSelectedDate = {
+        current_date: day,
+        current_month: month,
+        current_time: time,
+      };
+
+      helper.updateLocalStorageValue('order_params', updateSelectedDate);
+    }
+
+    if ($("input:radio[name='time_set_nomination']:checked").length) {
+      var duration = $("input:radio[name='time_set_nomination']:checked").val();
+
+      if('other_time_set' == duration) {
+        duration = $('.select-duration option:selected').val();
+      }
+
+      $castId = $('.cast-id').val();
+      var params = {
+        date : date,
+        start_time : time,
+        type :3,
+        duration :duration,
+        total_cast :1,
+        nominee_ids : $castId
+      };
+
+      window.axios.post('/api/v1/orders/price',params)
+        .then(function(response) {
+          var totalPoint=cost*(duration*6)/3;
+          totalPoint = response.data['data'];
+          totalPoint = parseInt(totalPoint).toLocaleString(undefined,{ minimumFractionDigits: 0 });
+          $('.total-point').text(totalPoint +'P~');
+
+          var params = {
+            current_total_point: totalPoint,
+          };
+
+          helper.updateLocalStorageValue('order_params', params);
+        }).catch(function(error) {
+          console.log(error);
+          if (error.response.status == 401) {
+            window.location = '/login';
+          }
+      });
+    }
+  })
 }
   
 function handlerSelectedDuration()
