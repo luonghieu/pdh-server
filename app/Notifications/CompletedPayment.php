@@ -113,7 +113,7 @@ class CompletedPayment extends Notification implements ShouldQueue
 //            . PHP_EOL . PHP_EOL . 'マイページの「ポイント履歴」から領収書の発行が可能です。'
 //            . PHP_EOL . PHP_EOL . $guestNickname . 'のまたのご利用をお待ちしております♪';
         // --temp--
-        $content = 'Cheersをご利用いただきありがとうございました♪' . $orderStartDate->format('Y/m/d H:i') . '～' . $orderEndDate->format('H:i') .'ご利用ポイント、' .
+        $content = 'Cheersをご利用いただきありがとうございました♪' . $orderStartDate->format('Y/m/d H:i') . '～' . $orderEndDate->format('H:i') .'のご利用ポイント、' .
             number_format($this->totalPoint) . 'Point のご清算が完了いたしました。'
             . '領収書発行をご希望の場合は、運営者チャットまでご連絡ください。'
             . PHP_EOL . $guestNickname . 'のまたのご利用をお待ちしております♪';
