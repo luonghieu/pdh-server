@@ -113,10 +113,17 @@ class CompletedPayment extends Notification implements ShouldQueue
 //            . PHP_EOL . PHP_EOL . 'マイページの「ポイント履歴」から領収書の発行が可能です。'
 //            . PHP_EOL . PHP_EOL . $guestNickname . 'のまたのご利用をお待ちしております♪';
         // --temp--
-        $content = 'Cheersをご利用いただきありがとうございました♪' . $orderStartDate->format('Y/m/d H:i') . '～' . $orderEndDate->format('H:i') .'のご利用ポイント、' .
-            number_format($this->totalPoint) . 'Point のご清算が完了いたしました。'
-            . '領収書発行をご希望の場合は、運営者チャットまでご連絡ください。'
-            . PHP_EOL . $guestNickname . 'のまたのご利用をお待ちしております♪';
+        if ($this->hasExtraTime) {
+            $content = 'Cheersをご利用いただきありがとうございました♪'
+                . PHP_EOL . $orderStartDate->format('Y/m/d H:i') . '~' . 'の合計ポイントは' . number_format($this->totalPoint) . 'Pointです。'
+                . PHP_EOL . '延長料金が' . $this->extraPoint . 'Point発生しておりますので、別途運営から決済画面をお送りいたします。';
+        } else {
+            $content = 'Cheersをご利用いただきありがとうございました♪' . $orderStartDate->format('Y/m/d H:i') . '～' . $orderEndDate->format('H:i') .'のご利用ポイント、' .
+                number_format($this->totalPoint) . 'Point のご清算が完了いたしました。'
+                . '領収書発行をご希望の場合は、運営者チャットまでご連絡ください。'
+                . PHP_EOL . $guestNickname . 'のまたのご利用をお待ちしております♪';
+        }
+
         // --temp--
         $room = $notifiable->rooms()
             ->where('rooms.type', RoomType::SYSTEM)
@@ -174,16 +181,25 @@ class CompletedPayment extends Notification implements ShouldQueue
 //            . PHP_EOL . PHP_EOL . 'マイページの「ポイント履歴」から領収書の発行が可能です。'
 //            . PHP_EOL . PHP_EOL . $guestNickname . 'のまたのご利用をお待ちしております♪';
         // --temp--
-        $roomMessageContent = 'Cheersをご利用いただきありがとうございました♪ ' . $orderStartDate->format('Y/m/d H:i') . '～' .
-            $orderEndDate->format('H:i') . 'のご利用ポイント、' . number_format($this->totalPoint) . 'Point のご清算が完了いたしました。 '
-            . '領収書発行をご希望の場合は、運営者チャットまでご連絡ください。'
-            . PHP_EOL . $guestNickname . 'のまたのご利用をお待ちしております♪';
-        $lineMessageContent = 'Cheersをご利用いただきありがとうございました♪'
-            . PHP_EOL . $orderStartDate->format('Y/m/d H:i') . '～' . $orderEndDate->format('H:i') .
-            'ご利用ポイント、' . number_format($this->totalPoint) . 'Point'
-            . PHP_EOL . 'のご清算が完了いたしました。'
-            . PHP_EOL . PHP_EOL . '領収書発行をご希望の場合は、運営者チャットまでご連絡ください。'
-            . PHP_EOL . PHP_EOL . $guestNickname . 'のまたのご利用をお待ちしております♪';
+        if ($this->hasExtraTime) {
+            $roomMessageContent = 'Cheersをご利用いただきありがとうございました♪'
+                . PHP_EOL . $orderStartDate->format('Y/m/d H:i') . '~' . 'の合計ポイントは' . number_format($this->totalPoint) . 'Point です。'
+                . PHP_EOL . '延長料金が' . $this->extraPoint . 'Point発生しておりますので、別途運営から決済画面をお送りいたします。';
+
+            $lineMessageContent = 'Cheersをご利用いただきありがとうございました♪'
+                . PHP_EOL . '延長料金が' . number_format($this->extraPoint) . 'Point 発生しておりますので、別途運営から決済画面をお送りいたします。';
+        } else {
+            $roomMessageContent = 'Cheersをご利用いただきありがとうございました♪ ' . $orderStartDate->format('Y/m/d H:i') . '～' .
+                $orderEndDate->format('H:i') . 'のご利用ポイント、' . number_format($this->totalPoint) . 'Point のご清算が完了いたしました。 '
+                . '領収書発行をご希望の場合は、運営者チャットまでご連絡ください。'
+                . PHP_EOL . $guestNickname . 'のまたのご利用をお待ちしております♪';
+            $lineMessageContent = 'Cheersをご利用いただきありがとうございました♪'
+                . PHP_EOL . $orderStartDate->format('Y/m/d H:i') . '～' . $orderEndDate->format('H:i') .
+                'ご利用ポイント、' . number_format($this->totalPoint) . 'Point'
+                . PHP_EOL . 'のご清算が完了いたしました。'
+                . PHP_EOL . PHP_EOL . '領収書発行をご希望の場合は、運営者チャットまでご連絡ください。'
+                . PHP_EOL . PHP_EOL . $guestNickname . 'のまたのご利用をお待ちしております♪';
+        }
         // --temp--
         $room = $notifiable->rooms()
             ->where('rooms.type', RoomType::SYSTEM)
