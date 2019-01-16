@@ -62,6 +62,12 @@ function checkCastSelected(selectorElement, userId) {
     });
 }
 
+function orderPoint(type, cast = null) {
+    const orderDuration = $('#order-duration').val();
+    if (type == 1) {
+        console.log(cast);
+    }
+}
 function renderListCast(classId, listCastMatching, listCastNominees, listCastCandidates, type, search = '') {
     $.ajax({
         headers: {
@@ -86,9 +92,14 @@ function renderListCast(classId, listCastMatching, listCastNominees, listCastCan
 }
 
 function caculateTempPoint(type, cast) {
+    let cost = 0;
     if (type == 1) {
-        console.log(cast);
+        cost = cast.cost;
     }
+
+    const orderDuration = $('#order-duration').val();
+
+    return (cost / 2) * Math.floor(orderDuration / 15);
 }
 jQuery(document).ready(function($) {
     // checkbox cast nominee
@@ -123,7 +134,8 @@ jQuery(document).ready(function($) {
           </button></td>
           </tr>`;
         $('#nomination-selected-table').append(element);
-        caculateTempPoint(1, cast);
+        const tempPoint = caculateTempPoint(1, cast);
+        console.log(tempPoint);
         }
       });
     });
@@ -254,7 +266,9 @@ jQuery(document).ready(function($) {
         numOfCast-=1;
         ele.parent().parent().remove();
     });
-
+    $('#order-duration').on('change', function (event) {
+        console.log($(this).val());
+    });
     renderListCast(classId, listCastMatching, listCastNominees, listCastCandidates, type);
     $('#orderdatetimepicker').datetimepicker({
       minDate: 'now',

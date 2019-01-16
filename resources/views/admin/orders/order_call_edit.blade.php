@@ -77,7 +77,7 @@
                 <tr>
                   <th>キャストを呼ぶ時間</th>
                   <td>
-                    <select name="duration" id="">
+                    <select name="duration" id="order-duration">
                     @for ($i = 1; $i < 11; $i++)
                     <option value="{{ $i }}" {{ $i == $order->duration ? 'selected':''}}>{{ $i.'時間' }}</option>
                     @endfor
