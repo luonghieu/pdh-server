@@ -96,6 +96,8 @@ $(document).ready(function(){
       var startTimeTo = $(".start_time_to-edit").val();
       var duration = $(".duration-edit").val();
       var comment = $(".comment-edit").val();
+      var expiredDate = $('.expired-date-edit').val();
+      var expiredTime = $('.expired-time-edit').val();
 
       var params = {
         arrIds: arrIds,
@@ -105,7 +107,9 @@ $(document).ready(function(){
         comment: comment,
         end_time: startTimeTo,
         start_time: startTimeFrom,
-        date: date
+        date: date,
+        expired_date: expiredDate,
+        expired_time: expiredTime
       };
 
       updateLocalStorageValue('offer', params);

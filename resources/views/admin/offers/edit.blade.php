@@ -35,6 +35,8 @@
                 <input type="hidden" value="{{ $offer->id }}" name="offer_id">
                 <input type="hidden" value="{{ $offer->date }}" class="date-offer-edit">
                 <input type="hidden" value="{{ Carbon\Carbon::parse($offer->start_time_from)->format('H:i') }}" class="start_time_from-edit">
+                <input type="hidden" value="{{ Carbon\Carbon::parse($offer->expired_date)->format('Y-m-d') }}" class="expired-date-edit">
+                <input type="hidden" value="{{ Carbon\Carbon::parse($offer->expired_date)->format('H:i') }}" class="expired-time-edit">
                 @php
                   $startTimeFrom = explode(":", $offer->start_time_from);
                   $startTimeTo = explode(":", $offer->start_time_to);
