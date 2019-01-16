@@ -40,6 +40,19 @@
 </div>
 
 <div class="modal_wrap">
+    <input id="popup-stop-buy-point" type="checkbox">
+    <div class="modal_overlay">
+        <div class="modal_content modal_content-btn1">
+            <div class="text-box">
+                <p>*現在ポイントはシステムメンテナンスのため、購入することができません。</p>
+                <p>ご不明な点がある場合は、運営までお問い合わせください。</p>
+            </div>
+            <label for="popup-stop-buy-point" class="close_button">OK</label>
+        </div>
+    </div>
+</div>
+
+<div class="modal_wrap">
     <input id="buypoint-alert" type="checkbox">
     <div class="modal_overlay">
         <label for="buypoint-alert" class="modal_trigger" id="buypoint-alert-label"></label>
@@ -69,7 +82,7 @@
                 <h3 class="point_amount">1,000P</h3>
             </div>
             <div class="item_right">
-                <div class="btn-m"><a href="javascript:void(0)" onclick="buyPoint(1000)">¥1,100</a></div>
+                <div class="btn-m"><a href="javascript:void(0)" onclick="stopBuyPoint()">¥1,100</a></div>
             </div>
         </div>
         <div class="list_item">
@@ -77,7 +90,7 @@
                 <h3 class="point_amount">3,000P</h3>
             </div>
             <div class="item_right">
-                <div class="btn-m"><a href="javascript:void(0)" onclick="buyPoint(3000)">¥3,300</a></div>
+                <div class="btn-m"><a href="javascript:void(0)" onclick="stopBuyPoint()">¥3,300</a></div>
             </div>
         </div>
         <div class="list_item">
@@ -85,7 +98,7 @@
                 <h3 class="point_amount">5,000P</h3>
             </div>
             <div class="item_right">
-                <div class="btn-m"><a href="javascript:void(0)" onclick="buyPoint(5000)">¥5,500</a></div>
+                <div class="btn-m"><a href="javascript:void(0)" onclick="stopBuyPoint()">¥5,500</a></div>
             </div>
         </div>
         <div class="list_item">
@@ -93,7 +106,7 @@
                 <h3 class="point_amount">10,000P</h3>
             </div>
             <div class="item_right">
-                <div class="btn-m"><a href="javascript:void(0)" onclick="buyPoint(10000)">¥11,000</a></div>
+                <div class="btn-m"><a href="javascript:void(0)" onclick="stopBuyPoint()">¥11,000</a></div>
             </div>
         </div>
         <div class="list_item">
@@ -101,7 +114,7 @@
                 <h3 class="point_amount">50,000P</h3>
             </div>
             <div class="item_right">
-                <div class="btn-m"><a href="javascript:void(0)" onclick="buyPoint(50000)">¥55,000</a></div>
+                <div class="btn-m"><a href="javascript:void(0)" onclick="stopBuyPoint()">¥55,000</a></div>
             </div>
         </div>
         <div class="list_item">
@@ -109,7 +122,7 @@
                 <h3 class="point_amount">100,000P</h3>
             </div>
             <div class="item_right">
-                <div class="btn-m"><a href="javascript:void(0)" onclick="buyPoint(100000)">¥110,000</a></div>
+                <div class="btn-m"><a href="javascript:void(0)" onclick="stopBuyPoint()">¥110,000</a></div>
             </div>
         </div>
     </div>
@@ -128,6 +141,10 @@
             $('#buypoint-popup').click();
             $('#popup-amount').html(point.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") + 'P');
             $('#point-amount').val(point);
+        }
+
+        function stopBuyPoint() {
+            $('#popup-stop-buy-point').trigger('click');
         }
     </script>
 @endsection

@@ -104,6 +104,8 @@
                   @endif
                   @if (App\Enums\OrderPaymentStatus::EDIT_REQUESTING == $order->payment_status)
                   <button class="change-time payment-request btn-nominee" data-toggle="modal" data-target="#payment-request">ステータスを売上申請待ちに切り替える</button>
+                  @endif
+                  @if (App\Enums\OrderPaymentStatus::REQUESTING == $order->payment_status || App\Enums\OrderPaymentStatus::EDIT_REQUESTING == $order->payment_status || App\Enums\OrderPaymentStatus::PAYMENT_FAILED == $order->payment_status)
                   <button class="change-time btn-pay-point" data-toggle="modal" data-target="#pay-point">ステータスをポイント決済完了に切り替える</button>
                   @endif
                 </td>
