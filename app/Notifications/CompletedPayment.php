@@ -48,7 +48,7 @@ class CompletedPayment extends Notification implements ShouldQueue
                 $this->hasExtraTime = true;
             }
 
-            if ($payment->old_extra_time == 0 && $payment->extra_time > 0) {
+            if ($payment->old_extra_time == 0 && $payment->extra_time > 0 && $payment->status != PaymentRequestStatus::CLOSED) {
                 $this->hasExtraTime = true;
             }
             $this->totalPoint += $payment->total_point;
