@@ -23,7 +23,7 @@ return [
                 'id' => 2,
                 'name' => '30分後',
                 'value' => '30',
-                'is_active' => 0,
+                'is_active' => 1,
             ],
             [
                 'id' => 3,
@@ -62,6 +62,5 @@ return [
                 'url_image' => 'assets/web/images/ge2-1-a/grade-icon_001.png',
             ],
         ],
-        'credit_card_required' => 0,
     ],
 ];

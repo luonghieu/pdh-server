@@ -28,16 +28,15 @@ class PointSettlement implements ShouldQueue
     use Dispatchable, InteractsWithQueue, Queueable, SerializesModels, DirectRoom;
 
     public $order;
-    public $setPointAdmin;
+
     /**
      * Create a new job instance.
      *
      * @param $orderId
      */
-    public function __construct($orderId, $setPointAdmin = null)
+    public function __construct($orderId)
     {
         $this->order = Order::onWriteConnection()->findOrFail($orderId);
-        $this->setPointAdmin = $setPointAdmin;
     }
 
     /**
@@ -51,16 +50,7 @@ class PointSettlement implements ShouldQueue
         try {
             \DB::beginTransaction();
 
-            if (!$this->setPointAdmin) {
-                $this->order->settle();
-            } else {
-                // Hard delete TEMP point
-                Point::withTrashed()
-                    ->where('order_id', $this->order->id)
-                    ->where('type', PointType::TEMP)
-                    ->forceDelete();
-            }
-
+            $this->order->settle();
             $this->order->paymentRequests()->update(['status' => PaymentRequestStatus::CLOSED]);
 
             $this->order->payment_status = OrderPaymentStatus::PAYMENT_FINISHED;

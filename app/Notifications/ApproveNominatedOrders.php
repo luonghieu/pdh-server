@@ -4,7 +4,6 @@ namespace App\Notifications;
 
 use App\Enums\DeviceType;
 use App\Enums\ProviderType;
-use App\Enums\RoomType;
 use App\Enums\UserType;
 use App\Room;
 use Illuminate\Bus\Queueable;
@@ -79,10 +78,7 @@ class ApproveNominatedOrders extends Notification implements ShouldQueue
 
     public function pushData($notifiable)
     {
-//        $room = Room::find($this->order->room_id);
-        $room = $notifiable->rooms()
-            ->where('rooms.type', RoomType::SYSTEM)
-            ->where('rooms.is_active', true)->first();
+        $room = Room::find($this->order->room_id);
 
         $startTime = Carbon::parse($this->order->date . ' ' . $this->order->start_time);
 
@@ -134,17 +130,14 @@ class ApproveNominatedOrders extends Notification implements ShouldQueue
 
     public function lineBotPushData($notifiable)
     {
-        $room = $notifiable->rooms()
-            ->where('rooms.type', RoomType::SYSTEM)
-            ->where('rooms.is_active', true)->first();
+        $room = Room::find($this->order->room_id);
         $startTime = Carbon::parse($this->order->date . ' ' . $this->order->start_time);
 
         $firstMessage = '\\\\ おめでとうございます！マッチングが確定しました🎊//';
-//        $secondMessage = '▼ご予約内容'
-//            . PHP_EOL . '場所：' . $this->order->address
-//            . PHP_EOL . '合流予定時間：' . $startTime->format('Y/m/d H:i') . '～'
-//            . PHP_EOL . PHP_EOL .'ゲストの方はキャストに来て欲しい場所の詳細をお伝えください。';
-        $secondMessage = 'キャストとの合流前に決済が必要です。決済画面をお送りいたしますので、大変お手数ですが運営者チャットに、' . $notifiable->nickname . '様のメールアドレスをお送りください。';
+        $secondMessage = '▼ご予約内容'
+            . PHP_EOL . '場所：' . $this->order->address
+            . PHP_EOL . '合流予定時間：' . $startTime->format('Y/m/d H:i') . '～'
+            . PHP_EOL . PHP_EOL .'ゲストの方はキャストに来て欲しい場所の詳細をお伝えください。';
 
         $page = env('LINE_LIFF_REDIRECT_PAGE') . '?page=room&room_id=' . $room->id;
 
@@ -163,7 +156,7 @@ class ApproveNominatedOrders extends Notification implements ShouldQueue
                     'actions' => [
                         [
                             'type' => 'uri',
-                            'label' => 'メールアドレスを送信する',
+                            'label' => 'メッセージを確認する',
                             'uri' => "line://app/$page"
                         ]
                     ]
