@@ -269,7 +269,7 @@
                     <i class="icon-remove"></i>
                   </button>
                   <strong>
-                    {{trans('messages.date_not_valid') }}
+                    開始時間は現在以降の時間を指定してください
                   </strong>
                 </div>
               </div>
