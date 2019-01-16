@@ -44,7 +44,11 @@ class CompletedPayment extends Notification implements ShouldQueue
         $this->hasExtraTime = false;
         $paymentRequests =  Order::find($this->order->id)->paymentRequests()->whereIn('status', $requestedStatuses)->get();
         foreach ($paymentRequests as $payment) {
-            if ($payment->extra_time) {
+            if ($payment->old_extra_time == $payment->extra_time && $payment->extra_time > 0) {
+                $this->hasExtraTime = true;
+            }
+
+            if ($payment->old_extra_time == 0 && $payment->extra_time > 0) {
                 $this->hasExtraTime = true;
             }
             $this->totalPoint += $payment->total_point;
