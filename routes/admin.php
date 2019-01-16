@@ -64,6 +64,7 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.'], function () {
         Route::get('{order}/candidates', ['as' => 'candidates', 'uses' => 'OrderController@candidates'])->where('order', '[0-9]+');
         Route::get('/{order}/nominees', ['as' => 'nominees', 'uses' => 'OrderController@nominees'])->where('order', '[0-9]+');
         Route::get('{order}', ['as' => 'call', 'uses' => 'OrderController@orderCall'])->where('order', '[0-9]+');
+        Route::get('{order}/edit', ['as' => 'edit_order_call', 'uses' => 'OrderController@editOrderCall'])->where('order', '[0-9]+');
         Route::get('{order}/order_nominee', ['as' => 'order_nominee', 'uses' => 'OrderController@orderNominee'])->where('order', '[0-9]+');
         Route::get('{order}/casts_matching', ['as' => 'casts_matching', 'uses' => 'OrderController@castsMatching'])->where('order', '[0-9]+');
         Route::put('change_start_time_order_call', ['as' => 'change_start_time_order_call', 'uses' => 'OrderController@changeStartTimeOrderCall']);
@@ -72,6 +73,8 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.'], function () {
         Route::put('{order}/point_settlement', ['as' => 'point_settlement', 'uses' => 'OrderController@pointSettlement'])->where('order', '[0-9]+');
         Route::put('change_start_time_order_nominee', ['as' => 'change_start_time_order_nominee', 'uses' => 'OrderController@changeStartTimeOrderNominee']);
         Route::put('change_stop_time_order_nominee', ['as' => 'change_stop_time_order_nominee', 'uses' => 'OrderController@changeStopTimeOrderNominee']);
+        Route::get('/casts/{classId}', ['as' => 'get_cast_by_classid', 'uses' => 'OrderController@getCasts']);
+
     });
 
     Route::group(['middleware' => 'is_admin'], function () {

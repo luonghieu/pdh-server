@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers\Admin\Order;
 
+use App\Cast;
+use App\CastClass;
 use App\Enums\OrderPaymentStatus;
 use App\Enums\OrderStatus;
 use App\Enums\OrderType;
@@ -162,6 +164,53 @@ class OrderController extends Controller
         $order = $order->load('candidates', 'nominees', 'user', 'castClass', 'room', 'casts', 'tags');
 
         return view('admin.orders.order_call', compact('order'));
+    }
+
+    public function editOrderCall(Order $order)
+    {
+        $castClasses = CastClass::all();
+        $castsMatching = $order->casts;
+        $castsNominee = $order->nominees()->whereNotIn('users.id', $castsMatching->pluck('id'))->get();
+        $castsCandidates = $order->candidates()->whereNotIn('users.id', $castsMatching->pluck('id'))->get();
+
+        return view('admin.orders.order_call_edit', compact('order', 'castClasses', 'castsMatching', 'castsNominee', 'castsCandidates'));
+    }
+
+    public function getCasts(Request $request, $classId)
+    {
+        $casts = Cast::where('class_id', $classId);
+        $listCast = [
+            $request->listCastNominees,
+            $request->listCastCandidates,
+            $request->listCastMatching,
+        ];
+        $listCast = collect($listCast)->collapse()->toArray();
+
+        $search = $request->search;
+        if ($request->type == 1 && $request->listCastNominees) {
+            $casts->whereNotIn('id', $listCast);
+            if ($search) {
+                $casts->where(function($query) use ($search) {
+                    $query->where('nickname', 'like', "%$search%")
+                        ->orWhere('id', $search);
+                });
+            }
+        }
+
+        if ($request->type == 2 && $request->listCastCandidates) {
+            $casts->whereNotIn('id', $listCast);
+        }
+
+        if ($request->listCastMatching) {
+            $casts->whereNotIn('id', $listCast);
+        }
+
+        $casts = $casts->get();
+
+        return response()->json([
+            'view' => view('admin.orders.list_cast_by_class', compact('casts'))->render(),
+            'casts' => $casts,
+        ]);
     }
 
     public function castsMatching($order)
