@@ -97,17 +97,19 @@
                 <tr>
                   <th>　予定合計ポイント</th>
                   <td>
-                    @if (in_array($order->status, [App\Enums\OrderStatus::ACTIVE, App\Enums\OrderStatus::PROCESSING,
-                    App\Enums\OrderStatus::DONE, App\Enums\OrderStatus::OPEN]))
-                      @php
-                        $tempPoint = 0;
-                        foreach ($order->casts as $cast) {
-                        if ($cast->pivot->status != \App\Enums\CastOrderStatus::TIMEOUT && $cast->pivot->status != \App\Enums\CastOrderStatus::CANCELED )
-                          $tempPoint+=$cast->pivot->temp_point;
-                        }
-                      @endphp
-                      {{ number_format($tempPoint).'P' }}
-                    @endif
+                    <span id="total-point">
+                      @if (in_array($order->status, [App\Enums\OrderStatus::ACTIVE, App\Enums\OrderStatus::PROCESSING, App\Enums\OrderStatus::DONE, App\Enums\OrderStatus::OPEN]))
+                        @php
+                          $tempPoint = 0;
+                          foreach ($order->casts as $cast) {
+                          if ($cast->pivot->status != \App\Enums\CastOrderStatus::TIMEOUT && $cast->pivot->status != \App\Enums\CastOrderStatus::CANCELED )
+                            $tempPoint+=$cast->pivot->temp_point;
+                          }
+                        @endphp
+                        {{ number_format($tempPoint).'P' }}
+                      @endif
+                    </span>
+                  </td>
                 </tr>
                 <tr>
                   <th>ステータス</th>
@@ -349,7 +351,7 @@
 <script type="text/javascript">
   let totalCast = '<?php echo $order->total_cast ?>';
   let numOfCast = '<?php echo count($castsMatching) + count($castsCandidates) + count($castsNominee) ?>';
-  let totalPoint = '<?php echo $tempPoint; ?>';
+  let totalPoint = Number('<?php echo $tempPoint; ?>');
   let orderDuration = '<?php echo $order->duration?>';
   let orderStartTime = '<?php echo $order->date . ' ' . $order->start_time ?>';
 

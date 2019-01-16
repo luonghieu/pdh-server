@@ -62,12 +62,6 @@ function checkCastSelected(selectorElement, userId) {
     });
 }
 
-function orderPoint(type, cast = null) {
-    const orderDuration = $('#order-duration').val();
-    if (type == 1) {
-        console.log(cast);
-    }
-}
 function renderListCast(classId, listCastMatching, listCastNominees, listCastCandidates, type, search = '') {
     $.ajax({
         headers: {
@@ -94,12 +88,13 @@ function renderListCast(classId, listCastMatching, listCastNominees, listCastCan
 function caculateTempPoint(type, cast) {
     let cost = 0;
     if (type == 1) {
-        cost = cast.cost;
+        cost = Number(cast.cost);
+        console.log(cost);
     }
 
-    const orderDuration = $('#order-duration').val();
+    const orderDuration = $('#order-duration').val() * 60;
 
-    return (cost / 2) * Math.floor(orderDuration / 15);
+    return (cost / 2) * Math.floor(Number(orderDuration) / 15);
 }
 jQuery(document).ready(function($) {
     // checkbox cast nominee
@@ -135,6 +130,7 @@ jQuery(document).ready(function($) {
           </tr>`;
         $('#nomination-selected-table').append(element);
         const tempPoint = caculateTempPoint(1, cast);
+        $('#total-point').text(tempPoint);
         console.log(tempPoint);
         }
       });
