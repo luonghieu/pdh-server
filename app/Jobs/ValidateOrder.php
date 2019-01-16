@@ -126,6 +126,7 @@ class ValidateOrder implements ShouldQueue
             $startTime = Carbon::parse($this->order->date . ' ' . $this->order->start_time);
             // --Temp--
             $guest = $this->order->user;
+            $guestNickname = $guest->nickname ? $guest->nickname . '様' : 'お客様';
             $guestRoom = $guest->rooms()
                 ->where('rooms.type', RoomType::SYSTEM)
                 ->where('rooms.is_active', true)->first();
@@ -134,7 +135,7 @@ class ValidateOrder implements ShouldQueue
                 . PHP_EOL . '場所：' . $this->order->address
                 . PHP_EOL . '合流予定時間：' . $startTime->format('H:i') . '～'
                 . PHP_EOL . PHP_EOL . '現在自動決済を停止しております。'
-                . PHP_EOL . 'キャストとの合流前に決済が必要です。決済画面をお送りいたしますので、大変お手数ですが運営者チャットに、' . $guest->nickname  . '様のメールアドレスをお送りください。';
+                . PHP_EOL . 'キャストとの合流前に決済が必要です。決済画面をお送りいたしますので、大変お手数ですが運営者チャットに、' . $guestNickname  . '様のメールアドレスをお送りください。';
             $guestRoomMessage = $guestRoom->messages()->create([
                 'user_id' => 1,
                 'type' => MessageType::SYSTEM,
@@ -172,6 +173,7 @@ class ValidateOrder implements ShouldQueue
             $startTime = Carbon::parse($this->order->date . ' ' . $this->order->start_time);
             // --Temp--
             $guest = $this->order->user;
+            $guestNickname = $guest->nickname ? $guest->nickname . '様' : 'お客様';
             $guestRoom = $guest->rooms()
                 ->where('rooms.type', RoomType::SYSTEM)
                 ->where('rooms.is_active', true)->first();
@@ -180,7 +182,7 @@ class ValidateOrder implements ShouldQueue
                 . PHP_EOL . '場所：' . $this->order->address
                 . PHP_EOL . '合流予定時間：' . $startTime->format('H:i') . '～'
                 . PHP_EOL . PHP_EOL . '現在自動決済を停止しております。'
-                . PHP_EOL . 'キャストとの合流前に決済が必要です。決済画面をお送りいたしますので、大変お手数ですが運営者チャットに、' . $guest->nickname  . '様のメールアドレスをお送りください。';
+                . PHP_EOL . 'キャストとの合流前に決済が必要です。決済画面をお送りいたしますので、大変お手数ですが運営者チャットに、' . $guestNickname  . '様のメールアドレスをお送りください。';
             $guestRoomMessage = $guestRoom->messages()->create([
                 'user_id' => 1,
                 'type' => MessageType::SYSTEM,
