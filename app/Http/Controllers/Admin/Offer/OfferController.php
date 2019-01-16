@@ -173,6 +173,16 @@ class OfferController extends Controller
             return redirect()->route('admin.offers.create');
         }
 
+        if (Carbon::parse($data['expired_date'])->gte(Carbon::parse($data['date_offer'] . ' ' . $data['start_time']))) {
+            $request->session()->flash('expired_date_not_valid', 'expired_date_not_valid');
+
+            if (isset($request->offer_id)) {
+                return redirect()->route('admin.offers.edit', ['offer' => $request->offer_id]);
+            }
+
+            return redirect()->route('admin.offers.create');
+        }
+
         $data['duration_offer'] = $request->duration_offer;
         $data['area_offer'] = $request->area_offer;
         $data['current_point_offer'] = $request->current_point_offer;
