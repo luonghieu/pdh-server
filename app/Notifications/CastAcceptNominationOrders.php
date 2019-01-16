@@ -4,7 +4,6 @@ namespace App\Notifications;
 
 use App\Enums\DeviceType;
 use App\Enums\ProviderType;
-use App\Enums\RoomType;
 use App\Enums\UserType;
 use Carbon\Carbon;
 use Illuminate\Bus\Queueable;
@@ -121,20 +120,14 @@ class CastAcceptNominationOrders extends Notification implements ShouldQueue
     public function lineBotPushData($notifiable)
     {
         $startTime = Carbon::parse($this->order->date . ' ' . $this->order->start_time);
-        $room = $notifiable->rooms()
-            ->where('rooms.type', RoomType::SYSTEM)
-            ->where('rooms.is_active', true)->first();
-
         $firstMessage = '\\\\ おめでとうございます！マッチングが確定しました🎊//';
-//        $secondMessage = '▼ご予約内容'
-//            . PHP_EOL . '場所：' . $this->order->address
-//            . PHP_EOL . '合流予定時間：' . $startTime->format('Y/m/d H:i') . '～'
-//            . PHP_EOL . PHP_EOL .'ゲストの方はキャストに来て欲しい場所の詳細をお伝えください。';
-        $secondMessage = 'キャストとの合流前に決済が必要です。決済画面をお送りいたしますので、大変お手数ですが運営者チャットに、' . $notifiable->nickname . '様のメールアドレスをお送りください。';
+        $secondMessage = '▼ご予約内容'
+            . PHP_EOL . '場所：' . $this->order->address
+            . PHP_EOL . '合流予定時間：' . $startTime->format('Y/m/d H:i') . '～'
+            . PHP_EOL . PHP_EOL .'ゲストの方はキャストに来て欲しい場所の詳細をお伝えください。';
 
-//        $page = env('LINE_LIFF_REDIRECT_PAGE') . '?page=room&room_id=' . $room->id . '&order_id=' .
-//            $this->order->id;
-        $page = env('LINE_LIFF_REDIRECT_PAGE') . '?page=room&room_id=' . $room->id;
+        $page = env('LINE_LIFF_REDIRECT_PAGE') . '?page=room&room_id=' . $this->order->room->id . '&order_id=' .
+            $this->order->id;
 
         return [
             [

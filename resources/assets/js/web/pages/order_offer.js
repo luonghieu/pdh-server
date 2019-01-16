@@ -154,7 +154,7 @@ $(document).ready(function(){
               var err ='';
 
               if (error.response.status == 400) {
-                var err = '開始時間は現在時刻から60分以降の時間を選択してください';
+                var err = '開始時間は現在時刻から30分以降の時間を選択してください';
               }
 
               if(error.response.status == 500) {
@@ -299,8 +299,8 @@ $(document).ready(function(){
     utc = now.getTime() + (now.getTimezoneOffset() * 60000);
     nd = new Date(utc + (3600000*9));
 
-    if (add_minutes(nd, 60) > checkDate) {
-      checkDate = add_minutes(nd, 60);
+    if (helper.add_minutes(nd, 30) > checkDate) {
+      checkDate = helper.add_minutes(nd, 30);
     }
 
     var startTimeTo = $('#start-time-to-offer').val();

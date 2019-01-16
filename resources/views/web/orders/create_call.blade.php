@@ -63,8 +63,8 @@
     <div class="form-grpup"><!-- フォーム内容 -->
       @if(isset($orderOptions['call_time']))
         @foreach($orderOptions['call_time'] as $callTime)
-        <label class="button button--green date {{ ($callTime['value'] == 60 && (!isset($currentTime) && !isset($timeDetail))) ? 'active' : '' }} {{ (isset($currentTime) && $currentTime == $callTime['value'] ) ? 'active' : '' }} {{ !$callTime['is_active'] ? 'inactive' : '' }}">
-          <input type="radio" name="time_join" value="{{ $callTime['value'] }}" {{ (isset($currentTime) && $currentTime == $callTime['value']) ? 'checked="checked"' : '' }} {{ !$callTime['is_active'] ? 'disabled' : '' }} {{ ($callTime['value'] == 60 && (!isset($currentTime) && !isset($timeDetail))) ? 'checked' : '' }}>
+        <label class="button button--green date {{ $callTime['value'] == 30 ? 'active' : '' }} {{ !$callTime['is_active'] ? 'inactive' : '' }} ">
+          <input type="radio" name="time_join" value="{{ $callTime['value'] }}"  {{ !$callTime['is_active'] ? 'disabled' : '' }} {{ ($callTime['value'] == 30) ? 'checked' : '' }} class="time-join-call">
           {{ $callTime['name'] }}
         </label>
         @endforeach
@@ -177,7 +177,7 @@
     <div class="date-select ct-date-select">
       <div class="date-select__content">
           @php
-            $now = \Carbon\Carbon::now()->addMinutes(60);
+            $now = \Carbon\Carbon::now()->addMinutes(30);
             $currentMonth = $now->format('m');
             $currentDate = $now->format('d');
             $currentHour = $now->format('H');
