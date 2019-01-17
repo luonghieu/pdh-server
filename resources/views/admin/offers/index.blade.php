@@ -79,10 +79,10 @@
                     {{ Carbon\Carbon::parse($offer->date)->format('Y/m/d') }}
                   @php
                     $startHour = (int)Carbon\Carbon::parse($offer->start_time_from)->format('H');
-                    $endHour = (int)Carbon\Carbon::parse($offer->start_time_to)->format('H');
-                    $endMinute = (int)Carbon\Carbon::parse($offer->start_time_to)->format('i');
+                    $endHour = Carbon\Carbon::parse($offer->start_time_to)->format('H');
+                    $endMinute = Carbon\Carbon::parse($offer->start_time_to)->format('i');
 
-                    if ($endHour < $startHour) {
+                    if ((int)$endHour < $startHour) {
                       switch ($endHour) {
                       case 0:
                       $endHour = 24;

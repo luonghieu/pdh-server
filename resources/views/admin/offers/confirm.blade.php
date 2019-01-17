@@ -68,6 +68,14 @@
               <p class="confirm-area-offer">東京</p>
             </div>
           </div>
+          <div class="col-lg-12 wrap-qr-code lb-date-offer">
+            <label class="">オファーの応募締切期限</label>
+          </div>
+          <div class="col-lg-12 wrap-qr-code">
+            <div class="col-sm-4 ">
+              <p class="">{{ Carbon\Carbon::parse($data['expired_date'])->format('Y年m月d日 H:i') }}</p>
+            </div>
+          </div>
           <div class="col-lg-12 wrap-qr-code">
             <label class="lb-date-offer"></label>
             <hr style="border: 1px #0000006e dashed;">

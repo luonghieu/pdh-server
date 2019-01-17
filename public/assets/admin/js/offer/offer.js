@@ -96,6 +96,8 @@ $(document).ready(function(){
       var startTimeTo = $(".start_time_to-edit").val();
       var duration = $(".duration-edit").val();
       var comment = $(".comment-edit").val();
+      var expiredDate = $('.expired-date-edit').val();
+      var expiredTime = $('.expired-time-edit').val();
 
       var params = {
         arrIds: arrIds,
@@ -105,7 +107,9 @@ $(document).ready(function(){
         comment: comment,
         end_time: startTimeTo,
         start_time: startTimeFrom,
-        date: date
+        date: date,
+        expired_date: expiredDate,
+        expired_time: expiredTime
       };
 
       updateLocalStorageValue('offer', params);
@@ -379,6 +383,28 @@ $(document).ready(function(){
     updateLocalStorageValue('offer', params);
   })
 
+  //expired_date_offer
+
+  $("#expired_date_offer").on("change",function(){
+    var date = $("#expired_date_offer option:selected").val();
+
+     var params = {
+        expired_date: date,
+      };
+
+    updateLocalStorageValue('offer', params);
+  })
+
+  //expired_time_offer
+  $("#expired_time_offer").on("change",function(){
+    var time = $("#expired_time_offer option:selected").val();
+
+    var params = {
+        expired_time: time,
+      };
+
+    updateLocalStorageValue('offer', params);
+  });
 
   //start_time
   $("#start_time_offer").on("change",function(){
@@ -525,6 +551,26 @@ $(document).ready(function(){
       const inputEndTime = $('select[name=date_offer] option');
       $.each(inputEndTime,function(index,val){
         if(val.value == offer.date) {
+          $(this).prop('selected',true);
+        }
+      })
+    }
+
+    //expired_date
+    if(offer.expired_date){
+      const inputEndTime = $('select[name=expired_date_offer] option');
+      $.each(inputEndTime,function(index,val){
+        if(val.value == offer.expired_date) {
+          $(this).prop('selected',true);
+        }
+      })
+    }
+
+    //expired_time
+    if(offer.expired_time){
+      const inputEndTime = $('select[name=expired_time_offer] option');
+      $.each(inputEndTime,function(index,val){
+        if(val.value == offer.expired_time) {
           $(this).prop('selected',true);
         }
       })
