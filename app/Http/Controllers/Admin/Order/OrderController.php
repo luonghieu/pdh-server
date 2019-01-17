@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin\Order;
 
 use App\Cast;
 use App\CastClass;
+use App\Enums\CastOrderStatus;
 use App\Enums\OrderPaymentStatus;
 use App\Enums\OrderStatus;
 use App\Enums\OrderType;
@@ -170,8 +171,13 @@ class OrderController extends Controller
     {
         $castClasses = CastClass::all();
         $castsMatching = $order->casts;
-        $castsNominee = $order->nominees()->whereNotIn('users.id', $castsMatching->pluck('id'))->get();
-        $castsCandidates = $order->candidates()->whereNotIn('users.id', $castsMatching->pluck('id'))->get();
+        $castsNominee = $order->nominees()->whereNotIn('cast_order.status', [CastOrderStatus::TIMEOUT, CastOrderStatus::CANCELED])
+            ->whereNotIn('users.id', $castsMatching->pluck('id'))
+            ->get();
+        $castsCandidates = $order->candidates()->whereNotIn('cast_order.status', [CastOrderStatus::TIMEOUT, CastOrderStatus::CANCELED])
+            ->whereNotIn('users.id', $castsMatching->pluck('id'))
+            ->get();
+        $castClass = CastClass::all();
 
         return view('admin.orders.order_call_edit', compact('order', 'castClasses', 'castsMatching', 'castsNominee', 'castsCandidates'));
     }
@@ -187,22 +193,12 @@ class OrderController extends Controller
         $listCast = collect($listCast)->collapse()->toArray();
 
         $search = $request->search;
-        if ($request->type == 1 && $request->listCastNominees) {
-            $casts->whereNotIn('id', $listCast);
-            if ($search) {
-                $casts->where(function($query) use ($search) {
-                    $query->where('nickname', 'like', "%$search%")
-                        ->orWhere('id', $search);
-                });
-            }
-        }
-
-        if ($request->type == 2 && $request->listCastCandidates) {
-            $casts->whereNotIn('id', $listCast);
-        }
-
-        if ($request->listCastMatching) {
-            $casts->whereNotIn('id', $listCast);
+        $casts->whereNotIn('id', $listCast);
+        if ($search) {
+            $casts->where(function($query) use ($search) {
+                $query->where('nickname', 'like', "%$search%")
+                    ->orWhere('id', $search);
+            });
         }
 
         $casts = $casts->get();
