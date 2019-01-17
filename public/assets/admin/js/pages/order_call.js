@@ -5,7 +5,7 @@ let listCastMatching = getListCastMatching();
 let listCastNominees = getListCastNominees();
 let listCastCandidates = getListCastCandidates();
 let classId = $('#choosen-cast-class').children("option:selected").val();
-
+let clastIdPrevious = $('#choosen-cast-class').val();
 function debounce(func, wait, immediate) {
     let timeout;
     return function() {
@@ -105,7 +105,6 @@ function orderPoint(cast, isNominee = null) {
     } else {
         cost = currentCastClass.cost;
     }
-
     return (cost / 2) * Math.floor(orderDuration / 15);
 }
 
@@ -114,21 +113,29 @@ function orderFee() {
     const multiplier = Math.floor(orderDuration / 15);
     return 500 * multiplier;
 }
+
 function allowance() {
     const orderDate = $('#order-date').val();
     const duration = $('#order-duration').val();
     const orderStartDate = moment(orderDate);
-    const orderEndDate = moment(orderDate).add(duration, 'hours');
+    const orderEndDate = moment(orderDate).clone().add(duration, 'hours');
 
-    const allowanceStartTime = moment().set( {hour:0, minute:1, second:0});
-    const allowanceEndTime = moment().set( {hour:4, minute:0, second:0});
+    const orderStartTime = moment().set({hour: orderStartDate.get('hour'), minute: orderStartDate.get('minute'), second:0});
+    const orderEndTime = moment().set({hour: orderEndDate.get('hour'), minute: orderEndDate.get('minute'), second:0});
 
-    console.log(allowanceStartTime.format('YYYY-MM-DD HH:mm'));
-    console.log(allowanceEndTime.format('YYYY-MM-DD HH:mm'));
-    console.log(orderStartDate.format('YYYY-MM-DD HH:mm'));
-    console.log(orderEndDate.format('YYYY-MM-DD HH:mm'));
+    const conditionStartTime = moment().set( {hour:0, minute:1, second:0});
+    const conditionEndTime  = moment().set( {hour:4, minute:0, second:0});
+
+    let bool = false;
+    if (orderStartTime.isBetween(conditionStartTime, conditionEndTime) || orderEndTime.isBetween(conditionStartTime, conditionEndTime) || orderEndTime.isSame(conditionEndTime)) {
+        bool = true;
+    }
+
+    if (orderStartDate.days() != orderEndDate.days() && orderEndDate.hours() != 0) {
+        bool = true;
+    }
+    return bool ? 4000 : 0;
 }
-allowance();
 function updateTotalPoint() {
     const castsMatching = getListCastMatching();
     const castsNominee = getListCastNominees();
@@ -137,11 +144,15 @@ function updateTotalPoint() {
 
     castsNominee.forEach(val => {
        const cast = selectedNomination.find(i => i.id == val);
-        totalPoint += orderPoint(cast, true) + orderFee();
+        totalPoint += orderPoint(cast, true) + orderFee() + allowance();
     });
     castsCandidate.forEach(val => {
         const cast = selectedNomination.find(i => i.id == val);
-        totalPoint += orderPoint(cast);
+        totalPoint += orderPoint(cast) + allowance();
+    });
+    castsMatching.forEach(val => {
+        const cast = selectedMatching.find(i => i.id == val);
+        totalPoint += orderPoint(cast) + allowance();
     });
 
     $('#total-point').text((totalPoint + '').replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1,") + 'P');
@@ -152,7 +163,7 @@ jQuery(document).ready(function($) {
     $('body').on('click', '#add-cast-nominee', function() {
       var totalCast = $("#total-cast option:selected").val();
       if (totalCast <= numOfCast) {
-        alert('invalid');
+        alert('設定している"キャストを呼ぶ人数"より、選択されているキャストの人数が超えています。編集してください。\n');
         return false;
       }
       cast_ids = [];
@@ -164,7 +175,10 @@ jQuery(document).ready(function($) {
       $('#cast_ids').val(cast_ids.join(','));
 
       $('#choose-cast-nominee').modal('hide');
-
+      if ((cast_ids.length + Number(numOfCast)) > totalCast) {
+          alert('設定している"キャストを呼ぶ人数"より、選択されているキャストの人数が超えています。編集してください。\n');
+          return false;
+      }
       $.each(cast_ids , function(index, val) {
         const cast = casts.find(i => i.id == val);
 
@@ -189,7 +203,7 @@ jQuery(document).ready(function($) {
     $('body').on('click', '#add-cast-candidate', function() {
       var totalCast = $("#total-cast option:selected").val();
       if (totalCast <= numOfCast) {
-        alert('invalid');
+        alert('設定している"キャストを呼ぶ人数"より、選択されているキャストの人数が超えています。編集してください。\n');
         return false;
       }
       cast_ids = [];
@@ -201,6 +215,10 @@ jQuery(document).ready(function($) {
       $('#cast_ids').val(cast_ids.join(','));
 
       $('#choose-cast-candidate').modal('hide');
+        if ((cast_ids.length + Number(numOfCast)) > totalCast) {
+            alert('設定している"キャストを呼ぶ人数"より、選択されているキャストの人数が超えています。編集してください。\n');
+            return false;
+        }
 
       $.each(cast_ids , function(index, val) {
         const cast = casts.find(i => i.id == val);
@@ -226,7 +244,7 @@ jQuery(document).ready(function($) {
     $('body').on('click', '#add-cast-matching', function() {
       var totalCast = $("#total-cast option:selected").val();
       if (totalCast <= numOfCast) {
-        alert('invalid');
+        alert('設定している"キャストを呼ぶ人数"より、選択されているキャストの人数が超えています。編集してください。\n');
         return false;
       }
       
@@ -239,7 +257,11 @@ jQuery(document).ready(function($) {
       $('#cast_ids').val(cast_ids.join(','));
 
       $('#choose-cast-matching').modal('hide');
-
+      $('#choose-cast-candidate').modal('hide');
+      if ((cast_ids.length + Number(numOfCast)) > totalCast) {
+        alert('設定している"キャストを呼ぶ人数"より、選択されているキャストの人数が超えています。編集してください。\n');
+        return false;
+      }
       $.each(cast_ids , function(index, val) {
         const cast = casts.find(i => i.id == val);
 
@@ -250,10 +272,13 @@ jQuery(document).ready(function($) {
           const element = `<tr>
           <td class="cast-matching-id">${cast.id}</td>
           <td>${cast.nickname}</td>
-          <td><button class="btn btn-info" data-type="3" data-user-id="${cast.id}">このキャストを削除する</button></td>
+          <td><button type="button" class="btn btn-info remove-btn" data-type="3" 
+          data-user-id="${cast.id}">このキャストを削除する
+          </button></td>
           </tr>`;
 
           $('#matching-selected-table').append(element);
+          updateTotalPoint();
         }
       });
     });
@@ -287,6 +312,25 @@ jQuery(document).ready(function($) {
 
     $('#choosen-cast-class').change(function(event) {
         classId = $(this).children("option:selected").val();
+        let isSameClass = true;
+        if (selectedMatching.length || selectedNomination.length || selectedCandidate.length) {
+            if (selectedMatching.findIndex(i => i.class_id == classId ) == -1) {
+                isSameClass = false;
+            }
+            if (selectedNomination.findIndex(i => i.class_id == classId ) == -1) {
+                isSameClass = false;
+            }
+            if (selectedCandidate.findIndex(i => i.class_id == classId ) == -1) {
+                isSameClass = false;
+            }
+        }
+
+        if (!isSameClass) {
+            alert('設定している"キャストクラス"と選択されているキャストのキャストクラスが異なります。編集してください。');
+            $(this).val(clastIdPrevious);
+            return false;
+        }
+        clastIdPrevious = classId;
         renderListCast(classId, getListCastMatching(), getListCastNominees(), getListCastCandidates());
     });
 
@@ -295,26 +339,37 @@ jQuery(document).ready(function($) {
         const ele = $(this);
         const type = ele.attr('data-type');
         const userId = ele.attr('data-user-id');
+        numOfCast-=1;
         if (type == 1) {
             const index = selectedNomination.findIndex(i => i.id == userId);
             selectedNomination.splice(index, 1);
+            ele.parent().parent().remove();
+            updateTotalPoint();
         }
 
         if (type == 2) {
             const index = selectedCandidate.findIndex(i => i.id == userId);
             selectedCandidate.splice(index, 1);
+            ele.parent().parent().remove();
+            updateTotalPoint();
         }
 
         if (type == 3) {
             const index = selectedMatching.findIndex(i => i.id == userId);
             selectedMatching.splice(index, 1);
+
+            ele.parent().parent().remove();
+            const castMatched = baseCastsMatched.find(i => i.id == userId);
+            if (castMatched) {
+                totalPoint -= castMatched.pivot.temp_point;
+                $('#total-point').text((totalPoint + '').replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1,") + 'P');
+            } else {
+                console.log('123');
+                updateTotalPoint();
+            }
         }
-        numOfCast-=1;
-        ele.parent().parent().remove();
     });
-    $('#order-duration').on('change', function (event) {
-        console.log($(this).val());
-    });
+
     renderListCast(classId, getListCastMatching(), getListCastNominees(), getListCastCandidates());
 
     // Search user in popup
@@ -322,6 +377,19 @@ jQuery(document).ready(function($) {
         var search = $(this).val();
         renderListCast(1, getListCastMatching(), getListCastNominees(), getListCastCandidates());
     },500));
+
+    $('#order-duration').on('change', function() {
+       updateTotalPoint();
+    });
+
+    $('body').on('change', '#total-cast', function() {
+        let totalCast = $("#total-cast option:selected").val();
+        if (totalCast < numOfCast) {
+            alert('設定している"キャストを呼ぶ人数"より、選択されているキャストの人数が超えています。編集してください。\n');
+            return false;
+        }
+    });
+
     $('#orderdatetimepicker').datetimepicker({
       minDate: 'now',
     });

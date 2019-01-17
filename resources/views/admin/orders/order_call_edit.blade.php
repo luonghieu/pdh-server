@@ -211,7 +211,6 @@
                   @endif
                 </tbody>
               </table>
-              @if (count($castsMatching) >= 1)
               <div class="panel-body">
                 <div class="display-title">
                   <p>マッチングしているキャスト一覧</p>
@@ -241,7 +240,6 @@
                   @endforeach
                 </tbody>
               </table>
-              @endif
               <div class="wrapper-button">
                 <a href="{{ route('admin.orders.call', ['order' =>$order->id]) }}" class="btn btn-info">戻る</a>
                 <button type="submit" class="btn btn-info">予約内容を変更する</button>
@@ -358,14 +356,8 @@
   let selectedNomination = JSON.parse('<?php echo json_encode($castsNominee) ?>');
   let selectedCandidate = JSON.parse('<?php echo json_encode($castsCandidates) ?>');
   let selectedMatching = JSON.parse('<?php echo json_encode($castsMatching) ?>');
+  const baseCastsMatched = JSON.parse('<?php echo json_encode($castsMatching) ?>');
   const castClasses = JSON.parse('<?php echo json_encode($castClasses) ?>');
-  $('body').on('change', '#total-cast', function() {
-    let totalCast = $("#total-cast option:selected").val();
-    if (totalCast < numOfCast) {
-      alert('Maximun Cast');
-      return false;
-    }
-  });
 </script>
 <script src="/assets/admin/js/pages/order_call.js"></script>
 @stop
