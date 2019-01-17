@@ -135,7 +135,7 @@ $(document).ready(function(){
       .catch(function(error) {
         $('#order-offer-popup').prop('checked',false);
          if (error.response.status == 401) {
-            window.location = '/login/line';
+            window.location = '/login';
           } else {
             if(error.response.status == 422) {
                 $('#timeout-offer-message h2').css('font-size', '15px');
@@ -154,7 +154,7 @@ $(document).ready(function(){
               var err ='';
 
               if (error.response.status == 400) {
-                var err = '開始時間は現在時刻から30分以降の時間を選択してください';
+                var err = '開始時間は現在時刻から60分以降の時間を選択してください';
               }
 
               if(error.response.status == 500) {
@@ -296,15 +296,11 @@ $(document).ready(function(){
       }
     }
 
-    var add_minutes =  function (dt, minutes) {
-      return new Date(dt.getTime() + minutes*60000);
-    }
-
     utc = now.getTime() + (now.getTimezoneOffset() * 60000);
     nd = new Date(utc + (3600000*9));
 
-    if (add_minutes(nd, 30) > checkDate) {
-      checkDate = add_minutes(nd, 30);
+    if (helper.add_minutes(nd, 60) > checkDate) {
+      checkDate = helper.add_minutes(nd, 60);
     }
 
     var startTimeTo = $('#start-time-to-offer').val();
@@ -424,7 +420,7 @@ $(document).ready(function(){
       }).catch(function(error) {
         console.log(error);
         if (error.response.status == 401) {
-          window.location = '/login/line';
+          window.location = '/login';
         }
     });
   })

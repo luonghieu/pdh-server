@@ -250,11 +250,11 @@
       $startHourFrom = Carbon\Carbon::parse($offer->start_time_from)->format('H:i');
       $startMinute =  (int)Carbon\Carbon::parse($offer->start_time_from)->format('i');
 
-      if($currentTime->copy()->addMinutes(30)->between($startTimeFrom,$startTimeTo)) {
-        $startHour = (int)$currentTime->copy()->addMinutes(30)->format('H');
-        $startHourFrom =$currentTime->copy()->addMinutes(30)->format('H:i');
-        $startMinute =  (int)$currentTime->copy()->addMinutes(30)->format('i');
-        $date = $currentTime->copy()->addMinutes(30)->format('Y-m-d');
+      if($currentTime->copy()->addMinutes(60)->between($startTimeFrom,$startTimeTo)) {
+        $startHour = (int)$currentTime->copy()->addMinutes(60)->format('H');
+        $startHourFrom =$currentTime->copy()->addMinutes(60)->format('H:i');
+        $startMinute =  (int)$currentTime->copy()->addMinutes(60)->format('i');
+        $date = $currentTime->copy()->addMinutes(60)->format('Y-m-d');
       }
     @endphp
       <label class="date-input d-flex-end">
