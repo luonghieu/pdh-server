@@ -524,6 +524,10 @@ $(document).ready(function(){
   var regex = /offers\/\d/;
 
   if (currentUrl.match(regex)) {
+    $('.details-list').css({
+      display: 'none',
+    });
+
     function caculatorPoint() {
       var hour = $(".select-hour-offer option:selected").val();
       if (23<hour) {
