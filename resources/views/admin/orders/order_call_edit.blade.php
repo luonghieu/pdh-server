@@ -354,9 +354,11 @@
   let totalCast = '<?php echo $order->total_cast ?>';
   let numOfCast = '<?php echo count($castsMatching) + count($castsCandidates) + count($castsNominee) ?>';
   let totalPoint = Number('<?php echo $tempPoint; ?>');
-  let orderDuration = '<?php echo $order->duration?>';
   let orderStartTime = '<?php echo $order->date . ' ' . $order->start_time ?>';
-  let orderType = '<?php echo $order->type ?>';
+  let selectedNomination = JSON.parse('<?php echo json_encode($castsNominee) ?>');
+  let selectedCandidate = JSON.parse('<?php echo json_encode($castsCandidates) ?>');
+  let selectedMatching = JSON.parse('<?php echo json_encode($castsMatching) ?>');
+  const castClasses = JSON.parse('<?php echo json_encode($castClasses) ?>');
   $('body').on('change', '#total-cast', function() {
     let totalCast = $("#total-cast option:selected").val();
     if (totalCast < numOfCast) {
@@ -366,7 +368,4 @@
   });
 </script>
 <script src="/assets/admin/js/pages/order_call.js"></script>
-<script>
-
-</script>
 @stop
