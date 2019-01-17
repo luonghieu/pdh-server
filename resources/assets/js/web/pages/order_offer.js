@@ -248,7 +248,7 @@ $(document).ready(function(){
     startMinuteTo   = hour == startHourTo   ? parseInt(startMinuteTo) : 59;
 
     for (var i = startMinuteFrom; i <= startMinuteTo; i++) {
-      var value = (i < 10) ? `0${i}` : i;
+      var value = (i < 10) ? `0${parseInt(i)}` : i;
 
       html += `<option value="${value}">${value}分</option>`;
     }
@@ -508,7 +508,7 @@ $(document).ready(function(){
           startMinuteTo   = orderOffer.hour == startHourTo   ? startMinuteTo   : 59;
 
           for (var i = startMinuteFrom; i <= startMinuteTo; i++) {
-            var value = i < 10 ? `0${i}` : i;
+            var value = i < 10 ? `0${parseInt(i)}` : i;
             var selected = i == orderOffer.minute ? 'selected' : '';
 
             html += `<option value="${value}" ${selected}>${value}分</option>`;
@@ -530,22 +530,8 @@ $(document).ready(function(){
 
     function caculatorPoint() {
       var hour = $(".select-hour-offer option:selected").val();
-      if (23<hour) {
-        switch(hour) {
-          case '24':
-              hour = '00';
-              break;
-          case '25':
-              hour = '01';
-              break;
-          case '26':
-              hour = '02';
-              break;
-        }
-      }
-      var minute = $(".select-minute-offer option:selected").val();
 
-      var time = hour + ':' + minute;
+      var minute = $(".select-minute-offer option:selected").val();
 
       if(localStorage.getItem("order_offer")){
         var offerId = $('.offer-id').val();
@@ -554,6 +540,21 @@ $(document).ready(function(){
           orderOffer = orderOffer[offerId];
           if(orderOffer.current_date) {
             var date = orderOffer.current_date;
+            hour = orderOffer.hour;
+            if (23 < hour) {
+              switch(hour) {
+                case '24':
+                    hour = '00';
+                    break;
+                case '25':
+                    hour = '01';
+                    break;
+                case '26':
+                    hour = '02';
+                    break;
+              }
+            }
+            time = orderOffer.minute;
           }else {
             var date = $('#current-date-offer').val();
           }
@@ -562,6 +563,7 @@ $(document).ready(function(){
         var date = $('#current-date-offer').val();
       }
 
+      var time = hour + ':' + minute;
       var duration = $("#duration-offer").val();
       var classId = $('#current-class-id-offer').val();
       var castIds = $('#current-cast-id-offer').val();

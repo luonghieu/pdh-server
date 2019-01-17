@@ -71,7 +71,7 @@ $(document).ready(function(){
     var arrTimeTo = [];
 
     for (var i = startHourTo; i <= 26; i++) {
-      var value = i < 10 ? `0${i}` : i;
+      var value = i < 10 ? `0${parseInt(i)}` : i;
       arrTimeTo.push(value + ':00',value + ':30')
     }
 
