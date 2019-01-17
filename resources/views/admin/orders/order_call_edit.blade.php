@@ -242,7 +242,7 @@
               </table>
               <div class="wrapper-button">
                 <a href="{{ route('admin.orders.call', ['order' =>$order->id]) }}" class="btn btn-info">戻る</a>
-                <button type="submit" class="btn btn-info">予約内容を変更する</button>
+                <button type="button" class="btn btn-info" id="submit-btn" disabled>予約内容を変更する</button>
               </div>
             </form>
             <div class="modal fade" id="choose-cast-nominee" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
@@ -351,7 +351,7 @@
 <script type="text/javascript">
   let totalCast = '<?php echo $order->total_cast ?>';
   let numOfCast = '<?php echo count($castsMatching) + count($castsCandidates) + count($castsNominee) ?>';
-  let totalPoint = Number('<?php echo $tempPoint; ?>');
+  let baseTempPoint = Number('<?php echo $tempPoint; ?>');
   let orderStartTime = '<?php echo $order->date . ' ' . $order->start_time ?>';
   let selectedNomination = JSON.parse('<?php echo json_encode($castsNominee) ?>');
   let selectedCandidate = JSON.parse('<?php echo json_encode($castsCandidates) ?>');
