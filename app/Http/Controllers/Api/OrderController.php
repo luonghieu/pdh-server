@@ -275,7 +275,15 @@ class OrderController extends ApiController
             }
         }
 
-        return $this->respondWithData($orderPoint + $orderFee + $allowancePoint);
+        if (isset($offer)) {
+            return $this->respondWithData([
+                'order_point' => $orderPoint,
+                'order_fee' => $orderFee,
+                'allowance_point' => $allowancePoint,
+            ]);
+        } else {
+            return $this->respondWithData($orderPoint + $orderFee + $allowancePoint);
+        }
     }
 
     public function getDayOfMonth(Request $request)

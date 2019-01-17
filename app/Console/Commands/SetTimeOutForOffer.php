@@ -48,6 +48,7 @@ class SetTimeOutForOffer extends Command
             if ($now->gte($expiredDate)) {
                 $offer->status = OfferStatus::TIMEOUT;
             }
+
             $offer->save();
         }
     }
