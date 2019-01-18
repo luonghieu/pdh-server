@@ -183,7 +183,27 @@ class OfferController extends Controller
             return redirect()->route('admin.offers.create');
         }
 
-        if (Carbon::parse($data['expired_date'])->lte(Carbon::parse($data['date_offer'] . ' ' . $data['start_time']))) {
+        $startTimeTo = explode(":", $data['end_time']);
+        $hour = $startTimeTo[0];
+        if (23 < $startTimeTo[0]) {
+            switch ($startTimeTo[0]) {
+                case 24:
+                    $hour = '00';
+                    break;
+                case 25:
+                    $hour = '01';
+                    break;
+                case 26:
+                    $hour = '02';
+                    break;
+            }
+
+            $validDate = Carbon::parse($data['date_offer'] . ' ' . $hour . ':' . $startTimeTo[1])->addDay();
+        } else {
+            $validDate = Carbon::parse($data['date_offer'] . ' ' . $data['end_time']);
+        }
+
+        if (Carbon::parse($data['expired_date'])->gt($validDate)) {
             $request->session()->flash('expired_date_not_valid', 'expired_date_not_valid');
 
             if (isset($request->offer_id)) {

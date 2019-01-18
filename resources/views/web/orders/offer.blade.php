@@ -224,7 +224,7 @@
     <div class="label-date">
       @php
       $day = \Carbon\Carbon::parse($offer->date);
-      $dayOfWeek = getNameDayOfWeek($day->dayOfWeek);
+      $dayOfWeek = dayOfWeek(0)[$day->dayOfWeek];
       @endphp
       <p id="temp-date-offer">{{ $day->format('Y年m月d日') }}({{$dayOfWeek}})</p>
     </div>
@@ -256,11 +256,11 @@
         $startHourFrom = Carbon\Carbon::parse($offer->start_time_from)->format('H:i');
         $startMinute =  (int)Carbon\Carbon::parse($offer->start_time_from)->format('i');
 
-        if($currentTime->copy()->addMinutes(30)->between($startTimeFrom,$startTimeTo)) {
-          $startHour = (int)$currentTime->copy()->addMinutes(30)->format('H');
-          $startHourFrom =$currentTime->copy()->addMinutes(30)->format('H:i');
-          $startMinute =  (int)$currentTime->copy()->addMinutes(30)->format('i');
-          $date = $currentTime->copy()->addMinutes(30)->format('Y-m-d');
+        if($currentTime->copy()->addMinutes(60)->between($startTimeFrom,$startTimeTo)) {
+          $startHour = (int)$currentTime->copy()->addMinutes(60)->format('H');
+          $startHourFrom =$currentTime->copy()->addMinutes(60)->format('H:i');
+          $startMinute =  (int)$currentTime->copy()->addMinutes(60)->format('i');
+          $date = $currentTime->copy()->addMinutes(60)->format('Y-m-d');
         }
       @endphp
     <div class="choose-time">

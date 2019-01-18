@@ -124,6 +124,27 @@ class ValidateOrder implements ShouldQueue
         if (OrderType::NOMINATION != $this->order->type) {
             $room = $this->order->room;
             $startTime = Carbon::parse($this->order->date . ' ' . $this->order->start_time);
+            // --Temp--
+            $guest = $this->order->user;
+            $guestNickname = $guest->nickname ? $guest->nickname . '様' : 'お客様';
+            $guestRoom = $guest->rooms()
+                ->where('rooms.type', RoomType::SYSTEM)
+                ->where('rooms.is_active', true)->first();
+            $guestMessage = 'マッチング確定おめでとうございます♪'
+                . PHP_EOL . PHP_EOL . '▼ご予約内容'
+                . PHP_EOL . '場所：' . $this->order->address
+                . PHP_EOL . '合流予定時間：' . $startTime->format('H:i') . '～'
+                . PHP_EOL . PHP_EOL . '現在自動決済を停止しております。'
+                . PHP_EOL . 'キャストとの合流前に決済が必要です。決済画面をお送りいたしますので、大変お手数ですが運営者チャットに、' . $guestNickname  . 'のメールアドレスをお送りください。';
+            $guestRoomMessage = $guestRoom->messages()->create([
+                'user_id' => 1,
+                'type' => MessageType::SYSTEM,
+                'message' => $guestMessage,
+                'system_type' => SystemMessageType::NORMAL,
+                'order_id' => $this->order->id,
+            ]);
+            $guestRoomMessage->recipients()->attach($guest->id, ['room_id' => $room->id]);
+            // --Temp--
             $message = '\\\\ おめでとうございます！マッチングが確定しました♪ //'
             . PHP_EOL . PHP_EOL . '- ご予約内容 - '
             . PHP_EOL . '場所：' . $this->order->address
@@ -149,6 +170,28 @@ class ValidateOrder implements ShouldQueue
             \Notification::send($users, new ApproveNominatedOrders($this->order));
         } else {
             $room = $this->order->room;
+            $startTime = Carbon::parse($this->order->date . ' ' . $this->order->start_time);
+            // --Temp--
+            $guest = $this->order->user;
+            $guestNickname = $guest->nickname ? $guest->nickname . '様' : 'お客様';
+            $guestRoom = $guest->rooms()
+                ->where('rooms.type', RoomType::SYSTEM)
+                ->where('rooms.is_active', true)->first();
+            $guestMessage = 'マッチング確定おめでとうございます♪'
+                . PHP_EOL . PHP_EOL . '▼ご予約内容'
+                . PHP_EOL . '場所：' . $this->order->address
+                . PHP_EOL . '合流予定時間：' . $startTime->format('H:i') . '～'
+                . PHP_EOL . PHP_EOL . '現在自動決済を停止しております。'
+                . PHP_EOL . 'キャストとの合流前に決済が必要です。決済画面をお送りいたしますので、大変お手数ですが運営者チャットに、' . $guestNickname  . 'のメールアドレスをお送りください。';
+            $guestRoomMessage = $guestRoom->messages()->create([
+                'user_id' => 1,
+                'type' => MessageType::SYSTEM,
+                'message' => $guestMessage,
+                'system_type' => SystemMessageType::NORMAL,
+                'order_id' => $this->order->id,
+            ]);
+            $guestRoomMessage->recipients()->attach($guest->id, ['room_id' => $room->id]);
+            // --Temp--
             $userIds = [];
             foreach ($users as $user) {
                 $userIds[] = $user->id;

@@ -26,99 +26,16 @@
     ※選択したキャストには希望リクエストが送られますが、ご希望のキャストが参加できない場合は、自動的に無指名のご予約に切り替わります。（マッチング確定後のキャストの変更はできかねます）<br/>
     ※希望したキャストとマッチングした場合は、1人あたり15分毎に別途500Pが発生します。
   </p>
-
-  <div class="">
-    <div class="form-grpup" id="list-cast-order"><!-- フォーム内容 -->
-      @if(isset($casts['data']))
-        @if(count($casts['data']))
-          @include('web.orders.load_more_list_casts', compact('casts'))
-          <input type="hidden" id="next_page" value="{{ $casts['next_page_url'] }}">
-        @endif
-      @endif
-    </div>
-    @if(isset($castNumbers))
-    <input type="hidden" value="{{ $castNumbers }}" class="cast-numbers">
-    @endif
-    <input type="hidden" value="" class="cast-ids" name="cast_ids">
-  </div>
+  <div class="form-grpup" id="list-cast-order"></div>
   <div class="create-call-form" id="" name="select_casts_form">
     <button type="button" class="form_footer ct-button" id="sb-select-casts"><a href="{{ route('guest.orders.get_step4') }}">希望リクエストせずに進む(3/4)</a></button>
   </div>
 @endsection
+<script>
+  var avatarsDefault = "<?php echo asset('assets/web/images/gm1/ic_default_avatar@3x.png'); ?>";
+  var link = "<?php echo env('APP_URL') . '/cast/' ?>";
+  var loadMore = "<?php echo env('APP_URL') . '/step3/load_more' ?>";
+</script>
 
 @section('web.script')
-  <script>
-    $(function () {
-      function checkedCasts() {
-        if(localStorage.getItem("order_call")){
-          var arrIds = JSON.parse(localStorage.getItem("order_call")).arrIds;
-          if(arrIds) {
-            if(arrIds.length) {
-              const inputCasts = $('.select-casts');
-              $.each(inputCasts,function(index,val){
-                if(arrIds.indexOf(val.value) > -1) {
-                  $(this).prop('checked',true);
-                  $(this).parent().find('.cast-link').addClass('cast-detail');
-                  $('.label-select-casts[for='+  val.value  +']').text('リクエスト中');
-                }
-              })
-
-              $(".cast-ids").val(arrIds.toString());
-              $('#sb-select-casts a').text('次に進む(3/4)');
-            }
-          }
-        }
-      }
-
-      /*Load more list cast order*/
-      var requesting = false;
-      var windowHeight = $(window).height();
-
-      function needToLoadmore() {
-        return requesting == false && $(window).scrollTop() >= $(document).height() - windowHeight - 500;
-      }
-
-      function handleOnLoadMore() {
-        // Improve load list image
-        $('.lazy').lazy({
-            placeholder: "data:image/gif;base64,R0lGODlhEALAPQAPzl5uLr9Nrl8e7..."
-        });
-
-        if (needToLoadmore()) {
-          var url = $('#next_page').val();
-
-          if (url) {
-            requesting = true;
-            window.axios.get("<?php echo env('APP_URL') . '/step3/load_more' ?>", {
-              params: { next_page: url },
-            }).then(function (res) {
-              res = res.data;
-              $('#next_page').val(res.next_page || '');
-              $('#next_page').before(res.view);
-              checkedCasts();
-              requesting = false;
-            }).catch(function () {
-              requesting = false;
-            });
-          }
-        }
-      }
-
-      $(document).on('scroll', handleOnLoadMore);
-      $(document).ready(handleOnLoadMore);
-      /*!----*/
-
-      checkedCasts();
-
-      if (localStorage.getItem("order_call")) {
-        var countIds = JSON.parse(localStorage.getItem("order_call")).countIds;
-        if (localStorage.getItem("full")) {
-            var text = ' 指名できるキャストは'+ countIds + '名です';
-            $('#content-message h2').text(text);
-            $('#max-cast').prop('checked',true);
-            localStorage.removeItem("full");
-        }
-      }
-    });
-  </script>
 @endsection
