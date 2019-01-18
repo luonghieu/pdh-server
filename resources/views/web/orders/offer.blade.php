@@ -84,8 +84,7 @@
       <div class="text-box" id="timeout-offer-message">
         <h2>オファーについて</h2>
         <p>2名以上で参加できるキャストから、ゲストに置く特別なオファーです。その他の予約と比較して</p>
-        <p>①少ないステップで予約が完了するための予約がラク</p>
-        <p>②指名予約と比較して、単価が安い</p>
+        <p>①少ないステップで予約が完了するための予約がラク <br />②指名予約と比較して、単価が安い</p>
         <p>という特徴があります</p>
       </div>
       <label for="instructions-offer" class="close_button" id="close-offer">OK</label>
@@ -222,47 +221,56 @@
       <h2>ギャラ飲みの時間</h2>
     </div>
     <div class="text-time">※希望の開始時間を選択してください</div>
+    <div class="label-date">
+      @php
+      $day = \Carbon\Carbon::parse($offer->date);
+      $dayOfWeek = getNameDayOfWeek($day->dayOfWeek);
+      @endphp
+      <p id="temp-date-offer">{{ $day->format('Y年m月d日') }}({{$dayOfWeek}})</p>
+    </div>
     <div class="form-grpup"><!-- フォーム内容 -->
-    @php
-      $startHour = (int)Carbon\Carbon::parse($offer->start_time_from)->format('H');
-      $endHour = (int)Carbon\Carbon::parse($offer->start_time_to)->format('H');
+      @php
+        $startHour = (int)Carbon\Carbon::parse($offer->start_time_from)->format('H');
+        $endHour = (int)Carbon\Carbon::parse($offer->start_time_to)->format('H');
 
-      $startTimeFrom = Carbon\Carbon::createFromFormat('Y-m-d H:i:s', $offer->date . ' ' . $offer->start_time_from);
-      $startTimeTo = Carbon\Carbon::createFromFormat('Y-m-d H:i:s', $offer->date . ' ' . $offer->start_time_to);
+        $startTimeFrom = Carbon\Carbon::createFromFormat('Y-m-d H:i:s', $offer->date . ' ' . $offer->start_time_from);
+        $startTimeTo = Carbon\Carbon::createFromFormat('Y-m-d H:i:s', $offer->date . ' ' . $offer->start_time_to);
 
-      if ($endHour < $startHour) {
-        $startTimeTo = Carbon\Carbon::createFromFormat('Y-m-d H:i:s', $offer->date . ' ' . $offer->start_time_to)->addDay();
-        switch ($endHour) {
-          case 0:
-              $endHour = 24;
-              break;
-          case 1:
-              $endHour = 25;
-              break;
-          case 2:
-              $endHour = 26;
-              break;
+        if ($endHour < $startHour) {
+          $startTimeTo = Carbon\Carbon::createFromFormat('Y-m-d H:i:s', $offer->date . ' ' . $offer->start_time_to)->addDay();
+          switch ($endHour) {
+            case 0:
+                $endHour = 24;
+                break;
+            case 1:
+                $endHour = 25;
+                break;
+            case 2:
+                $endHour = 26;
+                break;
+          }
         }
-      }
 
-      $currentTime = Carbon\Carbon::now()->second(0);
-      $date = $offer->date;
-      $startHourFrom = Carbon\Carbon::parse($offer->start_time_from)->format('H:i');
-      $startMinute =  (int)Carbon\Carbon::parse($offer->start_time_from)->format('i');
+        $currentTime = Carbon\Carbon::now()->second(0);
+        $date = $offer->date;
+        $startHourFrom = Carbon\Carbon::parse($offer->start_time_from)->format('H:i');
+        $startMinute =  (int)Carbon\Carbon::parse($offer->start_time_from)->format('i');
 
-      if($currentTime->copy()->addMinutes(30)->between($startTimeFrom,$startTimeTo)) {
-        $startHour = (int)$currentTime->copy()->addMinutes(30)->format('H');
-        $startHourFrom =$currentTime->copy()->addMinutes(30)->format('H:i');
-        $startMinute =  (int)$currentTime->copy()->addMinutes(30)->format('i');
-        $date = $currentTime->copy()->addMinutes(30)->format('Y-m-d');
-      }
-    @endphp
+        if($currentTime->copy()->addMinutes(30)->between($startTimeFrom,$startTimeTo)) {
+          $startHour = (int)$currentTime->copy()->addMinutes(30)->format('H');
+          $startHourFrom =$currentTime->copy()->addMinutes(30)->format('H:i');
+          $startMinute =  (int)$currentTime->copy()->addMinutes(30)->format('i');
+          $date = $currentTime->copy()->addMinutes(30)->format('Y-m-d');
+        }
+      @endphp
+    <div class="choose-time">
+      <label class="choose-time-title">希望開始時間</label>
       <label class="date-input d-flex-end">
         <p class="date-input__text">
-          <span id="temp-date-offer">{{ Carbon\Carbon::parse($date)->format('Y年m月d日') }}</span>&nbsp&nbsp&nbsp
-          <span class='time-offer' id='temp-time-offer'>{{ $startHourFrom }}~</span>
+          <span class='time-offer color-placeholder' id='temp-time-offer'>選択してください</span>
         </p>
       </label>
+    </div>
     </div>
     <input type="hidden" name="current_date_offer" value="{{ $date }}" id="current-date-offer">
     <input type="hidden" name="start_time_from_offer" value="{{ Carbon\Carbon::parse($offer->start_time_from)->format('H:i') }}" id="start-time-from-offer">
@@ -290,7 +298,6 @@
     <a class="link-arrow link-arrow--left" href="{{ route('credit_card.index') }}" style="color: #222222;">登録済み</a>
     @endif
     <div class="form-group">
-      <div class="reservation-attention"><a href="{{ route('guest.orders.offers_attention') }}" style="margin: 10px 0px -7px">予約前の注意事項</a></div>
       <div id="detail-point-offer">
         <div class="settlement-confirm">
           <section class="details-header">
@@ -328,8 +335,8 @@
         <label class="checkbox">
           <input type="checkbox" class="checked-order-offer" name="confrim_order_offer">
           <span class="sp-disable" id="sp-cancel"></span>
-          <a href="{{ route('guest.orders.cancel') }}">キャンセルポリシー</a>
-          に同意する
+          <p><a href="{{ route('guest.orders.cancel') }}">キャンセルポリシー</a>、及び<a href="{{ route('guest.orders.offers_attention') }}">予約前の注意事項に</a>
+          に同意する</p>
         </label>
       </div>
     </div>

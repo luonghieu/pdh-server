@@ -30,6 +30,24 @@ $(document).ready(function(){
 
   }
 
+  if(localStorage.getItem("order_offer")){
+    var offerId = $('.offer-id').val();
+    var orderOffer = JSON.parse(localStorage.getItem("order_offer"));
+    if (orderOffer[offerId].hour) {
+      $('#temp-time-offer').removeClass('color-placeholder');
+      $('#temp-time-offer').addClass('color-choose-time');
+    }
+  } else {
+    $('#temp-time-offer').removeClass('color-choose-time');
+    $('#temp-time-offer').addClass('color-placeholder');
+  }
+
+  $('#temp-time-offer').click(function(event) {
+    $(this).removeClass('color-placeholder');
+    $(this).addClass('color-choose-time');
+  });
+
+
   $(".checked-order-offer").on("change",function(event){
     if ($(this).is(':checked')) {
       var area = $("input:radio[name='offer_area']:checked").val();
@@ -603,7 +621,19 @@ $(document).ready(function(){
     // Set the date we're counting down to
     var countingDownTo = $('#expired-time').val();
     if (countingDownTo) {
-      var countDownDate = new Date(countingDownTo).getTime();
+      var countDownDate = new Date(countingDownTo);
+      var month = countDownDate.getMonth()+1;
+      var year = countDownDate.getFullYear();
+      var date = countDownDate.getDate();
+      var hour = countDownDate.getHours();
+      var minute = countDownDate.getMinutes();
+
+      if (checkApp.isAppleDevice()) {
+        var dateFolowDevice = new Date(month +'/' + date +'/'+ year +' ' + hour +':' + minute).getTime();
+      } else {
+        var dateFolowDevice = new Date(year +'-' + month +'-'+ date +' ' + hour +':' + minute).getTime();
+      }
+
       // Update the count down every 1 second
       var x = setInterval(function() {
         // Get todays date and time
@@ -612,7 +642,7 @@ $(document).ready(function(){
         nd = new Date(utc + (3600000*9));
         var nowJapan = new Date(nd).getTime();
         // Find the distance between now and the count down date
-        var distance = countDownDate - nowJapan;
+        var distance = dateFolowDevice - nowJapan;
 
         // Time calculations for days, hours, minutes and seconds
         var days = Math.floor(distance / (1000 * 60 * 60 * 24));
