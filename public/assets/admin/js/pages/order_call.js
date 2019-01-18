@@ -7,7 +7,7 @@ let listCastCandidates = getListCastCandidates();
 let classId = $('#choosen-cast-class').children("option:selected").val();
 let clastIdPrevious = $('#choosen-cast-class').val();
 let totalCastPrevious = $('#total-cast').val();
-
+let newNominees = [];
 function debounce(func, wait, immediate) {
     let timeout;
     return function () {
@@ -175,7 +175,35 @@ function updateTotalPoint(newBaseTempPoint) {
 
 function orderChanged() {
     const currentCasts = [...getListCastNominees(), ...getListCastMatching(), ...getListCastCandidates()];
-    console.log(currentCasts)
+    let isChanged = false;
+    if (numOfCast != $('#total-cast').val()) {
+        isChanged = true;
+    }
+    if (castClasses != $('#choosen-cast-class').val()) {
+        isChanged = true;
+    }
+    if (baseCastClass != $('#choosen-cast-class').val()) {
+        isChanged = true;
+        console.log($('#choosen-cast-class').val());
+    }
+
+    const tempBaseCastMatched = [];
+    baseCastsMatched.forEach(i => tempBaseCastMatched.push(i.id));
+    if (currentCasts.toString() != tempBaseCastMatched.toString()) {
+        isChanged = true;
+    }
+
+    if (orderStartTime != moment($('#order-date').val()).format('YYYY-MM-DD HH:mm:ss')) {
+        isChanged = true;
+        console.log(orderStartTime);
+        console.log(moment($('#order-date').val()).format('YYYY-MM-DD HH:mm:ss'))
+    }
+
+    if (isChanged) {
+        $('#submit-btn').prop('disabled', false);
+    } else {
+        $('#submit-btn').prop('disabled', true);
+    }
 }
 
 function handleOpenPopupSelectCastEvent() {
@@ -456,12 +484,30 @@ jQuery(document).ready(function ($) {
     handleChangeTotalCastEvent();
 
     $('#submit-btn').on('click', function () {
-        console.log(getListCastCandidates(), getListCastMatching(), getListCastNominees());
+        $.ajax({
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            },
+            type: "PUT",
+            url: '/admin/orders/' + orderId,
+            data: {
+                'listCastMatching': getListCastMatching(),
+                'listCastNominees': getListCastNominees(),
+                'listCastCandidates': getListCastCandidates(),
+                'orderDuration': $('#order-duration').val(),
+                'orderDate': $('#order-date').val(),
+                'class_id': $('#choosen-cast-class').val(),
+                'totalCast': $('#total-cast').val()
+            },
+            success: function (response) {
+                console.log(response);
+            },
+        });
     });
 
     $('#orderdatetimepicker').datetimepicker({
         minDate: 'now',
     }).on('dp.change',function(event){
-        console.log('123123');
+        orderChanged();
     });
 });

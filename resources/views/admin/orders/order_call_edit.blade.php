@@ -356,6 +356,8 @@
   let selectedNomination = JSON.parse('<?php echo json_encode($castsNominee) ?>');
   let selectedCandidate = JSON.parse('<?php echo json_encode($castsCandidates) ?>');
   let selectedMatching = JSON.parse('<?php echo json_encode($castsMatching) ?>');
+  const baseCastClass = '<?php echo $order->class_id ?>';
+  const orderId = '<?php echo $order->id ?>';
   const baseCastsMatched = JSON.parse('<?php echo json_encode($castsMatching) ?>');
   const castClasses = JSON.parse('<?php echo json_encode($castClasses) ?>');
 </script>

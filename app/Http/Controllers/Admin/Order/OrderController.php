@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin\Order;
 use App\Cast;
 use App\CastClass;
 use App\Enums\CastOrderStatus;
+use App\Enums\CastOrderType;
 use App\Enums\OrderPaymentStatus;
 use App\Enums\OrderStatus;
 use App\Enums\OrderType;
@@ -180,6 +181,92 @@ class OrderController extends Controller
         $castClass = CastClass::all();
 
         return view('admin.orders.order_call_edit', compact('order', 'castClasses', 'castsMatching', 'castsNominee', 'castsCandidates'));
+    }
+
+    public function updateOrderCall(Request $request, $id)
+    {
+        $order = Order::find($id);
+        $casts = $order->castOrder;
+        $castMatchingIds = [];
+        $castNomineeIds = [];
+        $castCandidateIds = [];
+        $orderDate = Carbon::parse($request->orderDate);
+
+        $order->duration = $request->orderDuration;
+        $order->class_id = $request->class_id;
+        $order->total_cast = $request->totalCast;
+        $order->date = $orderDate->format('YYYY-MM-DD');
+        $order->start_time = $orderDate->format('H:i');
+
+        foreach ($casts as $cast) {
+            if ($cast->pivot->status == CastOrderStatus::ACCEPTED) {
+                $castMatchingIds[] = $cast->id;
+            } else {
+                if ($cast->pivot->type == CastOrderType::NOMINEE) {
+                    $castNomineeIds[] = $cast->id;
+                } else {
+                    $castCandidateIds[] = $cast->id;
+                }
+            }
+        }
+
+        if (!$request->listCastNominees) {
+            if ($castNomineeIds) {
+                $order->castOrder()->detach($castNomineeIds);
+            }
+        } else {
+            $deletedNomineeIds = array_merge(array_diff($castNomineeIds, $request->listCastNominees));
+            $newNomineeIds = array_merge(array_diff($request->listCastNominees, $castNomineeIds));
+            if ($deletedNomineeIds) {
+//                $order->castOrder()->detach($deletedNomineeIds);
+            }
+            if ($newNomineeIds) {
+//                $order->nominees()->attach($newNomineeIds, [
+//                    'type' => CastOrderType::NOMINEE,
+//                    'status' => CastOrderStatus::OPEN,
+//                ]);
+            }
+        }
+
+        if (!$request->listCastCandidates) {
+            if ($castCandidateIds) {
+                dump('delete candidate all');
+            }
+        } else {
+            $deletedCandidateIds = array_merge(array_diff($castCandidateIds, $request->listCastCandidates));
+            $newCandidateIds = array_merge(array_diff($request->listCastCandidates, $castCandidateIds));
+
+            if ($deletedCandidateIds) {
+                dump('delete candidate');
+                dump($deletedCandidateIds);
+            }
+
+            if ($newCandidateIds) {
+                dump('add candidate');
+                dump($newCandidateIds);
+            }
+        }
+
+        if (!$request->listCastMatching) {
+            if ($castMatchingIds) {
+                dump('delete matching all');
+            }
+        } else {
+            $deletedMatchingIds = array_merge(array_diff($castMatchingIds, $request->listCastMatching));
+            $newMatchingIds = array_merge(array_diff($request->listCastMatching, $castMatchingIds));
+
+            if ($deletedMatchingIds) {
+                dump('delete matching');
+                dump($deletedMatchingIds);
+            }
+
+            if ($newMatchingIds) {
+                dump('add matching');
+                dump($newMatchingIds);
+            }
+        }
+
+        dd(123);
     }
 
     public function getCasts(Request $request, $classId)
