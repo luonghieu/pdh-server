@@ -26,12 +26,9 @@ class PointController extends ApiController
 
         $user = $this->guard()->user();
         $now = Carbon::now();
-        if (!$user->card) {
-            return $this->respondErrorMessage(trans('messages.card_not_exist'), 404);
-        }
 
-        if ($now->month > $user->card->exp_month && $now->year == $user->card->exp_year || $now->year > $user->card->exp_year) {
-            return $this->respondErrorMessage(trans('messages.card_expired'), 406);
+        if (!$user->tc_send_id) {
+            return $this->respondErrorMessage(trans('messages.card_not_exist'), 404);
         }
 
         $point = $user->buyPoint($request->amount);

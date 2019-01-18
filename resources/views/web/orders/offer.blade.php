@@ -245,10 +245,10 @@
             <h2>クレジットカードの登録</h2>
           </div>
 
-          @if(!Auth::user()->card)
-          <a class="link-arrow link-arrow--left" href="{{ route('credit_card.index') }}" style="color: #222222;">未登録</a>
+          @if(!Auth::user()->tc_send_id)
+          <a class="link-arrow link-arrow--left tc-verification-link" href="#" style="color: #222222;">未登録</a>
           @else
-          <a class="link-arrow link-arrow--left" href="{{ route('credit_card.index') }}" style="color: #222222;">登録済み</a>
+          <a class="link-arrow link-arrow--left tc-verification-link" href="#" style="color: #222222;">登録済み</a>
           @endif
           <div class="form-group">
             <div class="reservation-attention"><a href="{{ route('guest.orders.offers_attention') }}" style="margin: 10px 0px -7px">予約前の注意事項</a></div>
