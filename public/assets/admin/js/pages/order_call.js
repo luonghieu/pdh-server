@@ -159,22 +159,22 @@ function updateTotalPoint(newBaseTempPoint) {
     // });
     castsMatching.forEach(val => {
         let castMatched = baseCastsMatched.find(i => i.id == val);
-        if (!castMatched) {
-            const cast = selectedMatching.find(i => i.id == val);
-            tempPoint += orderPoint(cast) + allowance();
-        } else {
+        if (castMatched) {
             if (castMatched.pivot.type == 1) {
                 tempPoint += orderPoint(castMatched, true) + allowance() + orderFee();
             } else {
                 tempPoint += orderPoint(castMatched) + allowance();
             }
+        } else {
+            const cast = selectedMatching.find(i => i.id == val);
+            tempPoint += orderPoint(cast) + allowance();
         }
     });
+
     if (newBaseTempPoint) {
         tempPoint = newBaseTempPoint;
-    } else {
-        tempPoint += baseTempPoint;
     }
+
     $('#total-point').text((tempPoint + '').replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1,") + 'P');
 
     return tempPoint;
