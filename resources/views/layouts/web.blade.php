@@ -43,6 +43,7 @@
     </script>
     @endif
 
+    @include('web.partials.telecom_credit')
     @include('web.partials.footer')
   </div>
   @yield('web.script')
