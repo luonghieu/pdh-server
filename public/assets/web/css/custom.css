@@ -1333,8 +1333,8 @@ div.user-data span.total-point-cast{
 }
 
 .text-time {
-  margin-bottom: -25px;
-  margin-top: 2px;
+  margin-top: 10px;
+  margin-bottom: 10px;
   font-size: 15px;
 }
 
@@ -1352,6 +1352,17 @@ div.user-data span.total-point-cast{
 
 .attention-offer a {
   color: #00C3C3;
+}
+
+.attention-offer a:before {
+  content: "";
+  display: inline-block;
+  width: 1.5em;
+  height: 1.5em;
+  background: url(../images/common/info.svg) no-repeat center center;
+  background-size: contain;
+  vertical-align: text-bottom;
+  margin-right: 2px;
 }
 
 .popup-attention {
@@ -2773,6 +2784,39 @@ padding-top: 65px !important;
   left: 0;
 }
 
+.label-date p {
+  font-size: 15px;
+  font-weight: bold;
+}
+
+.choose-time {
+  position: relative;
+}
+
+.choose-time .choose-time-title {
+  color: #00C3C3;
+  font-size: 15px;
+  text-align: right;
+  position: absolute;
+  bottom: 10px;
+}
+
+.color-placeholder {
+  color: #c8c8c8;
+}
+
+.color-choose-time {
+  color: #222222 !important;
+}
+
+#timeout-offer-message p {
+  text-align: left;
+  line-height: 1.2;
+  font-weight: 400;
+}
+.reservation-policy .checkbox p a {
+  display: inline;
+}
 @media (max-width: 375px) {
   #accept-resend-code-voice .modal_content-btn2 h2 {
     padding: 0 1em .8em 1em;
