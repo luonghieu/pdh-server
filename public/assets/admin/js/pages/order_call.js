@@ -170,9 +170,8 @@ function updateTotalPoint(newBaseTempPoint) {
             }
         }
     });
-
     if (newBaseTempPoint) {
-        tempPoint += newBaseTempPoint;
+        tempPoint = newBaseTempPoint;
     } else {
         tempPoint += baseTempPoint;
     }
@@ -192,7 +191,6 @@ function orderChanged() {
     }
     if (baseCastClass != $('#choosen-cast-class').val()) {
         isChanged = true;
-        console.log($('#choosen-cast-class').val());
     }
 
     const tempBaseCastMatched = [];
@@ -203,8 +201,6 @@ function orderChanged() {
 
     if (orderStartTime != moment($('#order-date').val()).format('YYYY-MM-DD HH:mm:ss')) {
         isChanged = true;
-        console.log(orderStartTime);
-        console.log(moment($('#order-date').val()).format('YYYY-MM-DD HH:mm:ss'))
     }
 
     if (isChanged) {
@@ -439,6 +435,7 @@ function handleDeleteCastEvent() {
             const castMatched = baseCastsMatched.find(i => i.id == userId);
             if (castMatched) {
                 baseTempPoint -= castMatched.pivot.temp_point;
+                console.log(baseTempPoint);
                 updateTotalPoint(baseTempPoint);
             } else {
                 updateTotalPoint();

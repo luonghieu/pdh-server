@@ -197,7 +197,7 @@ class OrderController extends Controller
             $order->duration = $request->orderDuration;
             $order->class_id = $request->class_id;
             $order->total_cast = $request->totalCast;
-            $order->date = $orderDate->format('YYYY-MM-DD');
+            $order->date = $orderDate->format('Y-m-d');
             $order->start_time = $orderDate->format('H:i');
 
             foreach ($casts as $cast) {
@@ -229,7 +229,6 @@ class OrderController extends Controller
             }
 
             $newCandidates = [];
-            $newCandidateIds = [];
             if (!$request->listCastCandidates) {
                 if ($castCandidateIds) {
                     $order->castOrder()->detach($castCandidateIds);
@@ -287,6 +286,7 @@ class OrderController extends Controller
                     'status' => CastOrderStatus::ACCEPTED,
                     'accepted_at' => Carbon::now(),
                     'temp_point' => $orderPoint + $allowance,
+                    'cost' => $matching->cost
                 ]);
             }
 
