@@ -23,8 +23,8 @@ class Payment extends Model
             $this->load(['user']);
             $user = $this->user;
 
-            // do not call Stripe if payment is suspended
-            if ($user->payment_suspended || !$user->tc_send_id) {
+            // return if user haven't registered credit card
+            if (!$user->tc_send_id) {
                 return false;
             }
 
