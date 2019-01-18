@@ -103,7 +103,11 @@
     </div>
     <div class="time-expired-detail">
       <span id="time-countdown"></span>
-      <input type="hidden" id="expired-time" value="{{ $offer->expired_date ? $offer->expired_date:''}}">
+      <input type="hidden" id="expired-year" value="{{ \Carbon\Carbon::parse($offer->expired_date)->year }}">
+      <input type="hidden" id="expired-month" value="{{ \Carbon\Carbon::parse($offer->expired_date)->month }}">
+      <input type="hidden" id="expired-date" value="{{ \Carbon\Carbon::parse($offer->expired_date)->day }}">
+      <input type="hidden" id="expired-hour" value="{{ \Carbon\Carbon::parse($offer->expired_date)->hour }}">
+      <input type="hidden" id="expired-minute" value="{{ \Carbon\Carbon::parse($offer->expired_date)->minute}}">
       @php
         $now = \Carbon\Carbon::now();
         $expiredDate = $offer->expired_date;
@@ -359,7 +363,7 @@
        </select>
     </div>
     <div class="date-select__footer">
-      <button class="date-select__cancel" type="button">キャンセル</button>
+      <button class="date-select__cancel reset-color-input" type="button">キャンセル</button>
       <button class="date-select__ok date-select-offer" type="button">完了</button>
     </div>
 
