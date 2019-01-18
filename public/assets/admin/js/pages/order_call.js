@@ -102,7 +102,7 @@ function orderPoint(cast, isNominee = null) {
     const currentCastClass = castClasses.find(i => i.id == $('#choosen-cast-class').val());
     let cost = 0;
     if (isNominee) {
-        cost = cast.cost;
+        cost = cast.pivot.cost;
     } else {
         cost = currentCastClass.cost;
     }
@@ -149,20 +149,28 @@ function updateTotalPoint(newBaseTempPoint) {
     const castsCandidate = getListCastCandidates();
     let tempPoint = 0;
 
-    castsNominee.forEach(val => {
-        const cast = selectedNomination.find(i => i.id == val);
-        tempPoint += orderPoint(cast, true) + orderFee() + allowance();
-    });
-    castsCandidate.forEach(val => {
-        const cast = selectedNomination.find(i => i.id == val);
-        tempPoint += orderPoint(cast) + allowance();
-    });
+    // castsNominee.forEach(val => {
+    //     const cast = selectedNomination.find(i => i.id == val);
+    //     tempPoint += orderPoint(cast, true) + orderFee() + allowance();
+    // });
+    // castsCandidate.forEach(val => {
+    //     const cast = selectedCandidate.find(i => i.id == val);
+    //     tempPoint += orderPoint(cast) + allowance();
+    // });
     castsMatching.forEach(val => {
-        if (baseCastsMatched.findIndex(i => i.id == val) == -1) {
+        let castMatched = baseCastsMatched.find(i => i.id == val);
+        if (!castMatched) {
             const cast = selectedMatching.find(i => i.id == val);
             tempPoint += orderPoint(cast) + allowance();
+        } else {
+            if (castMatched.pivot.type == 1) {
+                tempPoint += orderPoint(castMatched, true) + allowance() + orderFee();
+            } else {
+                tempPoint += orderPoint(castMatched) + allowance();
+            }
         }
     });
+
     if (newBaseTempPoint) {
         tempPoint += newBaseTempPoint;
     } else {
@@ -497,7 +505,7 @@ jQuery(document).ready(function ($) {
                 'orderDuration': $('#order-duration').val(),
                 'orderDate': $('#order-date').val(),
                 'class_id': $('#choosen-cast-class').val(),
-                'totalCast': $('#total-cast').val()
+                'totalCast': $('#total-cast').val(),
             },
             success: function (response) {
                 console.log(response);

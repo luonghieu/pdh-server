@@ -359,6 +359,8 @@
   const baseCastClass = '<?php echo $order->class_id ?>';
   const orderId = '<?php echo $order->id ?>';
   const baseCastsMatched = JSON.parse('<?php echo json_encode($castsMatching) ?>');
+  const baseCastsNominee = JSON.parse('<?php echo json_encode($castsNominee) ?>');
+  const baseCastsCandidate = JSON.parse('<?php echo json_encode($castsCandidates) ?>');
   const castClasses = JSON.parse('<?php echo json_encode($castClasses) ?>');
 </script>
 <script src="/assets/admin/js/pages/order_call.js"></script>
