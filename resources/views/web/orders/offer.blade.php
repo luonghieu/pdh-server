@@ -255,7 +255,6 @@
         $date = $offer->date;
         $startHourFrom = Carbon\Carbon::parse($offer->start_time_from)->format('H:i');
         $startMinute =  (int)Carbon\Carbon::parse($offer->start_time_from)->format('i');
-
         if($currentTime->copy()->addMinutes(60)->between($startTimeFrom,$startTimeTo)) {
           $startHour = (int)$currentTime->copy()->addMinutes(60)->format('H');
           $startHourFrom =$currentTime->copy()->addMinutes(60)->format('H:i');
