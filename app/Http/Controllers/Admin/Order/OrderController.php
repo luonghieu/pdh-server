@@ -229,6 +229,7 @@ class OrderController extends Controller
             }
 
             $newCandidates = [];
+            $newCandidateIds = [];
             if (!$request->listCastCandidates) {
                 if ($castCandidateIds) {
                     $order->castOrder()->detach($castCandidateIds);
@@ -239,10 +240,6 @@ class OrderController extends Controller
 
                 if ($deletedCandidateIds) {
                     $order->castOrder()->detach($castCandidateIds);
-                }
-
-                if ($newCandidateIds) {
-                    $newCandidates = Cast::whereIn('id', $newCandidateIds)->get();
                 }
             }
 
@@ -256,14 +253,41 @@ class OrderController extends Controller
                 $newMatchingIds = array_merge(array_diff($request->listCastMatching, $castMatchingIds));
 
                 if ($deletedMatchingIds) {
-                    $order->castOrder()->detach($castMatchingIds);
+                    $order->castOrder()->detach($deletedMatchingIds);
                 }
 
-                if ($newMatchingIds) {
-                    $newMatchings = Cast::whereIn('id', $newMatchingIds)->get();
+                $newMatchings = Cast::whereIn('id', array_merge($newCandidateIds, $newMatchingIds))->get();
+            }
+
+            $orderStartTime = Carbon::parse($order->date . ' ' . $order->start_time);
+            $orderEndTime = $orderStartTime->copy()->addMinutes($order->duration * 60);
+
+            // Update temp point for previous casts matched
+            $matchedCasts = $order->casts;
+            foreach ($matchedCasts as $cast) {
+                $nightTime = $order->nightTime($orderEndTime);
+                $allowance = $order->allowance($nightTime);
+                if ($cast->pivot->type == CastOrderType::NOMINEE) {
+                    $orderFee = $order->orderFee($cast, $orderStartTime, $orderEndTime);
+                    $orderPoint = $order->orderPoint($cast);
+                    $order->castOrder()->updateExistingPivot(
+                        $cast->id,
+                        [
+                            'temp_point' => $orderPoint + $allowance + $orderFee,
+                        ]
+                    );
+                } else {
+                    $orderPoint = $order->orderPoint();
+                    $order->castOrder()->updateExistingPivot(
+                        $cast->id,
+                        [
+                            'temp_point' => $orderPoint + $allowance,
+                        ]
+                    );
                 }
             }
 
+            // Add casts nominee
             foreach ($newNominees as $nominee) {
                 $order->nominees()->attach($nominee->id, [
                     'type' => CastOrderType::NOMINEE,
@@ -275,28 +299,33 @@ class OrderController extends Controller
                 $order->apply($candidate->id);
             }
 
-            $orderStartTime = Carbon::parse($order->date . ' ' . $order->start_time);
-            $orderEndTime = $orderStartTime->copy()->addMinutes($order->duration * 60);
+            // Add casts matched
             $nightTime = $order->nightTime($orderEndTime);
             $allowance = $order->allowance($nightTime);
             $orderPoint = $order->orderPoint();
+
             foreach ($newMatchings as $matching) {
                 $order->candidates()->attach($matching->id ,[
                     'type' => CastOrderType::CANDIDATE,
                     'status' => CastOrderStatus::ACCEPTED,
                     'accepted_at' => Carbon::now(),
                     'temp_point' => $orderPoint + $allowance,
-                    'cost' => $matching->cost
                 ]);
+            }
+
+            $currentTotalCast = $order->casts()->count();
+            if ($currentTotalCast == $order->total_cast) {
+                $order->status = OrderStatus::ACTIVE;
+            } else {
+                $order->status = OrderStatus::OPEN;
             }
 
             $order->save();
             \DB::commit();
-
-            return response()->json(['suceess' => true, 200]);
+            return response()->json(['success' => true], 200);
         } catch (\Exception $e) {
             \DB::rollBack();
-            dd($e->getMessage());
+            return response()->json(['success' => false, 'info' => $e->getMessage()], 400);
         }
     }
 

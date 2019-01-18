@@ -4,10 +4,9 @@ let type = null;
 let listCastMatching = getListCastMatching();
 let listCastNominees = getListCastNominees();
 let listCastCandidates = getListCastCandidates();
-let classId = $('#choosen-cast-class').children("option:selected").val();
+let classId = $('#choosen-cast-class').val();
 let clastIdPrevious = $('#choosen-cast-class').val();
 let totalCastPrevious = $('#total-cast').val();
-let newNominees = [];
 function debounce(func, wait, immediate) {
     let timeout;
     return function () {
@@ -101,10 +100,14 @@ function orderPoint(cast, isNominee = null) {
     let orderDuration = Number($('#order-duration').val()) * 60;
     const currentCastClass = castClasses.find(i => i.id == $('#choosen-cast-class').val());
     let cost = 0;
-    if (isNominee) {
-        cost = cast.pivot.cost;
-    } else {
+    if (orderType != 3) {
         cost = currentCastClass.cost;
+    } else {
+        if (cast) {
+            cost = cast.pivot.cost;
+        } else {
+            cost = currentCastClass.cost;
+        }
     }
 
     return (cost / 2) * Math.floor(orderDuration / 15);
@@ -153,10 +156,10 @@ function updateTotalPoint(newBaseTempPoint) {
     //     const cast = selectedNomination.find(i => i.id == val);
     //     tempPoint += orderPoint(cast, true) + orderFee() + allowance();
     // });
-    // castsCandidate.forEach(val => {
-    //     const cast = selectedCandidate.find(i => i.id == val);
-    //     tempPoint += orderPoint(cast) + allowance();
-    // });
+    castsCandidate.forEach(val => {
+        const cast = selectedCandidate.find(i => i.id == val);
+        tempPoint += orderPoint(cast) + allowance();
+    });
     castsMatching.forEach(val => {
         let castMatched = baseCastsMatched.find(i => i.id == val);
         if (castMatched) {
@@ -170,10 +173,6 @@ function updateTotalPoint(newBaseTempPoint) {
             tempPoint += orderPoint(cast) + allowance();
         }
     });
-
-    if (newBaseTempPoint) {
-        tempPoint = newBaseTempPoint;
-    }
 
     $('#total-point').text((tempPoint + '').replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1,") + 'P');
 
@@ -431,15 +430,7 @@ function handleDeleteCastEvent() {
             const index = selectedMatching.findIndex(i => i.id == userId);
             selectedMatching.splice(index, 1);
             ele.parent().parent().remove();
-
-            const castMatched = baseCastsMatched.find(i => i.id == userId);
-            if (castMatched) {
-                baseTempPoint -= castMatched.pivot.temp_point;
-                console.log(baseTempPoint);
-                updateTotalPoint(baseTempPoint);
-            } else {
-                updateTotalPoint();
-            }
+            updateTotalPoint();
         }
 
         orderChanged();
@@ -453,7 +444,7 @@ function handleSearchCastEvent() {
         baseCastsMatched.forEach(i => {
             if (listCastsMatching.includes(i.id) === false) listCastsMatching.push(i.id);
         });
-        renderListCast(1, listCastsMatching, getListCastNominees(), getListCastCandidates(), search);
+        renderListCast($('#choosen-cast-class').val(), listCastsMatching, getListCastNominees(), getListCastCandidates(), search);
     }, 500));
 }
 
@@ -505,7 +496,13 @@ jQuery(document).ready(function ($) {
                 'totalCast': $('#total-cast').val(),
             },
             success: function (response) {
-                console.log(response);
+                if (response.success) {
+                    alert('Update succeed');
+                    window.location.reload();
+                } else {
+                    console.log(response.info);
+                    alert(response.info);
+                }
             },
         });
     });
@@ -513,6 +510,7 @@ jQuery(document).ready(function ($) {
     $('#orderdatetimepicker').datetimepicker({
         minDate: 'now',
     }).on('dp.change',function(event){
+        updateTotalPoint();
         orderChanged();
     });
 });
