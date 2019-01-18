@@ -118,7 +118,7 @@
 
 @section('web.extra_js')
     <script>
-        const hasCard = parseInt('<?php echo ($user->tc_send_id) ? 1 : 0 ?>');
+        var hasCard = '{!! $user->tc_send_id ? 1 : 0 !!}';
         function buyPoint(point) {
             if (!hasCard) {
                 document.getElementById('popup-require-card').click();
