@@ -72,7 +72,9 @@ class CancelFeeSettlement extends Command
             ->get();
 
         foreach ($orders as $order) {
-            $this->processPayment($order, $now);
+            if (!$order->user->trashed()) {
+                $this->processPayment($order, $now);
+            }
         }
     }
 

@@ -77,7 +77,23 @@
           </div>
         </div>
       </section>
-
+      <section class="details-list">
+        <div class="details-list__line"><p></p></div>
+        <div class="details-list__header">
+          <div class="details-header__title">クレジットカードの登録</div>
+        </div>
+        <div class="details-list__content show">
+          <div class="details-list-box">
+            <div class="btn2-s">
+              @if(!Auth::user()->tc_send_id)
+              <a class="link-arrow link-arrow--left link-credit-card tc-verification-link" href="#" style="color: #222222;">未登録</a>
+              @else
+              <a class="link-arrow link-arrow--left link-credit-card tc-verification-link" href="#" style="color: #222222;">登録済み</a>
+              @endif
+            </div>
+          </div>
+        </div>
+      </section>
       <section class="details-total">
         <div class="details-list__line"><p></p></div>
         <div class="details-total__content">
@@ -142,9 +158,9 @@
     </div>
   </div>
 
-  @if(!$user->card)
+  @if(!$user->tc_send_id)
     <div class="modal_wrap">
-      {{-- <input id="md-require-card" type="checkbox"> --}}
+      <input id="md-require-card" type="checkbox">
       <div class="modal_overlay">
         <label for="md-require-card" class="modal_trigger"></label>
         <div class="modal_content modal_content-btn1">

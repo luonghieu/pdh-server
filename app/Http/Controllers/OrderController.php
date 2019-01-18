@@ -594,7 +594,7 @@ class OrderController extends Controller
     public function pointSettlement(Request $request, $id)
     {
         $user = Auth::user();
-        if (!$user->card) {
+        if (!$user->tc_send_id) {
             return response()->json(['success' => false], 400);
         }
 
