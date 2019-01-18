@@ -224,7 +224,7 @@
     <div class="label-date">
       @php
       $day = \Carbon\Carbon::parse($offer->date);
-      $dayOfWeek = dayOfWeek(0)[$day->dayOfWeek];
+      $dayOfWeek = dayOfWeek()[$day->dayOfWeek];
       @endphp
       <p id="temp-date-offer">{{ $day->format('Y年m月d日') }}({{$dayOfWeek}})</p>
     </div>
