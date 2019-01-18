@@ -70,7 +70,7 @@ class OrderController extends ApiController
     public function pointSettlement(Request $request, $id)
     {
         $user = $this->guard()->user();
-        if (!$user->card) {
+        if (!$user->tc_send_id) {
             return $this->respondErrorMessage(trans('messages.card_not_exist'), 404);
         }
 
