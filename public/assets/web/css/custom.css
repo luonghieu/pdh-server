@@ -2611,6 +2611,7 @@ padding-top: 65px !important;
   border: none !important;
   font-size: 14px !important;
   font-weight: 600;
+  width: 105px;
 }
 
 .link-credit-card::after {
@@ -2618,4 +2619,5 @@ padding-top: 65px !important;
   height: 10px;
   border-bottom:2px solid #222222;
   border-left:2px solid #222222;
+  margin-right: 10px;
 }
