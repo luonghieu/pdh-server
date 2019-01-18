@@ -351,7 +351,7 @@ $(document).ready(function(){
   });
 
   $('.lable-register-card').on('click',function(){
-    window.location.href = '/credit_card';
+    $('#telecom-credit-form').submit();
   });
 
   var area = $("input:radio[name='area']:checked").val();
@@ -598,6 +598,6 @@ $(document).ready(function(){
           $("#cast-ids-nominate").val(arrIds.toString());
         }
       }
-    }   
+    }
   }
 });

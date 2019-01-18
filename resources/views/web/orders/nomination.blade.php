@@ -253,9 +253,9 @@
     </div>
   </div>
 
-  @if(!$user->card)
+  @if(!$user->tc_send_id)
     <div class="modal_wrap">
-      {{-- <input id="md-require-card" type="checkbox"> --}}
+      <input id="md-require-card" type="checkbox">
       <div class="modal_overlay">
         <label for="md-require-card" class="modal_trigger"></label>
         <div class="modal_content modal_content-btn1">
