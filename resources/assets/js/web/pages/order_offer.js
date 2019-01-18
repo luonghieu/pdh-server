@@ -47,6 +47,10 @@ $(document).ready(function(){
     $(this).addClass('color-choose-time');
   });
 
+  $('.reset-color-input').click(function(event) {
+    $('#temp-time-offer').removeClass('color-choose-time');
+    $('#temp-time-offer').addClass('color-placeholder');
+  });
 
   $(".checked-order-offer").on("change",function(event){
     if ($(this).is(':checked')) {
@@ -219,11 +223,12 @@ $(document).ready(function(){
     if('その他'== areaOffer){
       if(localStorage.getItem("order_offer")){
         var orderOffer = JSON.parse(localStorage.getItem("order_offer"));
+
+        if(orderOffer.text_area){
+          $("input:text[name='other_area_offer']").val(orderOffer.text_area);
+        }
       }
 
-      if(orderOffer.text_area){
-        $("input:text[name='other_area_offer']").val(orderOffer.text_area);
-      }
     }
 
     var params = {
@@ -615,15 +620,13 @@ $(document).ready(function(){
     caculatorPoint();
 
     // Set the date we're counting down to
-    var countingDownTo = $('#expired-time').val();
-    if (countingDownTo) {
-      var countDownDate = new Date(countingDownTo);
-      var month = countDownDate.getMonth()+1;
-      var year = countDownDate.getFullYear();
-      var date = countDownDate.getDate();
-      var hour = countDownDate.getHours();
-      var minute = countDownDate.getMinutes();
+    var date = $('#expired-date').val();
+    var month = $('#expired-month').val();
+    var year = $('#expired-year').val();
+    var hour = $('#expired-hour').val();
+    var minute = $('#expired-minute').val();
 
+    if (date && month && year && hour && minute) {
       if (checkApp.isAppleDevice()) {
         var dateFolowDevice = new Date(month +'/' + date +'/'+ year +' ' + hour +':' + minute).getTime();
       } else {
