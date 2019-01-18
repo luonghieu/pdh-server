@@ -34,7 +34,7 @@
                 <h2>クレジットカードを <br>登録してください</h2>
                 <p>※キャストと合流するまで <br>料金は発生しません</p>
             </div>
-            <a class="close_button" href="{{ route('credit_card.index') }}">クレジットカードを登録する</a>
+            <a class="close_button tc-verification-link" href="#">クレジットカードを登録する</a>
         </div>
     </div>
 </div>
@@ -118,7 +118,7 @@
 
 @section('web.extra_js')
     <script>
-        const hasCard = parseInt('<?php echo ($user->card) ? 1 : 0 ?>');
+        const hasCard = parseInt('<?php echo ($user->tc_send_id) ? 1 : 0 ?>');
         function buyPoint(point) {
             if (!hasCard) {
                 document.getElementById('popup-require-card').click();
