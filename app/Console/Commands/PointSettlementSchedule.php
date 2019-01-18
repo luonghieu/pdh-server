@@ -58,7 +58,7 @@ class PointSettlementSchedule extends Command
             ->get();
 
         foreach ($orders as $order) {
-            if ($order->user) {
+            if (!$order->user->trashed()) {
                 PointSettlement::dispatchNow($order->id);
             }
         }
