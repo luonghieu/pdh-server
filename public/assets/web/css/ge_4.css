@@ -86,40 +86,6 @@ textarea.cheer-input {
   transform: rotate(45deg);
 }
 
-.link-arrow {
-  align-items: center;
-  display: flex;
-  justify-content: flex-end;
-  flex: 1 1 auto;
-  border-bottom: 1px #e8e6e6 solid;
-  padding: 13px 20px 13px;
-  box-sizing: border-box;
-  position: relative;
-  font-size: 15px;
-}
-
-.link-arrow::after {
-  pointer-events: none;
-  position: absolute;
-  content: "";
-  display: block;
-  top: 050%;
-  right: 0;
-  width: 6px;
-  margin-right: 5px;
-  height: 6px;
-  border-bottom: 1px solid #222222;
-  border-left: 1px solid #222222;
-  box-sizing: border-box;
-  -webkit-transform: translateY(-50%) translateX(0) rotate(135deg);
-  transform: translateY(-50%) translateX(0) rotate(135deg);
-}
-
-.link-arrow.link-arrow--left::after {
-  -webkit-transform: translateY(-50%) translateX(0) rotate(-135deg);
-  transform: translateY(-50%) translateX(0) rotate(-135deg);
-}
-
 .pl-2 {
   padding-left: 15px !important;
 }
