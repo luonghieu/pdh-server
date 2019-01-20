@@ -14,6 +14,8 @@ use App\Enums\PointType;
 use App\Http\Controllers\Controller;
 use App\Jobs\PointSettlement;
 use App\Notification;
+use App\Notifications\CastApplyOrders;
+use App\Notifications\CreateNominatedOrdersForCast;
 use App\Order;
 use App\PaymentRequest;
 use App\Point;
@@ -200,6 +202,8 @@ class OrderController extends Controller
             $order->date = $orderDate->format('Y-m-d');
             $order->start_time = $orderDate->format('H:i');
 
+            $order->save();
+
             foreach ($casts as $cast) {
                 if ($cast->pivot->status == CastOrderStatus::ACCEPTED) {
                     $castMatchingIds[] = $cast->id;
@@ -228,7 +232,6 @@ class OrderController extends Controller
                 }
             }
 
-            $newCandidates = [];
             $newCandidateIds = [];
             if (!$request->listCastCandidates) {
                 if ($castCandidateIds) {
@@ -243,7 +246,7 @@ class OrderController extends Controller
                 }
             }
 
-            $newMatchings = [];
+            $newMatchingIds = [];
             if (!$request->listCastMatching) {
                 if ($castMatchingIds) {
                     $order->castOrder()->detach($castMatchingIds);
@@ -255,9 +258,8 @@ class OrderController extends Controller
                 if ($deletedMatchingIds) {
                     $order->castOrder()->detach($deletedMatchingIds);
                 }
-
-                $newMatchings = Cast::whereIn('id', array_merge($newCandidateIds, $newMatchingIds))->get();
             }
+            $newMatchings = Cast::whereIn('id', array_merge($newCandidateIds, $newMatchingIds))->get();
 
             $orderStartTime = Carbon::parse($order->date . ' ' . $order->start_time);
             $orderEndTime = $orderStartTime->copy()->addMinutes($order->duration * 60);
@@ -295,33 +297,30 @@ class OrderController extends Controller
                 ]);
             }
 
-            foreach ($newCandidates as $candidate) {
-                $order->apply($candidate->id);
-            }
-
             // Add casts matched
-            $nightTime = $order->nightTime($orderEndTime);
-            $allowance = $order->allowance($nightTime);
-            $orderPoint = $order->orderPoint();
+//            $nightTime = $order->nightTime($orderEndTime);
+//            $allowance = $order->allowance($nightTime);
+//            $orderPoint = $order->orderPoint();
+//            $tempPoint = $orderPoint + $allowance;
 
             foreach ($newMatchings as $matching) {
-                $order->candidates()->attach($matching->id ,[
-                    'type' => CastOrderType::CANDIDATE,
-                    'status' => CastOrderStatus::ACCEPTED,
-                    'accepted_at' => Carbon::now(),
-                    'temp_point' => $orderPoint + $allowance,
-                ]);
+                $order->apply($matching->id);
             }
 
-            $currentTotalCast = $order->casts()->count();
-            if ($currentTotalCast == $order->total_cast) {
-                $order->status = OrderStatus::ACTIVE;
-            } else {
-                $order->status = OrderStatus::OPEN;
-            }
+//            $currentTotalCast = $order->casts()->count();
+//            if ($currentTotalCast == $order->total_cast) {
+//                $order->status = OrderStatus::ACTIVE;
+//            } else {
+//                $order->status = OrderStatus::OPEN;
+//            }
 
-            $order->save();
             \DB::commit();
+            // Send notification for nominees
+            \Notification::send(
+                $newNominees,
+                (new CreateNominatedOrdersForCast($order->id))->delay(now()->addSeconds(3))
+            );
+
             return response()->json(['success' => true], 200);
         } catch (\Exception $e) {
             \DB::rollBack();

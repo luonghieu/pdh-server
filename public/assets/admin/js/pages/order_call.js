@@ -500,8 +500,8 @@ jQuery(document).ready(function ($) {
                     alert('Update succeed');
                     window.location.reload();
                 } else {
-                    console.log(response.info);
                     alert(response.info);
+                    window.location.reload();
                 }
             },
         });
