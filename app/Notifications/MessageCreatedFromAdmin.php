@@ -7,8 +7,6 @@ use App\Enums\UserType;
 use Illuminate\Bus\Queueable;
 use Illuminate\Notifications\Notification;
 use Illuminate\Contracts\Queue\ShouldQueue;
-use NotificationChannels\Twilio\TwilioChannel;
-use NotificationChannels\Twilio\TwilioSmsMessage;
 
 class MessageCreatedFromAdmin extends Notification implements ShouldQueue
 {
@@ -34,10 +32,6 @@ class MessageCreatedFromAdmin extends Notification implements ShouldQueue
     public function via($notifiable)
     {
         if ($notifiable->device_type == DeviceType::WEB && $notifiable->type == UserType::GUEST) {
-            if ($notifiable->is_verified) {
-                return [LineBotNotificationChannel::class, TwilioChannel::class];
-            }
-
             return [LineBotNotificationChannel::class];
         }
 
@@ -68,14 +62,5 @@ class MessageCreatedFromAdmin extends Notification implements ShouldQueue
                 ]
             ]
         ];
-    }
-
-    public function toTwilio($notifiable)
-    {
-        $content = '[Cheers]運営局から新着メッセージが届きました。'
-            . PHP_EOL . 'CheersのLINE内にあるメニューから、メッセージをご確認ください。';
-
-        return (new TwilioSmsMessage())
-            ->content($content);
     }
 }

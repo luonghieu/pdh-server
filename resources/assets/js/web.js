@@ -63,3 +63,8 @@ require('./web/pages/create_room');
 require('./web/pages/verify');
 require('./web/pages/order_offer');
 require('./web/pages/menu');
+require('./web/pages/confirm_order_call');
+require('./web/pages/list_cast');
+require('./web/pages/order_step_one');
+require('./web/pages/order_step_two');
+require('./web/pages/order_step_three');

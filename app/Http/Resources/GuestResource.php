@@ -77,6 +77,7 @@ class GuestResource extends Resource
             'post_code' => $this->post_code,
             'address' => $this->address,
             'is_verified' => $this->is_verified,
+            'deleted_at' => $this->deleted_at,
         ]);
     }
 }
