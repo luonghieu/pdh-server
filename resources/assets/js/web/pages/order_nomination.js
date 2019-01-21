@@ -525,7 +525,12 @@ $(document).ready(function(){
       var cost = $('.cost-order').val();
       if(orderParams.current_duration){
         if('other_time_set' == orderParams.current_duration) {
+          if(orderParams.select_duration) {
           var chooseDuration = orderParams.select_duration;
+          } else {
+          var chooseDuration = 4;
+          }
+          
           $('.time-input-nomination').css('display','flex');
         } else {
           var chooseDuration = orderParams.current_duration;

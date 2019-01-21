@@ -53,7 +53,7 @@ $(document).ready(function(){
   });
 
   $('.lable-register-card').on('click',function(){
-    window.location.href = '/credit_card';
+    $('#telecom-credit-form').submit();
   });
 
   $('.checked-order').prop('checked',false);

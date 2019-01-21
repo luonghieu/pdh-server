@@ -144,9 +144,18 @@
               </div>
             </label>
           </div>
+          <div class="caption">
+            <h2>クレジットカードの登録</h2>
+          </div>
+
+          @if(!Auth::user()->tc_send_id)
+          <a class="link-arrow link-arrow--left tc-verification-link" href="#" style="color: #222222;">未登録</a>
+          @else
+          <a class="link-arrow link-arrow--left tc-verification-link" href="#" style="color: #222222;">登録済み</a>
+          @endif
         </div>
 
-        <div class="reservation-attention"><a href="{{ route('guest.orders.nominate_step2') }}">予約前の注意事項</a></div>
+        <div class="reservation-attention"><a href="{{ route('guest.orders.nominate_step2') }}" style="margin: 10px 0px -7px;">予約前の注意事項</a></div>
 
         <div class="reservation-total">
           <div class="reservation-total__content">
@@ -244,9 +253,9 @@
     </div>
   </div>
 
-  @if(!$user->card)
+  @if(!$user->tc_send_id)
     <div class="modal_wrap">
-      {{-- <input id="md-require-card" type="checkbox"> --}}
+      <input id="md-require-card" type="checkbox">
       <div class="modal_overlay">
         <label for="md-require-card" class="modal_trigger"></label>
         <div class="modal_content modal_content-btn1">

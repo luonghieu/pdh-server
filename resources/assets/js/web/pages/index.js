@@ -13,4 +13,8 @@ $(document).ready(function() {
   if (helper.getCookie('campaign') == 'true') {
     $('#hide-campaign').hide();
   }
+
+  $('.tc-verification-link').on('click', function () {
+    $('#telecom-credit-form').submit();
+  });
 });
