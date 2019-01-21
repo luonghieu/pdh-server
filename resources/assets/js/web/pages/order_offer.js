@@ -432,7 +432,7 @@ $(document).ready(function(){
           var data = {
             current_total_point: response.data.data.allowance_point + response.data.data.order_point + response.data.data.order_fee,
           };
-          $('.total-amount').text(totalPoint +'P~');
+          $('.total-amount').text(totalPoint +'P');
           helper.updateLocalStorageKey('order_offer', data, offerId);
         }
       }).catch(function(error) {
@@ -454,7 +454,7 @@ $(document).ready(function(){
 
         if(orderOffer.current_total_point){
           totalPoint = parseInt(orderOffer.current_total_point).toLocaleString(undefined,{ minimumFractionDigits: 0 });
-          $('.total-amount').text(totalPoint +'P~');
+          $('.total-amount').text(totalPoint +'P');
           $('#temp-point-offer').val(orderOffer.current_total_point);
         }
 
