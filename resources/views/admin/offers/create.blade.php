@@ -216,6 +216,66 @@
               </div>
             </div>
             <div class="col-lg-12 wrap-qr-code">
+              <label class="lb-date-offer">オファーの応募締切期限</label>
+            </div>
+            <div class="col-lg-12 wrap-qr-code">
+              <div class="col-sm-2 wrap-input-date-offer">
+                @php
+                  $start_date = Carbon\Carbon::now();
+                  $end_date = $start_date->copy()->addWeek();
+                @endphp
+
+                <select name="expired_date_offer" class="form-control select-time date-offer" id="expired_date_offer">
+                    @php
+                      while(!$start_date->gt($end_date))
+                      {
+                    @endphp
+                    <option value="{{ $start_date->format('Y-m-d') }}" >
+                      {{ $start_date->format('Y年m月d日') }}
+                    </option>
+                    @php
+                        $start_date->addDay();
+                      }
+                    @endphp
+                </select>
+              </div>
+              @php
+                  $start = "00:00";
+
+                  $end = "23:59";
+                  $tStart = strtotime($start);
+                  $tEnd = strtotime($end);
+                  $tNow = $tStart;
+
+                  $arrTime = [];
+                  while($tNow <= $tEnd){
+                    array_push($arrTime, date("H:i",$tNow));
+                    $tNow = strtotime('+1 minutes',$tNow);
+                  }
+              @endphp
+              <div class="col-sm-6 col-sm-offset-1">
+                <select id="expired_time_offer" name="expired_time_offer" class="form-control select-time select-time-offer">
+                  @foreach ($arrTime as $time)
+                    <option value="{{ $time }}">{{ $time }}</option>
+                  @endforeach
+                </select>
+              </div>
+            </div>
+            @if(Session::has('expired_date_not_valid'))
+            <div class="col-lg-12 wrap-qr-code">
+              <div class="form-group error-end-coupon" >
+                <div class="alert alert-danger fade in col-sm-4">
+                  <button data-dismiss="alert" class="close close-sm" type="button">
+                    <i class="icon-remove"></i>
+                  </button>
+                  <strong>
+                    開始時間は現在以降の時間を指定してください
+                  </strong>
+                </div>
+              </div>
+            </div>
+            @endif
+            <div class="col-lg-12 wrap-qr-code">
               <label class="lb-date-offer"></label>
               <hr style="border: 1px #0000006e dashed;">
             </div>
