@@ -27,30 +27,7 @@ $(document).ready(function(){
         window.location = '/mypage';
       })
     }
-
   }
-
-  if(localStorage.getItem("order_offer")){
-    var offerId = $('.offer-id').val();
-    var orderOffer = JSON.parse(localStorage.getItem("order_offer"));
-    if (orderOffer[offerId].hour) {
-      $('#temp-time-offer').removeClass('color-placeholder');
-      $('#temp-time-offer').addClass('color-choose-time');
-    }
-  } else {
-    $('#temp-time-offer').removeClass('color-choose-time');
-    $('#temp-time-offer').addClass('color-placeholder');
-  }
-
-  $('#temp-time-offer').click(function(event) {
-    $(this).removeClass('color-placeholder');
-    $(this).addClass('color-choose-time');
-  });
-
-  $('.reset-color-input').click(function(event) {
-    $('#temp-time-offer').removeClass('color-choose-time');
-    $('#temp-time-offer').addClass('color-placeholder');
-  });
 
   $(".checked-order-offer").on("change",function(event){
     if ($(this).is(':checked')) {
@@ -543,6 +520,23 @@ $(document).ready(function(){
   var regex = /offers\/\d/;
 
   if (currentUrl.match(regex)) {
+    $('.btn-choose-time-success').click(function(event) {
+      $('#temp-time-offer').removeClass('color-placeholder');
+      $('#temp-time-offer').addClass('color-choose-time');
+    });
+
+    if(localStorage.getItem("order_offer")){
+      var offerId = $('.offer-id').val();
+      var orderOffer = JSON.parse(localStorage.getItem("order_offer"));
+      if (orderOffer[offerId].hour) {
+        $('#temp-time-offer').removeClass('color-placeholder');
+        $('#temp-time-offer').addClass('color-choose-time');
+      }
+    } else {
+      $('#temp-time-offer').removeClass('color-choose-time');
+      $('#temp-time-offer').addClass('color-placeholder');
+    }
+
     $('.details-list').css({
       display: 'none',
     });
