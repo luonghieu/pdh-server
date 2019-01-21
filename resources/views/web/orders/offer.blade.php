@@ -363,7 +363,7 @@
     </div>
     <div class="date-select__footer">
       <button class="date-select__cancel reset-color-input" type="button">キャンセル</button>
-      <button class="date-select__ok date-select-offer" type="button">完了</button>
+      <button class="date-select__ok date-select-offer btn-choose-time-success" type="button">完了</button>
     </div>
 
   </div>
