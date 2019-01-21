@@ -234,7 +234,7 @@ $(document).ready(function(){
     if('その他'== areaOffer){
       if(localStorage.getItem("order_offer")){
         var orderOffer = JSON.parse(localStorage.getItem("order_offer"));
-
+        
         if(orderOffer.text_area){
           $("input:text[name='other_area_offer']").val(orderOffer.text_area);
         }

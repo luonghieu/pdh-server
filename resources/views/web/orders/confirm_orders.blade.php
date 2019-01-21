@@ -154,21 +154,6 @@
       </div>
     </div>
   </div>
-
-  <div class="modal_wrap">
-    <input id="order-done" type="checkbox">
-    <div class="modal_overlay">
-      <label for="mypage" class="modal_trigger"></label>
-      <div class="modal_content modal_content-btn1">
-        <div class="text-box show-message-order-call">
-          <h2>予約が完了しました</h2>
-          <p>ただいまキャストの調整中です<br>予約状況はホーム画面の予約一覧をご確認ください</p>
-        </div>
-        <label for="order-done" class="close_button order-done">OK</label>
-      </div>
-    </div>
-  </div>
-
   <div class="modal_wrap">
     <input id="order-done" type="checkbox">
     <div class="modal_overlay">

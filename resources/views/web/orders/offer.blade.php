@@ -299,7 +299,6 @@
     @else
     <a class="link-arrow link-arrow--left tc-verification-link" href="#" style="color: #222222;">登録済み</a>
     @endif
-
     <div class="form-group">
       <div id="detail-point-offer">
         <div class="settlement-confirm">
