@@ -105,8 +105,6 @@ class GuestController extends ApiController
         $user = $this->guard()->user();
 
         try {
-            $delay = Carbon::now()->addSeconds(3);
-
             \DB::beginTransaction();
             $user->fullname = $request->fullname;
             $user->date_of_birth = Carbon::parse($request->date_of_birth);
@@ -138,10 +136,11 @@ class GuestController extends ApiController
             $user->request_transfer_date = Carbon::now();
 
             $user->save();
-            \DB::commit();
 
-            $user->notify((new MessageRequestTransferRocketNotify($user->id))->delay($delay));
-            $user->notify((new MessageRequestTransferLineNotify($user->id))->delay($delay));
+            $user->notify(new MessageRequestTransferRocketNotify());
+            $user->notify(new MessageRequestTransferLineNotify());
+
+            \DB::commit();
         } catch (\Exception $e) {
             \DB::rollBack();
             LogService::writeErrorLog($e);
