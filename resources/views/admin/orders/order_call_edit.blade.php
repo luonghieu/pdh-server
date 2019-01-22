@@ -35,7 +35,7 @@
                                     </tr>
                                     <tr>
                                         <th>予約区分</th>
-                                        <td>{{ App\Enums\OrderType::getDescription($order->type) }}</td>
+                                        <td><span id="order-type">{{ App\Enums\OrderType::getDescription($order->type) }}</span></td>
                                     </tr>
                                     <tr>
                                         <th>ルームID</th>
@@ -393,10 +393,12 @@
                                 <div class="modal-dialog" role="document">
                                     <div class="modal-content">
                                         <div class="modal-body">
-                                            <p>キャストを選択してください</p>
-                                            <h2>変更を実行しますか？</h2>
-                                            <h2>"OK"をタップすると、対象のゲスト/キャストに</h2>
-                                            <h2>通知が送られます。</h2>
+                                            <div id="submit-popup-content">
+                                                <p>キャストを選択してください</p>
+                                                <h2>変更を実行しますか？</h2>
+                                                <h2>"OK"をタップすると、対象のゲスト/キャストに</h2>
+                                                <h2>通知が送られます。</h2>
+                                            </div>
                                         </div>
                                         <div class="modal-footer">
                                             <button type="button" class="btn btn-canceled" data-dismiss="modal">いいえ
@@ -442,6 +444,8 @@
         const baseCastsCandidate = JSON.parse('<?php echo json_encode( $castsCandidates ) ?>');
         const castClasses = JSON.parse('<?php echo json_encode( $castClasses ) ?>');
         const orderType = '<?php echo $order->type ?>';
+        const orderTypeDesc = JSON.parse('<?php echo json_encode($orderTypeDesc) ?>');
+        console.log(orderTypeDesc);
     </script>
     <script src="/assets/admin/js/pages/order_call.js"></script>
 @stop
