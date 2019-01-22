@@ -302,7 +302,21 @@
                     <i class="icon-remove"></i>
                   </button>
                   <strong>
-                    開始時間は現在以降の時間を指定してください
+                    {{ Session::get('expired_date_not_valid') }}
+                  </strong>
+                </div>
+              </div>
+            </div>
+            @endif
+            @if(Session::has('time_out'))
+            <div class="col-lg-12 wrap-qr-code">
+              <div class="form-group error-end-coupon" >
+                <div class="alert alert-danger fade in col-sm-4">
+                  <button data-dismiss="alert" class="close close-sm" type="button">
+                    <i class="icon-remove"></i>
+                  </button>
+                  <strong>
+                    {{ Session::get('time_out') }}
                   </strong>
                 </div>
               </div>
