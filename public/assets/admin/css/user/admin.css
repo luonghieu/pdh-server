@@ -1595,6 +1595,31 @@ tbody td {
   color: red;
 }
 
+.btn-edit-order {
+  float: right;
+}
+
+.edit-datetime-order-call {
+  margin-left: 37%;
+}
+
+.column-checkbox {
+  width: 1% !important;
+}
+
+.wrapper-table {
+  max-height: 400px;
+  overflow: auto;
+}
+
+.change-cast-order-call {
+  float: right;
+}
+
+.wrapper-button {
+  text-align: right;
+}
+
 @media (max-width: 799px) {
   .image-verified {
     float: right;
@@ -1776,5 +1801,9 @@ tbody td {
 
   .list-avatar img {
     height: 95px;
+  }
+
+  .change-cast-order-call {
+    float: left;
   }
 }
