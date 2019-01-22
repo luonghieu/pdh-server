@@ -32,19 +32,26 @@ $(document).ready(function(){
 
   $(".checked-order-offer").on("change",function(event){
     if ($(this).is(':checked')) {
-      var area = $("input:radio[name='offer_area']:checked").val();
-      var otherArea = $("input:text[name='other_area_offer']").val();
-
-      if((!area || (area=='その他' && !otherArea))) {
+      if($('.inactive-button-order').length) {
         $('#confirm-orders-offer').addClass("disable");
         $(this).prop('checked', false);
         $('#confirm-orders-offer').prop('disabled', true);
         $('#sp-cancel').addClass("sp-disable");
       } else {
-        $('#confirm-orders-offer').removeClass('disable');
-        $(this).prop('checked', true);
-        $('#confirm-orders-offer').prop('disabled', false);
-        $('#sp-cancel').removeClass('sp-disable');
+        var area = $("input:radio[name='offer_area']:checked").val();
+        var otherArea = $("input:text[name='other_area_offer']").val();
+
+        if((!area || (area=='その他' && !otherArea))) {
+          $('#confirm-orders-offer').addClass("disable");
+          $(this).prop('checked', false);
+          $('#confirm-orders-offer').prop('disabled', true);
+          $('#sp-cancel').addClass("sp-disable");
+        } else {
+          $('#confirm-orders-offer').removeClass('disable');
+          $(this).prop('checked', true);
+          $('#confirm-orders-offer').prop('disabled', false);
+          $('#sp-cancel').removeClass('sp-disable');
+        }
       }
     } else {
         $(this).prop('checked', false);

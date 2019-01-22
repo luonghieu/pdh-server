@@ -86,7 +86,7 @@
           <div class="details-list-box">
             <div class="btn2-s">
               @if(!Auth::user()->tc_send_id)
-              <a class="link-arrow link-arrow--left link-credit-card tc-verification-link" href="#" style="color: #222222;">未登録</a>
+              <a class="link-arrow link-arrow--left link-credit-card tc-verification-link inactive-button-order" href="#" style="color: #222222;">未登録</a>
               @else
               <a class="link-arrow link-arrow--left link-credit-card tc-verification-link" href="#" style="color: #222222;">登録済み</a>
               @endif
