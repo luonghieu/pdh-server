@@ -3,25 +3,32 @@ $(document).ready(function(){
 
   $(".checked-order").on("change",function(event){
     if ($(this).is(':checked')) {
-      var time = $("input:radio[name='time_join_nomination']:checked").val();
-      var area = $("input:radio[name='nomination_area']:checked").val();
-      var duration = $("input:radio[name='time_set_nomination']:checked").val();
-      var date = $('.sp-date').text();
-      var cancel=$("input:checkbox[name='confrim_order_nomination']:checked").length;
-      var otherArea = $("input:text[name='other_area_nomination']").val();
-
-      if((!area || (area=='その他' && !otherArea)) || !time ||
-       (!duration || (duration<1 && 'other_time_set' != duration)) || (time=='other_time' && !date)) {
-
+      if($('.inactive-button-order').length) {
         $('#confirm-orders-nomination').addClass("disable");
         $(this).prop('checked', false);
         $('#confirm-orders-nomination').prop('disabled', true);
         $('#sp-cancel').addClass("sp-disable");
-      } else {
-        $('#confirm-orders-nomination').removeClass('disable');
-        $(this).prop('checked', true);
-        $('#confirm-orders-nomination').prop('disabled', false);
-        $('#sp-cancel').removeClass('sp-disable');
+      } else {      
+        var time = $("input:radio[name='time_join_nomination']:checked").val();
+        var area = $("input:radio[name='nomination_area']:checked").val();
+        var duration = $("input:radio[name='time_set_nomination']:checked").val();
+        var date = $('.sp-date').text();
+        var cancel=$("input:checkbox[name='confrim_order_nomination']:checked").length;
+        var otherArea = $("input:text[name='other_area_nomination']").val();
+
+        if((!area || (area=='その他' && !otherArea)) || !time ||
+         (!duration || (duration<1 && 'other_time_set' != duration)) || (time=='other_time' && !date)) {
+
+          $('#confirm-orders-nomination').addClass("disable");
+          $(this).prop('checked', false);
+          $('#confirm-orders-nomination').prop('disabled', true);
+          $('#sp-cancel').addClass("sp-disable");
+        } else {
+          $('#confirm-orders-nomination').removeClass('disable');
+          $(this).prop('checked', true);
+          $('#confirm-orders-nomination').prop('disabled', false);
+          $('#sp-cancel').removeClass('sp-disable');
+        }
       }
     } else {
         $(this).prop('checked', false);
@@ -217,10 +224,10 @@ $(document).ready(function(){
 
       if (time == 'other_time') {
         var month = $('.select-month').val();
-        var checkMonth = currentDate.getMonth();
+        var checkMonth = nd.getMonth();
 
         if (month <= checkMonth) {
-          var year = currentDate.getFullYear() + 1;
+          var year = nd.getFullYear() + 1;
         }
 
         if(month<10) {

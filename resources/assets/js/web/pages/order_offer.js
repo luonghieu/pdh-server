@@ -47,7 +47,7 @@ $(document).ready(function(){
             var otherArea = $("input:text[name='other_area_offer']").val();
             var checkExpired = $("#check-expired").val();
 
-            if(((checkExpired == 1) || !area || (area=='その他' && !otherArea))) {
+            if(((checkExpired == 1) || !area || (area=='その他' && !otherArea) || $('.inactive-button-order').length)) {
               $('#confirm-orders-offer').addClass("disable");
               $(this).prop('checked', false);
               $('#confirm-orders-offer').prop('disabled', true);

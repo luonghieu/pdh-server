@@ -62,7 +62,7 @@ if (!function_exists('getDay')) {
     function getDay($month = null)
     {
         $date = \Carbon\Carbon::now()->addMinutes(30);
-        $dayOfWeek = dayOfWeek();
+        $dayOfWeek = ['日', '月', '火', '水', '木', '金', '土'];
 
         if (!isset($month)) {
             $month = $date->month;
