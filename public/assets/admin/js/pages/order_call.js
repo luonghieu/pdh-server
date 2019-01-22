@@ -7,6 +7,7 @@ let listCastCandidates = getListCastCandidates();
 let classId = $('#choosen-cast-class').val();
 let clastIdPrevious = $('#choosen-cast-class').val();
 let totalCastPrevious = $('#total-cast').val();
+
 function debounce(func, wait, immediate) {
     let timeout;
     return function () {
@@ -203,6 +204,71 @@ function orderChanged() {
     }
 
     if (isChanged) {
+        type = 2;
+        let nominees = [];
+        let candidates = [];
+        if (getListCastNominees().length) {
+            type = 4;
+        }
+
+        if (type != 4) {
+            if (getListCastCandidates().length) {
+                getListCastMatching().forEach(val => {
+                    const cast = baseCastsMatched.find(cast => cast.id == val);
+                    if (cast) {
+                        if (cast.pivot.type == 1) {
+                            nominees.push(cast);
+                        } else {
+                            candidates.push(cast);
+                        }
+                    }
+                });
+
+                if (nominees.length) {
+                    type = 4;
+                }
+            } else {
+                getListCastMatching().forEach(val => {
+                    const cast = baseCastsMatched.find(cast => cast.id == val);
+                    if (cast) {
+                        if (cast.pivot.type == 1) {
+                            nominees.push(cast);
+                        } else {
+                            candidates.push(cast);
+                        }
+                    }
+                });
+
+                if (nominees.length && candidates.length) {
+                    type = 4;
+                }
+            }
+        }
+        $('#order-type').text(orderTypeDesc[type]);
+        if (numOfCast < $('#total-cast').val()) {
+            $('#submit-popup-content').html(`
+            <h2> ${ $('#total-cast').val() - numOfCast}名をコールとして募集します</h2>
+            <h2> "OK"をタップすると、キャストに通知が送られます</h2>
+            `);
+        } else if(selectedNomination.length) {
+            let title = 'ユーザーID ';
+            selectedNomination.forEach(item => {
+                title += item.id + ',';
+            });
+            title = title.slice(0, -1);
+            title += 'を指名キャストとして選択しています<';
+            $('#submit-popup-content').html(`
+            <h2> ${title}</h2>
+            <h2> "OK"をタップすると、キャストに通知が送られます</h2>
+            `);
+        } else {
+            $('#submit-popup-content').html(`
+            <p>キャストを選択してください</p>
+            <h2>変更を実行しますか？</h2>
+            <h2>"OK"をタップすると、対象のゲスト/キャストに</h2>
+            <h2>通知が送られます。</h2>
+            `);
+        }
         $('#btn-submit-popup').prop('disabled', false);
     } else {
         $('#btn-submit-popup').prop('disabled', true);
@@ -502,14 +568,14 @@ jQuery(document).ready(function ($) {
                     $('#alert-popup-content').html('<p>変更しました</p>');
                     setTimeout(() => {
                         window.location.reload();
-                    }, 2000);
+                    }, 1000);
                 } else {
                     $('#submit-popup').hide();
                     $('#btn-alert-popup').trigger('click');
                     $('#alert-popup-content').html('<p>' + response.info + '</p>');
                     setTimeout(() => {
                         window.location.reload();
-                    }, 2000);
+                    }, 1000);
                 }
             },
         });

@@ -11,6 +11,7 @@ use App\Enums\OrderStatus;
 use App\Enums\OrderType;
 use App\Enums\PaymentRequestStatus;
 use App\Enums\PointType;
+use App\Enums\RoomType;
 use App\Http\Controllers\Controller;
 use App\Jobs\PointSettlement;
 use App\Notification;
@@ -21,6 +22,7 @@ use App\Notifications\CreateNominationOrdersForCast;
 use App\Order;
 use App\PaymentRequest;
 use App\Point;
+use App\Room;
 use App\Services\LogService;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -181,8 +183,13 @@ class OrderController extends Controller
             ->whereNotIn('users.id', $castsMatching->pluck('id'))
             ->get();
         $castClass = CastClass::all();
-
-        return view('admin.orders.order_call_edit', compact('order', 'castClasses', 'castsMatching', 'castsNominee', 'castsCandidates'));
+        $orderTypeDesc = [
+          OrderType::NOMINATED_CALL => OrderType::getDescription(OrderType::NOMINATED_CALL),
+          OrderType::CALL => OrderType::getDescription(OrderType::CALL),
+          OrderType::NOMINATION => OrderType::getDescription(OrderType::NOMINATION),
+          OrderType::HYBRID => OrderType::getDescription(OrderType::HYBRID),
+        ];
+        return view('admin.orders.order_call_edit', compact('order', 'castClasses', 'castsMatching', 'castsNominee', 'castsCandidates', 'orderTypeDesc'));
     }
 
     public function updateOrderCall(Request $request, $id)
@@ -266,8 +273,11 @@ class OrderController extends Controller
                     $castsRemoved = array_merge($castsRemoved, $deletedMatchingIds);
                 }
             }
-            $newMatchings = Cast::whereIn('id', array_merge($newCandidateIds, $newMatchingIds))->get();
-            $castsRemoved = Cast::whereIn('id', $castsRemoved)->get();
+            $newMatchingsId = array_merge($newCandidateIds, $newMatchingIds);
+            $castsRemovedId = $castsRemoved;
+
+            $newMatchings = Cast::whereIn('id', $newMatchingsId)->get();
+            $castsRemoved = Cast::whereIn('id', $castsRemovedId)->get();
 
             $orderStartTime = Carbon::parse($order->date . ' ' . $order->start_time);
             $orderEndTime = $orderStartTime->copy()->addMinutes($order->duration * 60);
@@ -316,12 +326,29 @@ class OrderController extends Controller
                 ]);
             }
 
+            $currentTotalCast = $order->casts()->count();
             if ($order->status != OrderStatus::PROCESSING) {
-                $currentTotalCast = $order->casts()->count();
                 if ($currentTotalCast == $order->total_cast) {
                     $order->status = OrderStatus::ACTIVE;
                 } else {
                     $order->status = OrderStatus::OPEN;
+                }
+            }
+
+            // Add/Remove casts in room
+            $room = Room::active()->where('type', RoomType::GROUP)->where('order_id', $order->id)->first();
+            if ($room) {
+                $room->users()->detach($castsRemovedId);
+                $room->users()->attach($newMatchingsId);
+            } else {
+                if ($order->total_cast == $currentTotalCast) {
+                    $room = new Room;
+                    $room->order_id = $order->id;
+                    $room->owner_id = $order->user_id;
+                    $room->type = RoomType::GROUP;
+                    $room->save();
+                    $room->users()->attach($newMatchingsId);
+                    $order->room_id = $room->id;
                 }
             }
 
@@ -331,11 +358,6 @@ class OrderController extends Controller
             \Notification::send(
                 $newNominees,
                 (new CreateNominationOrdersForCast($order->id))->delay(now()->addSeconds(3))
-            );
-            // Send notification to new candidates
-            \Notification::send(
-                $newMatchings,
-                (new CallOrdersCreated($order->id))->delay(now()->addSeconds(3))
             );
             // Send notification to casts removed
             \Notification::send(
@@ -349,6 +371,16 @@ class OrderController extends Controller
                 (new AdminRemoveCastInOrder())->delay(now()->addSeconds(3))
             );
 
+            // Send notification to other casts
+            if ($order->total_cast != $currentTotalCast) {
+                $casts = Cast::where('class_id', $order->class_id)->whereNotIn('id',
+                    array_merge($newMatchingsId, $newNominees, $newCandidateIds, $castNomineeIds, $castCandidateIds, $castMatchingIds))
+                    ->get();
+                \Notification::send(
+                    $casts,
+                    (new CallOrdersCreated($order->id))->delay(now()->addSeconds(3))
+                );
+            }
             return response()->json(['success' => true], 200);
         } catch (\Exception $e) {
             \DB::rollBack();
