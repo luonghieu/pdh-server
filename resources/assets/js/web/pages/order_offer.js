@@ -567,7 +567,7 @@ $(document).ready(function(){
     if(localStorage.getItem("order_offer")){
       var offerId = $('.offer-id').val();
       var orderOffer = JSON.parse(localStorage.getItem("order_offer"));
-      if (orderOffer[offerId].hour) {
+      if (orderOffer[offerId]) {
         $('#temp-time-offer').removeClass('color-placeholder');
         $('#temp-time-offer').addClass('color-choose-time');
       }
@@ -582,17 +582,22 @@ $(document).ready(function(){
 
     function caculatorPoint() {
       var hour = $(".select-hour-offer option:selected").val();
-
       var minute = $(".select-minute-offer option:selected").val();
+      var offerId = $('.offer-id').val();
+      var date = $('#current-date-offer').val();
+      var duration = $("#duration-offer").val();
+      var classId = $('#current-class-id-offer').val();
+      var castIds = $('#current-cast-id-offer').val();
+      var totalCast = castIds.split(',').length;
 
       if(localStorage.getItem("order_offer")){
-        var offerId = $('.offer-id').val();
         var orderOffer = JSON.parse(localStorage.getItem("order_offer"));
         if(orderOffer[offerId]) {
           orderOffer = orderOffer[offerId];
           if(orderOffer.current_date) {
-            var date = orderOffer.current_date;
+            date = orderOffer.current_date;
             hour = orderOffer.hour;
+            minute = orderOffer.minute;
             if (23 < hour) {
               switch(hour) {
                 case '24':
@@ -606,20 +611,11 @@ $(document).ready(function(){
                     break;
               }
             }
-            time = orderOffer.minute;
-          }else {
-            var date = $('#current-date-offer').val();
           }
         }
-      } else {
-        var date = $('#current-date-offer').val();
       }
 
       var time = hour + ':' + minute;
-      var duration = $("#duration-offer").val();
-      var classId = $('#current-class-id-offer').val();
-      var castIds = $('#current-cast-id-offer').val();
-      var totalCast = castIds.split(',').length;
 
       var params = {
         date: date,
