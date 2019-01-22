@@ -203,7 +203,6 @@ class OrderController extends Controller
 
         try {
             \DB::beginTransaction();
-            $room = $order->room;
             $order->duration = $request->orderDuration;
             $order->class_id = $request->class_id;
             $order->total_cast = $request->totalCast;
