@@ -23,7 +23,7 @@ return [
                 'id' => 2,
                 'name' => '30分後',
                 'value' => '30',
-                'is_active' => 0,
+                'is_active' => 1,
             ],
             [
                 'id' => 3,

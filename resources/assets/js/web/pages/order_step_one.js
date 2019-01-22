@@ -149,7 +149,11 @@ function handlerSelectedTime()
 
 
     var currentDate = new Date();
-    var year = currentDate.getFullYear();
+    utc = currentDate.getTime() + (currentDate.getTimezoneOffset() * 60000);
+    nd = new Date(utc + (3600000*9));
+
+    var year = nd.getFullYear();
+    var checkMonth = nd.getMonth();
 
     var app = {
       isAppleDevice : function() {
@@ -167,14 +171,10 @@ function handlerSelectedTime()
       var selectDate = new Date(year +'-' + month +'-'+ date +' ' + hour +':' + minute);
     }
 
-    utc = currentDate.getTime() + (currentDate.getTimezoneOffset() * 60000);
-    nd = new Date(utc + (3600000*9));
-
-    var checkMonth = currentDate.getMonth();
 
     if (month > checkMonth) {
-      if(helper.add_minutes(nd, 60) > selectDate) {
-        selectDate = helper.add_minutes(nd, 60);
+      if(helper.add_minutes(nd, 30) > selectDate) {
+        selectDate = helper.add_minutes(nd, 30);
         date = selectDate.getDate();
         month = selectDate.getMonth() +1;
 
@@ -241,17 +241,20 @@ function handlerSelectedTime()
   });
 
   //select-time order 1-1
-   $('.choose-time').on("click",function(){
+  $('.choose-time').on("click",function(){
     var cost = $('.cost-order').val();
     var time = $("input:radio[name='time_join_nomination']:checked").val();
     var currentDate = new Date();
-    var year = currentDate.getFullYear();
+    utc = currentDate.getTime() + (currentDate.getTimezoneOffset() * 60000);
+    nd = new Date(utc + (3600000*9));
+    
+    var year = nd.getFullYear();
     if ((time == 'other_time')) {
       var month = $('.select-month').val();
-      var checkMonth = currentDate.getMonth();
+      var checkMonth = nd.getMonth();
 
       if (month <= checkMonth) {
-        var year = currentDate.getFullYear() + 1;
+        var year = nd.getFullYear() + 1;
       }
 
       if(month<10) {
@@ -287,13 +290,11 @@ function handlerSelectedTime()
     var date = year+'-'+month+'-'+day;
     var time = hour+':'+minute;
   } else{
-      utc = currentDate.getTime() + (currentDate.getTimezoneOffset() * 60000);
-      nd = new Date(utc + (3600000*9));
 
       var selectDate = helper.add_minutes(nd,time);
 
-      if (helper.add_minutes(nd, 60) > selectDate) {
-        selectDate = helper.add_minutes(nd, 60);
+      if (helper.add_minutes(nd, 30) > selectDate) {
+        selectDate = helper.add_minutes(nd, 30);
       }
 
       var day = selectDate.getDate();

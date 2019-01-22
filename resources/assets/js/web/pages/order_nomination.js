@@ -91,13 +91,17 @@ $(document).ready(function(){
 
     if(time){
       var currentDate = new Date();
-      var year = currentDate.getFullYear();
+      utc = currentDate.getTime() + (currentDate.getTimezoneOffset() * 60000);
+      nd = new Date(utc + (3600000*9));
+
+      var year = nd.getFullYear();
+      
       if ((time == 'other_time')) {
         var month = $('.select-month').val();
-        var checkMonth = currentDate.getMonth();
+        var checkMonth = nd.getMonth();
 
         if (month <= checkMonth) {
-          var year = currentDate.getFullYear() + 1;
+          var year = nd.getFullYear() + 1;
         }
 
         if(month<10) {
@@ -124,13 +128,11 @@ $(document).ready(function(){
         var date = year+'-'+month+'-'+day;
         var time = hour+':'+minute;
       } else{
-          utc = currentDate.getTime() + (currentDate.getTimezoneOffset() * 60000);
-          nd = new Date(utc + (3600000*9));
 
           var selectDate = helper.add_minutes(nd,time);
 
-          if (helper.add_minutes(nd, 60) > selectDate) {
-            selectDate = helper.add_minutes(nd, 60);
+          if (helper.add_minutes(nd, 30) > selectDate) {
+            selectDate = helper.add_minutes(nd, 30);
           }
 
           var day = selectDate.getDate();
@@ -208,7 +210,10 @@ $(document).ready(function(){
     var totalPoint=cost*(duration*6)/3;
     if(time) {
       var currentDate = new Date();
-      var year = currentDate.getFullYear();
+      utc = currentDate.getTime() + (currentDate.getTimezoneOffset() * 60000);
+      nd = new Date(utc + (3600000*9));
+
+      var year = nd.getFullYear();
 
       if (time == 'other_time') {
         var month = $('.select-month').val();
@@ -242,13 +247,11 @@ $(document).ready(function(){
         var date = year+'-'+month+'-'+day;
         var time = hour+':'+minute;
       } else{
-          utc = currentDate.getTime() + (currentDate.getTimezoneOffset() * 60000);
-          nd = new Date(utc + (3600000*9));
 
           var selectDate = helper.add_minutes(nd,time);
 
-          if (helper.add_minutes(nd, 60) > selectDate) {
-            selectDate = helper.add_minutes(nd, 60);
+          if (helper.add_minutes(nd, 30) > selectDate) {
+            selectDate = helper.add_minutes(nd, 30);
           }
 
           var day = selectDate.getDate();
@@ -385,13 +388,17 @@ $(document).ready(function(){
       var cost = $('.cost-order').val();
 
       var currentDate = new Date();
-      var year = currentDate.getFullYear();
+      utc = currentDate.getTime() + (currentDate.getTimezoneOffset() * 60000);
+      nd = new Date(utc + (3600000*9));
+
+      var year = nd.getFullYear();
+
       if (time == 'other_time') {
         var month = $('.select-month').val();
-        var checkMonth = currentDate.getMonth();
+        var checkMonth = nd.getMonth();
 
         if (month <= checkMonth) {
-          var year = currentDate.getFullYear() + 1;
+          var year = nd.getFullYear() + 1;
         }
 
         if(month<10) {
@@ -418,13 +425,11 @@ $(document).ready(function(){
         var date = year+'-'+month+'-'+day;
         var time = hour+':'+minute;
       } else{
-          utc = currentDate.getTime() + (currentDate.getTimezoneOffset() * 60000);
-          nd = new Date(utc + (3600000*9));
 
           var selectDate = helper.add_minutes(nd,time);
 
-          if (helper.add_minutes(nd, 60) > selectDate) {
-            selectDate = helper.add_minutes(nd, 60);
+          if (helper.add_minutes(nd, 30) > selectDate) {
+            selectDate = helper.add_minutes(nd, 30);
           }
 
           var day = selectDate.getDate();
