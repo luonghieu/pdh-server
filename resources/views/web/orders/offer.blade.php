@@ -211,11 +211,11 @@
             $startHourFrom = Carbon\Carbon::parse($offer->start_time_from)->format('H:i');
             $startMinute =  (int)Carbon\Carbon::parse($offer->start_time_from)->format('i');
 
-            if($currentTime->copy()->addMinutes(60)->between($startTimeFrom,$startTimeTo)) {
-              $startHour = (int)$currentTime->copy()->addMinutes(60)->format('H');
-              $startHourFrom =$currentTime->copy()->addMinutes(60)->format('H:i');
-              $startMinute =  (int)$currentTime->copy()->addMinutes(60)->format('i');
-              $date = $currentTime->copy()->addMinutes(60)->format('Y-m-d');
+            if($currentTime->copy()->addMinutes(30)->between($startTimeFrom,$startTimeTo)) {
+              $startHour = (int)$currentTime->copy()->addMinutes(30)->format('H');
+              $startHourFrom =$currentTime->copy()->addMinutes(30)->format('H:i');
+              $startMinute =  (int)$currentTime->copy()->addMinutes(30)->format('i');
+              $date = $currentTime->copy()->addMinutes(30)->format('Y-m-d');
             }
           @endphp
             <label class="date-input d-flex-end">
@@ -246,7 +246,7 @@
           </div>
 
           @if(!Auth::user()->tc_send_id)
-          <a class="link-arrow link-arrow--left tc-verification-link" href="#" style="color: #222222;">未登録</a>
+          <a class="link-arrow link-arrow--left tc-verification-link inactive-button-order" href="#" style="color: #222222;">未登録</a>
           @else
           <a class="link-arrow link-arrow--left tc-verification-link" href="#" style="color: #222222;">登録済み</a>
           @endif

@@ -110,8 +110,8 @@ $(document).ready(function(){
     var checkMonth = currentDate.getMonth();
 
     if (month > checkMonth) {
-      if(add_minutes(nd, 60) > selectDate) {
-        selectDate = add_minutes(nd, 60);
+      if(add_minutes(nd, 30) > selectDate) {
+        selectDate = add_minutes(nd, 30);
         date = selectDate.getDate();
         month = selectDate.getMonth() +1;
 
@@ -306,10 +306,18 @@ $(document).ready(function(){
 
   $(".cb-cancel").on("change",function(event){
     if ($(this).is(':checked')) {
-        $(this).prop('checked', true);
-        $('#sp-cancel').removeClass('sp-disable');
-        $('#btn-confirm-orders').removeClass('disable');
-        $('#btn-confirm-orders').prop('disabled', false);
+
+        if($('.inactive-button-order').length) {
+          $(this).prop('checked', false);
+          $('#sp-cancel').addClass("sp-disable");
+          $('#btn-confirm-orders').addClass("disable");
+          $('#btn-confirm-orders').prop('disabled', true);
+        } else {
+          $(this).prop('checked', true);
+          $('#sp-cancel').removeClass('sp-disable');
+          $('#btn-confirm-orders').removeClass('disable');
+          $('#btn-confirm-orders').prop('disabled', false);
+        }
       } else {
         $(this).prop('checked', false);
         $('#sp-cancel').addClass("sp-disable");

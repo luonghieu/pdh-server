@@ -32,19 +32,26 @@ $(document).ready(function(){
 
   $(".checked-order-offer").on("change",function(event){
     if ($(this).is(':checked')) {
-      var area = $("input:radio[name='offer_area']:checked").val();
-      var otherArea = $("input:text[name='other_area_offer']").val();
-
-      if((!area || (area=='その他' && !otherArea))) {
+      if($('.inactive-button-order').length) {
         $('#confirm-orders-offer').addClass("disable");
         $(this).prop('checked', false);
         $('#confirm-orders-offer').prop('disabled', true);
         $('#sp-cancel').addClass("sp-disable");
       } else {
-        $('#confirm-orders-offer').removeClass('disable');
-        $(this).prop('checked', true);
-        $('#confirm-orders-offer').prop('disabled', false);
-        $('#sp-cancel').removeClass('sp-disable');
+        var area = $("input:radio[name='offer_area']:checked").val();
+        var otherArea = $("input:text[name='other_area_offer']").val();
+
+        if((!area || (area=='その他' && !otherArea))) {
+          $('#confirm-orders-offer').addClass("disable");
+          $(this).prop('checked', false);
+          $('#confirm-orders-offer').prop('disabled', true);
+          $('#sp-cancel').addClass("sp-disable");
+        } else {
+          $('#confirm-orders-offer').removeClass('disable');
+          $(this).prop('checked', true);
+          $('#confirm-orders-offer').prop('disabled', false);
+          $('#sp-cancel').removeClass('sp-disable');
+        }
       }
     } else {
         $(this).prop('checked', false);
@@ -154,7 +161,7 @@ $(document).ready(function(){
               var err ='';
 
               if (error.response.status == 400) {
-                var err = '開始時間は現在時刻から60分以降の時間を選択してください';
+                var err = '開始時間は現在時刻から30分以降の時間を選択してください';
               }
 
               if(error.response.status == 500) {
@@ -321,8 +328,8 @@ $(document).ready(function(){
     utc = now.getTime() + (now.getTimezoneOffset() * 60000);
     nd = new Date(utc + (3600000*9));
 
-    if (add_minutes(nd, 60) > checkDate) {
-      checkDate = add_minutes(nd, 60);
+    if (add_minutes(nd, 30) > checkDate) {
+      checkDate = add_minutes(nd, 30);
     }
 
     var startTimeTo = $('#start-time-to-offer').val();
