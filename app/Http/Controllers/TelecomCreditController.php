@@ -55,5 +55,7 @@ class TelecomCreditController extends Controller
                 }
             }
         }
+
+        return response()->json(['message' => 'SuccessOK']);
     }
 }
