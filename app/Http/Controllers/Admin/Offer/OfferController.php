@@ -164,7 +164,7 @@ class OfferController extends Controller
         $data['expired_date'] = $request->expired_date_offer . ' ' . $request->expired_time_offer;
 
         if (Carbon::now()->second(0)->addMinutes(30)->gt(Carbon::parse($data['expired_date']))) {
-            $request->session()->flash('expired_date_not_valid', 'expired_date_not_valid');
+            $request->session()->flash('expired_date_not_valid', '開始時間は現在以降の時間を指定してください');
 
             if (isset($request->offer_id)) {
                 return redirect()->route('admin.offers.edit', ['offer' => $request->offer_id]);
@@ -174,7 +174,7 @@ class OfferController extends Controller
         }
 
         if (Carbon::now()->second(0)->addWeek()->lt(Carbon::parse($data['expired_date']))) {
-            $request->session()->flash('expired_date_not_valid', 'expired_date_not_valid');
+            $request->session()->flash('time_out', '応募締切期限は最大で1週間までしか設定できません。');
 
             if (isset($request->offer_id)) {
                 return redirect()->route('admin.offers.edit', ['offer' => $request->offer_id]);
@@ -204,7 +204,7 @@ class OfferController extends Controller
         }
 
         if (Carbon::parse($data['expired_date'])->gt($validDate)) {
-            $request->session()->flash('expired_date_not_valid', 'expired_date_not_valid');
+            $request->session()->flash('expired_date_not_valid', '開始時間は現在以降の時間を指定してください');
 
             if (isset($request->offer_id)) {
                 return redirect()->route('admin.offers.edit', ['offer' => $request->offer_id]);
