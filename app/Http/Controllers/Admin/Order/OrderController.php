@@ -356,21 +356,21 @@ class OrderController extends Controller
             \DB::commit();
 
             // Send notification to new nominees
-//            \Notification::send(
-//                $newNominees,
-//                (new CreateNominationOrdersForCast($order->id))->delay(now()->addSeconds(3))
-//            );
-//            // Send notification to casts removed
-//            \Notification::send(
-//                $castsRemoved,
-//                (new AdminRemoveCastInOrder())->delay(now()->addSeconds(3))
-//            );
-//            // Send notification to user and casts.
-//            $order->user->notify((new AdminEditOrder())->delay(now()->addSeconds(3)));
-//            \Notification::send(
-//                $matchedCasts,
-//                (new AdminRemoveCastInOrder())->delay(now()->addSeconds(3))
-//            );
+            \Notification::send(
+                $newNominees,
+                (new CreateNominationOrdersForCast($order->id))->delay(now()->addSeconds(3))
+            );
+            // Send notification to casts removed
+            \Notification::send(
+                $castsRemoved,
+                (new AdminRemoveCastInOrder())->delay(now()->addSeconds(3))
+            );
+            // Send notification to user and casts.
+            $order->user->notify((new AdminEditOrder())->delay(now()->addSeconds(3)));
+            \Notification::send(
+                $matchedCasts,
+                (new AdminRemoveCastInOrder())->delay(now()->addSeconds(3))
+            );
 
             // Send notification to other casts
             if ($order->total_cast != $currentTotalCast) {
