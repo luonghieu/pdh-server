@@ -445,7 +445,6 @@
         const castClasses = JSON.parse('<?php echo json_encode( $castClasses ) ?>');
         const orderType = '<?php echo $order->type ?>';
         const orderTypeDesc = JSON.parse('<?php echo json_encode($orderTypeDesc) ?>');
-        console.log(orderTypeDesc);
     </script>
     <script src="/assets/admin/js/pages/order_call.js"></script>
 @stop
