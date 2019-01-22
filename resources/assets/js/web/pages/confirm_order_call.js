@@ -251,7 +251,7 @@ $(document).ready(function(){
                   $('#md-require-card').prop('checked',true);
                 } else {
                   if (error.response.status == 400) {
-                    var title = '開始時間は現在時刻から60分以降の時間を選択してください';
+                    var title = '開始時間は現在時刻から30分以降の時間を選択してください';
                   }
 
                   if(error.response.status == 422) {

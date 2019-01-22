@@ -129,8 +129,8 @@ $(document).ready(function(){
 
           var selectDate = helper.add_minutes(nd,time);
 
-          if (helper.add_minutes(nd, 60) > selectDate) {
-            selectDate = helper.add_minutes(nd, 60);
+          if (helper.add_minutes(nd, 30) > selectDate) {
+            selectDate = helper.add_minutes(nd, 30);
           }
 
           var day = selectDate.getDate();
@@ -247,8 +247,8 @@ $(document).ready(function(){
 
           var selectDate = helper.add_minutes(nd,time);
 
-          if (helper.add_minutes(nd, 60) > selectDate) {
-            selectDate = helper.add_minutes(nd, 60);
+          if (helper.add_minutes(nd, 30) > selectDate) {
+            selectDate = helper.add_minutes(nd, 30);
           }
 
           var day = selectDate.getDate();
@@ -423,8 +423,8 @@ $(document).ready(function(){
 
           var selectDate = helper.add_minutes(nd,time);
 
-          if (helper.add_minutes(nd, 60) > selectDate) {
-            selectDate = helper.add_minutes(nd, 60);
+          if (helper.add_minutes(nd, 30) > selectDate) {
+            selectDate = helper.add_minutes(nd, 30);
           }
 
           var day = selectDate.getDate();

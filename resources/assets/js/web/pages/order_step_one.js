@@ -173,8 +173,8 @@ function handlerSelectedTime()
     var checkMonth = currentDate.getMonth();
 
     if (month > checkMonth) {
-      if(helper.add_minutes(nd, 60) > selectDate) {
-        selectDate = helper.add_minutes(nd, 60);
+      if(helper.add_minutes(nd, 30) > selectDate) {
+        selectDate = helper.add_minutes(nd, 30);
         date = selectDate.getDate();
         month = selectDate.getMonth() +1;
 
@@ -241,7 +241,7 @@ function handlerSelectedTime()
   });
 
   //select-time order 1-1
-   $('.choose-time').on("click",function(){
+  $('.choose-time').on("click",function(){
     var cost = $('.cost-order').val();
     var time = $("input:radio[name='time_join_nomination']:checked").val();
     var currentDate = new Date();
@@ -292,8 +292,8 @@ function handlerSelectedTime()
 
       var selectDate = helper.add_minutes(nd,time);
 
-      if (helper.add_minutes(nd, 60) > selectDate) {
-        selectDate = helper.add_minutes(nd, 60);
+      if (helper.add_minutes(nd, 30) > selectDate) {
+        selectDate = helper.add_minutes(nd, 30);
       }
 
       var day = selectDate.getDate();
