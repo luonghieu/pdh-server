@@ -250,9 +250,25 @@ function orderChanged() {
             <h2> ${ $('#total-cast').val() - numOfCast}名をコールとして募集します</h2>
             <h2> "OK"をタップすると、キャストに通知が送られます</h2>
             `);
+        } else if(selectedNomination.length) {
+            let title = 'ユーザーID ';
+            selectedNomination.forEach(item => {
+                title += item.id + ',';
+            });
+            title = title.slice(0, -1);
+            title += 'を指名キャストとして選択しています<';
+            $('#submit-popup-content').html(`
+            <h2> ${title}</h2>
+            <h2> "OK"をタップすると、キャストに通知が送られます</h2>
+            `);
+        } else {
+            $('#submit-popup-content').html(`
+            <p>キャストを選択してください</p>
+            <h2>変更を実行しますか？</h2>
+            <h2>"OK"をタップすると、対象のゲスト/キャストに</h2>
+            <h2>通知が送られます。</h2>
+            `);
         }
-
-        console.log(selectedNomination);
         $('#btn-submit-popup').prop('disabled', false);
     } else {
         $('#btn-submit-popup').prop('disabled', true);
