@@ -31,25 +31,46 @@ $(document).ready(function(){
 
   $(".checked-order-offer").on("change",function(event){
     if ($(this).is(':checked')) {
-      var area = $("input:radio[name='offer_area']:checked").val();
-      var otherArea = $("input:text[name='other_area_offer']").val();
-      var checkExpired = $("#check-expired").val();
-      if(((checkExpired == 1) || !area || (area=='その他' && !otherArea))) {
+      if(localStorage.getItem("order_offer")){
+        var offerId = $('.offer-id').val();
+        var orderOffer = JSON.parse(localStorage.getItem("order_offer"));
+
+        if(orderOffer[offerId]) {
+          orderOffer = orderOffer[offerId];
+          if(!orderOffer.current_date) {
+            $('#confirm-orders-offer').addClass("disable");
+            $(this).prop('checked', false);
+            $('#confirm-orders-offer').prop('disabled', true);
+            $('#sp-cancel').addClass("sp-disable");
+          }else {
+            var area = $("input:radio[name='offer_area']:checked").val();
+            var otherArea = $("input:text[name='other_area_offer']").val();
+            var checkExpired = $("#check-expired").val();
+
+            if(((checkExpired == 1) || !area || (area=='その他' && !otherArea))) {
+              $('#confirm-orders-offer').addClass("disable");
+              $(this).prop('checked', false);
+              $('#confirm-orders-offer').prop('disabled', true);
+              $('#sp-cancel').addClass("sp-disable");
+            } else {
+              $('#confirm-orders-offer').removeClass('disable');
+              $(this).prop('checked', true);
+              $('#confirm-orders-offer').prop('disabled', false);
+              $('#sp-cancel').removeClass('sp-disable');
+            }
+          }
+        }
+      } else {
         $('#confirm-orders-offer').addClass("disable");
         $(this).prop('checked', false);
         $('#confirm-orders-offer').prop('disabled', true);
         $('#sp-cancel').addClass("sp-disable");
-      } else {
-        $('#confirm-orders-offer').removeClass('disable');
-        $(this).prop('checked', true);
-        $('#confirm-orders-offer').prop('disabled', false);
-        $('#sp-cancel').removeClass('sp-disable');
       }
     } else {
-        $(this).prop('checked', false);
-        $('#confirm-orders-offer').addClass("disable");
-        $('#confirm-orders-offer').prop('disabled', true);
-        $('#sp-cancel').addClass("sp-disable");
+      $(this).prop('checked', false);
+      $('#confirm-orders-offer').addClass("disable");
+      $('#confirm-orders-offer').prop('disabled', true);
+      $('#sp-cancel').addClass("sp-disable");
     }
   });
 
@@ -211,7 +232,7 @@ $(document).ready(function(){
     if('その他'== areaOffer){
       if(localStorage.getItem("order_offer")){
         var orderOffer = JSON.parse(localStorage.getItem("order_offer"));
-        
+
         if(orderOffer.text_area){
           $("input:text[name='other_area_offer']").val(orderOffer.text_area);
         }

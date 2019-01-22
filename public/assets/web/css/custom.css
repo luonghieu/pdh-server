@@ -2789,11 +2789,11 @@ padding-top: 65px !important;
   font-weight: bold;
 }
 
-.choose-time {
+.choose-time-offer {
   position: relative;
 }
 
-.choose-time .choose-time-title {
+.choose-time-offer .choose-time-title {
   color: #00C3C3;
   font-size: 15px;
   text-align: right;
