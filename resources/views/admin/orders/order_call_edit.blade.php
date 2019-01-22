@@ -155,10 +155,12 @@
                                     <div class="display-title">
                                         <p>指名中キャスト一覧</p>
                                     </div>
-                                    <div class="display-title change-cast-order-call">
-                                        <a href="" data-toggle="modal" data-target="#choose-cast-nominee"
-                                           id="popup-cast-nominee">+別のキャストを追加する</a>
-                                    </div>
+                                    @if($order->status == \App\Enums\OrderStatus::OPEN || $order->status == \App\Enums\OrderStatus::ACTIVE)
+                                        <div class="display-title change-cast-order-call">
+                                            <a href="" data-toggle="modal" data-target="#choose-cast-nominee"
+                                               id="popup-cast-nominee">+別のキャストを追加する</a>
+                                        </div>
+                                    @endif
                                 </div>
                                 <table class="table table-striped table-bordered bootstrap-datatable"
                                        id="nomination-selected-table">
@@ -265,8 +267,13 @@
                                 <div class="wrapper-button">
                                     <a href="{{ route('admin.orders.call', ['order' =>$order->id]) }}"
                                        class="btn btn-info">戻る</a>
-                                    <button type="button" class="btn btn-info" id="submit-btn" disabled>予約内容を変更する
+                                    <button type="button" class="btn btn-info" id="btn-submit-popup"
+                                            data-toggle="modal" data-target="#submit-popup"
+                                            disabled>予約内容を変更する
                                     </button>
+                                    <a href="#"
+                                       class="btn btn-info" id="btn-alert-popup"
+                                       data-toggle="modal" data-target="#alert-popup"></a>
                                 </div>
                             </form>
                             <div class="modal fade" id="choose-cast-nominee" tabindex="-1" role="dialog"
@@ -377,6 +384,35 @@
                                             <button type="submit" class="btn btn-accept" id="add-cast-matching">
                                                 このキャストを選択する
                                             </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="modal fade" id="submit-popup" tabindex="-1" role="dialog"
+                                 aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                <div class="modal-dialog" role="document">
+                                    <div class="modal-content">
+                                        <div class="modal-body">
+                                            <p>キャストを選択してください</p>
+                                            <h2>変更を実行しますか？</h2>
+                                            <h2>"OK"をタップすると、対象のゲスト/キャストに</h2>
+                                            <h2>通知が送られます。</h2>
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-canceled" data-dismiss="modal">いいえ
+                                            </button>
+                                            <button type="submit" class="btn btn-accept" id="btn-submit">
+                                                OK
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="modal fade" id="alert-popup" tabindex="-1" role="dialog"
+                                 aria-labelledby="exampleModalLabel" aria-hidden="true">
+                                <div class="modal-dialog" role="document">
+                                    <div class="modal-content">
+                                        <div class="modal-body" id="alert-popup-content">
                                         </div>
                                     </div>
                                 </div>

@@ -14,16 +14,16 @@ use App\Enums\PointType;
 use App\Http\Controllers\Controller;
 use App\Jobs\PointSettlement;
 use App\Notification;
-use App\Notifications\CastApplyOrders;
-use App\Notifications\CreateNominatedOrdersForCast;
+use App\Notifications\AdminEditOrder;
+use App\Notifications\AdminRemoveCastInOrder;
+use App\Notifications\CallOrdersCreated;
+use App\Notifications\CreateNominationOrdersForCast;
 use App\Order;
 use App\PaymentRequest;
 use App\Point;
 use App\Services\LogService;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
-use Session;
 
 class OrderController extends Controller
 {
@@ -217,15 +217,18 @@ class OrderController extends Controller
             }
 
             $newNominees = [];
+            $castsRemoved = [];
             if (!$request->listCastNominees) {
                 if ($castNomineeIds) {
                     $order->castOrder()->detach($castNomineeIds);
+                    $castsRemoved = array_merge($castsRemoved, $castNomineeIds);
                 }
             } else {
                 $deletedNomineeIds = array_merge(array_diff($castNomineeIds, $request->listCastNominees));
                 $newNomineeIds = array_merge(array_diff($request->listCastNominees, $castNomineeIds));
                 if ($deletedNomineeIds) {
                     $order->castOrder()->detach($deletedNomineeIds);
+                    $castsRemoved = array_merge($castsRemoved, $deletedNomineeIds);
                 }
                 if ($newNomineeIds) {
                     $newNominees = Cast::whereIn('id', $newNomineeIds)->get();
@@ -236,6 +239,7 @@ class OrderController extends Controller
             if (!$request->listCastCandidates) {
                 if ($castCandidateIds) {
                     $order->castOrder()->detach($castCandidateIds);
+                    $castsRemoved = array_merge($castsRemoved, $castCandidateIds);
                 }
             } else {
                 $deletedCandidateIds = array_merge(array_diff($castCandidateIds, $request->listCastCandidates));
@@ -243,6 +247,7 @@ class OrderController extends Controller
 
                 if ($deletedCandidateIds) {
                     $order->castOrder()->detach($castCandidateIds);
+                    $castsRemoved = array_merge($castsRemoved, $castCandidateIds);
                 }
             }
 
@@ -250,6 +255,7 @@ class OrderController extends Controller
             if (!$request->listCastMatching) {
                 if ($castMatchingIds) {
                     $order->castOrder()->detach($castMatchingIds);
+                    $castsRemoved = array_merge($castsRemoved, $castMatchingIds);
                 }
             } else {
                 $deletedMatchingIds = array_merge(array_diff($castMatchingIds, $request->listCastMatching));
@@ -257,18 +263,21 @@ class OrderController extends Controller
 
                 if ($deletedMatchingIds) {
                     $order->castOrder()->detach($deletedMatchingIds);
+                    $castsRemoved = array_merge($castsRemoved, $deletedMatchingIds);
                 }
             }
             $newMatchings = Cast::whereIn('id', array_merge($newCandidateIds, $newMatchingIds))->get();
+            $castsRemoved = Cast::whereIn('id', $castsRemoved)->get();
 
             $orderStartTime = Carbon::parse($order->date . ' ' . $order->start_time);
             $orderEndTime = $orderStartTime->copy()->addMinutes($order->duration * 60);
+            $nightTime = $order->nightTime($orderEndTime);
+            $allowance = $order->allowance($nightTime);
+            $orderPoint = $order->orderPoint();
 
             // Update temp point for previous casts matched
             $matchedCasts = $order->casts;
             foreach ($matchedCasts as $cast) {
-                $nightTime = $order->nightTime($orderEndTime);
-                $allowance = $order->allowance($nightTime);
                 if ($cast->pivot->type == CastOrderType::NOMINEE) {
                     $orderFee = $order->orderFee($cast, $orderStartTime, $orderEndTime);
                     $orderPoint = $order->orderPoint($cast);
@@ -298,27 +307,46 @@ class OrderController extends Controller
             }
 
             // Add casts matched
-//            $nightTime = $order->nightTime($orderEndTime);
-//            $allowance = $order->allowance($nightTime);
-//            $orderPoint = $order->orderPoint();
-//            $tempPoint = $orderPoint + $allowance;
-
             foreach ($newMatchings as $matching) {
-                $order->apply($matching->id);
+                $order->candidates()->attach($matching->id ,[
+                    'type' => CastOrderType::CANDIDATE,
+                    'status' => CastOrderStatus::ACCEPTED,
+                    'accepted_at' => Carbon::now(),
+                    'temp_point' => $orderPoint + $allowance,
+                ]);
             }
 
-//            $currentTotalCast = $order->casts()->count();
-//            if ($currentTotalCast == $order->total_cast) {
-//                $order->status = OrderStatus::ACTIVE;
-//            } else {
-//                $order->status = OrderStatus::OPEN;
-//            }
+            if ($order->status != OrderStatus::PROCESSING) {
+                $currentTotalCast = $order->casts()->count();
+                if ($currentTotalCast == $order->total_cast) {
+                    $order->status = OrderStatus::ACTIVE;
+                } else {
+                    $order->status = OrderStatus::OPEN;
+                }
+            }
 
             \DB::commit();
-            // Send notification for nominees
+
+            // Send notification to new nominees
             \Notification::send(
                 $newNominees,
-                (new CreateNominatedOrdersForCast($order->id))->delay(now()->addSeconds(3))
+                (new CreateNominationOrdersForCast($order->id))->delay(now()->addSeconds(3))
+            );
+            // Send notification to new candidates
+            \Notification::send(
+                $newMatchings,
+                (new CallOrdersCreated($order->id))->delay(now()->addSeconds(3))
+            );
+            // Send notification to casts removed
+            \Notification::send(
+                $castsRemoved,
+                (new AdminRemoveCastInOrder())->delay(now()->addSeconds(3))
+            );
+            // Send notification to user and casts.
+            $order->user->notify((new AdminEditOrder())->delay(now()->addSeconds(3)));
+            \Notification::send(
+                $matchedCasts,
+                (new AdminRemoveCastInOrder())->delay(now()->addSeconds(3))
             );
 
             return response()->json(['success' => true], 200);

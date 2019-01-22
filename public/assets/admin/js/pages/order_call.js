@@ -203,9 +203,9 @@ function orderChanged() {
     }
 
     if (isChanged) {
-        $('#submit-btn').prop('disabled', false);
+        $('#btn-submit-popup').prop('disabled', false);
     } else {
-        $('#submit-btn').prop('disabled', true);
+        $('#btn-submit-popup').prop('disabled', true);
     }
 }
 
@@ -479,7 +479,7 @@ jQuery(document).ready(function ($) {
     handleChangeOrderDurationEvent();
     handleChangeTotalCastEvent();
 
-    $('#submit-btn').on('click', function () {
+    $('#btn-submit').on('click', function () {
         $.ajax({
             headers: {
                 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
@@ -497,11 +497,19 @@ jQuery(document).ready(function ($) {
             },
             success: function (response) {
                 if (response.success) {
-                    alert('Update succeed');
-                    window.location.reload();
+                    $('#submit-popup').hide();
+                    $('#btn-alert-popup').trigger('click');
+                    $('#alert-popup-content').html('<p>変更しました</p>');
+                    setTimeout(() => {
+                        window.location.reload();
+                    }, 2000);
                 } else {
-                    alert(response.info);
-                    window.location.reload();
+                    $('#submit-popup').hide();
+                    $('#btn-alert-popup').trigger('click');
+                    $('#alert-popup-content').html('<p>' + response.info + '</p>');
+                    setTimeout(() => {
+                        window.location.reload();
+                    }, 2000);
                 }
             },
         });

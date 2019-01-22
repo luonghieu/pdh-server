@@ -1620,6 +1620,12 @@ tbody td {
   text-align: right;
 }
 
+#btn-alert-popup {
+  position: absolute;
+  top: 0;
+  left: 999999px;
+}
+
 @media (max-width: 799px) {
   .image-verified {
     float: right;
