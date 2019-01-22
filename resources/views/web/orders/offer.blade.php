@@ -266,7 +266,7 @@
           $date = $currentTime->copy()->addMinutes(60)->format('Y-m-d');
         }
       @endphp
-    <div class="choose-time">
+    <div class="choose-time-offer">
       <label class="choose-time-title">希望開始時間</label>
       <label class="date-input d-flex-end">
         <p class="date-input__text">
