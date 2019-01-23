@@ -1,6 +1,8 @@
 $(document).ready(function(){
   const helper = require('./helper');
-
+  function dayOfWeek() {
+    return ['日', '月', '火', '水', '木', '金', '土'];
+  }
   var checkApp = {
       isAppleDevice : function() {
         if (navigator.userAgent.match(/(iPhone|iPod|iPad)/) != null) {
@@ -392,8 +394,15 @@ $(document).ready(function(){
       minuteOffer = '0'+minuteOffer;
     }
     var time = yearOffer + '-' + monthOffer + '-' +  dateOffer;
+    if (checkApp.isAppleDevice()) {
+      var dateFolowDevice = new Date(monthOffer +'/' + dateOffer +'/'+ yearOffer);
+    } else {
+      var dateFolowDevice = new Date(yearOffer +'-' + monthOffer +'-'+ dateOffer);
+    }
+    var getDayOfWeek = dateFolowDevice.getDay();
+    var dayOfWeekString = dayOfWeek()[getDayOfWeek];
 
-    $('#temp-date-offer').text(yearOffer+'年'+monthOffer+'月'+dateOffer+'日');
+    $('#temp-date-offer').text(yearOffer+'年'+monthOffer+'月'+dateOffer+'日('+dayOfWeekString+')');
     $('.time-offer').text(hourOffer + ':' + minuteOffer +'~');
 
     check = hourOffer;
@@ -481,7 +490,15 @@ $(document).ready(function(){
 
         if(orderOffer.current_date) {
           currentDate = orderOffer.current_date.split('-');
-          $('#temp-date-offer').text(currentDate[0]+'年'+currentDate[1]+'月'+currentDate[2]+'日');
+          if (checkApp.isAppleDevice()) {
+            var dateFolowDevice = new Date(currentDate[1] +'/' + currentDate[2] +'/'+ currentDate[0]);
+          } else {
+            var dateFolowDevice = new Date(currentDate[0] +'-' + currentDate[1] +'-'+ currentDate[2]);
+          }
+
+          var getDayOfWeek = dateFolowDevice.getDay();
+          var dayOfWeekString = dayOfWeek()[getDayOfWeek];
+          $('#temp-date-offer').text(currentDate[0]+'年'+currentDate[1]+'月'+currentDate[2]+'日('+dayOfWeekString+')');
         }
           //area
         if(orderOffer.select_area){
