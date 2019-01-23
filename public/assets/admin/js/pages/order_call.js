@@ -152,28 +152,35 @@ function updateTotalPoint(newBaseTempPoint) {
     const castsMatching = getListCastMatching();
     const castsNominee = getListCastNominees();
     const castsCandidate = getListCastCandidates();
-    let tempPoint = 0;
     let totalCandidate = $('#total-cast').val();
-    let totalNominee = 0;
-    castsMatching.forEach(val => {
-        let castMatched = baseCastsMatched.find(i => i.id == val);
-        if (castMatched) {
-            if (castMatched.pivot.type == 1) {
-                totalNominee++;
-                totalCandidate--;
+    let tempPoint = 0;
+    if (castsMatching.length || castsNominee.length) {
+        let totalNominee = 0;
+        castsMatching.forEach(val => {
+            let castMatched = baseCastsMatched.find(i => i.id == val);
+            if (castMatched) {
+                if (castMatched.pivot.type == 1) {
+                    totalNominee++;
+                    totalCandidate--;
+                }
             }
+        });
+        castsNominee.forEach(val => {
+            totalNominee++;
+            totalCandidate--;
+        });
+        for (let i = 0; i < totalNominee; i++) {
+            tempPoint += orderPoint() + allowance() + orderFee();
         }
-    });
-    castsNominee.forEach(val => {
-        totalNominee++;
-        totalCandidate--;
-    });
-    for (let i = 0; i < totalNominee; i++) {
-        tempPoint += orderPoint() + allowance() + orderFee();
+        for (let i = 0; i < totalCandidate; i++) {
+            tempPoint += orderPoint() + allowance();
+        }
+    } else {
+        for (let i = 0; i < totalCandidate; i++) {
+            tempPoint += orderPoint() + allowance();
+        }
     }
-    for (let i = 0; i < totalCandidate; i++) {
-        tempPoint += orderPoint() + allowance();
-    }
+
     currentTempPoint = tempPoint;
     // castsNominee.forEach(val => {
     //     const cast = selectedNomination.find(i => i.id == val);
@@ -497,6 +504,8 @@ function handleChoosenCastClassEvent() {
             return false;
         }
         clastIdPrevious = classId;
+        console.log('123');
+        updateTotalPoint();
         orderChanged();
         renderListCast(classId, getListCastMatching(), getListCastNominees(), getListCastCandidates());
     });
@@ -601,7 +610,7 @@ jQuery(document).ready(function ($) {
                     $('#btn-alert-popup').trigger('click');
                     $('#alert-popup-content').html('<p>変更しました</p>');
                     setTimeout(() => {
-                        window.location.reload();
+                        window.location.href = redirectBackUrl;
                     }, 1000);
                 } else {
                     $('#submit-popup').hide();
