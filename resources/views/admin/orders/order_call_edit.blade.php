@@ -438,18 +438,18 @@
         let numOfCast = '<?php echo count( $castsMatching ) + count( $castsCandidates ) + count( $castsNominee ) ?>';
         let baseTempPoint = Number('<?php echo $tempPoint; ?>');
         let orderStartTime = '<?php echo $order->date . ' ' . $order->start_time ?>';
-        let selectedNomination = JSON.parse(<?php echo json_encode($castsNominee, true) ?>);
-        let selectedCandidate = JSON.parse(<?php echo json_encode($castsCandidates, true) ?>);
-        let selectedMatching = JSON.parse(<?php echo json_encode($castsMatching, true) ?>);
+        let selectedNomination = JSON.parse("<?php echo json_encode($castsNominee, true) ?>");
+        let selectedCandidate = JSON.parse("<?php echo json_encode($castsCandidates, true) ?>");
+        let selectedMatching = JSON.parse("<?php echo json_encode($castsMatching, true) ?>");
         const baseCastClass = '<?php echo $order->class_id ?>';
         const orderId = '<?php echo $order->id ?>';
-        const baseCastsMatched = JSON.parse(<?php echo json_encode($castsMatching, true) ?>);
-        const baseCastsNominee = JSON.parse(<?php echo json_encode( $castsNominee, true) ?>);
-        const baseCastsCandidate = JSON.parse(<?php echo json_encode( $castsCandidates , true) ?>);
-        const castClasses = JSON.parse(<?php echo json_encode( $castClasses , true) ?>);
+        const baseCastsMatched = JSON.parse("<?php echo json_encode($castsMatching, true) ?>");
+        const baseCastsNominee = JSON.parse("<?php echo json_encode( $castsNominee, true) ?>");
+        const baseCastsCandidate = JSON.parse("<?php echo json_encode( $castsCandidates , true) ?>");
+        const castClasses = JSON.parse("<?php echo json_encode( $castClasses , true) ?>");
         const orderType = '<?php echo $order->type ?>';
-        const orderTypeDesc = JSON.parse(<?php echo json_encode($orderTypeDesc, true) ?>);
-        const orderStatusDesc = JSON.parse(<?php echo json_encode($orderStatusDesc, true) ?>);
+        const orderTypeDesc = JSON.parse("<?php echo json_encode($orderTypeDesc, true) ?>");
+        const orderStatusDesc = JSON.parse("<?php echo json_encode($orderStatusDesc, true) ?>");
         const orderStatus = '<?php echo $order->status ?>';
     </script>
     <script src="/assets/admin/js/pages/order_call.js"></script>
