@@ -233,6 +233,7 @@ class OrderController extends Controller
             $order->start_time = $orderDate->format('H:i');
             $order->type = $request->type;
             $order->temp_point = $request->temp_point;
+            $order->status = $request->status;
             $order->save();
 
             foreach ($casts as $cast) {
@@ -351,14 +352,6 @@ class OrderController extends Controller
             }
 
             $currentTotalCast = $order->casts()->count();
-            if ($order->status != OrderStatus::PROCESSING) {
-                if ($currentTotalCast == $order->total_cast) {
-                    $order->status = OrderStatus::ACTIVE;
-                } else {
-                    $order->status = OrderStatus::OPEN;
-                }
-            }
-
             // Add/Remove casts in room
             $room = Room::active()->where('type', RoomType::GROUP)->where('order_id', $order->id)->first();
             if ($room) {
