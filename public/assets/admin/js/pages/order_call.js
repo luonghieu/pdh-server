@@ -9,6 +9,7 @@ let clastIdPrevious = $('#choosen-cast-class').val();
 let totalCastPrevious = $('#total-cast').val();
 let currentOrderType = orderType;
 let currentTempPoint = 0;
+let currentOrderStatus = orderStatus;
 function debounce(func, wait, immediate) {
     let timeout;
     return function () {
@@ -302,8 +303,10 @@ function orderChanged() {
         if (orderStatus != 3) {
             if ($('#total-cast').val() == getListCastMatching().length) {
                 $('#order-status span').text(`${orderStatusDesc[2]}`);
+                currentOrderStatus = 2;
             } else {
                 $('#order-status span').text(`${orderStatusDesc[1]}`);
+                currentOrderStatus = 1;
             }
         }
         $('#btn-submit-popup').prop('disabled', false);
@@ -504,7 +507,6 @@ function handleChoosenCastClassEvent() {
             return false;
         }
         clastIdPrevious = classId;
-        console.log('123');
         updateTotalPoint();
         orderChanged();
         renderListCast(classId, getListCastMatching(), getListCastNominees(), getListCastCandidates());
@@ -602,7 +604,8 @@ jQuery(document).ready(function ($) {
                 'class_id': $('#choosen-cast-class').val(),
                 'totalCast': $('#total-cast').val(),
                 'type': currentOrderType,
-                'temp_point': currentTempPoint
+                'temp_point': currentTempPoint,
+                'status': currentOrderStatus
             },
             success: function (response) {
                 if (response.success) {
