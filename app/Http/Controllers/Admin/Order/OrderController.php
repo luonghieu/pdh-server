@@ -196,6 +196,7 @@ class OrderController extends Controller
             OrderStatus::DONE => OrderStatus::getDescription(OrderStatus::DONE),
             OrderStatus::TIMEOUT => OrderStatus::getDescription(OrderStatus::TIMEOUT),
         ];
+
         return view('admin.orders.order_call_edit', compact('order', 'castClasses', 'castsMatching', 'castsNominee', 'castsCandidates', 'orderTypeDesc', 'orderStatusDesc'));
     }
 
