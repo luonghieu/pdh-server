@@ -189,7 +189,14 @@ class OrderController extends Controller
           OrderType::NOMINATION => OrderType::getDescription(OrderType::NOMINATION),
           OrderType::HYBRID => OrderType::getDescription(OrderType::HYBRID),
         ];
-        return view('admin.orders.order_call_edit', compact('order', 'castClasses', 'castsMatching', 'castsNominee', 'castsCandidates', 'orderTypeDesc'));
+        $orderStatusDesc = [
+            OrderStatus::OPEN => OrderStatus::getDescription(OrderStatus::OPEN),
+            OrderStatus::ACTIVE => OrderStatus::getDescription(OrderStatus::ACTIVE),
+            OrderStatus::PROCESSING => OrderStatus::getDescription(OrderStatus::PROCESSING),
+            OrderStatus::DONE => OrderStatus::getDescription(OrderStatus::DONE),
+            OrderStatus::TIMEOUT => OrderStatus::getDescription(OrderStatus::TIMEOUT),
+        ];
+        return view('admin.orders.order_call_edit', compact('order', 'castClasses', 'castsMatching', 'castsNominee', 'castsCandidates', 'orderTypeDesc', 'orderStatusDesc'));
     }
 
     public function updateOrderCall(Request $request, $id)
@@ -208,7 +215,8 @@ class OrderController extends Controller
             $order->total_cast = $request->totalCast;
             $order->date = $orderDate->format('Y-m-d');
             $order->start_time = $orderDate->format('H:i');
-
+            $order->type = $request->type;
+            $order->temp_point = $request->temp_point;
             $order->save();
 
             foreach ($casts as $cast) {

@@ -7,7 +7,8 @@ let listCastCandidates = getListCastCandidates();
 let classId = $('#choosen-cast-class').val();
 let clastIdPrevious = $('#choosen-cast-class').val();
 let totalCastPrevious = $('#total-cast').val();
-
+let currentOrderType = orderType;
+let currentTempPoint = 0;
 function debounce(func, wait, immediate) {
     let timeout;
     return function () {
@@ -97,7 +98,7 @@ function renderListCast(classId, listCastMatching, listCastNominees, listCastCan
     });
 }
 
-function orderPoint(cast, isNominee = null) {
+function orderPoint(cast = null, isNominee = null) {
     let orderDuration = Number($('#order-duration').val()) * 60;
     const currentCastClass = castClasses.find(i => i.id == $('#choosen-cast-class').val());
     let cost = 0;
@@ -152,28 +153,49 @@ function updateTotalPoint(newBaseTempPoint) {
     const castsNominee = getListCastNominees();
     const castsCandidate = getListCastCandidates();
     let tempPoint = 0;
-
-    // castsNominee.forEach(val => {
-    //     const cast = selectedNomination.find(i => i.id == val);
-    //     tempPoint += orderPoint(cast, true) + orderFee() + allowance();
-    // });
-    castsCandidate.forEach(val => {
-        const cast = selectedCandidate.find(i => i.id == val);
-        tempPoint += orderPoint(cast) + allowance();
-    });
+    let totalCandidate = $('#total-cast').val();
+    let totalNominee = 0;
     castsMatching.forEach(val => {
         let castMatched = baseCastsMatched.find(i => i.id == val);
         if (castMatched) {
             if (castMatched.pivot.type == 1) {
-                tempPoint += orderPoint(castMatched, true) + allowance() + orderFee();
-            } else {
-                tempPoint += orderPoint(castMatched) + allowance();
+                totalNominee++;
+                totalCandidate--;
             }
-        } else {
-            const cast = selectedMatching.find(i => i.id == val);
-            tempPoint += orderPoint(cast) + allowance();
         }
     });
+    castsNominee.forEach(val => {
+        totalNominee++;
+        totalCandidate--;
+    });
+    for (let i = 0; i < totalNominee; i++) {
+        tempPoint += orderPoint() + allowance() + orderFee();
+    }
+    for (let i = 0; i < totalCandidate; i++) {
+        tempPoint += orderPoint() + allowance();
+    }
+    currentTempPoint = tempPoint;
+    // castsNominee.forEach(val => {
+    //     const cast = selectedNomination.find(i => i.id == val);
+    //     tempPoint += orderPoint(cast, true) + orderFee() + allowance();
+    // });
+    // castsCandidate.forEach(val => {
+    //     const cast = selectedCandidate.find(i => i.id == val);
+    //     tempPoint += orderPoint(cast) + allowance();
+    // });
+    // castsMatching.forEach(val => {
+    //     let castMatched = baseCastsMatched.find(i => i.id == val);
+    //     if (castMatched) {
+    //         if (castMatched.pivot.type == 1) {
+    //             tempPoint += orderPoint(castMatched, true) + allowance() + orderFee();
+    //         } else {
+    //             tempPoint += orderPoint(castMatched) + allowance();
+    //         }
+    //     } else {
+    //         const cast = selectedMatching.find(i => i.id == val);
+    //         tempPoint += orderPoint(cast) + allowance();
+    //     }
+    // });
 
     $('#total-point').text((tempPoint + '').replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1,") + 'P');
 
@@ -204,14 +226,14 @@ function orderChanged() {
     }
 
     if (isChanged) {
-        type = 2;
+        currentOrderType = 2;
         let nominees = [];
         let candidates = [];
         if (getListCastNominees().length) {
-            type = 4;
+            currentOrderType = 4;
         }
 
-        if (type != 4) {
+        if (currentOrderType != 4) {
             if (getListCastCandidates().length) {
                 getListCastMatching().forEach(val => {
                     const cast = baseCastsMatched.find(cast => cast.id == val);
@@ -225,7 +247,7 @@ function orderChanged() {
                 });
 
                 if (nominees.length) {
-                    type = 4;
+                    currentOrderType = 4;
                 }
             } else {
                 getListCastMatching().forEach(val => {
@@ -240,11 +262,11 @@ function orderChanged() {
                 });
 
                 if (nominees.length && candidates.length) {
-                    type = 4;
+                    currentOrderType = 4;
                 }
             }
         }
-        $('#order-type').text(orderTypeDesc[type]);
+        $('#order-type').text(orderTypeDesc[currentOrderType]);
         if (numOfCast < $('#total-cast').val()) {
             $('#submit-popup-content').html(`
             <h2> ${ $('#total-cast').val() - numOfCast}名をコールとして募集します</h2>
@@ -268,6 +290,14 @@ function orderChanged() {
             <h2>"OK"をタップすると、対象のゲスト/キャストに</h2>
             <h2>通知が送られます。</h2>
             `);
+        }
+
+        if (orderStatus != 3) {
+            if ($('#total-cast').val() == getListCastMatching().length) {
+                $('#order-status span').text(`${orderStatusDesc[2]}`);
+            } else {
+                $('#order-status span').text(`${orderStatusDesc[1]}`);
+            }
         }
         $('#btn-submit-popup').prop('disabled', false);
     } else {
@@ -532,6 +562,8 @@ function handleChangeTotalCastEvent() {
             totalCastPrevious = $(this).val();
             orderChanged();
         }
+
+        updateTotalPoint();
     });
 }
 
@@ -560,6 +592,8 @@ jQuery(document).ready(function ($) {
                 'orderDate': $('#order-date').val(),
                 'class_id': $('#choosen-cast-class').val(),
                 'totalCast': $('#total-cast').val(),
+                'type': currentOrderType,
+                'temp_point': currentTempPoint
             },
             success: function (response) {
                 if (response.success) {
