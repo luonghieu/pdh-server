@@ -176,12 +176,27 @@ class OrderController extends Controller
     {
         $castClasses = CastClass::all();
         $castsMatching = $order->casts;
+        $castsMatching = $castsMatching->map(function ($user) {
+            return collect($user->toArray())
+                ->only(['id', 'nickname', 'pivot'])
+                ->all();
+        });
         $castsNominee = $order->nominees()->whereNotIn('cast_order.status', [CastOrderStatus::TIMEOUT, CastOrderStatus::CANCELED])
             ->whereNotIn('users.id', $castsMatching->pluck('id'))
             ->get();
+        $castsNominee = $castsNominee->map(function ($user) {
+            return collect($user->toArray())
+                ->only(['id', 'nickname', 'pivot'])
+                ->all();
+        });
         $castsCandidates = $order->candidates()->whereNotIn('cast_order.status', [CastOrderStatus::TIMEOUT, CastOrderStatus::CANCELED])
             ->whereNotIn('users.id', $castsMatching->pluck('id'))
             ->get();
+        $castsCandidates = $castsCandidates->map(function ($user) {
+            return collect($user->toArray())
+                ->only(['id', 'nickname', 'pivot'])
+                ->all();
+        });
         $castClass = CastClass::all();
         $orderTypeDesc = [
           OrderType::NOMINATED_CALL => OrderType::getDescription(OrderType::NOMINATED_CALL),
