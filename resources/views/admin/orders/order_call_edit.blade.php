@@ -102,22 +102,26 @@
                                         <th>　予定合計ポイント</th>
                                         <td>
                                             <span id="total-point">
-                                                @if (in_array($order->status, [App\Enums\OrderStatus::ACTIVE, App\Enums\OrderStatus::PROCESSING, App\Enums\OrderStatus::DONE, App\Enums\OrderStatus::OPEN]))
-                                                    @php
-                                                        $tempPoint = 0;
-                                                        foreach ($order->casts as $cast) {
-                                                        if ($cast->pivot->status != \App\Enums\CastOrderStatus::TIMEOUT && $cast->pivot->status != \App\Enums\CastOrderStatus::CANCELED )
-                                                          $tempPoint+=$cast->pivot->temp_point;
-                                                        }
-                                                    @endphp
-                                                    {{ number_format($tempPoint).'P' }}
-                                                @endif
+                                                @php
+                                                    $tempPoint = $order->temp_point;
+                                                @endphp
+                                                {{ number_format($tempPoint).'P' }}
+                                                {{--@if (in_array($order->status, [App\Enums\OrderStatus::ACTIVE, App\Enums\OrderStatus::PROCESSING, App\Enums\OrderStatus::DONE, App\Enums\OrderStatus::OPEN]))--}}
+                                                    {{--@php--}}
+                                                        {{--$tempPoint = 0;--}}
+                                                        {{--foreach ($order->casts as $cast) {--}}
+                                                        {{--if ($cast->pivot->status != \App\Enums\CastOrderStatus::TIMEOUT && $cast->pivot->status != \App\Enums\CastOrderStatus::CANCELED )--}}
+                                                          {{--$tempPoint+=$cast->pivot->temp_point;--}}
+                                                        {{--}--}}
+                                                    {{--@endphp--}}
+                                                    {{--{{ number_format($tempPoint).'P' }}--}}
+                                                {{--@endif--}}
                                             </span>
                                         </td>
                                     </tr>
                                     <tr>
                                         <th>ステータス</th>
-                                        <td class="wrap-status">
+                                        <td class="edit-order-detail wrap-status" id="order-status">
                                             @if ($order->payment_status != null)
                                                 @if ($order->status == App\Enums\OrderStatus::PROCESSING)
                                                     <span>{{ App\Enums\OrderStatus::getDescription($order->status) }}</span>
@@ -445,6 +449,9 @@
         const castClasses = JSON.parse('<?php echo json_encode( $castClasses ) ?>');
         const orderType = '<?php echo $order->type ?>';
         const orderTypeDesc = JSON.parse('<?php echo json_encode($orderTypeDesc) ?>');
+        const orderStatusDesc = JSON.parse('<?php echo json_encode($orderStatusDesc) ?>');
+        const orderStatus = '<?php echo $order->status ?>';
+        console.log(orderStatus);
     </script>
     <script src="/assets/admin/js/pages/order_call.js"></script>
 @stop

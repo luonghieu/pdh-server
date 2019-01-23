@@ -189,7 +189,14 @@ class OrderController extends Controller
           OrderType::NOMINATION => OrderType::getDescription(OrderType::NOMINATION),
           OrderType::HYBRID => OrderType::getDescription(OrderType::HYBRID),
         ];
-        return view('admin.orders.order_call_edit', compact('order', 'castClasses', 'castsMatching', 'castsNominee', 'castsCandidates', 'orderTypeDesc'));
+        $orderStatusDesc = [
+            OrderStatus::OPEN => OrderStatus::getDescription(OrderStatus::OPEN),
+            OrderStatus::ACTIVE => OrderStatus::getDescription(OrderStatus::ACTIVE),
+            OrderStatus::PROCESSING => OrderStatus::getDescription(OrderStatus::PROCESSING),
+            OrderStatus::DONE => OrderStatus::getDescription(OrderStatus::DONE),
+            OrderStatus::TIMEOUT => OrderStatus::getDescription(OrderStatus::TIMEOUT),
+        ];
+        return view('admin.orders.order_call_edit', compact('order', 'castClasses', 'castsMatching', 'castsNominee', 'castsCandidates', 'orderTypeDesc', 'orderStatusDesc'));
     }
 
     public function updateOrderCall(Request $request, $id)
@@ -208,7 +215,8 @@ class OrderController extends Controller
             $order->total_cast = $request->totalCast;
             $order->date = $orderDate->format('Y-m-d');
             $order->start_time = $orderDate->format('H:i');
-
+            $order->type = $request->type;
+            $order->temp_point = $request->temp_point;
             $order->save();
 
             foreach ($casts as $cast) {
@@ -355,32 +363,32 @@ class OrderController extends Controller
             \DB::commit();
 
             // Send notification to new nominees
-            \Notification::send(
-                $newNominees,
-                (new CreateNominationOrdersForCast($order->id))->delay(now()->addSeconds(3))
-            );
-            // Send notification to casts removed
-            \Notification::send(
-                $castsRemoved,
-                (new AdminRemoveCastInOrder())->delay(now()->addSeconds(3))
-            );
-            // Send notification to user and casts.
-            $order->user->notify((new AdminEditOrder())->delay(now()->addSeconds(3)));
-            \Notification::send(
-                $matchedCasts,
-                (new AdminRemoveCastInOrder())->delay(now()->addSeconds(3))
-            );
+//            \Notification::send(
+//                $newNominees,
+//                (new CreateNominationOrdersForCast($order->id))->delay(now()->addSeconds(3))
+//            );
+//            // Send notification to casts removed
+//            \Notification::send(
+//                $castsRemoved,
+//                (new AdminRemoveCastInOrder())->delay(now()->addSeconds(3))
+//            );
+//            // Send notification to user and casts.
+//            $order->user->notify((new AdminEditOrder())->delay(now()->addSeconds(3)));
+//            \Notification::send(
+//                $matchedCasts,
+//                (new AdminRemoveCastInOrder())->delay(now()->addSeconds(3))
+//            );
 
             // Send notification to other casts
-            if ($order->total_cast != $currentTotalCast) {
-                $casts = Cast::where('class_id', $order->class_id)->whereNotIn('id',
-                    array_merge($newMatchingsId, $newNominees, $newCandidateIds, $castNomineeIds, $castCandidateIds, $castMatchingIds))
-                    ->get();
-                \Notification::send(
-                    $casts,
-                    (new CallOrdersCreated($order->id))->delay(now()->addSeconds(3))
-                );
-            }
+//            if ($order->total_cast != $currentTotalCast) {
+//                $casts = Cast::where('class_id', $order->class_id)->whereNotIn('id',
+//                    array_merge($newMatchingsId, $newNominees, $newCandidateIds, $castNomineeIds, $castCandidateIds, $castMatchingIds))
+//                    ->get();
+//                \Notification::send(
+//                    $casts,
+//                    (new CallOrdersCreated($order->id))->delay(now()->addSeconds(3))
+//                );
+//            }
             return response()->json(['success' => true], 200);
         } catch (\Exception $e) {
             \DB::rollBack();
