@@ -438,18 +438,18 @@
         let numOfCast = '<?php echo count( $castsMatching ) + count( $castsCandidates ) + count( $castsNominee ) ?>';
         let baseTempPoint = Number('<?php echo $tempPoint; ?>');
         let orderStartTime = '<?php echo $order->date . ' ' . $order->start_time ?>';
-        let selectedNomination = JSON.parse(JSON.parse(JSON.stringify('<?php echo json_encode($castsNominee, true) ?>')));
-        let selectedCandidate = JSON.parse(JSON.parse(JSON.stringify('<?php echo json_encode($castsCandidates, true)?>')));
-        let selectedMatching = JSON.parse(JSON.parse(JSON.stringify('<?php echo json_encode($castsMatching, true) ?>')));
+        let selectedNomination = JSON.parse(JSON.parse(JSON.stringify('<?php echo json_encode($castsNominee, true) ?>').replace(/\r?\n|\r/g, '')));
+        let selectedCandidate = JSON.parse(JSON.parse(JSON.stringify('<?php echo json_encode($castsCandidates, true)?>').replace(/\r?\n|\r/g, '')));
+        let selectedMatching = JSON.parse(JSON.parse(JSON.stringify('<?php echo json_encode($castsMatching, true) ?>').replace(/\r?\n|\r/g, '')));
         const baseCastClass = '<?php echo $order->class_id ?>';
         const orderId = '<?php echo $order->id ?>';
-        const baseCastsMatched = JSON.parse(JSON.parse(JSON.stringify('<?php echo json_encode($castsMatching, true) ?>')));
-        const baseCastsNominee = JSON.parse(JSON.parse(JSON.stringify('<?php echo json_encode($castsNominee, true) ?>')));
-        const baseCastsCandidate = JSON.parse(JSON.parse(JSON.stringify('<?php echo json_encode($castsCandidates, true)?>')));
-        const castClasses = JSON.parse(JSON.parse(JSON.stringify('<?php echo json_encode($castClasses, true) ?>')));
+        const baseCastsMatched = JSON.parse(JSON.parse(JSON.stringify('<?php echo json_encode($castsMatching, true) ?>').replace(/\r?\n|\r/g, '')));
+        const baseCastsNominee = JSON.parse(JSON.parse(JSON.stringify('<?php echo json_encode($castsNominee, true) ?>').replace(/\r?\n|\r/g, '')));
+        const baseCastsCandidate = JSON.parse(JSON.parse(JSON.stringify('<?php echo json_encode($castsCandidates, true)?>').replace(/\r?\n|\r/g, '')));
+        const castClasses = JSON.parse(JSON.parse(JSON.stringify('<?php echo json_encode($castClasses, true) ?>').replace(/\r?\n|\r/g, '')));
         const orderType = '<?php echo $order->type ?>';
-        const orderTypeDesc = JSON.parse(JSON.parse(JSON.stringify('<?php echo json_encode($orderTypeDesc, true) ?>')));
-        const orderStatusDesc = JSON.parse(JSON.parse(JSON.stringify('<?php echo json_encode($orderStatusDesc, true) ?>')));
+        const orderTypeDesc = JSON.parse(JSON.parse(JSON.stringify('<?php echo json_encode($orderTypeDesc, true) ?>').replace(/\r?\n|\r/g, '')));
+        const orderStatusDesc = JSON.parse(JSON.parse(JSON.stringify('<?php echo json_encode($orderStatusDesc, true) ?>').replace(/\r?\n|\r/g, '')));
         const orderStatus = '<?php echo $order->status ?>';
     </script>
     <script src="/assets/admin/js/pages/order_call.js"></script>
