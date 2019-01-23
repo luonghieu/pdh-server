@@ -610,7 +610,7 @@ jQuery(document).ready(function ($) {
                     $('#btn-alert-popup').trigger('click');
                     $('#alert-popup-content').html('<p>変更しました</p>');
                     setTimeout(() => {
-                        window.location.reload();
+                        window.location.href = redirectBackUrl;
                     }, 1000);
                 } else {
                     $('#submit-popup').hide();
