@@ -20,24 +20,27 @@
         <div class="panel-body">
           <div class="col-sm-6">
             <form class="navbar-form navbar-left form-search" action="{{ route('admin.casts.index') }}" id="limit-page" method="GET">
-              <div class="form-group">
-                <label class="col-md-1 limit-page">表示件数：</label>
-                <div class="col-md-1">
-                  <select id="select-limit" name="limit" class="form-control">
-                    @foreach ([10, 20, 50, 100] as $limit)
-                      <option value="{{ $limit }}" {{ request()->limit == $limit ? 'selected' : '' }}>{{ $limit }}</option>
-                    @endforeach
-                  </select>
-                  <input type="hidden" name="from_date" value="{{ request()->from_date }}" />
-                  <input type="hidden" name="to_date" value="{{ request()->to_date }}" />
-                  <input type="hidden" name="search" value="{{ request()->search }}" />
+                <div class="form-group">
+                  <label class="col-md-1 limit-page">表示件数：</label>
+                  <div class="col-md-1">
+                    <select id="select-limit" name="limit" class="form-control">
+                      @foreach ([10, 20, 50, 100] as $limit)
+                        <option value="{{ $limit }}" {{ request()->limit == $limit ? 'selected' : '' }}>{{ $limit }}</option>
+                      @endforeach
+                    </select>
+                    <input type="hidden" name="from_date" value="{{ request()->from_date }}" />
+                    <input type="hidden" name="to_date" value="{{ request()->to_date }}" />
+                    <input type="hidden" name="search" value="{{ request()->search }}" />
+                  </div>
                 </div>
-              </div>
             </form>
           </div>
           <div class="col-sm-6">
             <div class="pull-right">
               <a href="{{ route('admin.casts.create') }}" class="btn btn-info">新規キャストアカウント作成</a>
+            </div>
+            <div class="mr-1 pull-right">
+              <a href="{{ route('admin.casts.export_bank_accounts') }}" class="btn btn-info">振込口座リストを抽出する</a>
             </div>
           </div>
         </div>

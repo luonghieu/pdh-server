@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin\Cast;
 use App\BankAccount;
 use App\Cast;
 use App\CastClass;
+use App\Enums\BankAccountType;
 use App\Enums\PointCorrectionType;
 use App\Enums\PointType;
 use App\Enums\ProviderType;
@@ -520,5 +521,54 @@ class CastController extends Controller
 
             return back();
         }
+    }
+
+    public function exportBankAccounts(Request $request)
+    {
+        $bankAccounts = BankAccount::all();
+
+        $data = collect($bankAccounts)->map(function ($item) {
+                return [
+                    $item->id,
+                    $item->user_id,
+                    $item->bank_name,
+                    $item->number,
+                    $item->holder_name,
+                    $item->holder_type,
+                    BankAccountType::getDescription($item->type),
+                    $item->bank_code,
+                    $item->branch_name,
+                    $item->branch_code,
+                    Carbon::parse($item->created_at)->format('Y年m月d日'),
+                ];
+            })->toArray();
+
+        $header = [
+            'No.',
+            'User ID',
+            'Bank Name',
+            'Number',
+            'Holder Name',
+            'Holder Type',
+            'Type',
+            'Bank Code',
+            'Branch Name',
+            'Branch Code',
+            'Create At',
+        ];
+
+        try {
+            $file = CSVExport::toCSV($data, $header);
+        } catch (\Exception $e) {
+            LogService::writeErrorLog($e);
+            $request->session()->flash('msg', trans('messages.server_error'));
+
+            return redirect()->route('admin.casts.index');
+        }
+
+        $file->output('list_bank_account_' . Carbon::now()->format('Ymd_Hi') . '.csv');
+
+        return;
+
     }
 }

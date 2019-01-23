@@ -1820,3 +1820,7 @@ tbody td {
     float: left;
   }
 }
+
+.mr-1 {
+  margin-right: 0.5rem;
+}
