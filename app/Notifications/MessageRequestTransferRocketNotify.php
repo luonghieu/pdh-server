@@ -10,15 +10,14 @@ class MessageRequestTransferRocketNotify extends Notification implements ShouldQ
 {
     use Queueable;
 
-    public $userId;
     /**
      * Create a new notification instance.
      *
      * @return void
      */
-    public function __construct($userId)
+    public function __construct()
     {
-        $this->userId = $userId;
+        //
     }
 
     /**
@@ -34,15 +33,10 @@ class MessageRequestTransferRocketNotify extends Notification implements ShouldQ
 
     public function rocketChatPushData($notifiable)
     {
-        $link = route('admin.request_transfer.show', ['user' => $this->userId]);
-        $content = '新規のキャスト申請がありました。'
-            . PHP_EOL . 'Link: ' . $link;
+        $link = route('admin.request_transfer.show', ['user' => $notifiable->id]);
 
         return [
-            [
-                'type' => 'text',
-                'text' => $content,
-            ]
+            'text' => "新規のキャスト申請がありました。[Link]($link)"
         ];
     }
 }

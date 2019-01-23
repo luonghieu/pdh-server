@@ -10,15 +10,14 @@ class MessageRequestTransferLineNotify extends Notification implements ShouldQue
 {
     use Queueable;
 
-    public $userId;
     /**
      * Create a new notification instance.
      *
      * @return void
      */
-    public function __construct($userId)
+    public function __construct()
     {
-        $this->userId = $userId;
+        //
     }
 
     /**
@@ -34,7 +33,7 @@ class MessageRequestTransferLineNotify extends Notification implements ShouldQue
 
     public function lineBotPushToGroupData($notifiable)
     {
-        $link = route('admin.request_transfer.show', ['user' => $this->userId]);
+        $link = route('admin.request_transfer.show', ['user' => $notifiable->id]);
         $content = '新規のキャスト申請がありました。'
             . PHP_EOL . 'Link: ' . $link;
 
