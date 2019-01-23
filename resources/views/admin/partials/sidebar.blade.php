@@ -62,7 +62,8 @@ $routes = [
               'admin.orders.candidates',
               'admin.orders.call',
               'admin.orders.casts_matching',
-              'admin.orders.order_nominee'
+              'admin.orders.order_nominee',
+              'admin.orders.edit_order_call'
             ],
         ],
     ],
