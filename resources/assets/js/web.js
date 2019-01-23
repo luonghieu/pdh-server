@@ -68,3 +68,4 @@ require('./web/pages/list_cast');
 require('./web/pages/order_step_one');
 require('./web/pages/order_step_two');
 require('./web/pages/order_step_three');
+require('./web/pages/cancel_time_order');

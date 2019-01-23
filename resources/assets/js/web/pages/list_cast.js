@@ -49,7 +49,12 @@ $(document).ready(function(){
           html += '<label for="'+ val.id +'" class="label-select-casts" >' + text + '</label> </div>';
         })
 
-        html += '<input type="hidden" id="next_page" value="' + data.data.next_page_url + '" />';
+        var nextPage = '';
+        if (data.data.next_page_url) {
+          var nextPage = data.data.next_page_url;
+        }
+
+        html += '<input type="hidden" id="next_page" value="' + nextPage + '" />';
         $('#list-cast-order').html(html);
         $('.img-cast').error(function(){
           $(this).attr("src", avatarsDefault);

@@ -199,15 +199,15 @@ $(document).ready(function(){
                   html +='<option value="'+key+'">'+ response.data[key] +'</option>';
                   }
                 })
-              $('.select-date').html(html);
+                $('.select-date').html(html);
 
-              const inputDate = $('select[name=sl_date] option');
+                const inputDate = $('select[name=sl_date] option');
 
-              $.each(inputDate,function(index,val){
-                if(val.value == parseInt(date)) {
-                  $(this).prop('selected',true);
-                }
-              })
+                $.each(inputDate,function(index,val){
+                  if(val.value == parseInt(date)) {
+                    $(this).prop('selected',true);
+                  }
+                })
               })
               .catch(function (error) {
                 console.log(error);
