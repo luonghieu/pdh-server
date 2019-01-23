@@ -262,7 +262,8 @@
                                             @if (!$castMatching['pivot']['started_at'])
                                                 <td>
                                                     <button type="button" class=" btn btn-info remove-btn"
-                                                            data-user-id="{{ $castMatching->id }}" data-type="3">このキャストを削除する
+                                                            data-user-id="{{ $castMatching['id'] }}"
+                                                            data-type="3">このキャストを削除する
                                                     </button>
                                                 </td>
                                             @endif
