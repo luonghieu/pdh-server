@@ -26,19 +26,22 @@ class TransferController extends Controller
             ->whereHas('user', function ($query) use ($adminType) {
                 $query->where('users.type', '!=', $adminType);
             })
+            ->whereHas('order', function ($query) {
+                $query->whereNull('deleted_at');
+            })
             ->where('is_transfered', true)->orderBy('updated_at', 'DESC');
 
         if ($request->from_date) {
             $fromDate = Carbon::parse($request->from_date)->startOfDay();
             $transfers->where(function ($query) use ($fromDate) {
-                $query->where('updated_at', '>=', $fromDate);
+                $query->where('created_at', '>=', $fromDate);
             });
         }
 
         if ($request->to_date) {
             $toDate = Carbon::parse($request->to_date)->endOfDay();
             $transfers->where(function ($query) use ($toDate) {
-                $query->where('updated_at', '<=', $toDate);
+                $query->where('created_at', '<=', $toDate);
             });
         }
 
@@ -111,19 +114,22 @@ class TransferController extends Controller
             ->whereHas('user', function ($query) use ($adminType) {
                 $query->where('users.type', '!=', $adminType);
             })
+            ->whereHas('order', function ($query) {
+                $query->whereNull('deleted_at');
+            })
             ->where('is_transfered', false)->orderBy('updated_at', 'DESC');
 
         if ($request->from_date) {
             $fromDate = Carbon::parse($request->from_date)->startOfDay();
             $transfers->where(function ($query) use ($fromDate) {
-                $query->where('updated_at', '>=', $fromDate);
+                $query->where('created_at', '>=', $fromDate);
             });
         }
 
         if ($request->to_date) {
             $toDate = Carbon::parse($request->to_date)->endOfDay();
             $transfers->where(function ($query) use ($toDate) {
-                $query->where('updated_at', '<=', $toDate);
+                $query->where('created_at', '<=', $toDate);
             });
         }
 
