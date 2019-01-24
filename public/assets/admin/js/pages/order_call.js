@@ -676,19 +676,18 @@ jQuery(document).ready(function ($) {
             },
             success: function (response) {
                 if (response.success) {
-                    window.location.reload();
-                    // $('#submit-popup').hide();
-                    // $('#btn-alert-popup').trigger('click');
-                    // $('#alert-popup-content').html('<p>変更しました</p>');
+                    $('#submit-popup').hide();
+                    $('#btn-alert-popup').trigger('click');
+                    $('#alert-popup-content').html('<p>変更しました</p>');
                     setTimeout(() => {
-                        // window.location.href = redirectBackUrl;
+                        window.location.href = redirectBackUrl;
                     }, 1000);
                 } else {
-                    // $('#submit-popup').hide();
-                    // $('#btn-alert-popup').trigger('click');
-                    // $('#alert-popup-content').html('<p>' + response.info + '</p>');
+                    $('#submit-popup').hide();
+                    $('#btn-alert-popup').trigger('click');
+                    $('#alert-popup-content').html('<p>' + response.info + '</p>');
                     setTimeout(() => {
-                        // window.location.reload();
+                        window.location.reload();
                     }, 1000);
                 }
             },
