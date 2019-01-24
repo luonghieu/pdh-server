@@ -569,6 +569,13 @@ class CastController extends Controller
         $file->output('list_bank_account_' . Carbon::now()->format('Ymd_Hi') . '.csv');
 
         return;
+    }
 
+    public function bankAccount($user)
+    {
+        $user = User::withTrashed()->find($user);
+        $bankAccount = BankAccount::where('user_id', $user->id)->first();
+
+        return view('admin.casts.bank_account', compact('user', 'bankAccount'));
     }
 }

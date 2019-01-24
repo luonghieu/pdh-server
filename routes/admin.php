@@ -46,6 +46,7 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.'], function () {
         Route::get('{user}/operation_history', ['as' => 'operation_history', 'uses' => 'CastController@getOperationHistory'])->where('user', '[0-9]+');
         Route::put('{user}/operation_history', ['as' => 'change_point', 'uses' => 'CastController@changePoint'])->where('user', '[0-9]+');
         Route::get('/export_bank_accounts', ['as' => 'export_bank_accounts', 'uses' => 'CastController@exportBankAccounts']);
+        Route::get('/{user}/bank_account', ['as' => 'bank_account', 'uses' => 'CastController@bankAccount']);
     });
 
     Route::group(['middleware' => 'is_admin'], function () {

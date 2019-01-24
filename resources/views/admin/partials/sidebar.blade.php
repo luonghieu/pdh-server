@@ -38,7 +38,8 @@ $routes = [
               'admin.casts.save',
               'admin.casts.guest_ratings',
               'admin.casts.operation_history',
-              'admin.casts.create'
+              'admin.casts.create',
+              'admin.casts.bank_account',
             ],
         ],
     ],
