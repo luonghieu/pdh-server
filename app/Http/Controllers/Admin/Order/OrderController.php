@@ -24,11 +24,14 @@ use App\PaymentRequest;
 use App\Point;
 use App\Room;
 use App\Services\LogService;
+use App\Traits\DirectRoom;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 
 class OrderController extends Controller
 {
+    use DirectRoom;
+
     public function index(Request $request)
     {
         $pointStatus = [
@@ -175,28 +178,39 @@ class OrderController extends Controller
     public function editOrderCall(Order $order)
     {
         $castClasses = CastClass::all();
-        $castsMatching = $order->casts;
-        $castsMatching = $castsMatching->map(function ($user) {
-            return collect($user->toArray())
-                ->only(['id', 'nickname', 'pivot'])
-                ->all();
-        });
-        $castsNominee = $order->nominees()->whereNotIn('cast_order.status', [CastOrderStatus::TIMEOUT, CastOrderStatus::CANCELED])
-            ->whereNotIn('users.id', $castsMatching->pluck('id'))
-            ->get();
-        $castsNominee = $castsNominee->map(function ($user) {
-            return collect($user->toArray())
-                ->only(['id', 'nickname', 'pivot'])
-                ->all();
-        });
-        $castsCandidates = $order->candidates()->whereNotIn('cast_order.status', [CastOrderStatus::TIMEOUT, CastOrderStatus::CANCELED])
-            ->whereNotIn('users.id', $castsMatching->pluck('id'))
-            ->get();
-        $castsCandidates = $castsCandidates->map(function ($user) {
-            return collect($user->toArray())
-                ->only(['id', 'nickname', 'pivot'])
-                ->all();
-        });
+        if ($order->status == OrderStatus::ACTIVE) {
+            $castsMatching = $order->casts;
+            $castsMatching = $castsMatching->map(function ($user) {
+                return collect($user->toArray())
+                    ->only(['id', 'nickname', 'pivot'])
+                    ->all();
+            });
+            $castsNominee = [];
+            $castsCandidates = [];
+        } else {
+            $castsNominee = $order->nominees()->whereNotIn('cast_order.status', [CastOrderStatus::TIMEOUT, CastOrderStatus::CANCELED])
+                ->get();
+            $castsNominee = $castsNominee->map(function ($user) {
+                return collect($user->toArray())
+                    ->only(['id', 'nickname', 'pivot'])
+                    ->all();
+            });
+            $castsCandidates = $order->candidates()->whereNotIn('cast_order.status', [CastOrderStatus::TIMEOUT, CastOrderStatus::CANCELED])
+                ->get();
+            $castsCandidates = $castsCandidates->map(function ($user) {
+                return collect($user->toArray())
+                    ->only(['id', 'nickname', 'pivot'])
+                    ->all();
+            });
+
+            $castsMatching = $order->casts;
+            $castsMatching = $castsMatching->map(function ($user) {
+                return collect($user->toArray())
+                    ->only(['id', 'nickname', 'pivot'])
+                    ->all();
+            });
+        }
+
         $castClass = CastClass::all();
         $orderTypeDesc = [
           OrderType::NOMINATED_CALL => OrderType::getDescription(OrderType::NOMINATED_CALL),
@@ -218,10 +232,6 @@ class OrderController extends Controller
     public function updateOrderCall(Request $request, $id)
     {
         $order = Order::find($id);
-        $casts = $order->castOrder;
-        $castMatchingIds = [];
-        $castNomineeIds = [];
-        $castCandidateIds = [];
         $orderDate = Carbon::parse($request->orderDate);
 
         try {
@@ -236,73 +246,20 @@ class OrderController extends Controller
             $order->status = $request->status;
             $order->save();
 
-            foreach ($casts as $cast) {
-                if ($cast->pivot->status == CastOrderStatus::ACCEPTED) {
-                    $castMatchingIds[] = $cast->id;
-                } else {
-                    if ($cast->pivot->type == CastOrderType::NOMINEE) {
-                        $castNomineeIds[] = $cast->id;
-                    } else {
-                        $castCandidateIds[] = $cast->id;
-                    }
-                }
-            }
-
             $newNominees = [];
             $castsRemoved = [];
-            if (!$request->listCastNominees) {
-                if ($castNomineeIds) {
-                    $order->castOrder()->detach($castNomineeIds);
-                    $castsRemoved = array_merge($castsRemoved, $castNomineeIds);
-                }
-            } else {
-                $deletedNomineeIds = array_merge(array_diff($castNomineeIds, $request->listCastNominees));
-                $newNomineeIds = array_merge(array_diff($request->listCastNominees, $castNomineeIds));
-                if ($deletedNomineeIds) {
-                    $order->castOrder()->detach($deletedNomineeIds);
-                    $castsRemoved = array_merge($castsRemoved, $deletedNomineeIds);
-                }
-                if ($newNomineeIds) {
-                    $newNominees = Cast::whereIn('id', $newNomineeIds)->get();
-                }
+            $newMatchings = [];
+            if ($request->addedNomineeCast) {
+                $newNominees = Cast::whereIn('id', $request->addedNomineeCast)->get();
+            }
+            if ($request->addedCandidateCast) {
+                $newMatchings = Cast::whereIn('id', $request->addedCandidateCast)->get();
             }
 
-            $newCandidateIds = [];
-            if (!$request->listCastCandidates) {
-                if ($castCandidateIds) {
-                    $order->castOrder()->detach($castCandidateIds);
-                    $castsRemoved = array_merge($castsRemoved, $castCandidateIds);
-                }
-            } else {
-                $deletedCandidateIds = array_merge(array_diff($castCandidateIds, $request->listCastCandidates));
-                $newCandidateIds = array_merge(array_diff($request->listCastCandidates, $castCandidateIds));
-
-                if ($deletedCandidateIds) {
-                    $order->castOrder()->detach($castCandidateIds);
-                    $castsRemoved = array_merge($castsRemoved, $castCandidateIds);
-                }
+            if ($request->deletedCast) {
+                $order->castOrder()->detach($request->deletedCast);
+                $castsRemoved = Cast::whereIn('id', $request->deletedCast)->get();
             }
-
-            $newMatchingIds = [];
-            if (!$request->listCastMatching) {
-                if ($castMatchingIds) {
-                    $order->castOrder()->detach($castMatchingIds);
-                    $castsRemoved = array_merge($castsRemoved, $castMatchingIds);
-                }
-            } else {
-                $deletedMatchingIds = array_merge(array_diff($castMatchingIds, $request->listCastMatching));
-                $newMatchingIds = array_merge(array_diff($request->listCastMatching, $castMatchingIds));
-
-                if ($deletedMatchingIds) {
-                    $order->castOrder()->detach($deletedMatchingIds);
-                    $castsRemoved = array_merge($castsRemoved, $deletedMatchingIds);
-                }
-            }
-            $newMatchingsId = array_merge($newCandidateIds, $newMatchingIds);
-            $castsRemovedId = $castsRemoved;
-
-            $newMatchings = Cast::whereIn('id', $newMatchingsId)->get();
-            $castsRemoved = Cast::whereIn('id', $castsRemovedId)->get();
 
             $orderStartTime = Carbon::parse($order->date . ' ' . $order->start_time);
             $orderEndTime = $orderStartTime->copy()->addMinutes($order->duration * 60);
@@ -350,25 +307,37 @@ class OrderController extends Controller
                     'temp_point' => $orderPoint + $allowance,
                 ]);
             }
-
             $currentTotalCast = $order->casts()->count();
             // Add/Remove casts in room
-            $room = Room::active()->where('type', RoomType::GROUP)->where('order_id', $order->id)->first();
-            if ($room) {
-                $room->users()->detach($castsRemovedId);
-                $room->users()->attach($newMatchingsId);
+            $room = $order->room;
+//            $room = Room::active()->where('type', RoomType::GROUP)->where('order_id', $order->id)->first();
+            if ($room && $room->type == RoomType::GROUP) {
+                $room->users()->detach($request->deletedCast);
+                $casts = $order->casts()->get()->pluck('id')->toArray();
+                $room->users()->attach($casts);
             } else {
                 if ($order->total_cast == $currentTotalCast) {
-                    $room = new Room;
-                    $room->order_id = $order->id;
-                    $room->owner_id = $order->user_id;
-                    $room->type = RoomType::GROUP;
-                    $room->save();
-                    $room->users()->attach($newMatchingsId);
+                    if ($order->total_cast > 1) {
+                        $room = new Room;
+                        $room->order_id = $order->id;
+                        $room->owner_id = $order->user_id;
+                        $room->type = RoomType::GROUP;
+                        $room->save();
+                        $casts = $order->casts()->get()->pluck('id')->toArray();
+                        $room->users()->attach(array_push($casts, $order->user_id));
+                    }
+
+                    if ($order->total_cast == 1) {
+                        $cast = $order->casts()->first();
+                        $ownerId = $order->user_id;
+                        $room = $this->createDirectRoom($ownerId, $cast->id);
+                        $room->save();
+                    }
+
                     $order->room_id = $room->id;
+                    $order->save();
                 }
             }
-
             \DB::commit();
 
             // Send notification to new nominees
@@ -385,14 +354,13 @@ class OrderController extends Controller
             $order->user->notify((new AdminEditOrder())->delay(now()->addSeconds(3)));
             \Notification::send(
                 $matchedCasts,
-                (new AdminRemoveCastInOrder())->delay(now()->addSeconds(3))
+                (new AdminEditOrder())->delay(now()->addSeconds(3))
             );
 
             // Send notification to other casts
             if ($order->total_cast != $currentTotalCast) {
-                $casts = Cast::where('class_id', $order->class_id)->whereNotIn('id',
-                    array_merge($newMatchingsId, $newNominees, $newCandidateIds, $castNomineeIds, $castCandidateIds, $castMatchingIds))
-                    ->get();
+                $castInOrder = $order->castOrder()->get()->pluck('id')->toArray();
+                $casts = Cast::where('class_id', $order->class_id)->whereNotIn('id', $castInOrder)->get();
                 \Notification::send(
                     $casts,
                     (new CallOrdersCreated($order->id))->delay(now()->addSeconds(3))
@@ -413,8 +381,7 @@ class OrderController extends Controller
             $request->listCastCandidates,
             $request->listCastMatching,
         ];
-        $listCast = collect($listCast)->collapse()->toArray();
-
+        $listCast = array_unique(collect($listCast)->collapse()->toArray());
         $search = $request->search;
         $casts->whereNotIn('id', $listCast);
         if ($search) {

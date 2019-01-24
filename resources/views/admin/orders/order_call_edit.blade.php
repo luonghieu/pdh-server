@@ -236,6 +236,7 @@
                                     @endif
                                     </tbody>
                                 </table>
+                                @if ($order->status == \App\Enums\OrderStatus::ACTIVE)
                                 <div class="panel-body">
                                     <div class="display-title">
                                         <p>マッチングしているキャスト一覧</p>
@@ -245,6 +246,7 @@
                                            id="popup-cast-matching">+別のキャストを追加する</a>
                                     </div>
                                 </div>
+
                                 <table class="table table-striped table-bordered bootstrap-datatable"
                                        id="matching-selected-table">
                                     <thead>
@@ -271,6 +273,7 @@
                                     @endforeach
                                     </tbody>
                                 </table>
+                                @endif
                                 <div class="wrapper-button">
                                     <a href="{{ route('admin.orders.call', ['order' => $order->id]) }}"
                                        class="btn btn-info">戻る</a>

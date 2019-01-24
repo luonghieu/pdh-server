@@ -10,6 +10,8 @@ let totalCastPrevious = $('#total-cast').val();
 let currentOrderType = orderType;
 let currentTempPoint = 0;
 let currentOrderStatus = orderStatus;
+let deletedCast = [];
+let addedNominee = [];
 function debounce(func, wait, immediate) {
     let timeout;
     return function () {
@@ -299,14 +301,50 @@ function orderChanged() {
             <h2>通知が送られます。</h2>
             `);
         }
-
         if (orderStatus != 3) {
-            if ($('#total-cast').val() == getListCastMatching().length) {
+            let currentNomineeList = getListCastNominees();
+            let currentCandidateList = getListCastCandidates();
+            let currentMatchingList = getListCastMatching();
+            currentOrderStatus = 1;
+            if (currentNomineeList.length) {
+                let nominee = 0;
+                let totalAcceptedCast = 0;
+                currentNomineeList.forEach(val => {
+                    let acceptedNominee = baseCastsNominee.find(cast => {
+                        if (cast.id == val && cast.pivot.status == 1) {
+                            return cast;
+                        }
+                    });
+
+                    if (acceptedNominee) {
+                        nominee++;
+                    }
+                });
+                totalAcceptedCast = nominee + currentCandidateList.length + currentMatchingList.length;
+
+                if (totalAcceptedCast == $('#total-cast').val())  {
+                    currentOrderStatus = 2;
+                }
+            }
+
+            if ($('#total-cast').val() == getListCastCandidates().length || $('#total-cast').val() == getListCastMatching().length) {
                 $('#order-status span').text(`${orderStatusDesc[2]}`);
                 currentOrderStatus = 2;
+            }
+
+            if (currentCandidateList.length && currentNomineeList.length == 0) {
+                if (currentCandidateList.length == $('#total-cast').val()) {
+                    currentOrderStatus = 2;
+                }
+            }
+
+            if (currentMatchingList.length + currentCandidateList.length == $('#total-cast').val()) {
+                currentOrderStatus = 2;
+            }
+            if (currentOrderStatus == 2) {
+                $('#order-status span').text(`${orderStatusDesc[2]}`);
             } else {
                 $('#order-status span').text(`${orderStatusDesc[1]}`);
-                currentOrderStatus = 1;
             }
         }
         $('#btn-submit-popup').prop('disabled', false);
@@ -319,10 +357,14 @@ function handleOpenPopupSelectCastEvent() {
     $('body').on('click', '#popup-cast-nominee', function (event) {
         type = 1;
         const listCastsMatching = getListCastMatching();
+        let nominees = [];
+        let candidates = [];
+        baseCastsNominee.forEach(cast => nominees.push(cast.id));
+        baseCastsCandidate.forEach(cast => candidates.push(cast.id));
         baseCastsMatched.forEach(i => {
             if (listCastsMatching.includes(i.id) === false) listCastsMatching.push(i.id);
         });
-        renderListCast(classId, listCastsMatching, getListCastNominees(), getListCastCandidates());
+        renderListCast(classId, listCastsMatching, getListCastNominees().concat(nominees), getListCastCandidates().concat(candidates));
         $('#nomination-table > tbody  > tr').each(function (index, val) {
             const dataUserId = $(val).attr('data-user-id');
             checkCastSelected('#nomination-table tr#nomination-', dataUserId);
@@ -332,10 +374,14 @@ function handleOpenPopupSelectCastEvent() {
     $('body').on('click', '#popup-cast-candidate', function (event) {
         type = 2;
         const listCastsMatching = getListCastMatching();
+        let nominees = [];
+        let candidates = [];
+        baseCastsNominee.forEach(cast => nominees.push(cast.id));
+        baseCastsCandidate.forEach(cast => candidates.push(cast.id));
         baseCastsMatched.forEach(i => {
             if (listCastsMatching.includes(i.id) === false) listCastsMatching.push(i.id);
         });
-        renderListCast(classId, listCastsMatching, getListCastNominees(), getListCastCandidates());
+        renderListCast(classId, listCastsMatching, getListCastNominees().concat(nominees), getListCastCandidates().concat(candidates));
         $('#candidation-table > tbody  > tr').each(function (index, val) {
             const dataUserId = $(val).attr('data-user-id');
             checkCastSelected('#candidation-table tr#candidate-', dataUserId);
@@ -345,10 +391,14 @@ function handleOpenPopupSelectCastEvent() {
     $('body').on('click', '#popup-cast-matching', function (event) {
         type = 3;
         const listCastsMatching = getListCastMatching();
+        let nominees = [];
+        let candidates = [];
+        baseCastsNominee.forEach(cast => nominees.push(cast.id));
+        baseCastsCandidate.forEach(cast => candidates.push(cast.id));
         baseCastsMatched.forEach(i => {
             if (listCastsMatching.includes(i.id) === false) listCastsMatching.push(i.id);
         });
-        renderListCast(classId, listCastsMatching, getListCastNominees(), getListCastCandidates());
+        renderListCast(classId, listCastsMatching, getListCastNominees().concat(nominees), getListCastCandidates().concat(candidates));
         $('#matching-table > tbody  > tr').each(function (index, val) {
             const dataUserId = $(val).attr('data-user-id');
             checkCastSelected('#matching-table tr#matching-', dataUserId);
@@ -358,24 +408,21 @@ function handleOpenPopupSelectCastEvent() {
 
 function handleAddCastEvent() {
     $('body').on('click', '#add-cast-nominee', function () {
-        const totalCast = $("#total-cast option:selected").val();
-        if (totalCast <= numOfCast) {
-            alert('設定している"キャストを呼ぶ人数"より、選択されているキャストの人数が超えています。編集してください。\n');
-            return false;
-        }
         cast_ids = [];
 
         $('.verify-checkboxs:checked').each(function () {
             cast_ids.push(this.value);
         });
+        const totalCast = $("#total-cast option:selected").val();
+        const currentTotalCast = getListCastCandidates().length + getListCastNominees().length + getListCastMatching().length + cast_ids.length;
+        if (totalCast < currentTotalCast) {
+            alert('設定している"キャストを呼ぶ人数"より、選択されているキャストの人数が超えています。編集してください。\n');
+            return false;
+        }
 
         $('#cast_ids').val(cast_ids.join(','));
 
         $('#choose-cast-nominee').modal('hide');
-        if ((cast_ids.length + Number(numOfCast)) > totalCast) {
-            alert('設定している"キャストを呼ぶ人数"より、選択されているキャストの人数が超えています。編集してください。\n');
-            return false;
-        }
         $.each(cast_ids, function (index, val) {
             const cast = casts.find(i => i.id == val);
 
@@ -399,25 +446,21 @@ function handleAddCastEvent() {
     });
 
     $('body').on('click', '#add-cast-candidate', function () {
-        const totalCast = $("#total-cast option:selected").val();
-        if (totalCast <= numOfCast) {
-            alert('設定している"キャストを呼ぶ人数"より、選択されているキャストの人数が超えています。編集してください。\n');
-            return false;
-        }
         cast_ids = [];
 
         $('.verify-checkboxs:checked').each(function () {
             cast_ids.push(this.value);
         });
-
-        $('#cast_ids').val(cast_ids.join(','));
-
-        $('#choose-cast-candidate').modal('hide');
-        if ((cast_ids.length + Number(numOfCast)) > totalCast) {
+        const totalCast = $("#total-cast option:selected").val();
+        const currentTotalCast = getListCastCandidates().length + getListCastNominees().length + getListCastMatching().length + cast_ids.length;
+        if (totalCast < currentTotalCast) {
             alert('設定している"キャストを呼ぶ人数"より、選択されているキャストの人数が超えています。編集してください。\n');
             return false;
         }
 
+        $('#cast_ids').val(cast_ids.join(','));
+
+        $('#choose-cast-candidate').modal('hide');
         $.each(cast_ids, function (index, val) {
             const cast = casts.find(i => i.id == val);
 
@@ -441,26 +484,20 @@ function handleAddCastEvent() {
     });
 
     $('body').on('click', '#add-cast-matching', function () {
-        const totalCast = $("#total-cast option:selected").val();
-        if (totalCast <= numOfCast) {
-            alert('設定している"キャストを呼ぶ人数"より、選択されているキャストの人数が超えています。編集してください。\n');
-            return false;
-        }
-
         cast_ids = [];
-
         $('.verify-checkboxs:checked').each(function () {
             cast_ids.push(this.value);
         });
 
-        $('#cast_ids').val(cast_ids.join(','));
-
-        $('#choose-cast-matching').modal('hide');
-        $('#choose-cast-candidate').modal('hide');
-        if ((cast_ids.length + Number(numOfCast)) > totalCast) {
+        const totalCast = $("#total-cast option:selected").val();
+        const currentTotalCast = getListCastCandidates().length + getListCastNominees().length + getListCastMatching().length + cast_ids.length;
+        if (totalCast < currentTotalCast) {
             alert('設定している"キャストを呼ぶ人数"より、選択されているキャストの人数が超えています。編集してください。\n');
             return false;
         }
+
+        $('#cast_ids').val(cast_ids.join(','));
+        $('#choose-cast-matching').modal('hide');
         $.each(cast_ids, function (index, val) {
             const cast = casts.find(i => i.id == val);
 
@@ -519,6 +556,19 @@ function handleDeleteCastEvent() {
         const type = ele.attr('data-type');
         const userId = ele.attr('data-user-id');
         numOfCast -= 1;
+        const matchedCast = baseCastsMatched.find(cast => cast.id == userId);
+        if (matchedCast) {
+            deletedCast.push(userId);
+        }
+        const nomineeCast = baseCastsNominee.find(cast => {
+            if (cast.id == userId && cast.pivot.status == 0) {
+                return cast;
+            }
+        });
+        if (nomineeCast) {
+            deletedCast.push(userId);
+        }
+
         if (type == 1) {
             const index = selectedNomination.findIndex(i => i.id == userId);
             selectedNomination.splice(index, 1);
@@ -564,8 +614,9 @@ function handleChangeOrderDurationEvent() {
 
 function handleChangeTotalCastEvent() {
     $('body').on('change', '#total-cast', function () {
-        let totalCast = $("#total-cast option:selected").val();
-        if (totalCast < numOfCast) {
+        const totalCast = $("#total-cast option:selected").val();
+        const currentTotalCast = getListCastCandidates().length + getListCastNominees().length + getListCastMatching().length;
+        if (totalCast < currentTotalCast) {
             alert('設定している"キャストを呼ぶ人数"より、選択されているキャストの人数が超えています。編集してください。\n');
             $(this).val(totalCastPrevious);
             return false;
@@ -589,6 +640,22 @@ jQuery(document).ready(function ($) {
     handleChangeTotalCastEvent();
 
     $('#btn-submit').on('click', function () {
+        let addedNomineCast = [];
+        let addedCandidateCast = [];
+        let listNomineeCast = getListCastNominees();
+        let listCandidateCast = getListCastCandidates().concat(getListCastMatching());
+        listNomineeCast.forEach(val => {
+            if (baseCastsNominee.findIndex(cast => val == cast.id) == -1) {
+                addedNomineCast.push(val);
+            }
+        });
+        listCandidateCast.forEach(val => {
+            if (baseCastsMatched.findIndex(cast => val == cast.id) == -1) {
+                addedCandidateCast.push(val);
+            }
+        });
+        addedNomineCast = [...new Set(addedNomineCast)];
+        addedCandidateCast = [...new Set(addedCandidateCast)];
         $.ajax({
             headers: {
                 'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
@@ -596,9 +663,9 @@ jQuery(document).ready(function ($) {
             type: "PUT",
             url: '/admin/orders/' + orderId,
             data: {
-                'listCastMatching': getListCastMatching(),
-                'listCastNominees': getListCastNominees(),
-                'listCastCandidates': getListCastCandidates(),
+                'addedNomineeCast': addedNomineCast,
+                'addedCandidateCast': addedCandidateCast,
+                'deletedCast': deletedCast,
                 'orderDuration': $('#order-duration').val(),
                 'orderDate': $('#order-date').val(),
                 'class_id': $('#choosen-cast-class').val(),
