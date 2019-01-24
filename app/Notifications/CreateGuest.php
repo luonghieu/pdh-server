@@ -194,7 +194,6 @@ class CreateGuest extends Notification implements ShouldQueue
                 . PHP_EOL . '2時間以上のご予約で1時間無料となります（最大11,000円OFF）'
                 . PHP_EOL . PHP_EOL . 'ギャラ飲み初めての方も安心！'
                 . PHP_EOL . 'Cheersのキャストが盛り上げます🙋‍♀️❤️'
-                . PHP_EOL . '忘年会の季節に、キャストを呼んで飲み会や接待を盛り上げませんか？'
                 . PHP_EOL . PHP_EOL . 'ご登録から1週間を超えてしまうとキャンペーン対象外となりますのでお早めにご予約ください。'
                 . PHP_EOL . PHP_EOL . 'ご不明点はメッセージ内の運営者チャットからご連絡ください！';
 
