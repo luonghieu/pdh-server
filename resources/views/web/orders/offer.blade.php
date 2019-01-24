@@ -42,6 +42,19 @@
 </div>
 
 <div class="modal_wrap">
+  <input id="admin-edited" type="checkbox">
+  <div class="modal_overlay">
+    <label for="" class="modal_trigger" id="lb-err-offer"></label>
+    <div class="modal_content modal_content-btn1">
+      <div class="text-box" id="err-offer-message">
+        <h2>予約情報が変更になっているので、再度予約内容を確認してください</h2>
+      </div>
+      <label for="admin-edited" class="close_button" id="reload-offer">OK</label>
+    </div>
+  </div>
+</div>
+
+<div class="modal_wrap">
   <input id="show-attention" type="checkbox">
   <div class="modal_overlay">
     <label for="show-attention" class="modal_trigger" id="lb-show-attention"></label>

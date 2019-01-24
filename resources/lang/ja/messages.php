@@ -74,4 +74,5 @@ return [
     'order_timeout' => 'この予約は募集が締め切られました',
     'payment_failed' => '決済に失敗しました' . PHP_EOL . '登録しているカード情報を' . PHP_EOL . '確認してください',
     'data_not_found' => 'データが見つかりません',
+    'admin_edited_order' => '予約情報が変更になっているので、再度予約内容を確認してください',
 ];
