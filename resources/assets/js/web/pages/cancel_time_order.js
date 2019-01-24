@@ -36,29 +36,167 @@ $(document).ready(function () {
     if($('.input-area-offer').length) {
       var currentTime = JSON.parse(localStorage.getItem("first_load_time_offer"));
 
+      var startTimeFrom = $('#start-time-from-offer').val();
+      startTimeFrom = startTimeFrom.split(":");
+      var startHourFrom = startTimeFrom[0];
+      var startMinuteFrom = startTimeFrom[1];
+
+      var startTimeTo = $('#start-time-to-offer').val();
+      startTimeTo = startTimeTo.split(":");
+      var startHourTo = startTimeTo[0];
+      var startMinuteTo = startTimeTo[1];
+      var html = '';
+
       if(localStorage.getItem("order_offer")){
         var offerId = $('.offer-id').val();
         var orderOffer = JSON.parse(localStorage.getItem("order_offer"));
         if(orderOffer[offerId]) {
           orderOffer = orderOffer[offerId];
           if(orderOffer.hour) {
+            var hour = orderOffer.hour;
+
             const inputHour = $('select[name=select_hour_offer] option');
             $.each(inputHour,function(index,val){
               if(val.value == orderOffer.hour) {
                 $(this).prop('selected',true);
               }
             })
+
+            if (23<hour) {
+              switch(hour) {
+                case '24':
+                    hour = '00';
+                    break;
+                case '25':
+                    hour = '01';
+                    break;
+                case '26':
+                    hour = '02';
+                    break;
+              }
+            }
+
+            startMinuteFrom = hour == startHourFrom ? parseInt(startMinuteFrom) : 0;
+            startMinuteTo   = hour == startHourTo   ? parseInt(startMinuteTo) : 59;
+
+            for (var i = startMinuteFrom; i <= startMinuteTo; i++) {
+              var value = (i < 10) ? `0${parseInt(i)}` : i;
+
+              html += `<option value="${value}">${value}分</option>`;
+            }
+
+            $('.select-minute-offer').html(html);
+
             $('.select-minute-offer').val(orderOffer.minute);
           } else {
-            $('.select-hour-offer').val(currentTime.current_hour_offer);
+            var hour = currentTime.current_hour_offer;
+
+            const inputHour = $('select[name=select_hour_offer] option');
+            $.each(inputHour,function(index,val){
+              if(val.value == currentTime.current_hour_offer) {
+                $(this).prop('selected',true);
+              }
+            })
+
+            if (23<hour) {
+              switch(hour) {
+                case '24':
+                    hour = '00';
+                    break;
+                case '25':
+                    hour = '01';
+                    break;
+                case '26':
+                    hour = '02';
+                    break;
+              }
+            }
+
+            startMinuteFrom = hour == startHourFrom ? parseInt(startMinuteFrom) : 0;
+            startMinuteTo   = hour == startHourTo   ? parseInt(startMinuteTo) : 59;
+
+            for (var i = startMinuteFrom; i <= startMinuteTo; i++) {
+              var value = (i < 10) ? `0${parseInt(i)}` : i;
+
+              html += `<option value="${value}">${value}分</option>`;
+            }
+
+            $('.select-minute-offer').html(html);
+
             $('.select-minute-offer').val(currentTime.current_minute_offer);
           }
         } else {
-          $('.select-hour-offer').val(currentTime.current_hour_offer);
-          $('.select-minute-offer').val(currentTime.current_minute_offer);
+            var hour = currentTime.current_hour_offer;
+
+            const inputHour = $('select[name=select_hour_offer] option');
+            $.each(inputHour,function(index,val){
+              if(val.value == currentTime.current_hour_offer) {
+                $(this).prop('selected',true);
+              }
+            })
+
+            if (23<hour) {
+              switch(hour) {
+                case '24':
+                    hour = '00';
+                    break;
+                case '25':
+                    hour = '01';
+                    break;
+                case '26':
+                    hour = '02';
+                    break;
+              }
+            }
+
+            startMinuteFrom = hour == startHourFrom ? parseInt(startMinuteFrom) : 0;
+            startMinuteTo   = hour == startHourTo   ? parseInt(startMinuteTo) : 59;
+
+            for (var i = startMinuteFrom; i <= startMinuteTo; i++) {
+              var value = (i < 10) ? `0${parseInt(i)}` : i;
+
+              html += `<option value="${value}">${value}分</option>`;
+            }
+
+            $('.select-minute-offer').html(html);
+
+            $('.select-minute-offer').val(currentTime.current_minute_offer);
         }
       } else {
-        $('.select-hour-offer').val(currentTime.current_hour_offer);
+        var hour = currentTime.current_hour_offer;
+
+        const inputHour = $('select[name=select_hour_offer] option');
+        $.each(inputHour,function(index,val){
+          if(val.value == currentTime.current_hour_offer) {
+            $(this).prop('selected',true);
+          }
+        })
+
+        if (23<hour) {
+          switch(hour) {
+            case '24':
+                hour = '00';
+                break;
+            case '25':
+                hour = '01';
+                break;
+            case '26':
+                hour = '02';
+                break;
+          }
+        }
+
+        startMinuteFrom = hour == startHourFrom ? parseInt(startMinuteFrom) : 0;
+        startMinuteTo   = hour == startHourTo   ? parseInt(startMinuteTo) : 59;
+
+        for (var i = startMinuteFrom; i <= startMinuteTo; i++) {
+          var value = (i < 10) ? `0${parseInt(i)}` : i;
+
+          html += `<option value="${value}">${value}分</option>`;
+        }
+
+        $('.select-minute-offer').html(html);
+
         $('.select-minute-offer').val(currentTime.current_minute_offer);
       }
     }
