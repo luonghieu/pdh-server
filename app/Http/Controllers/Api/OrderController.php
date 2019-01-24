@@ -314,14 +314,30 @@ class OrderController extends ApiController
             return $this->respondErrorMessage(trans('messages.card_not_exist'), 409);
         }
 
+        if ($offer->total_cast != $request->total_cast) {
+            return $this->respondErrorMessage(trans('messages.admin_edited_order'), 406);
+        }
+
+        $castIds = explode(",", trim($request->nominee_ids, ","));
+        foreach ($castIds as $castId) {
+            if (!in_array($castId, $offer->cast_ids)) {
+                return $this->respondErrorMessage(trans('messages.admin_edited_order'), 406);
+            }
+        }
+
+        if ($offer->class_id != $request->class_id) {
+            return $this->respondErrorMessage(trans('messages.admin_edited_order'), 406);
+        }
+
+        if ($offer->duration != $request->duration) {
+            return $this->respondErrorMessage(trans('messages.admin_edited_order'), 406);
+        }
+
         $now = Carbon::now()->second(0);
 
         $start_time = Carbon::parse($request->date . ' ' . $request->start_time);
-        $end_time = $start_time->copy()->addHours($input['duration']);
 
-        if ($now->second(0)->diffInMinutes($start_time, false) < 29) {
-            return $this->respondErrorMessage(trans('messages.time_invalid'), 400);
-        }
+        $end_time = $start_time->copy()->addHours($input['duration']);
 
         $startHourFrom = (int) Carbon::parse($offer->start_time_from)->format('H');
         $startHourTo = (int) Carbon::parse($offer->start_time_to)->format('H');
@@ -331,16 +347,24 @@ class OrderController extends ApiController
             $startTimeTo = $startTimeTo->copy()->addDay();
         }
 
+        $startTimeFrom = Carbon::createFromFormat('Y-m-d H:i:s', $offer->date . ' ' . $offer->start_time_from);
+
+        if (!$start_time->between($startTimeFrom, $startTimeTo)) {
+            return $this->respondErrorMessage(trans('messages.admin_edited_order'), 406);
+        }
+
+        if ($now->second(0)->diffInMinutes($start_time, false) < 29) {
+            return $this->respondErrorMessage(trans('messages.time_invalid'), 400);
+        }
+
         $input['end_time'] = $end_time->format('H:i');
 
-        $castIds = explode(",", trim($request->nominee_ids, ","));
         $input['end_time'] = $end_time->format('H:i');
         $input['status'] = OrderStatus::ACTIVE;
 
         try {
             DB::beginTransaction();
             $order = $user->orders()->create($input);
-
             $order->nominees()->attach($castIds, [
                 'type' => CastOrderType::CANDIDATE,
                 'status' => CastOrderStatus::ACCEPTED,

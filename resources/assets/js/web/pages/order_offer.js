@@ -111,8 +111,8 @@ $(document).ready(function(){
 
     var time = hour + ':' + minute;
 
+    var offerId = $('.offer-id').val();
     if(localStorage.getItem("order_offer")){
-      var offerId = $('.offer-id').val();
       var orderOffer = JSON.parse(localStorage.getItem("order_offer"));
       if(orderOffer[offerId]) {
         orderOffer = orderOffer[offerId];
@@ -171,33 +171,41 @@ $(document).ready(function(){
                   window.location = '/mypage';
                 })
             } else {
-              var content = '';
-              var err ='';
+              if (error.response.status == 406) {
+                $('#admin-edited').prop('checked',true);
+                
+                $('#reload-offer').on("click",function(event){
+                  if (localStorage.getItem("order_offer")) {
+                    localStorage.removeItem("order_offer");
+                  }
+                  window.location = '/offers/' + offerId;
+                })
+              } else {
+                var content = '';
+                var err ='';
 
-              if (error.response.status == 400) {
-                var err = '開始時間は現在時刻から30分以降の時間を選択してください';
+                if (error.response.status == 400) {
+                  var err = '開始時間は現在時刻から30分以降の時間を選択してください';
+                }
+
+                if(error.response.status == 500) {
+                var err = 'この操作は実行できません';
+                }
+
+                if(error.response.status == 404) {
+                  var err = '予約が存在しません';
+                }
+
+                if(error.response.status == 409) {
+                  var err = '支払い方法が未登録です';
+                }
+
+                $('#err-offer-message h2').html(err);
+                $('#err-offer-message p').html(content);
+
+                $('#err-offer').prop('checked',true);
               }
 
-              if(error.response.status == 500) {
-              var err = 'この操作は実行できません';
-              }
-
-              if(error.response.status == 404) {
-                var err = '予約が存在しません';
-              }
-
-              if(error.response.status == 409) {
-                var err = '支払い方法が未登録です';
-              }
-
-               if(error.response.status == 406) {
-                content = '予約日までにクレジットカードの <br> 1有効期限が切れます  <br> <br> 予約を完了するには  <br> カード情報を更新してください';
-              }
-
-              $('#err-offer-message h2').html(err);
-              $('#err-offer-message p').html(content);
-
-              $('#err-offer').prop('checked',true);
             }
           }
       })
