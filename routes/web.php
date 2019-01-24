@@ -44,6 +44,11 @@ Route::group(['middleware' => 'auth'], function () {
             Route::get('edit', ['as' => 'update', 'uses' => 'CardController@update']);
         });
 
+        Route::group(['middleware' => ['guest'], 'prefix' => 'card_square', 'as' => 'card_square.'], function () {
+            Route::get('/', ['as' => 'create', 'uses' => 'CardSquareController@create']);
+            Route::post('/', ['as' => 'create_card', 'uses' => 'CardSquareController@createCard']);
+        });
+
         Route::group(['prefix' => 'point_settement', 'as' => 'point_settement.'], function () {
             Route::post('/{orderId}', ['as' => 'create', 'uses' => 'OrderController@pointSettlement']);
         });

@@ -96,6 +96,7 @@ class CardController extends ApiController
 
             return $this->respondWithData(CardResource::make($card));
         } catch (\Exception $e) {
+            dd($e);
             LogService::writeErrorLog($e);
 
             return $this->respondServerError();
