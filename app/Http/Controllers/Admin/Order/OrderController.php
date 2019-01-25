@@ -341,31 +341,31 @@ class OrderController extends Controller
             \DB::commit();
 
             // Send notification to new nominees
-//            \Notification::send(
-//                $newNominees,
-//                (new CreateNominationOrdersForCast($order->id))->delay(now()->addSeconds(3))
-//            );
-//            // Send notification to casts removed
-//            \Notification::send(
-//                $castsRemoved,
-//                (new AdminRemoveCastInOrder())->delay(now()->addSeconds(3))
-//            );
-//            // Send notification to user and casts.
-//            $order->user->notify((new AdminEditOrder())->delay(now()->addSeconds(3)));
-//            \Notification::send(
-//                $matchedCasts,
-//                (new AdminEditOrder())->delay(now()->addSeconds(3))
-//            );
-//
-//            // Send notification to other casts
-//            if ($order->total_cast != $currentTotalCast) {
-//                $castInOrder = $order->castOrder()->get()->pluck('id')->toArray();
-//                $casts = Cast::where('class_id', $order->class_id)->whereNotIn('id', $castInOrder)->get();
-//                \Notification::send(
-//                    $casts,
-//                    (new CallOrdersCreated($order->id))->delay(now()->addSeconds(3))
-//                );
-//            }
+            \Notification::send(
+                $newNominees,
+                (new CreateNominationOrdersForCast($order->id))->delay(now()->addSeconds(3))
+            );
+            // Send notification to casts removed
+            \Notification::send(
+                $castsRemoved,
+                (new AdminRemoveCastInOrder())->delay(now()->addSeconds(3))
+            );
+            // Send notification to user and casts.
+            $order->user->notify((new AdminEditOrder())->delay(now()->addSeconds(3)));
+            \Notification::send(
+                $matchedCasts,
+                (new AdminEditOrder())->delay(now()->addSeconds(3))
+            );
+
+            // Send notification to other casts
+            if ($order->total_cast != $currentTotalCast) {
+                $castInOrder = $order->castOrder()->get()->pluck('id')->toArray();
+                $casts = Cast::where('class_id', $order->class_id)->whereNotIn('id', $castInOrder)->get();
+                \Notification::send(
+                    $casts,
+                    (new CallOrdersCreated($order->id))->delay(now()->addSeconds(3))
+                );
+            }
             return response()->json(['success' => true], 200);
         } catch (\Exception $e) {
             \DB::rollBack();
