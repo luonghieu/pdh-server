@@ -21,7 +21,7 @@ class CreditCardController extends Controller
                 if ($user) {
                     Auth::loginUsingId($user->id);
 
-                    if ($user->card) {
+                    if ($user->is_card_registered) {
                         $card = $user->card;
                         return redirect(route('webview.show', ['card' => $card->id]));
                     } else {
