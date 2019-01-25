@@ -56,6 +56,7 @@ class ValidateOrder implements ShouldQueue
                         $data = array_merge($data, [$cast->pivot->user_id]);
                     }
                     $room = $this->order->room;
+
                     if ($room) {
                         $room->users()->sync($data);
                     } else {
