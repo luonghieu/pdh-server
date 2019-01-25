@@ -319,6 +319,7 @@
     });
 
     function submitSquareForm() {
+      var backUrl = $("#back-url").val();
       var nonce = $("#card-nonce").val();
 
       $.ajax({
