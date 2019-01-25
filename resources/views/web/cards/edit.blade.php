@@ -26,7 +26,7 @@
   <div class="notify" id="notify">
     <span></span>
   </div>
-  {{--<div class="content">--}}
+  <div class="content">
 
     <div id="orderSummary">
       <div class="sub-title">
@@ -74,7 +74,7 @@
       </div> <!-- end #form-container -->
       <!--end Square template form-container div-->
     </div>
-  {{--</div>--}}
+  </div>
 @endsection
 @section('web.extra_js')
   <script src="{{ mix('assets/webview/js/script.min.js') }}"></script>
