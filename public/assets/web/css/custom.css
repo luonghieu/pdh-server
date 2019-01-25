@@ -476,6 +476,7 @@ title {
 .image-main {
   text-align: center;
   margin-top: 45px;
+  margin-bottom: 45px;
 }
 
 .image-main img {
@@ -741,7 +742,7 @@ title {
   height: 40px;
   margin: 0 8px;
   position: absolute;
-  top: 185px;
+  top: 180px;
 }
 
 .bd-none {
