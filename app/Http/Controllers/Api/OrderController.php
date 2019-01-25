@@ -75,7 +75,7 @@ class OrderController extends ApiController
             return $this->respondErrorMessage(trans('messages.time_invalid'), 400);
         }
 
-        if (!$user->tc_send_id) {
+        if (!$user->is_card_registered) {
             return $this->respondErrorMessage(trans('messages.card_not_exist'), 404);
         }
 
@@ -303,7 +303,7 @@ class OrderController extends ApiController
             return $this->respondErrorMessage(trans('messages.order_timeout'), 422);
         }
 
-        if (!$user->tc_send_id) {
+        if (!$user->is_card_registered) {
             return $this->respondErrorMessage(trans('messages.card_not_exist'), 409);
         }
 
