@@ -17,7 +17,7 @@
         <span>クレジットカード登録</span>
       </div>
       <div class="btn-register header-item">
-        <a {{-- id="btn-create" --}} class="btn-stop-create-card">登録</a>
+        <a id="btn-create">登録</a>
       </div>
   </header>
   <div class="image-main">
@@ -67,28 +67,8 @@
     </div>
     </form>
   </div>
-  <div class="modal_wrap">
-    <input id="popup-stop-create-card" type="checkbox">
-    <div class="modal_overlay">
-        <div class="modal_content modal_content-btn1">
-            <div class="text-box">
-                <p>*現在クレジットカード情報はシステムメンテナンスのため、編集することができません。</p>
-                <p>※只今、クレジットカードの登録なしで予約をすることができます。</p>
-                <p>※ご不明な点がある場合は、運営までお問い合わせください。</p>
-            </div>
-            <label for="popup-stop-create-card" class="close_button">OK</label>
-        </div>
-    </div>
-  </div>
   <script src="{{ mix('assets/webview/js/script.min.js') }}"></script>
   <script src="{{ mix('assets/webview/js/create_card.min.js') }}"></script>
   <script src="/assets/webview/js/lib/payment.js"></script>
-  <script>
-    $(document).ready(function() {
-      $('.btn-stop-create-card').click(function(event) {
-        $('#popup-stop-create-card').trigger('click');
-      });
-    });
-  </script>
 </body>
 </html>
