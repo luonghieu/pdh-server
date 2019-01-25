@@ -340,6 +340,11 @@
             window.location.href = backUrl;
           }
         },
+        error: function(xhr, status, error) {
+          var error = 'このクレジットカードはご利用できません';
+
+          $(".notify span").text(error);
+        }
       });
     }
 </script>
