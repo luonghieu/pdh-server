@@ -16,7 +16,7 @@
     @endphp
     <div class="title-name"></div>
     <div class="btn-register header-item">
-      <a id="sq-creditcard" onclick="requestCardNonce(event)">登録</a>
+      <a id="sq-creditcard" onclick="requestCardNonce(event)" >登録</a>
     </div>
   </div>
   <div class="image-main">
