@@ -752,6 +752,10 @@ title {
   color: #ff6090 !important;
 }
 
+.wrap-select-date-webview {
+  padding-top: 18px;
+   padding-right: 0;
+}
 .wrap-expiration-date {
   width: 92px;
   position: absolute;

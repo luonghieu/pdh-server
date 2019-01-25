@@ -6,6 +6,8 @@
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
     <link rel="stylesheet" href="{{ mix('assets/webview/css/style.min.css') }}"/>
     <link href="{{ mix('assets/web/css/web.css') }}" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="{{ mix('assets/web/css/card_square.min.css') }}">
+
   </head>
   <body>
     <header class="border-bottom">
@@ -40,8 +42,8 @@
       </div>
       <div class="clear"></div>
       <div class="expiration-date border-bottom">
-        <span class="left">有効期限</span>
-        <div class="date-select right">
+        <span class="left title-expiration-date">有効期限</span>
+        <div class="date-select right wrap-select-date-webview">
           <select name="month" id="month" disabled>
             <option value="{{ $card->exp_month }}">{{ $card->exp_month }}月</option>
           </select>
