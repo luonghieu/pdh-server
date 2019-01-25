@@ -8,8 +8,8 @@ use Illuminate\Database\Eloquent\Model;
 class Card extends Model
 {
     const BRANDS = [
-        'AMERICAN EXPRESS',
-        // 'DINERS CLUB',
+        'AMERICAN_EXPRESS',
+        // 'DISCOVER_DINERS',
         // 'JCB',
         'MASTERCARD',
         'VISA',
