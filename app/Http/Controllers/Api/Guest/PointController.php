@@ -27,7 +27,7 @@ class PointController extends ApiController
         $user = $this->guard()->user();
         $now = Carbon::now();
 
-        if (!$user->tc_send_id) {
+        if (!$user->is_card_registered) {
             return $this->respondErrorMessage(trans('messages.card_not_exist'), 404);
         }
 

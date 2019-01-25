@@ -6,7 +6,7 @@ use App\Card;
 use App\Http\Controllers\Api\ApiController;
 use App\Http\Resources\CardResource;
 use App\Services\LogService;
-use App\Services\Payment;
+use App\Services\Square as Payment;
 use App\User;
 use Illuminate\Http\Request;
 
@@ -32,11 +32,13 @@ class CardController extends ApiController
         }
 
         $user = $this->guard()->user();
+        $paymentService = config('common.payment_service');
+
         try {
-            if (!$user->stripe_id) {
+            if (!$user->payment_id) {
                 $customer = $this->createCustomer($user);
             } else {
-                $customerId = $user->stripe_id;
+                $customerId = $user->payment_id;
 
                 $customer = $this->payment->getCustomer($customerId);
 
@@ -47,44 +49,31 @@ class CardController extends ApiController
 
             $user->cards()->delete();
 
-            $card = $customer->sources->create(['source' => $request->token]);
+            $card = $this->payment->createCustomerCard($customer->id, ['source' => $request->token]);
 
-            if (in_array($card->funding, ['debit', 'prepaid'])) {
+            // Square doesn't know what kind of card funding
+            if ($paymentService == 'stripe' && in_array($card->funding, ['debit', 'prepaid'])) {
                 return $this->respondErrorMessage(trans('messages.payment_method_not_supported'));
             }
 
             if (!in_array($card->brand, Card::BRANDS)) {
-                $customer->sources->retrieve($card->id)->delete();
-
+                // $customer->sources->retrieve($card->id)->delete();
                 return $this->respondErrorMessage(trans('messages.payment_method_not_supported'));
             }
 
-            $customer->default_source = $card->id;
-            $customer->save();
+            // $customer->default_source = $card->id;
+            // $customer->save();
 
             $cardAttributes = [
                 'card_id' => $card->id,
-                'address_city' => $card->address_city,
-                'address_country' => $card->address_country,
-                'address_line1' => $card->address_line1,
-                'address_line1_check' => $card->address_line1_check,
-                'address_line2' => $card->address_line2,
-                'address_state' => $card->address_state,
-                'address_zip' => $card->address_zip,
-                'address_zip_check' => $card->address_zip_check,
                 'brand' => $card->brand,
-                'country' => $card->country,
-                'customer' => $card->customer,
-                'cvc_check' => $card->cvc_check,
-                'dynamic_last4' => $card->dynamic_last4,
                 'exp_month' => $card->exp_month,
                 'exp_year' => $card->exp_year,
                 'fingerprint' => $card->fingerprint,
-                'funding' => $card->funding,
                 'last4' => $card->last4,
                 'name' => $card->name,
-                'tokenization_method' => $card->tokenization_method,
                 'is_default' => true,
+                'service' => $paymentService,
             ];
 
             $card = $user->cards()->create($cardAttributes);
@@ -112,10 +101,10 @@ class CardController extends ApiController
         }
 
         try {
-            $customerId = $user->stripe_id;
+            $customerId = $user->payment_id;
             $customer = $this->payment->getCustomer($customerId);
 
-            $customer->sources->retrieve($card->card_id)->delete();
+            // $customer->sources->retrieve($card->card_id)->delete();
 
             $card->delete();
 
@@ -143,6 +132,11 @@ class CardController extends ApiController
     {
         $attributes = [
             'description' => $user->id,
+            'nickname' => $user->nickname,
+            'email' => $user->email,
+            'firstname' => $user->firstname,
+            'lastname' => $user->lastname,
+            'phone' => $user->phone,
         ];
 
         $customer = $this->payment->createCustomer($attributes);
@@ -151,7 +145,7 @@ class CardController extends ApiController
             return false;
         }
 
-        $user->stripe_id = $customer->id;
+        $user->payment_id = $customer->id;
         $user->save();
 
         return $customer;

@@ -43,7 +43,10 @@
     </script>
     @endif
 
-    @include('web.partials.telecom_credit')
+    @if(config('common.payment_service') == 'telecom_credit')
+      @include('web.partials.telecom_credit')
+    @endif
+
     @include('web.partials.footer')
   </div>
   @yield('web.script')
