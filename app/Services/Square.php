@@ -157,7 +157,7 @@ class Square extends Service
         $locationId = config('services.square.location_id');
 
         $amountMoney = new Money([
-            'amount' => $request['amount'],
+            'amount' => (int) $request['amount'],
             'currency' => 'JPY',
         ]);
 
