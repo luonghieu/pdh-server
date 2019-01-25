@@ -195,7 +195,7 @@ class User extends Authenticatable implements JWTSubject
 
         switch ($paymentService) {
             case 'stripe':
-                $isCardRegistered = $this->stripe_id ? true : false;
+                $isCardRegistered = $this->stripe_id && $this->card ? true : false;
                 break;
 
             case 'telecom_credit':
@@ -203,7 +203,7 @@ class User extends Authenticatable implements JWTSubject
                 break;
 
             case 'square':
-                $isCardRegistered = $this->square_id ? true : false;
+                $isCardRegistered = $this->square_id && $this->card ? true : false;
                 break;
 
             default:
