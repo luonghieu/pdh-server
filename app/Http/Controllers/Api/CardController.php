@@ -47,8 +47,6 @@ class CardController extends ApiController
                 }
             }
 
-            $user->cards()->delete();
-
             $card = $this->payment->createCustomerCard($customer->id, ['source' => $request->token]);
 
             // Square doesn't know what kind of card funding
@@ -63,6 +61,8 @@ class CardController extends ApiController
 
             // $customer->default_source = $card->id;
             // $customer->save();
+
+            $user->cards()->delete();
 
             $cardAttributes = [
                 'card_id' => $card->id,
