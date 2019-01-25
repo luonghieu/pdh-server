@@ -32,9 +32,17 @@ class Square extends Service
             'note' => 'User ' . $request['description'],
             'given_name' => $request['firstname'],
             'family_name' => $request['lastname'],
-            'email_address' => $request['email'],
-            'phone_number' => $request['phone'],
         ];
+
+        if ($request['email']) {
+            $params['email_address'] = $request['email'];
+        }
+
+        if ($request['phone']) {
+            $params['phone_number'] = $request['phone'];
+        }
+
+        logger($params);
 
         $params = array_merge($params, $request);
 

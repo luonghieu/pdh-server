@@ -487,6 +487,20 @@ title {
   object-fit: contain;
 }
 
+.image-main-webview {
+text-align: center;
+margin-bottom: 45px;
+}
+
+.image-main-webview img {
+height: 46px;
+width: 80%;
+margin-left: 12%;
+padding-top: 23px;
+object-fit: contain;
+}
+
+
 #gl1 .sub-title {
   height: 45px;
   background-color: #f3f2f2;
@@ -761,6 +775,10 @@ title {
   position: absolute;
   right: 8px;
   top: 45px;
+}
+
+.wrap-expiration-date-webview {
+  top: 55px;
 }
 
 #gl1 .notify span {
@@ -2663,4 +2681,44 @@ padding-top: 65px !important;
 
 .title-number-card-webview {
   color: red;
+}
+
+.header-webview {
+  height: 45px;
+  text-align: center;
+  padding: 8px;
+}
+
+.header-webview .header-item {
+  display: inline-block;
+}
+
+.header-webview .btn-register {
+  float: right;
+  font-size: 18px;
+  margin-top: 10px;
+}
+
+.header-webview .title-main {
+  margin-top: 10px;
+  display: inline-block;
+  font-family: NotoSansCJKjp;
+  font-size: 15px;
+  font-weight: bold;
+  font-style: normal;
+  font-stretch: normal;
+  line-height: normal;
+  letter-spacing: normal;
+  text-align: center;
+  color: #30ccc3;
+}
+
+.header-webview .btn-back {
+  float: left;
+  padding: 10px;
+  margin-top: 3px;
+}
+
+.header-webview .header-item img {
+  width: 12px;
 }

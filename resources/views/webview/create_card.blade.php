@@ -11,7 +11,7 @@
 
 </head>
 <body>
-  <header class="border-bottom">
+  <div class="border-bottom header-webview">
       <div class="btn-back header-item">
         <a href="cheers://back"><img src="/assets/webview/images/back.png" alt=""></a>
       </div>
@@ -21,11 +21,11 @@
       <div class="btn-register header-item">
         <a id="sq-creditcard" onclick="requestCardNonce(event)" class="color-btn-create">登録</a>
       </div>
-  </header>
-  <div class="image-main">
+  </div>
+  <div class="image-main-webview">
     <img src="/assets/webview/images/ic_credit_cards@2x.png" alt="">
   </div>
-  <div class="notify">
+  <div class="notify-webview">
     <span></span>
   </div>
   <div class="content">
@@ -50,7 +50,7 @@
               <div class="expiration-date border-bottom">
                 <span class="left title-expiration-date">有効期限</span>
                 <div class="date-select right">
-                  <div class="wrap-expiration-date">
+                  <div class="wrap-expiration-date wrap-expiration-date-webview">
                     <div id="sq-expiration-date"></div>
                   </div>
                 </div>
