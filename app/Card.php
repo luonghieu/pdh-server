@@ -8,11 +8,11 @@ use Illuminate\Database\Eloquent\Model;
 class Card extends Model
 {
     const BRANDS = [
-        'American Express',
-        'Diners Club',
-        'JCB',
-        'MasterCard',
-        'Visa',
+        'AMERICAN EXPRESS',
+        // 'DINERS CLUB',
+        // 'JCB',
+        'MASTERCARD',
+        'VISA',
     ];
 
     protected $guarded = [];
