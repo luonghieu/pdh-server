@@ -36,7 +36,7 @@
           the Transaction API charge endpoint URL you want to POST the nonce to
           (for example, "/process-card")
         -->
-        <form id="nonce-form" novalidate action="#" method="post">
+        <form id="nonce-form" novalidate action="{{ route('card_square.create_card')  }}" method="post">
           {{ csrf_field() }}
           <fieldset>
             <span class="label">Card Number</span>

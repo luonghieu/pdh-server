@@ -588,7 +588,7 @@ title {
 }
 
 .date-select {
-  padding-top: 20px;
+  padding-top: 10px;
   padding-right: 10px;
 }
 
@@ -624,7 +624,7 @@ title {
 }
 
 #gl1 form {
-  margin-top: 60px;
+  margin-top: 10px;
 }
 
 .date-select select:first-child {
@@ -722,6 +722,12 @@ title {
   top: -16px;
   right: 20px;
   z-index: 2;
+}
+
+.wrap-cvv {
+  width: 60%;
+  position: absolute;
+  right: 9;
 }
 
 #gl1 .notify span {

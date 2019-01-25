@@ -10,7 +10,6 @@ class CardController extends Controller
 {
     public function index(Request $request)
     {
-        dd(1);
         $user = Auth::user();
         $card = $user->card;
 
