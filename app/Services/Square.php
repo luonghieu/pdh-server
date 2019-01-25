@@ -34,12 +34,25 @@ class Square extends Service
             'family_name' => $request['lastname'],
         ];
 
+        $flag = false;
+
         if ($request['email']) {
             $params['email_address'] = $request['email'];
+            $flag = true;
         }
 
         if ($request['phone']) {
             $params['phone_number'] = $request['phone'];
+            $flag = true;
+        }
+
+        if (!$params['given_name']) {
+            $params['given_name'] = $request['nickname'];
+            $flag = true;
+        }
+
+        if (!$flag && !$params['given_name'] && !$params['family_name']) {
+            $params['given_name'] = 'User ' . $request['description'];
         }
 
         logger($params);
