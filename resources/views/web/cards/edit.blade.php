@@ -17,11 +17,11 @@
     <div class="title-name"></div>
     <div class="btn-register header-item">
       {{--<button id="sq-creditcard" class="button-credit-card" onclick="requestCardNonce(event)">登録</button>--}}
-      <a id="sq-creditcard"  onclick="requestCardNonce(event)">登録</a>
+      <a id="sq-creditcard"  onclick="requestCardNonce(event)">完了</a>
     </div>
   </div>
   <div class="image-main">
-    <img src="/assets/web/images/card/allCard.png" alt="">
+    <img src="/assets/webview/images/ic_credit_cards@2x.png" alt="">
   </div>
   <div class="notify" id="notify">
     <span></span>
@@ -41,7 +41,7 @@
                 <span class="left">カード番号</span>
                 <div class="right number right-number-square">
                   <input type="hidden" value="{{ $backUrl }}" id="back-url">
-                  <div class="wrap-cvv">
+                  <div class="wrap-card-number">
                     <div id="sq-card-number"></div>
                   </div>
                 </div>
@@ -50,7 +50,7 @@
               <div class="expiration-date border-bottom">
                 <span class="left">有効期限</span>
                 <div class="date-select right">
-                  <div class="wrap-cvv">
+                  <div class="wrap-expiration-date">
                     <div id="sq-expiration-date"></div>
                   </div>
                 </div>
@@ -107,7 +107,7 @@
 
           // Customize the CSS for SqPaymentForm iframe elements
           inputStyles: [{
-              fontSize: '16px',
+              fontSize: '15px',
               fontFamily: 'Helvetica Neue',
               padding: '10px',
               color: '#373F4A',
@@ -125,11 +125,11 @@
           },
           cvv: {
               elementId: 'sq-cvv',
-              placeholder: '3桁または4桁の数字'
+              placeholder: 'CVV'
           },
           expirationDate: {
               elementId: 'sq-expiration-date',
-              placeholder: 'MM/YY(05/22)'
+              placeholder: 'MM/YY'
           },
           postalCode: false,
 

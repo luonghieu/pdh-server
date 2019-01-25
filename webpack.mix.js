@@ -32,6 +32,7 @@ mix.styles('public/assets/web/css/gf_3.css', 'public/assets/web/css/gf_3.min.css
 mix.styles('public/assets/web/css/gf_4.css', 'public/assets/web/css/gf_4.min.css').version();
 mix.styles('public/assets/web/css/ge_4.css', 'public/assets/web/css/ge_4.min.css').version();
 mix.styles('public/assets/web/css/cast.css', 'public/assets/web/css/cast.min.css').version();
+mix.styles('public/assets/web/css/card_square.css', 'public/assets/web/css/card_square.min.css').version();
 
 mix.js("resources/assets/js/app.js", "public/js").version();
 mix.js("resources/assets/js/web.js", "public/js").version();
