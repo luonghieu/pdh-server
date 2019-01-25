@@ -55,8 +55,20 @@ class CreditCardController extends Controller
 
             $response = $client->post(route('cards.create'), $option);
 
-            if ($response->getStatusCode() == 200) {
-                return redirect(route('credit_card.index'));
+            $statusCode = $response->getStatusCode();
+
+            if ($statusCode == 400) {
+                return response()->json(['success' => false, 'error' => trans('messages.payment_method_not_supported')]);
+            } else {
+                if ($statusCode != 200) {
+                    return response()->json(['success' => false, 'error' => trans('messages.action_not_performed')]);
+                }
+
+                if ($user->card) {
+                    $card = $user->card;
+
+                    return response()->json(['success' => true, 'url' => 'cheers://adding_card?result=1']);
+                }
             }
         } else {
             $rules = [
