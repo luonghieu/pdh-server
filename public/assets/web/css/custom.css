@@ -589,6 +589,10 @@ title {
   margin-left: 18px;
 }
 
+.expiration-date .title-expiration-date {
+  margin-left: 0;
+}
+
 .date-select {
   padding-top: 10px;
   padding-right: 10px;
@@ -738,6 +742,14 @@ title {
   position: absolute;
   right: 8px;
   top: -4px;
+}
+
+.wrap-card-number-webview {
+  top: 8px;
+}
+
+.color-btn-create {
+  color: #ff6090 !important;
 }
 
 .wrap-expiration-date {
@@ -2643,4 +2655,8 @@ padding-top: 65px !important;
   border-bottom:2px solid #222222;
   border-left:2px solid #222222;
   margin-right: 10px;
+}
+
+.title-number-card-webview {
+  color: red;
 }
