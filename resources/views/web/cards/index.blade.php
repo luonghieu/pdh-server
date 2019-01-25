@@ -10,7 +10,7 @@
   </div>
 </div>
 <div class="image-main">
-  <img src="/assets/web/images/card/allCard.png" alt="">
+  <img src="/assets/webview/images/ic_credit_cards@2x.png" alt="">
 </div>
 <div class="notify">
   <span></span>

@@ -56,7 +56,7 @@ class CardController extends ApiController
                 return $this->respondErrorMessage(trans('messages.payment_method_not_supported'));
             }
 
-            if (!in_array($card->brand, Card::BRANDS)) {
+            if (!in_array(strtoupper($card->brand), Card::BRANDS)) {
                 // $customer->sources->retrieve($card->id)->delete();
 //                return $this->respondErrorMessage(trans('messages.payment_method_not_supported'));
             }

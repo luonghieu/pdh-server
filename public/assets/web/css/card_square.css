@@ -34,7 +34,7 @@ fieldset {
 
 #form-container {
   position: relative;
-  width: 380px;
+  width: 100%;
   margin: 0 auto;
   top: 50%;
   /*transform: translateY(-50%);*/
@@ -62,7 +62,7 @@ fieldset {
 /* Define how SqPaymentForm iframes should look */
 .sq-input {
   box-sizing: border-box;
-  border: 1px solid #E0E2E3;
+  /*border: 1px solid #E0E2E3;*/
   border-radius: 4px;
   outline-offset: -2px;
   display: inline-block;

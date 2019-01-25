@@ -468,7 +468,7 @@ title {
 
 #gl1 .btn-register a {
   text-decoration: none;
-  color: #cccccc;
+  color: #ff6090;
   cursor: pointer;
   font-size: 18px;
 }
@@ -507,7 +507,7 @@ title {
 }
 
 #gl1 .card-number {
-  height: 50px;
+  height: 40px;
   background-color: #ffffff;
   padding: 0 18px;
   position: relative;
@@ -529,7 +529,7 @@ title {
   letter-spacing: -0.3px;
   text-align: left;
   color: #30ccc3;
-  padding-top: 18px;
+  padding-top: 5px;
 }
 
 #gl1 .left {
@@ -569,7 +569,7 @@ title {
 }
 
 .expiration-date {
-  height: 60px;
+  height: 55px;
   background-color: #ffffff;
 }
 
@@ -602,13 +602,14 @@ title {
 .security-code {
   height: 50px;
   background-color: #ffffff;
-  padding-top: 20px;
+  padding-top: 10px;
   position: relative;
 }
 
 .security-code img {
   padding-left: 20px;
   width: 40px;
+  margin-top: 5px;
 }
 
 .security-code input {
@@ -726,9 +727,23 @@ title {
 }
 
 .wrap-cvv {
-  width: 60%;
+  width: 69px;
   position: absolute;
-  right: 9;
+  right: 8px;
+}
+
+.wrap-card-number {
+  width: 160px;
+  position: absolute;
+  right: 8px;
+  top: -4px;
+}
+
+.wrap-expiration-date {
+  width: 92px;
+  position: absolute;
+  right: 8px;
+  top: 45px;
 }
 
 #gl1 .notify span {

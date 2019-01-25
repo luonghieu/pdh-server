@@ -17,38 +17,31 @@
     <div class="title-name"></div>
     <div class="btn-register header-item">
       {{--<button id="sq-creditcard" class="button-credit-card" onclick="requestCardNonce(event)">登録</button>--}}
-      <a id="sq-creditcard"  onclick="requestCardNonce(event)">登録</a>
+      <a id="sq-creditcard"  onclick="requestCardNonce(event)">完了</a>
     </div>
   </div>
   <div class="image-main">
-    <img src="/assets/web/images/card/allCard.png" alt="">
+    <img src="/assets/webview/images/ic_credit_cards@2x.png" alt="">
   </div>
   <div class="notify" id="notify">
     <span></span>
   </div>
-  <div class="content">
+  {{--<div class="content">--}}
 
     <div id="orderSummary">
       <div class="sub-title">
         <p>カード情報</p>
       </div>
-    {{--<button id='show-paymentform'>Pay now</button>--}}
-    <!--Square template form-container div-->
       <div id="form-container">
         <div id="sq-ccbox">
-          <!--
-            Be sure to replace the action attribute of the form with the path of
-            the Transaction API charge endpoint URL you want to POST the nonce to
-            (for example, "/process-card")
-          -->
-          <form id="nonce-form" novalidate action="/webview/card/create" method="post">
+          <form id="nonce-form" novalidate>
             {{ csrf_field() }}
             <fieldset>
               <div class="card-number border-bottom">
                 <span class="left">カード番号</span>
                 <div class="right number right-number-square">
                   <input type="hidden" value="{{ $backUrl }}" id="back-url">
-                  <div class="wrap-cvv">
+                  <div class="wrap-card-number">
                     <div id="sq-card-number"></div>
                   </div>
                 </div>
@@ -57,7 +50,7 @@
               <div class="expiration-date border-bottom">
                 <span class="left">有効期限</span>
                 <div class="date-select right">
-                  <div class="wrap-cvv">
+                  <div class="wrap-expiration-date">
                     <div id="sq-expiration-date"></div>
                   </div>
                 </div>
@@ -74,10 +67,6 @@
             </fieldset>
 
             <div id="error"></div>
-
-            <!--
-              After a nonce is generated it will be assigned to this hidden input field.
-            -->
             <input type="hidden" id="card-nonce" name="nonce">
           </form>
         </div> <!-- end #sq-ccbox -->
@@ -85,7 +74,7 @@
       </div> <!-- end #form-container -->
       <!--end Square template form-container div-->
     </div>
-  </div>
+  {{--</div>--}}
 @endsection
 @section('web.extra_js')
   <script src="{{ mix('assets/webview/js/script.min.js') }}"></script>
@@ -93,10 +82,10 @@
   <script type="text/javascript" src="https://js.squareup.com/v2/paymentform"></script>
   <script>
       // Set the application ID
-      var applicationId = 'sandbox-sq0idp-eznXFTkuPsHuPDKwMS4JdA';
+    var applicationId = '{!! config('services.square.application_id') !!}';
 
-      // Set the location ID
-      var locationId = 'CBASEKf4fcz1hwMzRTodkqwO2oogAQ';
+    // Set the location ID
+    var locationId = '{!! config('services.square.location_id') !!}';
 
       /*
        * function: requestCardNonce
@@ -118,7 +107,7 @@
 
           // Customize the CSS for SqPaymentForm iframe elements
           inputStyles: [{
-              fontSize: '16px',
+              fontSize: '15px',
               fontFamily: 'Helvetica Neue',
               padding: '10px',
               color: '#373F4A',
@@ -129,25 +118,10 @@
               _mozOsxFontSmoothing: 'grayscale'
           }],
 
-          // Initialize Apple Pay placeholder ID
-          applePay: {
-              elementId: 'sq-apple-pay'
-          },
-
-          // Initialize Masterpass placeholder ID
-          masterpass: {
-              elementId: 'sq-masterpass'
-          },
-
-          // Initialize Google Pay placeholder ID
-          googlePay: {
-              elementId: 'sq-google-pay'
-          },
-
           // Initialize the credit card placeholders
           cardNumber: {
               elementId: 'sq-card-number',
-              placeholder: '• • • •  • • • •  • • • •  • • • •'
+              placeholder: '0000 0000 0000 0000'
           },
           cvv: {
               elementId: 'sq-cvv',
@@ -200,21 +174,9 @@
 
                   return {
                       requestShippingAddress: false,
-                      requestBillingInfo: true,
-                      currencyCode: "USD",
-                      countryCode: "US",
-                      total: {
-                          label: "MERCHANT NAME",
-                          amount: "100",
-                          pending: false
-                      },
-                      lineItems: [
-                          {
-                              label: "Subtotal",
-                              amount: "100",
-                              pending: false
-                          }
-                      ]
+                      requestBillingInfo: false,
+                      currencyCode: "JPY",
+                      countryCode: "JP"
                   }
               },
 
@@ -249,8 +211,9 @@
                   document.getElementById('card-nonce').value = nonce;
 
                   // POST the nonce form to the payment processing page
-                  document.getElementById('nonce-form').submit();
+                  // document.getElementById('nonce-form').submit();
 
+                  submitSquareForm();
               },
 
               /*
@@ -327,5 +290,35 @@
               paymentForm.recalculateSize();
           }
       });
+
+      function submitSquareForm() {
+        var backUrl = $("#back-url").val();
+        var nonce = $("#card-nonce").val();
+
+        $.ajax({
+          headers: {
+            'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+          },
+          type: "POST",
+          dataType: "json",
+          url: '/webview/card/create',
+          data: {
+            nonce: nonce,
+          },
+          success: function (msg) {
+            if (!msg.success) {
+              var error = msg.error;
+              $(".notify span").text(error);
+            } else {
+              window.location.href = backUrl;
+            }
+          },
+          error: function(xhr, status, error) {
+            var error = 'このクレジットカードはご利用できません';
+
+            $(".notify span").text(error);
+          }
+        });
+      }
   </script>
 @endsection
