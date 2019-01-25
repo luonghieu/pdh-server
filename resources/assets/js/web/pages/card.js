@@ -1,4 +1,4 @@
-$(document).ready(function(){
+/* $(document).ready(function(){
   function submitSquareForm() {
     var nonce = $("#card-nonce").val();
 
@@ -23,3 +23,4 @@ $(document).ready(function(){
     });
   }
 });
+ */
