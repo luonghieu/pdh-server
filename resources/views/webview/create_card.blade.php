@@ -307,7 +307,7 @@
               success: function (msg) {
                   if (!msg.success) {
                       var error = msg.error;
-                      $(".notify span").text(error);
+                      $(".notify-webview span").text(error);
                   } else {
                       window.location.href = 'cheers://adding_card?result=1';
                   }
@@ -315,7 +315,7 @@
               error: function(xhr, status, error) {
                   var error = 'このクレジットカードはご利用できません';
 
-                  $(".notify span").text(error);
+                  $(".notify-webview span").text(error);
               }
           });
       }
