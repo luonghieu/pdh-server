@@ -22,7 +22,7 @@ class TransferController extends Controller
         $adminType = UserType::ADMIN;
         $keyword = $request->search;
 
-        $transfers = Point::with('user', 'order')->where('type', PointType::RECEIVE)
+        $transfers = Point::with('user', 'order')->whereIn('type', [PointType::RECEIVE, PointType::ADJUSTED])
             ->whereHas('user', function ($query) use ($adminType) {
                 $query->where('users.type', '!=', $adminType);
             })
@@ -107,7 +107,7 @@ class TransferController extends Controller
         $keyword = $request->search;
         $adminType = UserType::ADMIN;
 
-        $transfers = Point::with('user', 'order')->where('type', PointType::RECEIVE)
+        $transfers = Point::with('user', 'order')->whereIn('type', [PointType::RECEIVE, PointType::ADJUSTED])
             ->whereHas('user', function ($query) use ($adminType) {
                 $query->where('users.type', '!=', $adminType);
             })
