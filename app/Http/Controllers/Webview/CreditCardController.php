@@ -54,11 +54,9 @@ class CreditCardController extends Controller
             ];
 
             $response = $client->post(route('cards.create'), $option);
-            if ($response->getStatusCode() == 200) {
-                $getContents = json_decode($response->getBody()->getContents(), JSON_NUMERIC_CHECK);
-                $card = collect($getContents['data']);
 
-                return view('web.cards.index', compact('card'));
+            if ($response->getStatusCode() == 200) {
+                return redirect(route('credit_card.index'));
             }
         } else {
             $rules = [
