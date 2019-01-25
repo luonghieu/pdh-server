@@ -32,16 +32,9 @@
       <div class="sub-title">
         <p>カード情報</p>
       </div>
-    {{--<button id='show-paymentform'>Pay now</button>--}}
-    <!--Square template form-container div-->
       <div id="form-container">
         <div id="sq-ccbox">
-          <!--
-            Be sure to replace the action attribute of the form with the path of
-            the Transaction API charge endpoint URL you want to POST the nonce to
-            (for example, "/process-card")
-          -->
-          <form id="nonce-form" novalidate action="/webview/card/create" method="post">
+          <form id="nonce-form" novalidate>
             {{ csrf_field() }}
             <fieldset>
               <div class="card-number border-bottom">
@@ -74,10 +67,6 @@
             </fieldset>
 
             <div id="error"></div>
-
-            <!--
-              After a nonce is generated it will be assigned to this hidden input field.
-            -->
             <input type="hidden" id="card-nonce" name="nonce">
           </form>
         </div> <!-- end #sq-ccbox -->
@@ -93,10 +82,10 @@
   <script type="text/javascript" src="https://js.squareup.com/v2/paymentform"></script>
   <script>
       // Set the application ID
-      var applicationId = 'sandbox-sq0idp-eznXFTkuPsHuPDKwMS4JdA';
+    var applicationId = '{!! config('services.square.application_id') !!}';
 
-      // Set the location ID
-      var locationId = 'CBASEKf4fcz1hwMzRTodkqwO2oogAQ';
+    // Set the location ID
+    var locationId = '{!! config('services.square.location_id') !!}';
 
       /*
        * function: requestCardNonce
@@ -249,8 +238,9 @@
                   document.getElementById('card-nonce').value = nonce;
 
                   // POST the nonce form to the payment processing page
-                  document.getElementById('nonce-form').submit();
+                  // document.getElementById('nonce-form').submit();
 
+                  submitSquareForm();
               },
 
               /*
