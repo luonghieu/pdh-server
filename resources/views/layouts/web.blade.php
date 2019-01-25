@@ -10,7 +10,7 @@
   <link rel="stylesheet" href="{{ asset('assets/web/css/plugin/slick/slick-theme.css') }}">
   <link rel="stylesheet" href="{{ asset('assets/web/css/plugin/slick/slick.css') }}">
   <!-- link to the custom styles for SqPaymentForm -->
-  <link rel="stylesheet" type="text/css" href="{{ mix('assets/web/css/card_square.css') }}">
+  <link rel="stylesheet" type="text/css" href="{{ mix('assets/web/css/card_square.min.css') }}">
   <link href="{{ mix('assets/web/css/web.css') }}" rel="stylesheet">
   @yield('web.extra_css')
   <script>
