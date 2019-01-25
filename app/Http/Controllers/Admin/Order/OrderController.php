@@ -310,11 +310,10 @@ class OrderController extends Controller
             $currentTotalCast = $order->casts()->count();
             // Add/Remove casts in room
             $room = $order->room;
-//            $room = Room::active()->where('type', RoomType::GROUP)->where('order_id', $order->id)->first();
             if ($room && $room->type == RoomType::GROUP) {
-                $room->users()->detach($request->deletedCast);
-                $casts = $order->casts()->get()->pluck('id')->toArray();
-                $room->users()->attach($casts);
+                $users = $order->casts()->get()->pluck('id')->toArray();
+                $users[] = $order->user_id;
+                $room->users()->sync($users);
             } else {
                 if ($order->total_cast == $currentTotalCast) {
                     if ($order->total_cast > 1) {
@@ -323,8 +322,9 @@ class OrderController extends Controller
                         $room->owner_id = $order->user_id;
                         $room->type = RoomType::GROUP;
                         $room->save();
-                        $casts = $order->casts()->get()->pluck('id')->toArray();
-                        $room->users()->attach(array_push($casts, $order->user_id));
+                        $users = $order->casts()->get()->pluck('id')->toArray();
+                        $users[] = $order->user_id;
+                        $room->users()->attach($users);
                     }
 
                     if ($order->total_cast == 1) {
