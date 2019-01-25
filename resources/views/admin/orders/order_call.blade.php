@@ -17,7 +17,7 @@
         <div class="clearfix"></div>
         <div class="panel-body">
           <div class="col-lg-10">
-            @if ($order->status <= App\Enums\OrderStatus::PROCESSING)
+            @if ($order->status <= App\Enums\OrderStatus::PROCESSING && $order->type != \App\Enums\OrderType::NOMINATION)
             <a href="{{ route('admin.orders.edit_order_call', ['order' => $order->id]) }}" class="btn btn-info btn-edit-order">予約内容を変更する</a>
             @endif
           </div>
@@ -82,6 +82,7 @@
                   @endforeach
                 </td>
               </tr>
+              @if ($order->status == \App\Enums\OrderStatus::OPEN)
               <tr>
                 <th>指名キャスト</th>
                 @if ($order->nominees->count() >= 1)
@@ -120,6 +121,19 @@
                 <td></td>
                 @endif
               </tr>
+              @endif
+              @if ($order->status >= App\Enums\OrderStatus::PROCESSING || $order->status >= App\Enums\OrderStatus::ACTIVE)
+                <tr>
+                  <th>マッチングしたキャスト</th>
+                  <td>
+                    @if ($order->casts && $order->casts->count() > 0)
+                      <a href="{{ route('admin.orders.casts_matching', ['order' => $order->id]) }}">{{ $order->casts->count().'人' }}</a>
+                    @else
+                      <span>0</span>
+                    @endif
+                  </td>
+                </tr>
+              @endif
               <tr>
                 <th>　予定合計ポイント</th>
                 <td>
@@ -171,18 +185,6 @@
                 <th>予約発生時刻</th>
                 <td>{{ Carbon\Carbon::parse($order->created_at)->format('Y/m/d H:i') }}</td>
               </tr>
-              @if ($order->status >= App\Enums\OrderStatus::PROCESSING)
-              <tr>
-                <th>マッチングしたキャスト</th>
-                <td>
-                  @if ($order->casts && $order->casts->count() > 0)
-                  <a href="{{ route('admin.orders.casts_matching', ['order' => $order->id]) }}">{{ $order->casts->count().'人' }}</a>
-                  @else
-                  <span>0</span>
-                  @endif
-                </td>
-              </tr>
-              @endif
               @if ($order->status >= App\Enums\OrderStatus::DONE)
                 <tr>
                   <th>実績合計ポイント</th>

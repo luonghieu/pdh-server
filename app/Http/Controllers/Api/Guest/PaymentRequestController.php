@@ -23,9 +23,9 @@ class PaymentRequestController extends ApiController
             return $this->respondErrorMessage(trans('messages.order_not_found'), 404);
         }
 
-        if (OrderPaymentStatus::REQUESTING != $order->payment_status) {
-            return $this->respondErrorMessage(trans('messages.action_not_performed'), 422);
-        }
+//        if (OrderPaymentStatus::REQUESTING != $order->payment_status) {
+//            return $this->respondErrorMessage(trans('messages.action_not_performed'), 422);
+//        }
         try {
             $delay = Carbon::now()->addSeconds(3);
             $order->payment_status = OrderPaymentStatus::EDIT_REQUESTING;
