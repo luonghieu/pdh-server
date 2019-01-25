@@ -178,7 +178,7 @@ class OrderController extends Controller
     public function editOrderCall(Order $order)
     {
         $castClasses = CastClass::all();
-        if ($order->status == OrderStatus::ACTIVE) {
+        if ($order->status == OrderStatus::ACTIVE || $order->status == OrderStatus::PROCESSING) {
             $castsMatching = $order->casts;
             $castsMatching = $castsMatching->map(function ($user) {
                 return collect($user->toArray())
