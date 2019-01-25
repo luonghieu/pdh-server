@@ -9,6 +9,8 @@
   <link rel="stylesheet" href="{{ asset('assets/web/css/plugin/mmenu/jquery.mmenu.all.css') }}" />
   <link rel="stylesheet" href="{{ asset('assets/web/css/plugin/slick/slick-theme.css') }}">
   <link rel="stylesheet" href="{{ asset('assets/web/css/plugin/slick/slick.css') }}">
+  <!-- link to the custom styles for SqPaymentForm -->
+  <link rel="stylesheet" type="text/css" href="/assets/web/css/card_square.css">
   <link href="{{ mix('assets/web/css/web.css') }}" rel="stylesheet">
   @yield('web.extra_css')
   <script>

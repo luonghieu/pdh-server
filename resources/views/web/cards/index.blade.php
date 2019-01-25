@@ -24,7 +24,7 @@
     <span class="left">カード番号</span>
     <div class="right number">
       <span id="error">カード番号を正しく入力してください</span>
-        <span id="number-card-display" class="color-show-page">下4桁{{ $card->last4 }}</span>
+        <span id="number-card-display" class="color-show-page">下4桁{{ $card['last4'] }}</span>
     </div>
   </div>
   <div class="clear"></div>
@@ -33,7 +33,7 @@
     <div class="date-select right">
       <select name="month" id="month" disabled>
         @for ($i = 1; $i < 13; $i++)
-        <option value="{{ $i }}" {{ ($card->exp_month == $i) ? 'selected' : '' }}>{{ $i }}月</option>
+        <option value="{{ $i }}" {{ ($card['exp_month'] == $i) ? 'selected' : '' }}>{{ $i }}月</option>
         @endfor
       </select>
         @php
@@ -41,7 +41,7 @@
         @endphp
       <select name="year" id="year" disabled>
         @for ($i = $currenYear; $i <= $currenYear+20; $i++)
-        <option value="{{ $i }}" {{ ($card->exp_year == $i) ? 'selected' : '' }}>{{ $i }}年</option>
+        <option value="{{ $i }}" {{ ($card['exp_year'] == $i) ? 'selected' : '' }}>{{ $i }}年</option>
         @endfor
       </select>
     </div>
