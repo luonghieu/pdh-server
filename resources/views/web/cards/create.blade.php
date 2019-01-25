@@ -119,33 +119,18 @@
             _mozOsxFontSmoothing: 'grayscale'
         }],
 
-        // Initialize Apple Pay placeholder ID
-        applePay: {
-            elementId: 'sq-apple-pay'
-        },
-
-        // Initialize Masterpass placeholder ID
-        masterpass: {
-            elementId: 'sq-masterpass'
-        },
-
-        // Initialize Google Pay placeholder ID
-        googlePay: {
-            elementId: 'sq-google-pay'
-        },
-
         // Initialize the credit card placeholders
         cardNumber: {
             elementId: 'sq-card-number',
-            placeholder: '• • • •  • • • •  • • • •  • • • •'
+            placeholder: '0000 0000 0000 0000'
         },
         cvv: {
             elementId: 'sq-cvv',
-            placeholder: 'CVV'
+            placeholder: '3桁または4桁の数字'
         },
         expirationDate: {
             elementId: 'sq-expiration-date',
-            placeholder: 'MM/YY'
+            placeholder: 'MM/YY(05/22)'
         },
         postalCode: false,
 
@@ -190,21 +175,9 @@
 
                 return {
                     requestShippingAddress: false,
-                    requestBillingInfo: true,
-                    currencyCode: "USD",
-                    countryCode: "US",
-                    total: {
-                        label: "MERCHANT NAME",
-                        amount: "100",
-                        pending: false
-                    },
-                    lineItems: [
-                        {
-                            label: "Subtotal",
-                            amount: "100",
-                            pending: false
-                        }
-                    ]
+                    requestBillingInfo: false,
+                    currencyCode: "JPY",
+                    countryCode: "JP"
                 }
             },
 
