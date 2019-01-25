@@ -65,7 +65,7 @@
                   <td>{{ $sale->order_id }}</td>
                   <td>{{ Carbon\Carbon::parse($sale->created_at)->format('Y年m月d日') }}</td>
                   <td>{{ $sale->user_id }}</td>
-                  <td>{{ $sale->user ? $sale->user->fullname : "" }}</td>
+                  <td>{{ $sale->user ? $sale->user->nickname : "" }}</td>
                   <td>{{ App\Enums\PointType::getDescription($sale->type) }}</td>
                   <td>{{ number_format($sale->point) }}</td>
                   @if ($sale->order)
