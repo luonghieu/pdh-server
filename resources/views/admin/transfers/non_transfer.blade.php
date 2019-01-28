@@ -56,7 +56,7 @@
                 <tr>
                   <th></th>
                   <th>予約ID</th>
-                  <th>日付</th>
+                  <th>予約開始日時</th>
                   <th>ユーザーID</th>
                   <th>ユーザー名</th>
                   <th>振込金額</th>
@@ -74,7 +74,11 @@
                       name="transfer_ids[]">
                   </td>
                   <td>{{ $transfer->order_id }}</td>
+                  @if($transfer->order)
+                  <td>{{ Carbon\Carbon::parse($transfer->order->created_at)->format('Y年m月d日') }}</td>
+                  @else
                   <td>{{ Carbon\Carbon::parse($transfer->created_at)->format('Y年m月d日') }}</td>
+                  @endif
                   <td>{{ $transfer->user_id }}</td>
                   <td>{{ $transfer->user->nickname }}</td>
                   <td>￥{{ number_format($transfer->point) }}</td>
