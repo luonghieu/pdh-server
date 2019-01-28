@@ -188,6 +188,80 @@ class User extends Authenticatable implements JWTSubject
         return Storage::url($value);
     }
 
+    public function getIsCardRegisteredAttribute()
+    {
+        $paymentService = config('common.payment_service');
+        $isCardRegistered = false;
+
+        switch ($paymentService) {
+            case 'stripe':
+                $isCardRegistered = $this->stripe_id && $this->card ? true : false;
+                break;
+
+            case 'telecom_credit':
+                $isCardRegistered = $this->tc_send_id ? true : false;
+                break;
+
+            case 'square':
+                $isCardRegistered = $this->square_id && $this->card ? true : false;
+                break;
+
+            default:
+                $isCardRegistered = false;
+                break;
+        }
+
+        return $isCardRegistered;
+    }
+
+    public function getPaymentIdAttribute()
+    {
+        $paymentService = config('common.payment_service');
+        $paymentId = null;
+
+        switch ($paymentService) {
+            case 'stripe':
+                $paymentId = $this->stripe_id ?: null;
+                break;
+
+            case 'telecom_credit':
+                $paymentId = $this->tc_send_id ?: null;
+                break;
+
+            case 'square':
+                $paymentId = $this->square_id ?: null;
+                break;
+
+            default:
+                $paymentId = null;
+                break;
+        }
+
+        return $paymentId;
+    }
+
+    public function setPaymentIdAttribute($value)
+    {
+        $paymentService = config('common.payment_service');
+
+        switch ($paymentService) {
+            case 'stripe':
+                $this->attributes['stripe_id'] = $value;
+                break;
+
+            case 'telecom_credit':
+                $this->attributes['tc_send_id'] = $value;
+                break;
+
+            case 'square':
+                $this->attributes['square_id'] = $value;
+                break;
+
+            default:
+                break;
+        }
+    }
+
     public function isFavoritedUser($userId)
     {
         return $this->favorites()->pluck('users.id')->contains($userId);
@@ -249,7 +323,7 @@ class User extends Authenticatable implements JWTSubject
         $payment->user_id = $this->id;
         $payment->amount = $point->point * $pointRate;
         $payment->point_id = $point->id;
-        $payment->card_id = $this->tc_send_id;
+        $payment->card_id = $this->card->id;
         $payment->status = PaymentStatus::OPEN;
         $payment->save();
 
@@ -266,7 +340,7 @@ class User extends Authenticatable implements JWTSubject
     {
         do {
             $code = rand(1000, 9999);
-        } while((strpos($code, '0') !== false) || (strpos($code, '7') !== false));
+        } while ((strpos($code, '0') !== false) || (strpos($code, '7') !== false));
 
         $data = [
             'code' => $code,

@@ -1824,3 +1824,7 @@ tbody td {
 .mr-1 {
   margin-right: 0.5rem;
 }
+
+.h-5 {
+  min-height: 5rem; 
+}

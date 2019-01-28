@@ -20,7 +20,7 @@ class TelecomCreditController extends Controller
 
             if ($userId) {
                 $user = User::findOrFail($userId);
-                $user->tc_send_id = $request->sendid;
+                $user->payment_id = $request->sendid;
 
                 if ($user->payment_suspended) {
                     $user->payment_suspended = false;
@@ -55,5 +55,7 @@ class TelecomCreditController extends Controller
                 }
             }
         }
+
+        return response()->json(['message' => 'SuccessOK']);
     }
 }

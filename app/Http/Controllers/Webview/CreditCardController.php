@@ -21,7 +21,7 @@ class CreditCardController extends Controller
                 if ($user) {
                     Auth::loginUsingId($user->id);
 
-                    if ($user->card) {
+                    if ($user->is_card_registered) {
                         $card = $user->card;
                         return redirect(route('webview.show', ['card' => $card->id]));
                     } else {
@@ -43,57 +43,87 @@ class CreditCardController extends Controller
         $user = Auth::user();
         $accessToken = JWTAuth::fromUser($user);
 
-        $rules = [
-            'number_card' => 'required|regex:/[0-9]{0,16}/',
-            'month' => 'required|numeric',
-            'year' => 'required|numeric',
-            'card_cvv' => 'required|regex:/[0-9]{3,4}/',
-        ];
+        if (config('common.payment_service') == 'square') {
+            $client = new Client(['base_uri' => config('common.api_url')]);
+            $param = $request->nonce;
+            $option = [
+                'headers' => ['Authorization' => 'Bearer ' . $accessToken],
+                'form_params' => ['token' => $param],
+                'allow_redirects' => false,
+                'verify' => false,
+            ];
 
-        $validator = validator($request->all(), $rules);
+            $response = $client->post(route('cards.create'), $option);
 
-        $numberCardVisa = preg_match("/^4[0-9]{12}(?:[0-9]{3})?$/", $request->number_card);
-        $numberMasterCard = preg_match("/^(5[1-5][0-9]{14}|2(22[1-9][0-9]{12}|2[3-9][0-9]{13}|[3-6][0-9]{14}|7[0-1][0-9]{13}|720[0-9]{12}))$/", $request->number_card);
-        $numberAmericanExpress = preg_match("/^3[47][0-9]{13,14}$/", $request->number_card);
-        $numberDinnersClub = preg_match("/^3(?:0[0-5]|[68][0-9])[0-9]{11}$/", $request->number_card);
-        $numberJcb = preg_match("/^(?:2131|1800|35\\d{3})\\d{11}$/", $request->number_card);
+            $statusCode = $response->getStatusCode();
 
-        if ($validator->fails()) {
-            return response()->json(['success' => false, 'error' => trans('messages.action_not_performed')]);
-        }
-        $currentMonth = Carbon::now()->format('m');
-        $currentYear = Carbon::now()->format('Y');
-
-        if ($currentMonth > $request->month && $currentYear > $request->year) {
-            return response()->json(['success' => false, 'error' => trans('messages.action_not_performed')]);
-        }
-
-        if ($numberCardVisa || $numberMasterCard || $numberAmericanExpress || $numberDinnersClub || $numberJcb) {
-            $input = request()->only([
-                'number_card',
-                'month',
-                'year',
-                'card_cvv',
-            ]);
-            try {
-                $response = $this->createToken($input, $accessToken);
-                if (false == $response) {
-                    return response()->json(['success' => false, 'error' => trans('messages.payment_method_not_supported')]);
-                } else {
-                    if ($response->getStatusCode() != 200) {
-                        return response()->json(['success' => false, 'error' => trans('messages.action_not_performed')]);
-                    }
-                    if ($user->card) {
-                        $card = $user->card;
-
-                        return response()->json(['success' => true, 'url' => 'cheers://adding_card?result=1']);
-                    }
+            if ($statusCode == 400) {
+                return response()->json(['success' => false, 'error' => trans('messages.payment_method_not_supported')]);
+            } else {
+                if ($statusCode != 200) {
+                    return response()->json(['success' => false, 'error' => trans('messages.action_not_performed')]);
                 }
-            } catch (\Exception $e) {
-                return response()->json(['success' => false, 'error' => trans('messages.action_not_performed')]);
+
+                if ($user->card) {
+                    $card = $user->card;
+
+                    return response()->json(['success' => true, 'url' => 'cheers://adding_card?result=1']);
+                }
             }
         } else {
-            return response()->json(['success' => false, 'error' => trans('messages.action_not_performed')]);
+            $rules = [
+                'number_card' => 'required|regex:/[0-9]{0,16}/',
+                'month' => 'required|numeric',
+                'year' => 'required|numeric',
+                'card_cvv' => 'required|regex:/[0-9]{3,4}/',
+            ];
+
+            $validator = validator($request->all(), $rules);
+
+            $numberCardVisa = preg_match("/^4[0-9]{12}(?:[0-9]{3})?$/", $request->number_card);
+            $numberMasterCard = preg_match("/^(5[1-5][0-9]{14}|2(22[1-9][0-9]{12}|2[3-9][0-9]{13}|[3-6][0-9]{14}|7[0-1][0-9]{13}|720[0-9]{12}))$/", $request->number_card);
+            $numberAmericanExpress = preg_match("/^3[47][0-9]{13,14}$/", $request->number_card);
+            $numberDinnersClub = preg_match("/^3(?:0[0-5]|[68][0-9])[0-9]{11}$/", $request->number_card);
+            $numberJcb = preg_match("/^(?:2131|1800|35\\d{3})\\d{11}$/", $request->number_card);
+
+            if ($validator->fails()) {
+                return response()->json(['success' => false, 'error' => trans('messages.action_not_performed')]);
+            }
+            $currentMonth = Carbon::now()->format('m');
+            $currentYear = Carbon::now()->format('Y');
+
+            if ($currentMonth > $request->month && $currentYear > $request->year) {
+                return response()->json(['success' => false, 'error' => trans('messages.action_not_performed')]);
+            }
+
+            if ($numberCardVisa || $numberMasterCard || $numberAmericanExpress || $numberDinnersClub || $numberJcb) {
+                $input = request()->only([
+                    'number_card',
+                    'month',
+                    'year',
+                    'card_cvv',
+                ]);
+                try {
+                    $response = $this->createToken($input, $accessToken);
+                    if (false == $response) {
+                        return response()->json(['success' => false, 'error' => trans('messages.payment_method_not_supported')]);
+                    } else {
+                        if ($response->getStatusCode() != 200) {
+                            return response()->json(['success' => false, 'error' => trans('messages.action_not_performed')]);
+                        }
+                        if ($user->card) {
+                            $card = $user->card;
+
+                            return response()->json(['success' => true, 'url' => 'cheers://adding_card?result=1']);
+                        }
+                    }
+                } catch (\Exception $e) {
+                    return response()->json(['success' => false, 'error' => trans('messages.action_not_performed')]);
+                }
+            } else {
+                return response()->json(['success' => false, 'error' => trans('messages.action_not_performed')]);
+            }
+
         }
     }
 

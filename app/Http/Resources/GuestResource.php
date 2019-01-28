@@ -77,7 +77,7 @@ class GuestResource extends Resource
             'post_code' => $this->post_code,
             'address' => $this->address,
             'is_verified' => $this->is_verified,
-            'is_card_registered' => $this->tc_send_id ? 1 : 0,
+            'is_card_registered' => $this->is_card_registered,
             'deleted_at' => $this->deleted_at,
         ]);
     }

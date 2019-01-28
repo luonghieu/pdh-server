@@ -200,13 +200,13 @@
             <div class="clear"></div>
             @if ($user->is_cast)
             <div class="btn-qr">
-              <button type="button" data-toggle="modal" data-target="#btn-qr-code" class="btn-detail">QRコードを表示する</button>
-              <button type="button" data-toggle="modal" data-target="#btn-id-image" class="btn-detail">身分証明書を表示する</button>
+              <button type="button" data-toggle="modal" data-target="#btn-qr-code" class="btn btn-info">QRコードを表示する</button>
+              <button type="button" data-toggle="modal" data-target="#btn-id-image" class="btn btn-info">身分証明書を表示する</button>
             </div>
             @endif
           </div>
           <div class="clearfix"></div>
-          <div class="info-table col-lg-6">
+          <div class="info-table col-lg-8">
             <table class="table table-bordered">
               <!--  table-striped -->
               <tr>
@@ -236,7 +236,7 @@
                           <option value="{{ $castClass->id }}" {{ ($user->class_id == $castClass->id) ? 'selected' : '' }}>{{ $castClass->name }}</option>
                         @endforeach
                       </select>
-                      <button type="submit" class="btn-change-cast-class">変更する</button>
+                      <button type="submit" class="btn btn-info btn-sm">変更する</button>
                     </form>
                   </td>
                 </tr>
@@ -251,7 +251,7 @@
                           <option value="{{ $prefecture->id }}" {{ ($user->prefecture_id == $prefecture->id) ? 'selected' : '' }}>{{ $prefecture->name }}</option>
                         @endforeach
                       </select>
-                      <button type="submit" class="btn-change-cast-class">変更する</button>
+                      <button type="submit" class="btn btn-info btn-sm">変更する</button>
                     </form>
                   </td>
                 </tr>
@@ -290,7 +290,7 @@
                         <option value="{{ $cost }}" {{ $user->cost == $cost ? 'selected' : ''}}>{{number_format($cost) }}</option>
                       @endforeach
                     </select>
-                    <button type="submit" class="btn-change-cast-class">変更する</button>
+                    <button type="submit" class="btn btn-info btn-sm">変更する</button>
                   </form>
                 </td>
               </tr>
@@ -308,7 +308,7 @@
                         <option value="{{ $key }}" {{ $user->rank == $key ? 'selected' : ''}}>{{ $rank }}</option>
                       @endforeach
                     </select>
-                    <button type="submit" class="btn-change-cast-class">変更する</button>
+                    <button type="submit" class="btn btn-info btn-sm">変更する</button>
                   </form>
                 </td>
               </tr>
@@ -393,6 +393,19 @@
                 <th>ステータス</th>
                 <td>{{ App\Enums\Status::getDescription($user->status) }}</td>
               </tr>
+              @if ($user->is_cast)
+              <tr>
+                <th>備考</th>
+                <td>
+                  <form action="{{ route('admin.casts.update_note', ['user' => $user->id]) }}" method="POST">
+                    {{ csrf_field() }}
+                    {{ method_field('PUT') }}
+                    <textarea name="note" class="h-5" placeholder="入力してください">{!! $user->note !!}</textarea>
+                    <button type="submit" class="pull-right btn btn-info btn-sm">変更する</button>
+                  </form>
+                </td>
+              </tr>
+              @endif
               <tr>
                 <th>登録日時</th>
                 <td>{{ Carbon\Carbon::parse($user->created_at)->format('Y/m/d H:i') }}</td>

@@ -3,6 +3,8 @@
 return [
     'api_url' => env('API_URL', env('APP_URL')),
 
+    'payment_service' => env('PAYMENT_SERVICE'), //stripe, square, telecom_credit
+
     'cast_percent' => 0.8,
 
     'point_rate' => 1.1,

@@ -35,19 +35,22 @@ class TransferController extends Controller
             ->whereHas('user', function ($query) use ($adminType) {
                 $query->where('type', '!=', $adminType);
             })
+            ->whereHas('order', function ($query) {
+                $query->whereNull('deleted_at');
+            })
             ->orderBy('updated_at', 'DESC');
 
         if ($request->from_date) {
             $fromDate = Carbon::parse($request->from_date)->startOfDay();
             $transfers->where(function ($query) use ($fromDate) {
-                $query->where('updated_at', '>=', $fromDate);
+                $query->where('created_at', '>=', $fromDate);
             });
         }
 
         if ($request->to_date) {
             $toDate = Carbon::parse($request->to_date)->endOfDay();
             $transfers->where(function ($query) use ($toDate) {
-                $query->where('updated_at', '<=', $toDate);
+                $query->where('created_at', '<=', $toDate);
             });
         }
 
@@ -129,19 +132,21 @@ class TransferController extends Controller
             ->whereHas('user', function ($query) use ($adminType) {
                 $query->where('type', '<>', 3);
             })
-            ->orderBy('updated_at', 'DESC');
+            ->whereHas('order', function ($query) {
+                $query->whereNull('deleted_at');
+            })
 
         if ($request->from_date) {
             $fromDate = Carbon::parse($request->from_date)->startOfDay();
             $transfers->where(function ($query) use ($fromDate) {
-                $query->where('updated_at', '>=', $fromDate);
+                $query->where('created_at', '>=', $fromDate);
             });
         }
 
         if ($request->to_date) {
             $toDate = Carbon::parse($request->to_date)->endOfDay();
             $transfers->where(function ($query) use ($toDate) {
-                $query->where('updated_at', '<=', $toDate);
+                $query->where('created_at', '<=', $toDate);
             });
         }
 
