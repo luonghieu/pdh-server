@@ -62,7 +62,7 @@
       <div class="details-list__content show">
         <div class="details-list-box">
           <div class="btn2-s">
-            @if(!Auth::user()->tc_send_id)
+            @if(!Auth::user()->is_card_registered)
             <a class="link-arrow link-arrow--left link-credit-card tc-verification-link inactive-button-order" href="#" style="color: #222222;">未登録</a>
             @else
             <a class="link-arrow link-arrow--left link-credit-card tc-verification-link" href="#" style="color: #222222;">登録済み</a>
@@ -144,6 +144,7 @@
       </div>
     </div>
   </div>
+
   <div class="modal_wrap">
     <input id="order-done" type="checkbox">
     <div class="modal_overlay">

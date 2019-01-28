@@ -28,7 +28,7 @@ class CardController extends Controller
 
         $request->session()->put('backUrl', $backUrl);
 
-        if ($card) {
+        if ($user->is_card_registered) {
             return view('web.cards.index', compact('card'));
         } else {
             return view('web.cards.create');

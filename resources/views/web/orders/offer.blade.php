@@ -307,7 +307,7 @@
     <div class="caption">
       <h2>クレジットカードの登録</h2>
     </div>
-    @if(!Auth::user()->tc_send_id)
+    @if(!Auth::user()->is_card_registered)
     <a class="link-arrow link-arrow--left tc-verification-link inactive-button-order" href="#" style="color: #222222;">未登録</a>
     @else
     <a class="link-arrow link-arrow--left tc-verification-link" href="#" style="color: #222222;">登録済み</a>
