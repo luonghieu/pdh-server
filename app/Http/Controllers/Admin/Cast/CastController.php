@@ -571,6 +571,14 @@ class CastController extends Controller
         return;
     }
 
+    public function bankAccount($user)
+    {
+        $user = User::withTrashed()->find($user);
+        $bankAccount = BankAccount::where('user_id', $user->id)->first();
+
+        return view('admin.casts.bank_account', compact('user', 'bankAccount'));
+    }
+
     public function updateNote(Request $request, Cast $user)
     {
         try {
