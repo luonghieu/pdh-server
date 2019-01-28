@@ -316,6 +316,16 @@ class OrderController extends Controller
                     $users[] = $order->user_id;
                     $room->users()->sync($users);
                 }
+
+                if ($order->total_cast == 1) {
+                    $cast = $order->casts()->first();
+                    $ownerId = $order->user_id;
+                    $room = $this->createDirectRoom($ownerId, $cast->id);
+                    $room->save();
+
+                    $order->room_id = $room->id;
+                    $order->save();
+                }
             } else {
                 if ($order->total_cast == $currentTotalCast) {
                     if ($order->total_cast > 1) {
