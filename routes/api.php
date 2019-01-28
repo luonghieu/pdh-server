@@ -9,7 +9,7 @@ Route::group(['prefix' => 'v1'], function () {
     Route::get('jobs', ['as' => 'jobs', 'uses' => 'JobController@index']);
     Route::get('body_types', ['as' => 'body_types', 'uses' => 'BodyTypeController@index']);
     Route::get('tags', ['as' => 'tags', 'uses' => 'TagController@index']);
-    Route::get('glossaries', ['as' => 'glossaries', 'uses' => 'GlossaryController@glossary']);
+    Route::get('glossaries', ['middleware' => ['auth:api'], 'as' => 'glossaries', 'uses' => 'GlossaryController@glossary']);
     Route::post('/get_day', ['as' => 'get_day', 'uses' => 'OrderController@getDayOfMonth']);
     Route::get('post_code', ['as' => 'post_code', 'uses' => 'PostCodeController@find']);
     Route::get('voices/code', ['as' => 'voice_code', 'uses' => 'VoiceController@code']);
