@@ -178,7 +178,7 @@ class OrderController extends Controller
     public function editOrderCall(Order $order)
     {
         $castClasses = CastClass::all();
-        if ($order->status == OrderStatus::ACTIVE) {
+        if ($order->status == OrderStatus::ACTIVE || $order->status == OrderStatus::PROCESSING) {
             $castsMatching = $order->casts;
             $castsMatching = $castsMatching->map(function ($user) {
                 return collect($user->toArray())
@@ -310,11 +310,22 @@ class OrderController extends Controller
             $currentTotalCast = $order->casts()->count();
             // Add/Remove casts in room
             $room = $order->room;
-//            $room = Room::active()->where('type', RoomType::GROUP)->where('order_id', $order->id)->first();
-            if ($room && $room->type == RoomType::GROUP) {
-                $room->users()->detach($request->deletedCast);
-                $casts = $order->casts()->get()->pluck('id')->toArray();
-                $room->users()->attach($casts);
+            if ($room) {
+                if ($room->type == RoomType::GROUP) {
+                    $users = $order->casts()->get()->pluck('id')->toArray();
+                    $users[] = $order->user_id;
+                    $room->users()->sync($users);
+                }
+
+                if ($order->total_cast == 1) {
+                    $cast = $order->casts()->first();
+                    $ownerId = $order->user_id;
+                    $room = $this->createDirectRoom($ownerId, $cast->id);
+                    $room->save();
+
+                    $order->room_id = $room->id;
+                    $order->save();
+                }
             } else {
                 if ($order->total_cast == $currentTotalCast) {
                     if ($order->total_cast > 1) {
@@ -323,8 +334,9 @@ class OrderController extends Controller
                         $room->owner_id = $order->user_id;
                         $room->type = RoomType::GROUP;
                         $room->save();
-                        $casts = $order->casts()->get()->pluck('id')->toArray();
-                        $room->users()->attach(array_push($casts, $order->user_id));
+                        $users = $order->casts()->get()->pluck('id')->toArray();
+                        $users[] = $order->user_id;
+                        $room->users()->attach($users);
                     }
 
                     if ($order->total_cast == 1) {

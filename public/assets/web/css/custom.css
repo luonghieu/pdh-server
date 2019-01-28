@@ -468,7 +468,7 @@ title {
 
 #gl1 .btn-register a {
   text-decoration: none;
-  color: #cccccc;
+  color: #ff6090;
   cursor: pointer;
   font-size: 18px;
 }
@@ -476,6 +476,7 @@ title {
 .image-main {
   text-align: center;
   margin-top: 45px;
+  margin-bottom: 45px;
 }
 
 .image-main img {
@@ -483,7 +484,22 @@ title {
   width: 80%;
   margin-left: 12%;
   padding-top: 23px;
+  object-fit: contain;
 }
+
+.image-main-webview {
+text-align: center;
+margin-bottom: 45px;
+}
+
+.image-main-webview img {
+height: 46px;
+width: 80%;
+margin-left: 12%;
+padding-top: 23px;
+object-fit: contain;
+}
+
 
 #gl1 .sub-title {
   height: 45px;
@@ -506,7 +522,7 @@ title {
 }
 
 #gl1 .card-number {
-  height: 50px;
+  height: 40px;
   background-color: #ffffff;
   padding: 0 18px;
   position: relative;
@@ -528,7 +544,7 @@ title {
   letter-spacing: -0.3px;
   text-align: left;
   color: #30ccc3;
-  padding-top: 18px;
+  padding-top: 5px;
 }
 
 #gl1 .left {
@@ -568,7 +584,7 @@ title {
 }
 
 .expiration-date {
-  height: 60px;
+  height: 55px;
   background-color: #ffffff;
 }
 
@@ -587,8 +603,12 @@ title {
   margin-left: 18px;
 }
 
+.expiration-date .title-expiration-date {
+  margin-left: 0;
+}
+
 .date-select {
-  padding-top: 20px;
+  padding-top: 10px;
   padding-right: 10px;
 }
 
@@ -601,13 +621,14 @@ title {
 .security-code {
   height: 50px;
   background-color: #ffffff;
-  padding-top: 20px;
+  padding-top: 10px;
   position: relative;
 }
 
 .security-code img {
   padding-left: 20px;
   width: 40px;
+  margin-top: 5px;
 }
 
 .security-code input {
@@ -624,7 +645,7 @@ title {
 }
 
 #gl1 form {
-  margin-top: 60px;
+  margin-top: 10px;
 }
 
 .date-select select:first-child {
@@ -724,6 +745,42 @@ title {
   z-index: 2;
 }
 
+.wrap-cvv {
+  width: 69px;
+  position: absolute;
+  right: 8px;
+}
+
+.wrap-card-number {
+  width: 160px;
+  position: absolute;
+  right: 8px;
+  top: -4px;
+}
+
+.wrap-card-number-webview {
+  top: 8px;
+}
+
+.color-btn-create {
+  color: #ff6090 !important;
+}
+
+.wrap-select-date-webview {
+  padding-top: 18px;
+   padding-right: 0;
+}
+.wrap-expiration-date {
+  width: 92px;
+  position: absolute;
+  right: 8px;
+  top: 45px;
+}
+
+.wrap-expiration-date-webview {
+  top: 55px;
+}
+
 #gl1 .notify span {
   color: red;
   font-size: 15px;
@@ -735,7 +792,7 @@ title {
   height: 40px;
   margin: 0 8px;
   position: absolute;
-  top: 185px;
+  top: 180px;
 }
 
 .bd-none {
@@ -2882,4 +2939,48 @@ padding-top: 65px !important;
   border-bottom:2px solid #222222;
   border-left:2px solid #222222;
   margin-right: 10px;
+}
+
+.title-number-card-webview {
+  color: red;
+}
+
+.header-webview {
+  height: 45px;
+  text-align: center;
+  padding: 8px;
+}
+
+.header-webview .header-item {
+  display: inline-block;
+}
+
+.header-webview .btn-register {
+  float: right;
+  font-size: 18px;
+  margin-top: 10px;
+}
+
+.header-webview .title-main {
+  margin-top: 10px;
+  display: inline-block;
+  font-family: NotoSansCJKjp;
+  font-size: 15px;
+  font-weight: bold;
+  font-style: normal;
+  font-stretch: normal;
+  line-height: normal;
+  letter-spacing: normal;
+  text-align: center;
+  color: #30ccc3;
+}
+
+.header-webview .btn-back {
+  float: left;
+  padding: 10px;
+  margin-top: 3px;
+}
+
+.header-webview .header-item img {
+  width: 12px;
 }

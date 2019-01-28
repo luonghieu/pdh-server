@@ -51,18 +51,23 @@ class ValidateOrder implements ShouldQueue
             try {
                 \DB::beginTransaction();
                 if ($this->order->total_cast > 1) {
-                    $room = new Room;
-                    $room->order_id = $this->order->id;
-                    $room->owner_id = $this->order->user_id;
-                    $room->type = RoomType::GROUP;
-                    $room->save();
-
                     $data = [$this->order->user_id];
                     foreach ($casts as $cast) {
                         $data = array_merge($data, [$cast->pivot->user_id]);
                     }
+                    $room = $this->order->room;
 
-                    $room->users()->attach($data);
+                    if ($room) {
+                        $room->users()->sync($data);
+                    } else {
+                        $room = new Room;
+                        $room->order_id = $this->order->id;
+                        $room->owner_id = $this->order->user_id;
+                        $room->type = RoomType::GROUP;
+                        $room->save();
+
+                        $room->users()->attach($data);
+                    }
                 } else {
                     $ownerId = $this->order->user_id;
                     $userId = $casts->first()->id;

@@ -6,7 +6,7 @@ use App\Enums\PaymentStatus;
 use App\Services\LogService;
 use App\Traits\FailedPaymentHandle;
 use Illuminate\Database\Eloquent\Model;
-use App\Services\TelecomCredit;
+use App\Services\Square as PaymentService;
 
 class Payment extends Model
 {
@@ -24,20 +24,22 @@ class Payment extends Model
             $user = $this->user;
 
             // return if user haven't registered credit card
-            if (!$user->tc_send_id) {
+            if (!$user->is_card_registered) {
                 return false;
             }
 
             $request = [
                 'amount' => $this->amount,
-                'customer' => $user->tc_send_id,
+                'customer' => $user->payment_id,
                 'user_id' => $user->id,
                 'payment_id' => $this->id,
+                'card_id' => $user->card->card_id,
+                'email' => $user->email,
             ];
 
             try {
-                $paymentService = new TelecomCredit;
-                $charge = $paymentService->charge($request);
+                $paymentService = new PaymentService;
+                $charge = $paymentService->charge($user->payment_id, $request);
 
                 if (!$charge) {
                     return false;
@@ -45,6 +47,7 @@ class Payment extends Model
 
                 // update order payment status
                 $this->charge_at = now();
+                $this->charge_id = $charge->id;
                 $this->status = PaymentStatus::DONE;
                 $this->save();
 

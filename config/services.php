@@ -50,4 +50,10 @@ return [
         'auth_token' => env('TWILIO_AUTH_TOKEN'),
         'from' => env('TWILIO_FROM'), // optional
     ],
+
+    'square' => [
+        'application_id' => env('SQUARE_APPLICATION_ID'),
+        'access_token' => env('SQUARE_ACCESS_TOKEN'),
+        'location_id' => env('SQUARE_LOCATION_ID'),
+    ],
 ];

@@ -578,4 +578,16 @@ class CastController extends Controller
 
         return view('admin.casts.bank_account', compact('user', 'bankAccount'));
     }
+
+    public function updateNote(Request $request, Cast $user)
+    {
+        try {
+            $user->note = $request->note;
+            $user->save();
+
+            return redirect()->route('admin.users.show', compact('user'));
+        } catch (\Exception $e) {
+            LogService::writeErrorLog($e);
+        }
+    }
 }
