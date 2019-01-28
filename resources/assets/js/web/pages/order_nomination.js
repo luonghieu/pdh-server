@@ -38,6 +38,15 @@ $(document).ready(function(){
       text_area: $(this).val(),
     };
     helper.updateLocalStorageValue('order_params', params);
+
+    var area = $("input:radio[name='nomination_area']:checked").val();
+
+    if (!area || (!$(this).val())) {
+      $('#confirm-orders-nomination').addClass("disable");
+       $('.checked-order').prop('checked', false);
+      $('#confirm-orders-nomination').prop('disabled', true);
+      $('#sp-cancel').addClass("sp-disable");
+    }
   });
 
   //area
@@ -54,6 +63,12 @@ $(document).ready(function(){
         }
       }
 
+      if (!$("input:text[name='other_area_nomination']").val()) {
+        $('#confirm-orders-nomination').addClass("disable");
+        $('.checked-order').prop('checked', false);
+        $('#confirm-orders-nomination').prop('disabled', true);
+        $('#sp-cancel').addClass("sp-disable");
+      }
     }
 
     var params = {

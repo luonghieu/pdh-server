@@ -316,7 +316,21 @@ header .btn-register {
   top: 185px;
 }
 
+.notify-webview {
+  height: 40px;
+  margin: 0 8px;
+  position: absolute;
+  top: 145px;
+}
+
 .notify span {
+  color: red;
+  font-size: 15px;
+  font-weight: bold;
+  padding: 0 10px;
+}
+
+.notify-webview span {
   color: red;
   font-size: 15px;
   font-weight: bold;

@@ -9,6 +9,8 @@
   <link rel="stylesheet" href="{{ asset('assets/web/css/plugin/mmenu/jquery.mmenu.all.css') }}" />
   <link rel="stylesheet" href="{{ asset('assets/web/css/plugin/slick/slick-theme.css') }}">
   <link rel="stylesheet" href="{{ asset('assets/web/css/plugin/slick/slick.css') }}">
+  <!-- link to the custom styles for SqPaymentForm -->
+  <link rel="stylesheet" type="text/css" href="{{ mix('assets/web/css/card_square.min.css') }}">
   <link href="{{ mix('assets/web/css/web.css') }}" rel="stylesheet">
   @yield('web.extra_css')
   <script>
@@ -43,7 +45,10 @@
     </script>
     @endif
 
-    @include('web.partials.telecom_credit')
+    @if(config('common.payment_service') == 'telecom_credit')
+      @include('web.partials.telecom_credit')
+    @endif
+
     @include('web.partials.footer')
   </div>
   @yield('web.script')
