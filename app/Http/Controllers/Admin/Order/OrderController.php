@@ -307,7 +307,6 @@ class OrderController extends Controller
                     'temp_point' => $orderPoint + $allowance,
                 ]);
             }
-
             $currentTotalCast = $order->casts()->count();
             // Add/Remove casts in room
             $room = $order->room;
@@ -396,7 +395,6 @@ class OrderController extends Controller
             return response()->json(['success' => true], 200);
         } catch (\Exception $e) {
             \DB::rollBack();
-            return $e;
             LogService::writeErrorLog($e);
             return response()->json(['success' => false, 'info' => $e->getMessage()], 400);
         }
