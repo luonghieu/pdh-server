@@ -395,6 +395,7 @@ class OrderController extends Controller
             return response()->json(['success' => true], 200);
         } catch (\Exception $e) {
             \DB::rollBack();
+            LogService::writeErrorLog($e);
             return response()->json(['success' => false, 'info' => $e->getMessage()], 400);
         }
     }
