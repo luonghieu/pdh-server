@@ -22,11 +22,20 @@ class TransferController extends Controller
         $adminType = UserType::ADMIN;
         $keyword = $request->search;
 
-        $transfers = Point::with('user', 'order')->whereIn('type', [PointType::RECEIVE, PointType::ADJUSTED])
-            ->whereHas('user', function ($query) use ($adminType) {
-                $query->where('users.type', '!=', $adminType);
+        $transfers = Point::with('user', 'order')
+            ->where(function ($query) {
+                $query->orWhere([
+                    ['type', '=', PointType::RECEIVE],
+                    ['is_transfered', '=', true],
+                ])->orWhere ([
+                    ['type', '=', PointType::ADJUSTED],
+                    ['is_cast_adjusted', '=', true],
+                ]);
             })
-            ->where('is_transfered', true)->orderBy('updated_at', 'DESC');
+            ->whereHas('user', function ($query) use ($adminType) {
+                $query->where('type', '!=', $adminType);
+            })
+            ->orderBy('updated_at', 'DESC');
 
         if ($request->from_date) {
             $fromDate = Carbon::parse($request->from_date)->startOfDay();
@@ -107,11 +116,20 @@ class TransferController extends Controller
         $keyword = $request->search;
         $adminType = UserType::ADMIN;
 
-        $transfers = Point::with('user', 'order')->whereIn('type', [PointType::RECEIVE, PointType::ADJUSTED])
-            ->whereHas('user', function ($query) use ($adminType) {
-                $query->where('users.type', '!=', $adminType);
+        $transfers = Point::with('user', 'order')
+            ->where(function ($query) {
+                $query->orWhere([
+                    ['type', '=', PointType::RECEIVE],
+                    ['is_transfered', '=', false],
+                ])->orWhere ([
+                    ['type', '=', PointType::ADJUSTED],
+                    ['is_cast_adjusted', '=', true],
+                ]);
             })
-            ->where('is_transfered', false)->orderBy('updated_at', 'DESC');
+            ->whereHas('user', function ($query) use ($adminType) {
+                $query->where('type', '<>', 3);
+            })
+            ->orderBy('updated_at', 'DESC');
 
         if ($request->from_date) {
             $fromDate = Carbon::parse($request->from_date)->startOfDay();
