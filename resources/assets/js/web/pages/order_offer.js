@@ -16,10 +16,14 @@ $(document).ready(function(){
   if($('.offer-status').length) {
     $offerStatus = $('.offer-status').val();
 
-    if(3 == $offerStatus || 4 == $offerStatus) {
+    if(3 == $offerStatus || 4 == $offerStatus || $('.deleted_at').val()) {
       $('#timeout-offer-message h2').css('font-size', '15px');
 
-      $('#timeout-offer-message h2').html('この予約は募集が締め切られました');
+      if ($('.deleted_at').val()) {
+        $('#timeout-offer-message h2').html('この予約は無効になりました');
+      } else {
+        $('#timeout-offer-message h2').html('この予約は募集が締め切られました');
+      }
 
       $('#close-offer').addClass('mypage');
 
