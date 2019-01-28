@@ -563,10 +563,15 @@ class Order extends Model
         }
 
         $ownerId = $this->user_id;
-        $castId = $this->casts()->first()->id;
-        $room = $this->createDirectRoom($ownerId, $castId);
+        $cast = $this->casts()->first();
+        if ($cast) {
+            $castId = $cast->id;
+            $room = $this->createDirectRoom($ownerId, $castId);
 
-        return $room->id;
+            return $room->id;
+        }
+
+        return '';
     }
 
     public function point()
