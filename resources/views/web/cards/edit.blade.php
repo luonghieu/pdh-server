@@ -77,8 +77,10 @@
   </div>
 @endsection
 @section('web.extra_js')
+  @if(config('common.payment_service') != 'square')
   <script src="{{ mix('assets/webview/js/script.min.js') }}"></script>
   <script src="/assets/webview/js/lib/payment.js"></script>
+  @else
   <script type="text/javascript" src="https://js.squareup.com/v2/paymentform"></script>
   <script>
       // Set the application ID
@@ -321,4 +323,5 @@
         });
       }
   </script>
+  @endif
 @endsection
