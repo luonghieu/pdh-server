@@ -23,20 +23,19 @@ class TransferController extends Controller
         $keyword = $request->search;
 
         $transfers = Point::with('user', 'order')
-            ->where(function ($query) {
-                $query->orWhere([
-                    ['type', '=', PointType::RECEIVE],
-                    ['is_transfered', '=', true],
-                ])->orWhere ([
-                    ['type', '=', PointType::ADJUSTED],
-                    ['is_cast_adjusted', '=', true],
-                ]);
-            })
-            ->whereHas('user', function ($query) use ($adminType) {
-                $query->where('type', '!=', $adminType);
-            })
-            ->whereHas('order', function ($query) {
-                $query->whereNull('deleted_at');
+            ->where('is_transfered', true)
+            ->where(function ($q) use ($adminType) {
+                $q->whereHas('user', function ($query) use ($adminType) {
+                    $query->where('type', '<>', $adminType)
+                        ->where([
+                            ['points.type', '=', PointType::ADJUSTED],
+                            ['points.is_cast_adjusted', '=', true],
+                        ]);
+                })
+                ->orWhereHas('order', function ($query) {
+                    $query->whereNull('deleted_at')
+                        ->where('points.type', PointType::RECEIVE);
+                });
             })
             ->orderBy('updated_at', 'DESC');
 
@@ -120,21 +119,21 @@ class TransferController extends Controller
         $adminType = UserType::ADMIN;
 
         $transfers = Point::with('user', 'order')
-            ->where(function ($query) {
-                $query->orWhere([
-                    ['type', '=', PointType::RECEIVE],
-                    ['is_transfered', '=', false],
-                ])->orWhere ([
-                    ['type', '=', PointType::ADJUSTED],
-                    ['is_cast_adjusted', '=', true],
-                ]);
+            ->where('is_transfered', false)
+            ->where(function ($q) use ($adminType) {
+                $q->whereHas('user', function ($query) use ($adminType) {
+                    $query->where('type', '<>', $adminType)
+                        ->where([
+                            ['points.type', '=', PointType::ADJUSTED],
+                            ['points.is_cast_adjusted', '=', true],
+                        ]);
+                })
+                ->orWhereHas('order', function ($query) {
+                    $query->whereNull('deleted_at')
+                        ->where('points.type', PointType::RECEIVE);
+                });
             })
-            ->whereHas('user', function ($query) use ($adminType) {
-                $query->where('type', '<>', 3);
-            })
-            ->whereHas('order', function ($query) {
-                $query->whereNull('deleted_at');
-            })
+            ->orderBy('updated_at', 'DESC');
 
         if ($request->from_date) {
             $fromDate = Carbon::parse($request->from_date)->startOfDay();
@@ -229,7 +228,16 @@ class TransferController extends Controller
         if ($request->has('transfer_ids')) {
             $transferIds = $request->transfer_ids;
 
-            $checkTransferExist = Point::whereIn('id', $transferIds)->where('type', PointType::RECEIVE)->where('is_transfered', false)->exists();
+            $checkTransferExist = Point::whereIn('id', $transferIds)
+                ->where('is_transfered', false)
+                ->where(function ($query) {
+                    $query->orWhere('type', PointType::RECEIVE)
+                        ->orWhere([
+                            ['points.type', '=', PointType::ADJUSTED],
+                            ['points.is_cast_adjusted', '=', true],
+                        ]);
+                })
+                ->exists();
 
             try {
                 if ($checkTransferExist) {
