@@ -569,6 +569,17 @@ class CastController extends Controller
         $file->output('list_bank_account_' . Carbon::now()->format('Ymd_Hi') . '.csv');
 
         return;
+    }
 
+    public function updateNote(Request $request, Cast $user)
+    {
+        try {
+            $user->note = $request->note;
+            $user->save();
+
+            return redirect()->route('admin.users.show', compact('user'));
+        } catch (\Exception $e) {
+            LogService::writeErrorLog($e);
+        }
     }
 }
