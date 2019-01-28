@@ -323,7 +323,7 @@ class User extends Authenticatable implements JWTSubject
         $payment->user_id = $this->id;
         $payment->amount = $point->point * $pointRate;
         $payment->point_id = $point->id;
-        $payment->card_id = $this->card->id;
+        $payment->card_id = $this->payment_id;
         $payment->status = PaymentStatus::OPEN;
         $payment->save();
 

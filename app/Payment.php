@@ -6,7 +6,7 @@ use App\Enums\PaymentStatus;
 use App\Services\LogService;
 use App\Traits\FailedPaymentHandle;
 use Illuminate\Database\Eloquent\Model;
-use App\Services\Square as PaymentService;
+use App\Services\TelecomCredit as PaymentService;
 
 class Payment extends Model
 {
@@ -33,8 +33,8 @@ class Payment extends Model
                 'customer' => $user->payment_id,
                 'user_id' => $user->id,
                 'payment_id' => $this->id,
-                'card_id' => $user->card->card_id,
-                'email' => $user->email,
+                // 'card_id' => $user->card->card_id,
+                // 'email' => $user->email,
             ];
 
             try {
@@ -47,7 +47,7 @@ class Payment extends Model
 
                 // update order payment status
                 $this->charge_at = now();
-                $this->charge_id = $charge->id;
+                // $this->charge_id = $charge->id;
                 $this->status = PaymentStatus::DONE;
                 $this->save();
 

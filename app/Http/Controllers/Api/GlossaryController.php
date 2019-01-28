@@ -65,6 +65,28 @@ class GlossaryController extends ApiController
 
         $data['order_options'] = config('common.order_options');
 
+        $data['payment']['service'] = config('common.payment_service') == 'stripe' || config('common.payment_service') == 'square' ? 'internal' : 'external';
+
+        $data['payment']['url'] = '';
+
+        if (auth()->check()) {
+            if ($data['payment']['service'] == 'internal') {
+                $data['payment']['url'] = route('webview.create');
+            } else {
+                $paramsArray = [
+                    'clientip' => env('TELECOM_CREDIT_CLIENT_IP'),
+                    'usrtel' => auth()->user()->phone,
+                    'usrmail' => 'question.cheers@gmail.com',
+                    'user_id' => auth()->user()->id,
+                    'redirect_url' => 'cheers://registerSuccess'
+                ];
+
+                $queryString = http_build_query($paramsArray);
+
+                $data['payment']['url'] = env('TELECOM_CREDIT_VERIFICATION_URL') . '?' . $queryString;
+            }
+        }
+
         return $this->respondWithData($data);
     }
 }
