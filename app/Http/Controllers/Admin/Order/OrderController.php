@@ -311,12 +311,6 @@ class OrderController extends Controller
             // Add/Remove casts in room
             $room = $order->room;
             if ($room) {
-                if ($room->type == RoomType::GROUP) {
-                    $users = $order->casts()->get()->pluck('id')->toArray();
-                    $users[] = $order->user_id;
-                    $room->users()->sync($users);
-                }
-
                 if ($order->total_cast == 1) {
                     $cast = $order->casts()->first();
                     $ownerId = $order->user_id;
@@ -325,6 +319,26 @@ class OrderController extends Controller
 
                     $order->room_id = $room->id;
                     $order->save();
+                }
+
+                if ($order->total_cast > 1) {
+                    if ($room->type == RoomType::GROUP) {
+                        $users = $order->casts()->get()->pluck('id')->toArray();
+                        $users[] = $order->user_id;
+                        $room->users()->sync($users);
+                    } else {
+                        $room = new Room;
+                        $room->order_id = $order->id;
+                        $room->owner_id = $order->user_id;
+                        $room->type = RoomType::GROUP;
+                        $room->save();
+                        $users = $order->casts()->get()->pluck('id')->toArray();
+                        $users[] = $order->user_id;
+                        $room->users()->attach($users);
+
+                        $order->room_id = $room->id;
+                        $order->save();
+                    }
                 }
             } else {
                 if ($order->total_cast == $currentTotalCast) {
