@@ -19,6 +19,7 @@ class Point extends Model
         'type',
         'status',
         'is_transfered',
+        'is_cast_adjusted',
         'created_at',
         'updated_at',
     ];
