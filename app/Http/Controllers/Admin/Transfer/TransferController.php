@@ -26,6 +26,9 @@ class TransferController extends Controller
             ->whereHas('user', function ($query) use ($adminType) {
                 $query->where('users.type', '!=', $adminType);
             })
+            ->whereHas('order', function ($query) {
+                $query->whereNull('deleted_at');
+            })
             ->where('is_transfered', true)->orderBy('updated_at', 'DESC');
 
         if ($request->from_date) {
@@ -110,6 +113,9 @@ class TransferController extends Controller
         $transfers = Point::with('user', 'order')->where('type', PointType::RECEIVE)
             ->whereHas('user', function ($query) use ($adminType) {
                 $query->where('users.type', '!=', $adminType);
+            })
+            ->whereHas('order', function ($query) {
+                $query->whereNull('deleted_at');
             })
             ->where('is_transfered', false)->orderBy('updated_at', 'DESC');
 
