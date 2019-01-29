@@ -15,7 +15,10 @@ $(document).ready(function() {
   }
 
   $('.tc-verification-link').on('click', function () {
-    $('#telecom-credit-form').submit();
-    // window.location.href = '/credit_card';
+    if (window.App.payment_service == 'telecom_credit') {
+      $('#telecom-credit-form').submit();
+    } else {
+      window.location.href = '/credit_card';
+    }
   });
 });
