@@ -78,7 +78,7 @@ class GlossaryController extends ApiController
                 } else {
                     $paramsArray = [
                         'clientip' => env('TELECOM_CREDIT_CLIENT_IP'),
-                        'usrtel' => $user->phone,
+                        // 'usrtel' => $user->phone,
                         'usrmail' => 'question.cheers@gmail.com',
                         'user_id' => $user->id,
                         'redirect_url' => 'cheers://registerSuccess'
