@@ -22,7 +22,8 @@
   </script>
   <script>
     window.App = {!! json_encode([
-          'api_url' => config('common.api_url')
+          'api_url' => config('common.api_url'),
+          'payment_service' => config('common.payment_service')
       ]) !!};
   </script>
 </head>
