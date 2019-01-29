@@ -69,21 +69,25 @@ class GlossaryController extends ApiController
 
         $data['payment']['url'] = '';
 
-        if (auth()->check()) {
-            if ($data['payment']['service'] == 'internal') {
-                $data['payment']['url'] = route('webview.create');
-            } else {
-                $paramsArray = [
-                    'clientip' => env('TELECOM_CREDIT_CLIENT_IP'),
-                    'usrtel' => auth()->user()->phone,
-                    'usrmail' => 'question.cheers@gmail.com',
-                    'user_id' => auth()->user()->id,
-                    'redirect_url' => 'cheers://registerSuccess'
-                ];
+        if ($token = request()->bearerToken()) {
+            $user = auth('api')->setToken($token)->user();
 
-                $queryString = http_build_query($paramsArray);
+            if ($user) {
+                if ($data['payment']['service'] == 'internal') {
+                    $data['payment']['url'] = route('webview.create');
+                } else {
+                    $paramsArray = [
+                        'clientip' => env('TELECOM_CREDIT_CLIENT_IP'),
+                        'usrtel' => $user->phone,
+                        'usrmail' => 'question.cheers@gmail.com',
+                        'user_id' => $user->id,
+                        'redirect_url' => 'cheers://registerSuccess'
+                    ];
 
-                $data['payment']['url'] = env('TELECOM_CREDIT_VERIFICATION_URL') . '?' . $queryString;
+                    $queryString = http_build_query($paramsArray);
+
+                    $data['payment']['url'] = env('TELECOM_CREDIT_VERIFICATION_URL') . '?' . $queryString;
+                }
             }
         }
 
