@@ -533,14 +533,15 @@ class CastController extends Controller
                     $item->id,
                     $item->user_id,
                     $item->bank_name,
+                    $item->bank_code,
+                    $item->branch_name,
+                    $item->branch_code,
                     $item->number,
                     $item->holder_name,
                     $item->holder_type,
                     BankAccountType::getDescription($item->type),
-                    $item->bank_code,
-                    $item->branch_name,
-                    $item->branch_code,
                     Carbon::parse($item->created_at)->format('Y年m月d日'),
+                    Carbon::parse($item->updated_at)->format('Y年m月d日'),
                 ];
             })->toArray();
 
@@ -548,14 +549,15 @@ class CastController extends Controller
             'No.',
             'User ID',
             'Bank Name',
+            'Bank Code',
+            'Branch Name',
+            'Branch Code',
             'Number',
             'Holder Name',
             'Holder Type',
             'Type',
-            'Bank Code',
-            'Branch Name',
-            'Branch Code',
             'Create At',
+            'Updated At',
         ];
 
         try {
@@ -567,7 +569,7 @@ class CastController extends Controller
             return redirect()->route('admin.casts.index');
         }
 
-        $file->output('list_bank_account_' . Carbon::now()->format('Ymd_Hi') . '.csv');
+        $file->output('bank_accounts_' . Carbon::now()->format('Ymd_Hi') . '.csv');
 
         return;
     }
