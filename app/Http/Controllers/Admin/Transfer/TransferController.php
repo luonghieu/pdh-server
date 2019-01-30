@@ -29,16 +29,16 @@ class TransferController extends Controller
         $transfers = Point::with($with)
             ->where('is_transfered', true)
             ->where(function ($q) use ($adminType) {
-                $q->whereHas('user', function ($query) use ($adminType) {
-                    $query->withTrashed()
+                $q->whereHas('user', function ($sq) use ($adminType) {
+                    $sq->withTrashed()
                         ->where('type', '<>', $adminType)
                         ->where([
                             ['points.type', '=', PointType::ADJUSTED],
                             ['points.is_cast_adjusted', '=', true],
                         ]);
                 })
-                ->orWhereHas('order', function ($query) {
-                    $query->whereNull('deleted_at')
+                ->orWhereHas('order', function ($sq) {
+                    $sq->whereNull('deleted_at')
                         ->where('points.type', PointType::RECEIVE);
                 });
             })
@@ -46,9 +46,9 @@ class TransferController extends Controller
 
         if ($request->from_date) {
             $fromDate = Carbon::parse($request->from_date)->startOfDay();
-            $transfers->where(function ($query) use ($fromDate) {
-                $query->whereHas('order', function ($query) use ($fromDate) {
-                    $query->where('created_at', '>=', $fromDate);
+            $transfers->where(function ($q) use ($fromDate) {
+                $q->whereHas('order', function ($sq) use ($fromDate) {
+                    $sq->where('created_at', '>=', $fromDate);
                 })
                 ->orWhere('created_at', '>=', $fromDate);
             });
@@ -56,17 +56,17 @@ class TransferController extends Controller
 
         if ($request->to_date) {
             $toDate = Carbon::parse($request->to_date)->endOfDay();
-            $transfers->where(function ($query) use ($toDate) {
-                $query->whereHas('order', function ($query) use ($toDate) {
-                    $query->where('created_at', '<=', $toDate);
+            $transfers->where(function ($q) use ($toDate) {
+                $q->whereHas('order', function ($sq) use ($toDate) {
+                    $sq->where('created_at', '<=', $toDate);
                 })
                 ->orWhere('created_at', '<=', $toDate);
             });
         }
 
         if ($keyword) {
-            $transfers->whereHas('user', function ($query) use ($keyword) {
-                $query->withTrashed()
+            $transfers->whereHas('user', function ($q) use ($keyword) {
+                $q->withTrashed()
                     ->where('id', "$keyword")
                     ->orWhere('nickname', 'like', "%$keyword%");
             });
@@ -137,16 +137,16 @@ class TransferController extends Controller
         $transfers = Point::with($with)
             ->where('is_transfered', false)
             ->where(function ($q) use ($adminType) {
-                $q->whereHas('user', function ($query) use ($adminType) {
-                    $query->withTrashed()
+                $q->whereHas('user', function ($sq) use ($adminType) {
+                    $sq->withTrashed()
                         ->where('type', '<>', $adminType)
                         ->where([
                             ['points.type', '=', PointType::ADJUSTED],
                             ['points.is_cast_adjusted', '=', true],
                         ]);
                 })
-                ->orWhereHas('order', function ($query) {
-                    $query->whereNull('deleted_at')
+                ->orWhereHas('order', function ($sq) {
+                    $sq->whereNull('deleted_at')
                         ->where('points.type', PointType::RECEIVE);
                 });
             })
@@ -154,9 +154,9 @@ class TransferController extends Controller
 
         if ($request->from_date) {
             $fromDate = Carbon::parse($request->from_date)->startOfDay();
-            $transfers->where(function ($query) use ($fromDate) {
-                $query->whereHas('order', function ($query) use ($fromDate) {
-                    $query->where('created_at', '>=', $fromDate);
+            $transfers->where(function ($q) use ($fromDate) {
+                $q->whereHas('order', function ($sq) use ($fromDate) {
+                    $sq->where('created_at', '>=', $fromDate);
                 })
                 ->orWhere('created_at', '>=', $fromDate);
             });
@@ -164,17 +164,17 @@ class TransferController extends Controller
 
         if ($request->to_date) {
             $toDate = Carbon::parse($request->to_date)->endOfDay();
-            $transfers->where(function ($query) use ($toDate) {
-                $query->whereHas('order', function ($query) use ($toDate) {
-                    $query->where('created_at', '<=', $toDate);
+            $transfers->where(function ($q) use ($toDate) {
+                $q->whereHas('order', function ($sq) use ($toDate) {
+                    $sq->where('created_at', '<=', $toDate);
                 })
                 ->orWhere('created_at', '<=', $toDate);
             });
         }
 
         if ($keyword) {
-            $transfers->whereHas('user', function ($query) use ($keyword) {
-                $query->withTrashed()
+            $transfers->whereHas('user', function ($q) use ($keyword) {
+                $q->withTrashed()
                     ->where('id', "$keyword")
                     ->orWhere('nickname', 'like', "%$keyword%");
             });
