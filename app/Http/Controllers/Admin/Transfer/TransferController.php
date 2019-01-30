@@ -37,9 +37,14 @@ class TransferController extends Controller
                             ['points.is_cast_adjusted', '=', true],
                         ]);
                 })
-                ->orWhereHas('order', function ($sq) {
-                    $sq->whereNull('deleted_at')
-                        ->where('points.type', PointType::RECEIVE);
+                ->orWhere(function ($query) use ($adminType) {
+                    $query->whereHas('user', function ($sq) use ($adminType) {
+                        $sq->withTrashed()
+                            ->where('type', '<>', $adminType);
+                    })->whereHas('order', function ($sq) {
+                        $sq->whereNull('deleted_at')
+                            ->where('points.type', PointType::RECEIVE);
+                    });
                 });
             })
             ->orderBy('updated_at', 'DESC');
@@ -48,7 +53,7 @@ class TransferController extends Controller
             $fromDate = Carbon::parse($request->from_date)->startOfDay();
             $transfers->where(function ($q) use ($fromDate) {
                 $q->whereHas('order', function ($sq) use ($fromDate) {
-                    $sq->where('orders.created_at', '>=', $fromDate);
+                    $sq->where('created_at', '>=', $fromDate);
                 })
                 ->orWhere('created_at', '>=', $fromDate);
             });
@@ -58,7 +63,7 @@ class TransferController extends Controller
             $toDate = Carbon::parse($request->to_date)->endOfDay();
             $transfers->where(function ($q) use ($toDate) {
                 $q->whereHas('order', function ($sq) use ($toDate) {
-                    $sq->where('orders.created_at', '<=', $toDate);
+                    $sq->where('created_at', '<=', $toDate);
                 })
                 ->orWhere('created_at', '<=', $toDate);
             });
@@ -145,9 +150,14 @@ class TransferController extends Controller
                             ['points.is_cast_adjusted', '=', true],
                         ]);
                 })
-                ->orWhereHas('order', function ($sq) {
-                    $sq->whereNull('deleted_at')
-                        ->where('points.type', PointType::RECEIVE);
+                ->orWhere(function ($query) use ($adminType) {
+                    $query->whereHas('user', function ($sq) use ($adminType) {
+                        $sq->withTrashed()
+                            ->where('type', '<>', $adminType);
+                    })->whereHas('order', function ($sq) {
+                        $sq->whereNull('deleted_at')
+                            ->where('points.type', PointType::RECEIVE);
+                    });
                 });
             })
             ->orderBy('updated_at', 'DESC');
@@ -156,7 +166,7 @@ class TransferController extends Controller
             $fromDate = Carbon::parse($request->from_date)->startOfDay();
             $transfers->where(function ($q) use ($fromDate) {
                 $q->whereHas('order', function ($sq) use ($fromDate) {
-                    $sq->where('orders.created_at', '>=', $fromDate);
+                    $sq->where('created_at', '>=', $fromDate);
                 })
                 ->orWhere('created_at', '>=', $fromDate);
             });
@@ -166,7 +176,7 @@ class TransferController extends Controller
             $toDate = Carbon::parse($request->to_date)->endOfDay();
             $transfers->where(function ($q) use ($toDate) {
                 $q->whereHas('order', function ($sq) use ($toDate) {
-                    $sq->where('orders.created_at', '<=', $toDate);
+                    $sq->where('created_at', '<=', $toDate);
                 })
                 ->orWhere('created_at', '<=', $toDate);
             });
