@@ -37,15 +37,15 @@ class LineController extends Controller
 
         try {
             if ($request->events[0]['type'] == 'follow') {
-                $body = [
-                    'replyToken' => $request->events[0]['replyToken'],
-                    'messages' => $this->addfriendMessages()
-                ];
-                $body = \GuzzleHttp\json_encode($body);
-                $response = $client->post(env('LINE_REPLY_URL'),
-                    ['body' => $body]
-                );
-                return $response;
+//                $body = [
+//                    'replyToken' => $request->events[0]['replyToken'],
+//                    'messages' => $this->addfriendMessages()
+//                ];
+//                $body = \GuzzleHttp\json_encode($body);
+//                $response = $client->post(env('LINE_REPLY_URL'),
+//                    ['body' => $body]
+//                );
+//                return $response;
             } else {
                 $message = '申し訳ございませんが、このアカウントでは個別の返信ができません。'
                     . PHP_EOL . PHP_EOL . 'サービスや予約などに関するお問い合わせは、下記からCheers運営局宛にご連絡ください。';
