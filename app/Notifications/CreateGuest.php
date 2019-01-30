@@ -157,6 +157,7 @@ class CreateGuest extends Notification implements ShouldQueue
         ]);
 
         $roomMessage->recipients()->attach($notifiable->id, ['room_id' => $room->id]);
+        $this->limitedMessages($notifiable, $room);
 
         $name = $notifiable->nickname ? $notifiable->nickname : $notifiable->name;
         $content = 'こんにちは！' . $name . 'さん🌼';
