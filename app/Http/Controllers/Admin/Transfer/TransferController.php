@@ -14,11 +14,21 @@ use App\User;
 use Carbon\Carbon;
 use DB;
 use Illuminate\Http\Request;
+use Session;
+use Validator;
 
 class TransferController extends Controller
 {
     public function getTransferedList(Request $request)
     {
+        if ($request->from_date && $request->to_date) {
+            $fromDate = Carbon::parse($request->from_date);
+            $toDate = Carbon::parse($request->to_date);
+            if ($fromDate > $toDate) {
+                return redirect()->back();
+            }
+        }
+
         $adminType = UserType::ADMIN;
         $keyword = $request->search;
         $with['user'] = function ($query) {
@@ -137,6 +147,14 @@ class TransferController extends Controller
 
     public function getNotTransferedList(Request $request)
     {
+        if ($request->from_date && $request->to_date) {
+            $fromDate = Carbon::parse($request->from_date);
+            $toDate = Carbon::parse($request->to_date);
+            if ($fromDate > $toDate) {
+                return redirect()->back();
+            }
+        }
+
         $keyword = $request->search;
         $adminType = UserType::ADMIN;
         $with['user'] = function ($query) {
