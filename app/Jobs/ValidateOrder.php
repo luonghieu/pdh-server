@@ -80,6 +80,8 @@ class ValidateOrder implements ShouldQueue
                 $this->order->room_id = $room->id;
                 $this->order->update();
 
+                \DB::commit();
+
                 $isHybrid = false;
                 if (OrderType::CALL == $this->order->type || OrderType::HYBRID == $this->order->type) {
                     $isHybrid = true;
@@ -95,8 +97,6 @@ class ValidateOrder implements ShouldQueue
                 }
 
                 $this->sendNotification($involvedUsers);
-
-                \DB::commit();
             } catch (\Exception $e) {
                 \DB::rollBack();
                 LogService::writeErrorLog($e);
