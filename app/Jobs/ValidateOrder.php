@@ -127,7 +127,8 @@ class ValidateOrder implements ShouldQueue
     private function sendNotification($users)
     {
         if (OrderType::NOMINATION != $this->order->type) {
-            $room = $this->order->room;
+            $room = Room::find($this->order->room_id);
+
             $startTime = Carbon::parse($this->order->date . ' ' . $this->order->start_time);
             $message = '\\\\ おめでとうございます！マッチングが確定しました♪ //'
             . PHP_EOL . PHP_EOL . '- ご予約内容 - '
@@ -153,7 +154,7 @@ class ValidateOrder implements ShouldQueue
 
             \Notification::send($users, new ApproveNominatedOrders($this->order));
         } else {
-            $room = $this->order->room;
+            $room = Room::find($this->order->room_id);
             $userIds = [];
             foreach ($users as $user) {
                 $userIds[] = $user->id;
