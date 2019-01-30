@@ -48,7 +48,7 @@ class TransferController extends Controller
             $fromDate = Carbon::parse($request->from_date)->startOfDay();
             $transfers->where(function ($q) use ($fromDate) {
                 $q->whereHas('order', function ($sq) use ($fromDate) {
-                    $sq->where('created_at', '>=', $fromDate);
+                    $sq->where('orders.created_at', '>=', $fromDate);
                 })
                 ->orWhere('created_at', '>=', $fromDate);
             });
@@ -58,7 +58,7 @@ class TransferController extends Controller
             $toDate = Carbon::parse($request->to_date)->endOfDay();
             $transfers->where(function ($q) use ($toDate) {
                 $q->whereHas('order', function ($sq) use ($toDate) {
-                    $sq->where('created_at', '<=', $toDate);
+                    $sq->where('orders.created_at', '<=', $toDate);
                 })
                 ->orWhere('created_at', '<=', $toDate);
             });
@@ -156,7 +156,7 @@ class TransferController extends Controller
             $fromDate = Carbon::parse($request->from_date)->startOfDay();
             $transfers->where(function ($q) use ($fromDate) {
                 $q->whereHas('order', function ($sq) use ($fromDate) {
-                    $sq->where('created_at', '>=', $fromDate);
+                    $sq->where('orders.created_at', '>=', $fromDate);
                 })
                 ->orWhere('created_at', '>=', $fromDate);
             });
@@ -166,7 +166,7 @@ class TransferController extends Controller
             $toDate = Carbon::parse($request->to_date)->endOfDay();
             $transfers->where(function ($q) use ($toDate) {
                 $q->whereHas('order', function ($sq) use ($toDate) {
-                    $sq->where('created_at', '<=', $toDate);
+                    $sq->where('orders.created_at', '<=', $toDate);
                 })
                 ->orWhere('created_at', '<=', $toDate);
             });
