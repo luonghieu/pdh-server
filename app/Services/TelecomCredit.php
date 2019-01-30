@@ -19,13 +19,13 @@ class TelecomCredit extends Service
         $this->client = new Client();
     }
 
-    public function charge($request)
+    public function charge($sendId, $request)
     {
         $settlementUrl = env('TELECOM_CREDIT_SETTLEMENT_URL');
 
         $params = [
             'clientip' => env('TELECOM_CREDIT_CLIENT_IP'),
-            'sendid' => $request['customer'],
+            'sendid' => $sendId,
             'money' => $request['amount'],
             'user_id' => $request['user_id'] ?? '',
             'payment_id' => $request['payment_id'] ?? '',
