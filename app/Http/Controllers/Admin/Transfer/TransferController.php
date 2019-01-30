@@ -28,23 +28,23 @@ class TransferController extends Controller
 
         $transfers = Point::with($with)
             ->where('is_transfered', true)
-            ->where(function ($q) use ($adminType) {
-                $q->whereHas('user', function ($sq) use ($adminType) {
-                    $sq->withTrashed()
-                        ->where('type', '<>', $adminType)
-                        ->where([
-                            ['points.type', '=', PointType::ADJUSTED],
-                            ['points.is_cast_adjusted', '=', true],
-                        ]);
-                })
-                ->orWhere(function ($query) use ($adminType) {
-                    $query->whereHas('user', function ($sq) use ($adminType) {
-                        $sq->withTrashed()
-                            ->where('type', '<>', $adminType);
-                    })->whereHas('order', function ($sq) {
-                        $sq->whereNull('deleted_at')
-                            ->where('points.type', PointType::RECEIVE);
-                    });
+            ->whereHas('user', function ($q) use ($adminType) {
+                $q->withTrashed()->where('type', '<>', $adminType);
+            })
+            ->where(function ($q) {
+                $q->whereHas('order', function ($sq) {
+                    $sq->whereNull('deleted_at')
+                        ->where('points.type', PointType::RECEIVE);
+                });
+
+                $q->orWhere(function ($sq) {
+                    $sq->doesntHave('order');
+
+                    $sq->where([
+                        ['points.type', '=', PointType::ADJUSTED],
+                        ['points.is_cast_adjusted', '=', true],
+                    ]);
+
                 });
             })
             ->orderBy('updated_at', 'DESC');
@@ -146,23 +146,23 @@ class TransferController extends Controller
 
         $transfers = Point::with($with)
             ->where('is_transfered', false)
-            ->where(function ($q) use ($adminType) {
-                $q->whereHas('user', function ($sq) use ($adminType) {
-                    $sq->withTrashed()
-                        ->where('type', '<>', $adminType)
-                        ->where([
-                            ['points.type', '=', PointType::ADJUSTED],
-                            ['points.is_cast_adjusted', '=', true],
-                        ]);
-                })
-                ->orWhere(function ($query) use ($adminType) {
-                    $query->whereHas('user', function ($sq) use ($adminType) {
-                        $sq->withTrashed()
-                            ->where('type', '<>', $adminType);
-                    })->whereHas('order', function ($sq) {
-                        $sq->whereNull('deleted_at')
-                            ->where('points.type', PointType::RECEIVE);
-                    });
+            ->whereHas('user', function ($q) use ($adminType) {
+                $q->withTrashed()->where('type', '<>', $adminType);
+            })
+            ->where(function ($q) {
+                $q->whereHas('order', function ($sq) {
+                    $sq->whereNull('deleted_at')
+                        ->where('points.type', PointType::RECEIVE);
+                });
+
+                $q->orWhere(function ($sq) {
+                    $sq->doesntHave('order');
+
+                    $sq->where([
+                        ['points.type', '=', PointType::ADJUSTED],
+                        ['points.is_cast_adjusted', '=', true],
+                    ]);
+
                 });
             })
             ->orderBy('updated_at', 'DESC');
