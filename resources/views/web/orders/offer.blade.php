@@ -96,7 +96,7 @@
     <div class="modal_content modal_content-btn1">
       <div class="text-box" id="timeout-offer-message">
         <h2>オファーについて</h2>
-        <p>2名以上で参加できるキャストから、ゲストに置く特別なオファーです。その他の予約と比較して</p>
+        <p>2名以上で参加できるキャストから、ゲストに届く特別なオファーです。その他の予約と比較して</p>
         <p>①少ないステップで予約が完了するための予約がラク <br />②指名予約と比較して、単価が安い</p>
         <p>という特徴があります</p>
       </div>
@@ -329,7 +329,7 @@
             <div class="details-list__content show">
               <ul class="details-info-list">
                 <li class="details-info-list__itme">
-                  <p class="details-info-list__text">合計{{ $offer->duration*60 }}分</p>
+                  <p class="details-info-list__text">合流{{ $offer->duration*60 }}分</p>
                   <p class="details-info-list__marks" id="order-point"></p>
                 </li>
                 <li class="details-info-list__itme">
@@ -350,7 +350,7 @@
         <label class="checkbox">
           <input type="checkbox" class="checked-order-offer" name="confrim_order_offer">
           <span class="sp-disable" id="sp-cancel"></span>
-          <p><a href="{{ route('guest.orders.cancel') }}">キャンセルポリシー</a>、及び<a href="{{ route('guest.orders.offers_attention') }}">予約前の注意事項に</a>
+          <p><a href="{{ route('guest.orders.cancel') }}">キャンセルポリシー</a>、及び<a href="{{ route('guest.orders.offers_attention') }}">予約前の注意事項</a>
           に同意する</p>
         </label>
       </div>
