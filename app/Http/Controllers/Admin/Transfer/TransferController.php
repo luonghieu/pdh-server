@@ -49,23 +49,28 @@ class TransferController extends Controller
             })
             ->orderBy('updated_at', 'DESC');
 
-        if ($request->from_date) {
-            $fromDate = Carbon::parse($request->from_date)->startOfDay();
-            $transfers->where(function ($q) use ($fromDate) {
-                $q->whereHas('order', function ($sq) use ($fromDate) {
-                    $sq->where('created_at', '>=', $fromDate);
-                })
-                ->orWhere('created_at', '>=', $fromDate);
-            });
-        }
+        if (!empty($request->from_date) || !empty($request->to_date)) {
+            $transfers->where(function ($query) use ($request) {
+                $query->whereHas('order', function ($q) use ($request) {
+                    if (!empty($request->from_date)) {
+                        $q->where('created_at', '>=', $request->from_date);
+                    }
 
-        if ($request->to_date) {
-            $toDate = Carbon::parse($request->to_date)->endOfDay();
-            $transfers->where(function ($q) use ($toDate) {
-                $q->whereHas('order', function ($sq) use ($toDate) {
-                    $sq->where('created_at', '<=', $toDate);
-                })
-                ->orWhere('created_at', '<=', $toDate);
+                    if (!empty($request->to_date)) {
+                        $q->where('created_at', '<=', $request->to_date);
+                    }
+                });
+                $query->orWhere(function ($q) {
+                    $q->doesntHave('order');
+
+                    if (!empty($request->from_date)) {
+                        $q->where('created_at', '>=', $request->from_date);
+                    }
+
+                    if (!empty($request->to_date)) {
+                        $q->where('created_at', '<=', $request->to_date);
+                    }
+                });
             });
         }
 
@@ -162,23 +167,28 @@ class TransferController extends Controller
             })
             ->orderBy('updated_at', 'DESC');
 
-        if ($request->from_date) {
-            $fromDate = Carbon::parse($request->from_date)->startOfDay();
-            $transfers->where(function ($q) use ($fromDate) {
-                $q->whereHas('order', function ($sq) use ($fromDate) {
-                    $sq->where('created_at', '>=', $fromDate);
-                })
-                ->orWhere('created_at', '>=', $fromDate);
-            });
-        }
+        if (!empty($request->from_date) || !empty($request->to_date)) {
+            $transfers->where(function ($query) use ($request) {
+                $query->whereHas('order', function ($q) use ($request) {
+                    if (!empty($request->from_date)) {
+                        $q->where('created_at', '>=', $request->from_date);
+                    }
 
-        if ($request->to_date) {
-            $toDate = Carbon::parse($request->to_date)->endOfDay();
-            $transfers->where(function ($q) use ($toDate) {
-                $q->whereHas('order', function ($sq) use ($toDate) {
-                    $sq->where('created_at', '<=', $toDate);
-                })
-                ->orWhere('created_at', '<=', $toDate);
+                    if (!empty($request->to_date)) {
+                        $q->where('created_at', '<=', $request->to_date);
+                    }
+                });
+                $query->orWhere(function ($q) {
+                    $q->doesntHave('order');
+
+                    if (!empty($request->from_date)) {
+                        $q->where('created_at', '>=', $request->from_date);
+                    }
+
+                    if (!empty($request->to_date)) {
+                        $q->where('created_at', '<=', $request->to_date);
+                    }
+                });
             });
         }
 
