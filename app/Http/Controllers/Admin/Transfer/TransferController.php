@@ -61,26 +61,13 @@ class TransferController extends Controller
             $fromDate = Carbon::parse($request->from_date)->startOfDay();
             $toDate = Carbon::parse($request->to_date)->endOfDay();
             $transfers->where(function ($query) use ($fromDate, $toDate) {
-                $query->whereHas('order', function ($q) use ($fromDate, $toDate) {
-                    if (!empty($fromDate)) {
-                        $q->where('created_at', '>=', $fromDate);
-                    }
+                if (!empty($fromDate)) {
+                    $q->where('created_at', '>=', $fromDate);
+                }
 
-                    if (!empty($toDate)) {
-                        $q->where('created_at', '<=', $toDate);
-                    }
-                });
-                $query->orWhere(function ($q) {
-                    $q->doesntHave('order');
-
-                    if (!empty($fromDate)) {
-                        $q->where('created_at', '>=', $fromDate);
-                    }
-
-                    if (!empty($toDate)) {
-                        $q->where('created_at', '<=', $toDate);
-                    }
-                });
+                if (!empty($toDate)) {
+                    $q->where('created_at', '<=', $toDate);
+                }
             });
         }
 
@@ -187,26 +174,14 @@ class TransferController extends Controller
             $fromDate = Carbon::parse($request->from_date)->startOfDay();
             $toDate = Carbon::parse($request->to_date)->endOfDay();
             $transfers->where(function ($query) use ($fromDate, $toDate) {
-                $query->whereHas('order', function ($q) use ($fromDate, $toDate) {
-                    if (!empty($fromDate)) {
-                        $q->where('created_at', '>=', $fromDate);
-                    }
+                if (!empty($fromDate)) {
+                    $query->where('created_at', '>=', $fromDate);
+                }
 
-                    if (!empty($toDate)) {
-                        $q->where('created_at', '<=', $toDate);
-                    }
-                });
-                $query->orWhere(function ($q) {
-                    $q->doesntHave('order');
+                if (!empty($toDate)) {
+                    $query->where('created_at', '<=', $toDate);
+                }
 
-                    if (!empty($fromDate)) {
-                        $q->where('created_at', '>=', $fromDate);
-                    }
-
-                    if (!empty($toDate)) {
-                        $q->where('created_at', '<=', $toDate);
-                    }
-                });
             });
         }
 
