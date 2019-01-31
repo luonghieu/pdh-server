@@ -22,7 +22,7 @@ class TransferController extends Controller
     public function getTransferedList(Request $request)
     {
         if ($request->from_date && $request->to_date) {
-            if ($fromDate > $toDate) {
+            if ($request->from_date > $request->to_date) {
                 return redirect()->back();
             }
         }
