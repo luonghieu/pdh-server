@@ -7,7 +7,7 @@
           @include('admin.partials.menu-tab-transfer')
           <div class="panel-body handling device-height-search">
             <div class="search">
-              <form class="navbar-form navbar-left form-search" action="{{ route('admin.transfers.transfered') }}" method="GET">
+              <form class="navbar-form navbar-left form-search" action="{{ route('admin.transfers.non_transfers') }}" method="GET">
                 <label for="">From date: </label>
                 <input type="text" class="form-control date-picker input-search" name="from_date" id="date01" data-date-format="yyyy/mm/dd" value="{{ request()->from_date }}" placeholder="yyyy/mm/dd" />
                 <label for="">To date: </label>
@@ -16,15 +16,15 @@
 "/>
                 <button type="submit" class="fa fa-search btn btn-search"></button>
                 <div class="export-csv">
-                  <input type="hidden" name="is_export" value="1">
-                  <button type="submit" class="export-btn" name="submit" value="export">CSV出力</button>
+                  <input type="hidden" name="is_transfers" value="1">
+                  <button type="submit" class="export-btn" name="submit" value="transfers">エクスポート</button>
                 </div>
               </form>
             </div>
           </div>
           <div class="clearfix"></div>
           <div class="panel-body">
-            <form class="navbar-form navbar-left form-search" action="{{ route('admin.transfers.transfered') }}" id="limit-page" method="GET">
+            <form class="navbar-form navbar-left form-search" action="{{ route('admin.transfers.non_transfers') }}" id="limit-page" method="GET">
               <div class="form-group">
                 <label class="col-md-1 limit-page">表示件数：</label>
                 <div class="col-md-1">
@@ -42,10 +42,10 @@
           </div>
           <form action="{{ route('admin.transfers.change_transfers') }}" method="POST" id="form-transfer">
             {{ csrf_field() }}
-            <div class="btn-change-report report transfered">
+            <div class="btn-change-report report position-device">
               <button type="button" class="submit-transfer">
                 <p>
-                  未振込に変更する
+                  振込済みに変更する
                 </p>
               </button>
             </div>
@@ -74,7 +74,7 @@
                                name="transfer_ids[]">
                       </td>
                       <td>{{ $transfer->order_id }}</td>
-                      <td>{{ Carbon\Carbon::parse($transfer->updated_at)->format('Y年m月d日') }}</td>
+                      <td>{{ Carbon\Carbon::parse($transfer->created_at)->format('Y年m月d日') }}</td>
                       <td>{{ $transfer->user_id }}</td>
                       <td>{{ $transfer->user->nickname }}</td>
                       <td>￥{{ number_format($transfer->point) }}</td>
