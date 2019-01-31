@@ -7,6 +7,8 @@ use App\Enums\CastTransferStatus;
 use App\Enums\OrderStatus;
 use App\Enums\UserType;
 use App\Jobs\MakeAvatarThumbnail;
+use App\Notifications\MessageRequestTransferLineNotify;
+use App\Notifications\MessageRequestTransferRocketNotify;
 use App\Services\LogService;
 use App\User;
 use Carbon\Carbon;
@@ -134,6 +136,10 @@ class GuestController extends ApiController
             $user->request_transfer_date = Carbon::now();
 
             $user->save();
+
+            $user->notify(new MessageRequestTransferRocketNotify());
+            $user->notify(new MessageRequestTransferLineNotify());
+
             \DB::commit();
         } catch (\Exception $e) {
             \DB::rollBack();

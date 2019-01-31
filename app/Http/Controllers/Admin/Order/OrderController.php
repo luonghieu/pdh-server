@@ -2,25 +2,36 @@
 
 namespace App\Http\Controllers\Admin\Order;
 
+use App\Cast;
+use App\CastClass;
+use App\Enums\CastOrderStatus;
+use App\Enums\CastOrderType;
 use App\Enums\OrderPaymentStatus;
 use App\Enums\OrderStatus;
 use App\Enums\OrderType;
 use App\Enums\PaymentRequestStatus;
 use App\Enums\PointType;
+use App\Enums\RoomType;
 use App\Http\Controllers\Controller;
 use App\Jobs\PointSettlement;
 use App\Notification;
+use App\Notifications\AdminEditOrder;
+use App\Notifications\AdminRemoveCastInOrder;
+use App\Notifications\CallOrdersCreated;
+use App\Notifications\CreateNominationOrdersForCast;
 use App\Order;
 use App\PaymentRequest;
 use App\Point;
+use App\Room;
 use App\Services\LogService;
+use App\Traits\DirectRoom;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
-use Session;
 
 class OrderController extends Controller
 {
+    use DirectRoom;
+
     public function index(Request $request)
     {
         $pointStatus = [
@@ -162,6 +173,257 @@ class OrderController extends Controller
         $order = $order->load('candidates', 'nominees', 'user', 'castClass', 'room', 'casts', 'tags');
 
         return view('admin.orders.order_call', compact('order'));
+    }
+
+    public function editOrderCall(Order $order)
+    {
+        $castClasses = CastClass::all();
+        if ($order->status == OrderStatus::ACTIVE || $order->status == OrderStatus::PROCESSING) {
+            $castsMatching = $order->casts;
+            $castsMatching = $castsMatching->map(function ($user) {
+                return collect($user->toArray())
+                    ->only(['id', 'nickname', 'pivot'])
+                    ->all();
+            });
+            $castsNominee = [];
+            $castsCandidates = [];
+        } else {
+            $castsNominee = $order->nominees()->whereNotIn('cast_order.status', [CastOrderStatus::TIMEOUT, CastOrderStatus::CANCELED])
+                ->get();
+            $castsNominee = $castsNominee->map(function ($user) {
+                return collect($user->toArray())
+                    ->only(['id', 'nickname', 'pivot'])
+                    ->all();
+            });
+            $castsCandidates = $order->candidates()->whereNotIn('cast_order.status', [CastOrderStatus::TIMEOUT, CastOrderStatus::CANCELED])
+                ->get();
+            $castsCandidates = $castsCandidates->map(function ($user) {
+                return collect($user->toArray())
+                    ->only(['id', 'nickname', 'pivot'])
+                    ->all();
+            });
+
+            $castsMatching = $order->casts;
+            $castsMatching = $castsMatching->map(function ($user) {
+                return collect($user->toArray())
+                    ->only(['id', 'nickname', 'pivot'])
+                    ->all();
+            });
+        }
+
+        $castClass = CastClass::all();
+        $orderTypeDesc = [
+          OrderType::NOMINATED_CALL => OrderType::getDescription(OrderType::NOMINATED_CALL),
+          OrderType::CALL => OrderType::getDescription(OrderType::CALL),
+          OrderType::NOMINATION => OrderType::getDescription(OrderType::NOMINATION),
+          OrderType::HYBRID => OrderType::getDescription(OrderType::HYBRID),
+        ];
+        $orderStatusDesc = [
+            OrderStatus::OPEN => OrderStatus::getDescription(OrderStatus::OPEN),
+            OrderStatus::ACTIVE => OrderStatus::getDescription(OrderStatus::ACTIVE),
+            OrderStatus::PROCESSING => OrderStatus::getDescription(OrderStatus::PROCESSING),
+            OrderStatus::DONE => OrderStatus::getDescription(OrderStatus::DONE),
+            OrderStatus::TIMEOUT => OrderStatus::getDescription(OrderStatus::TIMEOUT),
+        ];
+
+        return view('admin.orders.order_call_edit', compact('order', 'castClasses', 'castsMatching', 'castsNominee', 'castsCandidates', 'orderTypeDesc', 'orderStatusDesc'));
+    }
+
+    public function updateOrderCall(Request $request, $id)
+    {
+        $order = Order::find($id);
+        $orderDate = Carbon::parse($request->orderDate);
+
+        try {
+            \DB::beginTransaction();
+            $order->duration = $request->orderDuration;
+            $order->class_id = $request->class_id;
+            $order->total_cast = $request->totalCast;
+            $order->date = $orderDate->format('Y-m-d');
+            $order->start_time = $orderDate->format('H:i');
+            $order->type = $request->type;
+            $order->temp_point = $request->temp_point;
+            $order->status = $request->status;
+            $order->save();
+
+            $newNominees = [];
+            $castsRemoved = [];
+            $newMatchings = [];
+            if ($request->addedNomineeCast) {
+                $newNominees = Cast::whereIn('id', $request->addedNomineeCast)->get();
+            }
+            if ($request->addedCandidateCast) {
+                $newMatchings = Cast::whereIn('id', $request->addedCandidateCast)->get();
+            }
+
+            if ($request->deletedCast) {
+                $order->castOrder()->detach($request->deletedCast);
+                $castsRemoved = Cast::whereIn('id', $request->deletedCast)->get();
+            }
+
+            $orderStartTime = Carbon::parse($order->date . ' ' . $order->start_time);
+            $orderEndTime = $orderStartTime->copy()->addMinutes($order->duration * 60);
+            $nightTime = $order->nightTime($orderEndTime);
+            $allowance = $order->allowance($nightTime);
+            $orderPoint = $order->orderPoint();
+
+            // Update temp point for previous casts matched
+            $matchedCasts = $order->casts;
+            foreach ($matchedCasts as $cast) {
+                if ($cast->pivot->type == CastOrderType::NOMINEE) {
+                    $orderFee = $order->orderFee($cast, $orderStartTime, $orderEndTime);
+                    $orderPoint = $order->orderPoint($cast);
+                    $order->castOrder()->updateExistingPivot(
+                        $cast->id,
+                        [
+                            'temp_point' => $orderPoint + $allowance + $orderFee,
+                        ]
+                    );
+                } else {
+                    $orderPoint = $order->orderPoint();
+                    $order->castOrder()->updateExistingPivot(
+                        $cast->id,
+                        [
+                            'temp_point' => $orderPoint + $allowance,
+                        ]
+                    );
+                }
+            }
+
+            // Add casts nominee
+            foreach ($newNominees as $nominee) {
+                $order->nominees()->attach($nominee->id, [
+                    'type' => CastOrderType::NOMINEE,
+                    'status' => CastOrderStatus::OPEN,
+                ]);
+            }
+
+            // Add casts matched
+            foreach ($newMatchings as $matching) {
+                $order->candidates()->attach($matching->id ,[
+                    'type' => CastOrderType::CANDIDATE,
+                    'status' => CastOrderStatus::ACCEPTED,
+                    'accepted_at' => Carbon::now(),
+                    'temp_point' => $orderPoint + $allowance,
+                ]);
+            }
+            $currentTotalCast = $order->casts()->count();
+            // Add/Remove casts in room
+            $room = $order->room;
+            if ($room) {
+                if ($order->total_cast == 1) {
+                    $cast = $order->casts()->first();
+                    $ownerId = $order->user_id;
+                    $room = $this->createDirectRoom($ownerId, $cast->id);
+                    $room->save();
+
+                    $order->room_id = $room->id;
+                    $order->save();
+                }
+
+                if ($order->total_cast > 1) {
+                    if ($room->type == RoomType::GROUP) {
+                        $users = $order->casts()->get()->pluck('id')->toArray();
+                        $users[] = $order->user_id;
+                        $room->users()->sync($users);
+                    } else {
+                        $room = new Room;
+                        $room->order_id = $order->id;
+                        $room->owner_id = $order->user_id;
+                        $room->type = RoomType::GROUP;
+                        $room->save();
+                        $users = $order->casts()->get()->pluck('id')->toArray();
+                        $users[] = $order->user_id;
+                        $room->users()->attach($users);
+
+                        $order->room_id = $room->id;
+                        $order->save();
+                    }
+                }
+            } else {
+                if ($order->total_cast == $currentTotalCast) {
+                    if ($order->total_cast > 1) {
+                        $room = new Room;
+                        $room->order_id = $order->id;
+                        $room->owner_id = $order->user_id;
+                        $room->type = RoomType::GROUP;
+                        $room->save();
+                        $users = $order->casts()->get()->pluck('id')->toArray();
+                        $users[] = $order->user_id;
+                        $room->users()->attach($users);
+                    }
+
+                    if ($order->total_cast == 1) {
+                        $cast = $order->casts()->first();
+                        $ownerId = $order->user_id;
+                        $room = $this->createDirectRoom($ownerId, $cast->id);
+                        $room->save();
+                    }
+
+                    $order->room_id = $room->id;
+                    $order->save();
+                }
+            }
+            \DB::commit();
+
+            // Send notification to new nominees
+            \Notification::send(
+                $newNominees,
+                (new CreateNominationOrdersForCast($order->id))->delay(now()->addSeconds(3))
+            );
+            // Send notification to casts removed
+            \Notification::send(
+                $castsRemoved,
+                (new AdminRemoveCastInOrder())->delay(now()->addSeconds(3))
+            );
+            // Send notification to user and casts.
+            $order->user->notify((new AdminEditOrder())->delay(now()->addSeconds(3)));
+            \Notification::send(
+                $matchedCasts,
+                (new AdminEditOrder())->delay(now()->addSeconds(3))
+            );
+
+            // Send notification to other casts
+            if ($order->total_cast != $currentTotalCast) {
+                $castInOrder = $order->castOrder()->get()->pluck('id')->toArray();
+                $casts = Cast::where('class_id', $order->class_id)->whereNotIn('id', $castInOrder)->get();
+                \Notification::send(
+                    $casts,
+                    (new CallOrdersCreated($order->id))->delay(now()->addSeconds(3))
+                );
+            }
+            return response()->json(['success' => true], 200);
+        } catch (\Exception $e) {
+            \DB::rollBack();
+            LogService::writeErrorLog($e);
+            return response()->json(['success' => false, 'info' => $e->getMessage()], 400);
+        }
+    }
+
+    public function getCasts(Request $request, $classId)
+    {
+        $casts = Cast::where('class_id', $classId);
+        $listCast = [
+            $request->listCastNominees,
+            $request->listCastCandidates,
+            $request->listCastMatching,
+        ];
+        $listCast = array_unique(collect($listCast)->collapse()->toArray());
+        $search = $request->search;
+        $casts->whereNotIn('id', $listCast);
+        if ($search) {
+            $casts->where(function($query) use ($search) {
+                $query->where('nickname', 'like', "%$search%")
+                    ->orWhere('id', $search);
+            });
+        }
+
+        $casts = $casts->get();
+
+        return response()->json([
+            'view' => view('admin.orders.list_cast_by_class', compact('casts'))->render(),
+            'casts' => $casts,
+        ]);
     }
 
     public function castsMatching($order)

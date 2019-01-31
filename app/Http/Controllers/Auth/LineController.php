@@ -37,15 +37,15 @@ class LineController extends Controller
 
         try {
             if ($request->events[0]['type'] == 'follow') {
-                $body = [
-                    'replyToken' => $request->events[0]['replyToken'],
-                    'messages' => $this->addfriendMessages()
-                ];
-                $body = \GuzzleHttp\json_encode($body);
-                $response = $client->post(env('LINE_REPLY_URL'),
-                    ['body' => $body]
-                );
-                return $response;
+//                $body = [
+//                    'replyToken' => $request->events[0]['replyToken'],
+//                    'messages' => $this->addfriendMessages()
+//                ];
+//                $body = \GuzzleHttp\json_encode($body);
+//                $response = $client->post(env('LINE_REPLY_URL'),
+//                    ['body' => $body]
+//                );
+//                return $response;
             } else {
                 $message = '申し訳ございませんが、このアカウントでは個別の返信ができません。'
                     . PHP_EOL . PHP_EOL . 'サービスや予約などに関するお問い合わせは、下記からCheers運営局宛にご連絡ください。';
@@ -247,7 +247,6 @@ class LineController extends Controller
                 . PHP_EOL . '2時間以上のご予約で1時間無料となります（最大11,000円OFF）'
                 . PHP_EOL . PHP_EOL . 'ギャラ飲み初めての方も安心！'
                 . PHP_EOL . 'Cheersのキャストが盛り上げます🙋‍♀️❤️'
-                . PHP_EOL . '忘年会の季節に、キャストを呼んで飲み会や接待を盛り上げませんか？'
                 . PHP_EOL . PHP_EOL . 'ご登録から1週間を超えてしまうとキャンペーン対象外となりますのでお早めにご予約ください。'
                 . PHP_EOL . PHP_EOL . 'ご不明点はメッセージ内の運営者チャットからご連絡ください！';
             $opMessages = [

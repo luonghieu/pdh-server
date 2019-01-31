@@ -73,4 +73,6 @@ return [
     'order_timeout' => 'The order is expired',
     'payment_failed' => 'Payment failed.',
     'data_not_found' => 'Data not found',
+    'admin_edited_order' => 'Admin edited this order',
+    'bank_account_not_found' => 'Bank account not found',
 ];

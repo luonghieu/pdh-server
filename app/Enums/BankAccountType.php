@@ -18,6 +18,16 @@ final class BankAccountType extends Enum
      */
     public static function getDescription($value): string
     {
+        switch ($value) {
+            case self::NORMAL:
+                return '普通';
+                break;
+            case self::CHECKING:
+                return '当座';
+                break;
+            default:break;
+        }
+
         return parent::getDescription($value);
     }
 }

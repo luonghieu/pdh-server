@@ -51,18 +51,23 @@ class ValidateOrder implements ShouldQueue
             try {
                 \DB::beginTransaction();
                 if ($this->order->total_cast > 1) {
-                    $room = new Room;
-                    $room->order_id = $this->order->id;
-                    $room->owner_id = $this->order->user_id;
-                    $room->type = RoomType::GROUP;
-                    $room->save();
-
                     $data = [$this->order->user_id];
                     foreach ($casts as $cast) {
                         $data = array_merge($data, [$cast->pivot->user_id]);
                     }
+                    $room = $this->order->room;
 
-                    $room->users()->attach($data);
+                    if ($room) {
+                        $room->users()->sync($data);
+                    } else {
+                        $room = new Room;
+                        $room->order_id = $this->order->id;
+                        $room->owner_id = $this->order->user_id;
+                        $room->type = RoomType::GROUP;
+                        $room->save();
+
+                        $room->users()->attach($data);
+                    }
                 } else {
                     $ownerId = $this->order->user_id;
                     $userId = $casts->first()->id;
@@ -74,6 +79,8 @@ class ValidateOrder implements ShouldQueue
                 $this->order->status = OrderStatus::ACTIVE;
                 $this->order->room_id = $room->id;
                 $this->order->update();
+
+                \DB::commit();
 
                 $isHybrid = false;
                 if (OrderType::CALL == $this->order->type || OrderType::HYBRID == $this->order->type) {
@@ -90,8 +97,6 @@ class ValidateOrder implements ShouldQueue
                 }
 
                 $this->sendNotification($involvedUsers);
-
-                \DB::commit();
             } catch (\Exception $e) {
                 \DB::rollBack();
                 LogService::writeErrorLog($e);
@@ -122,7 +127,8 @@ class ValidateOrder implements ShouldQueue
     private function sendNotification($users)
     {
         if (OrderType::NOMINATION != $this->order->type) {
-            $room = $this->order->room;
+            $room = Room::find($this->order->room_id);
+
             $startTime = Carbon::parse($this->order->date . ' ' . $this->order->start_time);
             $message = '\\\\ おめでとうございます！マッチングが確定しました♪ //'
             . PHP_EOL . PHP_EOL . '- ご予約内容 - '
@@ -148,7 +154,7 @@ class ValidateOrder implements ShouldQueue
 
             \Notification::send($users, new ApproveNominatedOrders($this->order));
         } else {
-            $room = $this->order->room;
+            $room = Room::find($this->order->room_id);
             $userIds = [];
             foreach ($users as $user) {
                 $userIds[] = $user->id;

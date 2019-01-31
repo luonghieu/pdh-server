@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin\Cast;
 use App\BankAccount;
 use App\Cast;
 use App\CastClass;
+use App\Enums\BankAccountType;
 use App\Enums\PointCorrectionType;
 use App\Enums\PointType;
 use App\Enums\ProviderType;
@@ -375,6 +376,7 @@ class CastController extends Controller
             'balance' => $newPoint,
             'type' => PointType::ADJUSTED,
             'status' => Status::ACTIVE,
+            'is_cast_adjusted' => true,
         ];
 
         try {
@@ -519,6 +521,76 @@ class CastController extends Controller
             LogService::writeErrorLog($e);
 
             return back();
+        }
+    }
+
+    public function exportBankAccounts(Request $request)
+    {
+        $bankAccounts = BankAccount::all();
+
+        $data = collect($bankAccounts)->map(function ($item) {
+                return [
+                    $item->id,
+                    $item->user_id,
+                    $item->bank_name,
+                    $item->bank_code,
+                    $item->branch_name,
+                    $item->branch_code,
+                    $item->number,
+                    $item->holder_name,
+                    $item->holder_type,
+                    BankAccountType::getDescription($item->type),
+                    Carbon::parse($item->created_at)->format('Y年m月d日'),
+                    Carbon::parse($item->updated_at)->format('Y年m月d日'),
+                ];
+            })->toArray();
+
+        $header = [
+            'No.',
+            'User ID',
+            'Bank Name',
+            'Bank Code',
+            'Branch Name',
+            'Branch Code',
+            'Number',
+            'Holder Name',
+            'Holder Type',
+            'Type',
+            'Create At',
+            'Updated At',
+        ];
+
+        try {
+            $file = CSVExport::toCSV($data, $header);
+        } catch (\Exception $e) {
+            LogService::writeErrorLog($e);
+            $request->session()->flash('msg', trans('messages.server_error'));
+
+            return redirect()->route('admin.casts.index');
+        }
+
+        $file->output('bank_accounts_' . Carbon::now()->format('Ymd_Hi') . '.csv');
+
+        return;
+    }
+
+    public function bankAccount($user)
+    {
+        $user = User::withTrashed()->find($user);
+        $bankAccount = BankAccount::where('user_id', $user->id)->first();
+
+        return view('admin.casts.bank_account', compact('user', 'bankAccount'));
+    }
+
+    public function updateNote(Request $request, Cast $user)
+    {
+        try {
+            $user->note = $request->note;
+            $user->save();
+
+            return redirect()->route('admin.users.show', compact('user'));
+        } catch (\Exception $e) {
+            LogService::writeErrorLog($e);
         }
     }
 }

@@ -1,6 +1,8 @@
 $(document).ready(function(){
   const helper = require('./helper');
-
+  function dayOfWeek() {
+    return ['日', '月', '火', '水', '木', '金', '土'];
+  }
   var checkApp = {
       isAppleDevice : function() {
         if (navigator.userAgent.match(/(iPhone|iPod|iPad)/) != null) {
@@ -27,37 +29,49 @@ $(document).ready(function(){
         window.location = '/mypage';
       })
     }
-
   }
 
   $(".checked-order-offer").on("change",function(event){
     if ($(this).is(':checked')) {
-      if($('.inactive-button-order').length) {
-        $('#confirm-orders-offer').addClass("disable");
-        $(this).prop('checked', false);
-        $('#confirm-orders-offer').prop('disabled', true);
-        $('#sp-cancel').addClass("sp-disable");
-      } else {
-        var area = $("input:radio[name='offer_area']:checked").val();
-        var otherArea = $("input:text[name='other_area_offer']").val();
+      if(localStorage.getItem("order_offer")){
+        var offerId = $('.offer-id').val();
+        var orderOffer = JSON.parse(localStorage.getItem("order_offer"));
 
-        if((!area || (area=='その他' && !otherArea))) {
+        if(orderOffer[offerId]) {
+          orderOffer = orderOffer[offerId];
+          var area = $("input:radio[name='offer_area']:checked").val();
+          var otherArea = $("input:text[name='other_area_offer']").val();
+          var checkExpired = $("#check-expired").val();
+
+          if(((checkExpired == 1) || !area || (area=='その他' && !otherArea) || $('.inactive-button-order').length 
+            || !orderOffer.current_date)) {
+            $('#confirm-orders-offer').addClass("disable");
+            $(this).prop('checked', false);
+            $('#confirm-orders-offer').prop('disabled', true);
+            $('#sp-cancel').addClass("sp-disable");
+          } else {
+            $('#confirm-orders-offer').removeClass('disable');
+            $(this).prop('checked', true);
+            $('#confirm-orders-offer').prop('disabled', false);
+            $('#sp-cancel').removeClass('sp-disable');
+          }
+        } else {
           $('#confirm-orders-offer').addClass("disable");
           $(this).prop('checked', false);
           $('#confirm-orders-offer').prop('disabled', true);
           $('#sp-cancel').addClass("sp-disable");
-        } else {
-          $('#confirm-orders-offer').removeClass('disable');
-          $(this).prop('checked', true);
-          $('#confirm-orders-offer').prop('disabled', false);
-          $('#sp-cancel').removeClass('sp-disable');
         }
-      }
-    } else {
-        $(this).prop('checked', false);
+      } else {
         $('#confirm-orders-offer').addClass("disable");
+        $(this).prop('checked', false);
         $('#confirm-orders-offer').prop('disabled', true);
         $('#sp-cancel').addClass("sp-disable");
+      }
+    } else {
+      $(this).prop('checked', false);
+      $('#confirm-orders-offer').addClass("disable");
+      $('#confirm-orders-offer').prop('disabled', true);
+      $('#sp-cancel').addClass("sp-disable");
     }
   });
 
@@ -73,7 +87,7 @@ $(document).ready(function(){
 
   $('#lb-order-offer').on("click",function(event){
     $('.modal-confirm-offer').css('display','none');
-    
+
     var area = $("input:radio[name='offer_area']:checked").val();
     if('その他'== area){
       area =   $("input:text[name='other_area_offer']").val();
@@ -97,8 +111,8 @@ $(document).ready(function(){
 
     var time = hour + ':' + minute;
 
+    var offerId = $('.offer-id').val();
     if(localStorage.getItem("order_offer")){
-      var offerId = $('.offer-id').val();
       var orderOffer = JSON.parse(localStorage.getItem("order_offer"));
       if(orderOffer[offerId]) {
         orderOffer = orderOffer[offerId];
@@ -142,7 +156,7 @@ $(document).ready(function(){
       .catch(function(error) {
         $('#order-offer-popup').prop('checked',false);
          if (error.response.status == 401) {
-            window.location = '/login/line';
+            window.location = '/login';
           } else {
             if(error.response.status == 422) {
                 $('#timeout-offer-message h2').css('font-size', '15px');
@@ -157,33 +171,41 @@ $(document).ready(function(){
                   window.location = '/mypage';
                 })
             } else {
-              var content = '';
-              var err ='';
+              if (error.response.status == 406) {
+                $('#admin-edited').prop('checked',true);
+                
+                $('#reload-offer').on("click",function(event){
+                  if (localStorage.getItem("order_offer")) {
+                    localStorage.removeItem("order_offer");
+                  }
+                  window.location = '/offers/' + offerId;
+                })
+              } else {
+                var content = '';
+                var err ='';
 
-              if (error.response.status == 400) {
-                var err = '開始時間は現在時刻から30分以降の時間を選択してください';
+                if (error.response.status == 400) {
+                  var err = '開始時間は現在時刻から30分以降の時間を選択してください';
+                }
+
+                if(error.response.status == 500) {
+                var err = 'この操作は実行できません';
+                }
+
+                if(error.response.status == 404) {
+                  var err = '予約が存在しません';
+                }
+
+                if(error.response.status == 409) {
+                  var err = '支払い方法が未登録です';
+                }
+
+                $('#err-offer-message h2').html(err);
+                $('#err-offer-message p').html(content);
+
+                $('#err-offer').prop('checked',true);
               }
 
-              if(error.response.status == 500) {
-              var err = 'この操作は実行できません';
-              }
-
-              if(error.response.status == 404) {
-                var err = '予約が存在しません';
-              }
-
-              if(error.response.status == 409) {
-                var err = '支払い方法が未登録です';
-              }
-
-               if(error.response.status == 406) {
-                content = '予約日までにクレジットカードの <br> 1有効期限が切れます  <br> <br> 予約を完了するには  <br> カード情報を更新してください';
-              }
-
-              $('#err-offer-message h2').html(err);
-              $('#err-offer-message p').html(content);
-
-              $('#err-offer').prop('checked',true);
             }
           }
       })
@@ -223,14 +245,15 @@ $(document).ready(function(){
         if(orderOffer.text_area){
           $("input:text[name='other_area_offer']").val(orderOffer.text_area);
         }
-
       }
+
       if(!$("input:text[name='other_area_offer']").val()) {
         $('#confirm-orders-offer').addClass("disable");
         $(".checked-order-offer").prop('checked', false);
         $('#confirm-orders-offer').prop('disabled', true);
         $('#sp-cancel').addClass("sp-disable");
       }
+
     }
 
     var params = {
@@ -273,7 +296,7 @@ $(document).ready(function(){
     startMinuteTo   = hour == startHourTo   ? parseInt(startMinuteTo) : 59;
 
     for (var i = startMinuteFrom; i <= startMinuteTo; i++) {
-      var value = (i < 10) ? `0${i}` : i;
+      var value = (i < 10) ? `0${parseInt(i)}` : i;
 
       html += `<option value="${value}">${value}分</option>`;
     }
@@ -291,7 +314,7 @@ $(document).ready(function(){
 
     var now = new Date();
     var check = hour;
-    
+
     if (23<hour) {
       switch(hour) {
         case '24':
@@ -321,15 +344,11 @@ $(document).ready(function(){
       }
     }
 
-    var add_minutes =  function (dt, minutes) {
-      return new Date(dt.getTime() + minutes*60000);
-    }
-
     utc = now.getTime() + (now.getTimezoneOffset() * 60000);
     nd = new Date(utc + (3600000*9));
 
-    if (add_minutes(nd, 30) > checkDate) {
-      checkDate = add_minutes(nd, 30);
+    if (helper.add_minutes(nd, 30) > checkDate) {
+      checkDate = helper.add_minutes(nd, 30);
     }
 
     var startTimeTo = $('#start-time-to-offer').val();
@@ -355,7 +374,7 @@ $(document).ready(function(){
         var timeTo = new Date(currentDate[0] +'-' +currentDate[1]+'-'+currentDate[2] +' ' +startHourTo +':' +startMinuteTo);
       }
     }
-    
+
     if (timeTo < checkDate ) {
       checkDate = timeTo;
     }
@@ -382,8 +401,15 @@ $(document).ready(function(){
       minuteOffer = '0'+minuteOffer;
     }
     var time = yearOffer + '-' + monthOffer + '-' +  dateOffer;
+    if (checkApp.isAppleDevice()) {
+      var dateFolowDevice = new Date(monthOffer +'/' + dateOffer +'/'+ yearOffer);
+    } else {
+      var dateFolowDevice = new Date(yearOffer +'-' + monthOffer +'-'+ dateOffer);
+    }
+    var getDayOfWeek = dateFolowDevice.getDay();
+    var dayOfWeekString = dayOfWeek()[getDayOfWeek];
 
-    $('#temp-date-offer').text(yearOffer+'年'+monthOffer+'月'+dateOffer+'日');
+    $('#temp-date-offer').text(yearOffer+'年'+monthOffer+'月'+dateOffer+'日('+dayOfWeekString+')');
     $('.time-offer').text(hourOffer + ':' + minuteOffer +'~');
 
     check = hourOffer;
@@ -431,21 +457,25 @@ $(document).ready(function(){
 
     window.axios.post('/api/v1/orders/price',input)
       .then(function(response) {
-        totalPoint = response.data['data'];
-        $('#temp-point-offer').val(totalPoint);
-        var data = {
-          current_total_point: totalPoint,
-        };
+        if (response.data.data) {
+          var nightFee = parseInt(response.data.data.allowance_point).toLocaleString(undefined,{ minimumFractionDigits: 0 });
+          var orderPoint = parseInt(response.data.data.order_point + response.data.data.order_fee).toLocaleString(undefined,{ minimumFractionDigits: 0 });
+          totalPoint = parseInt(response.data.data.allowance_point + response.data.data.order_point + response.data.data.order_fee).toLocaleString(undefined,{ minimumFractionDigits: 0 });
+          $('#order-point').html(orderPoint + 'P');
+          $('#night-fee').html(nightFee+'P');
+          $('#total-point-order').html(totalPoint+'P');
+          $('#temp-point-offer').val(response.data.data.allowance_point + response.data.data.order_point + response.data.data.order_fee);
 
-        totalPoint = parseInt(totalPoint).toLocaleString(undefined,{ minimumFractionDigits: 0 });
-        $('.total-amount').text(totalPoint +'P~');
-
-
-        helper.updateLocalStorageKey('order_offer', data, offerId);
+          var data = {
+            current_total_point: response.data.data.allowance_point + response.data.data.order_point + response.data.data.order_fee,
+          };
+          $('.total-amount').text(totalPoint +'P');
+          helper.updateLocalStorageKey('order_offer', data, offerId);
+        }
       }).catch(function(error) {
         console.log(error);
         if (error.response.status == 401) {
-          window.location = '/login/line';
+          window.location = '/login';
         }
     });
   })
@@ -461,13 +491,21 @@ $(document).ready(function(){
 
         if(orderOffer.current_total_point){
           totalPoint = parseInt(orderOffer.current_total_point).toLocaleString(undefined,{ minimumFractionDigits: 0 });
-          $('.total-amount').text(totalPoint +'P~');
+          $('.total-amount').text(totalPoint +'P');
           $('#temp-point-offer').val(orderOffer.current_total_point);
         }
 
         if(orderOffer.current_date) {
           currentDate = orderOffer.current_date.split('-');
-          $('#temp-date-offer').text(currentDate[0]+'年'+currentDate[1]+'月'+currentDate[2]+'日');
+          if (checkApp.isAppleDevice()) {
+            var dateFolowDevice = new Date(currentDate[1] +'/' + currentDate[2] +'/'+ currentDate[0]);
+          } else {
+            var dateFolowDevice = new Date(currentDate[0] +'-' + currentDate[1] +'-'+ currentDate[2]);
+          }
+
+          var getDayOfWeek = dateFolowDevice.getDay();
+          var dayOfWeekString = dayOfWeek()[getDayOfWeek];
+          $('#temp-date-offer').text(currentDate[0]+'年'+currentDate[1]+'月'+currentDate[2]+'日('+dayOfWeekString+')');
         }
           //area
         if(orderOffer.select_area){
@@ -529,7 +567,7 @@ $(document).ready(function(){
           startMinuteTo   = orderOffer.hour == startHourTo   ? startMinuteTo   : 59;
 
           for (var i = startMinuteFrom; i <= startMinuteTo; i++) {
-            var value = i < 10 ? `0${i}` : i;
+            var value = i < 10 ? `0${parseInt(i)}` : i;
             var selected = i == orderOffer.minute ? 'selected' : '';
 
             html += `<option value="${value}" ${selected}>${value}分</option>`;
@@ -538,6 +576,150 @@ $(document).ready(function(){
           $('.select-minute-offer').html(html);
         }
       }
+    }
+  }
+
+  var currentUrl = window.location.href;
+  var regex = /offers\/\d/;
+
+  if (currentUrl.match(regex)) {
+    $('.btn-choose-time-success').click(function(event) {
+      $('#temp-time-offer').removeClass('color-placeholder');
+      $('#temp-time-offer').addClass('color-choose-time');
+    });
+
+    if(localStorage.getItem("order_offer")){
+      var offerId = $('.offer-id').val();
+      var orderOffer = JSON.parse(localStorage.getItem("order_offer"));
+      if (orderOffer[offerId]) {
+        $('#temp-time-offer').removeClass('color-placeholder');
+        $('#temp-time-offer').addClass('color-choose-time');
+      }
+    } else {
+      $('#temp-time-offer').removeClass('color-choose-time');
+      $('#temp-time-offer').addClass('color-placeholder');
+    }
+
+    $('.details-list').css({
+      display: 'none',
+    });
+
+    function caculatorPoint() {
+      var hour = $(".select-hour-offer option:selected").val();
+      var minute = $(".select-minute-offer option:selected").val();
+      var offerId = $('.offer-id').val();
+      var date = $('#current-date-offer').val();
+      var duration = $("#duration-offer").val();
+      var classId = $('#current-class-id-offer').val();
+      var castIds = $('#current-cast-id-offer').val();
+      var totalCast = castIds.split(',').length;
+
+      if(localStorage.getItem("order_offer")){
+        var orderOffer = JSON.parse(localStorage.getItem("order_offer"));
+        if(orderOffer[offerId]) {
+          orderOffer = orderOffer[offerId];
+          if(orderOffer.current_date) {
+            date = orderOffer.current_date;
+            hour = orderOffer.hour;
+            minute = orderOffer.minute;
+            if (23 < hour) {
+              switch(hour) {
+                case '24':
+                    hour = '00';
+                    break;
+                case '25':
+                    hour = '01';
+                    break;
+                case '26':
+                    hour = '02';
+                    break;
+              }
+            }
+          }
+        }
+      }
+
+      var time = hour + ':' + minute;
+
+      var params = {
+        date: date,
+        start_time: time,
+        duration: duration,
+        type: 2,
+        class_id: classId,
+        total_cast: totalCast,
+        nominee_ids: castIds,
+        offer: 1,
+      }
+
+      window.axios.post('/api/v1/orders/price', params)
+      .then(function(response) {
+        if(response.data.data) {
+          var nightFee = parseInt(response.data.data.allowance_point).toLocaleString(undefined,{ minimumFractionDigits: 0 });
+          var orderPoint = parseInt(response.data.data.order_point + response.data.data.order_fee).toLocaleString(undefined,{ minimumFractionDigits: 0 });
+          var totalOrderPoint = parseInt(response.data.data.allowance_point + response.data.data.order_point + response.data.data.order_fee).toLocaleString(undefined,{ minimumFractionDigits: 0 });
+
+          $('#order-point').html(orderPoint + 'P');
+          $('#night-fee').html(nightFee+'P');
+          $('#total-point-order').html(totalOrderPoint+'P');
+        }
+      })
+      .catch(function(error) {
+        if (error.response.status == 401) {
+          window.location = '/login';
+        }
+      });
+    }
+
+    caculatorPoint();
+
+    // Set the date we're counting down to
+    var date = $('#expired-date').val();
+    var month = $('#expired-month').val();
+    var year = $('#expired-year').val();
+    var hour = $('#expired-hour').val();
+    var minute = $('#expired-minute').val();
+
+    if (date && month && year && hour && minute) {
+      if (checkApp.isAppleDevice()) {
+        var dateFolowDevice = new Date(month +'/' + date +'/'+ year +' ' + hour +':' + minute).getTime();
+      } else {
+        var dateFolowDevice = new Date(year +'-' + month +'-'+ date +' ' + hour +':' + minute).getTime();
+      }
+
+      // Update the count down every 1 second
+      var x = setInterval(function() {
+        // Get todays date and time
+        var now = new Date();
+        utc = now.getTime() + (now.getTimezoneOffset() * 60000);
+        nd = new Date(utc + (3600000*9));
+        var nowJapan = new Date(nd).getTime();
+        // Find the distance between now and the count down date
+        var distance = dateFolowDevice - nowJapan;
+
+        // Time calculations for days, hours, minutes and seconds
+        var days = Math.floor(distance / (1000 * 60 * 60 * 24));
+        var hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+        var minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+        if (minutes < 10) {
+          minutes = '0' + minutes;
+        }
+        var seconds = Math.floor((distance % (1000 * 60)) / 1000);
+        if (seconds < 10) {
+          seconds = '0' + seconds;
+        }
+        // Output the result in an element with id="demo"
+        document.getElementById("time-countdown").innerHTML = hours+(days*24) + "時間"
+        + minutes + "分" + seconds + "秒";
+        // If the count down is over, write some text
+        if (distance < 0) {
+          clearInterval(x);
+          document.getElementById("time-countdown").innerHTML = "0時間00分00秒";
+          $("#check-expired").val(1);
+        }
+      }, 1000);
+    } else {
+      document.getElementById("time-countdown").innerHTML = "00時間00分00秒";
     }
   }
 })

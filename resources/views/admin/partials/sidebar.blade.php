@@ -38,7 +38,8 @@ $routes = [
               'admin.casts.save',
               'admin.casts.guest_ratings',
               'admin.casts.operation_history',
-              'admin.casts.create'
+              'admin.casts.create',
+              'admin.casts.bank_account',
             ],
         ],
     ],
@@ -62,7 +63,8 @@ $routes = [
               'admin.orders.candidates',
               'admin.orders.call',
               'admin.orders.casts_matching',
-              'admin.orders.order_nominee'
+              'admin.orders.order_nominee',
+              'admin.orders.edit_order_call'
             ],
         ],
     ],

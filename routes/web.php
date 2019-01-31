@@ -72,15 +72,11 @@ Route::group(['middleware' => ['auth', 'guest', 'check_info'], 'as' => 'guest.']
     Route::group(['middleware' => 'is_active', 'as' => 'orders.'], function () {
         Route::get('/reserve', ['as' => 'reserve', 'uses' => 'OrderController@index']);
         Route::get('/call', ['as' => 'call', 'uses' => 'OrderController@call']);
-        Route::post('/call', ['as' => 'post_call', 'uses' => 'OrderController@getParams']);
         Route::get('/call/step2', ['as' => 'get_step2', 'uses' => 'OrderController@selectTags']);
-        Route::post('/call/step2', ['as' => 'post_step2', 'uses' => 'OrderController@getTags']);
         Route::get('/call/step3', ['as' => 'get_step3', 'uses' => 'OrderController@selectCasts']);
         Route::get('/call/step4', ['as' => 'get_step4', 'uses' => 'OrderController@attention']);
         Route::get('/cancellation_policies', ['as' => 'cancel', 'uses' => 'OrderController@cancel']);
         Route::get('/call/confirm', ['as' => 'confirm', 'uses' => 'OrderController@confirm']);
-        Route::post('/call/confirm', ['as' => 'post_confirm', 'uses' => 'OrderController@getConfirm']);
-        Route::post('/call/add', ['as' => 'add', 'uses' => 'OrderController@add']);
         Route::get('/nominate', ['as' => 'nominate', 'uses' => 'OrderController@nominate']);
         Route::post('/nominate', ['as' => 'post_nominate', 'uses' => 'OrderController@createNominate']);
         Route::get('/nominate/step2', ['as' => 'nominate_step2', 'uses' => 'OrderController@nominateAttention']);
