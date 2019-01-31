@@ -51,11 +51,11 @@
             <div class="col-sm-4">
               {{ Carbon\Carbon::parse($offer->start_time_from)->format('H:i') }} &nbsp ~ &nbsp
               @php
-                $startHour = (int)Carbon\Carbon::parse($offer->start_time_from)->format('H');
-                $endHour = (int)Carbon\Carbon::parse($offer->start_time_to)->format('H');
-                $endMinute = (int)Carbon\Carbon::parse($offer->start_time_to)->format('i');
+                $startHour = Carbon\Carbon::parse($offer->start_time_from)->format('H');
+                $endHour = Carbon\Carbon::parse($offer->start_time_to)->format('H');
+                $endMinute = Carbon\Carbon::parse($offer->start_time_to)->format('i');
 
-                if ($endHour < $startHour) {
+                if ((int)$endHour < (int)$startHour) {
                   switch ($endHour) {
                   case 0:
                   $endHour = 24;
@@ -86,6 +86,14 @@
           <div class="col-lg-12 wrap-qr-code">
             <div class="col-sm-4 ">
               <p class="confirm-area-offer">東京</p>
+            </div>
+          </div>
+          <div class="col-lg-12 wrap-qr-code lb-date-offer">
+            <label class="">オファーの応募締切期限</label>
+          </div>
+          <div class="col-lg-12 wrap-qr-code">
+            <div class="col-sm-4 ">
+              <p class="">{{ Carbon\Carbon::parse($offer->expired_date)->format('Y年m月d日 H:i') }}</p>
             </div>
           </div>
           <div class="col-lg-12 wrap-qr-code">

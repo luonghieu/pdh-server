@@ -3,12 +3,6 @@ $(document).ready(function(){
 
   $(".checked-order").on("change",function(event){
     if ($(this).is(':checked')) {
-      if($('.inactive-button-order').length) {
-        $('#confirm-orders-nomination').addClass("disable");
-        $(this).prop('checked', false);
-        $('#confirm-orders-nomination').prop('disabled', true);
-        $('#sp-cancel').addClass("sp-disable");
-      } else {      
         var time = $("input:radio[name='time_join_nomination']:checked").val();
         var area = $("input:radio[name='nomination_area']:checked").val();
         var duration = $("input:radio[name='time_set_nomination']:checked").val();
@@ -17,7 +11,8 @@ $(document).ready(function(){
         var otherArea = $("input:text[name='other_area_nomination']").val();
 
         if((!area || (area=='その他' && !otherArea)) || !time ||
-         (!duration || (duration<1 && 'other_time_set' != duration)) || (time=='other_time' && !date)) {
+         (!duration || (duration<1 && 'other_time_set' != duration)) || (time=='other_time' && !date) 
+         || $('.inactive-button-order').length) {
 
           $('#confirm-orders-nomination').addClass("disable");
           $(this).prop('checked', false);
@@ -29,7 +24,6 @@ $(document).ready(function(){
           $('#confirm-orders-nomination').prop('disabled', false);
           $('#sp-cancel').removeClass('sp-disable');
         }
-      }
     } else {
         $(this).prop('checked', false);
         $('#confirm-orders-nomination').addClass("disable");
@@ -39,11 +33,20 @@ $(document).ready(function(){
   });
 
   //textArea
-  $("input:text[name='other_area_nomination']").on('change', function(e) {
+  $("input:text[name='other_area_nomination']").on('input', function(e) {
     var params = {
       text_area: $(this).val(),
     };
     helper.updateLocalStorageValue('order_params', params);
+
+    var area = $("input:radio[name='nomination_area']:checked").val();
+
+    if (!area || (!$(this).val())) {
+      $('#confirm-orders-nomination').addClass("disable");
+       $('.checked-order').prop('checked', false);
+      $('#confirm-orders-nomination').prop('disabled', true);
+      $('#sp-cancel').addClass("sp-disable");
+    }
   });
 
   //area
@@ -54,10 +57,17 @@ $(document).ready(function(){
     if('その他'== areaNomination){
       if(localStorage.getItem("order_params")){
         var orderParams = JSON.parse(localStorage.getItem("order_params"));
+
+        if(orderParams.text_area){
+          $("input:text[name='other_area_nomination']").val(orderParams.text_area);
+        }
       }
 
-      if(orderParams.text_area){
-        $("input:text[name='other_area_nomination']").val(orderParams.text_area);
+      if (!$("input:text[name='other_area_nomination']").val()) {
+        $('#confirm-orders-nomination').addClass("disable");
+        $('.checked-order').prop('checked', false);
+        $('#confirm-orders-nomination').prop('disabled', true);
+        $('#sp-cancel').addClass("sp-disable");
       }
     }
 
@@ -97,13 +107,17 @@ $(document).ready(function(){
 
     if(time){
       var currentDate = new Date();
-      var year = currentDate.getFullYear();
+      utc = currentDate.getTime() + (currentDate.getTimezoneOffset() * 60000);
+      nd = new Date(utc + (3600000*9));
+
+      var year = nd.getFullYear();
+      
       if ((time == 'other_time')) {
         var month = $('.select-month').val();
-        var checkMonth = currentDate.getMonth();
+        var checkMonth = nd.getMonth();
 
         if (month <= checkMonth) {
-          var year = currentDate.getFullYear() + 1;
+          var year = nd.getFullYear() + 1;
         }
 
         if(month<10) {
@@ -130,17 +144,11 @@ $(document).ready(function(){
         var date = year+'-'+month+'-'+day;
         var time = hour+':'+minute;
       } else{
-          utc = currentDate.getTime() + (currentDate.getTimezoneOffset() * 60000);
-          nd = new Date(utc + (3600000*9));
 
-          var add_minutes =  function (dt, minutes) {
-            return new Date(dt.getTime() + minutes*60000);
-          }
+          var selectDate = helper.add_minutes(nd,time);
 
-          var selectDate = add_minutes(nd,time);
-
-          if (add_minutes(nd, 30) > selectDate) {
-            selectDate = add_minutes(nd, 30);
+          if (helper.add_minutes(nd, 30) > selectDate) {
+            selectDate = helper.add_minutes(nd, 30);
           }
 
           var day = selectDate.getDate();
@@ -189,7 +197,7 @@ $(document).ready(function(){
         }).catch(function(error) {
           console.log(error);
           if (error.response.status == 401) {
-            window.location = '/login/line';
+            window.location = '/login';
           }
         });
       } else {
@@ -218,14 +226,17 @@ $(document).ready(function(){
     var totalPoint=cost*(duration*6)/3;
     if(time) {
       var currentDate = new Date();
-      var year = currentDate.getFullYear();
+      utc = currentDate.getTime() + (currentDate.getTimezoneOffset() * 60000);
+      nd = new Date(utc + (3600000*9));
+
+      var year = nd.getFullYear();
 
       if (time == 'other_time') {
         var month = $('.select-month').val();
-        var checkMonth = currentDate.getMonth();
+        var checkMonth = nd.getMonth();
 
         if (month <= checkMonth) {
-          var year = currentDate.getFullYear() + 1;
+          var year = nd.getFullYear() + 1;
         }
 
         if(month<10) {
@@ -252,16 +263,11 @@ $(document).ready(function(){
         var date = year+'-'+month+'-'+day;
         var time = hour+':'+minute;
       } else{
-          utc = currentDate.getTime() + (currentDate.getTimezoneOffset() * 60000);
-          nd = new Date(utc + (3600000*9));
 
-          var add_minutes =  function (dt, minutes) {
-            return new Date(dt.getTime() + minutes*60000);
-          }
-          var selectDate = add_minutes(nd,time);
+          var selectDate = helper.add_minutes(nd,time);
 
-          if (add_minutes(nd, 30) > selectDate) {
-            selectDate = add_minutes(nd, 30);
+          if (helper.add_minutes(nd, 30) > selectDate) {
+            selectDate = helper.add_minutes(nd, 30);
           }
 
           var day = selectDate.getDate();
@@ -311,7 +317,7 @@ $(document).ready(function(){
         }).catch(function(error) {
           console.log(error);
           if (error.response.status == 401) {
-            window.location = '/login/line';
+            window.location = '/login';
           }
         });
       } else {
@@ -330,135 +336,6 @@ $(document).ready(function(){
     $('.reservation-total__text').text('内訳：'+cost+ '(キャストP/30分)✖'+(duration)+'時間')
   })
 
-  $('.choose-time').on("click",function(){
-    var cost = $('.cost-order').val();
-    var time = $("input:radio[name='time_join_nomination']:checked").val();
-
-      var currentDate = new Date();
-      var year = currentDate.getFullYear();
-      if ((time == 'other_time')) {
-        var month = $('.select-month').val();
-        var checkMonth = currentDate.getMonth();
-
-        if (month <= checkMonth) {
-          var year = currentDate.getFullYear() + 1;
-        }
-
-        if(month<10) {
-          month = '0'+month;
-        }
-
-        var day = $('.select-date').val();
-
-        if(day<10) {
-          day = '0'+day;
-        }
-
-        var hour = $('.select-hour').val();
-
-        if(hour<10) {
-          hour = '0'+hour;
-        }
-
-        var minute = $('.select-minute').val();
-        if(minute<10) {
-          minute = '0'+minute;
-        }
-
-      var updateOtherTime = {
-          current_month: month,
-          current_date: day,
-          current_hour: hour,
-          current_minute: minute,
-        };
-
-      helper.updateLocalStorageValue('order_params', updateOtherTime);
-
-      var date = year+'-'+month+'-'+day;
-      var time = hour+':'+minute;
-      } else{
-        utc = currentDate.getTime() + (currentDate.getTimezoneOffset() * 60000);
-        nd = new Date(utc + (3600000*9));
-
-        var add_minutes =  function (dt, minutes) {
-          return new Date(dt.getTime() + minutes*60000);
-        }
-
-        var selectDate = add_minutes(nd,time);
-
-        if (add_minutes(nd, 30) > selectDate) {
-          selectDate = add_minutes(nd, 30);
-        }
-
-        var day = selectDate.getDate();
-        if(day<10) {
-          day = '0'+day;
-        }
-
-        var month = selectDate.getMonth() +1;
-        if(month<10) {
-          month = '0'+month;
-        }
-        var hour = selectDate.getHours();
-        if(hour<10) {
-          hour = '0'+hour;
-        }
-
-        var minute = selectDate.getMinutes();
-        if(minute<10) {
-          minute = '0'+minute;
-        }
-
-        var date = year+'-'+month+'-'+day;
-        var time = hour+':'+minute;
-
-        var updateSelectedDate = {
-          current_date: day,
-          current_month: month,
-          current_time: time,
-        };
-
-        helper.updateLocalStorageValue('order_params', updateSelectedDate);
-    }
-
-    if ($("input:radio[name='time_set_nomination']:checked").length) {
-      var duration = $("input:radio[name='time_set_nomination']:checked").val();
-
-      if('other_time_set' == duration) {
-        duration = $('.select-duration option:selected').val();
-      }
-
-      $castId = $('.cast-id').val();
-      var params = {
-        date : date,
-        start_time : time,
-        type :3,
-        duration :duration,
-        total_cast :1,
-        nominee_ids : $castId
-      };
-
-      window.axios.post('/api/v1/orders/price',params)
-        .then(function(response) {
-          var totalPoint=cost*(duration*6)/3;
-          totalPoint = response.data['data'];
-          totalPoint = parseInt(totalPoint).toLocaleString(undefined,{ minimumFractionDigits: 0 });
-          $('.total-point').text(totalPoint +'P~');
-
-          var params = {
-            current_total_point: totalPoint,
-          };
-
-          helper.updateLocalStorageValue('order_params', params);
-        }).catch(function(error) {
-          console.log(error);
-          if (error.response.status == 401) {
-            window.location = '/login/line';
-          }
-      });
-    }
-  })
-
 //timejoin
   $("input:radio[name='time_join_nomination']").on("change",function(){
     var time = $("input:radio[name='time_join_nomination']:checked").val();
@@ -473,9 +350,7 @@ $(document).ready(function(){
     if('other_time' == time) {
       if(localStorage.getItem("order_params")){
         var orderParams = JSON.parse(localStorage.getItem("order_params"));
-      }
 
-      if(orderParams){
         if('other_time'== orderParams.current_time_set){
           if(orderParams.current_month){
            const inputMonth = $('select[name=sl_month_nomination] option');
@@ -529,13 +404,17 @@ $(document).ready(function(){
       var cost = $('.cost-order').val();
 
       var currentDate = new Date();
-      var year = currentDate.getFullYear();
+      utc = currentDate.getTime() + (currentDate.getTimezoneOffset() * 60000);
+      nd = new Date(utc + (3600000*9));
+
+      var year = nd.getFullYear();
+
       if (time == 'other_time') {
         var month = $('.select-month').val();
-        var checkMonth = currentDate.getMonth();
+        var checkMonth = nd.getMonth();
 
         if (month <= checkMonth) {
-          var year = currentDate.getFullYear() + 1;
+          var year = nd.getFullYear() + 1;
         }
 
         if(month<10) {
@@ -562,16 +441,11 @@ $(document).ready(function(){
         var date = year+'-'+month+'-'+day;
         var time = hour+':'+minute;
       } else{
-          utc = currentDate.getTime() + (currentDate.getTimezoneOffset() * 60000);
-          nd = new Date(utc + (3600000*9));
 
-          var add_minutes =  function (dt, minutes) {
-            return new Date(dt.getTime() + minutes*60000);
-          }
-          var selectDate = add_minutes(nd,time);
+          var selectDate = helper.add_minutes(nd,time);
 
-          if (add_minutes(nd, 30) > selectDate) {
-            selectDate = add_minutes(nd, 30);
+          if (helper.add_minutes(nd, 30) > selectDate) {
+            selectDate = helper.add_minutes(nd, 30);
           }
 
           var day = selectDate.getDate();
@@ -622,7 +496,7 @@ $(document).ready(function(){
         }).catch(function(error) {
           console.log(error);
           if (error.response.status == 401) {
-            window.location = '/login/line';
+            window.location = '/login';
           }
         });
     }
@@ -647,9 +521,7 @@ $(document).ready(function(){
   if ($('#create-nomination-form').length) {
     if(localStorage.getItem("order_params")){
       var orderParams = JSON.parse(localStorage.getItem("order_params"));
-    }
 
-    if(orderParams){
       if(orderParams.current_total_point){
           $('.total-point').text(orderParams.current_total_point +'P~');
       }
@@ -674,7 +546,12 @@ $(document).ready(function(){
       var cost = $('.cost-order').val();
       if(orderParams.current_duration){
         if('other_time_set' == orderParams.current_duration) {
+          if(orderParams.select_duration) {
           var chooseDuration = orderParams.select_duration;
+          } else {
+          var chooseDuration = 4;
+          }
+          
           $('.time-input-nomination').css('display','flex');
         } else {
           var chooseDuration = orderParams.current_duration;
@@ -710,6 +587,7 @@ $(document).ready(function(){
           $('.date-input-nomination').css('display', 'flex')
 
           if(orderParams.current_month){
+            $('.month-nomination').text(orderParams.current_month +'月');
             var month = parseInt(orderParams.current_month);
 
             window.axios.post('/api/v1/get_day', {month})
@@ -722,6 +600,7 @@ $(document).ready(function(){
                 })
               $('.select-date').html(html);
               if(orderParams.current_date){
+                $('.date-nomination').text(orderParams.current_date +'日');
                 var currentDate = parseInt(orderParams.current_date);
                 const inputDate = $('select[name=sl_date_nomination] option');
 
@@ -730,12 +609,13 @@ $(document).ready(function(){
                     $(this).prop('selected',true);
                   }
                 })
-
-                $('.date-nomination').text(currentDate +'日');
               }
               })
               .catch(function (error) {
                 console.log(error);
+                if (error.response.status == 401) {
+                  window.location = '/login';
+                }
               });
 
             const inputMonth = $('select[name=sl_month_nomination] option');
@@ -744,8 +624,6 @@ $(document).ready(function(){
                 $(this).prop('selected',true);
               }
             })
-
-            $('.month-nomination').text(month +'月');
           }
 
           if(orderParams.current_hour) {

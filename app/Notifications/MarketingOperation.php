@@ -4,9 +4,8 @@ namespace App\Notifications;
 
 use Carbon\Carbon;
 use Illuminate\Bus\Queueable;
-use Illuminate\Notifications\Notification;
 use Illuminate\Contracts\Queue\ShouldQueue;
-use Storage;
+use Illuminate\Notifications\Notification;
 
 class MarketingOperation extends Notification implements ShouldQueue
 {
@@ -51,7 +50,6 @@ class MarketingOperation extends Notification implements ShouldQueue
                 . PHP_EOL . 'Cheersにご登録いただいてから1週間以内のゲスト様限定で、1時間無料キャンペーンを実施中！✨'
                 . PHP_EOL . PHP_EOL . '※予約方法は、コール予約、指名予約問いません。'
                 . PHP_EOL . '2時間以上のご予約で1時間無料となります（最大11,000円OFF）'
-                . PHP_EOL . PHP_EOL . '忘年会の季節に、キャストを呼んで飲み会や接待を盛り上げませんか？'
                 . PHP_EOL . PHP_EOL . '無料体験ができるのは今だけ！'
                 . PHP_EOL . 'この機会にぜひご利用ください🌷'
                 . PHP_EOL . 'キャンペーン中のため利用者が増えております。'
@@ -68,12 +66,11 @@ class MarketingOperation extends Notification implements ShouldQueue
                 . PHP_EOL . PHP_EOL . 'ご不明点はメッセージ内の運営者チャットからご連絡ください！';
         }
 
-
-        return  [
+        return [
             [
                 'type' => 'text',
-                'text' => $message
-            ]
+                'text' => $message,
+            ],
         ];
     }
 }

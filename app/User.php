@@ -340,7 +340,7 @@ class User extends Authenticatable implements JWTSubject
     {
         do {
             $code = rand(1000, 9999);
-        } while((strpos($code, '0') !== false) || (strpos($code, '7') !== false));
+        } while ((strpos($code, '0') !== false) || (strpos($code, '7') !== false));
 
         $data = [
             'code' => $code,

@@ -162,7 +162,7 @@ class CreateGuest extends Notification implements ShouldQueue
         $content = 'こんにちは！' . $name . 'さん🌼';
         $page = env('LINE_LIFF_REDIRECT_PAGE') . '?page=call';
 
-        return [
+        $baseMessage = [
             [
                 'type' => 'template',
                 'altText' => $content,
@@ -180,6 +180,9 @@ class CreateGuest extends Notification implements ShouldQueue
                 ]
             ]
         ];
+
+        $messages = array_merge($baseMessage, $this->limitedLineMessage());
+        return $messages;
     }
 
     private function limitedMessages($notifiable, $room)
@@ -194,7 +197,6 @@ class CreateGuest extends Notification implements ShouldQueue
                 . PHP_EOL . '2時間以上のご予約で1時間無料となります（最大11,000円OFF）'
                 . PHP_EOL . PHP_EOL . 'ギャラ飲み初めての方も安心！'
                 . PHP_EOL . 'Cheersのキャストが盛り上げます🙋‍♀️❤️'
-                . PHP_EOL . '忘年会の季節に、キャストを呼んで飲み会や接待を盛り上げませんか？'
                 . PHP_EOL . PHP_EOL . 'ご登録から1週間を超えてしまうとキャンペーン対象外となりますのでお早めにご予約ください。'
                 . PHP_EOL . PHP_EOL . 'ご不明点はメッセージ内の運営者チャットからご連絡ください！';
 
@@ -239,5 +241,88 @@ class CreateGuest extends Notification implements ShouldQueue
             ]);
             $bannerImgMessage->recipients()->attach($notifiable->id, ['room_id' => $room->id]);
         }
+    }
+
+    private function limitedLineMessage()
+    {
+        $message = 'Cheersへようこそ！'
+            . PHP_EOL . 'Cheersは飲み会や接待など様々なシーンに素敵なキャストを呼べるマッチングアプリです♪'
+            . PHP_EOL . '【現在対応可能エリア】'
+            . PHP_EOL . '東京都23区'
+            . PHP_EOL . '※随時エリア拡大予定';
+        $firstButton = env('LINE_LIFF_REDIRECT_PAGE');
+        $secondButton = env('LINE_LIFF_REDIRECT_PAGE') . '?page=call';
+        $messages = [
+            [
+                'type' => 'template',
+                'altText' => $message,
+                'text' => $message,
+                'template' => [
+                    'type' => 'buttons',
+                    'text' => $message,
+                    'actions' => [
+                        [
+                            'type' => 'uri',
+                            'label' => 'ログイン',
+                            'uri' => "line://app/$firstButton"
+                        ],
+                        [
+                            'type' => 'uri',
+                            'label' => '今すぐキャストを呼ぶ',
+                            'uri' => "line://app/$secondButton"
+                        ]
+                    ]
+                ]
+            ]
+        ];
+
+        $now = Carbon::now()->startOfDay();
+        $limitedMessageFromDate = Carbon::parse(env('CAMPAIGN_FROM'))->startOfDay();
+        $limitedMessageToDate = Carbon::parse(env('CAMPAIGN_TO'))->endOfDay();
+        if ($now->between($limitedMessageFromDate, $limitedMessageToDate)) {
+
+            $pricesSrc = Storage::url('add_friend_price_063112.png');
+            $bannerSrc = Storage::url('add_friend_banner_063112.jpg');
+            if (!@getimagesize($pricesSrc)) {
+                $fileContents = Storage::disk('local')->get("system_images/add_friend_price_063112.png");
+                $fileName = 'add_friend_price_063112.png';
+                Storage::put($fileName, $fileContents, 'public');
+            }
+            if (!@getimagesize($bannerSrc)) {
+                $fileContents = Storage::disk('local')->get("system_images/add_friend_banner_063112.jpg");
+                $fileName = 'add_friend_banner_063112.jpg';
+                Storage::put($fileName, $fileContents, 'public');
+            }
+
+            $message = '【新規ユーザー様限定！ギャラ飲み1時間無料🥂💕】'
+                . PHP_EOL . PHP_EOL . 'Cheersにご登録いただいてから1週間以内のゲスト様限定で、1時間無料キャンペーンを実施中！✨'
+                . PHP_EOL . PHP_EOL . '※予約方法は、コール予約、指名予約問いません。'
+                . PHP_EOL . '2時間以上のご予約で1時間無料となります（最大11,000円OFF）'
+                . PHP_EOL . PHP_EOL . 'ギャラ飲み初めての方も安心！'
+                . PHP_EOL . 'Cheersのキャストが盛り上げます🙋‍♀️❤️'
+                . PHP_EOL . PHP_EOL . 'ご登録から1週間を超えてしまうとキャンペーン対象外となりますのでお早めにご予約ください。'
+                . PHP_EOL . PHP_EOL . 'ご不明点はメッセージ内の運営者チャットからご連絡ください！';
+            $opMessages = [
+                [
+                    'type' => 'text',
+                    'text' => $message
+                ],
+                [
+                    'type' => 'image',
+                    'originalContentUrl' => $pricesSrc,
+                    'previewImageUrl' => $pricesSrc
+
+                ],
+                [
+                    'type' => 'image',
+                    'originalContentUrl' => $bannerSrc,
+                    'previewImageUrl' => $bannerSrc
+                ]
+            ];
+
+            return array_merge($messages, $opMessages);
+        }
+
+        return $messages;
     }
 }
