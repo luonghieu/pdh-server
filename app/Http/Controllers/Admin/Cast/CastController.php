@@ -376,7 +376,7 @@ class CastController extends Controller
             'balance' => $newPoint,
             'type' => PointType::ADJUSTED,
             'status' => Status::ACTIVE,
-//            'is_cast_adjusted' => true, Sprint-30is_cast_adjusted
+            'is_cast_adjusted' => true,
         ];
 
         try {
