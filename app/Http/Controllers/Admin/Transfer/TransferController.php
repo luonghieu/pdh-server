@@ -22,8 +22,6 @@ class TransferController extends Controller
     public function getTransferedList(Request $request)
     {
         if ($request->from_date && $request->to_date) {
-            $fromDate = Carbon::parse($request->from_date);
-            $toDate = Carbon::parse($request->to_date);
             if ($fromDate > $toDate) {
                 return redirect()->back();
             }
@@ -60,25 +58,27 @@ class TransferController extends Controller
             ->orderBy('updated_at', 'DESC');
 
         if (!empty($request->from_date) || !empty($request->to_date)) {
-            $transfers->where(function ($query) use ($request) {
-                $query->whereHas('order', function ($q) use ($request) {
-                    if (!empty($request->from_date)) {
-                        $q->where('created_at', '>=', $request->from_date);
+            $fromDate = Carbon::parse($request->from_date)->startOfDay();
+            $toDate = Carbon::parse($request->to_date)->endOfDay();
+            $transfers->where(function ($query) use ($fromDate, $toDate) {
+                $query->whereHas('order', function ($q) use ($fromDate, $toDate) {
+                    if (!empty($fromDate)) {
+                        $q->where('created_at', '>=', $fromDate);
                     }
 
-                    if (!empty($request->to_date)) {
-                        $q->where('created_at', '<=', $request->to_date);
+                    if (!empty($toDate)) {
+                        $q->where('created_at', '<=', $toDate);
                     }
                 });
                 $query->orWhere(function ($q) {
                     $q->doesntHave('order');
 
-                    if (!empty($request->from_date)) {
-                        $q->where('created_at', '>=', $request->from_date);
+                    if (!empty($fromDate)) {
+                        $q->where('created_at', '>=', $fromDate);
                     }
 
-                    if (!empty($request->to_date)) {
-                        $q->where('created_at', '<=', $request->to_date);
+                    if (!empty($toDate)) {
+                        $q->where('created_at', '<=', $toDate);
                     }
                 });
             });
@@ -148,9 +148,7 @@ class TransferController extends Controller
     public function getNotTransferedList(Request $request)
     {
         if ($request->from_date && $request->to_date) {
-            $fromDate = Carbon::parse($request->from_date);
-            $toDate = Carbon::parse($request->to_date);
-            if ($fromDate > $toDate) {
+            if ($request->from_date > $request->to_date) {
                 return redirect()->back();
             }
         }
@@ -186,25 +184,27 @@ class TransferController extends Controller
             ->orderBy('updated_at', 'DESC');
 
         if (!empty($request->from_date) || !empty($request->to_date)) {
-            $transfers->where(function ($query) use ($request) {
-                $query->whereHas('order', function ($q) use ($request) {
-                    if (!empty($request->from_date)) {
-                        $q->where('created_at', '>=', $request->from_date);
+            $fromDate = Carbon::parse($request->from_date)->startOfDay();
+            $toDate = Carbon::parse($request->to_date)->endOfDay();
+            $transfers->where(function ($query) use ($fromDate, $toDate) {
+                $query->whereHas('order', function ($q) use ($fromDate, $toDate) {
+                    if (!empty($fromDate)) {
+                        $q->where('created_at', '>=', $fromDate);
                     }
 
-                    if (!empty($request->to_date)) {
-                        $q->where('created_at', '<=', $request->to_date);
+                    if (!empty($toDate)) {
+                        $q->where('created_at', '<=', $toDate);
                     }
                 });
                 $query->orWhere(function ($q) {
                     $q->doesntHave('order');
 
-                    if (!empty($request->from_date)) {
-                        $q->where('created_at', '>=', $request->from_date);
+                    if (!empty($fromDate)) {
+                        $q->where('created_at', '>=', $fromDate);
                     }
 
-                    if (!empty($request->to_date)) {
-                        $q->where('created_at', '<=', $request->to_date);
+                    if (!empty($toDate)) {
+                        $q->where('created_at', '<=', $toDate);
                     }
                 });
             });
@@ -220,7 +220,6 @@ class TransferController extends Controller
 
         if ('transfers' == $request->submit) {
             $transfers = $transfers->select(DB::raw('sum(point) as sum_amount,  user_id'))->groupBy('user_id')->get();
-
             $header = [
                 '1',
                 '21',
