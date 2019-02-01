@@ -93,9 +93,7 @@
                     </td>
                     @endif
                   @else
-                    <td>
-                      {{ trans('messages.order_not_found') }}
-                    </td>
+                    <td></td>
                   @endif
                 @endforeach
                  <tr>
