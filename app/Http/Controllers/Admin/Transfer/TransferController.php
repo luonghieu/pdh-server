@@ -58,14 +58,14 @@ class TransferController extends Controller
             ->orderBy('updated_at', 'DESC');
 
         if (!empty($request->from_date) || !empty($request->to_date)) {
-            $fromDate = Carbon::parse($request->from_date)->startOfDay();
-            $toDate = Carbon::parse($request->to_date)->endOfDay();
-            $transfers->where(function ($query) use ($fromDate, $toDate) {
-                if (!empty($fromDate)) {
+            $transfers->where(function ($query) use ($request) {
+                if (!empty($request->from_date)) {
+                    $fromDate = Carbon::parse($request->from_date)->startOfDay();
                     $q->where('created_at', '>=', $fromDate);
                 }
 
-                if (!empty($toDate)) {
+                if (!empty($request->to_date)) {
+                    $toDate = Carbon::parse($request->to_date)->endOfDay();
                     $q->where('created_at', '<=', $toDate);
                 }
             });
@@ -171,17 +171,16 @@ class TransferController extends Controller
             ->orderBy('updated_at', 'DESC');
 
         if (!empty($request->from_date) || !empty($request->to_date)) {
-            $fromDate = Carbon::parse($request->from_date)->startOfDay();
-            $toDate = Carbon::parse($request->to_date)->endOfDay();
-            $transfers->where(function ($query) use ($fromDate, $toDate) {
-                if (!empty($fromDate)) {
+            $transfers->where(function ($query) use ($request) {
+                if (!empty($request->from_date)) {
+                    $fromDate = Carbon::parse($request->from_date)->startOfDay();
                     $query->where('created_at', '>=', $fromDate);
                 }
 
-                if (!empty($toDate)) {
+                if (!empty($request->to_date)) {
+                    $toDate = Carbon::parse($request->to_date)->endOfDay();
                     $query->where('created_at', '<=', $toDate);
                 }
-
             });
         }
 
