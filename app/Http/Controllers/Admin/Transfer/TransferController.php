@@ -61,12 +61,12 @@ class TransferController extends Controller
             $transfers->where(function ($query) use ($request) {
                 if (!empty($request->from_date)) {
                     $fromDate = Carbon::parse($request->from_date)->startOfDay();
-                    $q->where('created_at', '>=', $fromDate);
+                    $query->where('created_at', '>=', $fromDate);
                 }
 
                 if (!empty($request->to_date)) {
                     $toDate = Carbon::parse($request->to_date)->endOfDay();
-                    $q->where('created_at', '<=', $toDate);
+                    $query->where('created_at', '<=', $toDate);
                 }
             });
         }
