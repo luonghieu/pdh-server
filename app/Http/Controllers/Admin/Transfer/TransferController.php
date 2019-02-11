@@ -249,7 +249,7 @@ class TransferController extends Controller
                 LogService::writeErrorLog($e);
             }
 
-            $file->output('non_transfered_list' . Carbon::now()->format('Ymd_Hi') . '.dat');
+            $file->output('non_transfered_list' . Carbon::now()->format('Ymd_Hi') . '.csv');
 
             return;
         }
