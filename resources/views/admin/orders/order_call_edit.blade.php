@@ -155,6 +155,7 @@
                                         </td>
                                     </tr>
                                 </table>
+                                @if($order->type != \App\Enums\OrderType::CALL)
                                 <div class="panel-body">
                                     <div class="display-title">
                                         <p>指名中キャスト一覧</p>
@@ -196,6 +197,7 @@
                                     @endif
                                     </tbody>
                                 </table>
+                                @endif
                                 <div class="panel-body">
                                     <div class="display-title">
                                         <p>応募中キャスト一覧</p>
