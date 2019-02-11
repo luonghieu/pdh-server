@@ -28,6 +28,7 @@ class CastController extends ApiController
             'height',
             'body_type_id',
             'device',
+            'prefecture_id',
         ]);
 
         $user = $this->guard()->user();
