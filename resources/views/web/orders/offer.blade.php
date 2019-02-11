@@ -138,6 +138,7 @@
       <div class="cast-body">
         <input type="hidden" value="{{ $offer->id }}" class="offer-id">
         <input type="hidden" value="{{ $offer->status }}" class="offer-status">
+        <input type="hidden" value="{{ $offer->deleted_at }}" class="deleted_at">
         @if(count($casts))
           <input type="hidden" value="{{ implode(",", $offer->cast_ids) }}" id="current-cast-id-offer">
           <input type="hidden" value="{{ $offer->class_id }}" id="current-class-id-offer">

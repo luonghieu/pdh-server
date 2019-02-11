@@ -544,7 +544,8 @@ class OrderController extends Controller
 
         try {
             $id = $request->id;
-            $offer = Offer::where('id', $id)->whereIn('status', [OfferStatus::ACTIVE, OfferStatus::DONE, OfferStatus::TIMEOUT])->first();
+            $offer = Offer::withTrashed()->where('id', $id)->whereIn('status', [OfferStatus::ACTIVE, OfferStatus::DONE, OfferStatus::TIMEOUT])->first()
+            ;
 
             if (!isset($offer)) {
                 return redirect()->route('web.index');
