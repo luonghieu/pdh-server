@@ -6,7 +6,7 @@ use Illuminate\Database\Eloquent\Model;
 
 class Prefecture extends Model
 {
-    const SUPPORTED_IDS = [13];
+    const SUPPORTED_IDS = [11, 13, 14, 26, 27, 28 ];
 
     public static function getIdByName($name)
     {
