@@ -2116,6 +2116,23 @@ padding-top: 65px !important;
   background-image: none;
 }
 
+#top .set-usage-area {
+  margin-bottom: 5%;
+}
+
+#top .set-usage-area select {
+  background: none;
+  border: none;
+  outline: none;
+  text-align-last: center;
+  width: 50%;
+}
+
+#top .text-box p {
+  font-size: 10px;
+  color: #808080bf;
+}
+
 .cast-list .cast-body .cast-class_b {
   position: absolute;
   top: 3px;

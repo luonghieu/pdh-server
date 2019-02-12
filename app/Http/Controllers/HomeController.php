@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Cast;
+use App\Prefecture;
 use App\Enums\OrderStatus;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\OrderResource;
@@ -59,6 +60,7 @@ class HomeController extends Controller
                     'headers' => ['Authorization' => 'Bearer ' . $token],
                     'form_params' => [],
                     'allow_redirects' => false,
+                    'verify' => false,
                 ];
 
                 $response = $client->get(route('casts.index', ['working_today' => 1, 'device' => 3]), $option);
@@ -66,8 +68,9 @@ class HomeController extends Controller
                 $casts = $getContents->data;
 
                 $newIntros = Cast::active()->whereNotNull('intro')->orderByDesc('intro_updated_at')->limit(10)->get();
+                $prefectures = Prefecture::supported()->get();
 
-                return view('web.index', compact('token', 'order', 'casts', 'newIntros'));
+                return view('web.index', compact('token', 'order', 'casts', 'newIntros', 'prefectures'));
             }
 
             if ($user->is_cast) {

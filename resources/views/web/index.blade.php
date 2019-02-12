@@ -20,6 +20,15 @@
               <input type="date" id="date-of-birth" name="date_of_birth" data-date="" max="{{ $max->format('Y-m-d') }}" data-date-format="YYYY年MM月DD日" value="{{ \Carbon\Carbon::parse(Auth::user()->date_of_birth)->format('Y-m-d') }}">
             </div>
             <label data-field="date_of_birth" id="date-of-birth-error" class="error help-block" for="date-of-birth"></label>
+            <div class="set-usage-area">
+              <h2>ご利用のエリアを設定しましょう！</h2>
+              <select id="prefecture-id">
+                @foreach($prefectures as $prefecture)
+                  <option value="{{ $prefecture->id }}">{{ $prefecture->name }}</option>
+                @endforeach
+              </select>
+            </div>
+            <p>※別エリアのご利用も可能です</p>
           </div>
           <button type="submit" for="popup-date-of-birth" class="close_button">登録する</button>
         </div>
