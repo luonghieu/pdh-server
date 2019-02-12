@@ -133,6 +133,12 @@ return [
         'point' => [
             'regex' => 'Please enter points with numbers',
         ],
+        'lastname_kana' => [
+            'regex' => 'Please use hiragana and space for your name (phonetic)',
+        ],
+        'firstname_kana' => [
+            'regex' => 'Please use hiragana and space for your name (phonetic)',
+        ],
     ],
 
     /*
