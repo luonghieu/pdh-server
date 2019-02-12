@@ -72,7 +72,9 @@ class UserController extends Controller
 
         $castClasses = $this->castClass->all();
 
-        return view('admin.users.show', compact('user', 'castClasses', 'prefectures'));
+        $editableCostRates = config('common.editable_cost_rate');
+
+        return view('admin.users.show', compact('user', 'castClasses', 'prefectures', 'editableCostRates'));
     }
 
     public function changeActive(User $user)

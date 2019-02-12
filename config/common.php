@@ -5,7 +5,18 @@ return [
 
     'payment_service' => env('PAYMENT_SERVICE'), //stripe, square, telecom_credit
 
-    'cast_percent' => 0.8,
+    'default_cost_rate' => [
+        1 => 0.7,
+        2 => 0.8,
+        3 => 0.8
+    ],
+
+    'editable_cost_rate' => [
+        0.7, 
+        0.8,
+        0.65, 
+        0.75,
+    ],
 
     'point_rate' => 1.1,
 
