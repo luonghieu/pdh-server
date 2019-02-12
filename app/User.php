@@ -264,10 +264,12 @@ class User extends Authenticatable implements JWTSubject
 
     public function setCostRateAttribute($value)
     {
-        if (!$value) {
-            $this->attributes['cost_rate'] = config('common.default_cost_rate')[$this->class_id];
-        } else {
-            $this->attributes['cost_rate'] = $value;
+        if ($this->class_id) {
+            if (!$value) {
+                $this->attributes['cost_rate'] = config('common.default_cost_rate')[$this->class_id];
+            } else {
+                $this->attributes['cost_rate'] = $value;
+            }
         }
     }
 
