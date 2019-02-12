@@ -348,7 +348,7 @@
                 <td>{{ $user->bodyType ? $user->bodyType->name : "" }}</td>
               </tr>
               <tr>
-                <th>基本情報：居住地</th>
+                <th>基本情報：稼働エリア</th>
                 <td>{{ ($user->prefecture_id) ? $user->prefecture->name : "" }}</td>
               </tr>
               <tr>
