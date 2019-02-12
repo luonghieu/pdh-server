@@ -597,4 +597,12 @@ class CastController extends Controller
             LogService::writeErrorLog($e);
         }
     }
+
+    public function updateCostRate(User $user, Request $request) 
+    {
+        $user->cost_rate = $request->cost_rate;
+        $user->save();
+
+        return redirect()->route('admin.users.show', ['user' => $user->id]);
+    }
 }

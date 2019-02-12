@@ -13,6 +13,7 @@ use App\Repositories\JobRepository;
 use App\Repositories\PrefectureRepository;
 use App\Repositories\SalaryRepository;
 use App\Traits\ResourceResponse;
+use Auth;
 use Illuminate\Http\Resources\Json\Resource;
 
 class CastResource extends Resource
@@ -27,6 +28,9 @@ class CastResource extends Resource
      */
     public function toArray($request)
     {
+        $cast = Auth::user();
+        $cast->cost_rate = $cast->cost_rate;
+
         return $this->filterNull([
             'id' => $this->id,
             'facebook_id' => $this->facebook_id,
@@ -70,6 +74,7 @@ class CastResource extends Resource
             'avatars' => AvatarResource::collection($this->avatars),
             'working_today' => $this->working_today,
             'class_id' => $this->class_id,
+            'cost_rate' => $cast->cost_rate,
             'class' => $this->class_id ? app(CastClassRepository::class)->find($this->class_id)->name : '',
             'is_favorited' => $this->is_favorited,
             'is_blocked' => $this->is_blocked,

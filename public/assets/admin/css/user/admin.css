@@ -1828,3 +1828,16 @@ tbody td {
 .h-5 {
   min-height: 5rem; 
 }
+
+.w-form {
+  width: 100%;
+  position: relative;
+}
+
+.w-option {
+  width: 150px !important;
+}
+
+.btn.btn-info.btn-sm.mt-2 {
+  margin-top: -2px; 
+}

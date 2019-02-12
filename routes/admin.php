@@ -1,4 +1,5 @@
 <?php
+
 Route::redirect('/admin', '/admin/login', 301);
 Route::group(['prefix' => 'admin', 'as' => 'admin.'], function () {
     Route::get('login', ['as' => 'login', 'uses' => 'AuthController@index']);
@@ -48,6 +49,7 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.'], function () {
         Route::get('/export_bank_accounts', ['as' => 'export_bank_accounts', 'uses' => 'CastController@exportBankAccounts']);
         Route::get('/{user}/bank_account', ['as' => 'bank_account', 'uses' => 'CastController@bankAccount'])->where('user', '[0-9]+');
         Route::put('/{user}/update_note', ['as' => 'update_note', 'uses' => 'CastController@updateNote'])->where('user', '[0-9]+');
+        Route::put('/{user}/update_cost_rate', ['as' => 'update_cost_rate', 'uses' => 'CastController@updateCostRate'])->where('user', '[0-9]+');
     });
 
     Route::group(['middleware' => 'is_admin'], function () {
