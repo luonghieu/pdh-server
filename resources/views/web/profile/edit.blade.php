@@ -207,7 +207,7 @@
           </li>
           <label data-field="body_type_id" id="body-type-id-error" class="error help-block" for="body-type-id"></label>
           <li class="portlet-content__item">
-            <p class="portlet-content__text--list">居住地</p>
+            <p class="portlet-content__text--list">ご利用エリア</p>
             <label class="time-input">
               <div class="selectbox">
                 <select dir="rtl" id="prefecture-id">

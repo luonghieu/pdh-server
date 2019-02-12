@@ -142,17 +142,24 @@ $(document).ready(function() {
         required: true,
         max: maxYear,
       },
+      prefecture_id: {
+        required: true,
+      },
     },
     messages: {
       date_of_birth: {
         required: "生年月日は、必ず指定してください。",
         max: '年齢は20歳以上で入力してください。',
       },
+      prefecture_id: {
+        required: "居住地は、必ず指定してください。",
+      },
     },
 
     submitHandler: function(form) {
       var param = {
         date_of_birth: $('#date-of-birth').val(),
+        prefecture_id: $('#prefecture-id').val(),
       };
 
       const day = $('#day').val();
@@ -161,13 +168,17 @@ $(document).ready(function() {
         delete param['date_of_birth'];
       }
 
+      if (!param['prefecture_id']) {
+        delete param['prefecture_id'];
+      }
+
       $('.help-block').each(function() {
         $(this).html('');
       });
 
       window.axios.post('/api/v1/auth/update', param)
         .then(function(response) {
-          window.sessionStorage.setItem('popup_mypage', '生年月日の登録が完了しました!');
+          window.sessionStorage.setItem('popup_mypage', '登録が完了しました');
           window.location.href = '/mypage';
         })
         .catch(function(error) {

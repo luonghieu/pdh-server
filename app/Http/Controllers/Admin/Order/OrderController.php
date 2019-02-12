@@ -678,8 +678,10 @@ class OrderController extends Controller
 
                 $point = Point::withTrashed()->where('payment_request_id', $paymentRequest->id)->where('type', PointType::TEMP)->first();
                 if ($point) {
-                    $castPercent = config('common.cast_percent');
-                    $point->update(['point' => $paymentRequest->total_point * $castPercent]);
+                    $cast = $paymentRequest->cast;
+                    $cast->cost_rate = $cast->cost_rate;
+                    
+                    $point->update(['point' => $paymentRequest->total_point * $cast->cost_rate]);
                 }
             }
 

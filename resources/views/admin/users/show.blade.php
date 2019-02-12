@@ -236,7 +236,22 @@
                           <option value="{{ $castClass->id }}" {{ ($user->class_id == $castClass->id) ? 'selected' : '' }}>{{ $castClass->name }}</option>
                         @endforeach
                       </select>
-                      <button type="submit" class="btn btn-info btn-sm">変更する</button>
+                      <button type="submit" class="btn btn-info btn-sm mt-2">変更する</button>
+                    </form>
+                  </td>
+                </tr>
+                <tr>
+                  <th>報酬</th>
+                  <td>
+                    <form action="{{ route('admin.casts.update_cost_rate', ['user' => $user->id]) }}" class="w-form" method="POST">
+                      {{ csrf_field() }}
+                      {{ method_field('PUT') }}
+                      <select class="w-option" name="cost_rate">
+                        @foreach ($editableCostRates as $editableCostRate)
+                          <option value="{{ $editableCostRate }}" {{ ($user->cost_rate == $editableCostRate) ? 'selected' : '' }}>{{ $editableCostRate * 100 }}%</option>
+                        @endforeach
+                      </select>
+                      <button type="submit" class="btn btn-info btn-sm mt-2">変更する</button>
                     </form>
                   </td>
                 </tr>
@@ -251,7 +266,7 @@
                           <option value="{{ $prefecture->id }}" {{ ($user->prefecture_id == $prefecture->id) ? 'selected' : '' }}>{{ $prefecture->name }}</option>
                         @endforeach
                       </select>
-                      <button type="submit" class="btn btn-info btn-sm">変更する</button>
+                      <button type="submit" class="btn btn-info btn-sm mt-2">変更する</button>
                     </form>
                   </td>
                 </tr>
@@ -290,7 +305,7 @@
                         <option value="{{ $cost }}" {{ $user->cost == $cost ? 'selected' : ''}}>{{number_format($cost) }}</option>
                       @endforeach
                     </select>
-                    <button type="submit" class="btn btn-info btn-sm">変更する</button>
+                    <button type="submit" class="btn btn-info btn-sm mt-2">変更する</button>
                   </form>
                 </td>
               </tr>
@@ -308,7 +323,7 @@
                         <option value="{{ $key }}" {{ $user->rank == $key ? 'selected' : ''}}>{{ $rank }}</option>
                       @endforeach
                     </select>
-                    <button type="submit" class="btn btn-info btn-sm">変更する</button>
+                    <button type="submit" class="btn btn-info btn-sm mt-2">変更する</button>
                   </form>
                 </td>
               </tr>
@@ -348,7 +363,7 @@
                 <td>{{ $user->bodyType ? $user->bodyType->name : "" }}</td>
               </tr>
               <tr>
-                <th>基本情報：居住地</th>
+                <th>基本情報：稼働エリア</th>
                 <td>{{ ($user->prefecture_id) ? $user->prefecture->name : "" }}</td>
               </tr>
               <tr>

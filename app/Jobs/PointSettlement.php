@@ -74,11 +74,13 @@ class PointSettlement implements ShouldQueue
             $paymentRequests = $order->paymentRequests;
 
             $receiveAdmin = 0;
-            $castPercent = config('common.cast_percent');
 
             foreach ($paymentRequests as $paymentRequest) {
-                $receiveCast = $paymentRequest->total_point * $castPercent;
-                $receiveAdmin += $paymentRequest->total_point * (1 - $castPercent);
+                $cast = $paymentRequest->cast;
+                $cast->cost_rate = $cast->cost_rate;
+
+                $receiveCast = $paymentRequest->total_point * $cast->cost_rate;
+                $receiveAdmin += $paymentRequest->total_point * (1 - $cast->cost_rate);
 
                 $this->createTransfer($order, $paymentRequest, $receiveCast);
 
