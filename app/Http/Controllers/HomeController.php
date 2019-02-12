@@ -60,7 +60,6 @@ class HomeController extends Controller
                     'headers' => ['Authorization' => 'Bearer ' . $token],
                     'form_params' => [],
                     'allow_redirects' => false,
-                    'verify' => false,
                 ];
 
                 $response = $client->get(route('casts.index', ['working_today' => 1, 'device' => 3]), $option);
