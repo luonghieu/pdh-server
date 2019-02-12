@@ -1828,3 +1828,6 @@ tbody td {
 .h-5 {
   min-height: 5rem; 
 }
+.edit-order .panel-body {
+  overflow: initial;
+}

@@ -16,6 +16,38 @@ class RoomController extends ApiController
 {
     public function index(Request $request)
     {
+        $user = $this->guard()->user();
+        $rooms = DB::table('room_user')->where('room_user.user_id', $user->id)
+            ->leftJoin('rooms', function ($j) {
+                $j->on('rooms.id', '=', 'room_user.room_id')
+                    ->where('rooms.is_active', true);
+            })
+            ->leftJoin('messages', function ($j) {
+                $j->on('messages.room_id', '=', 'room_user.room_id');
+            })
+            ->orderBy('messages.created_at','desc')
+            ->select('rooms.id', 'rooms.owner_id', 'rooms.type as room_type','messages.message as latest_message', 'messages.image as latest_image')
+            ->paginate(100);
+
+        return response()->json(['data' => $rooms], 200);
+//            ->join('room_user', function ($j) {
+//                $j->on('rooms.owner_id', '=', 'users.id')
+//                    ->where('users.type', UserType::GUEST);
+//            })
+//            ->join('users', function ($j) {
+//                $j->on('rooms.owner_id', '=', 'users.id')
+//                    ->where('users.type', UserType::GUEST);
+//            })
+//            ->leftJoin('avatars', function ($j) {
+//                $j->on('avatars.user_id', '=', 'users.id')
+//                    ->where('is_default', true);
+//            })
+//            ->where('users.deleted_at', null)
+//            ->select('rooms.*', 'users.type As user_type', 'users.gender', 'users.nickname', 'avatars.thumbnail')
+//            ->orderBy('users.updated_at', 'DESC')
+//            ->paginate(100);
+
+//        return response()->json(['rooms' => Room::all()], 200);
         $rules = [
             'per_page' => 'numeric|min:1',
             'favorited' => 'boolean',
