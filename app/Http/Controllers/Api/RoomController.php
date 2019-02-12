@@ -23,10 +23,11 @@ class RoomController extends ApiController
                     ->where('rooms.is_active', true);
             })
             ->leftJoin('messages', function ($j) {
-                $j->on('messages.room_id', '=', 'room_user.room_id');
+                $j->on('messages.room_id', '=', 'room_user.room_id')->take(1);
             })
             ->orderBy('messages.created_at','desc')
             ->select('rooms.id', 'rooms.owner_id', 'rooms.type as room_type','messages.message as latest_message', 'messages.image as latest_image')
+//            ->select('rooms.id', 'rooms.owner_id', 'rooms.type as room_type')
             ->paginate(100);
 
         return response()->json(['data' => $rooms], 200);
