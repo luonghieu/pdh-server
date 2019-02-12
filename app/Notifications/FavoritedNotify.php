@@ -66,7 +66,7 @@ class FavoritedNotify extends Notification implements ShouldQueue
             Storage::put($fileName, $fileContents, 'public');
         }
         $likeImgMessge = $room->messages()->create([
-            'user_id' => 1,
+            'user_id' => $this->user->id,
             'type' => MessageType::IMAGE,
             'image' => 'iine3.png',
             'system_type' => SystemMessageType::NORMAL,
