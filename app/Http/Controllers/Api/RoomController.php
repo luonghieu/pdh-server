@@ -61,9 +61,15 @@ class RoomController extends ApiController
                 }
 
             })
-            ->leftJoin('messages', function ($query) {
-                $query->on('room_user.room_id', '=', 'messages.room_id')
-                    ->whereRaw('messages.id IN (select MAX(messages.id) from messages join room_user on room_user.room_id = messages.room_id group by room_user.id)');
+            ->leftJoin('messages', function ($query) use ($isFavoritedIds) {
+                if (empty($isFavoritedIds)) {
+                    $query->on('room_user.room_id', '=', 'messages.room_id')
+                        ->whereRaw('messages.id IN (select MAX(messages.id) from messages join room_user on room_user.room_id = messages.room_id group by room_user.id)');
+                } else {
+                    $query->on('room_user.room_id', '=', 'messages.room_id')
+                        ->whereRaw('messages.id IN (select MAX(messages.id) from messages join room_user on room_user.room_id = messages.room_id group by room_user.id)')
+                        ->where('rooms.type', RoomType::DIRECT);
+                }
             }
             );
 
@@ -72,14 +78,6 @@ class RoomController extends ApiController
             $rooms = $rooms->leftJoin('users', function ($j) use ($nickName) {
                 $j->on('room_user.user_id', '=', 'users.id')
                     ->where('users.nickname', 'like', "%$nickName%");
-            });
-        }
-
-        if ($request->favorited) {
-            dd($user);
-            $rooms = $rooms->join('users', function ($j) use ($nickName) {
-                $j->on('room_user.user_id', '=', 'users.id')
-                    ->whereIn('room_user.user_id', [8160]);
             });
         }
 
