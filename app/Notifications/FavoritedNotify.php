@@ -67,7 +67,7 @@ class FavoritedNotify extends Notification implements ShouldQueue
         }
         $likeImgMessge = $room->messages()->create([
             'user_id' => $this->user->id,
-            'type' => MessageType::IMAGE,
+            'type' => MessageType::LIKE,
             'image' => 'iine3.png',
             'system_type' => SystemMessageType::NORMAL,
             'created_at' => now()->copy()->addSeconds(2)
