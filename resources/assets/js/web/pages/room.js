@@ -1,7 +1,7 @@
 $(document).ready(function() {
   $("#search-box").val(null);
   var userId = $('#auth').val();
-  console.log('123123');
+  console.log('1231234');
   window.Echo.private('user.'+userId).listen('MessageCreated', (e) => {
     var roomId = e.message.room_id;
     var message = '';
