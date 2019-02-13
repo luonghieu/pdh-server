@@ -19,8 +19,8 @@ class RoomController extends Controller
         ];
 
         $response = $client->get(route('rooms.room'), $option);
-        $getContents = json_decode($response->getBody()->getContents());
-        $rooms = $getContents->data;
+        $contents = json_decode($response->getBody()->getContents());
+        $rooms = $contents->data;
 
         return view('web.rooms.rooms', compact('rooms'));
     }
