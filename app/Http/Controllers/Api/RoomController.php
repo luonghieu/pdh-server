@@ -294,7 +294,7 @@ class RoomController extends ApiController
             'messages.type as message_type', 'messages.created_at as message_created_at', 'messages.user_id as message_user_id')
             ->orderBy('messages.created_at', 'desc')
             ->groupBy('rooms.id')
-            ->paginate(15);
+            ->paginate(30)->appends($request->query());
 
         $collection = $rooms->getCollection();
         $roomArray = $collection->pluck('id');
