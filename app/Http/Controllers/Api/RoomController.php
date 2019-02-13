@@ -311,7 +311,12 @@ class RoomController extends ApiController
             $userMap = [];
             foreach ($users as $user) {
                 if (!filter_var($user->thumbnail, FILTER_VALIDATE_URL)) {
-                    $user->thumbnail = Storage::url($user->thumbnail);
+                    $thumbnail = '';
+                    if (!$thumbnail) {
+                        $user->thumbnail = url('/assets/web/images/gm1/ic_default_avatar@3x.png');
+                    } else {
+                        $user->thumbnail = Storage::url($user->thumbnail);
+                    }
                 }
                 $user->path = $user->thumbnail;
                 $userMap[$user->room_id][] = [
