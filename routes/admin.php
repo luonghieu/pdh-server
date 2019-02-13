@@ -54,6 +54,11 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.'], function () {
 
     Route::group(['middleware' => 'is_admin'], function () {
         Route::get('cast_rankings', ['as' => 'cast_rankings.index', 'uses' => 'CastRankingController@index']);
+
+        Route::group(['prefix' => 'rank_schedules', 'as' => 'rank_schedules.'], function () {
+            Route::get('/', ['as' => 'index', 'uses' => 'RankScheduleController@getRankSchedule']);
+            Route::put('/', ['as' => 'update', 'uses' => 'RankScheduleController@setRankSchedule']);
+        });
     });
 
     Route::group(['namespace' => 'Room', 'prefix' => 'rooms', 'as' => 'rooms.', 'middleware' => 'is_admin'], function () {

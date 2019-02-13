@@ -179,6 +179,17 @@ $routes = [
             ],
         ],
     ],
+
+    'rank_schedule' => [
+        [
+            'name' => 'admin.rank_schedules.index',
+            'value' => 'キャスト新規申請',
+            'url' => route('admin.rank_schedules.index'),
+            'submenu' => [
+              
+            ],
+        ],
+    ],
 ];
 @endphp
 
