@@ -2128,7 +2128,7 @@ padding-top: 65px !important;
   width: 50%;
 }
 
-#top .text-box p {
+#top .text-box .color-gray {
   font-size: 10px;
   color: #808080bf;
 }

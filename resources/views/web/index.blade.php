@@ -28,7 +28,7 @@
                 @endforeach
               </select>
             </div>
-            <p>※別エリアのご利用も可能です</p>
+            <p class="color-gray">※別エリアのご利用も可能です</p>
           </div>
           <button type="submit" for="popup-date-of-birth" class="close_button">登録する</button>
         </div>
