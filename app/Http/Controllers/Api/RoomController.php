@@ -16,55 +16,60 @@ class RoomController extends ApiController
 {
     public function index(Request $request)
     {
-        $rules = [
-            'per_page' => 'numeric|min:1',
-            'favorited' => 'boolean',
-            'nickname' => 'max:20',
-        ];
+        try {
+            $rules = [
+                'per_page' => 'numeric|min:1',
+                'favorited' => 'boolean',
+                'nickname' => 'max:20',
+            ];
 
-        $validator = validator($request->all(), $rules);
+            $validator = validator($request->all(), $rules);
 
-        if ($validator->fails()) {
-            return $this->respondWithValidationError($validator->errors()->messages());
-        }
-
-        $user = $this->guard()->user();
-        if (!$user->status) {
-            return $this->respondErrorMessage(trans('messages.freezing_account'), 403);
-        }
-
-        $rooms = Room::active()->whereHas('users', function ($query) use ($user) {
-            $query->where('user_id', $user->id);
-        });
-
-        $nickName = $request->nickname;
-        if ($nickName) {
-            $rooms->whereHas('users', function ($query) use ($nickName) {
-                $query->where('users.nickname', 'like', "%$nickName%");
-            });
-        }
-
-        if ($request->favorited) {
-            $isFavoritedIds = $user->favorites()->pluck('favorited_id')->toArray();
-
-            $rooms->where('type', RoomType::DIRECT)->whereHas('users', function ($query) use ($isFavoritedIds) {
-                $query->whereIn('user_id', $isFavoritedIds);
-            });
-        }
-
-        $rooms = $rooms->with('latestMessage', 'users')->orderBy('updated_at', 'DESC')->paginate($request->per_page)->appends($request->query());
-
-        if ('html' == $request->response_type) {
-            $rooms = $this->respondWithData(RoomResource::collection($rooms));
-            $rooms = $rooms->getData()->data;
-
-            if (!$rooms->data) {
-                return view('web.rooms.no_room');
+            if ($validator->fails()) {
+                return $this->respondWithValidationError($validator->errors()->messages());
             }
-            return view('web.rooms.content-room', compact('rooms'));
-        }
 
-        return $this->respondWithData(RoomResource::collection($rooms));
+            $user = $this->guard()->user();
+            if (!$user->status) {
+                return $this->respondErrorMessage(trans('messages.freezing_account'), 403);
+            }
+
+            $rooms = Room::active()->whereHas('users', function ($query) use ($user) {
+                $query->where('user_id', $user->id);
+            });
+
+            $nickName = $request->nickname;
+            if ($nickName) {
+                $rooms->whereHas('users', function ($query) use ($nickName) {
+                    $query->where('users.nickname', 'like', "%$nickName%");
+                });
+            }
+
+            if ($request->favorited) {
+                $isFavoritedIds = $user->favorites()->pluck('favorited_id')->toArray();
+
+                $rooms->where('type', RoomType::DIRECT)->whereHas('users', function ($query) use ($isFavoritedIds) {
+                    $query->whereIn('user_id', $isFavoritedIds);
+                });
+            }
+
+            $rooms = $rooms->with('latestMessage', 'users')->orderBy('updated_at', 'DESC')->paginate($request->per_page)->appends($request->query());
+
+            if ('html' == $request->response_type) {
+                $rooms = $this->respondWithData(RoomResource::collection($rooms));
+                $rooms = $rooms->getData()->data;
+
+                if (!$rooms->data) {
+                    return view('web.rooms.no_room');
+                }
+                return view('web.rooms.content-room', compact('rooms'));
+            }
+
+            return $this->respondWithData(RoomResource::collection($rooms));
+        } catch (\Exception $e) {
+            LogService::writeErrorLog($e);
+            dd($e);
+        }
     }
 
     public function store(Request $request)
