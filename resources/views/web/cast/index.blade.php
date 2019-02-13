@@ -95,6 +95,51 @@
     <label for="lb-update-cost" class="update-cost"></label>
   </section>
   <a href="javascript:void(0)" id="change-point">変更する</a>
+  <div class="rank-schedule">
+    <p>現在のキャストクラス　{{$castClass->name}}</p>
+    @if($user->class_id == 1)
+      <p>プラチナクラスまで‥</p>
+    @elseif($user->class_id == 2)
+      <p>プラチナクラスキープまで‥</p>
+    @endif
+    <div class="times-ordered">
+      <div class="title-times-ordered">参加回数</div>
+      <div class="chart-times-ordered">
+        <div class="wrapper-rank-schedule">
+          <ul class="indicators">
+            @for($i = 0; $i < 10; $i++)
+            <li>$i</li>
+              @endfor
+          </ul>
+          <div class="progress-wrapper">
+            <div class="progress-bar"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="clear"></div>
+    <div class="times-ordered">
+      <div class="title-times-ordered">平均評価</div>
+      <div class="chart-times-ordered">
+        <div class="wrapper-rank-schedule">
+          <ul class="indicators">
+            <li>0</li>
+            <li>1</li>
+            <li>2</li>
+            <li>3</li>
+            <li>4</li>
+            <li></li>
+          </ul>
+          <div class="progress-wrapper">
+            <div class="progress-bar-avg"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="clear"></div>
+    <p>※次回クラス変更日‥◯月◯日</p>
+    <p>※ダイヤモンドクラスへの</p>
+  </div>
   @if($token)
     <script>
         window.localStorage.setItem('access_token', '{{ $token }}');

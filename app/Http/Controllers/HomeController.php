@@ -88,7 +88,9 @@ class HomeController extends Controller
             $token = JWTAuth::fromUser($user);
 
             if ($user->is_cast) {
-                return view('web.cast.index', compact('token', 'user'));
+                $castClass= \App\CastClass::find($user->class_id);
+
+                return view('web.cast.index', compact('token', 'user', 'castClass'));
             } else {
                 return redirect()->route('web.login');
             }
