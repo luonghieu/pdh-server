@@ -51,7 +51,7 @@ $(document).ready(function() {
 
   $('.search-box').keyup(function(event) {
     var keywork = $('.search-box').val();
-    axios.get('api/v1/rooms/rooms_web',{
+    axios.get('api/v1/rooms',{
       'params': {
         nickname: keywork,
         response_type: 'html',
