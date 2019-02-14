@@ -8,7 +8,7 @@
           <div class="search">
             <form class="navbar-form navbar-left form-search" action="{{route('admin.offers.edit', $offer->id )}}" method="GET">
               <input type="text" class="form-control input-search" placeholder="ユーザーID,名前" name="search" value="{{request()->search}}">
-              <select class="form-control search-point-type" name="cast_class" style="margin-right: 15px;" id="class-id-offer">
+              <select class="form-control search-point-type class_id-offer" name="cast_class" style="margin-right: 15px;" id="class-id-offer">
                 @foreach ($castClasses as $castClass)
                   <option value="{{ $castClass->id }}" {{ request()->cast_class == $castClass->id ? 'selected' : '' }}>{{ $castClass->name }}</option>
                 @endforeach
@@ -29,6 +29,7 @@
                 @php
                   $castIds = implode(',', $offer->cast_ids);
                 @endphp
+                <input type="hidden" value="{{ $offer->prefecture_id }}" name="prefecture_id" class="prefecture_id-edit">
                 <input type="hidden" value="{{ $castIds }}" name="list_cast_ids" class="cast-ids-edit">
                 <input type="hidden" value="{{ $offer->temp_point }}" class="temp_point-edit">
                 <input type="hidden" value="{{ $offer->class_id }}" class="class_id-edit">
@@ -238,12 +239,9 @@
             </div>
             <div class="col-lg-12 wrap-qr-code">
               <div class="col-sm-4 ">
-                @php
-                  $arrArea =['東京'];
-                @endphp
                 <select id="area_offer" name="area_offer" class="form-control select-time date-offer">
-                  @foreach ($arrArea as $area)
-                    <option value="13">{{ $area }}</option>
+                  @foreach ($prefectures as $prefecture)
+                    <option value="{{ $prefecture['id'] }}">{{ $prefecture['name'] }}</option>
                   @endforeach
                 </select>
               </div>

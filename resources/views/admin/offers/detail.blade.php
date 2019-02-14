@@ -85,7 +85,7 @@
           </div>
           <div class="col-lg-12 wrap-qr-code">
             <div class="col-sm-4 ">
-              <p class="confirm-area-offer">東京</p>
+              <p class="confirm-area-offer">{{ $prefecture }}</p>
             </div>
           </div>
           <div class="col-lg-12 wrap-qr-code lb-date-offer">

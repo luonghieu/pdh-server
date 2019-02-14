@@ -131,22 +131,6 @@ $(document).ready(function(){
         })
       }
 
-        //area
-      if(orderCall.select_area){
-        const inputArea = $("#ge2-1-x input:radio[name='area']");
-        if('その他'== orderCall.select_area){
-          $('.area-call').css('display', 'flex')
-          $("input:text[name='other_area']").val(orderCall.text_area);
-        }
-
-        $.each(inputArea,function(index,val){
-          if (val.value == orderCall.select_area) {
-            $(this).prop('checked', true);
-            $(this).parent().addClass('active');
-          }
-        })
-      }
-
       //duration     
       if(orderCall.current_duration){
         const inputDuration = $("input[name=time_set]");
@@ -252,31 +236,84 @@ $(document).ready(function(){
         })
       }
 
-      var area = $("input:radio[name='area']:checked").val();
-      var otherArea = $("input:text[name='other_area']").val();
+      if(orderCall.prefecture_id){
+        $('.select-prefecture').val(orderCall.prefecture_id);
+        var params = {
+          prefecture_id : orderCall.prefecture_id,
+        };
+        window.axios.get('/api/v1/municipalities', {params})
+          .then(function(response) {
+          var data = response.data;
+
+          var municipalities = (data.data);
+          html = '';
+          municipalities.forEach(function (val) {
+            name = val.name;
+            html += '<label class="button button--green area">';
+            html += '<input type="radio" name="area" value="'+ name +'">' + name +'</label>';
+          })
+          
+          html += '<label id="area_input" class="button button--green area">';
+          html += '<input type="radio" name="area" value="その他">その他 </label>';
+          html += '<label class="area-input area-call"> <span>希望エリア</span>';
+          html += '<input type="text" placeholder="入力してください" name="other_area" value=""> </label>';
+
+          $('#list-municipalities').html(html);
+
+          //area
+          if(orderCall.select_area){
+            const inputArea = $("#ge2-1-x input:radio[name='area']");
+            if('その他'== orderCall.select_area){
+              $('.area-call').css('display', 'flex')
+              $("input:text[name='other_area']").val(orderCall.text_area);
+            }
+
+            $.each(inputArea,function(index,val){
+              if (val.value == orderCall.select_area) {
+                $(this).prop('checked', true);
+                $(this).parent().addClass('active');
+              }
+            })
+          }
+        })
+        .catch(function (error) {
+          console.log(error);
+          if (error.response.status == 401) {
+            window.location = '/login';
+          }
+        });
+      }
+
       var time = $("input:radio[name='time_join']:checked").val();
       var castClass = $("input:radio[name='cast_class']:checked").val();
       var duration = $("input:radio[name='time_set']:checked").val();
 
-      if((area || (area=='その他' && otherArea)) && time && castClass && duration) {
+      if(((orderCall.select_area && orderCall.select_area !='その他') || (orderCall.select_area=='その他' && orderCall.text_area))
+       && time && castClass && duration) {
         $("#step1-create-call").removeClass('disable');
         $("#step1-create-call").prop('disabled', false);
       }
 
       if(arrIds) {
-        var input = {
-          arrIds: [],
-        };
-        helper.updateLocalStorageValue('order_call', input);
+        helper.deleteLocalStorageValue('order_call','arrIds');
       }
 
       var tags = JSON.parse(localStorage.getItem("order_call")).tags;
       if(tags) {
-        var params = {
-          tags: [],
-        };
-        helper.updateLocalStorageValue('order_call', params);
+        helper.deleteLocalStorageValue('order_call','tags');
       }
     }
   }
+
+  if($('.select-prefecture').length) {
+    if(!localStorage.getItem("order_call")) {
+      var params = {
+          prefecture_id : $('.select-prefecture option:selected').val(),
+        };
+
+      helper.updateLocalStorageValue('order_call', params);
+    }
+
+  }
+
 });

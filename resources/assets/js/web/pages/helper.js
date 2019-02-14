@@ -82,4 +82,29 @@ export  function add_minutes(dt, minutes) {
       return new Date(dt.getTime() + minutes*60000);
     }
 
+export function deleteLocalStorageValue(key, delKey) {
+    var data = JSON.parse(localStorage.getItem(key));
+
+    if (data) {
+      if(data[delKey]) {
+        delete data[delKey];
+      }
+    }
+
+    localStorage.setItem(key, JSON.stringify(data));
+  }
+
+export function deleteLocalStorageKey(key, delKey, ids) {
+    var data = JSON.parse(localStorage.getItem(key));
+
+    if (data) {
+      if(data[ids]) {
+        if(data[ids][delKey]){
+            delete data[ids][delKey];
+        }
+      }
+    }
+    localStorage.setItem(key, JSON.stringify(data));
+  }
+
 
