@@ -8,6 +8,7 @@ use App\Http\Resources\RoomResource;
 use App\Room;
 use App\Services\LogService;
 use App\User;
+use Carbon\Carbon;
 use DB;
 use Illuminate\Http\Request;
 use Storage;
@@ -292,7 +293,7 @@ class RoomController extends ApiController
 
             $rooms = $rooms->select('rooms.id', 'rooms.order_id', 'rooms.is_active', 'rooms.type as type',
                 'messages.message as message', 'messages.image as image', 'messages.image as thumbnail', 'messages.system_type as message_system_type',
-                'messages.type as message_type', 'messages.created_at as message_created_at', 'messages.user_id as message_user_id')
+                'messages.type as message_type', 'messages.created_at as message_created_at', 'messages.user_id as message_user_id', 'messages.updated_at as message_updated_at')
                 ->orderBy('messages.created_at', 'desc')
                 ->groupBy('rooms.id')
                 ->paginate(30)->appends($request->query());
@@ -305,7 +306,7 @@ class RoomController extends ApiController
                     $j->on('avatars.user_id', '=', 'users.id')
                         ->where('is_default', true);
                 })
-                ->select('room_user.room_id', 'users.id', 'users.nickname', 'avatars.thumbnail', 'users.deleted_at')
+                ->select('room_user.room_id', 'users.id', 'users.nickname', 'avatars.thumbnail', 'users.deleted_at', 'users.date_of_birth')
                 ->get();
 
             $userMap = [];
@@ -321,6 +322,7 @@ class RoomController extends ApiController
                 $userMap[$user->room_id][] = [
                     'id' => $user->id,
                     'nickname' => $user->nickname,
+                    'age' => Carbon::parse($user->date_of_birth)->age,
                     'avatars' => [
                         [
                             'path' => $user->path,
@@ -329,6 +331,7 @@ class RoomController extends ApiController
                     ],
                     'deleted_at' => $user->deleted_at
                 ];
+                unset($user->date_of_birth);
             }
 
             $collection->transform(function ($room) use ($unReadsMap, $userMap, $users) {
@@ -355,12 +358,15 @@ class RoomController extends ApiController
                     'image' => $room->image,
                     'thumbnail' => $room->thumbnail,
                     'created_at' => $room->message_created_at,
+                    'updated_at' => $room->message_updated_at,
                     'user' => $messageByUser
                 ];
                 unset($room->message_type);
                 unset($room->message_system_type);
                 unset($room->thumbnail);
                 unset($room->message_created_at);
+                unset($room->message_updated_at);
+                unset($room->message_user_id);
                 unset($room->message);
                 unset($room->image);
 
