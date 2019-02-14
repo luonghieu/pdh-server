@@ -34,12 +34,24 @@ class GuestController extends ApiController
             });
         }
 
-        $casts = $guests->latest()->active()->WhereDoesntHave('blockers', function ($q) use ($user) {
+        if ($request->prefecture_id) {
+            $guests->where('prefecture_id', $request->prefecture_id);
+        }
+
+        if ($request->salary_id) {
+            $guests->where('salary_id', $request->salary_id);
+        }
+
+        if ($request->age) {
+            $guests->whereRaw( 'timestampdiff(year, date_of_birth, curdate()) = ?', [$request->age]);
+        }
+
+        $guests = $guests->latest()->active()->WhereDoesntHave('blockers', function ($q) use ($user) {
             $q->where('user_id', $user->id);
         })->WhereDoesntHave('blocks', function ($q) use ($user) {
             $q->where('blocked_id', $user->id);
         })->paginate($request->per_page)->appends($request->query());
 
-        return $this->respondWithData(GuestResource::collection($casts));
+        return $this->respondWithData(GuestResource::collection($guests));
     }
 }
