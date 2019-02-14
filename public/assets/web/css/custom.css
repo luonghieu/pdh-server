@@ -2122,15 +2122,17 @@ padding-top: 65px !important;
 
 #top .set-usage-area select {
   background: none;
+  -webkit-appearance: none;
   border: none;
   outline: none;
   text-align-last: center;
-  width: 50%;
+  padding: 0 45px;
+  background: transparent url(../images/common/arrow.svg) no-repeat right center;
 }
 
 #top .text-box .color-gray {
   font-size: 10px;
-  color: #808080bf;
+  color: #808080;
 }
 
 .cast-list .cast-body .cast-class_b {
