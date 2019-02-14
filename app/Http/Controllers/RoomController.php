@@ -18,7 +18,7 @@ class RoomController extends Controller
             'allow_redirects' => false,
         ];
 
-        $response = $client->get(route('rooms.room_web'), $option);
+        $response = $client->get(route('rooms.room'), $option);
         $contents = json_decode($response->getBody()->getContents());
         $rooms = $contents->data;
 
