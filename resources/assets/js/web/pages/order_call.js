@@ -91,6 +91,22 @@ $(document).ready(function(){
     }
   })
 
+  if($('.select-prefecture').length) {
+    if(!localStorage.getItem("order_call")) {
+
+      if(localStorage.getItem("prefecture_id")) {
+        var prefectureId = localStorage.getItem("prefecture_id");
+        
+        var params = {
+            prefecture_id : prefectureId,
+          };
+
+        helper.updateLocalStorageValue('order_call', params);
+      }
+    }
+
+  }
+
   if(localStorage.getItem("order_call")){
     var orderCall = JSON.parse(localStorage.getItem("order_call"));
     var arrIds = JSON.parse(localStorage.getItem("order_call")).arrIds;
@@ -304,16 +320,4 @@ $(document).ready(function(){
       }
     }
   }
-
-  if($('.select-prefecture').length) {
-    if(!localStorage.getItem("order_call")) {
-      var params = {
-          prefecture_id : $('.select-prefecture option:selected').val(),
-        };
-
-      helper.updateLocalStorageValue('order_call', params);
-    }
-
-  }
-
 });

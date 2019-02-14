@@ -74,13 +74,6 @@ class OrderController extends Controller
             $orderOptions = $client->get(route('glossaries'), $option);
 
             $prefectures = $client->get(route('prefectures', ['filter' => 'supported']));
-
-            $prefectureId = 11;
-            if ($request->prefecture_id) {
-                $prefectureId = $request->prefecture_id;
-            }
-
-            $municipalities = $client->get(route('municipalities', ['prefecture_id' => $prefectureId]));
         } catch (\Exception $e) {
             LogService::writeErrorLog($e);
             abort(500);
@@ -92,10 +85,7 @@ class OrderController extends Controller
         $prefectures = json_decode(($prefectures->getBody())->getContents(), JSON_NUMERIC_CHECK);
         $prefectures = $prefectures['data'];
 
-        $municipalities = json_decode(($municipalities->getBody())->getContents(), JSON_NUMERIC_CHECK);
-        $municipalities = $municipalities['data'];
-
-        return view('web.orders.create_call', compact('orderOptions', 'prefectures', 'municipalities', 'prefectureId'));
+        return view('web.orders.create_call', compact('orderOptions', 'prefectures'));
     }
 
     public function selectTags(Request $request)

@@ -10,7 +10,7 @@
         <div class="selectbox">
           <select class="select-prefecture" name="" id="prefecture">
             @foreach ($prefectures as $prefecture)
-              <option value="{{ $prefecture['id'] }}" {{ $prefecture['id'] == $prefectureId ? 'selected' : '' }}>{{ $prefecture['name'] }}</option>
+              <option value="{{ $prefecture['id'] }}" >{{ $prefecture['name'] }}</option>
             @endforeach
           </select>
           <i></i>
@@ -18,18 +18,7 @@
       </label>
     </div>
     <div class="form-grpup" id="list-municipalities"><!-- フォーム内容 -->
-      @foreach($municipalities as $municipaliti)
-      <label class="button button--green area">
-        <input type="radio" name="area" value="{{ $municipaliti['name'] }}">{{ $municipaliti['name'] }}
-      </label>
-      @endforeach
-      <label id="area_input" class="button button--green area">
-        <input type="radio" name="area" value="その他">その他
-      </label>
-      <label class="area-input area-call">
-        <span>希望エリア</span>
-        <input type="text" placeholder="入力してください" name="other_area" value="">
-     </label>
+
     </div>
   </div>
 
