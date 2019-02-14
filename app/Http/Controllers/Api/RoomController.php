@@ -387,7 +387,6 @@ class RoomController extends ApiController
             return $this->respondWithData($rooms);
         } catch (\Exception $e) {
             LogService::writeErrorLog($e);
-            dd($e);
         }
     }
 }
