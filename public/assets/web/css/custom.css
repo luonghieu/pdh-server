@@ -2130,10 +2130,9 @@ padding-top: 65px !important;
   background: transparent url(../images/common/arrow.svg) no-repeat right center;
 }
 
-
 #top .text-box .color-gray {
-font-size: 10px;
-color: #808080;
+  font-size: 10px;
+  color: #808080;
 }
 
 .cast-list .cast-body .cast-class_b {
