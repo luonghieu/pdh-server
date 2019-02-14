@@ -215,170 +215,179 @@ class RoomController extends ApiController
 
     public function getRoomsOnWeb(Request $request)
     {
-        $rules = [
-            'per_page' => 'numeric|min:1',
-            'favorited' => 'boolean',
-            'nickname' => 'max:20',
-        ];
-        $validator = validator($request->all(), $rules);
+        try {
+            $rules = [
+                'per_page' => 'numeric|min:1',
+                'favorited' => 'boolean',
+                'nickname' => 'max:20',
+            ];
+            $validator = validator($request->all(), $rules);
 
-        if ($validator->fails()) {
-            return $this->respondWithValidationError($validator->errors()->messages());
-        }
+            if ($validator->fails()) {
+                return $this->respondWithValidationError($validator->errors()->messages());
+            }
 
-        $user = $this->guard()->user();
-        if (!$user->status) {
-            return $this->respondErrorMessage(trans('messages.freezing_account'), 403);
-        }
+            $user = $this->guard()->user();
+            if (!$user->status) {
+                return $this->respondErrorMessage(trans('messages.freezing_account'), 403);
+            }
 
-        $unReads = DB::table('message_recipient')
-            ->where('user_id', $user->id)
-            ->where('is_show', true)
-            ->whereNull('read_at')
-            ->select('room_id', DB::raw('count(*) as total'))
-            ->groupBy('room_id')->get();
-        $unReadsMap = [];
-        foreach ($unReads as $unRead) {
-            $unReadsMap[$unRead->room_id] = $unRead->total;
-        }
+            $unReads = DB::table('message_recipient')
+                ->where('user_id', $user->id)
+                ->where('is_show', true)
+                ->whereNull('read_at')
+                ->select('room_id', DB::raw('count(*) as total'))
+                ->groupBy('room_id')->get();
+            $unReadsMap = [];
+            foreach ($unReads as $unRead) {
+                $unReadsMap[$unRead->room_id] = $unRead->total;
+            }
 
-        $favoritedIds = [];
-        $favoritedRooms = [];
-        if ($request->favorited) {
-            $favoritedIds = $user->favorites()->pluck('favorited_id')->toArray();
-            $favoritedRooms = DB::table('favorites')->where('favorites.user_id', $user->id)
-                ->join('room_user', function($j) use ($favoritedIds) {
-                    $j->on('favorites.user_id', '=', 'room_user.user_id');
+            $favoritedIds = [];
+            $favoritedRooms = [];
+            if ($request->favorited) {
+                $favoritedIds = $user->favorites()->pluck('favorited_id')->toArray();
+                $favoritedRooms = DB::table('favorites')->where('favorites.user_id', $user->id)
+                    ->join('room_user', function ($j) use ($favoritedIds) {
+                        $j->on('favorites.user_id', '=', 'room_user.user_id');
+                    })
+                    ->groupBy('room_user.room_id')->get()->reject(function ($item) use ($favoritedIds) {
+                        return in_array($item->room_id, $favoritedIds);
+                    });
+
+                $favoritedRooms = $favoritedRooms->transform(function ($item) {
+                    return $item->room_id;
+                })->toArray();
+            }
+
+            $rooms = DB::table('room_user')->where('room_user.user_id', $user->id)
+                ->leftJoin('rooms', function ($j) use ($favoritedIds) {
+                    if (empty($favoritedIds)) {
+                        $j->on('rooms.id', '=', 'room_user.room_id')
+                            ->where('rooms.is_active', true);
+                    } else {
+                        $j->on('rooms.id', '=', 'room_user.room_id')
+                            ->where('rooms.is_active', true)
+                            ->where('rooms.type', RoomType::DIRECT);
+                    }
                 })
-                ->groupBy('room_user.room_id')->get()->reject(function($item) use ($favoritedIds) {
-                    return in_array($item->room_id, $favoritedIds);
+                ->leftJoin('messages', function ($query) use ($favoritedIds) {
+                    if (empty($favoritedIds)) {
+                        $query->on('room_user.room_id', '=', 'messages.room_id')
+                            ->whereRaw('messages.id IN (select MAX(messages.id) from messages join room_user on room_user.room_id = messages.room_id group by room_user.id)');
+                    } else {
+                        $query->on('room_user.room_id', '=', 'messages.room_id')
+                            ->whereRaw('messages.id IN (select MAX(messages.id) from messages join room_user on room_user.room_id = messages.room_id group by room_user.id)')
+                            ->where('rooms.type', RoomType::DIRECT);
+                    }
                 });
 
-            $favoritedRooms = $favoritedRooms->transform(function ($item) {
-                return $item->room_id;
-            })->toArray();
-        }
+            $nickName = $request->nickname;
+            if ($nickName) {
+                $rooms = $rooms->leftJoin('users', function ($j) use ($nickName) {
+                    $j->on('room_user.user_id', '=', 'users.id')
+                        ->where('users.nickname', 'like', "%$nickName%");
+                });
+            }
 
-        $rooms = DB::table('room_user')->where('room_user.user_id', $user->id)
-            ->leftJoin('rooms', function ($j) use ($favoritedIds) {
-                if (empty($favoritedIds)) {
-                    $j->on('rooms.id', '=', 'room_user.room_id')
-                        ->where('rooms.is_active', true);
-                } else {
-                    $j->on('rooms.id', '=', 'room_user.room_id')
-                        ->where('rooms.is_active', true)
-                        ->where('rooms.type', RoomType::DIRECT);
+            $rooms = $rooms->select('rooms.id', 'rooms.order_id', 'rooms.is_active', 'rooms.type as type',
+                'messages.message as message', 'messages.image as image', 'messages.image as thumbnail', 'messages.system_type as message_system_type',
+                'messages.type as message_type', 'messages.created_at as message_created_at', 'messages.user_id as message_user_id')
+                ->orderBy('messages.created_at', 'desc')
+                ->groupBy('rooms.id')
+                ->paginate(30)->appends($request->query());
+
+            $collection = $rooms->getCollection();
+            $roomArray = $collection->pluck('id');
+            $users = DB::table('room_user')->whereIn('room_id', $roomArray)
+                ->leftJoin('users', 'room_user.user_id', '=', 'users.id')
+                ->leftJoin('avatars', function ($j) {
+                    $j->on('avatars.user_id', '=', 'users.id')
+                        ->where('is_default', true);
+                })
+                ->select('room_user.room_id', 'users.id', 'users.nickname', 'avatars.thumbnail', 'users.deleted_at')
+                ->get();
+
+            $userMap = [];
+            foreach ($users as $user) {
+                if (!filter_var($user->thumbnail, FILTER_VALIDATE_URL)) {
+                    if (!$user->thumbnail) {
+                        $user->thumbnail = url('/assets/web/images/gm1/ic_default_avatar@3x.png');
+                    } else {
+                        $user->thumbnail = Storage::url($user->thumbnail);
+                    }
                 }
-            })
-            ->leftJoin('messages', function ($query) use ($favoritedIds) {
-                if (empty($favoritedIds)) {
-                    $query->on('room_user.room_id', '=', 'messages.room_id')
-                        ->whereRaw('messages.id IN (select MAX(messages.id) from messages join room_user on room_user.room_id = messages.room_id group by room_user.id)');
+                $user->path = $user->thumbnail;
+                $userMap[$user->room_id][] = [
+                    'id' => $user->id,
+                    'nickname' => $user->nickname,
+                    'avatars' => [
+                        [
+                            'path' => $user->path,
+                            'thumbnail' => $user->thumbnail
+                        ]
+                    ],
+                    'deleted_at' => $user->deleted_at
+                ];
+            }
+
+            $collection->transform(function ($room) use ($unReadsMap, $userMap, $users) {
+                if (isset($unReadsMap[$room->id])) {
+                    $room->unread_count = $unReadsMap[$room->id];
                 } else {
-                    $query->on('room_user.room_id', '=', 'messages.room_id')
-                        ->whereRaw('messages.id IN (select MAX(messages.id) from messages join room_user on room_user.room_id = messages.room_id group by room_user.id)')
-                        ->where('rooms.type', RoomType::DIRECT);
+                    $room->unread_count = 0;
                 }
+
+                if (isset($userMap[$room->id])) {
+                    $room->users = array_values(getUniqueArray($userMap[$room->id], 'id'));
+                } else {
+                    $room->users = [];
+                }
+
+                $messageByUser = $users->first(function ($item) use ($room) {
+                    unset($item->room_id);
+                    return $item->id == $room->message_user_id;
+                });
+                $room->latest_message = [
+                    'type' => $room->message_type,
+                    'system_type' => $room->message_system_type,
+                    'message' => $room->message,
+                    'image' => $room->image,
+                    'thumbnail' => $room->thumbnail,
+                    'created_at' => $room->message_created_at,
+                    'user' => $messageByUser
+                ];
+                unset($room->message_type);
+                unset($room->message_system_type);
+                unset($room->thumbnail);
+                unset($room->message_created_at);
+                unset($room->message);
+                unset($room->image);
+
+                return $room;
             });
 
-        $nickName = $request->nickname;
-        if ($nickName) {
-            $rooms = $rooms->leftJoin('users', function ($j) use ($nickName) {
-                $j->on('room_user.user_id', '=', 'users.id')
-                    ->where('users.nickname', 'like', "%$nickName%");
-            });
-        }
-
-        $rooms = $rooms->select('rooms.id', 'rooms.order_id', 'rooms.is_active', 'rooms.type as type',
-            'messages.message as message', 'messages.image as image', 'messages.image as thumbnail', 'messages.system_type as message_system_type',
-            'messages.type as message_type', 'messages.created_at as message_created_at', 'messages.user_id as message_user_id')
-            ->orderBy('messages.created_at', 'desc')
-            ->groupBy('rooms.id')
-            ->paginate(30)->appends($request->query());
-
-        $collection = $rooms->getCollection();
-        $roomArray = $collection->pluck('id');
-        $users = DB::table('room_user')->whereIn('room_id', $roomArray)
-            ->leftJoin('users', 'room_user.user_id', '=', 'users.id')
-            ->leftJoin('avatars', function ($j) {
-                $j->on('avatars.user_id', '=', 'users.id')
-                    ->where('is_default', true);
-            })
-            ->select('room_user.room_id', 'users.id', 'users.nickname', 'avatars.thumbnail', 'users.deleted_at')
-            ->get();
-
-        $userMap = [];
-        foreach ($users as $user) {
-            if (!filter_var($user->thumbnail, FILTER_VALIDATE_URL)) {
-                $user->thumbnail = Storage::url($user->thumbnail);
-            }
-            $user->path = $user->thumbnail;
-            $userMap[$user->room_id][] = [
-                'id' => $user->id,
-                'nickname' => $user->nickname,
-                'avatars' => [
-                    [
-                        'path' => $user->path,
-                        'thumbnail' => $user->thumbnail
-                    ]
-                ],
-                'deleted_at' => $user->deleted_at
-            ];
-        }
-
-        $collection->transform(function ($room) use ($unReadsMap, $userMap, $users) {
-            if (isset($unReadsMap[$room->id])) {
-                $room->unread_count = $unReadsMap[$room->id];
-            } else {
-                $room->unread_count = 0;
+            if ($request->favorited) {
+                $collection = $collection->reject(function ($item) use ($favoritedRooms) {
+                    return !in_array($item->id, $favoritedRooms);
+                });
+                $rooms->setCollection($collection);
             }
 
-            if (isset($userMap[$room->id])) {
-                $room->users = array_values(getUniqueArray($userMap[$room->id], 'id'));
-            } else {
-                $room->users = [];
+            if ('html' == $request->response_type) {
+                $rooms = $this->respondWithData($rooms);
+                $rooms = $rooms->getData()->data;
+
+                if (!$rooms->data) {
+                    return view('web.rooms.no_room');
+                }
+                return view('web.rooms.content-room', compact('rooms'));
             }
 
-            $messageByUser = $users->first(function ($item) use ($room) {
-                unset($item->room_id);
-                return $item->id == $room->message_user_id;
-            });
-            $room->latest_message = [
-                'type' => $room->message_type,
-                'system_type' => $room->message_system_type,
-                'message' => $room->message,
-                'image' => $room->image,
-                'thumbnail' => $room->thumbnail,
-                'created_at' => $room->message_created_at,
-                'user' => $messageByUser
-            ];
-            unset($room->message_type);
-            unset($room->message_system_type);
-            unset($room->thumbnail);
-            unset($room->message_created_at);
-            unset($room->message);
-            unset($room->image);
-
-            return $room;
-        });
-
-        if ($request->favorited) {
-            $collection = $collection->reject(function($item) use ($favoritedRooms) {
-                return !in_array($item->id, $favoritedRooms);
-            });
-            $rooms->setCollection($collection);
+            return $this->respondWithData($rooms);
+        } catch (\Exception $e) {
+            LogService::writeErrorLog($e);
+            dd($e);
         }
-
-        if ('html' == $request->response_type) {
-            $rooms = $this->respondWithData($rooms);
-            $rooms = $rooms->getData()->data;
-
-            if (!$rooms->data) {
-                return view('web.rooms.no_room');
-            }
-            return view('web.rooms.content-room', compact('rooms'));
-        }
-
-        return $this->respondWithData($rooms);
     }
 }
