@@ -24,7 +24,7 @@
               <h2>ご利用のエリアを設定しましょう！</h2>
               <select id="prefecture-id">
                 @foreach($prefectures as $prefecture)
-                  <option value="{{ $prefecture->id }}">{{ $prefecture->name }}</option>
+                  <option value="{{ $prefecture->id }}" {{ ($prefecture->id == 13) ? 'selected':''}}>{{ $prefecture->name }}</option>
                 @endforeach
               </select>
             </div>
