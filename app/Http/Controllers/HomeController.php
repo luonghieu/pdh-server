@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Cast;
 use App\Prefecture;
+use App\CastClass;
+use App\RankSchedule;
 use App\Enums\OrderStatus;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\OrderResource;
@@ -88,9 +90,28 @@ class HomeController extends Controller
             $token = JWTAuth::fromUser($user);
 
             if ($user->is_cast) {
-                $castClass= \App\CastClass::find($user->class_id);
+                $castClass= CastClass::find($user->class_id);
+                $today = now();
+                $rankSchedule = RankSchedule::where('from_date','<', $today)->where('to_date','>', $today)->first();
+                $sumOrders = 0;
+                $ratingScore = 0;
+                if ($rankSchedule) {
+                    $sumOrders = Cast::find($user->id)->orders()->where(
+                        [
+                            ['orders.status','=',4],
+                            ['orders.created_at','>=',$rankSchedule->from_date],
+                            ['orders.created_at','<=',$rankSchedule->to_date],
 
-                return view('web.cast.index', compact('token', 'user', 'castClass'));
+                        ]
+                    )->count();
+                    $ratingScore = \App\Rating::where([
+                        ['rated_id','=', $user->id],
+                        ['created_at','>=',$rankSchedule->from_date],
+                        ['created_at','<=',$rankSchedule->to_date],
+                    ])->avg('score');
+                }
+
+                return view('web.cast.index', compact('token', 'user', 'castClass', 'rankSchedule', 'sumOrders', 'ratingScore'));
             } else {
                 return redirect()->route('web.login');
             }

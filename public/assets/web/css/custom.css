@@ -3034,6 +3034,7 @@ padding-top: 65px !important;
    height: 25px;
    border-radius: 4px;
    padding: 2px;
+   position: relative;
  }
 
 .progress-bar {
@@ -3050,9 +3051,16 @@ padding-top: 65px !important;
   background-image: linear-gradient(151deg, #42e4b2, #00c3c3)
  }
 
-.wrapper-rank-schedule {
-  display: block;
-}
+ .class-up{
+   position: absolute;
+   top: 0;
+   left: 40%;
+   display: none;
+ }
+
+  .wrapper-rank-schedule {
+    display: block;
+  }
 
 .rank-schedule p {
   margin-bottom: 7px;
