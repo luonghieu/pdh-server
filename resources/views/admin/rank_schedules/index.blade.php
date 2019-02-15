@@ -41,11 +41,21 @@
                 <th>次回クラス変更期間</th>
                 <td>
                   <b class="pull-left">From date</b>
-                  <input type="text" class="form-control date-picker from-date" name="from_date" id="date01" data-date-format="yyyy/mm/dd" value="{{ $rankSchedule->from_date }}" placeholder="yyyy/mm/dd" />
+                  <input type="text" class="form-control date-picker from-date" name="from_date" id="date01" data-date-format="yyyy/mm/dd" value="{{ $rankSchedule->from_date ?? '' }}" placeholder="yyyy/mm/dd" />
+                  @if ($errors->has('from_date'))
+                    <div class="error pull-left">
+                      <span>{{ $errors->first('from_date') }}</span>
+                    </div>
+                  @endif
                 </td>
                 <td>
                   <b class="pull-left">To date</b>
-                  <input type="text" class="form-control date-picker to-date" name="to_date" id="date01" data-date-format="yyyy/mm/dd" value="{{ $rankSchedule->to_date }}" placeholder="yyyy/mm/dd" />
+                  <input type="text" class="form-control date-picker to-date" name="to_date" id="date01" data-date-format="yyyy/mm/dd" value="{{ $rankSchedule->to_date ?? '' }}" placeholder="yyyy/mm/dd" />
+                  @if ($errors->has('to_date'))
+                    <div class="error pull-left">
+                      <span>{{ $errors->first('to_date') }}</span>
+                    </div>
+                  @endif
                 </td>
               </tr>
               <tr>
@@ -57,6 +67,11 @@
                     <option value="{{ $i }}" {{ $rankSchedule && $rankSchedule->num_of_attend_up_platium == $i ? 'selected' : '' }}>{{ $i }}</option>
                     @endfor
                   </select>
+                  @if ($errors->has('num_of_attend_up_platium'))
+                    <div class="error pull-left">
+                      <span>{{ $errors->first('num_of_attend_up_platium') }}</span>
+                    </div>
+                  @endif
                 </td>
                 <td>
                   <b class="pull-left">平均評価</b>
@@ -65,6 +80,11 @@
                     <option value="{{ $i }}" {{ $rankSchedule && $rankSchedule->num_of_avg_rate_up_platium == $i ? 'selected' : '' }}>{{ $i }}</option>
                     @endfor
                   </select>
+                  @if ($errors->has('num_of_avg_rate_up_platium'))
+                    <div class="error pull-left">
+                      <span>{{ $errors->first('num_of_avg_rate_up_platium') }}</span>
+                    </div>
+                  @endif
                 </td>
               </tr>
               <tr>
@@ -76,6 +96,11 @@
                     <option value="{{ $i }}" {{ $rankSchedule && $rankSchedule->num_of_attend_platium == $i ? 'selected' : '' }}>{{ $i }}</option>
                     @endfor
                   </select>
+                  @if ($errors->has('num_of_attend_platium'))
+                    <div class="error pull-left">
+                      <span>{{ $errors->first('num_of_attend_platium') }}</span>
+                    </div>
+                  @endif
                 </td>
                 <td>
                   <b class="pull-left">平均評価</b>
@@ -84,6 +109,11 @@
                     <option value="{{ $i }}" {{ $rankSchedule && $rankSchedule->num_of_avg_rate_platium == $i ? 'selected' : '' }}>{{ $i }}</option>
                     @endfor
                   </select>
+                  @if ($errors->has('num_of_avg_rate_platium'))
+                    <div class="error pull-left">
+                      <span>{{ $errors->first('num_of_avg_rate_platium') }}</span>
+                    </div>
+                  @endif
                 </td>
               </tr>
             </table>
@@ -106,22 +136,17 @@
   <script type="text/javascript">
     $('body').on('click', '.set-rank-schedule', function() {
       var fromDate = $('.from-date').val();
-      $('#from-date').val(fromDate);
-
       var toDate = $('.to-date').val();
-      $('#to-date').val(toDate);
-      console.log(toDate);
-      
       var numOfAttendPlatium = $('.num-of-attend-platium').val();
-      $('#num-of-attend-platium').val(numOfAttendPlatium);
-      
       var numOfAvgRatePlatium = $('.num-of-avg-rate-platium').val();
-      $('#num-of-avg-rate-platium').val(numOfAvgRatePlatium);
-      
       var numOfAttendUpPlatium = $('.num-of-attend-up-platium').val();
-      $('#num-of-attend-up-platium').val(numOfAttendUpPlatium);
-      
       var numOfAvgRateUpPlatium = $('.num-of-avg-rate-up-platium').val();
+
+      $('#to-date').val(toDate);
+      $('#from-date').val(fromDate);
+      $('#num-of-attend-platium').val(numOfAttendPlatium);
+      $('#num-of-avg-rate-platium').val(numOfAvgRatePlatium);
+      $('#num-of-attend-up-platium').val(numOfAttendUpPlatium);
       $('#num-of-avg-rate-up-platium').val(numOfAvgRateUpPlatium);
     });
   </script>

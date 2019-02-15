@@ -1,7 +1,7 @@
 @php
   $currentRouteName = Route::currentRouteName();
   $routes = [
-    ['name' => '#', 'value' => 'キャスト一覧', 'url' => '#'],
+    ['name' => 'admin.rank_schedules.casts', 'value' => 'キャスト一覧', 'url' => route('admin.rank_schedules.casts')],
     ['name' => 'admin.rank_schedules.index', 'value' => 'クラス設定', 'url' => route('admin.rank_schedules.index')],
   ];
 @endphp

@@ -58,6 +58,7 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.'], function () {
         Route::group(['prefix' => 'rank_schedules', 'as' => 'rank_schedules.'], function () {
             Route::get('/', ['as' => 'index', 'uses' => 'RankScheduleController@getRankSchedule']);
             Route::put('/', ['as' => 'update', 'uses' => 'RankScheduleController@setRankSchedule']);
+            Route::get('/casts', ['as' => 'casts', 'uses' => 'RankScheduleController@getListCast']);
         });
     });
 

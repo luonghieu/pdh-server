@@ -186,7 +186,7 @@ $routes = [
             'value' => 'キャスト新規申請',
             'url' => route('admin.rank_schedules.index'),
             'submenu' => [
-              
+              'admin.rank_schedules.casts'  
             ],
         ],
     ],
