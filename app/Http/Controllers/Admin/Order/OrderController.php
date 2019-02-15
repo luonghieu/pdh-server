@@ -313,12 +313,14 @@ class OrderController extends Controller
             if ($room) {
                 if ($order->total_cast == 1) {
                     $cast = $order->casts()->first();
-                    $ownerId = $order->user_id;
-                    $room = $this->createDirectRoom($ownerId, $cast->id);
-                    $room->save();
+                    if ($cast) {
+                        $ownerId = $order->user_id;
+                        $room = $this->createDirectRoom($ownerId, $cast->id);
+                        $room->save();
 
-                    $order->room_id = $room->id;
-                    $order->save();
+                        $order->room_id = $room->id;
+                        $order->save();
+                    }
                 }
 
                 if ($order->total_cast > 1) {
