@@ -14,6 +14,7 @@ Route::group(['prefix' => 'v1'], function () {
     Route::get('post_code', ['as' => 'post_code', 'uses' => 'PostCodeController@find']);
     Route::get('voices/code', ['as' => 'voice_code', 'uses' => 'VoiceController@code']);
     Route::get('voices/code_repeat', ['as' => 'voice_code_repeat', 'uses' => 'VoiceController@repeat']);
+    Route::get('versions', ['as' => 'versions', 'uses' => 'VersionController@index']);
 
     Route::group(['prefix' => 'auth', 'as' => 'auth.'], function () {
         Route::post('login', ['as' => 'login', 'uses' => 'AuthController@login']);
