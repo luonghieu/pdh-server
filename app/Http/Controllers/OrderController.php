@@ -72,6 +72,8 @@ class OrderController extends Controller
 
         try {
             $orderOptions = $client->get(route('glossaries'), $option);
+
+            $prefectures = $client->get(route('prefectures', ['filter' => 'supported']));
         } catch (\Exception $e) {
             LogService::writeErrorLog($e);
             abort(500);
@@ -80,7 +82,10 @@ class OrderController extends Controller
         $orderOptions = json_decode(($orderOptions->getBody())->getContents(), JSON_NUMERIC_CHECK);
         $orderOptions = $orderOptions['data']['order_options'];
 
-        return view('web.orders.create_call', compact('orderOptions'));
+        $prefectures = json_decode(($prefectures->getBody())->getContents(), JSON_NUMERIC_CHECK);
+        $prefectures = $prefectures['data'];
+
+        return view('web.orders.create_call', compact('orderOptions', 'prefectures'));
     }
 
     public function selectTags(Request $request)
@@ -288,6 +293,14 @@ class OrderController extends Controller
 
         try {
             $orderOptions = $client->get(route('glossaries'), $option);
+            $prefectures = $client->get(route('prefectures', ['filter' => 'supported']));
+
+            $prefectureId = 13;
+            if ($cast['prefecture_id']) {
+                $prefectureId = $cast['prefecture_id'];
+            }
+
+            $municipalities = $client->get(route('municipalities', ['prefecture_id' => $prefectureId]));
         } catch (\Exception $e) {
             LogService::writeErrorLog($e);
             abort(500);
@@ -296,11 +309,18 @@ class OrderController extends Controller
         $orderOptions = json_decode(($orderOptions->getBody())->getContents(), JSON_NUMERIC_CHECK);
         $orderOptions = $orderOptions['data']['order_options'];
 
-        return view('web.orders.nomination', compact('cast', 'user', 'orderOptions'));
+        $municipalities = json_decode(($municipalities->getBody())->getContents(), JSON_NUMERIC_CHECK);
+        $municipalities = $municipalities['data'];
+
+        $prefectures = json_decode(($prefectures->getBody())->getContents(), JSON_NUMERIC_CHECK);
+        $prefectures = $prefectures['data'];
+
+        return view('web.orders.nomination', compact('cast', 'user', 'orderOptions', 'municipalities', 'prefectures'));
     }
 
     public function createNominate(Request $request)
     {
+        $prefecture = $request->prefecture_nomination;
         $area = $request->nomination_area;
         $otherArea = $request->other_area_nomination;
         if (!isset($area)) {
@@ -410,7 +430,7 @@ class OrderController extends Controller
 
         try {
             $order = $client->post(route('orders.create', [
-                'prefecture_id' => 13,
+                'prefecture_id' => $prefecture,
                 'address' => $area,
                 'class_id' => $classId,
                 'duration' => $duration,
@@ -538,6 +558,7 @@ class OrderController extends Controller
 
     public function offer(Request $request)
     {
+        $client = new Client(['base_uri' => config('common.api_url')]);
         $user = Auth::user();
         if ($user->is_cast) {
             abort(500);
@@ -553,12 +574,20 @@ class OrderController extends Controller
             }
 
             $casts = Cast::whereIn('id', $offer->cast_ids)->with('castClass')->get();
+            $prefectures = $client->get(route('prefectures', ['filter' => 'supported']));
+            $municipalities = $client->get(route('municipalities', ['prefecture_id' => $offer->prefecture_id]));
         } catch (\Exception $e) {
             LogService::writeErrorLog($e);
             abort(500);
         }
 
-        return view('web.orders.offer', compact('offer', 'casts'));
+        $prefectures = json_decode(($prefectures->getBody())->getContents(), JSON_NUMERIC_CHECK);
+        $prefectures = $prefectures['data'];
+
+        $municipalities = json_decode(($municipalities->getBody())->getContents(), JSON_NUMERIC_CHECK);
+        $municipalities = $municipalities['data'];
+
+        return view('web.orders.offer', compact('offer', 'casts', 'prefectures', 'municipalities'));
     }
 
     public function offerAttention()

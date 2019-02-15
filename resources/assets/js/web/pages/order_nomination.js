@@ -1,7 +1,7 @@
 $(document).ready(function(){
   const helper = require('./helper');
 
-  $(".checked-order").on("change",function(event){
+  $('body').on('change', ".checked-order",function(event){
     if ($(this).is(':checked')) {
         var time = $("input:radio[name='time_join_nomination']:checked").val();
         var area = $("input:radio[name='nomination_area']:checked").val();
@@ -33,10 +33,11 @@ $(document).ready(function(){
   });
 
   //textArea
-  $("input:text[name='other_area_nomination']").on('input', function(e) {
+  $('body').on('input', "input:text[name='other_area_nomination']", function(e) {
     var params = {
       text_area: $(this).val(),
     };
+    
     helper.updateLocalStorageValue('order_params', params);
 
     var area = $("input:radio[name='nomination_area']:checked").val();
@@ -50,8 +51,7 @@ $(document).ready(function(){
   });
 
   //area
-  var area = $("input:radio[name='nomination_area']");
-  area.on("change",function(){
+  $('body').on('change', "input:radio[name='nomination_area']", function(){
     var areaNomination = $("input:radio[name='nomination_area']:checked").val();
 
     if('その他'== areaNomination){
@@ -526,22 +526,6 @@ $(document).ready(function(){
           $('.total-point').text(orderParams.current_total_point +'P~');
       }
 
-        //area
-      if(orderParams.select_area){
-       if('その他'== orderParams.select_area){
-          $('.area-nomination').css('display', 'flex')
-          $("input:text[name='other_area_nomination']").val(orderParams.text_area);
-        }
-
-        const inputArea = $(".input-area");
-        $.each(inputArea,function(index,val){
-          if (val.value == orderParams.select_area) {
-            $(this).prop('checked', true);
-            $(this).parent().addClass('active');
-          }
-        })
-      }
-
         //duration
       var cost = $('.cost-order').val();
       if(orderParams.current_duration){
@@ -658,11 +642,108 @@ $(document).ready(function(){
           }
         })
       }
+
+      if(orderParams.prefecture_id){
+        $('.select-prefecture-nomination').val(orderParams.prefecture_id);
+        var params = {
+          prefecture_id : orderParams.prefecture_id,
+        };
+        window.axios.get('/api/v1/municipalities', {params})
+          .then(function(response) {
+            var data = response.data;
+
+            var municipalities = (data.data);
+            html = '';
+            municipalities.forEach(function (val) {
+              name = val.name;
+              html += '<label class="button button--green area">';
+              html += '<input class="input-area" type="radio" name="nomination_area" value="'+ name +'">' + name +'</label>';
+            })
+            
+            html += '<label id="area_input" class="button button--green area ">';
+            html += '<input class="input-area" type="radio" name="nomination_area" value="その他">その他</label>';
+            html += '<label class="area-input area-nomination"><span>希望エリア</span>';
+            html += '<input type="text" id="other_area_nomination" placeholder="入力してください" name="other_area_nomination" value=""></label>';
+
+            $('#list-municipalities-nomination').html(html);
+
+            //area
+            if(orderParams.select_area){
+             if('その他'== orderParams.select_area){
+                $('.area-nomination').css('display', 'flex')
+                $("input:text[name='other_area_nomination']").val(orderParams.text_area);
+              }
+
+              const inputArea = $(".input-area");
+              $.each(inputArea,function(index,val){
+                if (val.value == orderParams.select_area) {
+                  $(this).prop('checked', true);
+                  $(this).parent().addClass('active');
+                }
+              })
+            }
+          })
+          .catch(function (error) {
+            console.log(error);
+            if (error.response.status == 401) {
+              window.location = '/login';
+            }
+          });
+      }
+    } else {
+      var params = {
+          prefecture_id : $('.select-prefecture-nomination option:selected').val(),
+        };
+      helper.updateLocalStorageValue('order_params', params);
     }
   }
 
   if($("label").hasClass("status-code-nomination")){
     $('.status-code-nomination').click();
   }
+
+
+  var selectedPrefectureNomination = $(".select-prefecture-nomination");
+  selectedPrefectureNomination.on("change",function(){
+    $(".checked-order").prop('checked', false);
+    $('#confirm-orders-nomination').addClass("disable");
+    $('#confirm-orders-nomination').prop('disabled', true);
+    $('#sp-cancel').addClass("sp-disable");
+
+    helper.deleteLocalStorageValue('order_params','select_area');
+    helper.deleteLocalStorageValue('order_params','text_area');
+    
+    var params = {
+      prefecture_id : this.value,
+    };
+
+    helper.updateLocalStorageValue('order_params', params);
+
+    window.axios.get('/api/v1/municipalities', {params})
+      .then(function(response) {
+        var data = response.data;
+
+        var municipalities = (data.data);
+        html = '';
+        municipalities.forEach(function (val) {
+          name = val.name;
+          html += '<label class="button button--green area">';
+          html += '<input class="input-area" type="radio" name="nomination_area" value="'+ name +'">' + name +'</label>';
+        })
+        
+        html += '<label id="area_input" class="button button--green area ">';
+        html += '<input class="input-area" type="radio" name="nomination_area" value="その他">その他</label>';
+        html += '<label class="area-input area-nomination"><span>希望エリア</span>';
+        html += '<input type="text" id="other_area_nomination" placeholder="入力してください" name="other_area_nomination" value=""></label>';
+
+        $('#list-municipalities-nomination').html(html);
+      })
+      .catch(function (error) {
+        console.log(error);
+        if (error.response.status == 401) {
+          window.location = '/login';
+        }
+      });
+  });
 
 })

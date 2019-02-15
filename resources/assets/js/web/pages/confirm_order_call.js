@@ -217,7 +217,7 @@ $(document).ready(function(){
         }
 
         var params = {
-          prefecture_id : 13,
+          prefecture_id : orderCall.prefecture_id,
           address : area,
           class_id : orderCall.cast_class ,
           duration : duration,

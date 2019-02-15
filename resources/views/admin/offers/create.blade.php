@@ -205,12 +205,9 @@
             </div>
             <div class="col-lg-12 wrap-qr-code">
               <div class="col-sm-4 ">
-                @php
-                  $arrArea =['東京'];
-                @endphp
                 <select id="area_offer" name="area_offer" class="form-control select-time date-offer">
-                  @foreach ($arrArea as $area)
-                    <option value="13">{{ $area }}</option>
+                  @foreach ($prefectures as $prefecture)
+                    <option value="{{ $prefecture['id'] }}">{{ $prefecture['name'] }}</option>
                   @endforeach
                 </select>
               </div>
