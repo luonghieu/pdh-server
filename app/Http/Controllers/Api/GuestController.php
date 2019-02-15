@@ -43,7 +43,10 @@ class GuestController extends ApiController
         }
 
         if ($request->age) {
-            $guests->whereRaw( 'timestampdiff(year, date_of_birth, curdate()) = ?', [$request->age]);
+            $rangeAge = explode('-', $request->age);
+            $min = $rangeAge[0];
+            $max = $rangeAge[1];
+            $guests->whereRaw( 'timestampdiff(year, date_of_birth, curdate()) between ? and ?', [$min, $max]);
         }
 
         $guests = $guests->latest()->active()->WhereDoesntHave('blockers', function ($q) use ($user) {
