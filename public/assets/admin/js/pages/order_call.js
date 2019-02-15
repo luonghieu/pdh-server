@@ -537,9 +537,7 @@ function handleChoosenCastClassEvent() {
                 isSameClass = false;
             }
         }
-        console.log(selectedMatching);
-        console.log(selectedNomination);
-        console.log(selectedCandidate);
+
         if (!isSameClass) {
             alert('設定している"キャストクラス"と選択されているキャストのキャストクラスが異なります。編集してください。');
             $(this).val(clastIdPrevious);
