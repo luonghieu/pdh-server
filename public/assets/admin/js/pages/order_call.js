@@ -591,7 +591,6 @@ function handleDeleteCastEvent() {
         }
 
         if (type == 3) {
-            console.log('123123');
             const index = selectedMatching.findIndex(i => i.id == userId);
             selectedMatching.splice(index, 1);
             ele.parent().parent().remove();
