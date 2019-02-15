@@ -104,7 +104,7 @@ class PaymentRequestController extends ApiController
                 $allowance = $order->allowance($nightTime);
                 $totalPoint = $paymentRequest->order_point + $allowance + $feePoint + $extraPoint;
                 $paymentRequest->allowance_point = $allowance;
-                $paymentRequest->extra_time = $request->extra_time;
+                $paymentRequest->extra_time = $extraTime;
                 $paymentRequest->extra_point = $extraPoint;
                 $paymentRequest->fee_point = $feePoint;
                 $paymentRequest->total_point = $totalPoint;
@@ -113,7 +113,7 @@ class PaymentRequestController extends ApiController
                 $order->casts()->updateExistingPivot(
                     $user->id,
                     [
-                        'extra_time' => $request->extra_time,
+                        'extra_time' => $extraTime,
                         'total_point' => $totalPoint,
                         'night_time' => $nightTime,
                         'extra_point' => $extraPoint,
