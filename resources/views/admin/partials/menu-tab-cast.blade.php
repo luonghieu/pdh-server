@@ -7,6 +7,8 @@
     ['name' => '#', 'value' => 'チャットルーム一覧', 'url' => '#'],
     ['name' => 'admin.casts.bank_account', 'value' => '振込口座情報', 'url' => route('admin.casts.bank_account', ['user' => $user->id])],
   ];
+
+
 @endphp
 
 <div class="panel-heading">
