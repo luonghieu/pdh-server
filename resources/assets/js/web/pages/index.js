@@ -24,10 +24,17 @@ $(document).ready(function() {
 
   //save prefecture in my page
 
-  if(!localStorage.getItem("prefecture_id")){
-    var prefectureId = $('#prefecture-id-mypage').val();
+  if ($('#prefecture-id-mypage').length) {
 
-    localStorage.setItem('prefecture_id', prefectureId);
+    if (localStorage.getItem("prefecture_id")) {
+      $('#prefecture-id-mypage').val(localStorage.getItem("prefecture_id"));
+    }
+
+    if (!localStorage.getItem("prefecture_id")) {
+      var prefectureId = $('#prefecture-id-mypage').val();
+      localStorage.setItem('prefecture_id', prefectureId);
+    }
+
   }
 
   $('#prefecture-id-mypage').on('change', function () {
@@ -44,7 +51,6 @@ $(document).ready(function() {
 
     window.axios.get('/api/v1/casts', {params})
       .then(function(response) {
-        console.log(response.data);
         $('.cast-body').html(response['data']);
       })
       .catch(function(error) {
