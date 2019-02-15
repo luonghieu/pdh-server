@@ -172,6 +172,25 @@ return [
         'firstname_kana' => [
             'regex' => 'お名前（ふりがな）はひらがなとスペースを利用してください',
         ],
+        'to_date' => [
+            'after_or_equal' => '次回クラス変更期間のto dataは、from data以降の時間を指定してください',
+        ],
+        'num_of_attend_platium' => [
+            'required' => 'プラチナまでの参加回数は必須項目です',
+            'numeric' => 'プラチナまでの参加回数は数字で入力してください',
+        ],
+        'num_of_avg_rate_platium' => [
+            'required' => 'プラチナまでの平均評価は必須項目です',
+            'numeric' => 'プラチナまでの平均評価は数字で入力してください',
+        ],
+        'num_of_attend_up_platium' => [
+            'required' => 'プラチナキープの参加回数は必須項目です',
+            'numeric' => 'プラチナキープの参加回数は数字で入力してください',
+        ],
+        'num_of_avg_rate_up_platium' => [
+            'required' => 'プラチナキープの平均評価は必須項目です',
+            'numeric' => 'プラチナキープの平均評価は数字で入力してください',
+        ],
     ],
 
     /*

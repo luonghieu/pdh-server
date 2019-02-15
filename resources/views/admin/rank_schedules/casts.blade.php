@@ -134,12 +134,37 @@
 @endsection
 @section('admin.js')
   <script type="text/javascript">
+    var fromDate = $('.from-date').val();
+    var toDate = $('.to-date').val();
+
     $('body').on('click', '.btn-search', function () {
-      var fromDate = "<?php echo request()->from_date ?>";
-      var toDate = "<?php echo request()->to_date ?>";
+      var fromDate = $('.from-date').val();
+      var toDate = $('.to-date').val();
 
       if (!fromDate && !toDate) {
         $(this).attr('disabled', 'true');
+      } else {
+        $('.btn-search').removeAttr('disabled');
+      }
+    });
+
+    $('body').on('change', '.from-date', function () {
+      var fromDate = $(this).val();
+
+      if (!fromDate) {
+        $('.btn-search').attr('disabled', 'true');
+      } else {
+        $('.btn-search').removeAttr('disabled');
+      }
+    });
+
+    $('body').on('change', '.to-date', function () {
+      var toDate = $(this).val();
+
+      if (!toDate) {
+        $('.btn-search').attr('disabled', 'true');
+      } else {
+        $('.btn-search').removeAttr('disabled');
       }
     });
   </script>
