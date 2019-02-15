@@ -3,6 +3,8 @@
 namespace App\Http\Controllers\Api;
 
 use App\Cast;
+use App\Job;
+use App\CastClass;
 use App\Http\Resources\CastResource;
 use Illuminate\Http\Request;
 
@@ -98,6 +100,13 @@ class CastController extends ApiController
                 ->select('users.*')
                 ->paginate($request->per_page)
                 ->appends($request->query());
+        }
+
+        if ('html' == $request->response_type) {
+            $jobs = Job::pluck('name', 'id');
+            $castClass = CastClass::pluck('name', 'id');
+
+            return view('web.casts-working-today', compact('casts', 'jobs', 'castClass'));
         }
 
         return $this->respondWithData(CastResource::collection($casts));

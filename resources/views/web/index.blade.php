@@ -102,7 +102,6 @@
       <img src="{{ asset('images/btn_login_base.png') }}" alt="">
     </a>
   @endif
-
   @if (isset(request()->first_time) && request()->first_time)
     <a href="javascript:void(0)" class="gtm-hidden-btn" id="first-time-login" name="button1" onclick="dataLayer.push({
       'userId': '<?php echo Auth::user()->id; ?>',
@@ -135,7 +134,19 @@
       </a>
     </div>
   </div>
-
+  <div class="prefecture">
+    <div class="wrapper-select">
+      <img src="{{ asset('assets/web/images/common/map-blue.svg') }}" alt="">
+      <form action="">
+        <select name="" id="prefecture-id-mypage">
+          @foreach($prefectures as $prefecture)
+            <option value="{{ $prefecture->id }}" {{ ($prefecture->id == 13) ? 'selected':''}}>{{ $prefecture->name }}</option>
+          @endforeach
+        </select>
+      </form>
+      <img src="{{ asset('assets/web/images/common/arrow-blue.svg') }}" alt="">
+    </div>
+  </div>
   @if ($order->resource)
   <div class="booking">
     <h2>現在の予約</h2>
@@ -200,39 +211,7 @@
     </div>
 
     <div class="cast-body">
-      @foreach ($casts as $cast)
-        <div class="cast-item">
-          <a href="{{ Auth::user()->status ? route('cast.show', ['id' => $cast->id]) : 'javascript:void(0)' }}" id="{{ Auth::user()->status ? '' : 'popup-freezed-account' }}">
-            @php
-              if ($cast->class_id == 1) {
-                $class = 'cast-class_b';
-              }
-
-              if ($cast->class_id == 2) {
-                $class = 'cast-class_p';
-              }
-
-              if ($cast->class_id == 3) {
-                $class = 'cast-class_d';
-              }
-            @endphp
-            <span class="tag {{ $class }}">{{ $cast->class }}</span>
-            <img src="{{ ($cast->avatars && @getimagesize($cast->avatars[0]->thumbnail)) ? $cast->avatars[0]->thumbnail :'/assets/web/images/gm1/ic_default_avatar@3x.png' }}">
-            <div class="info">
-              <span class="tick {{ $cast->is_online == 1? 'tick-online':'tick-offline' }}"></span>
-              <span class="title-info">{{ str_limit($cast->job, 15) }}  {{ $cast->age }}歳</span>
-              <div class="wrap-description">
-                <span class="description">{{ $cast->intro }}</span>
-              </div>
-            </div>
-          </a>
-        </div>
-      @endforeach
-      @if (Auth::user()->status)
-      <a href="{{ route('cast.list_casts') }}" class="cast-item import"></a>
-      @else
-      <a href="javascript:void(0)" class="cast-item import" id="popup-freezed-account"></a>
-      @endif
+      @include('web.casts-working-today',compact('casts'))
     </div>
   </div>
 <!-- Timeline -->

@@ -3004,3 +3004,34 @@ padding-top: 65px !important;
 .header-webview .header-item img {
   width: 12px;
 }
+
+#top .prefecture {
+  text-align: center;
+}
+
+#top .prefecture .wrapper-select {
+  background-color: #F4FDFD;
+  display: inline-flex;
+  padding: 10px;
+  border-radius: 25px;
+}
+
+#top .prefecture .wrapper-select form{
+  margin: 0 4px;
+}
+
+#top .prefecture .wrapper-select img{
+  width: 15px;
+  display: inline-block;
+}
+
+#top .prefecture select {
+  background: none;
+  border: none;
+  -webkit-appearance: none;
+  outline: none;
+  text-align-last: center;
+  color: #00C4C4;
+  font-size: 18px;
+  font-weight: 500;
+}
