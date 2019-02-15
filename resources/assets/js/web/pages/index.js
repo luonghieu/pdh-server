@@ -25,16 +25,31 @@ $(document).ready(function() {
   //save prefecture in my page
 
   if ($('#prefecture-id-mypage').length) {
+    var prefectureId = $('#prefecture-id-mypage').val();
 
     if (localStorage.getItem("prefecture_id")) {
       $('#prefecture-id-mypage').val(localStorage.getItem("prefecture_id"));
+      prefectureId = localStorage.getItem("prefecture_id");
+
+      // display cast working today in mypape
+      var params = {
+        prefecture_id: prefectureId,
+        working_today: 1,
+        response_type: 'html'
+      };
+
+      window.axios.get('/api/v1/casts', {params})
+        .then(function(response) {
+          $('.cast-body').html(response['data']);
+        })
+        .catch(function(error) {
+          console.log(error);
+        });
     }
 
     if (!localStorage.getItem("prefecture_id")) {
-      var prefectureId = $('#prefecture-id-mypage').val();
       localStorage.setItem('prefecture_id', prefectureId);
     }
-
   }
 
   $('#prefecture-id-mypage').on('change', function () {
@@ -57,7 +72,4 @@ $(document).ready(function() {
         console.log(error);
       });
   });
-
-
-
 });
