@@ -39,7 +39,7 @@
       </div>
     </section>
 
-    <section class="details-list details-shimei">
+{{--     <section class="details-list details-shimei">
       <div class="details-list__line"><p></p></div>
       <div class="details-list__header">
         <div class="details-header__title">指名リクエスト</div>
@@ -53,7 +53,7 @@
           <div class="btn2-s"><a href="{{ route('guest.orders.get_step3') }}">変更</a></div>
         </div>
       </div>
-    </section>
+    </section> --}}
     <section class="details-list">
       <div class="details-list__line"><p></p></div>
       <div class="details-list__header">
