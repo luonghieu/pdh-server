@@ -1,6 +1,6 @@
 @extends('layouts.admin')
 @section('admin.content')
-    <div class="col-md-10 col-sm-11 main ">
+    <div class="col-md-10 col-sm-11 main edit-order">
         <div class="row">
             <div class="col-lg-12">
                 <div class="panel panel-default">

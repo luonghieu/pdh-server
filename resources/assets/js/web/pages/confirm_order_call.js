@@ -82,58 +82,60 @@ $(document).ready(function(){
 
         }
 
-        if (orderCall.arrIds) {
-          var castIds = orderCall.arrIds;
-          var countIds = castIds.length;
-          castIds = castIds.toString();
-          if (countIds) {
-            if (countIds == orderCall.countIds) {
-              var type = 1;
-            } else {
-              var type = 4;
-            }
-          } else {
-            var type = 2;
-          }      
-        } else {
-          var castIds = '';
-          type = 2;
-        }
+        // if (orderCall.arrIds) {
+        //   var castIds = orderCall.arrIds;
+        //   var countIds = castIds.length;
+        //   castIds = castIds.toString();
+        //   if (countIds) {
+        //     if (countIds == orderCall.countIds) {
+        //       var type = 1;
+        //     } else {
+        //       var type = 4;
+        //     }
+        //   } else {
+        //     var type = 2;
+        //   }      
+        // } else {
+        //   var castIds = '';
+        //   type = 2;
+        // }
 
-        var input = {
-          nominee_ids : castIds,
-        };
+        var castIds = '';
+        var type = 2;
+        // var input = {
+        //   nominee_ids : castIds,
+        // };
 
-        window.axios.post('/api/v1/casts/list_casts',input)
-        .then(function(response) {
-          var data = response.data['data'];
-          $('.total-nominated-call').text(data.length)
-          if (data.length) {
+        // window.axios.post('/api/v1/casts/list_casts',input)
+        // .then(function(response) {
+        //   var data = response.data['data'];
+        //   $('.total-nominated-call').text(data.length)
+        //   if (data.length) {
 
-            data.forEach(function (val) {
-              var avatars = val.avatars;
-              if(avatars.length) {
-                if (avatars[0].thumbnail) {
-                  $('.details-list-box__pic').append('<li> <img src= "' + avatars[0].thumbnail + '" class="img-detail-cast" /> </li>');
-                } else {
-                  $('.details-list-box__pic').append('<li> <img src= "' + avatarsDefault + '" class="img-detail-cast" /> </li>');
-                }
-              } else {
-                $('.details-list-box__pic').append('<li> <img src= "' + avatarsDefault + '" class="img-detail-cast" /> </li>');
-              }
-            })
+        //     data.forEach(function (val) {
+        //       var avatars = val.avatars;
+        //       if(avatars.length) {
+        //         if (avatars[0].thumbnail) {
+        //           $('.details-list-box__pic').append('<li> <img src= "' + avatars[0].thumbnail + '" class="img-detail-cast" /> </li>');
+        //         } else {
+        //           $('.details-list-box__pic').append('<li> <img src= "' + avatarsDefault + '" class="img-detail-cast" /> </li>');
+        //         }
+        //       } else {
+        //         $('.details-list-box__pic').append('<li> <img src= "' + avatarsDefault + '" class="img-detail-cast" /> </li>');
+        //       }
+        //     })
 
-            $('.img-detail-cast').error(function(){
-              $(this).attr("src", avatarsDefault);
-            });
-          }
+        //     $('.img-detail-cast').error(function(){
+        //       $(this).attr("src", avatarsDefault);
+        //     });
+        //   }
 
-        }).catch(function(error) {
-          console.log(error);
-          if (error.response.status == 401) {
-            window.location = '/login';
-          }
-        });
+        // }).catch(function(error) {
+        //   console.log(error);
+        //   if (error.response.status == 401) {
+        //     window.location = '/login';
+        //   }
+        // });
 
         var params = {
           date : currentDate,

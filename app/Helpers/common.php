@@ -175,3 +175,17 @@ if (!function_exists('transferLinkMessage')) {
         }
     }
 }
+
+if (!function_exists('getUniqueArray')) {
+    function getUniqueArray($arr, $key) {
+        $uniqueArray = array();
+
+        foreach($arr as $item) {
+            $niddle = $item[$key];
+            if(array_key_exists($niddle, $uniqueArray)) continue;
+            $uniqueArray[$niddle] = $item;
+        }
+
+        return $uniqueArray;
+    }
+}

@@ -109,7 +109,7 @@ $(document).ready(function(){
 
   if(localStorage.getItem("order_call")){
     var orderCall = JSON.parse(localStorage.getItem("order_call"));
-    var arrIds = JSON.parse(localStorage.getItem("order_call")).arrIds;
+    //var arrIds = JSON.parse(localStorage.getItem("order_call")).arrIds;
 
     if($('.tags-name').length) {
       if(orderCall.tags) {
@@ -310,10 +310,10 @@ $(document).ready(function(){
         $("#step1-create-call").prop('disabled', false);
       }
 
-      if(arrIds) {
-        helper.deleteLocalStorageValue('order_call','arrIds');
-      }
-
+      // if(arrIds) {
+      //   helper.deleteLocalStorageValue('order_call','arrIds');
+      // }
+      
       var tags = JSON.parse(localStorage.getItem("order_call")).tags;
       if(tags) {
         helper.deleteLocalStorageValue('order_call','tags');

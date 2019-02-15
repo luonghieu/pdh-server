@@ -187,7 +187,7 @@
   </div>
   <form action="{{ route('guest.orders.get_step2') }}" method="GET">
     <button type="submit" class="form_footer ct-button disable" id="step1-create-call" disabled>
-      次に進む (1/4)
+      次に進む (1/3)
     </button>
   </form>
 @endsection

@@ -262,13 +262,13 @@ class User extends Authenticatable implements JWTSubject
         }
     }
 
-    public function setCostRateAttribute($value)
+    public function getCostRateAttribute()
     {
-        if ($this->class_id) {
-            if (!$value) {
-                $this->attributes['cost_rate'] = config('common.default_cost_rate')[$this->class_id];
+        if ($this->attributes['class_id']) {
+            if (!$this->attributes['cost_rate']) {
+                return config('common.default_cost_rate')[$this->attributes['class_id']];
             } else {
-                $this->attributes['cost_rate'] = $value;
+                return $this->attributes['cost_rate'];
             }
         }
     }

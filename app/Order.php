@@ -335,10 +335,9 @@ class Order extends Model
     public function createTempPoint($paymentRequest)
     {
         $cast = $paymentRequest->cast;
-        $cast->cost_rate = $cast->cost_rate;
 
         $point = new Point;
-        $point->point = $paymentRequest->total_point * $cast->cost_rate;
+        $point->point = round($paymentRequest->total_point * $cast->cost_rate);
         $point->user_id = $paymentRequest->cast_id;
         $point->order_id = $this->id;
         $point->payment_request_id = $paymentRequest->id;
