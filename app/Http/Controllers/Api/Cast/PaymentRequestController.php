@@ -48,6 +48,8 @@ class PaymentRequestController extends ApiController
     {
         $rules = [
             'extra_time' => 'numeric',
+            'started_at' => 'date_format:Y-m-d H:i',
+            'stopped_at' => 'date_format:Y-m-d H:i'
         ];
 
         $validator = validator($request->all(), $rules);
@@ -85,10 +87,17 @@ class PaymentRequestController extends ApiController
         try {
             if (isset($request->extra_time)) {
                 DB::beginTransaction();
-                $castStartTime = Carbon::parse($cast->pivot->started_at);
-                $stoppedAt = $castStartTime->copy()->addMinutes($order->duration * 60)->addMinutes($request->extra_time);
+                if ($request->started_at && $request->stopped_at) {
+                    $castStartTime = Carbon::parse($request->started_at);
+                    $stoppedAt = Carbon::parse($request->stopped_at);
+                    $extraTime = $order->extraTime($castStartTime, $stoppedAt);
+                } else {
+                    $castStartTime = Carbon::parse($cast->pivot->started_at);
+                    $stoppedAt = $castStartTime->copy()->addMinutes($order->duration * 60)->addMinutes($request->extra_time);
+                    $extraTime = $request->extra_time;
+                }
 
-                $extraPoint = $order->extraPoint($cast, $request->extra_time);
+                $extraPoint = $order->extraPoint($cast, $extraTime);
                 $feePoint = $order->orderFee($cast, $castStartTime, $stoppedAt);
 
                 $nightTime = $order->nightTime($stoppedAt);
@@ -110,6 +119,7 @@ class PaymentRequestController extends ApiController
                         'extra_point' => $extraPoint,
                         'fee_point' => $feePoint,
                         'allowance_point' => $allowance,
+                        'started_at' => $castStartTime,
                         'stopped_at' => $stoppedAt,
                     ],
                     false
