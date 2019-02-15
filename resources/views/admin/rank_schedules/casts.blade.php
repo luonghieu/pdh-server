@@ -13,10 +13,10 @@
             <form class="navbar-form navbar-left form-search" action="{{ route('admin.rank_schedules.casts') }}" method="GET">
               <input type="text" class="form-control input-search" placeholder="ユーザーID,名前" name="search" value="{{ request()->search }}">
               <label for="">From date: </label>
-              <input type="text" class="form-control date-picker input-search" name="from_date" id="date01" data-date-format="yyyy/mm/dd" value="{{ request()->from_date ?? $rankSchedule->from_date }}" placeholder="yyyy/mm/dd" />
+              <input type="text" class="form-control date-picker input-search from-date" name="from_date" id="date01" data-date-format="yyyy/mm/dd" value="{{ request()->from_date ?? ($rankSchedule->from_date ?? '') }}" placeholder="yyyy/mm/dd" />
               <label for="">To date: </label>
-              <input type="text" class="form-control date-picker" name="to_date" id="date01" data-date-format="yyyy/mm/dd" value="{{ request()->to_date ?? $rankSchedule->to_date }}" placeholder="yyyy/mm/dd"/>
-              <button type="submit" class="fa fa-search btn-search"></button>
+              <input type="text" class="form-control date-picker to-date" name="to_date" id="date01" data-date-format="yyyy/mm/dd" value="{{ request()->to_date ?? ($rankSchedule->to_date ?? '') }}" placeholder="yyyy/mm/dd"/>
+              <button type="" class="fa fa-search btn-search"></button>
 
               <input type="hidden" name="limit" value="{{ request()->limit }}" />
               <input type="hidden" name="class_id" value="{{ request()->class_id }}" />
@@ -90,7 +90,7 @@
               </tr>
             </thead>
             <tbody>
-              @if (empty($casts->count()) || !$rankSchedule)
+              @if (!$casts->count())
               <tr>
                 <td colspan="8">{{ trans('messages.results_not_found') }}</td>
               </tr>
@@ -131,4 +131,16 @@
   </div>
   <!--/row-->
 </div>
+@endsection
+@section('admin.js')
+  <script type="text/javascript">
+    $('body').on('click', '.btn-search', function () {
+      var fromDate = "<?php echo request()->from_date ?>";
+      var toDate = "<?php echo request()->to_date ?>";
+
+      if (!fromDate && !toDate) {
+        $(this).attr('disabled', 'true');
+      }
+    });
+  </script>
 @endsection

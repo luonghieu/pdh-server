@@ -89,7 +89,7 @@ class RankScheduleController extends Controller
         $fromDate = $fromDate ? Carbon::parse($fromDate)->startOfDay() : null;
         $toDate = $toDate ? Carbon::parse($toDate)->endOfDay() : null;
 
-        if ($fromDate > $toDate) {
+        if ($fromDate > $toDate || (!$rankSchedule && $fromDate == null && $toDate == null)) {
             $casts = collect([]);
             return view('admin.rank_schedules.casts', compact('casts', 'rankSchedule'));
         }
