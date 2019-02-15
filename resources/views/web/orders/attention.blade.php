@@ -38,16 +38,16 @@
       <p class="ml-p">延長15分 = 2,100P(1,500P×1.4)となります。</p>
     </div>
   </div>
-  <div class="ge2-4-block">
+{{--   <div class="ge2-4-block">
     <h2>コール内指名料金</h2>
     <p>コール予約内でのキャスト指名は、キャスト1人あたり500P/15分が発生します。</p>
-  </div>
+  </div> --}}
   <div class="ge2-4-block">
     <h2>オートチャージ</h2>
     <p>ご利用後、評価と決済確定作業を行っていただいておりますが、決済確定作業を行われなかった場合は、ポイントの不足分をご登録いただいたクレジットカードから、自動決済させていただきます。(1P = 1.1円)</p>
   </div>
     <button type="button" class="form_footer ct-button">
-      <a href="{{ route('guest.orders.confirm') }}">次に進む(4/4)</a>
+      <a href="{{ route('guest.orders.confirm') }}">次に進む(3/3)</a>
     </button>
 
 @endsection
