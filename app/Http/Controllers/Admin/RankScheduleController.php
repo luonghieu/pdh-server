@@ -119,8 +119,6 @@ class RankScheduleController extends Controller
            $casts->orderBy('class_id', $request->class_id);
         }
 
-        $casts = $casts->orderBy('created_at', 'DESC');
-
         // Casts collection
         // Count order of the cast
         // Calculate average rate of the cast
