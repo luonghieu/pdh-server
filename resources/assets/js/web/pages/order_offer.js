@@ -34,8 +34,7 @@ $(document).ready(function(){
       })
     }
   }
-
-  $(".checked-order-offer").on("change",function(event){
+  $('body').on('change', ".checked-order-offer",function(event){
     if ($(this).is(':checked')) {
       if(localStorage.getItem("order_offer")){
         var offerId = $('.offer-id').val();
@@ -91,6 +90,7 @@ $(document).ready(function(){
 
   $('#lb-order-offer').on("click",function(event){
     $('.modal-confirm-offer').css('display','none');
+    $('#confirm-orders-offer').prop('disabled', true);
 
     var area = $("input:radio[name='offer_area']:checked").val();
     if('その他'== area){
@@ -138,7 +138,7 @@ $(document).ready(function(){
     var offerId = $('.offer-id').val();
 
     var params = {
-      prefecture_id: 13,
+      prefecture_id: orderOffer.prefecture_id,
       address: area,
       class_id: classId,
       duration: duration,
@@ -158,6 +158,7 @@ $(document).ready(function(){
         window.location.href = '/message/' +roomId;
       })
       .catch(function(error) {
+        $('#confirm-orders-offer').prop('disabled', false);
         $('#order-offer-popup').prop('checked',false);
          if (error.response.status == 401) {
             window.location = '/login';
@@ -216,7 +217,7 @@ $(document).ready(function(){
   })
 
   //textArea
-  $("input:text[name='other_area_offer']").on('input', function(e) {
+  $('body').on('input', "input:text[name='other_area_offer']", function(e){
     var offerId = $('.offer-id').val();
     var otherArea = $(this).val();
 
@@ -237,8 +238,7 @@ $(document).ready(function(){
   });
 
   //area
-  var area = $("input:radio[name='offer_area']");
-  area.on("change",function(){
+  $('body').on('change', "input:radio[name='offer_area']", function(){
     var offerId = $('.offer-id').val();
     var areaOffer = $("input:radio[name='offer_area']:checked").val();
 
@@ -485,10 +485,9 @@ $(document).ready(function(){
   })
 
   if($('#temp-point-offer').length) {
-
+    var offerId = $('.offer-id').val();
     if(localStorage.getItem("order_offer")){
-      var offerId = $('.offer-id').val();
-      var orderOffer = JSON.parse(localStorage.getItem("order_offer"));
+      let orderOffer = JSON.parse(localStorage.getItem("order_offer"));
 
       if(orderOffer[offerId]) {
         orderOffer = orderOffer[offerId];
@@ -510,23 +509,6 @@ $(document).ready(function(){
           var getDayOfWeek = dateFolowDevice.getDay();
           var dayOfWeekString = dayOfWeek()[getDayOfWeek];
           $('#temp-date-offer').text(currentDate[0]+'年'+currentDate[1]+'月'+currentDate[2]+'日('+dayOfWeekString+')');
-        }
-          //area
-        if(orderOffer.select_area){
-         if('その他'== orderOffer.select_area){
-            $('.area-offer').css('display', 'flex')
-            $("input:text[name='other_area_offer']").val(orderOffer.text_area);
-          }
-
-          const inputArea = $(".input-area-offer");
-          inputArea.parent().removeClass('active');
-
-          $.each(inputArea,function(index,val){
-            if (val.value == orderOffer.select_area) {
-              $(this).prop('checked', true);
-              $(this).parent().addClass('active');
-            }
-          })
         }
 
         //time
@@ -579,7 +561,63 @@ $(document).ready(function(){
 
           $('.select-minute-offer').html(html);
         }
+
+        if(orderOffer.prefecture_id){
+          $('.select-prefecture-offer').val(orderOffer.prefecture_id);
+          var params = {
+            prefecture_id : orderOffer.prefecture_id,
+          };
+
+          window.axios.get('/api/v1/municipalities', {params})
+            .then(function(response) {
+              var data = response.data;
+
+              var municipalities = (data.data);
+              html = '';
+              municipalities.forEach(function (val) {
+                name = val.name;
+                html += '<label class="button button--green area">';
+                html += '<input class="input-area-offer" type="radio" name="offer_area" value="'+ name +'">' + name +'</label>';
+              })
+              
+              html += '<label id="area_input" class="button button--green area ">';
+              html += '<input class="input-area-offer" type="radio" name="offer_area" value="その他">その他</label>';
+              html += '<label class="area-input area-offer"><span>希望エリア</span>';
+              html += '<input type="text" id="other_area_offer" placeholder="入力してください" name="other_area_offer" value=""></label>';
+
+              $('#list-municipalities-offer').html(html);
+
+              //area
+              if(orderOffer.select_area){
+               if('その他'== orderOffer.select_area){
+                  $('.area-offer').css('display', 'flex')
+                  $("input:text[name='other_area_offer']").val(orderOffer.text_area);
+                }
+
+                const inputArea = $(".input-area-offer");
+                inputArea.parent().removeClass('active');
+
+                $.each(inputArea,function(index,val){
+                  if (val.value == orderOffer.select_area) {
+                    $(this).prop('checked', true);
+                    $(this).parent().addClass('active');
+                  }
+                })
+              }
+            })
+            .catch(function (error) {
+              console.log(error);
+              if (error.response.status == 401) {
+                window.location = '/login';
+              }
+            });
+        }
       }
+    } else {
+      var params = {
+          prefecture_id : $('.select-prefecture-offer option:selected').val(),
+        };
+      helper.updateLocalStorageKey('order_offer', params, offerId);
     }
   }
 
@@ -726,4 +764,49 @@ $(document).ready(function(){
       document.getElementById("time-countdown").innerHTML = "00時間00分00秒";
     }
   }
+
+  //select prefecture
+  var selectedPrefectureOffer = $(".select-prefecture-offer");
+  selectedPrefectureOffer.on("change",function(){
+    var offerId = $('.offer-id').val();
+    $('#confirm-orders-offer').addClass("disable");
+    $('.checked-order-offer').prop('checked', false);
+    $('#confirm-orders-offer').prop('disabled', true);
+    $('#sp-cancel').addClass("sp-disable");
+
+    helper.deleteLocalStorageKey('order_offer','select_area', offerId);
+    helper.deleteLocalStorageKey('order_offer','text_area', offerId);
+    
+    var params = {
+      prefecture_id : this.value,
+    };
+
+    helper.updateLocalStorageKey('order_offer', params, offerId);
+
+    window.axios.get('/api/v1/municipalities', {params})
+      .then(function(response) {
+        var data = response.data;
+
+        var municipalities = (data.data);
+        html = '';
+        municipalities.forEach(function (val) {
+          name = val.name;
+          html += '<label class="button button--green area">';
+          html += '<input class="input-area-offer" type="radio" name="offer_area" value="'+ name +'">' + name +'</label>';
+        })
+        
+        html += '<label id="area_input" class="button button--green area ">';
+        html += '<input class="input-area-offer" type="radio" name="offer_area" value="その他">その他</label>';
+        html += '<label class="area-input area-offer"><span>希望エリア</span>';
+        html += '<input type="text" id="other_area_offer" placeholder="入力してください" name="other_area_offer" value=""></label>';
+
+        $('#list-municipalities-offer').html(html);
+      })
+      .catch(function (error) {
+        console.log(error);
+        if (error.response.status == 401) {
+          window.location = '/login';
+        }
+      });
+  });
 })

@@ -2122,15 +2122,18 @@ padding-top: 65px !important;
 
 #top .set-usage-area select {
   background: none;
+  -webkit-appearance: none;
   border: none;
   outline: none;
   text-align-last: center;
-  width: 50%;
+  padding: 0 45px;
+  background: transparent url(../images/common/arrow.svg) no-repeat right center;
 }
 
-#top .text-box p {
+#top .text-box .color-gray {
   font-size: 10px;
-  color: #808080bf;
+  color: #808080;
+  font-weight: 300;
 }
 
 .cast-list .cast-body .cast-class_b {
@@ -3064,4 +3067,35 @@ padding-top: 65px !important;
 
 .rank-schedule p {
   margin-bottom: 7px;
+}
+
+#top .prefecture {
+  text-align: center;
+}
+
+#top .prefecture .wrapper-select {
+  background-color: #F4FDFD;
+  display: inline-flex;
+  padding: 10px;
+  border-radius: 25px;
+}
+
+#top .prefecture .wrapper-select form{
+  margin: 0 4px;
+}
+
+#top .prefecture .wrapper-select img{
+  width: 15px;
+  display: inline-block;
+}
+
+#top .prefecture select {
+  background: none;
+  border: none;
+  -webkit-appearance: none;
+  outline: none;
+  text-align-last: center;
+  color: #00C4C4;
+  font-size: 18px;
+  font-weight: 500;
 }

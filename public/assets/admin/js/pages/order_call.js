@@ -581,6 +581,13 @@ function handleDeleteCastEvent() {
             selectedCandidate.splice(index, 1);
             ele.parent().parent().remove();
             updateTotalPoint();
+            const candidateIndex = selectedMatching.findIndex(i => i.id == userId);
+            if (candidateIndex != -1) {
+                const index = selectedMatching.findIndex(i => i.id == userId);
+                selectedMatching.splice(index, 1);
+                ele.parent().parent().remove();
+                updateTotalPoint();
+            }
         }
 
         if (type == 3) {

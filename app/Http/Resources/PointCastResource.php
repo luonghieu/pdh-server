@@ -20,7 +20,6 @@ class PointCastResource extends Resource
     public function toArray($request)
     {
         $cast = Auth::user();
-        $cast->cost_rate = $cast->cost_rate;
         
         $order = $this->whenLoaded('order');
         $paymentRequests = ($paymentRequestsTmp = $order->paymentRequests ?? []) ? $paymentRequestsTmp->first() : '';
@@ -33,11 +32,11 @@ class PointCastResource extends Resource
             'is_admin' => $this->is_adjusted ? 1 : 0,
             'order_time' => $paymentRequests ? $paymentRequests['order_time'] : '',
             'extra_time' => $paymentRequests ? $paymentRequests['extra_time'] : '',
-            'order_point' => $paymentRequests ? $cast->cost_rate * $paymentRequests['order_point'] : '',
-            'extra_point' => $paymentRequests ? $cast->cost_rate * $paymentRequests['extra_point'] : '',
-            'allowance_point' => $paymentRequests ? $cast->cost_rate * $paymentRequests['allowance_point'] : '',
-            'fee_point' => $paymentRequests ? $cast->cost_rate * $paymentRequests['fee_point'] : '',
-            'total_point' => $paymentRequests ? $cast->cost_rate * $paymentRequests['total_point'] : $this->point,
+            'order_point' => $paymentRequests ? round($cast->cost_rate * $paymentRequests['order_point']) : '',
+            'extra_point' => $paymentRequests ? round($cast->cost_rate * $paymentRequests['extra_point']) : '',
+            'allowance_point' => $paymentRequests ? round($cast->cost_rate * $paymentRequests['allowance_point']) : '',
+            'fee_point' => $paymentRequests ? round($cast->cost_rate * $paymentRequests['fee_point']) : '',
+            'total_point' => $paymentRequests ? round($cast->cost_rate * $paymentRequests['total_point']) : $this->point,
             'nickname' => $this->is_adjusted ? 'Cheers運営局' : $order->user->nickname,
             'type' => $this->type,
             'date' => $this->is_adjusted ? Carbon::parse($this->created_at)->format('Y-m-d') : Carbon::parse($order->date)->format('Y-m-d'),

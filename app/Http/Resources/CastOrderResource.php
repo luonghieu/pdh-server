@@ -20,12 +20,11 @@ class CastOrderResource extends JsonResource
     {
         $cast = Auth::user();
         $isCast = $cast->is_cast;
-        $cast->cost_rate = $cast->cost_rate;
 
         return $this->filterNull([
             'order_time' => $this->order_time,
             'cost' => $this->cost,
-            'temp_point' => $this->when($isCast, $cast->cost_rate * $this->temp_point, $this->temp_point),
+            'temp_point' => $this->when($isCast, round($cast->cost_rate * $this->temp_point), $this->temp_point),
             'cost_rate' => $cast->cost_rate,
             'extra_time' => $this->extra_time,
             'order_point' => $this->order_point,

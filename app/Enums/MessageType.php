@@ -10,6 +10,7 @@ final class MessageType extends Enum
     const MESSAGE = 2;
     const IMAGE = 3;
     const THANKFUL = 4;
+    const LIKE = 5;
 
     /**
      * Get the description for an enum value

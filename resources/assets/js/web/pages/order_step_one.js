@@ -2,8 +2,7 @@ const helper = require('./helper');
 
 function handlerSelectedArea()
 {
-  var buttonGreen = $(".button--green.area");
-  buttonGreen.on("change",function(){
+  $('body').on('change', ".button--green.area",function(){
 
     if ($("input:radio[name='area']").length) {
       var areaCall = $("input:radio[name='area']:checked").val();
@@ -49,8 +48,7 @@ function handlerSelectedArea()
 
 function handlerCustomArea()
 {
-  var txtArea = $("input:text[name='other_area']");
-  txtArea.on("input",function(){
+  $('body').on('input', "input:text[name='other_area']",function(){
     //text-area
     var params = {
       text_area: $(this).val(),
@@ -570,6 +568,50 @@ function handlerNumberCasts()
   }
 }
 
+function handlerSelectedPrefecture()
+{
+  var selectedPrefecture = $(".select-prefecture");
+  selectedPrefecture.on("change",function(){
+    $("#step1-create-call").addClass("disable");
+    $("#step1-create-call").prop('disabled', true);
+
+    helper.deleteLocalStorageValue('order_call','select_area');
+    helper.deleteLocalStorageValue('order_call','text_area');
+
+    var params = {
+      prefecture_id : this.value,
+    };
+
+    helper.updateLocalStorageValue('order_call', params);
+
+    window.axios.get('/api/v1/municipalities', {params})
+      .then(function(response) {
+        var data = response.data;
+
+        var municipalities = (data.data);
+        html = '';
+        municipalities.forEach(function (val) {
+          name = val.name;
+          html += '<label class="button button--green area">';
+          html += '<input type="radio" name="area" value="'+ name +'">' + name +'</label>';
+        })
+        
+        html += '<label id="area_input" class="button button--green area">';
+        html += '<input type="radio" name="area" value="その他">その他 </label>';
+        html += '<label class="area-input area-call"> <span>希望エリア</span>';
+        html += '<input type="text" placeholder="入力してください" name="other_area" value=""> </label>';
+
+        $('#list-municipalities').html(html);
+      })
+      .catch(function (error) {
+        console.log(error);
+        if (error.response.status == 401) {
+          window.location = '/login';
+        }
+      });
+  });
+}
+
 $(document).ready(function () {
   handlerSelectedArea();
   handlerCustomArea();
@@ -577,4 +619,5 @@ $(document).ready(function () {
   handlerSelectedDuration();
   handlerSelectedCastClass();
   handlerNumberCasts();
+  handlerSelectedPrefecture();
 });

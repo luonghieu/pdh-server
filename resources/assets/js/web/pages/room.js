@@ -1,7 +1,6 @@
 $(document).ready(function() {
   $("#search-box").val(null);
   var userId = $('#auth').val();
-
   window.Echo.private('user.'+userId).listen('MessageCreated', (e) => {
     var roomId = e.message.room_id;
     var message = '';
@@ -52,7 +51,7 @@ $(document).ready(function() {
 
   $('.search-box').keyup(function(event) {
     var keywork = $('.search-box').val();
-    axios.get('api/v1/rooms',{
+    axios.get('api/v1/rooms/list_room',{
       'params': {
         nickname: keywork,
         response_type: 'html',

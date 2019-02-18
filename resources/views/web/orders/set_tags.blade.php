@@ -44,7 +44,7 @@
       @endif
     </div>
   </div>
-  <button type="button" class="form_footer ct-button"><a href="{{ route('guest.orders.get_step3') }}">次に進む　(2/4)</a></button>
+  <button type="button" class="form_footer ct-button"><a href="{{ route('guest.orders.get_step4') }}">次に進む　(2/3)</a></button>
 @endsection
 <script>
     if(!localStorage.getItem("order_call")){

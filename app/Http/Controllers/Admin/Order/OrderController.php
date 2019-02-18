@@ -313,12 +313,14 @@ class OrderController extends Controller
             if ($room) {
                 if ($order->total_cast == 1) {
                     $cast = $order->casts()->first();
-                    $ownerId = $order->user_id;
-                    $room = $this->createDirectRoom($ownerId, $cast->id);
-                    $room->save();
+                    if ($cast) {
+                        $ownerId = $order->user_id;
+                        $room = $this->createDirectRoom($ownerId, $cast->id);
+                        $room->save();
 
-                    $order->room_id = $room->id;
-                    $order->save();
+                        $order->room_id = $room->id;
+                        $order->save();
+                    }
                 }
 
                 if ($order->total_cast > 1) {
@@ -679,9 +681,8 @@ class OrderController extends Controller
                 $point = Point::withTrashed()->where('payment_request_id', $paymentRequest->id)->where('type', PointType::TEMP)->first();
                 if ($point) {
                     $cast = $paymentRequest->cast;
-                    $cast->cost_rate = $cast->cost_rate;
                     
-                    $point->update(['point' => $paymentRequest->total_point * $cast->cost_rate]);
+                    $point->update(['point' => round($paymentRequest->total_point * $cast->cost_rate)]);
                 }
             }
 
