@@ -106,7 +106,6 @@
                       未完了
                     @endif
                   </td>
-                  </td>
                   <td>{{ App\Enums\Status::getDescription($cast->status) }}</td>
                   @if ($cast->is_online == true)
                   <td>オンライン中</td>
