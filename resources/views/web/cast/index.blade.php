@@ -95,6 +95,80 @@
     <label for="lb-update-cost" class="update-cost"></label>
   </section>
   <a href="javascript:void(0)" id="change-point">変更する</a>
+  @php
+  $now = now()->format('Y-m-d');
+  @endphp
+  @if($rankSchedule && $rankSchedule->from_date < $now && $rankSchedule->to_date > $now)
+  <div class="rank-schedule">
+    <input type="hidden" id="sum_orders" value="{{$sumOrders}}">
+    <input type="hidden" id="rating_score" value="{{$ratingScore}}">
+    @if($user->class_id == 1)
+      <input type="hidden" id="num_of_attend_up_platium" value="{{$rankSchedule->num_of_attend_up_platium}}">
+      <input type="hidden" id="num_of_avg_rate_up_platium" value="{{$rankSchedule->num_of_avg_rate_up_platium}}">
+    @elseif($user->class_id == 2)
+      <input type="hidden" id="num_of_attend_platium" value="{{$rankSchedule->num_of_attend_platium}}">
+      <input type="hidden" id="num_of_avg_rate_platium" value="{{$rankSchedule->num_of_avg_rate_platium}}">
+    @endif
+    <p>現在のキャストクラス　{{$castClass->name}}</p>
+    @if($user->class_id == 1)
+      <p>プラチナクラスまで‥</p>
+    @elseif($user->class_id == 2)
+      <p>プラチナクラスキープまで‥</p>
+    @endif
+    <div class="times-ordered">
+      <div class="title-times-ordered">参加回数</div>
+      <div class="chart-times-ordered">
+        <div class="wrapper-rank-schedule">
+          <ul class="indicators">
+            @php
+              if ($user->class_id == 1) {
+                $maxNumOfAttend = $rankSchedule->num_of_attend_up_platium;
+              }
+              if ($user->class_id == 2) {
+                $maxNumOfAttend = $rankSchedule->num_of_attend_platium;
+              }
+            @endphp
+            @for($i = 0; $i <= $maxNumOfAttend; $i++)
+            <li>{{$i}}</li>
+            @endfor
+          </ul>
+          <div class="progress-wrapper">
+            <div class="progress-bar"></div>
+            <span class="class-up">Class UP !</span>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="clear"></div>
+    <div class="times-ordered">
+      <div class="title-times-ordered">平均評価</div>
+      <div class="chart-times-ordered">
+        <div class="wrapper-rank-schedule">
+          <ul class="indicators">
+            @php
+              if ($user->class_id == 1) {
+                $maxNumOfAvgRate = $rankSchedule->num_of_avg_rate_up_platium;
+              }
+              if ($user->class_id == 2) {
+                $maxNumOfAvgRate = $rankSchedule->num_of_avg_rate_platium;
+              }
+            @endphp
+            @for($i = 0; $i <= $maxNumOfAvgRate; $i++)
+              <li>{{$i}}</li>
+            @endfor
+          </ul>
+          <div class="progress-wrapper">
+            <div class="progress-bar-avg"></div>
+            <span class="class-up">Class UP !</span>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="clear"></div>
+    <p>※次回クラス変更日‥{{Carbon\Carbon::parse($rankSchedule->to_date)->format('m月d日')}}</p>
+    <p>※ダイヤモンドクラスへの</p>
+  </div>
+  @endif
   @if($token)
     <script>
         window.localStorage.setItem('access_token', '{{ $token }}');
@@ -140,4 +214,54 @@
   }
   window.onload = responsivePoint;
 </script>
+@section('web.script')
+  <script>
+      $(document).ready(function() {
+          var sumOrders = $('#sum_orders').val();
+          var ratingScore = $('#rating_score').val();
+          var numOfAttendUpPlatium = $('#num_of_attend_up_platium').val();
+          var numOfAvgRateUpPlatium = $('#num_of_avg_rate_up_platium').val();
+          var numOfAttendPlatium = $('#num_of_attend_platium').val();
+          var numOfAvgRatePlatium = $('#num_of_avg_rate_platium').val();
 
+          if (((sumOrders >= numOfAttendUpPlatium) && (ratingScore >= numOfAvgRateUpPlatium)) || ((sumOrders >= numOfAttendPlatium) && (ratingScore >= numOfAvgRatePlatium))){
+            $('.class-up').css('display','block');
+          }
+
+          if (numOfAttendUpPlatium && numOfAvgRateUpPlatium) {
+              var percentNumOfAttendUpPlatium = sumOrders * 100 / numOfAttendUpPlatium;
+
+              if (percentNumOfAttendUpPlatium > 100) {
+                  percentNumOfAttendUpPlatium = 100;
+              }
+
+              $('.progress-bar').css('width', percentNumOfAttendUpPlatium + '%');
+
+              var percentNumOfAvgRateUpPlatium = ratingScore * 100 / numOfAvgRateUpPlatium;
+
+              if (percentNumOfAvgRateUpPlatium > 100) {
+                  percentNumOfAvgRateUpPlatium = 100;
+              }
+
+              $('.progress-bar-avg').css('width',percentNumOfAvgRateUpPlatium+'%');
+          }
+
+          if (numOfAttendPlatium && numOfAvgRatePlatium) {
+              var percentNumOfAttendPlatium = sumOrders * 100 / numOfAttendPlatium;
+
+              if (percentNumOfAttendPlatium > 100) {
+                  percentNumOfAttendPlatium = 100;
+              }
+              $('.progress-bar').css('width',percentNumOfAttendPlatium + '%');
+
+              var percentNumOfAvgRatePlatium = ratingScore * 100 / numOfAvgRatePlatium;
+
+              if (percentNumOfAvgRatePlatium > 100) {
+                  percentNumOfAvgRatePlatium = 100;
+              }
+
+              $('.progress-bar-avg').css('width',percentNumOfAvgRatePlatium + '%');
+          }
+      });
+  </script>
+@endsection
