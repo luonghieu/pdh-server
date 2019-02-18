@@ -69,6 +69,7 @@
                   </a>
                 </th>
                 <th>会員区分</th>
+                <th>アカウント連携状況</th>
                 <th>ステータス</th>
                 <th class="sorting{{ (request()->last_active_at) ? '_' . request()->last_active_at: '' }}">
                   <a href="{{ route('admin.casts.index',
@@ -101,6 +102,11 @@
                   <td>{{ App\Enums\UserRank::getKey($cast->rank) }}</td>
                   <td>{{ App\Enums\UserType::getDescription($cast->type) }}</td>
                   <td>{{ App\Enums\Status::getDescription($cast->status) }}</td>
+                  <td>
+                    @if(App\Enums\DeviceType::IOS == $cast->device_type || 'facebook' == $cast->provider)
+                    未完了
+                    @endif
+                  </td>
                   @if ($cast->is_online == true)
                   <td>オンライン中</td>
                   @else
