@@ -71,6 +71,7 @@ Route::group(['prefix' => 'v1'], function () {
         Route::get('/list_room', ['as' => 'list_room', 'uses' => 'RoomController@getListRoom']);
         Route::post('/', ['as' => 'create', 'uses' => 'RoomController@store']);
         Route::get('/{id}', ['as' => 'index', 'uses' => 'MessageController@index']);
+        Route::get('/{id}/messages', ['as' => 'list_message', 'uses' => 'MessageController@getMessages']);
         Route::post('{id}/messages', ['as' => 'store', 'uses' => 'MessageController@store']);
         Route::get('admin/room_load', ['as' => 'roomLoad', 'uses' => 'RoomController@getRooms']);
         Route::get('admin/room_detail/{id}', ['as' => 'room_detail', 'uses' => 'RoomController@getRoom']);
