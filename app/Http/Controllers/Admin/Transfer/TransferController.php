@@ -14,37 +14,67 @@ use App\User;
 use Carbon\Carbon;
 use DB;
 use Illuminate\Http\Request;
+use Session;
+use Validator;
 
 class TransferController extends Controller
 {
     public function getTransferedList(Request $request)
     {
-        $adminType = UserType::ADMIN;
-        $keyword = $request->search;
-
-        $transfers = Point::with('user', 'order')->where('type', PointType::RECEIVE)
-            ->whereHas('user', function ($query) use ($adminType) {
-                $query->where('users.type', '!=', $adminType);
-            })
-            ->where('is_transfered', true)->orderBy('updated_at', 'DESC');
-
-        if ($request->from_date) {
-            $fromDate = Carbon::parse($request->from_date)->startOfDay();
-            $transfers->where(function ($query) use ($fromDate) {
-                $query->where('updated_at', '>=', $fromDate);
-            });
+        if ($request->from_date && $request->to_date) {
+            if ($request->from_date > $request->to_date) {
+                return redirect()->back();
+            }
         }
 
-        if ($request->to_date) {
-            $toDate = Carbon::parse($request->to_date)->endOfDay();
-            $transfers->where(function ($query) use ($toDate) {
-                $query->where('updated_at', '<=', $toDate);
+        $adminType = UserType::ADMIN;
+        $keyword = $request->search;
+        $with['user'] = function ($query) {
+            return $query->withTrashed();
+        };
+        $with[] = 'order';
+
+        $transfers = Point::with($with)
+            ->where('is_transfered', true)
+            ->whereHas('user', function ($q) use ($adminType) {
+                $q->withTrashed()->where('type', '<>', $adminType);
+            })
+            ->where(function ($q) {
+                $q->whereHas('order', function ($sq) {
+                    $sq->whereNull('deleted_at')
+                        ->where('points.type', PointType::RECEIVE);
+                });
+
+                $q->orWhere(function ($sq) {
+                    $sq->doesntHave('order');
+
+                    $sq->where([
+                        ['points.type', '=', PointType::ADJUSTED],
+                        ['points.is_cast_adjusted', '=', true],
+                    ]);
+
+                });
+            })
+            ->orderBy('updated_at', 'DESC');
+
+        if (!empty($request->from_date) || !empty($request->to_date)) {
+            $transfers->where(function ($query) use ($request) {
+                if (!empty($request->from_date)) {
+                    $fromDate = Carbon::parse($request->from_date)->startOfDay();
+                    $query->where('created_at', '>=', $fromDate);
+                }
+
+                if (!empty($request->to_date)) {
+                    $toDate = Carbon::parse($request->to_date)->endOfDay();
+                    $query->where('created_at', '<=', $toDate);
+                }
             });
         }
 
         if ($keyword) {
-            $transfers->whereHas('user', function ($query) use ($keyword) {
-                $query->where('id', "$keyword")
+            $transfers->whereHas('user', function ($q) use ($keyword) {
+                $q->withTrashed()
+                    ->where('id', "$keyword")
                     ->orWhere('nickname', 'like', "%$keyword%");
             });
         }
@@ -104,39 +134,66 @@ class TransferController extends Controller
 
     public function getNotTransferedList(Request $request)
     {
-        $keyword = $request->search;
-        $adminType = UserType::ADMIN;
-
-        $transfers = Point::with('user', 'order')->where('type', PointType::RECEIVE)
-            ->whereHas('user', function ($query) use ($adminType) {
-                $query->where('users.type', '!=', $adminType);
-            })
-            ->where('is_transfered', false)->orderBy('updated_at', 'DESC');
-
-        if ($request->from_date) {
-            $fromDate = Carbon::parse($request->from_date)->startOfDay();
-            $transfers->where(function ($query) use ($fromDate) {
-                $query->where('updated_at', '>=', $fromDate);
-            });
+        if ($request->from_date && $request->to_date) {
+            if ($request->from_date > $request->to_date) {
+                return redirect()->back();
+            }
         }
 
-        if ($request->to_date) {
-            $toDate = Carbon::parse($request->to_date)->endOfDay();
-            $transfers->where(function ($query) use ($toDate) {
-                $query->where('updated_at', '<=', $toDate);
+        $keyword = $request->search;
+        $adminType = UserType::ADMIN;
+        $with['user'] = function ($query) {
+            return $query->withTrashed();
+        };
+        $with[] = 'order';
+
+        $transfers = Point::with($with)
+            ->where('is_transfered', false)
+            ->whereHas('user', function ($q) use ($adminType) {
+                $q->withTrashed()->where('type', '<>', $adminType);
+            })
+            ->where(function ($q) {
+                $q->whereHas('order', function ($sq) {
+                    $sq->whereNull('deleted_at')
+                        ->where('points.type', PointType::RECEIVE);
+                });
+
+                $q->orWhere(function ($sq) {
+                    $sq->doesntHave('order');
+
+                    $sq->where([
+                        ['points.type', '=', PointType::ADJUSTED],
+                        ['points.is_cast_adjusted', '=', true],
+                    ]);
+
+                });
+            })
+            ->orderBy('updated_at', 'DESC');
+
+        if (!empty($request->from_date) || !empty($request->to_date)) {
+            $transfers->where(function ($query) use ($request) {
+                if (!empty($request->from_date)) {
+                    $fromDate = Carbon::parse($request->from_date)->startOfDay();
+                    $query->where('created_at', '>=', $fromDate);
+                }
+
+                if (!empty($request->to_date)) {
+                    $toDate = Carbon::parse($request->to_date)->endOfDay();
+                    $query->where('created_at', '<=', $toDate);
+                }
             });
         }
 
         if ($keyword) {
-            $transfers->whereHas('user', function ($query) use ($keyword) {
-                $query->where('id', "$keyword")
+            $transfers->whereHas('user', function ($q) use ($keyword) {
+                $q->withTrashed()
+                    ->where('id', "$keyword")
                     ->orWhere('nickname', 'like', "%$keyword%");
             });
         }
 
         if ('transfers' == $request->submit) {
             $transfers = $transfers->select(DB::raw('sum(point) as sum_amount,  user_id'))->groupBy('user_id')->get();
-
             $header = [
                 '1',
                 '21',
@@ -192,7 +249,7 @@ class TransferController extends Controller
                 LogService::writeErrorLog($e);
             }
 
-            $file->output('non_transfered_list' . Carbon::now()->format('Ymd_Hi') . '.dat');
+            $file->output('non_transfered_list' . Carbon::now()->format('Ymd_Hi') . '.csv');
 
             return;
         }
@@ -206,7 +263,16 @@ class TransferController extends Controller
         if ($request->has('transfer_ids')) {
             $transferIds = $request->transfer_ids;
 
-            $checkTransferExist = Point::whereIn('id', $transferIds)->where('type', PointType::RECEIVE)->where('is_transfered', false)->exists();
+            $checkTransferExist = Point::whereIn('id', $transferIds)
+                ->where('is_transfered', false)
+                ->where(function ($query) {
+                    $query->orWhere('type', PointType::RECEIVE)
+                        ->orWhere([
+                            ['points.type', '=', PointType::ADJUSTED],
+                            ['points.is_cast_adjusted', '=', true],
+                        ]);
+                })
+                ->exists();
 
             try {
                 if ($checkTransferExist) {
