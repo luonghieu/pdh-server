@@ -34,8 +34,19 @@
     <div class="h-logo">
       <a href="{{ route('web.index') }}"><img src="{{ asset('assets/web/images/common/logo.svg') }}" alt="cheers"></a>
     </div>
-    @if (Auth::check())
+    @if (Auth::check() && Auth::user()->is_guest)
       <a href="#menu" class="hamburger"><span></span></a>
+    @endif
+
+    @if (Auth::check() && Auth::user()->is_cast)
+
+      @if (Auth::user()->cast_transfer_status == \App\Enums\CastTransferStatus::PENDING 
+        || (Auth::user()->cast_transfer_status == \App\Enums\CastTransferStatus::DENIED 
+            && Auth::user()->gender == \App\Enums\UserGender::FEMALE))
+
+      @else 
+      <a href="#menu" class="hamburger"><span></span></a>
+      @endif
     @endif
   </div>
 </header>

@@ -6,7 +6,10 @@ use App\Cast;
 use App\Prefecture;
 use App\CastClass;
 use App\RankSchedule;
+use App\Enums\CastTransferStatus;
 use App\Enums\OrderStatus;
+use App\Enums\UserGender;
+use App\Enums\UserType;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\OrderResource;
 use App\Order;
@@ -88,6 +91,14 @@ class HomeController extends Controller
             $user = Auth::user();
             $token = '';
             $token = JWTAuth::fromUser($user);
+
+            if ($user->is_cast && $user->cast_transfer_status == CastTransferStatus::PENDING) {
+                return view('web.cast.wait_review');
+            }
+
+            if ($user->is_cast && $user->cast_transfer_status == CastTransferStatus::DENIED && $user->gender == UserGender::FEMALE) {
+                return view('web.cast.deny_review');
+            }
 
             if ($user->is_cast) {
                 $castClass= CastClass::find($user->class_id);

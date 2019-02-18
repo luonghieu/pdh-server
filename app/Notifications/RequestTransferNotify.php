@@ -109,6 +109,7 @@ class RequestTransferNotify extends Notification implements ShouldQueue
                         'push_id' => $pushId,
                         'send_from' => $send_from,
                         'room_id' => $room->id,
+                        'gender' => $notifiable->gender,
                     ],
                 ],
                 'android' => [
@@ -117,6 +118,7 @@ class RequestTransferNotify extends Notification implements ShouldQueue
                         'push_id' => $pushId,
                         'send_from' => $send_from,
                         'room_id' => $room->id,
+                        'gender' => $notifiable->gender,
                     ],
                 ],
             ],
