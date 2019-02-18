@@ -165,7 +165,7 @@ class RankScheduleController extends Controller
             }
 
             $total = $casts->count();
-            $casts->values()->forPage($request->page, $request->limit ?: 10);
+            $casts = $casts->values()->forPage($request->page, $request->limit ?: 10);
 
             $casts = new LengthAwarePaginator($casts, $total, $request->limit ?: 10);
             $casts = $casts->withPath('');
