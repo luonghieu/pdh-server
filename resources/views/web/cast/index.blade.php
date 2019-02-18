@@ -98,7 +98,7 @@
   @php
   $now = now()->format('Y-m-d');
   @endphp
-  @if($rankSchedule && $rankSchedule->from_date < $now && $rankSchedule->to_date > $now)
+  @if($rankSchedule && $rankSchedule->from_date <= $now && $rankSchedule->to_date >= $now)
   <div class="rank-schedule">
     <input type="hidden" id="sum_orders" value="{{$sumOrders}}">
     <input type="hidden" id="rating_score" value="{{$ratingScore}}">
