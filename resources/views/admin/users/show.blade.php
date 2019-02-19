@@ -229,9 +229,13 @@
                 <tr>
                   <th>キャストクラス</th>
                   <td>
+                    @php
+                      $classes = config('common.default_cost_rate');
+                    @endphp
                     <form action="{{ route('admin.users.change_cast_class', ['user' => $user->id]) }}" class="form-cast-class" method="post">
                       {{ csrf_field() }}
-                      <select class="cast-class" name="cast_class">
+                      <input type="hidden" id="input-cost-rate" name="input_cost_rate">
+                      <select class="cast-class" id="class-id" name="cast_class">
                         @foreach ($castClasses as $castClass)
                           <option value="{{ $castClass->id }}" {{ ($user->class_id == $castClass->id) ? 'selected' : '' }}>{{ $castClass->name }}</option>
                         @endforeach
@@ -246,7 +250,7 @@
                     <form action="{{ route('admin.casts.update_cost_rate', ['user' => $user->id]) }}" class="w-form" method="POST">
                       {{ csrf_field() }}
                       {{ method_field('PUT') }}
-                      <select class="w-option" name="cost_rate">
+                      <select class="w-option" id="cost-rate" name="cost_rate">
                         @foreach ($editableCostRates as $editableCostRate)
                           <option value="{{ $editableCostRate }}" {{ ($user->cost_rate == $editableCostRate) ? 'selected' : '' }}>{{ $editableCostRate * 100 }}%</option>
                         @endforeach
@@ -470,4 +474,16 @@
   <input type="hidden" id="user_id" value="{{ $user->id }}" />
   <input type="hidden" id="url-upload" value="{{ route('admin.avatars.upload', $user->id) }}" />
   <script src="/assets/admin/js/pages/upload_image.js"></script>
+
+  <script type="text/javascript">
+    $('body').on('click', '#class-id', function () {
+      <?php foreach ($classes as $key => $value): ?>
+        if ($(this).val() == <?php echo $key; ?>) {
+          $('#cost-rate').val(<?php echo $value; ?>);
+
+          $('#input-cost-rate').val($('#cost-rate').val());
+        }
+      <?php endforeach ?>
+    });
+  </script>
 @stop
