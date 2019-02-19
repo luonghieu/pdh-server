@@ -47,7 +47,7 @@
           @foreach ($room->users as $user)
             @if ($i != 4)
               @if ($user->id != Auth::user()->id)
-                <li><img src="{{ ($user->avatars && @getimagesize($user->avatars[0]->path)) ? $user->avatars[0]->path :'/assets/web/images/gm1/ic_default_avatar@3x.png' }}"></li>
+                <li><img src="{{ ($user->avatars && ($user->avatars[0]->path)) ? $user->avatars[0]->path :'/assets/web/images/gm1/ic_default_avatar@3x.png' }}"></li>
                 @php
                   $i++;
                 @endphp

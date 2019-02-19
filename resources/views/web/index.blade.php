@@ -176,7 +176,7 @@
         @foreach($order->casts as $cast)
           <li>
             <div class="top-image">
-              @if (@getimagesize($cast->avatars->first()->thumbnail))
+              @if ($cast->avatars->first()->thumbnail)
               <img class="lazy" data-src="{{ $cast->avatars->first()->thumbnail }}" alt="">
               @else
               <img class="lazy" data-src="{{ asset('assets/web/images/gm1/ic_default_avatar@3x.png') }}" alt="">
@@ -225,7 +225,7 @@
       <div class="tl-item">
         <div class="tl-item_avatar">
           <a href="{{ Auth::user()->status ? route('cast.show', ['id' => $intro->id]) : 'javascript:void(0)' }}" id="{{ Auth::user()->status ? '' : 'popup-freezed-account' }}">
-            <img src="{{ ($intro->avatars && @getimagesize($intro->avatars[0]->thumbnail)) ? $intro->avatars[0]->thumbnail :'/assets/web/images/gm1/ic_default_avatar@3x.png' }}" alt="avatar" class="image-intro">
+            <img src="{{ ($intro->avatars && isset($intro->avatars[0]) &&$intro->avatars[0]->thumbnail) ? $intro->avatars[0]->thumbnail :'/assets/web/images/gm1/ic_default_avatar@3x.png' }}" alt="avatar" class="image-intro">
           </a>
         </div>
 
