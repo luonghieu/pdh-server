@@ -94,6 +94,7 @@
   <section class="button-box">
     <label for="lb-update-cost" class="update-cost"></label>
   </section>
+  <span class="ml-2">※実際に振り込まれる売上は入力した金額の{{ $user->cost_rate * 100 }}%になります。</span>
   <a href="javascript:void(0)" id="change-point">変更する</a>
   @php
   $now = now()->format('Y-m-d');
