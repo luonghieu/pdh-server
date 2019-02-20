@@ -92,6 +92,7 @@ class UserController extends Controller
 
         $user->class_id = $newClass->id;
         $user->cost = $newClass->cost;
+        $user->cost_rate = $request->input_cost_rate;
 
         $user->save();
 
