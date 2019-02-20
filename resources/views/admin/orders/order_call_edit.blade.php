@@ -186,12 +186,14 @@
                                             <tr>
                                                 <td class="cast-nominee-id">{{ $nominee['id'] }}</td>
                                                 <td>{{ $nominee['nickname'] }}</td>
+                                                @if (!$nominee['pivot']['started_at'])
                                                 <td>
                                                     <button type="button" class=" btn btn-info remove-btn"
                                                             data-user-id="{{ $nominee['id'] }}"
                                                             data-type="1">このキャストを削除する
                                                     </button>
                                                 </td>
+                                                @endif
                                             </tr>
                                         @endforeach
                                     @endif
@@ -227,12 +229,14 @@
                                             <tr>
                                                 <td class="cast-candidate-id">{{ $candidate['id'] }}</td>
                                                 <td>{{ $candidate['nickname'] }}</td>
+                                                @if (!$candidate['pivot']['started_at'])
                                                 <td>
                                                     <button type="button" class=" btn btn-info remove-btn"
                                                             data-user-id="{{ $candidate['id'] }}"
                                                             data-type="2">このキャストを削除する
                                                     </button>
                                                 </td>
+                                                @endif
                                             </tr>
                                         @endforeach
                                     @endif
