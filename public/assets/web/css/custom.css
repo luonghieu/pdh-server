@@ -3100,3 +3100,23 @@ padding-top: 65px !important;
   font-size: 18px;
   font-weight: 500;
 }
+
+.logo-cheers {
+  width: 30%;
+  margin: 15% auto 5%;
+}
+
+.color-green {
+  color: #31ACB0;
+  font-weight: bold;
+  font-size: 1.5rem;
+  padding-bottom: 5px;
+}
+
+.pb-2 {
+  padding-bottom: 0.5rem;
+}
+
+.ml-2 {
+  margin-left: 2%;
+}
