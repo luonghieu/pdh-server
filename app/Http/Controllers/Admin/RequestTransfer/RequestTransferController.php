@@ -76,6 +76,11 @@ class RequestTransferController extends Controller
                 $cast->cast_transfer_status = $request->transfer_request_status;
                 $cast->class_id = $castClass->id;
                 $cast->cost = $castClass->cost;
+
+                if ($request->transfer_request_status == CastTransferStatus::DENIED && $cast->gender == UserGender::MALE) {
+                    $cast->type = UserType::GUEST;
+                }
+
                 $cast->save();
 
                 $cast->notify(new RequestTransferNotify());
