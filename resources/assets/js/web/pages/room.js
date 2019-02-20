@@ -68,6 +68,8 @@ $(document).ready(function() {
 });
 
 let roomLoading = false;
+let previousPage = localStorage.setItem('prev_page', localStorage.getItem('current_page'));
+let currentPage = localStorage.setItem('current_page', window.location.pathname);
 
 $(window).scroll(function() {
     if($(document).height() - ($(window).scrollTop() + $(window).height()) <= 10  ) {
