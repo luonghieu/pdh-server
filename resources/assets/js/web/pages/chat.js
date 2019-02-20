@@ -354,14 +354,3 @@ $('.msg-system').each(function(index, val) {
     $(this).html(content.replace(/\n/g, "<br />"));
   }
 });
-
-jQuery(document).ready(function($) {
-  if (window.history && window.history.pushState && $('#rooms').length) {
-    window.history.pushState(null, null, null);
-
-    $(window).on('popstate', function() {
-      window.location.reload();
-      window.location.href = "/message";
-    });
-  }
-});
