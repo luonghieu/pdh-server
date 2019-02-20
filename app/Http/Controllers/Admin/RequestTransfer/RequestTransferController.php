@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin\RequestTransfer;
 
 use App\CastClass;
 use App\Enums\CastTransferStatus;
+use App\Enums\UserType;
 use App\Http\Controllers\Controller;
 use App\Notifications\RequestTransferNotify;
 use App\Services\LogService;
@@ -71,21 +72,33 @@ class RequestTransferController extends Controller
     {
         try {
             if ($request->has('transfer_request_status')) {
-                $castClass = CastClass::findOrFail(1);
+                switch ($request->transfer_request_status) {
+                    case 'approved':
+                        $castClass = CastClass::findOrFail(1);
 
-                $cast->cast_transfer_status = $request->transfer_request_status;
-                $cast->class_id = $castClass->id;
-                $cast->cost = $castClass->cost;
+                        $cast->cast_transfer_status = CastTransferStatus::APPROVED;
+                        $cast->class_id = $castClass->id;
+                        $cast->cost = $castClass->cost;
+                        $cast->save();
+                        break;
 
-                if ($request->transfer_request_status == CastTransferStatus::DENIED && $cast->gender == UserGender::MALE) {
-                    $cast->type = UserType::GUEST;
+                    case 'denied-female':
+                        $cast->cast_transfer_status = CastTransferStatus::DENIED;
+                        $cast->save();
+                        break;
+
+                    case 'denied-male':
+                        $cast->cast_transfer_status = CastTransferStatus::DENIED;
+                        $cast->type = UserType::GUEST;
+                        $cast->save();
+                        break;
+                    
+                    default:break;
                 }
-
-                $cast->save();
 
                 $cast->notify(new RequestTransferNotify());
 
-                if (CastTransferStatus::APPROVED == $request->transfer_request_status) {
+                if ($request->transfer_request_status == 'approved') {
                     return redirect(route('admin.casts.index'));
                 } else {
                     return redirect(route('admin.request_transfer.index', ['transfer_type' => CastTransferStatus::DENIED]));
