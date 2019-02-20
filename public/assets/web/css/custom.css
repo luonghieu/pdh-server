@@ -3120,3 +3120,16 @@ padding-top: 65px !important;
 .ml-2 {
   margin-left: 2%;
 }
+
+#gg2 .msg-wrap .pic-like {
+  text-align: right;
+}
+
+#gg2 .msg-wrap .pic-like p {
+  display: inline-block;
+  width: 50px;
+}
+
+#gg2 .msg-wrap .pic-like p img {
+  display: inline-block;
+}
