@@ -3,23 +3,33 @@
 namespace App\Http\Controllers;
 
 use Auth;
-use GuzzleHttp\Client;
 use JWTAuth;
+use GuzzleHttp\Client;
+use Illuminate\Foundation\Testing\Concerns\MakesHttpRequests;
 
 class RoomController extends Controller
 {
+    use MakesHttpRequests;
+
+    protected $baseUrl = null;
+    protected $app = null;
+
+    public function __construct()
+    {
+        $this->baseUrl = request()->getSchemeAndHttpHost();
+        $this->app = app();
+    }
+
     public function index()
     {
         $accessToken = JWTAuth::fromUser(Auth::user());
-        $client = new Client(['base_uri' => config('common.api_url')]);
-        $option = [
-            'headers' => ['Authorization' => 'Bearer ' . $accessToken],
-            'form_params' => [],
-            'allow_redirects' => false,
-        ];
 
-        $response = $client->get(route('rooms.list_room'), $option);
-        $contents = json_decode($response->getBody()->getContents());
+        $response = $this
+            ->get(route('rooms.room'), [
+                'HTTP_Authorization' => 'Bearer ' . $accessToken
+            ])->getContent();
+
+        $contents = json_decode($response);
         $rooms = $contents->data;
 
         return view('web.rooms.rooms', compact('rooms'));
