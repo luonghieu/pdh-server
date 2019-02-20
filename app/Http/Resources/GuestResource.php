@@ -79,6 +79,7 @@ class GuestResource extends Resource
             'is_verified' => $this->is_verified,
             'is_card_registered' => $this->is_card_registered,
             'deleted_at' => $this->deleted_at,
+            'cast_transfer_status' => $this->cast_transfer_status,
         ]);
     }
 }

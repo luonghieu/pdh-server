@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin\RequestTransfer;
 
 use App\CastClass;
 use App\Enums\CastTransferStatus;
+use App\Enums\UserGender;
 use App\Enums\UserType;
 use App\Http\Controllers\Controller;
 use App\Notifications\RequestTransferNotify;
@@ -84,11 +85,13 @@ class RequestTransferController extends Controller
 
                     case 'denied-female':
                         $cast->cast_transfer_status = CastTransferStatus::DENIED;
+                        $cast->gender = UserGender::FEMALE;
                         $cast->save();
                         break;
 
                     case 'denied-male':
                         $cast->cast_transfer_status = CastTransferStatus::DENIED;
+                        $cast->gender = UserGender::MALE;
                         $cast->type = UserType::GUEST;
                         $cast->save();
                         break;
