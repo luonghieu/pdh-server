@@ -16,7 +16,7 @@
       }
       @endphp
 
-      @if ($cast['avatars'] && ($cast['avatars'][0]['thumbnail']))
+      @if ($cast['avatars'] && isset($cast['avatars'][0]) && $cast['avatars'][0]['thumbnail'])
       <img class="lazy" data-src="{{ $cast['avatars'][0]['thumbnail'] }}">
       @else
       <img class="lazy" data-src="{{ asset('assets/web/images/gm1/ic_default_avatar@3x.png') }}">

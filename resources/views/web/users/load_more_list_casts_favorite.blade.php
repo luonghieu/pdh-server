@@ -15,7 +15,7 @@
               break;
       }
       @endphp
-      @if ($favorite['avatars'] && ($favorite['avatars'][0]['thumbnail']))
+      @if ($favorite['avatars'] && isset($favorite['avatars'][0]) && $favorite['avatars'][0]['thumbnail'])
       <img class="lazy" data-src="{{ $favorite['avatars'][0]['thumbnail'] }}">
       @else
       <img class="lazy" data-src="{{ asset('assets/web/images/gm1/ic_default_avatar@3x.png') }}">
