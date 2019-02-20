@@ -62,6 +62,13 @@
                 </p>
               </div>
             @endif
+            @if ($element['type'] == App\Enums\MessageType::LIKE)
+              <div class="pic-like">
+                <p>
+                  <img src="{{ $element['image'] }}"  alt="" title="" class="">
+                </p>
+              </div>
+            @endif
             @if ($element['type'] == App\Enums\MessageType::SYSTEM && $element['system_type'] == App\Enums\SystemMessageType::NORMAL)
             <div class="text">
               <div class="text-wrapper">

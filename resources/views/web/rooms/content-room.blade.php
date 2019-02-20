@@ -85,7 +85,11 @@
             @endif
             @if ($room->latest_message != null)
               @if ($room->latest_message->image)
-              <p class="latest-message" id="latest-message_{{ $room->id }}">{{ ($room->latest_message && $room->latest_message->user) ? $room->latest_message->user->nickname:'' }}さんが写真を送信しました</p>
+                @if($room->latest_message->type == App\Enums\MessageType::LIKE)
+                  <p class="latest-message" id="latest-message_{{ $room->id }}">{{ ($room->latest_message && $room->latest_message->user) ? $room->latest_message->user->nickname:'' }}さんがいいねしました</p>
+                @else
+                  <p class="latest-message" id="latest-message_{{ $room->id }}">{{ ($room->latest_message && $room->latest_message->user) ? $room->latest_message->user->nickname:'' }}さんが写真を送信しました</p>
+                @endif
               @else
               <p class="latest-message" id="latest-message_{{ $room->id }}">{{ $room->latest_message ? $room->latest_message->message:'' }}</p>
               @endif
