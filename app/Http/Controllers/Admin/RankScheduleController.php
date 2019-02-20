@@ -119,8 +119,6 @@ class RankScheduleController extends Controller
            $casts->orderBy('class_id', $request->class_id);
         }
 
-        $casts = $casts->orderBy('created_at', 'DESC');
-
         // Casts collection
         // Count order of the cast
         // Calculate average rate of the cast
@@ -165,7 +163,7 @@ class RankScheduleController extends Controller
             }
 
             $total = $casts->count();
-            $casts->values()->forPage($request->page, $request->limit ?: 10);
+            $casts = $casts->values()->forPage($request->page, $request->limit ?: 10);
 
             $casts = new LengthAwarePaginator($casts, $total, $request->limit ?: 10);
             $casts = $casts->withPath('');

@@ -102,7 +102,7 @@
                   <td>{{ App\Enums\UserRank::getKey($cast->rank) }}</td>
                   <td>{{ App\Enums\UserType::getDescription($cast->type) }}</td>
                   <td>
-                    @if(App\Enums\DeviceType::IOS == $cast->device_type || 'facebook' == $cast->provider)
+                    @if((App\Enums\DeviceType::IOS == $cast->device_type || App\Enums\DeviceType::WEB == $cast->device_type) && App\Enums\ProviderType::FACEBOOK == $cast->provider)
                       未完了
                     @endif
                   </td>

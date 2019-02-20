@@ -102,8 +102,8 @@ class HomeController extends Controller
 
             if ($user->is_cast) {
                 $castClass= CastClass::find($user->class_id);
-                $today = now();
-                $rankSchedule = RankSchedule::where('from_date','<', $today)->where('to_date','>', $today)->first();
+                $today = now()->format('Y-m-d');
+                $rankSchedule = RankSchedule::where('from_date','<=', $today)->where('to_date','>=', $today)->first();
                 $sumOrders = 0;
                 $ratingScore = 0;
                 if ($rankSchedule) {

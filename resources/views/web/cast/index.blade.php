@@ -94,11 +94,12 @@
   <section class="button-box">
     <label for="lb-update-cost" class="update-cost"></label>
   </section>
+  <span class="ml-2">※実際に振り込まれる売上は入力した金額の{{ $user->cost_rate * 100 }}%になります。</span>
   <a href="javascript:void(0)" id="change-point">変更する</a>
   @php
   $now = now()->format('Y-m-d');
   @endphp
-  @if($rankSchedule && $rankSchedule->from_date < $now && $rankSchedule->to_date > $now)
+  @if($user->class_id != 3 && $rankSchedule && $rankSchedule->from_date <= $now && $rankSchedule->to_date >= $now)
   <div class="rank-schedule">
     <input type="hidden" id="sum_orders" value="{{$sumOrders}}">
     <input type="hidden" id="rating_score" value="{{$ratingScore}}">
