@@ -476,7 +476,7 @@
   <script src="/assets/admin/js/pages/upload_image.js"></script>
 
   <script type="text/javascript">
-    const classes = JSON.parse('<?php echo json_encode($classes); ?>');
+    const classes = JSON.parse('<?php echo json_encode(config('common.default_cost_rate')); ?>');
 
     $('body').on('click', '#class-id', function () {
       Object.keys(classes).forEach(function(key) {
