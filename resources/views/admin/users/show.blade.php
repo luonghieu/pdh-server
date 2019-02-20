@@ -476,14 +476,16 @@
   <script src="/assets/admin/js/pages/upload_image.js"></script>
 
   <script type="text/javascript">
+    const classes = JSON.parse('<?php echo json_encode($classes); ?>');
+
     $('body').on('click', '#class-id', function () {
-      <?php foreach ($classes as $key => $value): ?>
-        if ($(this).val() == <?php echo $key; ?>) {
-          $('#cost-rate').val(<?php echo $value; ?>);
+      Object.keys(classes).forEach(function(key) {
+        if ($('#class-id').val() == key) {
+          $('#cost-rate').val(classes[key]);
 
           $('#input-cost-rate').val($('#cost-rate').val());
         }
-      <?php endforeach ?>
+      });
     });
   </script>
 @stop
