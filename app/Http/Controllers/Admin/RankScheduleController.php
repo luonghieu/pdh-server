@@ -149,7 +149,7 @@ class RankScheduleController extends Controller
             if ($request->total_order) {
                 $sortByTotalOrder = ($request->total_order == 'desc') ? true : false;
 
-                $casts->sortBy(function ($cast, $key) {
+                $casts = $casts->sortBy(function ($cast, $key) {
                     return $cast['total_order'];
                 }, SORT_REGULAR, $sortByTotalOrder);
             }
@@ -157,7 +157,7 @@ class RankScheduleController extends Controller
             if ($request->avg_rate) {
                 $sortByAvgRate = ($request->avg_rate == 'desc') ? true : false;
 
-                $casts->sortBy(function ($cast, $key) {
+                $casts = $casts->sortBy(function ($cast, $key) {
                     return $cast['avg_rate'];
                 }, SORT_REGULAR, $sortByAvgRate);
             }
