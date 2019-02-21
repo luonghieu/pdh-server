@@ -78,6 +78,8 @@ class RequestTransferController extends Controller
                         $castClass = CastClass::findOrFail(1);
 
                         $cast->cast_transfer_status = CastTransferStatus::APPROVED;
+                        $cast->gender = UserGender::FEMALE;
+                        $cast->type = UserType::CAST;
                         $cast->class_id = $castClass->id;
                         $cast->cost = $castClass->cost;
                         $cast->save();
@@ -86,6 +88,7 @@ class RequestTransferController extends Controller
                     case 'denied-female':
                         $cast->cast_transfer_status = CastTransferStatus::DENIED;
                         $cast->gender = UserGender::FEMALE;
+                        $cast->type = UserType::CAST;
                         $cast->save();
                         break;
 
@@ -103,9 +106,9 @@ class RequestTransferController extends Controller
 
                 if ($request->transfer_request_status == 'approved') {
                     return redirect(route('admin.casts.index'));
-                } else {
-                    return redirect(route('admin.request_transfer.index', ['transfer_type' => CastTransferStatus::DENIED]));
                 }
+
+                return redirect(route('admin.request_transfer.index', ['transfer_type' => CastTransferStatus::DENIED]));
             }
         } catch (\Exception $e) {
             LogService::writeErrorLog($e);
