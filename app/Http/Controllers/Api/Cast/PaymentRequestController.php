@@ -91,15 +91,16 @@ class PaymentRequestController extends ApiController
                     $castStartTime = Carbon::parse($request->started_at);
                     $stoppedAt = Carbon::parse($request->stopped_at);
                     $extraTime = $order->extraTime($castStartTime, $stoppedAt);
-                    if ($order->total_cast == 1) {
-                        $order->actual_started_at = $castStartTime;
-                        $order->actual_ended_at = $stoppedAt;
-                        $order->save();
-                    }
                 } else {
                     $castStartTime = Carbon::parse($cast->pivot->started_at);
                     $stoppedAt = $castStartTime->copy()->addMinutes($order->duration * 60)->addMinutes($request->extra_time);
                     $extraTime = $request->extra_time;
+                }
+
+                if ($order->total_cast == 1) {
+                    $order->actual_started_at = $castStartTime;
+                    $order->actual_ended_at = $stoppedAt;
+                    $order->save();
                 }
 
                 $extraPoint = $order->extraPoint($cast, $extraTime);
