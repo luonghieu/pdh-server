@@ -23,10 +23,10 @@
 </div>
 @endif
 <script>
-      window.onload = window.onpageshow= function() {
-          if (localStorage.getItem('prev_page').match(/message\/\d/)) {
-              window.location.href = "/message";
-          }
-      };
+    window.onload = window.onpageshow= function() {
+        if (localStorage.getItem('prev_page').match(/message\/\d/)) {
+            window.location.href = "/message";
+        }
+    };
 </script>
 @endsection
