@@ -167,7 +167,6 @@
     </div>
     <div class="clear"></div>
     <p>※次回クラス変更日‥{{Carbon\Carbon::parse($rankSchedule->to_date)->format('m月d日')}}</p>
-    <p>※ダイヤモンドクラスへの</p>
   </div>
   @endif
   @if($token)
