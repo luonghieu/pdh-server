@@ -22,11 +22,4 @@
 @include('web.rooms.content-room',compact('rooms'))
 </div>
 @endif
-<script>
-      window.onload = window.onpageshow= function() {
-          if (localStorage.getItem('prev_page').match(/message\/\d/)) {
-              window.location.href = "/message";
-          }
-      };
-</script>
 @endsection
