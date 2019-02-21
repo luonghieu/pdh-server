@@ -56,13 +56,17 @@
     <script src="/assets/admin/js/jquery-ui.min.js"></script>
     <script src="/assets/admin/js/jquery.sparkline.min.js"></script>
     <!-- page scripts -->
-    <script src="/assets/admin/js/jquery.icheck.min.js"></script>
+    @if(url()->current() != route('admin.coupons.create'))
+      <script src="/assets/admin/js/jquery.icheck.min.js"></script>
+    @endif
     <!-- theme scripts -->
     <!-- inline scripts related to this page -->
     <script src="/assets/admin/js/custom.min.js"></script>
     <script src="/assets/admin/js/core.min.js"></script>
     <!-- inline scripts related to this page -->
+    @if(url()->current() != route('admin.coupons.create'))
     <script src="/assets/admin/js/pages/login.js"></script>
+    @endif
     <!-- end: JavaScript-->
     <script src="/assets/admin/js/jquery.dataTables.min.js"></script>
     <script src="/assets/admin/js/dataTables.bootstrap.min.js"></script>
