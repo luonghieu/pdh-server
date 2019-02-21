@@ -93,6 +93,7 @@ class RequestTransferController extends Controller
                         $cast->cast_transfer_status = CastTransferStatus::DENIED;
                         $cast->gender = UserGender::MALE;
                         $cast->type = UserType::GUEST;
+                        $cast->cast_transfer_status = null;
                         $cast->save();
                         break;
                     
