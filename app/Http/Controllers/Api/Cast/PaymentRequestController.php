@@ -97,6 +97,16 @@ class PaymentRequestController extends ApiController
                     $extraTime = $request->extra_time;
                 }
 
+                if (Carbon::parse($order->actual_started_at) > $castStartTime) {
+                    $order->actual_started_at = $castStartTime;
+                    $order->save();
+                }
+
+                if (Carbon::parse($order->actual_ended_at) < $stoppedAt) {
+                    $order->actual_ended_at = $stoppedAt;
+                    $order->save();
+                }
+
                 $extraPoint = $order->extraPoint($cast, $extraTime);
                 $feePoint = $order->orderFee($cast, $castStartTime, $stoppedAt);
 
