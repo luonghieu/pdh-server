@@ -123,7 +123,7 @@ class RankScheduleController extends Controller
         // Count order of the cast
         // Calculate average rate of the cast
         $collection = $casts->get()->transform(function ($cast) {
-            $cast->total_order = $cast->orders()->count();
+            $cast->total_order = $cast->orders->count();
             $ratings = $cast->ratings;
             $avgOfRate = 0;
             $sumOfScore = 0;
@@ -170,7 +170,7 @@ class RankScheduleController extends Controller
         } else {
             $casts = $casts->paginate($request->limit ?: 10);
         }
-
+        
         // Export rank schedules of casts
         if ('export' == $request->submit) {
             if (!$casts->count()) {
