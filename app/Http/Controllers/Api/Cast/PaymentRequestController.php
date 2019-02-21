@@ -140,11 +140,11 @@ class PaymentRequestController extends ApiController
                         $castStoppedAt = Carbon::parse($cast->pivot->stopped_at);
 
                         if ($orderStartedtAt > $castStartTime) {
-                            $orderStartedtAt = $castStartTime;
+                            $order->actual_started_at = $castStartTime;
                             $order->save();
                         }
                         if ($orderStoppedAt < $castStoppedAt) {
-                            $orderStoppedAt = $castStoppedAt;
+                            $order->actual_ended_at = $castStoppedAt;
                             $order->save();
                         }
                     }
