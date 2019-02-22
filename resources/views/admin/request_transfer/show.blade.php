@@ -8,7 +8,7 @@
         @include('admin.partials.notification')
         <div class="clearfix"></div>
         <div class="panel-body">
-          <div class="col-lg-6 wrap-qr-code">
+          <div class="col-lg-10 wrap-qr-code">
             <div class="list-avatar">
               @php
                 $avatars = $cast->avatars->reverse();
@@ -18,10 +18,10 @@
                 <img src="{{ @getimagesize($avatar->path) ? $avatar->path :'/assets/web/images/gm1/ic_default_avatar@3x.png' }}" alt="avatar">
               @endforeach
             </div>
-            <button type="button" data-toggle="modal" data-target="#btn-qr-code" class="btn-detail">QRコードを表示する</button>
+            <button type="button" data-toggle="modal" data-target="#btn-qr-code" class="btn btn-info pull-right">QRコードを表示する</button>
           </div>
           <div class="clearfix"></div>
-          <div class="info-table col-lg-6">
+          <div class="info-table col-lg-10">
             <table class="table table-bordered">
               <!--  table-striped -->
               <tr>
@@ -68,19 +68,26 @@
           </div>
         </div>
         <div class="panel-body">
-          <div class="col-lg-6 change-type-transfer">
-            <label for="{{ App\Enums\CastTransferStatus::APPROVED }}">
-              <input type="radio" name="transfer_request_status" id="{{ App\Enums\CastTransferStatus::APPROVED }}" value="{{ App\Enums\CastTransferStatus::APPROVED }}" {{ $cast->cast_transfer_status == App\Enums\CastTransferStatus::APPROVED ? 'checked':''}}><br>
+          <div class="col-lg-10 change-type-transfer">
+            <label for="approved">
+              <input type="radio" name="transfer_request_status" id="approved" value="approved"
+                {{ $cast->cast_transfer_status == App\Enums\CastTransferStatus::APPROVED ? 'checked' : '' }}><br>
               <span>通過</span>
             </label>
-            <label for="{{ App\Enums\CastTransferStatus::DENIED }}">
-              <input type="radio" name="transfer_request_status" id="{{ App\Enums\CastTransferStatus::DENIED }}" value="{{ App\Enums\CastTransferStatus::DENIED }}" {{ $cast->cast_transfer_status == App\Enums\CastTransferStatus::DENIED ? 'checked':''}}><br>
-              <span>見送り</span>
+            <label for="denied-female">
+              <input type="radio" name="transfer_request_status" id="denied-female" value="denied-female"
+                {{ $cast->cast_transfer_status == App\Enums\CastTransferStatus::DENIED && $cast->gender == App\Enums\UserGender::FEMALE ? 'checked' : '' }}><br>
+              <span>見送り(女性)</span>
             </label>
-            <button type="button" id="btn-change-status" class="btn-detail">更新する</button>
+            <label for="denied-male">
+              <input type="radio" name="transfer_request_status" id="denied-male" value="denied-male" 
+                {{ $cast->cast_transfer_status == App\Enums\CastTransferStatus::DENIED && $cast->gender == App\Enums\UserGender::MALE ? 'checked' : '' }} /><br>
+              <span>見送り(男性)</span>
+            </label>
+            <button type="button" id="btn-change-status" class="btn btn-info">更新する</button>
           </div>
         </div>
-        <div class="modal fade" id="passModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal fade" id="approved-modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
           <div class="modal-dialog" role="document">
             <div class="modal-content">
               <div class="modal-body">
@@ -90,7 +97,7 @@
                 <form action="{{ route('admin.request_transfer.update', ['cast' => $cast->id]) }}" method="POST">
                 {{ csrf_field() }}
                 {{ method_field('PUT') }}
-                  <input type="hidden" name="transfer_request_status" value="{{ App\Enums\CastTransferStatus::APPROVED }}">
+                  <input type="hidden" name="transfer_request_status" value="approved">
                   <button type="button" class="btn btn-canceled" data-dismiss="modal">キャンセル</button>
                   <button type="submit" class="btn btn-accept">はい</button>
                 </form>
@@ -98,7 +105,7 @@
             </div>
           </div>
         </div>
-        <div class="modal fade" id="deniedModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal fade" id="denied-female-modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
           <div class="modal-dialog" role="document">
             <div class="modal-content">
               <div class="modal-body">
@@ -108,7 +115,25 @@
                 <form action="{{ route('admin.request_transfer.update', ['cast' => $cast->id]) }}" method="POST">
                 {{ csrf_field() }}
                 {{ method_field('PUT') }}
-                  <input type="hidden" name="transfer_request_status" value="{{ App\Enums\CastTransferStatus::DENIED }}">
+                  <input type="hidden" name="transfer_request_status" value="denied-female">
+                  <button type="button" class="btn btn-canceled" data-dismiss="modal">キャンセル</button>
+                  <button type="submit" class="btn btn-accept">はい</button>
+                </form>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="modal fade" id="denied-male-modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+          <div class="modal-dialog" role="document">
+            <div class="modal-content">
+              <div class="modal-body">
+                <p>このユーザーのキャスト申請を「見送り」で更新しますか？</p>
+              </div>
+              <div class="modal-footer">
+                <form action="{{ route('admin.request_transfer.update', ['cast' => $cast->id]) }}" method="POST">
+                {{ csrf_field() }}
+                {{ method_field('PUT') }}
+                  <input type="hidden" name="transfer_request_status" value="denied-male">
                   <button type="button" class="btn btn-canceled" data-dismiss="modal">キャンセル</button>
                   <button type="submit" class="btn btn-accept">はい</button>
                 </form>
@@ -140,14 +165,18 @@
   <script type="text/javascript">
     $(document).ready(function() {
       $("#btn-change-status").click(function(event) {
-        var valueRadioChecked = $("input[name='transfer_request_status']:checked").val();
+        var valRadioChecked = $("input[name='transfer_request_status']:checked").val();
 
-        if(valueRadioChecked == 3) {
-          $('#passModal').modal();
+        if (valRadioChecked == 'approved') {
+          $('#approved-modal').modal();
         }
 
-        if(valueRadioChecked == 2) {
-          $('#deniedModal').modal();
+        if (valRadioChecked == 'denied-female') {
+          $('#denied-female-modal').modal();
+        }
+
+        if (valRadioChecked == 'denied-male') {
+          $('#denied-male-modal').modal();
         }
       });
     });

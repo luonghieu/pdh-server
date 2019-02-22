@@ -72,7 +72,9 @@ class UserController extends Controller
 
         $castClasses = $this->castClass->all();
 
-        return view('admin.users.show', compact('user', 'castClasses', 'prefectures'));
+        $editableCostRates = config('common.editable_cost_rate');
+
+        return view('admin.users.show', compact('user', 'castClasses', 'prefectures', 'editableCostRates'));
     }
 
     public function changeActive(User $user)
@@ -90,6 +92,7 @@ class UserController extends Controller
 
         $user->class_id = $newClass->id;
         $user->cost = $newClass->cost;
+        $user->cost_rate = $request->input_cost_rate;
 
         $user->save();
 
@@ -119,6 +122,8 @@ class UserController extends Controller
     public function registerGuest(User $user)
     {
         $user->type = UserType::GUEST;
+        $user->cast_transfer_status = null;
+        $user->is_guest_active = true;
         $user->save();
 
         return redirect(route('admin.users.show', ['user' => $user->id]));

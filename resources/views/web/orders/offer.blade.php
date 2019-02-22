@@ -138,6 +138,7 @@
       <div class="cast-body">
         <input type="hidden" value="{{ $offer->id }}" class="offer-id">
         <input type="hidden" value="{{ $offer->status }}" class="offer-status">
+        <input type="hidden" value="{{ $offer->deleted_at }}" class="deleted_at">
         @if(count($casts))
           <input type="hidden" value="{{ implode(",", $offer->cast_ids) }}" id="current-cast-id-offer">
           <input type="hidden" value="{{ $offer->class_id }}" id="current-class-id-offer">
@@ -197,34 +198,22 @@
       <label class="place">
         <!-- アイコン -->
         <div class="selectbox">
-          <select class="" name="">
-            <option value="">東京</option>
+          <select class="select-prefecture-offer" name="">
+            @foreach ($prefectures as $prefecture)
+              <option value="{{ $prefecture['id'] }}" {{ $prefecture['id'] == $offer->prefecture_id ? 'selected' : '' }}>{{ $prefecture['name'] }}</option>
+            @endforeach
           </select>
           <i></i>
         </div>
+
       </label>
     </div>
-    <div class="form-grpup"><!-- フォーム内容 -->
+    <div class="form-grpup" id="list-municipalities-offer"><!-- フォーム内容 -->
+      @foreach($municipalities as $municipaliti)
       <label class="button button--green area">
-        <input class="input-area-offer" type="radio" name="offer_area" value="六本木">六本木</label>
-      <label class="button button--green area">
-        <input class="input-area-offer" type="radio" name="offer_area" value="恵比寿">恵比寿</label>
-      <label class="button button--green area">
-        <input class="input-area-offer" type="radio" name="offer_area" value="西麻布">西麻布</label>
-      <label class="button button--green area ">
-        <input class="input-area-offer" type="radio" name="offer_area" value="渋谷">渋谷</label>
-      <label class="button button--green area ">
-        <input class="input-area-offer" type="radio" name="offer_area" value="赤坂">赤坂</label>
-      <label class="button button--green area ">
-        <input class="input-area-offer" type="radio" name="offer_area" value="銀座">銀座</label>
-      <label class="button button--green area ">
-        <input class="input-area-offer" type="radio" name="offer_area" value="中目黒">中目黒</label>
-      <label class="button button--green area" >
-        <input class="input-area-offer" type="radio" name="offer_area" value="新橋">新橋</label>
-      <label class="button button--green area ">
-        <input class="input-area-offer" type="radio" name="offer_area" value="池袋">池袋</label>
-      <label class="button button--green area ">
-        <input class="input-area-offer" type="radio" name="offer_area" value="新宿">新宿</label>
+        <input class="input-area-offer" type="radio" name="offer_area" value="{{ $municipaliti['name'] }}">{{ $municipaliti['name'] }}</label>
+      @endforeach
+
       <label id="area_input" class="button button--green area ">
         <input class="input-area-offer" type="radio" name="offer_area" value="その他">その他</label>
       <label class="area-input area-offer"><span>希望エリア</span>

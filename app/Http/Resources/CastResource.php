@@ -70,6 +70,7 @@ class CastResource extends Resource
             'avatars' => AvatarResource::collection($this->avatars),
             'working_today' => $this->working_today,
             'class_id' => $this->class_id,
+            'cost_rate' => $this->cost_rate,
             'class' => $this->class_id ? app(CastClassRepository::class)->find($this->class_id)->name : '',
             'is_favorited' => $this->is_favorited,
             'is_blocked' => $this->is_blocked,

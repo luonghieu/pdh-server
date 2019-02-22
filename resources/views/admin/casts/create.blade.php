@@ -255,7 +255,7 @@
                       </tr>
                       @if ($prefectures->count())
                       <tr>
-                        <th class="color-error">エリア</th>
+                        <th class="color-error">稼働希望エリア</th>
                         <td>
                           <div class="form-group">
                             <div class="col-sm-3">

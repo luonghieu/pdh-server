@@ -44,7 +44,6 @@ class ProfileController extends Controller
     {
         try {
             $glossaries = $this->getApi('/api/v1/glossaries')['data'];
-
             $contents = $this->getApi('/api/v1/auth/me');
             $profile = $contents['data'];
 

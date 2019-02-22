@@ -1,7 +1,6 @@
 $(document).ready(function() {
   $("#search-box").val(null);
   var userId = $('#auth').val();
-
   window.Echo.private('user.'+userId).listen('MessageCreated', (e) => {
     var roomId = e.message.room_id;
     var message = '';
@@ -52,7 +51,7 @@ $(document).ready(function() {
 
   $('.search-box').keyup(function(event) {
     var keywork = $('.search-box').val();
-    axios.get('api/v1/rooms',{
+    axios.get('api/v1/rooms/list_room',{
       'params': {
         nickname: keywork,
         response_type: 'html',
@@ -66,10 +65,6 @@ $(document).ready(function() {
     });
   });
 });
-
-let roomLoading = false;
-let previousPage = localStorage.setItem('prev_page', localStorage.getItem('current_page'));
-let currentPage = localStorage.setItem('current_page', window.location.pathname);
 
 $(window).scroll(function() {
     if($(document).height() - ($(window).scrollTop() + $(window).height()) <= 10  ) {
@@ -95,4 +90,26 @@ $(window).scroll(function() {
           });
         }
     }
+});
+
+let roomLoading = false;
+let previousPageOldest = localStorage.setItem('previousPageOldest', localStorage.getItem('prev_page_older'));
+let previousPageOlder = localStorage.setItem('prev_page_older', localStorage.getItem('prev_page'));
+let previousPage = localStorage.setItem('prev_page', localStorage.getItem('current_page'));
+let currentPage = localStorage.setItem('current_page', window.location.pathname);
+
+jQuery(document).ready(function($) {
+  if (window.history && window.history.pushState) {
+    window.history.pushState(null, null, null);
+
+    $(window).on('popstate', function() {
+      if (localStorage.getItem('current_page').match(/message\/\d/)) {
+        window.location.href = "/message";
+      }
+
+      if (localStorage.getItem('current_page')== '/message') {
+        window.location.href = localStorage.getItem('previousPageOldest');
+      }
+    });
+  }
 });

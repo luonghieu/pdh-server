@@ -31,13 +31,6 @@ $(document).ready(function(){
     }
   })
 
-  if(localStorage.getItem("offer")){
-    var offer = JSON.parse(localStorage.getItem("offer"));
-    if(offer.class_id) {
-      $('.class-id-offer').val(offer.class_id);
-    }
-  }
-
   $('#start_time_offer').on('change', function (e) {
     var startTimeFrom = $(this).val();
 
@@ -98,6 +91,7 @@ $(document).ready(function(){
       var comment = $(".comment-edit").val();
       var expiredDate = $('.expired-date-edit').val();
       var expiredTime = $('.expired-time-edit').val();
+      var prefectureId = $('.prefecture_id-edit').val();
 
       var params = {
         arrIds: arrIds,
@@ -109,7 +103,8 @@ $(document).ready(function(){
         start_time: startTimeFrom,
         date: date,
         expired_date: expiredDate,
-        expired_time: expiredTime
+        expired_time: expiredTime,
+        prefecture_id: prefectureId
       };
 
       updateLocalStorageValue('offer', params);
@@ -473,11 +468,24 @@ $(document).ready(function(){
     updateLocalStorageValue('offer', params);
   });
 
+  //select prefecture
+  $("#area_offer").on("change",function(){
+    var prefectureId = $("#area_offer option:selected").val();
 
+    var params = {
+        prefecture_id: prefectureId,
+      };
+
+    updateLocalStorageValue('offer', params);
+  });
+  
 
   if(localStorage.getItem("offer")){
     var offer = JSON.parse(localStorage.getItem("offer"));
-
+    if(offer.class_id) {
+      $('.class-id-offer').val(offer.class_id);
+       $('.class_id-offer').val(offer.class_id);
+    }
     //select-cast
     if(offer.arrIds){
 
@@ -574,6 +582,11 @@ $(document).ready(function(){
           $(this).prop('selected',true);
         }
       })
+    }
+
+    //prefecture
+    if(offer.prefecture_id){
+      $("#area_offer").val(offer.prefecture_id);
     }
   }
 

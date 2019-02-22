@@ -46,34 +46,22 @@
             <label class="place">
               <!-- アイコン -->
               <div class="selectbox">
-                <select class="" name="">
-                  <option value="">東京</option>
+                <select class="select-prefecture-nomination" name="prefecture_nomination">
+                  @foreach($prefectures as $prefecture)
+                  <option value="{{ $prefecture['id'] }}" {{ $prefecture['id'] == $cast['prefecture_id'] ? 'selected' : '' }} >
+                  {{ $prefecture['name'] }}
+                  </option>
+                  @endforeach
                 </select>
                 <i></i>
               </div>
             </label>
           </div>
-          <div class="form-grpup"><!-- フォーム内容 -->
+          <div class="form-grpup" id="list-municipalities-nomination"><!-- フォーム内容 -->
+            @foreach($municipalities as $municipaliti)
             <label class="button button--green area">
-              <input class="input-area" type="radio" name="nomination_area" value="六本木">六本木</label>
-            <label class="button button--green area">
-              <input class="input-area" type="radio" name="nomination_area" value="恵比寿">恵比寿</label>
-            <label class="button button--green area">
-              <input class="input-area" type="radio" name="nomination_area" value="西麻布">西麻布</label>
-            <label class="button button--green area ">
-              <input class="input-area" type="radio" name="nomination_area" value="渋谷">渋谷</label>
-            <label class="button button--green area ">
-              <input class="input-area" type="radio" name="nomination_area" value="赤坂">赤坂</label>
-            <label class="button button--green area ">
-              <input class="input-area" type="radio" name="nomination_area" value="銀座">銀座</label>
-            <label class="button button--green area ">
-              <input class="input-area" type="radio" name="nomination_area" value="中目黒">中目黒</label>
-            <label class="button button--green area" >
-              <input class="input-area" type="radio" name="nomination_area" value="新橋">新橋</label>
-            <label class="button button--green area ">
-              <input class="input-area" type="radio" name="nomination_area" value="池袋">池袋</label>
-            <label class="button button--green area ">
-              <input class="input-area" type="radio" name="nomination_area" value="新宿">新宿</label>
+              <input class="input-area" type="radio" name="nomination_area" value="{{ $municipaliti['name'] }}">{{ $municipaliti['name'] }}</label>
+            @endforeach
             <label id="area_input" class="button button--green area ">
               <input class="input-area" type="radio" name="nomination_area" value="その他">その他</label>
             <label class="area-input area-nomination"><span>希望エリア</span>

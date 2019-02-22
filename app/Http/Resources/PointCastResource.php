@@ -19,10 +19,10 @@ class PointCastResource extends Resource
      */
     public function toArray($request)
     {
+        $cast = Auth::user();
+        
         $order = $this->whenLoaded('order');
         $paymentRequests = ($paymentRequestsTmp = $order->paymentRequests ?? []) ? $paymentRequestsTmp->first() : '';
-
-        $castPercent = config('common.cast_percent');
 
         return $this->filterNull([
             'id' => $this->id,
@@ -32,11 +32,11 @@ class PointCastResource extends Resource
             'is_admin' => $this->is_adjusted ? 1 : 0,
             'order_time' => $paymentRequests ? $paymentRequests['order_time'] : '',
             'extra_time' => $paymentRequests ? $paymentRequests['extra_time'] : '',
-            'order_point' => $paymentRequests ? $castPercent * $paymentRequests['order_point'] : '',
-            'extra_point' => $paymentRequests ? $castPercent * $paymentRequests['extra_point'] : '',
-            'allowance_point' => $paymentRequests ? $castPercent * $paymentRequests['allowance_point'] : '',
-            'fee_point' => $paymentRequests ? $castPercent * $paymentRequests['fee_point'] : '',
-            'total_point' => $paymentRequests ? $castPercent * $paymentRequests['total_point'] : $this->point,
+            'order_point' => $paymentRequests ? round($cast->cost_rate * $paymentRequests['order_point']) : '',
+            'extra_point' => $paymentRequests ? round($cast->cost_rate * $paymentRequests['extra_point']) : '',
+            'allowance_point' => $paymentRequests ? round($cast->cost_rate * $paymentRequests['allowance_point']) : '',
+            'fee_point' => $paymentRequests ? round($cast->cost_rate * $paymentRequests['fee_point']) : '',
+            'total_point' => $paymentRequests ? round($cast->cost_rate * $paymentRequests['total_point']) : $this->point,
             'nickname' => $this->is_adjusted ? 'Cheers運営局' : $order->user->nickname,
             'type' => $this->type,
             'date' => $this->is_adjusted ? Carbon::parse($this->created_at)->format('Y-m-d') : Carbon::parse($order->date)->format('Y-m-d'),
