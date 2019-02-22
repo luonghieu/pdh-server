@@ -21,8 +21,8 @@ class OrderResource extends Resource
      */
     public function toArray($request)
     {
-        $isCast = Auth::user()->is_cast;
-        $castPercent = config('common.cast_percent');
+        $cast = Auth::user();
+        $isCast = $cast->is_cast;
 
         return $this->filterNull([
             'id' => $this->id,
@@ -39,8 +39,8 @@ class OrderResource extends Resource
             'night_time' => $this->night_time,
             'total_time' => $this->total_time,
             'total_cast' => $this->total_cast,
-            'temp_point' => $this->when($isCast, $this->temp_point * $castPercent, $this->temp_point),
-            'total_point' => $this->when($isCast, $this->total_point * $castPercent, $this->total_point),
+            'temp_point' => $this->when($isCast, round($this->temp_point * $cast->cost_rate), $this->temp_point),
+            'total_point' => $this->when($isCast, round($this->total_point * $cast->cost_rate), $this->total_point),
             'class_id' => $this->class_id,
             'cast_class' => CastClassResource::make(app(CastClassRepository::class)->find($this->class_id)),
             'type' => $this->type,
@@ -61,8 +61,8 @@ class OrderResource extends Resource
             'cancel_fee_percent' => $this->cancel_fee_percent,
             'payment_requested_at' => $this->payment_requested_at,
             'paid_at' => $this->paid_at,
-            'call_point' => $this->when($isCast, $this->call_point * $castPercent, $this->call_point),
-            'nominee_point' => $this->when($isCast, $this->nominee_point * $castPercent, $this->nominee_point),
+            'call_point' => $this->when($isCast, round($this->call_point * $cast->cost_rate), $this->call_point),
+            'nominee_point' => $this->when($isCast, round($this->nominee_point * $cast->cost_rate), $this->nominee_point),
             'deleted_at' => $this->deleted_at,
         ]);
     }

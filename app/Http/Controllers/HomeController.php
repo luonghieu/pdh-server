@@ -3,7 +3,13 @@
 namespace App\Http\Controllers;
 
 use App\Cast;
+use App\Prefecture;
+use App\CastClass;
+use App\RankSchedule;
+use App\Enums\CastTransferStatus;
 use App\Enums\OrderStatus;
+use App\Enums\UserGender;
+use App\Enums\UserType;
 use App\Http\Controllers\Controller;
 use App\Http\Resources\OrderResource;
 use App\Order;
@@ -66,8 +72,9 @@ class HomeController extends Controller
                 $casts = $getContents->data;
 
                 $newIntros = Cast::active()->whereNotNull('intro')->orderByDesc('intro_updated_at')->limit(10)->get();
+                $prefectures = Prefecture::supported()->get();
 
-                return view('web.index', compact('token', 'order', 'casts', 'newIntros'));
+                return view('web.index', compact('token', 'order', 'casts', 'newIntros', 'prefectures'));
             }
 
             if ($user->is_cast) {
@@ -85,8 +92,37 @@ class HomeController extends Controller
             $token = '';
             $token = JWTAuth::fromUser($user);
 
+            if ($user->is_cast && $user->cast_transfer_status == CastTransferStatus::PENDING) {
+                return view('web.cast.wait_review');
+            }
+
+            if ($user->is_cast && $user->cast_transfer_status == CastTransferStatus::DENIED && $user->gender == UserGender::FEMALE) {
+                return view('web.cast.deny_review');
+            }
+
             if ($user->is_cast) {
-                return view('web.cast.index', compact('token', 'user'));
+                $castClass= CastClass::find($user->class_id);
+                $today = now()->format('Y-m-d');
+                $rankSchedule = RankSchedule::where('from_date','<=', $today)->where('to_date','>=', $today)->first();
+                $sumOrders = 0;
+                $ratingScore = 0;
+                if ($rankSchedule) {
+                    $sumOrders = Cast::find($user->id)->orders()->where(
+                        [
+                            ['orders.status','=',4],
+                            ['orders.created_at','>=',$rankSchedule->from_date],
+                            ['orders.created_at','<=',$rankSchedule->to_date],
+
+                        ]
+                    )->count();
+                    $ratingScore = \App\Rating::where([
+                        ['rated_id','=', $user->id],
+                        ['created_at','>=',$rankSchedule->from_date],
+                        ['created_at','<=',$rankSchedule->to_date],
+                    ])->avg('score');
+                }
+
+                return view('web.cast.index', compact('token', 'user', 'castClass', 'rankSchedule', 'sumOrders', 'ratingScore'));
             } else {
                 return redirect()->route('web.login');
             }

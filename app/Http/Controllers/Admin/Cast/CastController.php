@@ -81,8 +81,8 @@ class CastController extends Controller
             [
                 'last_name' => 'required',
                 'first_name' => 'required',
-                'last_name_kana' => 'required',
-                'first_name_kana' => 'required',
+                'last_name_kana' => 'required|string|regex:/^[ぁ-ん ]/u',
+                'first_name_kana' => 'required|string|regex:/^[ぁ-ん ]/u',
                 'nick_name' => 'required',
                 'phone' => 'required|regex:/^[0-9]+$/',
                 'line' => 'required',
@@ -103,8 +103,10 @@ class CastController extends Controller
         $data = [
             'lastname' => $request->last_name,
             'firstname' => $request->first_name,
+            'fullname' => $request->last_name . $request->first_name,
             'lastname_kana' => $request->last_name_kana,
             'firstname_kana' => $request->first_name_kana,
+            'fullname_kana' => $request->last_name_kana . $request->first_name_kana,
             'nickname' => $request->nick_name,
             'phone' => $request->phone,
             'line_id' => $request->line,
@@ -166,8 +168,10 @@ class CastController extends Controller
         $data = [
             'lastname' => $request->lastname,
             'firstname' => $request->firstname,
+            'fullname' => $request->lastname . $request->firstname,
             'lastname_kana' => $request->lastname_kana,
             'firstname_kana' => $request->firstname_kana,
+            'fullname_kana' => $request->lastname_kana . $request->firstname_kana,
             'nickname' => $request->nickname,
             'phone' => $request->phone,
             'line_id' => $request->line_id,
@@ -430,8 +434,8 @@ class CastController extends Controller
                 'gender' => 'required',
                 'lastname' => 'required|string',
                 'firstname' => 'required|string',
-                'lastname_kana' => 'required|string',
-                'firstname_kana' => 'required|string',
+                'lastname_kana' => 'required|string|regex:/^[ぁ-ん ]/u',
+                'firstname_kana' => 'required|string|regex:/^[ぁ-ん ]/u',
                 'nickname' => 'required|string|max:20',
                 'phone' => 'required|regex:/^[0-9]+$/|digits_between:10,11|unique:users',
                 'line_id' => 'required|string',
@@ -592,5 +596,13 @@ class CastController extends Controller
         } catch (\Exception $e) {
             LogService::writeErrorLog($e);
         }
+    }
+
+    public function updateCostRate(User $user, Request $request) 
+    {
+        $user->cost_rate = $request->cost_rate;
+        $user->save();
+
+        return redirect()->route('admin.users.show', ['user' => $user->id]);
     }
 }

@@ -48,6 +48,8 @@ class PaymentRequestController extends ApiController
     {
         $rules = [
             'extra_time' => 'numeric',
+            'started_at' => 'date_format:Y-m-d H:i',
+            'stopped_at' => 'date_format:Y-m-d H:i'
         ];
 
         $validator = validator($request->all(), $rules);
@@ -85,17 +87,30 @@ class PaymentRequestController extends ApiController
         try {
             if (isset($request->extra_time)) {
                 DB::beginTransaction();
-                $castStartTime = Carbon::parse($cast->pivot->started_at);
-                $stoppedAt = $castStartTime->copy()->addMinutes($order->duration * 60)->addMinutes($request->extra_time);
+                if ($request->started_at && $request->stopped_at) {
+                    $castStartTime = Carbon::parse($request->started_at);
+                    $stoppedAt = Carbon::parse($request->stopped_at);
+                    $extraTime = $order->extraTime($castStartTime, $stoppedAt);
+                } else {
+                    $castStartTime = Carbon::parse($cast->pivot->started_at);
+                    $stoppedAt = $castStartTime->copy()->addMinutes($order->duration * 60)->addMinutes($request->extra_time);
+                    $extraTime = $request->extra_time;
+                }
 
-                $extraPoint = $order->extraPoint($cast, $request->extra_time);
+                if ($order->total_cast == 1) {
+                    $order->actual_started_at = $castStartTime;
+                    $order->actual_ended_at = $stoppedAt;
+                    $order->save();
+                }
+
+                $extraPoint = $order->extraPoint($cast, $extraTime);
                 $feePoint = $order->orderFee($cast, $castStartTime, $stoppedAt);
 
                 $nightTime = $order->nightTime($stoppedAt);
                 $allowance = $order->allowance($nightTime);
                 $totalPoint = $paymentRequest->order_point + $allowance + $feePoint + $extraPoint;
                 $paymentRequest->allowance_point = $allowance;
-                $paymentRequest->extra_time = $request->extra_time;
+                $paymentRequest->extra_time = $extraTime;
                 $paymentRequest->extra_point = $extraPoint;
                 $paymentRequest->fee_point = $feePoint;
                 $paymentRequest->total_point = $totalPoint;
@@ -104,16 +119,37 @@ class PaymentRequestController extends ApiController
                 $order->casts()->updateExistingPivot(
                     $user->id,
                     [
-                        'extra_time' => $request->extra_time,
+                        'extra_time' => $extraTime,
                         'total_point' => $totalPoint,
                         'night_time' => $nightTime,
                         'extra_point' => $extraPoint,
                         'fee_point' => $feePoint,
                         'allowance_point' => $allowance,
+                        'started_at' => $castStartTime,
                         'stopped_at' => $stoppedAt,
                     ],
                     false
                 );
+
+                if ($order->total_cast > 1) {
+                    $orderStartedtAt = Carbon::parse($order->actual_started_at);
+                    $orderStoppedAt = Carbon::parse($order->actual_ended_at);
+                    $casts = $order->casts;
+                    foreach ($casts as $cast) {
+                        $castStartTime = Carbon::parse($cast->pivot->started_at);
+                        $castStoppedAt = Carbon::parse($cast->pivot->stopped_at);
+
+                        if ($orderStartedtAt > $castStartTime) {
+                            $order->actual_started_at = $castStartTime;
+                            $order->save();
+                        }
+                        if ($orderStoppedAt < $castStoppedAt) {
+                            $order->actual_ended_at = $castStoppedAt;
+                            $order->save();
+                        }
+                    }
+                }
+
                 DB::commit();
             } else {
                 $paymentRequest->status = PaymentRequestStatus::REQUESTED;

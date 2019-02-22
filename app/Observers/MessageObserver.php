@@ -20,7 +20,7 @@ class MessageObserver
     public function created(Message $message)
     {
         $room = $message->room;
-        if (MessageType::SYSTEM == $message->type) {
+        if (MessageType::SYSTEM == $message->type || MessageType::LIKE == $message->type) {
             broadcast(new BroadcastMessage($message->id));
         }
         if (MessageType::SYSTEM != $message->type) {

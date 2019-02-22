@@ -229,14 +229,33 @@
                 <tr>
                   <th>キャストクラス</th>
                   <td>
+                    @php
+                      $classes = config('common.default_cost_rate');
+                    @endphp
                     <form action="{{ route('admin.users.change_cast_class', ['user' => $user->id]) }}" class="form-cast-class" method="post">
                       {{ csrf_field() }}
-                      <select class="cast-class" name="cast_class">
+                      <input type="hidden" id="input-cost-rate" name="input_cost_rate">
+                      <select class="cast-class" id="class-id" name="cast_class">
                         @foreach ($castClasses as $castClass)
                           <option value="{{ $castClass->id }}" {{ ($user->class_id == $castClass->id) ? 'selected' : '' }}>{{ $castClass->name }}</option>
                         @endforeach
                       </select>
-                      <button type="submit" class="btn btn-info btn-sm">変更する</button>
+                      <button type="submit" class="btn btn-info btn-sm mt-2">変更する</button>
+                    </form>
+                  </td>
+                </tr>
+                <tr>
+                  <th>報酬</th>
+                  <td>
+                    <form action="{{ route('admin.casts.update_cost_rate', ['user' => $user->id]) }}" class="w-form" method="POST">
+                      {{ csrf_field() }}
+                      {{ method_field('PUT') }}
+                      <select class="w-option" id="cost-rate" name="cost_rate">
+                        @foreach ($editableCostRates as $editableCostRate)
+                          <option value="{{ $editableCostRate }}" {{ ($user->cost_rate == $editableCostRate) ? 'selected' : '' }}>{{ $editableCostRate * 100 }}%</option>
+                        @endforeach
+                      </select>
+                      <button type="submit" class="btn btn-info btn-sm mt-2">変更する</button>
                     </form>
                   </td>
                 </tr>
@@ -251,7 +270,7 @@
                           <option value="{{ $prefecture->id }}" {{ ($user->prefecture_id == $prefecture->id) ? 'selected' : '' }}>{{ $prefecture->name }}</option>
                         @endforeach
                       </select>
-                      <button type="submit" class="btn btn-info btn-sm">変更する</button>
+                      <button type="submit" class="btn btn-info btn-sm mt-2">変更する</button>
                     </form>
                   </td>
                 </tr>
@@ -290,7 +309,7 @@
                         <option value="{{ $cost }}" {{ $user->cost == $cost ? 'selected' : ''}}>{{number_format($cost) }}</option>
                       @endforeach
                     </select>
-                    <button type="submit" class="btn btn-info btn-sm">変更する</button>
+                    <button type="submit" class="btn btn-info btn-sm mt-2">変更する</button>
                   </form>
                 </td>
               </tr>
@@ -308,7 +327,7 @@
                         <option value="{{ $key }}" {{ $user->rank == $key ? 'selected' : ''}}>{{ $rank }}</option>
                       @endforeach
                     </select>
-                    <button type="submit" class="btn btn-info btn-sm">変更する</button>
+                    <button type="submit" class="btn btn-info btn-sm mt-2">変更する</button>
                   </form>
                 </td>
               </tr>
@@ -348,7 +367,7 @@
                 <td>{{ $user->bodyType ? $user->bodyType->name : "" }}</td>
               </tr>
               <tr>
-                <th>基本情報：居住地</th>
+                <th>基本情報：稼働エリア</th>
                 <td>{{ ($user->prefecture_id) ? $user->prefecture->name : "" }}</td>
               </tr>
               <tr>
@@ -433,7 +452,10 @@
                   data-toggle="modal" data-target="#campaign_participated" {{ !$user->campaign_participated ?: 'disabled' }}>
                   11月キャンペーン利用完了
                 </button>
+                @if ($user->gender == App\Enums\UserGender::MALE && $user->cast_transfer_status == App\Enums\CastTransferStatus::DENIED)
+                @else
                 <button type="button" class="btn btn-info" data-toggle="modal" data-target="#register_cast">キャストへ変更する</button>
+                @endif
               @endif
               @if($user->is_cast)
                 <button type="button" class="btn btn-info" data-toggle="modal" data-target="#register_guest">ゲストに変更する</button>
@@ -455,4 +477,18 @@
   <input type="hidden" id="user_id" value="{{ $user->id }}" />
   <input type="hidden" id="url-upload" value="{{ route('admin.avatars.upload', $user->id) }}" />
   <script src="/assets/admin/js/pages/upload_image.js"></script>
+
+  <script type="text/javascript">
+    const classes = JSON.parse('<?php echo json_encode(config('common.default_cost_rate')); ?>');
+
+    $('body').on('click', '#class-id', function () {
+      Object.keys(classes).forEach(function(key) {
+        if ($('#class-id').val() == key) {
+          $('#cost-rate').val(classes[key]);
+
+          $('#input-cost-rate').val($('#cost-rate').val());
+        }
+      });
+    });
+  </script>
 @stop

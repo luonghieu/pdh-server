@@ -80,7 +80,7 @@ class Order extends Model
         return $this->belongsToMany(Cast::class)
             ->where('cast_order.type', CastOrderType::NOMINEE)
             ->whereNull('cast_order.deleted_at')
-            ->withPivot('accepted_at', 'status', 'type', 'cost')
+            ->withPivot('accepted_at', 'status', 'type', 'cost', 'started_at', 'stopped_at')
             ->withTimestamps();
     }
 
@@ -97,6 +97,7 @@ class Order extends Model
         return $this->belongsToMany(Cast::class)
             ->where('cast_order.type', CastOrderType::CANDIDATE)
             ->whereNull('cast_order.deleted_at')
+            ->withPivot('order_id', 'user_id', 'started_at', 'stopped_at', 'created_at', 'updated_at')
             ->withTimestamps();
     }
 
@@ -334,10 +335,10 @@ class Order extends Model
 
     public function createTempPoint($paymentRequest)
     {
-        $castPercent = config('common.cast_percent');
+        $cast = $paymentRequest->cast;
 
         $point = new Point;
-        $point->point = $paymentRequest->total_point * $castPercent;
+        $point->point = round($paymentRequest->total_point * $cast->cost_rate);
         $point->user_id = $paymentRequest->cast_id;
         $point->order_id = $this->id;
         $point->payment_request_id = $paymentRequest->id;

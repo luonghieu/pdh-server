@@ -40,9 +40,9 @@
         <div class="{{ $className }} msg-wrap" id="msg-left">
           <figure>
             @if ($element['user']['type'] == App\Enums\UserType::CAST)
-            <a href="{{ route('cast.show', $element['user_id']) }}"><img src="{{ ($element['user']['avatars'] && @getimagesize($element['user']['avatars'][0]['path'])) ? $element['user']['avatars'][0]['path'] :'/assets/web/images/gm1/ic_default_avatar@3x.png' }}"  alt="" title="" class="alignnone size-full wp-image-515" /></a>
+            <a href="{{ route('cast.show', $element['user_id']) }}"><img src="{{ ($element['user']['avatars'] && isset($element['user']['avatars'][0]) && $element['user']['avatars'][0]['thumbnail']) ? $element['user']['avatars'][0]['thumbnail'] :'/assets/web/images/gm1/ic_default_avatar@3x.png' }}"  alt="" title="" class="alignnone size-full wp-image-515" /></a>
             @else
-            <a href="javascript:void(1);"><img src="{{ ($element['user']['avatars'] && @getimagesize($element['user']['avatars'][0]['path'])) ? $element['user']['avatars'][0]['path'] :'/assets/web/images/gm1/ic_default_avatar@3x.png' }}"  alt="" title="" class="alignnone size-full wp-image-515" /></a>
+            <a href="javascript:void(1);"><img src="{{ ($element['user']['avatars'] && isset($element['user']['avatars'][0]) && $element['user']['avatars'][0]['thumbnail']) ? $element['user']['avatars'][0]['thumbnail'] :'/assets/web/images/gm1/ic_default_avatar@3x.png' }}"  alt="" title="" class="alignnone size-full wp-image-515" /></a>
             @endif
           </figure>
           <div class="{{ $className }}-text">
@@ -57,6 +57,13 @@
             @endif
             @if ($element['type'] == App\Enums\MessageType::IMAGE)
               <div class="pic">
+                <p>
+                  <img src="{{ $element['image'] }}"  alt="" title="" class="">
+                </p>
+              </div>
+            @endif
+            @if ($element['type'] == App\Enums\MessageType::LIKE)
+              <div class="pic-like">
                 <p>
                   <img src="{{ $element['image'] }}"  alt="" title="" class="">
                 </p>

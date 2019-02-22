@@ -100,11 +100,12 @@ class OrderController extends ApiController
             $paymentRequests = $order->paymentRequests;
 
             $receiveAdmin = 0;
-            $castPercent = config('common.cast_percent');
 
             foreach ($paymentRequests as $paymentRequest) {
-                $receiveCast = $paymentRequest->total_point * $castPercent;
-                $receiveAdmin += $paymentRequest->total_point * (1 - $castPercent);
+                $cast = $paymentRequest->cast;
+
+                $receiveCast = round($paymentRequest->total_point * $cast->cost_rate);
+                $receiveAdmin += round($paymentRequest->total_point * (1 - $cast->cost_rate));
 
                 $this->createTransfer($order, $paymentRequest, $receiveCast);
 

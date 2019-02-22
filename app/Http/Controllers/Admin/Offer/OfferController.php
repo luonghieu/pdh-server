@@ -10,6 +10,7 @@ use App\Enums\UserType;
 use App\Http\Controllers\Controller;
 use App\Notifications\OfferMessageNotifyToLine;
 use App\Offer;
+use App\Prefecture;
 use App\Services\LogService;
 use App\User;
 use Auth;
@@ -102,10 +103,14 @@ class OfferController extends Controller
 
         try {
             $casts = $client->get(route('casts.index', $params), $option);
+            $prefectures = $client->get(route('prefectures', ['filter' => 'supported']));
         } catch (\Exception $e) {
             LogService::writeErrorLog($e);
             abort(500);
         }
+
+        $prefectures = json_decode(($prefectures->getBody())->getContents(), JSON_NUMERIC_CHECK);
+        $prefectures = $prefectures['data'];
 
         $casts = json_decode(($casts->getBody())->getContents(), JSON_NUMERIC_CHECK);
         $casts = $casts['data'];
@@ -120,7 +125,7 @@ class OfferController extends Controller
             ]
         );
 
-        return view('admin.offers.create', compact('casts', 'castClasses'));
+        return view('admin.offers.create', compact('casts', 'castClasses', 'prefectures'));
     }
 
     public function confirm(Request $request)
@@ -129,10 +134,10 @@ class OfferController extends Controller
             $request->session()->flash('cast_not_found', 'cast_not_found');
 
             if (isset($request->offer_id)) {
-                return redirect()->route('admin.offers.edit', ['offer' => $request->offer_id]);
+                return redirect()->route('admin.offers.edit', ['offer' => $request->offer_id, 'cast_class' => $request->class_id_offer]);
             }
 
-            return redirect()->route('admin.offers.create');
+            return redirect()->route('admin.offers.create', ['cast_class' => $request->class_id_offer]);
         }
 
         $data['cast_ids'] = explode(",", trim($request->cast_ids_offer, ","));
@@ -142,20 +147,20 @@ class OfferController extends Controller
             $request->session()->flash('message_exits', 'message_exits');
 
             if (isset($request->offer_id)) {
-                return redirect()->route('admin.offers.edit', ['offer' => $request->offer_id]);
+                return redirect()->route('admin.offers.edit', ['offer' => $request->offer_id, 'cast_class' => $request->class_id_offer]);
             }
 
-            return redirect()->route('admin.offers.create');
+            return redirect()->route('admin.offers.create', ['cast_class' => $request->class_id_offer]);
         }
 
         if (80 < mb_strlen($data['comment_offer'], 'UTF-8')) {
             $request->session()->flash('message_invalid', 'message_invalid');
 
             if (isset($request->offer_id)) {
-                return redirect()->route('admin.offers.edit', ['offer' => $request->offer_id]);
+                return redirect()->route('admin.offers.edit', ['offer' => $request->offer_id, 'cast_class' => $request->class_id_offer]);
             }
 
-            return redirect()->route('admin.offers.create');
+            return redirect()->route('admin.offers.create', ['cast_class' => $request->class_id_offer]);
         }
 
         $data['start_time'] = $request->start_time_offer;
@@ -167,20 +172,20 @@ class OfferController extends Controller
             $request->session()->flash('expired_date_not_valid', '開始時間は現在以降の時間を指定してください');
 
             if (isset($request->offer_id)) {
-                return redirect()->route('admin.offers.edit', ['offer' => $request->offer_id]);
+                return redirect()->route('admin.offers.edit', ['offer' => $request->offer_id, 'cast_class' => $request->class_id_offer]);
             }
 
-            return redirect()->route('admin.offers.create');
+            return redirect()->route('admin.offers.create', ['cast_class' => $request->class_id_offer]);
         }
 
         if (Carbon::now()->second(0)->addWeek()->lt(Carbon::parse($data['expired_date']))) {
             $request->session()->flash('time_out', '応募締切期限は最大で1週間までしか設定できません。');
 
             if (isset($request->offer_id)) {
-                return redirect()->route('admin.offers.edit', ['offer' => $request->offer_id]);
+                return redirect()->route('admin.offers.edit', ['offer' => $request->offer_id, 'cast_class' => $request->class_id_offer]);
             }
 
-            return redirect()->route('admin.offers.create');
+            return redirect()->route('admin.offers.create', ['cast_class' => $request->class_id_offer]);
         }
 
         $startTimeTo = explode(":", $data['end_time']);
@@ -207,10 +212,10 @@ class OfferController extends Controller
             $request->session()->flash('expired_date_not_valid', '開始時間は現在以降の時間を指定してください');
 
             if (isset($request->offer_id)) {
-                return redirect()->route('admin.offers.edit', ['offer' => $request->offer_id]);
+                return redirect()->route('admin.offers.edit', ['offer' => $request->offer_id, 'cast_class' => $request->class_id_offer]);
             }
 
-            return redirect()->route('admin.offers.create');
+            return redirect()->route('admin.offers.create', ['cast_class' => $request->class_id_offer]);
         }
 
         $data['duration_offer'] = $request->duration_offer;
@@ -225,8 +230,9 @@ class OfferController extends Controller
         Session::put('offer', $data);
 
         $casts = Cast::whereIn('id', $data['cast_ids'])->get();
+        $prefecture = Prefecture::find($request->area_offer)->name;
 
-        return view('admin.offers.confirm', compact('casts', 'data'));
+        return view('admin.offers.confirm', compact('casts', 'data', 'prefecture'));
     }
 
     public function price(Request $request, $offer = null)
@@ -359,7 +365,7 @@ class OfferController extends Controller
         $offer->start_time_to = $time;
         $offer->duration = $data['duration_offer'];
         $offer->total_cast = count($data['cast_ids']);
-        $offer->prefecture_id = 13;
+        $offer->prefecture_id = $data['area_offer'];
         $offer->temp_point = $data['current_point_offer'];
         $offer->class_id = $data['class_id_offer'];
         $offer->cast_ids = $data['cast_ids'];
@@ -389,7 +395,9 @@ class OfferController extends Controller
     {
         $casts = Cast::whereIn('id', $offer->cast_ids)->get();
 
-        return view('admin.offers.detail', compact('offer', 'casts'));
+        $prefecture = Prefecture::find($offer->prefecture_id)->name;
+
+        return view('admin.offers.detail', compact('offer', 'casts', 'prefecture'));
     }
 
     public function delete(Offer $offer)
@@ -433,10 +441,14 @@ class OfferController extends Controller
 
         try {
             $casts = $client->get(route('casts.index', $params), $option);
+            $prefectures = $client->get(route('prefectures', ['filter' => 'supported']));
         } catch (\Exception $e) {
             LogService::writeErrorLog($e);
             abort(500);
         }
+
+        $prefectures = json_decode(($prefectures->getBody())->getContents(), JSON_NUMERIC_CHECK);
+        $prefectures = $prefectures['data'];
 
         $casts = json_decode(($casts->getBody())->getContents(), JSON_NUMERIC_CHECK);
         $casts = $casts['data'];
@@ -451,6 +463,6 @@ class OfferController extends Controller
             ]
         );
 
-        return view('admin.offers.edit', compact('offer', 'casts', 'castClasses'));
+        return view('admin.offers.edit', compact('offer', 'casts', 'castClasses', 'prefectures'));
     }
 }

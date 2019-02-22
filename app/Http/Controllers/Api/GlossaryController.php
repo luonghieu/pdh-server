@@ -52,7 +52,7 @@ class GlossaryController extends ApiController
 
         $data['genders'] = $genders;
 
-        $data['prefectures'] = Prefecture::where('id', '<=', 47)->get(['id', 'name'])->toArray();
+        $data['prefectures'] = Prefecture::supported()->get(['id', 'name'])->toArray();
 
         $hometowns = Prefecture::all(['id', 'name']);
         $data['hometowns'] = $hometowns->prepend($hometowns->pull(48))->toArray();

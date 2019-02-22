@@ -20,6 +20,15 @@
               <input type="date" id="date-of-birth" name="date_of_birth" data-date="" max="{{ $max->format('Y-m-d') }}" data-date-format="YYYY年MM月DD日" value="{{ \Carbon\Carbon::parse(Auth::user()->date_of_birth)->format('Y-m-d') }}">
             </div>
             <label data-field="date_of_birth" id="date-of-birth-error" class="error help-block" for="date-of-birth"></label>
+            <div class="set-usage-area">
+              <h2>ご利用のエリアを設定しましょう！</h2>
+              <select id="prefecture-id">
+                @foreach($prefectures as $prefecture)
+                  <option value="{{ $prefecture->id }}" {{ ($prefecture->id == 13) ? 'selected':''}}>{{ $prefecture->name }}</option>
+                @endforeach
+              </select>
+            </div>
+            <p class="color-gray">※別エリアのご利用も可能です</p>
           </div>
           <button type="submit" for="popup-date-of-birth" class="close_button">登録する</button>
         </div>
@@ -93,7 +102,6 @@
       <img src="{{ asset('images/btn_login_base.png') }}" alt="">
     </a>
   @endif
-
   @if (isset(request()->first_time) && request()->first_time)
     <a href="javascript:void(0)" class="gtm-hidden-btn" id="first-time-login" name="button1" onclick="dataLayer.push({
       'userId': '<?php echo Auth::user()->id; ?>',
@@ -126,7 +134,19 @@
       </a>
     </div>
   </div>
-
+  <div class="prefecture">
+    <div class="wrapper-select">
+      <img src="{{ asset('assets/web/images/common/map-blue.svg') }}" alt="">
+      <form action="">
+        <select name="" id="prefecture-id-mypage">
+          @foreach($prefectures as $prefecture)
+            <option value="{{ $prefecture->id }}" {{ ($prefecture->id == 13) ? 'selected':''}}>{{ $prefecture->name }}</option>
+          @endforeach
+        </select>
+      </form>
+      <img src="{{ asset('assets/web/images/common/arrow-blue.svg') }}" alt="">
+    </div>
+  </div>
   @if ($order->resource)
   <div class="booking">
     <h2>現在の予約</h2>
@@ -156,7 +176,7 @@
         @foreach($order->casts as $cast)
           <li>
             <div class="top-image">
-              @if (@getimagesize($cast->avatars->first()->thumbnail))
+              @if ($cast->avatars->first()->thumbnail)
               <img class="lazy" data-src="{{ $cast->avatars->first()->thumbnail }}" alt="">
               @else
               <img class="lazy" data-src="{{ asset('assets/web/images/gm1/ic_default_avatar@3x.png') }}" alt="">
@@ -176,9 +196,9 @@
   </div>
   @endif
   @if (Auth::user()->status)
-  <a href="{{ route('guest.orders.call') }}" class="cast-call">今すぐキャストを呼ぶ<span>最短20分で合流!</span></a>
+  <a href="{{ route('guest.orders.call') }}" class="cast-call">キャストを呼ぶ<span>複数人、当日以降の予約もOK！</span></a>
   @else
-  <a href="javascript:void(0)" class="cast-call" id="popup-freezed-account">今すぐキャストを呼ぶ<span>最短20分で合流!</span></a>
+  <a href="javascript:void(0)" class="cast-call" id="popup-freezed-account">キャストを呼ぶ<span>複数人、当日以降の予約もOK！</span></a>
   @endif
   <div class="cast-list">
     <div class="cast-head">
@@ -191,39 +211,7 @@
     </div>
 
     <div class="cast-body">
-      @foreach ($casts as $cast)
-        <div class="cast-item">
-          <a href="{{ Auth::user()->status ? route('cast.show', ['id' => $cast->id]) : 'javascript:void(0)' }}" id="{{ Auth::user()->status ? '' : 'popup-freezed-account' }}">
-            @php
-              if ($cast->class_id == 1) {
-                $class = 'cast-class_b';
-              }
-
-              if ($cast->class_id == 2) {
-                $class = 'cast-class_p';
-              }
-
-              if ($cast->class_id == 3) {
-                $class = 'cast-class_d';
-              }
-            @endphp
-            <span class="tag {{ $class }}">{{ $cast->class }}</span>
-            <img src="{{ ($cast->avatars && @getimagesize($cast->avatars[0]->thumbnail)) ? $cast->avatars[0]->thumbnail :'/assets/web/images/gm1/ic_default_avatar@3x.png' }}">
-            <div class="info">
-              <span class="tick {{ $cast->is_online == 1? 'tick-online':'tick-offline' }}"></span>
-              <span class="title-info">{{ str_limit($cast->job, 15) }}  {{ $cast->age }}歳</span>
-              <div class="wrap-description">
-                <span class="description">{{ $cast->intro }}</span>
-              </div>
-            </div>
-          </a>
-        </div>
-      @endforeach
-      @if (Auth::user()->status)
-      <a href="{{ route('cast.list_casts') }}" class="cast-item import"></a>
-      @else
-      <a href="javascript:void(0)" class="cast-item import" id="popup-freezed-account"></a>
-      @endif
+      @include('web.casts-working-today',compact('casts'))
     </div>
   </div>
 <!-- Timeline -->
@@ -237,7 +225,7 @@
       <div class="tl-item">
         <div class="tl-item_avatar">
           <a href="{{ Auth::user()->status ? route('cast.show', ['id' => $intro->id]) : 'javascript:void(0)' }}" id="{{ Auth::user()->status ? '' : 'popup-freezed-account' }}">
-            <img src="{{ ($intro->avatars && @getimagesize($intro->avatars[0]->thumbnail)) ? $intro->avatars[0]->thumbnail :'/assets/web/images/gm1/ic_default_avatar@3x.png' }}" alt="avatar" class="image-intro">
+            <img src="{{ ($intro->avatars && isset($intro->avatars[0]) &&$intro->avatars[0]->thumbnail) ? $intro->avatars[0]->thumbnail :'/assets/web/images/gm1/ic_default_avatar@3x.png' }}" alt="avatar" class="image-intro">
           </a>
         </div>
 

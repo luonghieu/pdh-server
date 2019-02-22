@@ -1,7 +1,6 @@
 $(function(){
   // button green-----------------------------------
-  var buttonGreen = $(".button--green.area");
-  buttonGreen.on("change",function(){
+  $('body').on('change', ".button--green.area",function(){
     var thisButton = $(this);
     //$(this).css("background","red")
     $(this).siblings().removeClass("active");
@@ -10,7 +9,7 @@ $(function(){
       $(".area-input").css("display","none");
     }
   })
-  $("#area_input").on("change",function(){
+  $('body').on('change', "#area_input",function(){
     if($("input[type='radio']:checked")){
       $(".area-input").css("display","flex");
     }
