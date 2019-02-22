@@ -196,9 +196,9 @@
   </div>
   @endif
   @if (Auth::user()->status)
-  <a href="{{ route('guest.orders.call') }}" class="cast-call">キャストを呼ぶ<span>複数人、当日以降のご予約もこちらから！</span></a>
+  <a href="{{ route('guest.orders.call') }}" class="cast-call">キャストを呼ぶ<span>複数人、当日以降の予約もOK！</span></a>
   @else
-  <a href="javascript:void(0)" class="cast-call" id="popup-freezed-account">キャストを呼ぶ<span>複数人、当日以降のご予約もこちらから！</span></a>
+  <a href="javascript:void(0)" class="cast-call" id="popup-freezed-account">キャストを呼ぶ<span>複数人、当日以降の予約もOK！</span></a>
   @endif
   <div class="cast-list">
     <div class="cast-head">
