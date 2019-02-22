@@ -14,7 +14,7 @@ class AlterTableUserFieldIsGuestActive extends Migration
     public function up()
     {
         Schema::table('users', function (Blueprint $table) {
-            $table->string('is_guest_active')->after('is_verified')->default(true);
+            $table->boolean('is_guest_active')->after('is_verified')->default(true);
         });
     }
 
