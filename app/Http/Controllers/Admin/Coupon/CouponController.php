@@ -100,9 +100,8 @@ class CouponController extends Controller
 
     public function delete(Coupon $coupon)
     {
-        dd(1);
-//        $user->delete();
-//
-//        return redirect()->route('admin.users.index');
+        $coupon->delete();
+
+        return redirect()->route('admin.coupons.index');
     }
 }
