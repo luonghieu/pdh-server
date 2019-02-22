@@ -97,12 +97,8 @@ class PaymentRequestController extends ApiController
                     $extraTime = $request->extra_time;
                 }
 
-                if (Carbon::parse($order->actual_started_at) > $castStartTime) {
+                if ($order->total_cast == 1) {
                     $order->actual_started_at = $castStartTime;
-                    $order->save();
-                }
-
-                if (Carbon::parse($order->actual_ended_at) < $stoppedAt) {
                     $order->actual_ended_at = $stoppedAt;
                     $order->save();
                 }
@@ -134,6 +130,26 @@ class PaymentRequestController extends ApiController
                     ],
                     false
                 );
+
+                if ($order->total_cast > 1) {
+                    $orderStartedtAt = Carbon::parse($order->actual_started_at);
+                    $orderStoppedAt = Carbon::parse($order->actual_ended_at);
+                    $casts = $order->casts;
+                    foreach ($casts as $cast) {
+                        $castStartTime = Carbon::parse($cast->pivot->started_at);
+                        $castStoppedAt = Carbon::parse($cast->pivot->stopped_at);
+
+                        if ($orderStartedtAt > $castStartTime) {
+                            $order->actual_started_at = $castStartTime;
+                            $order->save();
+                        }
+                        if ($orderStoppedAt < $castStoppedAt) {
+                            $order->actual_ended_at = $castStoppedAt;
+                            $order->save();
+                        }
+                    }
+                }
+
                 DB::commit();
             } else {
                 $paymentRequest->status = PaymentRequestStatus::REQUESTED;

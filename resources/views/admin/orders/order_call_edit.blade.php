@@ -155,7 +155,7 @@
                                         </td>
                                     </tr>
                                 </table>
-                                @if($order->type != \App\Enums\OrderType::CALL)
+                                @if($order->type != \App\Enums\OrderType::CALL && $order->status == \App\Enums\OrderStatus::OPEN)
                                 <div class="panel-body">
                                     <div class="display-title">
                                         <p>指名中キャスト一覧</p>
@@ -200,6 +200,7 @@
                                     </tbody>
                                 </table>
                                 @endif
+                                @if ($order->status == \App\Enums\OrderStatus::OPEN)
                                 <div class="panel-body">
                                     <div class="display-title">
                                         <p>応募中キャスト一覧</p>
@@ -210,39 +211,40 @@
                                     </div>
                                 </div>
                                 <div id="list-cast"></div>
-                                <table class="table table-striped table-bordered bootstrap-datatable"
-                                       id="candidate-selected-table">
-                                    <thead>
-                                    <tr>
-                                        <th>ユーザーID</th>
-                                        <th>キャスト名</th>
-                                        <th></th>
-                                    </tr>
-                                    </thead>
-                                    <tbody>
-                                    @if (count($castsCandidates) == 0)
+                                    <table class="table table-striped table-bordered bootstrap-datatable"
+                                           id="candidate-selected-table">
+                                        <thead>
                                         <tr>
-                                            <td colspan="8">{{ trans('messages.cast_not_found') }}</td>
+                                            <th>ユーザーID</th>
+                                            <th>キャスト名</th>
+                                            <th></th>
                                         </tr>
-                                    @else
-                                        @foreach ($castsCandidates as $candidate)
+                                        </thead>
+                                        <tbody>
+                                        @if (count($castsCandidates) == 0)
                                             <tr>
-                                                <td class="cast-candidate-id">{{ $candidate['id'] }}</td>
-                                                <td>{{ $candidate['nickname'] }}</td>
-                                                @if (!$candidate['pivot']['started_at'])
-                                                <td>
-                                                    <button type="button" class=" btn btn-info remove-btn"
-                                                            data-user-id="{{ $candidate['id'] }}"
-                                                            data-type="2">このキャストを削除する
-                                                    </button>
-                                                </td>
-                                                @endif
+                                                <td colspan="8">{{ trans('messages.cast_not_found') }}</td>
                                             </tr>
-                                        @endforeach
-                                    @endif
-                                    </tbody>
-                                </table>
-                                @if ($order->status == \App\Enums\OrderStatus::ACTIVE)
+                                        @else
+                                            @foreach ($castsCandidates as $candidate)
+                                                <tr>
+                                                    <td class="cast-candidate-id">{{ $candidate['id'] }}</td>
+                                                    <td>{{ $candidate['nickname'] }}</td>
+                                                    @if (!$candidate['pivot']['started_at'])
+                                                        <td>
+                                                            <button type="button" class=" btn btn-info remove-btn"
+                                                                    data-user-id="{{ $candidate['id'] }}"
+                                                                    data-type="2">このキャストを削除する
+                                                            </button>
+                                                        </td>
+                                                    @endif
+                                                </tr>
+                                            @endforeach
+                                        @endif
+                                        </tbody>
+                                    </table>
+                                @endif
+                                @if ($order->status == \App\Enums\OrderStatus::ACTIVE || $order->status == \App\Enums\OrderStatus::PROCESSING)
                                 <div class="panel-body">
                                     <div class="display-title">
                                         <p>マッチングしているキャスト一覧</p>

@@ -183,7 +183,7 @@ $routes = [
     'rank_schedule' => [
         [
             'name' => 'admin.rank_schedules.index',
-            'value' => 'キャスト新規申請',
+            'value' => 'キャストランク管理',
             'url' => route('admin.rank_schedules.index'),
             'submenu' => [
               'admin.rank_schedules.casts'  

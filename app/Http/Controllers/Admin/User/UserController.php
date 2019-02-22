@@ -122,6 +122,7 @@ class UserController extends Controller
     public function registerGuest(User $user)
     {
         $user->type = UserType::GUEST;
+        $user->cast_transfer_status = null;
         $user->save();
 
         return redirect(route('admin.users.show', ['user' => $user->id]));

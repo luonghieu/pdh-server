@@ -452,7 +452,10 @@
                   data-toggle="modal" data-target="#campaign_participated" {{ !$user->campaign_participated ?: 'disabled' }}>
                   11月キャンペーン利用完了
                 </button>
+                @if ($user->gender == App\Enums\UserGender::MALE && $user->cast_transfer_status == App\Enums\CastTransferStatus::DENIED)
+                @else
                 <button type="button" class="btn btn-info" data-toggle="modal" data-target="#register_cast">キャストへ変更する</button>
+                @endif
               @endif
               @if($user->is_cast)
                 <button type="button" class="btn btn-info" data-toggle="modal" data-target="#register_guest">ゲストに変更する</button>

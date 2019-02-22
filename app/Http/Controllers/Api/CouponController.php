@@ -40,8 +40,8 @@ class CouponController extends ApiController
             ]);
         }
         $coupons = $coupons->get();
-        $collection = $coupons->reject(function ($item) use ($user) {
-            $now = now();
+        $now = now();
+        $collection = $coupons->reject(function ($item) use ($user, $now) {
             $createdAtOfUser = Carbon::parse($user->created_at);
 
             $bool = false;
