@@ -123,6 +123,7 @@ class UserController extends Controller
     {
         $user->type = UserType::GUEST;
         $user->cast_transfer_status = null;
+        $user->is_guest_active = true;
         $user->save();
 
         return redirect(route('admin.users.show', ['user' => $user->id]));
