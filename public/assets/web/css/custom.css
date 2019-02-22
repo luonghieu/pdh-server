@@ -3133,3 +3133,20 @@ padding-top: 65px !important;
 #gg2 .msg-wrap .pic-like p img {
   display: inline-block;
 }
+
+.tag-today {
+  position: absolute;
+  right: 0px;
+  top: 3px;
+  display: block;
+  width: 55px;
+  height: 24px;
+  border-radius: 25px;
+  font-size: 11px;
+  color: #FFFFFF;
+  line-height: 24px;
+  text-align: center;
+  letter-spacing: 0;
+  background: rgba(34,34,34,0.40);
+  opacity: .9;
+}
