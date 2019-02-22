@@ -1,4 +1,4 @@
-@section('title', '審査見送り画面_女性')
+@section('title', '審査結果画面')
 @extends('layouts.web')
 @section('web.content')
 <div class="no-cast">
