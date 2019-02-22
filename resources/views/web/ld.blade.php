@@ -142,8 +142,8 @@
         <div class="guest01-saitan font-w">
           <p><span>ギャラ飲み会</span><br>最短</p>
         </div>
-        <h2>いつでも、どこでも<br>最短20分で<br class="g-spOnly"><span>※</span>キャストに会える！</h2>
-        <p class="guest01-atcl01"><span class="font-w">六本木・恵比寿・渋谷・新宿など、主要地域を中心に、<br class="g-pcOnly">呼びたい時にすぐキャストが駆けつけその場を盛り上げてくれます。</p>
+        <h2>いつでも、どこでも<br>最短30分で<br class="g-spOnly"><span>※</span>キャストに会える！</h2>
+        <p class="guest01-atcl01"><span class="font-w">関東・関西の主要エリアを中心に、<br class="g-pcOnly">呼びたい時にすぐキャストが駆けつけその場を盛り上げてくれます。</p>
       <p class="guest01-atcl02">プライベートの飲み会から接待まで、様々なシーンでご利用いただけます。モーニングやランチにキャストを呼ぶ方も♪</span>
           <p class="guest01-atcl03">※キャストとは飲み会に参加してくれる方のことを指します</p>
       </div>
@@ -292,7 +292,7 @@
         <ul class="guest04-melit">
           <li class="guest04-melit-li melit-01">
             <h3>最短20分でキャストがあなたの元に！</h3>
-            <p class="g-pcOnly">ギャラ飲み会初！予約から最短20分でキャストと合流できます。面倒くさい手間はなし！アプリ、LINE一つでスムーズにキャストを呼ぶことができます。</p>
+            <p class="g-pcOnly">ギャラ飲み会初！予約から最短30分でキャストと合流できます。面倒くさい手間はなし！アプリ、LINE一つでスムーズにキャストを呼ぶことができます。</p>
             <p class="g-spOnly">ギャラ飲みには数少ないアプリ化で、アプリひとつでスムーズにキャストを呼べるようになりました。</p>
           </li>
           <li class="guest04-melit-li melit-02">
