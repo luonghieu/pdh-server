@@ -1,12 +1,11 @@
 <?php
 
-namespace App\Http\Controllers\Api;
+namespace App\Http\Controllers\Api\Guest;
 
+use App\Http\Controllers\Api\ApiController;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
-use App\Http\Controllers\Controller;
 use App\Coupon;
-use Illuminate\Pagination\LengthAwarePaginator;
 
 class CouponController extends ApiController
 {

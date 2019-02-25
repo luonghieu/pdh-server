@@ -152,13 +152,13 @@ Route::group(['prefix' => 'v1'], function () {
             Route::get('/', ['as' => 'points', 'uses' => 'PointController@points']);
             Route::post('/', ['as' => 'buy', 'uses' => 'Guest\PointController@buy']);
         });
+
+        Route::group(['prefix' => 'coupons', 'as' => 'coupons.'], function () {
+            Route::get('/', ['as' => 'index', 'uses' => 'Guest\CouponController@getCoupons']);
+        });
     });
 
     Route::group(['middleware' => ['auth:api'], 'prefix' => 'receipts', 'as' => 'receipts.'], function () {
         Route::post('/', ['as' => 'create', 'uses' => 'ReceiptController@create']);
-    });
-
-    Route::group(['middleware' => ['auth:api'], 'prefix' => 'coupons', 'as' => 'coupons.'], function () {
-        Route::get('/', ['as' => 'index', 'uses' => 'CouponController@getCoupons']);
     });
 });
