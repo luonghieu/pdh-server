@@ -142,7 +142,8 @@ class AuthController extends ApiController
             'address',
             'fullname_kana',
             'fullname',
-            'prefecture_id'
+            'prefecture_id',
+            'is_guest_active'
         ]);
 
         try {
