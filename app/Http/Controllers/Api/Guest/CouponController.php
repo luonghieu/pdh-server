@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api\Guest;
 
 use App\Http\Controllers\Api\ApiController;
+use App\Http\Resources\CouponResource;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use App\Coupon;
@@ -31,27 +32,27 @@ class CouponController extends ApiController
             $q->where('user_id', '=', $user->id);
         });
 
+        $coupons = $coupons->where([
+            ['is_filter_order_duration', '=', true],
+            ['filter_order_duration', '>=', $params['duration']],
+        ])->orWhere('is_filter_order_duration', false);
 
-        if ($params['duration']) {
-            $coupons = $coupons->where([
-                ['is_filter_order_duration', '=', true],
-                ['filter_order_duration', '>=', $params['duration']],
-            ]);
-        }
         $coupons = $coupons->get();
         $now = now();
         $collection = $coupons->reject(function ($item) use ($user, $now) {
             $createdAtOfUser = Carbon::parse($user->created_at);
 
             $bool = false;
-            if ($now->diffInDays($createdAtOfUser) <= $item->filter_after_created_date) {
-                $bool = true;
+            if ($item->is_filter_after_created_date && $item->filter_after_created_date) {
+                if ($now->diffInDays($createdAtOfUser) > $item->filter_after_created_date) {
+                    $bool = true;
+                }
             }
 
             return $bool;
         });
 
-        return $this->respondWithData($collection);
+        return $this->respondWithData(CouponResource::collection($collection));
 
     }
 }
