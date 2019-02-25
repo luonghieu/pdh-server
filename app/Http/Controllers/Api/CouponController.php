@@ -52,12 +52,6 @@ class CouponController extends ApiController
             return $bool;
         });
 
-        $collection = $collection->values();
-        $total = $collection->count();
-        $collection = $collection->forPage($request->page, $request->limit ?: 10);
-
-        $collection = new LengthAwarePaginator($collection, $total, $request->limit ?: 10);
-        $collection = $collection->withPath('');
         return $this->respondWithData($collection);
 
     }
