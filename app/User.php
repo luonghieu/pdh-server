@@ -531,4 +531,9 @@ class User extends Authenticatable implements JWTSubject
 
         return $totalBalance;
     }
+
+    public function coupons()
+    {
+        return $this->belongsToMany('App\Coupon', 'coupon_users', 'user_id','coupon_id');
+    }
 }

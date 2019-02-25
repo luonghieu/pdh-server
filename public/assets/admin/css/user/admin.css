@@ -1828,9 +1828,11 @@ tbody td {
 .h-5 {
   min-height: 5rem; 
 }
+
 .edit-order .panel-body {
   overflow: initial;
 }
+
 .w-form {
   width: 100%;
   position: relative;
@@ -1841,5 +1843,39 @@ tbody td {
 }
 
 .btn.btn-info.btn-sm.mt-2 {
-  margin-top: -2px; 
+  margin-top: -2px;
+}
+
+.wrap-td-coupon {
+  width: 80%;
+  display: inline-block;
+  text-align: left;
+}
+
+.wrap-td-coupon input[type=text], textarea {
+  width: 100%;
+}
+
+.wrap-td-coupon .object-coupon {
+  width: 75% !important;
+}
+
+.wrap-td-coupon .wrap-object-coupon span {
+  display: inline-block;
+}
+
+.wrap-radio-coupon {
+  margin-bottom: 10px;
+}
+
+.wrap-td-coupon textarea {
+  height: 50px;
+}
+
+.btn-create-coupon {
+  text-align: center;
+}
+
+.invalid-element-coupon {
+  color: #A5A5A5;
 }

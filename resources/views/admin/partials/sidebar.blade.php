@@ -190,6 +190,17 @@ $routes = [
             ],
         ],
     ],
+
+    'coupon' => [
+        [
+            'name' => 'admin.coupons.index',
+            'value' => 'クーポン管理',
+            'url' => route('admin.coupons.index'),
+            'submenu' => [
+              'admin.coupons.create'
+            ],
+        ],
+    ],
 ];
 @endphp
 

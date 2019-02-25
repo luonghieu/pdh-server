@@ -146,4 +146,11 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.'], function () {
         Route::delete('/{offer}', ['as' => 'delete', 'uses' => 'OfferController@delete'])->where('offer', '[0-9]+');
         Route::get('/edit/{offer}', ['as' => 'edit', 'uses' => 'OfferController@edit'])->where('offer', '[0-9]+');
     });
+
+    Route::group(['namespace' => 'Coupon', 'prefix' => 'coupons', 'as' => 'coupons.', 'middleware' => 'is_admin'], function () {
+        Route::get('/', ['as' => 'index', 'uses' => 'CouponController@index']);
+        Route::get('/create', ['as' => 'create', 'uses' => 'CouponController@create']);
+        Route::post('/create', ['as' => 'store', 'uses' => 'CouponController@store']);
+        Route::get('/{coupon}', ['as' => 'delete', 'uses' => 'CouponController@delete'])->where('coupon', '[0-9]+');
+    });
 });
