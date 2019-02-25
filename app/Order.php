@@ -139,6 +139,11 @@ class Order extends Model
         return $this->hasOne(Offer::class, 'id', 'offer_id');
     }
 
+    public function coupon()
+    {
+        return $this->hasOne(Coupon::class, 'id', 'coupon_id');
+    }
+
     public function deny($userId)
     {
         try {

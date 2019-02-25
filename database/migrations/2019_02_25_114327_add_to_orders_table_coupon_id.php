@@ -14,7 +14,7 @@ class AddToOrdersTableCouponId extends Migration
     public function up()
     {
         Schema::table('orders', function (Blueprint $table) {
-            $table->timestamp('coupon_id')->nullable()->after('send_warning');
+            $table->unsignedInteger('coupon_id')->nullable()->after('send_warning');
         });
     }
 
