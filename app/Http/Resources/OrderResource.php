@@ -3,8 +3,10 @@
 namespace App\Http\Resources;
 
 use App\Http\Resources\CastClassResource;
+use App\Http\Resources\CouponResource;
 use App\Repositories\CastClassRepository;
 use App\Repositories\PrefectureRepository;
+use App\Repositories\CouponRepository;
 use App\Traits\ResourceResponse;
 use Illuminate\Http\Resources\Json\Resource;
 use Illuminate\Support\Facades\Auth;
@@ -63,7 +65,7 @@ class OrderResource extends Resource
             'paid_at' => $this->paid_at,
             'call_point' => $this->when($isCast, round($this->call_point * $cast->cost_rate), $this->call_point),
             'nominee_point' => $this->when($isCast, round($this->nominee_point * $cast->cost_rate), $this->nominee_point),
-            'coupon_id' => $this->coupon_id,
+            'coupon_id' => $this->coupon_id ? app(CouponRepository::class)->find($this->coupon_id) : '',
             'deleted_at' => $this->deleted_at,
         ]);
     }

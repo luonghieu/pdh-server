@@ -15,6 +15,11 @@ class AddToOrdersTableCouponId extends Migration
     {
         Schema::table('orders', function (Blueprint $table) {
             $table->unsignedInteger('coupon_id')->nullable()->after('send_warning');
+
+            $table->foreign('coupon_id')
+                ->references('id')
+                ->on('coupons')
+                ->onDelete('cascade');
         });
     }
 
