@@ -52,9 +52,9 @@ class CouponController extends Controller
             'point' => 'numeric|required_if:type,1|nullable',
             'time' => 'numeric|required_if:type,2|nullable',
             'note' => 'string',
-            'is_filter_after_created_date' => 'string|in:on,off|nullable',
+            'is_filter_after_created_date' => 'numeric|nullable',
             'filter_after_created_date' => 'numeric|nullable',
-            'is_filter_order_duration' => 'string|in:on,off|nullable',
+            'is_filter_order_duration' => 'numeric|nullable',
             'filter_order_duration' => 'numeric|nullable',
         ];
 
@@ -76,17 +76,6 @@ class CouponController extends Controller
             'filter_order_duration',
         ]);
 
-        if (isset($input['is_filter_after_created_date']) && $input['is_filter_after_created_date'] == 'on') {
-            $input['is_filter_after_created_date'] = 1;
-        } else {
-            $input['is_filter_after_created_date'] = 0;
-        }
-
-        if (isset($input['is_filter_order_duration']) && $input['is_filter_order_duration'] == 'on') {
-            $input['is_filter_order_duration'] = 1;
-        } else {
-            $input['is_filter_order_duration'] = 0;
-        }
         $coupon = new Coupon;
         $coupon = $coupon->create($input);
 
@@ -124,9 +113,9 @@ class CouponController extends Controller
             'point' => 'numeric|required_if:type,1|nullable',
             'time' => 'numeric|required_if:type,2|nullable',
             'note' => 'string',
-            'is_filter_after_created_date' => 'string|in:on,off|nullable',
+            'is_filter_after_created_date' => 'numeric|nullable',
             'filter_after_created_date' => 'numeric|nullable',
-            'is_filter_order_duration' => 'string|in:on,off|nullable',
+            'is_filter_order_duration' => 'numeric|nullable',
             'filter_order_duration' => 'numeric|nullable',
         ];
 
@@ -148,16 +137,14 @@ class CouponController extends Controller
             'filter_order_duration',
         ]);
 
-        if (isset($input['is_filter_after_created_date']) && $input['is_filter_after_created_date'] == 'on') {
-            $input['is_filter_after_created_date'] = 1;
-        } else {
-            $input['is_filter_after_created_date'] = 0;
+        if (!isset($input['is_filter_after_created_date'])) {
+            $input['is_filter_after_created_date'] = null;
+            $input['filter_after_created_date'] = null;
         }
 
-        if (isset($input['is_filter_order_duration']) && $input['is_filter_order_duration'] == 'on') {
-            $input['is_filter_order_duration'] = 1;
-        } else {
-            $input['is_filter_order_duration'] = 0;
+        if (!isset($input['is_filter_order_duration'])) {
+            $input['is_filter_order_duration'] = null;
+            $input['filter_order_duration'] = null;
         }
 
         try {

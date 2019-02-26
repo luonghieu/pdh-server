@@ -79,7 +79,7 @@
                     <td>
                       <div class="wrap-td-coupon">
                         <label class="switch switch-primary">
-                          <input type="checkbox" class="switch-input" checked="" id="checkbox-after-created-date-filter" name="is_filter_after_created_date">
+                          <input type="checkbox" class="switch-input" checked="" id="checkbox-after-created-date-filter" name="is_filter_after_created_date" value="1">
                           <span class="switch-label" data-on="On" data-off="Off"></span>
                           <span class="switch-handle"></span>
                         </label>
@@ -101,7 +101,7 @@
                     <td>
                       <div class="wrap-td-coupon">
                         <label class="switch switch-primary">
-                          <input type="checkbox" class="switch-input" checked="" id="checkbox-time-order-filter" name="is_filter_order_duration">
+                          <input type="checkbox" class="switch-input" checked="" id="checkbox-time-order-filter" name="is_filter_order_duration" value="1">
                           <span class="switch-label" data-on="On" data-off="Off"></span>
                           <span class="switch-handle"></span>
                         </label>
