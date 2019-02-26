@@ -21,4 +21,9 @@ class Coupon extends Model
     {
         return $this->belongsToMany('App\User', 'coupon_users', 'coupon_id','user_id');
     }
+
+    public function orders()
+    {
+        return $this->belongsToMany('App\Order', 'coupon_users', 'coupon_id','order_id');
+    }
 }

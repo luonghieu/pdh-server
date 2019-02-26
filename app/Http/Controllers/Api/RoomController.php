@@ -305,42 +305,11 @@ class RoomController extends ApiController
                 ->leftJoin('avatars', function ($j) {
                     $j->on('avatars.user_id', '=', 'users.id');
                 })
-                ->select('room_user.room_id', 'users.id', 'users.nickname', 'avatars.thumbnail', 'users.deleted_at', 'users.date_of_birth', 'avatars.is_default', 'avatars.created_at')
+                ->select('room_user.room_id', 'users.id', 'users.nickname', 'avatars.thumbnail', 'users.deleted_at', 'users.date_of_birth')
                 ->orderBy('avatars.is_default', 'desc')
                 ->orderBy('avatars.created_at', 'desc')
                 ->get();
-//            dd($users);
-//            $usersAvatarDefault = $users->filter(function ($item) {
-//                return $item->is_default;
-//            })->groupBy('room_id');
-//
-//            $usersAvatarWithout = $users->filter(function ($item) {
-//                return $item->is_default == false;
-//            })->sortByDesc('created_at')->groupBy('room_id');
-//
-//            $userWithOutDefault = [];
-//            foreach ($usersAvatarWithout as $key => $value) {
-//                $userWithOutDefault[$key] = $value->unique('id');
-//            }
-//
-//            foreach ($usersAvatarDefault as $key => $value) {
-//                if (array_key_exists($key, $userWithOutDefault)) {
-//                    foreach ($userWithOutDefault[$key] as $si) {
-//                        $exist = $value->contains(function ($value, $key) use ($si) {
-//                            return $value->id == $si->id;
-//                        });
-//
-//                        if (!$exist) {
-//                            $value->push($si);
-//                        }
-//                    }
-//                }
-//            }
-//
-//            $missingRoom = array_diff_key($usersAvatarDefault->toArray(), $userWithOutDefault);
-//            dd(array_diff_key($usersAvatarDefault->toArray(), $userWithOutDefault));
-//            dd($usersAvatarDefault);
-//            dd($userWithOutDefault);
+
             $userMap = [];
             foreach ($users as $user) {
                 if (!filter_var($user->thumbnail, FILTER_VALIDATE_URL)) {

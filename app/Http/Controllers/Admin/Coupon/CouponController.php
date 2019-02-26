@@ -104,4 +104,10 @@ class CouponController extends Controller
 
         return redirect()->route('admin.coupons.index');
     }
+
+    public function history(Coupon $coupon) {
+        $historyCoupons = $coupon->orders()->paginate();
+
+        return view('admin.coupons.history', compact('coupon', 'historyCoupons'));
+    }
 }
