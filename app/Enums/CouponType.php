@@ -8,6 +8,7 @@ final class CouponType extends Enum
 {
     const POINT = 1;
     const TIME = 2;
+    const PERCENT = 2;
 
     /**
      * Get the description for an enum value

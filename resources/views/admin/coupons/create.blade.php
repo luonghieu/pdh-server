@@ -51,7 +51,19 @@
                                 <span>{{ $errors->first('time') }}</span>
                               </div>
                             @endif
-                            <span>分無料</span>
+                            <span class="invalid-element-coupon">分無料</span>
+                          </div>
+                        </div>
+                        <div class="wrap-radio-coupon">
+                          <input type="radio" name="type" value="3">%<br>
+                          <div class="wrap-object-coupon coupon-percent">
+                            <input type="text" class="object-coupon" name="percent" readonly placeholder="0">
+                            @if ($errors->has('percent'))
+                              <div class="error pull-left">
+                                <span>{{ $errors->first('percent') }}</span>
+                              </div>
+                            @endif
+                            <span class="invalid-element-coupon">%Off</span>
                           </div>
                         </div>
                       </div>
