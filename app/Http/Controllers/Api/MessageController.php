@@ -184,47 +184,4 @@ class MessageController extends ApiController
 
         return $this->respondWithData(MessageResource::make($message));
     }
-
-    public function getMessages(Request $request, $id)
-    {
-        try {
-            $user = $this->guard()->user();
-            $room = DB::table('rooms')->where('is_active', true)->where('id', $id)->first();
-
-            if (empty($room)) {
-                return $this->respondErrorMessage(trans('messages.room_not_found'), 404);
-            }
-
-            DB::table('message_recipient')
-                ->where([
-                    'user_id' => $user->id,
-                    'room_id' => $room->id,
-                ])
-                ->whereNull('read_at')
-                ->update(['read_at' => now()]);
-
-            $messages = DB::table('messages')->where('messages.room_id', $room->id)
-                ->join('message_recipient', 'messages.room_id', '=', 'message_recipient.room_id')
-                ->where('message_recipient.user_id', $user->id)
-                ->where('message_recipient.is_show', true)
-                ->join('rooms', 'messages.room_id', '=', 'rooms.id');
-
-
-            if ($request->action) {
-                $action = $request->action;
-                $currentId = $request->current_id;
-                if (1 == $action) {
-                    $messages = $messages->where('messages.id', '<', $currentId);
-                } else {
-                    $messages = $messages->where('messages.id', '>', $currentId);
-                }
-            }
-
-            $messages = $messages->select('rooms.*')->get();
-            dump($messages);
-        } catch (\Exception $e) {
-            dd($e);
-        }
-        dd(123);
-    }
 }
