@@ -45,7 +45,7 @@
               <tr>
                 <th>ルームID</th>
                 <td>
-                  @if ($order->status >= App\Enums\OrderStatus::ACTIVE && $order->room)
+                  @if ($order->room)
                   <a href="{{ route('admin.rooms.messages_by_room', ['room' => $order->room->id]) }}">
                     {{ $order->room->id }}
                   </a>
