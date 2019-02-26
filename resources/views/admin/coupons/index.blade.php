@@ -74,7 +74,7 @@
                     <td><a href="{{route('admin.coupons.history', ['coupon' => $coupon->id])}}">{{ count($coupon->users) }}</a></td>
                     <td>{{ $coupon->created_at }}</td>
                     <td>
-                      <a href="" class="btn btn-info">詳細</a>
+                      <a href="{{route('admin.coupons.show', ['coupon' => $coupon->id])}}" class="btn btn-info">詳細</a>
                       <a href="{{route('admin.coupons.delete', ['coupon' => $coupon->id])}}" data-method="delete" class="btn btn-info">削除</a>
                     </td>
                   </tr>
