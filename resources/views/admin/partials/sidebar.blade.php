@@ -201,6 +201,15 @@ $routes = [
             ],
         ],
     ],
+
+    'app_version' => [
+        [
+            'name' => 'admin.app_versions.index',
+            'value' => 'App Version',
+            'url' => route('admin.app_versions.index'),
+            'submenu' => [],
+        ],
+    ],
 ];
 @endphp
 
