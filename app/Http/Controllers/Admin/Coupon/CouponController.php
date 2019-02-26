@@ -111,7 +111,7 @@ class CouponController extends Controller
     {
         $rules = [
             'name' => 'string',
-            'type' => 'numeric|in:1,2',
+            'type' => 'numeric|in:1,2,3',
             'point' => 'numeric|required_if:type,1|nullable',
             'time' => 'numeric|required_if:type,2|nullable',
             'percent' => 'numeric|required_if:type,3|nullable',
