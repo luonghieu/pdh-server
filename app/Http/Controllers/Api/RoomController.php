@@ -373,6 +373,13 @@ class RoomController extends ApiController
                 return $room;
             });
 
+            foreach ($collection as $key => $item) {
+                if ($item->id == null) {
+                    $collection->pull($key);
+                }
+            }
+            $collection = $collection->values();
+
             if ($request->favorited) {
                 $collection = $collection->reject(function ($item) use ($favoritedRooms) {
                     return !in_array($item->id, $favoritedRooms);
@@ -380,6 +387,7 @@ class RoomController extends ApiController
                 $rooms->setCollection($collection);
             }
 
+            $rooms->setCollection($collection);
             if ('html' == $request->response_type) {
                 $rooms = $this->respondWithData($rooms);
                 $rooms = $rooms->getData()->data;
