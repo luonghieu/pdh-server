@@ -153,4 +153,9 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.'], function () {
         Route::post('/create', ['as' => 'store', 'uses' => 'CouponController@store']);
         Route::get('/{coupon}', ['as' => 'delete', 'uses' => 'CouponController@delete'])->where('coupon', '[0-9]+');
     });
+
+    Route::group(['prefix' => 'app_versions', 'as' => 'app_versions.', 'middleware' => 'is_admin'], function () {
+        Route::get('/', ['as' => 'index', 'uses' => 'AppVersionController@index']);
+        Route::put('/{app_version}', ['as' => 'update', 'uses' => 'AppVersionController@update'])->where('app_version', '[0-9]+');
+    });
 });
