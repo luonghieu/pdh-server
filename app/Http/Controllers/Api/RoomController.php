@@ -303,10 +303,11 @@ class RoomController extends ApiController
             $users = DB::table('room_user')->whereIn('room_id', $roomArray)
                 ->leftJoin('users', 'room_user.user_id', '=', 'users.id')
                 ->leftJoin('avatars', function ($j) {
-                    $j->on('avatars.user_id', '=', 'users.id')
-                        ->where('is_default', true);
+                    $j->on('avatars.user_id', '=', 'users.id');
                 })
                 ->select('room_user.room_id', 'users.id', 'users.nickname', 'avatars.thumbnail', 'users.deleted_at', 'users.date_of_birth')
+                ->orderBy('avatars.is_default', 'desc')
+                ->orderBy('avatars.created_at', 'desc')
                 ->get();
 
             $userMap = [];
