@@ -385,9 +385,10 @@ class RoomController extends ApiController
                     return !in_array($item->id, $favoritedRooms);
                 });
                 $rooms->setCollection($collection);
+            } else {
+                $rooms->setCollection($collection);
             }
 
-            $rooms->setCollection($collection);
             if ('html' == $request->response_type) {
                 $rooms = $this->respondWithData($rooms);
                 $rooms = $rooms->getData()->data;
