@@ -6,7 +6,6 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Coupon;
 use Carbon\Carbon;
-use Illuminate\Support\Facades\Auth;
 
 class CouponController extends Controller
 {
@@ -107,11 +106,18 @@ class CouponController extends Controller
         return redirect()->route('admin.coupons.index');
     }
 
+    public function history(Coupon $coupon) {
+        $historyCoupons = $coupon->orders()->paginate();
+
+        return view('admin.coupons.history', compact('coupon', 'historyCoupons'));
+    }
+
     public function show(Coupon $coupon) {
         return view('admin.coupons.show', compact('coupon'));
     }
 
-    public function update(Request $request, Coupon $coupon) {
+    public function update(Request $request, Coupon $coupon)
+    {
         $rules = [
             'name' => 'string',
             'type' => 'numeric|in:1,2',
@@ -160,9 +166,9 @@ class CouponController extends Controller
             return redirect()->route('admin.coupons.index');
 
         } catch (\Exception $e) {
-            dd($e);
             LogService::writeErrorLog($e);
-            $request->session()->flash('msg', trans('messages.server_error'));
+
+            $request->session()->flash('err', trans('messages.server_error'));
 
             return redirect()->route('admin.coupons.show', compact('coupon'));
         }

@@ -152,7 +152,8 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.'], function () {
         Route::get('/create', ['as' => 'create', 'uses' => 'CouponController@create']);
         Route::get('/{coupon}', ['as' => 'show', 'uses' => 'CouponController@show'])->where('coupon', '[0-9]+');
         Route::post('/create', ['as' => 'store', 'uses' => 'CouponController@store']);
-        Route::post('/edit/{coupon}', ['as' => 'update', 'uses' => 'CouponController@update']);
         Route::get('/delete/{coupon}', ['as' => 'delete', 'uses' => 'CouponController@delete'])->where('coupon', '[0-9]+');
+        Route::post('/edit/{coupon}', ['as' => 'update', 'uses' => 'CouponController@update']);
+        Route::get('/history/{coupon}', ['as' => 'history', 'uses' => 'CouponController@history'])->where('coupon', '[0-9]+');
     });
 });

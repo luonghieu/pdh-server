@@ -71,7 +71,7 @@
                       登録時から{{ $coupon->filter_after_created_date }}日間以内
                       @endif
                     </td>
-                    <td>{{ count($coupon->users) }}</td>
+                    <td><a href="{{route('admin.coupons.history', ['coupon' => $coupon->id])}}">{{ count($coupon->users) }}</a></td>
                     <td>{{ $coupon->created_at }}</td>
                     <td>
                       <a href="{{route('admin.coupons.show', ['coupon' => $coupon->id])}}" class="btn btn-info">詳細</a>
