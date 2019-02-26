@@ -374,10 +374,19 @@ class RoomController extends ApiController
                 return $room;
             });
 
+            foreach ($collection as $key => $item) {
+                if ($item->id == null) {
+                    $collection->pull($key);
+                }
+            }
+            $collection = $collection->values();
+
             if ($request->favorited) {
                 $collection = $collection->reject(function ($item) use ($favoritedRooms) {
                     return !in_array($item->id, $favoritedRooms);
                 });
+                $rooms->setCollection($collection);
+            } else {
                 $rooms->setCollection($collection);
             }
 
