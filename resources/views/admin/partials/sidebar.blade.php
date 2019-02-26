@@ -197,7 +197,7 @@ $routes = [
             'value' => 'クーポン管理',
             'url' => route('admin.coupons.index'),
             'submenu' => [
-              'admin.coupons.create'
+              'admin.coupons.create', 'admin.coupons.show'
             ],
         ],
     ],

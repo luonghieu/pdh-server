@@ -1,6 +1,6 @@
 $(document).ready(function(){
     $('input[type=radio]').click(function (){
-        var typeCoupon = $('input[name=type_coupon]:checked').val();
+        var typeCoupon = $('input[name=type]:checked').val();
 
         if (typeCoupon == 1) {
             $('.wrap-object-coupon.coupon-point input').attr('readonly', false);
