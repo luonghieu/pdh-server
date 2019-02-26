@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Coupon;
 use Carbon\Carbon;
+
 class CouponController extends Controller
 {
     public function index(Request $request) {
@@ -46,14 +47,14 @@ class CouponController extends Controller
 
     public function store(Request $request) {
         $rules = [
-            'name' => 'string',
-            'type' => 'numeric|in:1,2',
+            'name' => 'required|string',
+            'type' => 'required|numeric|in:1,2',
             'point' => 'numeric|required_if:type,1|nullable',
             'time' => 'numeric|required_if:type,2|nullable',
             'note' => 'string',
-            'is_filter_after_created_date' => 'string|in:on,off|nullable',
+            'is_filter_after_created_date' => 'numeric|nullable',
             'filter_after_created_date' => 'numeric|nullable',
-            'is_filter_order_duration' => 'string|in:on,off|nullable',
+            'is_filter_order_duration' => 'numeric|nullable',
             'filter_order_duration' => 'numeric|nullable',
         ];
 
@@ -75,17 +76,6 @@ class CouponController extends Controller
             'filter_order_duration',
         ]);
 
-        if (isset($input['is_filter_after_created_date']) && $input['is_filter_after_created_date'] == 'on') {
-            $input['is_filter_after_created_date'] = 1;
-        } else {
-            $input['is_filter_after_created_date'] = 0;
-        }
-
-        if (isset($input['is_filter_order_duration']) && $input['is_filter_order_duration'] == 'on') {
-            $input['is_filter_order_duration'] = 1;
-        } else {
-            $input['is_filter_order_duration'] = 0;
-        }
         $coupon = new Coupon;
         $coupon = $coupon->create($input);
 
@@ -109,5 +99,63 @@ class CouponController extends Controller
         $historyCoupons = $coupon->orders()->paginate();
 
         return view('admin.coupons.history', compact('coupon', 'historyCoupons'));
+    }
+
+    public function show(Coupon $coupon) {
+        return view('admin.coupons.show', compact('coupon'));
+    }
+
+    public function update(Request $request, Coupon $coupon)
+    {
+        $rules = [
+            'name' => 'string',
+            'type' => 'numeric|in:1,2',
+            'point' => 'numeric|required_if:type,1|nullable',
+            'time' => 'numeric|required_if:type,2|nullable',
+            'note' => 'string',
+            'is_filter_after_created_date' => 'numeric|nullable',
+            'filter_after_created_date' => 'numeric|nullable',
+            'is_filter_order_duration' => 'numeric|nullable',
+            'filter_order_duration' => 'numeric|nullable',
+        ];
+
+        $validator = validator(request()->all(), $rules);
+
+        if ($validator->fails()) {
+            return back()->withErrors($validator->errors())->withInput();
+        }
+
+        $input = request()->only([
+            'name',
+            'type',
+            'point',
+            'time',
+            'note',
+            'is_filter_after_created_date',
+            'filter_after_created_date',
+            'is_filter_order_duration',
+            'filter_order_duration',
+        ]);
+
+        if (!isset($input['is_filter_after_created_date'])) {
+            $input['is_filter_after_created_date'] = 0;
+        }
+
+        if (!isset($input['is_filter_order_duration'])) {
+            $input['is_filter_order_duration'] = 0;
+        }
+
+        try {
+            $coupon->update($input);
+
+            return redirect()->route('admin.coupons.index');
+
+        } catch (\Exception $e) {
+            LogService::writeErrorLog($e);
+
+            $request->session()->flash('err', trans('messages.server_error'));
+
+            return redirect()->route('admin.coupons.show', compact('coupon'));
+        }
     }
 }

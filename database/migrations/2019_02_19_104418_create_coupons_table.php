@@ -20,9 +20,9 @@ class CreateCouponsTable extends Migration
             $table->integer('point')->nullable();
             $table->integer('time')->nullable();
             $table->string('note')->unique()->nullable();
-            $table->boolean('is_filter_after_created_date')->nullable();
+            $table->boolean('is_filter_after_created_date')->default(false);
             $table->tinyInteger('filter_after_created_date')->nullable();
-            $table->boolean('is_filter_order_duration')->nullable();
+            $table->boolean('is_filter_order_duration')->default(false);
             $table->float('filter_order_duration')->nullable();
             $table->timestamps();
         });

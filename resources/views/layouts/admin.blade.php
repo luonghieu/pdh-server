@@ -56,7 +56,7 @@
     <script src="/assets/admin/js/jquery-ui.min.js"></script>
     <script src="/assets/admin/js/jquery.sparkline.min.js"></script>
     <!-- page scripts -->
-    @if(url()->current() != route('admin.coupons.create'))
+    @if(!in_array(Route::currentRouteName(), ['admin.coupons.show', 'admin.coupons.create']))
       <script src="/assets/admin/js/jquery.icheck.min.js"></script>
     @endif
     <!-- theme scripts -->
@@ -64,7 +64,7 @@
     <script src="/assets/admin/js/custom.min.js"></script>
     <script src="/assets/admin/js/core.min.js"></script>
     <!-- inline scripts related to this page -->
-    @if(url()->current() != route('admin.coupons.create'))
+    @if(!in_array(Route::currentRouteName(), ['admin.coupons.show', 'admin.coupons.create']))
     <script src="/assets/admin/js/pages/login.js"></script>
     @endif
     <!-- end: JavaScript-->
