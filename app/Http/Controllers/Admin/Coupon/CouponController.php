@@ -139,12 +139,10 @@ class CouponController extends Controller
 
         if (!isset($input['is_filter_after_created_date'])) {
             $input['is_filter_after_created_date'] = 0;
-            $input['filter_after_created_date'] = null;
         }
 
         if (!isset($input['is_filter_order_duration'])) {
             $input['is_filter_order_duration'] = 0;
-            $input['filter_order_duration'] = null;
         }
 
         try {
