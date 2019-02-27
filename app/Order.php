@@ -701,9 +701,9 @@ class Order extends Model
 
     public function getDiscountPointAttribute()
     {
-        if ($this->coupon_id) {
+        $discountPoint = 0;
 
-            $discountPoint = 0;
+        if ($this->coupon_id) {
             switch ($this->coupon_type) {
                 case CouponType::POINT:
                     $discountPoint = (int)$this->coupon_value;
@@ -718,11 +718,9 @@ class Order extends Model
                 
                 default:break;
             }
-
-            return $discountPoint;
         }
 
-        return 0;
+        return $discountPoint;
     }
 
     public function orderPointDiscount($casts, $orderDuration)
