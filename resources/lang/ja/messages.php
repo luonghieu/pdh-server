@@ -76,4 +76,5 @@ return [
     'data_not_found' => 'データが見つかりません',
     'admin_edited_order' => '予約情報が変更になっているので、再度予約内容を確認してください',
     'bank_account_not_found' => '振込口座情報履歴はありません',
+    'coupon_invalid' => 'クーポンが無効です'
 ];

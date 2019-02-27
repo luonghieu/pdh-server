@@ -46,6 +46,10 @@ class Order extends Model
         'status',
         'canceled_at',
         'is_changed',
+        'coupon_id',
+        'coupon_name',
+        'coupon_type',
+        'coupon_value'
     ];
 
     public function user()
@@ -697,29 +701,26 @@ class Order extends Model
 
     public function getDiscountPointAttribute()
     {
-        if ($this->coupon) {
-            $coupon = $this->coupon;
+        $discountPoint = 0;
 
-            $discountPoint = 0;
-            switch ($coupon->type) {
+        if ($this->coupon_id) {
+            switch ($this->coupon_type) {
                 case CouponType::POINT:
-                    $discountPoint = $coupon->point;
+                    $discountPoint = (int)$this->coupon_value;
                     break;
                 case CouponType::PERCENT:
-                    $discountPoint = $this->total_point * $coupon->percent / 100;
+                    $discountPoint = $this->total_point * $this->coupon_value / 100;
                     break;
                 case CouponType::TIME:
                     $casts = $this->casts()->get();
-                    $discountPoint = $this->orderPointDiscount($casts, $coupon->time) + $this->orderFeeDiscount($casts, $coupon->time);
+                    $discountPoint = $this->orderPointDiscount($casts, (int)$this->coupon_value) + $this->orderFeeDiscount($casts, (int)$this->coupon_value);
                     break;
                 
                 default:break;
             }
-
-            return $discountPoint;
         }
 
-        return 0;
+        return $discountPoint;
     }
 
     public function orderPointDiscount($casts, $orderDuration)
@@ -741,7 +742,6 @@ class Order extends Model
             $orderFee = 0;
 
             if (OrderType::NOMINATION != $this->type && CastOrderType::NOMINEE == $cast->pivot->type) {
-                $cost = $this->castClass->cost;
                 $multiplier = 0;
 
                 while ($orderDuration / 15 >= 1) {
