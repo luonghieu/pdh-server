@@ -314,8 +314,7 @@ $(document).ready(function(){
       //   helper.deleteLocalStorageValue('order_call','arrIds');
       // }
       
-      var tags = JSON.parse(localStorage.getItem("order_call")).tags;
-      if(tags) {
+      if(orderCall.tags) {
         helper.deleteLocalStorageValue('order_call','tags');
       }
     }

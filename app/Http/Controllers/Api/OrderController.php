@@ -187,6 +187,11 @@ class OrderController extends ApiController
             $offer = $request->offer;
         }
 
+        $couponDuration = 0;
+        if (isset($request->duration_coupon)) {
+            $couponDuration = $request->duration_coupon;
+        }
+
         $rules = [
             'date' => 'required|date|date_format:Y-m-d|after_or_equal:today',
             'start_time' => 'required|date_format:H:i',
@@ -245,7 +250,7 @@ class OrderController extends ApiController
         }
 
         //orderPoint
-
+        $orderPointCoupon = 0;
         $orderPoint = 0;
         $orderDuration = $request->duration * 60;
         $nomineeIds = explode(",", trim($request->nominee_ids, ","));
@@ -253,19 +258,33 @@ class OrderController extends ApiController
         if (OrderType::NOMINATION != $request->type) {
             $cost = CastClass::find($request->class_id)->cost;
             $orderPoint = $totalCast * (($cost / 2) * floor($orderDuration / 15));
+
+            if ($couponDuration) {
+                $orderPointCoupon = $totalCast * (($cost / 2) * floor(($couponDuration * 60) / 15));
+            }
         } else {
             $cost = Cast::find($nomineeIds[0])->cost;
             $orderPoint = ($cost / 2) * floor($orderDuration / 15);
+
+            if ($couponDuration) {
+                $orderPointCoupon = ($cost / 2) * floor(($couponDuration * 60) / 15);
+            }
         }
 
         //ordersFee
 
         $orderFee = 0;
+        $orderFeeCoupon = 0;
         if (OrderType::NOMINATION != $request->type) {
             if (!isset($offer)) {
                 if (!empty($nomineeIds[0])) {
                     $multiplier = floor($orderDuration / 15);
                     $orderFee = 500 * $multiplier * count($nomineeIds);
+
+                    if ($couponDuration) {
+                        $multiplierCoupon = floor($couponDuration / 15);
+                        $orderFeeCoupon = 500 * $multiplierCoupon * count($nomineeIds);
+                    }
                 }
             }
         }
@@ -277,7 +296,18 @@ class OrderController extends ApiController
                 'allowance_point' => $allowancePoint,
             ]);
         } else {
-            return $this->respondWithData($orderPoint + $orderFee + $allowancePoint);
+
+            if ($couponDuration) {
+                return $this->respondWithData([
+                    'order_point_coupon' => $orderPointCoupon,
+                    'order_fee_coupon' => $orderFeeCoupon,
+                    'allowance_point' => $allowancePoint,
+                    'total_point' => $orderPoint + $orderFee + $allowancePoint,
+                ]);
+            } else {
+
+                return $this->respondWithData($orderPoint + $orderFee + $allowancePoint);
+            }
         }
     }
 

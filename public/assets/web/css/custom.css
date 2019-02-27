@@ -3150,3 +3150,29 @@ padding-top: 65px !important;
   background: rgba(34,34,34,0.40);
   opacity: .9;
 }
+
+#coupon-order {
+  -webkit-appearance: none;
+  background : none;
+  width: 93%;
+  background-image: url(../../web/images/common/arrow-blue.svg);
+  background-repeat: no-repeat, repeat;
+  background-position: 98%;
+  margin-left: 8px;
+  border: none;
+  border-bottom: 1px solid #30ccc3;
+  padding-left: 4px;
+  margin-bottom: 10px;
+  padding-bottom: 6px;
+  background-size: 15px 15px;
+  outline: none;
+  font-size: 14px;
+}
+
+#point-coupon {
+  margin-bottom: 20px;
+  color: red;
+  font-size: 20px;
+  line-height: 1;
+  font-weight: bold;
+}

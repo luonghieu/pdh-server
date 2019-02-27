@@ -1,3 +1,275 @@
+let coupons = [];
+const couponType = {
+  'POINT': 1,
+  'DURATION': 2,
+  'PERCENT': 3
+};
+
+function firstLoadCoupons(duration, params)
+{
+  var paramCoupon = {
+    duration : parseInt(duration),
+  };
+
+  window.axios.get('/api/v1/coupons', {params: paramCoupon})
+  .then(function(response) {
+    coupons = response.data['data'];
+    if (coupons.length) {
+      var show_point_coupon = '<div class="details-total__content"><div class="details-list__header">';
+      show_point_coupon += '<div class="details-header__title">クーポン適用</div> </div>';
+
+      var html = '<section class="details-list">';
+      html += '<div class="details-list__line"><p></p></div>';
+      html += '<div class="details-list__header">';
+      html += '<div class="details-header__title">クーポン選択</div> </div>';
+      html += '<div class="details-list__content show"> <div class="details-list-box">';
+      html += '<select id="coupon-order">';
+
+      var check = true;
+      coupons.forEach(function (coupon) {
+        var id = coupon.id;
+        var name = coupon.name;
+
+        html += '<option value="'+ id +'">'+ name +'</option>';
+
+        if(check) {
+          //default percent
+          if (couponType.PERCENT == coupon.type) {
+            window.axios.post('/api/v1/orders/price',params)
+            .then(function(response) {
+              var tempPoint = response.data['data'];
+              var pointCoupon = (coupon.point/100)*tempPoint;
+
+              $('#temp_point_order_call').val(tempPoint-pointCoupon);
+
+              tempPoint = parseInt(tempPoint-pointCoupon).toLocaleString(undefined,{ minimumFractionDigits: 0 });
+              pointCoupon = parseInt(pointCoupon).toLocaleString(undefined,{ minimumFractionDigits: 0 });
+              $('.details-total__marks').text(tempPoint +'P~');
+
+              show_point_coupon += '<div id="point-coupon">-' + pointCoupon + 'P~</div></div>';
+              $('#show-point-coupon').html(show_point_coupon);
+            }).catch(function(error) {
+              console.log(error);
+              if (error.response.status == 401) {
+                window.location = '/login';
+              }
+            });
+          }
+
+          //default point
+          if (couponType.POINT == coupon.type) {
+            window.axios.post('/api/v1/orders/price',params)
+            .then(function(response) {
+              var tempPoint = response.data['data'];
+              var pointCoupon = coupon.point;
+
+              $('#temp_point_order_call').val(tempPoint-pointCoupon);
+
+              tempPoint = parseInt(tempPoint-pointCoupon).toLocaleString(undefined,{ minimumFractionDigits: 0 });
+              pointCoupon = parseInt(pointCoupon).toLocaleString(undefined,{ minimumFractionDigits: 0 });
+              $('.details-total__marks').text(tempPoint +'P~');
+
+              show_point_coupon += '<div id="point-coupon">-' + pointCoupon + 'P~</div></div>';
+              $('#show-point-coupon').html(show_point_coupon);
+            }).catch(function(error) {
+              console.log(error);
+              if (error.response.status == 401) {
+                window.location = '/login';
+              }
+            });
+          }
+
+          //default duration
+          if (couponType.DURATION == coupon.type) {
+            params.duration_coupon = coupon.time;
+            window.axios.post('/api/v1/orders/price',params)
+            .then(function(response) {
+              var totalCouponPoint = response.data['data'];
+
+              $('#temp_point_order_call').val(totalCouponPoint.total_point-(totalCouponPoint.order_point_coupon + totalCouponPoint.order_fee_coupon));
+
+              tempPoint = parseInt(totalCouponPoint.total_point-(totalCouponPoint.order_point_coupon + totalCouponPoint.order_fee_coupon)).toLocaleString(undefined,{ minimumFractionDigits: 0 });
+              pointCoupon = parseInt(totalCouponPoint.order_point_coupon + totalCouponPoint.order_fee_coupon).toLocaleString(undefined,{ minimumFractionDigits: 0 });
+              $('.details-total__marks').text(tempPoint +'P~');
+
+              show_point_coupon += '<div id="point-coupon">-' + pointCoupon + 'P~</div></div>';
+              $('#show-point-coupon').html(show_point_coupon);
+            }).catch(function(error) {
+              console.log(error);
+              if (error.response.status == 401) {
+                window.location = '/login';
+              }
+            });
+          }
+        }
+
+        check = false;
+      })
+
+      html += '</select> </div></div></section></div>';
+
+      $('#show-coupons-order').html(html);
+    } else {
+      window.axios.post('/api/v1/orders/price',params)
+        .then(function(response) {
+          var tempPoint = response.data['data'];
+
+          $('#temp_point_order_call').val(tempPoint);
+
+          tempPoint = parseInt(tempPoint).toLocaleString(undefined,{ minimumFractionDigits: 0 });
+          $('.details-total__marks').text(tempPoint +'P~');
+        }).catch(function(error) {
+          console.log(error);
+          if (error.response.status == 401) {
+            window.location = '/login';
+          }
+        });
+    }
+
+  }).catch(function(error) {
+    console.log(error);
+    if (error.response.status == 401) {
+      window.location = '/login';
+    }
+  });
+}
+
+function handleChangeCoupons(params, currentTime, helper)
+{
+  $('body').on('change', "#coupon-order", function(){
+    if('other_time' != currentTime) {
+      now = new Date();
+
+      utc = now.getTime() + (now.getTimezoneOffset() * 60000);
+      nd = new Date(utc + (3600000*9));
+      var day = helper.add_minutes(nd, currentTime);
+
+      var year = day.getFullYear();
+
+      var date = day.getDate();
+      if(date<10) {
+        date = '0'+date;
+      }
+
+      var month = day.getMonth() +1;
+      if(month<10) {
+        month = '0'+month;
+      }
+
+      var hour = day.getHours();
+        if(hour<10) {
+        hour = '0' +hour;
+      }
+
+      var minute = day.getMinutes();
+      if(minute<10) {
+        minute = '0' +minute;
+      }
+
+      currentDate = year + '-' + month + '-' + date;
+      time = hour + ':' + minute;
+
+      params.start_time = time;
+      params.date = currentDate;
+    }
+
+    var couponId = parseInt($(this).val());
+
+    if(!coupons) {
+      window.location = '/mypage';
+    }
+
+    var couponIds = coupons.map(function (e) {
+      return e.id; 
+    });
+
+    if(couponIds.indexOf(couponId) > -1) {
+      var show_point_coupon = '<div class="details-total__content"><div class="details-list__header">';
+      show_point_coupon += '<div class="details-header__title">クーポン適用</div> </div>';
+     
+      var coupon = {};
+      coupons.forEach(function (e) {
+        if(e.id == couponId) {
+          coupon = e;
+        }
+      });
+
+      //selected point
+      if (couponType.POINT == coupon.type) {
+        params.duration_coupon = 0;
+        window.axios.post('/api/v1/orders/price',params)
+        .then(function(response) {
+          var tempPoint = response.data['data'];
+          var pointCoupon = coupon.point;
+
+          $('#temp_point_order_call').val(tempPoint-pointCoupon);
+
+          tempPoint = parseInt(tempPoint-pointCoupon).toLocaleString(undefined,{ minimumFractionDigits: 0 });
+          pointCoupon = parseInt(pointCoupon).toLocaleString(undefined,{ minimumFractionDigits: 0 });
+          $('.details-total__marks').text(tempPoint +'P~');
+
+          show_point_coupon += '<div id="point-coupon">-' + pointCoupon + 'P~</div></div>';
+          $('#show-point-coupon').html(show_point_coupon);
+        }).catch(function(error) {
+          console.log(error);
+          if (error.response.status == 401) {
+            window.location = '/login';
+          }
+        });
+      }
+
+      //selected duration
+      if (couponType.DURATION == coupon.type) {
+        params.duration_coupon = coupon.time;
+        window.axios.post('/api/v1/orders/price',params)
+        .then(function(response) {
+          var totalCouponPoint = response.data['data'];
+
+          $('#temp_point_order_call').val(totalCouponPoint.total_point-(totalCouponPoint.order_point_coupon + totalCouponPoint.order_fee_coupon));
+
+          tempPoint = parseInt(totalCouponPoint.total_point-(totalCouponPoint.order_point_coupon + totalCouponPoint.order_fee_coupon)).toLocaleString(undefined,{ minimumFractionDigits: 0 });
+          pointCoupon = parseInt(totalCouponPoint.order_point_coupon + totalCouponPoint.order_fee_coupon).toLocaleString(undefined,{ minimumFractionDigits: 0 });
+          $('.details-total__marks').text(tempPoint +'P~');
+
+          show_point_coupon += '<div id="point-coupon">-' + pointCoupon + 'P~</div></div>';
+          $('#show-point-coupon').html(show_point_coupon);
+        }).catch(function(error) {
+          console.log(error);
+          if (error.response.status == 401) {
+            window.location = '/login';
+          }
+        });
+      }
+
+      //selected percent
+      if (couponType.PERCENT == coupon.type) {
+        params.duration_coupon = 0;
+        window.axios.post('/api/v1/orders/price',params)
+        .then(function(response) {
+          var tempPoint = response.data['data'];
+          var pointCoupon = (coupon.point/100)*tempPoint;
+
+          $('#temp_point_order_call').val(tempPoint-pointCoupon);
+
+          tempPoint = parseInt(tempPoint-pointCoupon).toLocaleString(undefined,{ minimumFractionDigits: 0 });
+          pointCoupon = parseInt(pointCoupon).toLocaleString(undefined,{ minimumFractionDigits: 0 });
+          $('.details-total__marks').text(tempPoint +'P~');
+
+          show_point_coupon += '<div id="point-coupon">-' + pointCoupon + 'P~</div></div>';
+          $('#show-point-coupon').html(show_point_coupon);
+        }).catch(function(error) {
+          console.log(error);
+          if (error.response.status == 401) {
+            window.location = '/login';
+          }
+        });
+      }
+    } else {
+      window.location = '/mypage';
+    }
+  })
+}
+
 $(document).ready(function(){
   const helper = require('./helper');
   if($('#btn-confirm-orders').length) {
@@ -147,19 +419,9 @@ $(document).ready(function(){
           nominee_ids : castIds,
         };
 
-        window.axios.post('/api/v1/orders/price',params)
-        .then(function(response) {
-          var tempPoint = response.data['data'];
-          $('#temp_point_order_call').val(tempPoint);
+        firstLoadCoupons(duration, params);
+        handleChangeCoupons(params, currentTime, helper);
 
-          tempPoint = parseInt(tempPoint).toLocaleString(undefined,{ minimumFractionDigits: 0 });
-          $('.details-total__marks').text(tempPoint +'P~');
-        }).catch(function(error) {
-          console.log(error);
-          if (error.response.status == 401) {
-            window.location = '/login';
-          }
-        });
       } else {
         window.location.href = '/mypage';
       }
@@ -216,6 +478,7 @@ $(document).ready(function(){
           time = hour + ':' + minute;
         }
 
+
         var params = {
           prefecture_id : orderCall.prefecture_id,
           address : area,
@@ -227,9 +490,42 @@ $(document).ready(function(){
           type :type,
           total_cast :orderCall.countIds,
           tags : tags,
-          temp_point : $('#temp_point_order_call').val()
+          temp_point : $('#temp_point_order_call').val(),
         };
 
+        if($('#coupon-order').length) {
+          var couponId = $('#coupon-order').val();
+
+          if(couponId) {
+            coupons.forEach(function (e) {
+              if(e.id == couponId) {
+                coupon = e;
+              }
+            })
+            
+            params.coupon_id = couponId;
+            params.coupon_name = coupon.name;
+            params.coupon_type = coupon.type;
+
+            switch(coupon.type) {
+              case couponType.POINT:
+                params.coupon_value = coupon.point;
+                break;
+
+              case couponType.DURATION:
+                params.coupon_value = coupon.time;
+                break;
+
+              case couponType.PERCENT:
+                params.coupon_value = coupon.point;
+                break;
+
+              default:
+                window.location.href = '/mypage';
+            }
+          }
+        }
+        
         window.axios.post('/api/v1/orders', params)
         .then(function(response) {
           $('#orders').prop('checked',false);
