@@ -14,6 +14,14 @@
             break;
       }
 
+      if ($point['order_id'] && $point['order']['discount_point'] > 0) {
+          if ($pointView > 0) {
+              $pointView = $pointView - $point['order']['discount_point'];
+          } else {
+              $pointView = $pointView + $point['order']['discount_point'];
+          }
+      }
+
       switch ($point['type']) {
           case \App\Enums\PointType::BUY:
               $type = '購入';

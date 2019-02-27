@@ -17,7 +17,7 @@ class PointController extends ApiController
         $points = $user->points()
             ->whereIn('type', $types)
             ->where('status', true)
-            ->with('receipt')->latest()->paginate($request->per_page)->appends($request->query());
+            ->with('receipt', 'order')->latest()->paginate($request->per_page)->appends($request->query());
 
         return $this->respondWithData(PointResource::collection($points));
     }

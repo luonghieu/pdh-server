@@ -65,6 +65,7 @@ class OrderResource extends Resource
             'call_point' => $this->when($isCast, round($this->call_point * $cast->cost_rate), $this->call_point),
             'nominee_point' => $this->when($isCast, round($this->nominee_point * $cast->cost_rate), $this->nominee_point),
             'coupon' => CouponResource::make($this->coupon),
+            'discount_point' => $this->discount_point,
             'deleted_at' => $this->deleted_at,
         ]);
     }

@@ -27,7 +27,8 @@ class PointResource extends Resource
             'status' => $this->status,
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
-            'receipt' => ReceiptResource::make($this->whenLoaded('receipt'))
+            'receipt' => ReceiptResource::make($this->whenLoaded('receipt')),
+            'order' => OrderResource::make($this->whenLoaded('order')),
         ]);
     }
 }
