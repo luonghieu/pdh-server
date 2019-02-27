@@ -7,6 +7,7 @@ use App\CastClass;
 use App\Coupon;
 use App\Enums\CastOrderStatus;
 use App\Enums\CastOrderType;
+use App\Enums\CouponType;
 use App\Enums\OfferStatus;
 use App\Enums\OrderStatus;
 use App\Enums\OrderType;
@@ -106,7 +107,7 @@ class OrderController extends ApiController
             }
 
             $coupon = Coupon::find($request->coupon_id);
-            if (!$this->isValidCoupon($coupon, $user)) {
+            if (!$this->isValidCoupon($coupon, $user, $request->all())) {
                 return $this->respondErrorMessage(trans('messages.coupon_invalid'), 409);
             }
         }
@@ -448,7 +449,7 @@ class OrderController extends ApiController
         }
     }
 
-    private function isValidCoupon($coupon, $user)
+    private function isValidCoupon($coupon, $user, $params)
     {
         $now = now();
         $createdAtOfUser = Carbon::parse($user->created_at);
@@ -457,6 +458,29 @@ class OrderController extends ApiController
             if ($now->diffInDays($createdAtOfUser) > $coupon->filter_after_created_date) {
                 $isValid = false;
             }
+        }
+
+        if ($coupon->type != $params->coupon_type || $coupon->name != $params->coupon_name)  {
+            $isValid = false;
+        }
+
+        switch ($coupon->type) {
+            case CouponType::POINT:
+                if ($coupon->point != $params->coupon_value) {
+                    $isValid = false;
+                }
+                break;
+            case CouponType::TIME:
+                if ($coupon->time != $params->coupon_value) {
+                    $isValid = false;
+                }
+                break;
+            case CouponType::PERCENT:
+                if ($coupon->percent != $params->coupon_value) {
+                    $isValid = false;
+                }
+                break;
+            default: break;
         }
 
         return $isValid;
