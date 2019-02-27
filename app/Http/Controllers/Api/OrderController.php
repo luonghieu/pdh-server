@@ -449,7 +449,7 @@ class OrderController extends ApiController
         }
     }
 
-    private function isValidCoupon($coupon, $user, $params)
+    private function isValidCoupon($coupon, $user, $input)
     {
         $now = now();
         $createdAtOfUser = Carbon::parse($user->created_at);
@@ -460,23 +460,23 @@ class OrderController extends ApiController
             }
         }
 
-        if ($coupon->type != $params->coupon_type || $coupon->name != $params->coupon_name)  {
+        if ($coupon->type != $input['coupon_type'] || $coupon->name != $input['coupon_name'])  {
             $isValid = false;
         }
 
         switch ($coupon->type) {
             case CouponType::POINT:
-                if ($coupon->point != $params->coupon_value) {
+                if ($coupon->point != $input['coupon_value']) {
                     $isValid = false;
                 }
                 break;
             case CouponType::TIME:
-                if ($coupon->time != $params->coupon_value) {
+                if ($coupon->time != $input['coupon_value']) {
                     $isValid = false;
                 }
                 break;
             case CouponType::PERCENT:
-                if ($coupon->percent != $params->coupon_value) {
+                if ($coupon->percent != $input['coupon_value']) {
                     $isValid = false;
                 }
                 break;
