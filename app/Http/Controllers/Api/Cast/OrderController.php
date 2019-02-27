@@ -144,11 +144,7 @@ class OrderController extends ApiController
     public function validTimeOrder($user, $order)
     {
         $startTime = Carbon::parse($order->date . ' ' . $order->start_time);
-
-        $endTime = Carbon::parse($order->date . ' ' . $order->end_time);
-        if ($order->end_time == '00:00:00') {
-            $endTime->addDays(1);
-        }
+        $endTime = $startTime->copy()->addMinutes($order->duration * 60);
 
         $validStatus = [
             CastOrderStatus::ACCEPTED,
