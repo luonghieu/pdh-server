@@ -146,6 +146,10 @@ class OrderController extends ApiController
         $startTime = Carbon::parse($order->date . ' ' . $order->start_time);
 
         $endTime = Carbon::parse($order->date . ' ' . $order->end_time);
+        if ($order->end_time == '00:00:00') {
+            $endTime->addDays(1);
+        }
+
         $validStatus = [
             CastOrderStatus::ACCEPTED,
             CastOrderStatus::PROCESSING,
