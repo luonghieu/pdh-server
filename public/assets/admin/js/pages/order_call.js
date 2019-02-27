@@ -526,18 +526,21 @@ function handleChoosenCastClassEvent() {
     $('#choosen-cast-class').change(function (event) {
         classId = $(this).children("option:selected").val();
         let isSameClass = true;
-        if (selectedMatching.length || selectedNomination.length || selectedCandidate.length) {
-            if (selectedMatching.findIndex(i => i.class_id == classId) == -1) {
-                isSameClass = false;
-            }
-            if (selectedNomination.findIndex(i => i.class_id == classId) == -1) {
-                isSameClass = false;
-            }
-            if (selectedCandidate.findIndex(i => i.class_id == classId) == -1) {
-                isSameClass = false;
-            }
-        }
+        // if (selectedMatching.length || selectedNomination.length || selectedCandidate.length) {
+        //     if (selectedMatching.findIndex(i => i.class_id == classId) == -1) {
+        //         isSameClass = false;
+        //     }
+        //     if (selectedNomination.findIndex(i => i.class_id == classId) == -1) {
+        //         isSameClass = false;
+        //     }
+        //     if (selectedCandidate.findIndex(i => i.class_id == classId) == -1) {
+        //         isSameClass = false;
+        //     }
+        // }
 
+        if (getListCastMatching().length || getListCastNominees().length || getListCastCandidates().length) {
+            isSameClass = false;
+        }
         if (!isSameClass) {
             alert('設定している"キャストクラス"と選択されているキャストのキャストクラスが異なります。編集してください。');
             $(this).val(clastIdPrevious);

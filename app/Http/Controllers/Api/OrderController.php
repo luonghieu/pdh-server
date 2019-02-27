@@ -4,8 +4,10 @@ namespace App\Http\Controllers\Api;
 
 use App\Cast;
 use App\CastClass;
+use App\Coupon;
 use App\Enums\CastOrderStatus;
 use App\Enums\CastOrderType;
+use App\Enums\CouponType;
 use App\Enums\OfferStatus;
 use App\Enums\OrderStatus;
 use App\Enums\OrderType;
@@ -96,12 +98,35 @@ class OrderController extends ApiController
             $input['prefecture_id'] = 13;
         }
 
+        $coupon = null;
+        if ($request->coupon_id) {
+            $coupon = $user->coupons()->where('coupon_id', $request->coupon_id)->first();
+
+            if ($coupon) {
+                return $this->respondErrorMessage(trans('messages.coupon_invalid'), 409);
+            }
+
+            $coupon = Coupon::find($request->coupon_id);
+            if (!$this->isValidCoupon($coupon, $user, $request->all())) {
+                return $this->respondErrorMessage(trans('messages.coupon_invalid'), 409);
+            }
+        }
+
         $input['status'] = OrderStatus::OPEN;
 
         try {
             $when = Carbon::now()->addSeconds(3);
             DB::beginTransaction();
             $order = $user->orders()->create($input);
+
+            if ($coupon) {
+                $order->coupon_id = $request->coupon_id;
+                $order->coupon_name = $request->coupon_name;
+                $order->coupon_type = $request->coupon_type;
+                $order->coupon_value = $request->coupon_value;
+                $order->save();
+                $user->coupons()->attach($request->coupon_id, ['order_id' => $order->id]);
+            }
 
             if ($request->tags) {
                 $listTags = explode(",", trim($request->tags, ","));
@@ -452,5 +477,42 @@ class OrderController extends ApiController
 
             return $this->respondServerError();
         }
+    }
+
+    private function isValidCoupon($coupon, $user, $input)
+    {
+        $now = now();
+        $createdAtOfUser = Carbon::parse($user->created_at);
+        $isValid = true;
+        if ($coupon->is_filter_after_created_date && $coupon->filter_after_created_date) {
+            if ($now->diffInDays($createdAtOfUser) > $coupon->filter_after_created_date) {
+                $isValid = false;
+            }
+        }
+
+        if ($coupon->type != $input['coupon_type'] || $coupon->name != $input['coupon_name'])  {
+            $isValid = false;
+        }
+
+        switch ($coupon->type) {
+            case CouponType::POINT:
+                if ($coupon->point != $input['coupon_value']) {
+                    $isValid = false;
+                }
+                break;
+            case CouponType::TIME:
+                if ($coupon->time != $input['coupon_value']) {
+                    $isValid = false;
+                }
+                break;
+            case CouponType::PERCENT:
+                if ($coupon->percent != $input['coupon_value']) {
+                    $isValid = false;
+                }
+                break;
+            default: break;
+        }
+
+        return $isValid;
     }
 }

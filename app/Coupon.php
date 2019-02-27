@@ -11,6 +11,7 @@ class Coupon extends Model
         'type',
         'point',
         'time',
+        'percent',
         'note',
         'is_filter_after_created_date',
         'filter_after_created_date',
@@ -19,6 +20,11 @@ class Coupon extends Model
     ];
     public function users()
     {
-        return $this->belongsToMany('App\User', 'coupon_users', 'coupon_id','user_id');
+        return $this->belongsToMany('App\User', 'coupon_users', 'coupon_id','user_id')->withTimestamps();
+    }
+
+    public function orders()
+    {
+        return $this->belongsToMany('App\Order', 'coupon_users', 'coupon_id','order_id');
     }
 }

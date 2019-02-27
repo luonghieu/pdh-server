@@ -197,8 +197,17 @@ $routes = [
             'value' => 'クーポン管理',
             'url' => route('admin.coupons.index'),
             'submenu' => [
-              'admin.coupons.create'
+              'admin.coupons.create', 'admin.coupons.history', 'admin.coupons.show'
             ],
+        ],
+    ],
+
+    'app_version' => [
+        [
+            'name' => 'admin.app_versions.index',
+            'value' => 'App Version',
+            'url' => route('admin.app_versions.index'),
+            'submenu' => [],
         ],
     ],
 ];

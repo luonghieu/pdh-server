@@ -4,6 +4,7 @@ namespace App;
 
 use App\Enums\CastOrderStatus;
 use App\Enums\CastOrderType;
+use App\Enums\CouponType;
 use App\Enums\OrderStatus;
 use App\Enums\OrderType;
 use App\Enums\PointType;
@@ -45,6 +46,10 @@ class Order extends Model
         'status',
         'canceled_at',
         'is_changed',
+        'coupon_id',
+        'coupon_name',
+        'coupon_type',
+        'coupon_value'
     ];
 
     public function user()
@@ -432,7 +437,7 @@ class Order extends Model
         return 0;
     }
 
-    public function orderPoint($cast = null, $startedAt = null, $stoppedAt = null)
+    public function orderPoint($cast = null, $startedAt = null, $stoppedAt = null, $orderDuration = null)
     {
         if (OrderType::NOMINATION != $this->type) {
             $cost = $this->castClass->cost;
@@ -444,7 +449,9 @@ class Order extends Model
             }
         }
 
-        $orderDuration = $this->duration * 60;
+        if (empty($orderDuration)) {
+            $orderDuration = $this->duration * 60;
+        }
 
         return ($cost / 2) * floor($orderDuration / 15);
     }
@@ -690,5 +697,64 @@ class Order extends Model
             LogService::writeErrorLog('Nominee Point Error. Order Id: ' . $this->id);
             LogService::writeErrorLog($this->nomineesWithTrashed->first());
         }
+    }
+
+    public function getDiscountPointAttribute()
+    {
+        $discountPoint = 0;
+
+        if ($this->coupon_id) {
+            switch ($this->coupon_type) {
+                case CouponType::POINT:
+                    $discountPoint = (int)$this->coupon_value;
+                    break;
+                case CouponType::PERCENT:
+                    $discountPoint = $this->total_point * $this->coupon_value / 100;
+                    break;
+                case CouponType::TIME:
+                    $casts = $this->casts()->get();
+                    $discountPoint = $this->orderPointDiscount($casts, (int)$this->coupon_value) + $this->orderFeeDiscount($casts, (int)$this->coupon_value);
+                    break;
+                
+                default:break;
+            }
+        }
+
+        return $discountPoint;
+    }
+
+    public function orderPointDiscount($casts, $orderDuration)
+    {
+        $point = 0;
+
+        foreach ($casts as $key => $cast) {
+            $point += $this->orderPoint($cast, $startedAt = null, $stoppedAt = null, $orderDuration);
+        }
+
+        return $point;
+    }
+
+    public function orderFeeDiscount($casts, $orderDuration)
+    {
+        $point = 0;
+
+        foreach ($casts as $cast) {
+            $orderFee = 0;
+
+            if (OrderType::NOMINATION != $this->type && CastOrderType::NOMINEE == $cast->pivot->type) {
+                $multiplier = 0;
+
+                while ($orderDuration / 15 >= 1) {
+                    $multiplier++;
+                    $orderDuration -= 15;
+                }
+
+                $orderFee = 500 * $multiplier;
+            }
+
+            $point += $orderFee;
+        }
+
+        return $point;
     }
 }

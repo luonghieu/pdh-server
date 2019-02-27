@@ -1,22 +1,42 @@
 $(document).ready(function(){
     $('input[type=radio]').click(function (){
-        var typeCoupon = $('input[name=type_coupon]:checked').val();
+        var typeCoupon = $('input[name=type]:checked').val();
 
         if (typeCoupon == 1) {
             $('.wrap-object-coupon.coupon-point input').attr('readonly', false);
+            $('.wrap-object-coupon.coupon-time input').attr('readonly', true);
+            $('.wrap-object-coupon.coupon-percent input').attr('readonly', true);
+            $('.wrap-object-coupon.coupon-time input').addClass('invalid-element-coupon');
+            $('.wrap-object-coupon.coupon-percent input').addClass('invalid-element-coupon');
+            $('.wrap-object-coupon.coupon-point input').removeClass('invalid-element-coupon');
             $('.wrap-object-coupon.coupon-point span').removeClass('invalid-element-coupon');
             $('.wrap-object-coupon.coupon-time span').addClass('invalid-element-coupon');
-            $('.wrap-object-coupon.coupon-time input').attr('readonly', true);
-            $('.wrap-object-coupon.coupon-time input').addClass('invalid-element-coupon');
-            $('.wrap-object-coupon.coupon-point input').removeClass('invalid-element-coupon');
+            $('.wrap-object-coupon.coupon-percent span').addClass('invalid-element-coupon');
 
-        } else {
-            $('.wrap-object-coupon.coupon-point input').attr('readonly', true);
-            $('.wrap-object-coupon.coupon-point span').addClass('invalid-element-coupon');
-            $('.wrap-object-coupon.coupon-time span').removeClass('invalid-element-coupon');
+        }
+
+        if (typeCoupon == 2) {
             $('.wrap-object-coupon.coupon-time input').attr('readonly', false);
-            $('.wrap-object-coupon.coupon-point input').addClass('invalid-element-coupon');
+            $('.wrap-object-coupon.coupon-point input').attr('readonly', true);
+            $('.wrap-object-coupon.coupon-percent input').attr('readonly', true);
+            $('.wrap-object-coupon.coupon-time span').removeClass('invalid-element-coupon');
+            $('.wrap-object-coupon.coupon-point span').addClass('invalid-element-coupon');
+            $('.wrap-object-coupon.coupon-percent span').addClass('invalid-element-coupon');
             $('.wrap-object-coupon.coupon-time input').removeClass('invalid-element-coupon');
+            $('.wrap-object-coupon.coupon-point input').addClass('invalid-element-coupon');
+            $('.wrap-object-coupon.coupon-percent input').addClass('invalid-element-coupon');
+        }
+
+        if (typeCoupon == 3) {
+            $('.wrap-object-coupon.coupon-percent input').attr('readonly', false);
+            $('.wrap-object-coupon.coupon-point input').attr('readonly', true);
+            $('.wrap-object-coupon.coupon-time input').attr('readonly', true);
+            $('.wrap-object-coupon.coupon-percent span').removeClass('invalid-element-coupon');
+            $('.wrap-object-coupon.coupon-point span').addClass('invalid-element-coupon');
+            $('.wrap-object-coupon.coupon-time span').addClass('invalid-element-coupon');
+            $('.wrap-object-coupon.coupon-percent input').removeClass('invalid-element-coupon');
+            $('.wrap-object-coupon.coupon-point input').addClass('invalid-element-coupon');
+            $('.wrap-object-coupon.coupon-time input').addClass('invalid-element-coupon');
         }
     });
 

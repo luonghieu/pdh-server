@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class AddToOrdersTableCouponId extends Migration
+class AddOrderIdColumnCouponUsersTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,12 +13,12 @@ class AddToOrdersTableCouponId extends Migration
      */
     public function up()
     {
-        Schema::table('orders', function (Blueprint $table) {
-            $table->unsignedInteger('coupon_id')->nullable()->after('send_warning');
+        Schema::table('coupon_users', function (Blueprint $table) {
+            $table->unsignedInteger('order_id')->nullable()->after('coupon_id');
 
-            $table->foreign('coupon_id')
+            $table->foreign('order_id')
                 ->references('id')
-                ->on('coupons')
+                ->on('orders')
                 ->onDelete('cascade');
         });
     }
@@ -30,9 +30,9 @@ class AddToOrdersTableCouponId extends Migration
      */
     public function down()
     {
-        Schema::table('orders', function (Blueprint $table) {
-            $table->dropForeign(['coupon_id']);
-            $table->dropColumn('coupon_id');
+        Schema::table('coupon_users', function (Blueprint $table) {
+            $table->dropForeign(['order_id']);
+            $table->dropColumn('order_id');
         });
     }
 }

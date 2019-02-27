@@ -144,8 +144,8 @@ class OrderController extends ApiController
     public function validTimeOrder($user, $order)
     {
         $startTime = Carbon::parse($order->date . ' ' . $order->start_time);
+        $endTime = $startTime->copy()->addMinutes($order->duration * 60);
 
-        $endTime = Carbon::parse($order->date . ' ' . $order->end_time);
         $validStatus = [
             CastOrderStatus::ACCEPTED,
             CastOrderStatus::PROCESSING,
@@ -429,5 +429,32 @@ class OrderController extends ApiController
 
             return $this->respondServerError();
         }
+    }
+
+    public function orderCount(Request $request)
+    {
+        $rules = [
+            'order_type' => 'required|numeric',
+        ];
+
+        $validator = validator($request->all(), $rules);
+
+        if ($validator->fails()) {
+            return $this->respondWithValidationError($validator->errors()->messages());
+        }
+
+        $user = $this->guard()->user();
+        $cast = Cast::find($user->id);
+
+        $input = $request->only([
+            'order_type',
+        ]);
+
+        $orderCount = $cast->orders()->where([
+            ['cast_order.status', '=', CastOrderStatus::OPEN],
+            ['orders.type', '=', $input['order_type']],
+        ])->count();
+
+        return $this->respondWithData(['total' => $orderCount]);
     }
 }

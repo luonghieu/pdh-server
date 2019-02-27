@@ -5,7 +5,7 @@ namespace App\Http\Resources;
 use App\Traits\ResourceResponse;
 use Illuminate\Http\Resources\Json\Resource;
 
-class PointResource extends Resource
+class CouponResource extends Resource
 {
     use ResourceResponse;
 
@@ -19,16 +19,17 @@ class PointResource extends Resource
     {
         return $this->filterNull([
             'id' => $this->id,
-            'point' => $this->point,
-            'user_id' => $this->user_id,
-            'order_id' => $this->order_id,
-            'is_autocharge' => $this->is_autocharge,
+            'name' => $this->name,
             'type' => $this->type,
-            'status' => $this->status,
+            'point' => $this->point,
+            'time' => $this->time,
+            'note' => $this->note,
+            'is_filter_after_created_date' => $this->is_filter_after_created_date,
+            'filter_after_created_date' => $this->filter_after_created_date,
+            'is_filter_order_duration' => $this->is_filter_order_duration,
+            'filter_order_duration' => $this->filter_order_duration,
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
-            'receipt' => ReceiptResource::make($this->whenLoaded('receipt')),
-            'order' => OrderResource::make($this->whenLoaded('order')),
         ]);
     }
 }
