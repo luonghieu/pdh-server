@@ -20,7 +20,7 @@ class Coupon extends Model
     ];
     public function users()
     {
-        return $this->belongsToMany('App\User', 'coupon_users', 'coupon_id','user_id');
+        return $this->belongsToMany('App\User', 'coupon_users', 'coupon_id','user_id')->withTimestamps();
     }
 
     public function orders()
