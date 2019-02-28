@@ -12,6 +12,11 @@ class NotificationSchedule extends Model
         'type',
         'send_date',
         'status',
-        'send_to'
+        'send_to',
+        'cast_ids'
+    ];
+
+    protected $casts = [
+        'cast_ids' => 'array',
     ];
 }
