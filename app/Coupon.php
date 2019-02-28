@@ -12,6 +12,7 @@ class Coupon extends Model
         'point',
         'time',
         'percent',
+        'max_point',
         'note',
         'is_filter_after_created_date',
         'filter_after_created_date',

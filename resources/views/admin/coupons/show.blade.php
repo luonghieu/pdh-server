@@ -21,7 +21,7 @@
                     <th>クーポン名*</th>
                     <td>
                       <div class="wrap-td-coupon">
-                        <input type="text" name="name" value="{{$coupon->name}}">
+                        <input type="text" name="name" value="{{$coupon->name}}" placeholder="クーポン名を入力してください">
                         @if ($errors->has('name'))
                           <div class="error pull-left">
                             <span>{{ $errors->first('name') }}</span>
@@ -68,6 +68,24 @@
                               </div>
                             @endif
                             <span class="invalid-element-coupon">%Off</span>
+                          </div>
+                        </div>
+                      </div>
+                    </td>
+                  </tr>
+                  <tr>
+                    <th>クーポン適用最高上限額 (ポイント)</th>
+                    <td>
+                      <div class="wrap-td-coupon">
+                        <div class="wrap-radio-coupon">
+                          <div class="wrap-object-coupon">
+                            <input type="text" class="object-coupon" name="max_point" placeholder="0" value="{{$coupon->max_point}}">
+                            @if ($errors->has('max_point'))
+                              <div class="error pull-left">
+                                <span>{{ $errors->first('max_point') }}</span>
+                              </div>
+                            @endif
+                            <span>ポイント</span>
                           </div>
                         </div>
                       </div>

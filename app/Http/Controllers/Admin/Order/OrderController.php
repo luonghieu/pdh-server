@@ -262,7 +262,7 @@ class OrderController extends Controller
             // Update temp point for previous casts matched
             $matchedCasts = $order->casts;
             foreach ($matchedCasts as $cast) {
-                if ($cast->pivot->type == CastOrderType::NOMINEE) {
+                if (CastOrderType::NOMINEE == $cast->pivot->type) {
                     $orderFee = $order->orderFee($cast, $orderStartTime, $orderEndTime);
                     $orderPoint = $order->orderPoint($cast);
                     $order->castOrder()->updateExistingPivot(
@@ -303,7 +303,7 @@ class OrderController extends Controller
             // Add/Remove casts in room
             $room = $order->room;
             if ($room) {
-                if ($order->total_cast == 1) {
+                if (1 == $order->total_cast) {
                     $cast = $order->casts()->first();
                     if ($cast) {
                         $ownerId = $order->user_id;
@@ -316,7 +316,7 @@ class OrderController extends Controller
                 }
 
                 if ($order->total_cast > 1) {
-                    if ($room->type == RoomType::GROUP) {
+                    if (RoomType::GROUP == $room->type) {
                         $users = $order->casts()->get()->pluck('id')->toArray();
                         $users[] = $order->user_id;
                         $room->users()->sync($users);
@@ -347,7 +347,7 @@ class OrderController extends Controller
                         $room->users()->attach($users);
                     }
 
-                    if ($order->total_cast == 1) {
+                    if (1 == $order->total_cast) {
                         $cast = $order->casts()->first();
                         $ownerId = $order->user_id;
                         $room = $this->createDirectRoom($ownerId, $cast->id);
