@@ -52,6 +52,25 @@
                     <span>{{ $errors->first('content') }}</span>
                   </div>
                 @endif
+                @if (env('ENABLE_LINE_IMAGE_CAROUSEL'))
+                  <div class="row">
+                    <div class="col-sm-12 init-inline-flex init-mt">
+                      <label class="col-sm-2 init-m-auto">キャストID: </label>
+                      <div class="col-sm-10 p-0">
+                        <input class="col-sm-2 mr-1 rank-schedule-cast-ids" type="text" name="cast_ids[]">
+                        <input class="col-sm-2 mr-1 rank-schedule-cast-ids" type="text" name="cast_ids[]">
+                        <input class="col-sm-2 mr-1 rank-schedule-cast-ids" type="text" name="cast_ids[]">
+                        <input class="col-sm-2 mr-1 rank-schedule-cast-ids" type="text" name="cast_ids[]">
+                        <input class="col-sm-2 mr-1 rank-schedule-cast-ids" type="text" name="cast_ids[]">
+                        <input class="col-sm-2 mr-1 rank-schedule-cast-ids" type="text" name="cast_ids[]">
+                        <input class="col-sm-2 mr-1 rank-schedule-cast-ids" type="text" name="cast_ids[]">
+                        <input class="col-sm-2 mr-1 rank-schedule-cast-ids" type="text" name="cast_ids[]">
+                        <input class="col-sm-2 mr-1 rank-schedule-cast-ids" type="text" name="cast_ids[]">
+                        <input class="col-sm-2 mr-1 rank-schedule-cast-ids" type="text" name="cast_ids[]">
+                      </div>
+                    </div>
+                  </div>
+                @endif
                 <div class="col-sm-12 p-0">
                   <div class="init-m">
                     <label class="css-m-auto">ステータスを変更: </label>
