@@ -117,6 +117,16 @@
       <h2>キャストのクラス</h2>
     </div>
     <div class="form-grpup"><!-- フォーム内容 -->
+      <select id="coupon-order">
+        <option>asdf</option>
+      </select>
+    </div>
+  </div>
+  <div class="reservation-item">
+    <div class="caption"><!-- 見出し用div -->
+      <h2>キャストのクラス</h2>
+    </div>
+    <div class="form-grpup"><!-- フォーム内容 -->
       <div class="grade-list">
         @if(isset($orderOptions['cast_classes']))
           @php

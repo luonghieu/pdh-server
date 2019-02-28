@@ -38,8 +38,7 @@ function firstLoadCoupons(duration, params)
             window.axios.post('/api/v1/orders/price',params)
             .then(function(response) {
               var tempPoint = response.data['data'];
-              var pointCoupon = (coupon.point/100)*tempPoint;
-
+              var pointCoupon = (coupon.percent/100)*tempPoint;
               $('#temp_point_order_call').val(tempPoint-pointCoupon);
 
               tempPoint = parseInt(tempPoint-pointCoupon).toLocaleString(undefined,{ minimumFractionDigits: 0 });
@@ -247,7 +246,7 @@ function handleChangeCoupons(params, currentTime, helper)
         window.axios.post('/api/v1/orders/price',params)
         .then(function(response) {
           var tempPoint = response.data['data'];
-          var pointCoupon = (coupon.point/100)*tempPoint;
+          var pointCoupon = (coupon.percent/100)*tempPoint;
 
           $('#temp_point_order_call').val(tempPoint-pointCoupon);
 
@@ -517,7 +516,7 @@ $(document).ready(function(){
                 break;
 
               case couponType.PERCENT:
-                params.coupon_value = coupon.point;
+                params.coupon_value = coupon.percent;
                 break;
 
               default:

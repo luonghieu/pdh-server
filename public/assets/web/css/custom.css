@@ -3152,21 +3152,21 @@ padding-top: 65px !important;
 }
 
 #coupon-order {
-  -webkit-appearance: none;
-  background : none;
-  width: 93%;
-  background-image: url(../../web/images/common/arrow-blue.svg);
-  background-repeat: no-repeat, repeat;
-  background-position: 98%;
-  margin-left: 8px;
-  border: none;
-  border-bottom: 1px solid #30ccc3;
-  padding-left: 4px;
-  margin-bottom: 10px;
-  padding-bottom: 6px;
-  background-size: 15px 15px;
-  outline: none;
-  font-size: 14px;
+  -webkit-appearance: none !important;
+  background: none !important;
+  width: 100% !important;
+  background-image: url(../../web/images/common/arrow.svg) !important;
+  background-repeat: no-repeat, repeat !important;
+  background-position: 98% !important;
+  border: none !important;
+  border-bottom: 1px solid #e8e6e6 !important;
+  padding-left: 15px !important;
+  margin-bottom: 10px !important;
+  padding-bottom: 6px !important;
+  background-size: 11px 11px !important;
+  outline: none !important;
+  font-size: 14px !important;
+  color: #222222 !important;
 }
 
 #point-coupon {
