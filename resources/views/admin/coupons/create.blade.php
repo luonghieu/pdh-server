@@ -17,7 +17,7 @@
                     <th>クーポン名*</th>
                     <td>
                       <div class="wrap-td-coupon">
-                        <input type="text" name="name">
+                        <input type="text" name="name" placeholder="クーポン名を入力してください">
                         @if ($errors->has('name'))
                           <div class="error pull-left">
                             <span>{{ $errors->first('name') }}</span>
