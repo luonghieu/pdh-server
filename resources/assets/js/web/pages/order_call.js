@@ -57,40 +57,6 @@ $(document).ready(function(){
 
   $('.checked-order').prop('checked',false);
 
-  $("#step1-create-call").on("click",function(){
-    if(localStorage.getItem("order_call")) {
-      var orderCall = JSON.parse(localStorage.getItem("order_call"));
-
-      if(!orderCall.countIds) {
-        var number_val = parseInt( $(".cast-number__value input").val());
-
-        var params = {
-          countIds: number_val,
-        };
-
-        helper.updateLocalStorageValue('order_call', params);
-      }
-
-      if (!orderCall.current_time_set) {
-        var timeJoin = $("input:radio[name='time_join']:checked").val()
-        var params = {
-          current_time_set: timeJoin,
-        };
-
-        helper.updateLocalStorageValue('order_call', params);
-      }
-
-      if (!orderCall.select_duration) {
-        var duration = $('#select-duration-call option:selected').val();
-        var params = {
-          select_duration: duration,
-        };
-
-        helper.updateLocalStorageValue('order_call', params);
-      }
-    }
-  })
-
   if($('.select-prefecture').length) {
     if(!localStorage.getItem("order_call")) {
 
@@ -316,6 +282,10 @@ $(document).ready(function(){
       
       if(orderCall.tags) {
         helper.deleteLocalStorageValue('order_call','tags');
+      }
+
+      if(orderCall.coupon) {
+        helper.deleteLocalStorageValue('order_call','coupon');
       }
     }
   }

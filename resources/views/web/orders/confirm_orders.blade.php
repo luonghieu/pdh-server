@@ -84,7 +84,7 @@
         <div class="details-list__header">
           <div class="details-header__title">合計</div>
         </div>
-        <div class="details-total__marks"></div>
+        <div class="details-total__marks" id="total_point-order-call"></div>
       </div>
 
       <input type="hidden" id="temp_point_order_call" value="">
@@ -183,6 +183,7 @@
 
   <script>
     var avatarsDefault = "<?php echo asset('assets/web/images/gm1/ic_default_avatar@3x.png'); ?>";
+    var linkStepOne = "<?php echo route('guest.orders.call'); ?>";
   </script>
 
 @endsection

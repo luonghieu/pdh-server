@@ -112,16 +112,9 @@
       </label>
     </div>
   </div>
-  <div class="reservation-item">
-    <div class="caption"><!-- 見出し用div -->
-      <h2>キャストのクラス</h2>
-    </div>
-    <div class="form-grpup"><!-- フォーム内容 -->
-      <select id="coupon-order">
-        <option>asdf</option>
-      </select>
-    </div>
-  </div>
+  <!-- show coupon -->
+  <div id="show-coupon-order-call"></div>
+
   <div class="reservation-item">
     <div class="caption"><!-- 見出し用div -->
       <h2>キャストのクラス</h2>

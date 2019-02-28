@@ -490,7 +490,7 @@ class OrderController extends ApiController
             }
         }
 
-        if ($coupon->type != $input['coupon_type'] || $coupon->name != $input['coupon_name'])  {
+        if ($coupon->type != $input['coupon_type'] || $coupon->name != $input['coupon_name']) {
             $isValid = false;
         }
 
@@ -510,7 +510,7 @@ class OrderController extends ApiController
                     $isValid = false;
                 }
                 break;
-            default: break;
+            default:break;
         }
 
         return $isValid;
