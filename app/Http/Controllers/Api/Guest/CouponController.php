@@ -54,7 +54,7 @@ class CouponController extends ApiController
             }
 
             return $bool;
-        });
+        })->values();
 
         return $this->respondWithData(CouponResource::collection($collection));
 

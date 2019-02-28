@@ -75,6 +75,7 @@ class FacebookAuthController extends ApiController
                 'facebook_id' => $fbResponse['id'],
                 'date_of_birth' => (isset($fbResponse['birthday'])) ? Carbon::parse($fbResponse['birthday']) : null,
                 'gender' => (isset($fbResponse['gender'])) ? ($fbResponse['gender'] == 'male') ? UserGender::MALE : UserGender::FEMALE : null,
+                'cost' => config('common.cost_default'),
                 'type' => UserType::GUEST,
                 'status' => Status::INACTIVE,
                 'provider' => ProviderType::FACEBOOK,
