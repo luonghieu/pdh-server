@@ -57,6 +57,7 @@ class LineAuthController extends ApiController
                 'fullname' => $lineResponse->name,
                 'nickname' => ($lineResponse->nickname) ? $lineResponse->nickname : $lineResponse->name,
                 'line_user_id' => $lineResponse->id,
+                'cost' => config('common.cost_default'),
                 'type' => UserType::GUEST,
                 'status' => Status::INACTIVE,
                 'provider' => ProviderType::LINE,

@@ -77,4 +77,7 @@ return [
         ],
         'credit_card_required' => 1,
     ],
+
+    'cost_default' => 5000,
+
 ];
