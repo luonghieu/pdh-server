@@ -23,6 +23,8 @@ class CouponResource extends Resource
             'type' => $this->type,
             'point' => $this->point,
             'time' => $this->time,
+            'percent' => $this->percent,
+            'max_point' => $this->max_point,
             'note' => $this->note,
             'is_filter_after_created_date' => $this->is_filter_after_created_date,
             'filter_after_created_date' => $this->filter_after_created_date,

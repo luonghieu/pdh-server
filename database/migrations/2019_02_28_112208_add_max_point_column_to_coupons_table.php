@@ -14,7 +14,7 @@ class AddMaxPointColumnToCouponsTable extends Migration
     public function up()
     {
         Schema::table('coupons', function (Blueprint $table) {
-            $table->integer('max_point')->after('note')->nullable();
+            $table->integer('max_point')->after('percent')->nullable();
         });
     }
 
