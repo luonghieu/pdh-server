@@ -124,6 +124,7 @@ class OrderController extends ApiController
                 $order->coupon_name = $request->coupon_name;
                 $order->coupon_type = $request->coupon_type;
                 $order->coupon_value = $request->coupon_value;
+                $order->coupon_max_point = $request->coupon_max_point;
                 $order->save();
                 $user->coupons()->attach($request->coupon_id, ['order_id' => $order->id]);
             }
@@ -460,7 +461,8 @@ class OrderController extends ApiController
             }
         }
 
-        if ($coupon->type != $input['coupon_type'] || $coupon->name != $input['coupon_name'])  {
+        if ($coupon->type != $input['coupon_type'] || $coupon->name != $input['coupon_name'] || $coupon->max_point
+            != $input['coupon_max_point'])  {
             $isValid = false;
         }
 
