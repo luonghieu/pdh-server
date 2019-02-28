@@ -723,6 +723,12 @@ class Order extends Model
                 
                 default:break;
             }
+
+            if ($this->coupon_max_point) {
+                if ($discountPoint > $this->coupon_max_point) {
+                    $discountPoint = $this->coupon_max_point;
+                }
+            }
         }
 
         return $discountPoint;
