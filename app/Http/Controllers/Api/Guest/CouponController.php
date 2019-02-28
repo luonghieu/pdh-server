@@ -13,7 +13,7 @@ class CouponController extends ApiController
     public function getCoupons(Request $request)
     {
         $rules = [
-            'duration' => 'required|numeric',
+            'duration' => 'numeric',
         ];
 
         $validator = validator($request->all(), $rules);
@@ -32,10 +32,14 @@ class CouponController extends ApiController
             $q->where('user_id', '=', $user->id);
         });
 
-        $coupons = $coupons->where([
-            ['is_filter_order_duration', '=', true],
-            ['filter_order_duration', '>=', $params['duration']],
-        ])->orWhere('is_filter_order_duration', false);
+        if (isset($params['duration'])) {
+            $coupons = $coupons->where([
+                ['is_filter_order_duration', '=', true],
+                ['filter_order_duration', '>=', $params['duration']],
+            ])->orWhere('is_filter_order_duration', false);
+        } else {
+            $coupons = $coupons->where('is_filter_order_duration', false);
+        }
 
         $coupons = $coupons->get();
         $now = now();
