@@ -2,6 +2,7 @@
 
 namespace App\Notifications;
 
+use App\Cast;
 use App\Enums\DeviceType;
 use App\Enums\NotificationScheduleSendTo;
 use App\Enums\ProviderType;
@@ -183,6 +184,40 @@ class AdminNotification extends Notification implements ShouldQueue
             }
         }
 
+        if ($this->imageCarouselMessage()) {
+            $pushData[] = $this->imageCarouselMessage();
+        }
+
         return $pushData;
+    }
+
+    private function imageCarouselMessage()
+    {
+        if (env('ENABLE_LINE_IMAGE_CAROUSEL') && $this->schedule->cast_ids) {
+            $columns = [];
+            $page = env('LINE_LIFF_REDIRECT_PAGE') . '?cast=';
+            $casts = Cast::whereIn('id', $this->schedule->cast_ids)->get();
+            foreach ($casts as $item) {
+                $columns[] = [
+                    'imageUrl' => $item->avatars->first()->path,
+                    'action' => [
+                        'type' => 'uri',
+                        'label' => 'プロフィールを見る',
+                        'uri' => $page . $item->id
+                    ]
+                ];
+            }
+
+            return [
+                'type' => 'template',
+                'altText' => 'this is a image carousel template',
+                'template' => [
+                    'type' => 'image_carousel',
+                    'columns' => $columns
+                ]
+            ];
+        }
+
+        return [];
     }
 }
