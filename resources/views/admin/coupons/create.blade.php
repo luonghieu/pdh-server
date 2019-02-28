@@ -34,11 +34,11 @@
                           <input type="radio" name="type" value="1" checked> ポイント数<br>
                           <div class="wrap-object-coupon coupon-point">
                             <input type="text" class="object-coupon" name="point" placeholder="0">
-                            @if ($errors->has('point'))
+{{--                            @if ($errors->has('point'))--}}
                               <div class="error pull-left">
                                 <span>{{ $errors->first('point') }}</span>
                               </div>
-                            @endif
+                            {{--@endif--}}
                             <span>ポイント引き</span>
                           </div>
                         </div>
