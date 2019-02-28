@@ -227,18 +227,15 @@
         </section>
     @endforeach
     
-    @if ($order->discount_point > 0)
     <section class="details-total">
         <div class="details-list__line"><p></p></div>
+        @if ($order->discount_point > 0)
         <div class="details-total__content">
-            <div class="details-total__text">クーポン適用</div>
-            <div class="details-total__marks">-{{ number_format($order->discount_point) . 'P' }}</div>
+            <div class="details-total__text font-size_15">クーポン適用</div>
+            <div class="details-total__marks red-color font-size_15">-{{ number_format($order->discount_point) . 'P' }}</div>
         </div>
-    </section>
-    @endif
-    <section class="details-total">
-        <div class="details-list__line"><p></p></div>
-        <div class="details-total__content">
+        @endif
+        <div class="details-total__content mt-2">
             <div class="details-total__text">合計</div>
             <div class="details-total__marks">{{ number_format($orderTotalPoint - $order->discount_point) . 'P' }}</div>
         </div>
