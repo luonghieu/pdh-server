@@ -595,9 +595,14 @@ class Order extends Model
     public function settle()
     {
         $user = $this->user;
+        $totalPoint = $this->total_point;
+        
+        if ($this->coupon_id) {
+            $totalPoint = $totalPoint - $this->discount_point;
+        }
 
-        if ($user->point < $this->total_point) {
-            $subPoint = $this->total_point - $user->point;
+        if ($user->point < $totalPoint) {
+            $subPoint = $totalPoint - $user->point;
             $pointAmount = $subPoint;
             $point = $user->autoCharge($pointAmount);
 
@@ -610,8 +615,8 @@ class Order extends Model
         $tempPoints = Point::withTrashed()->where('order_id', $this->id)->where('type', PointType::TEMP)->forceDelete();
 
         $point = new Point;
-        $point->point = -$this->total_point;
-        $point->balance = $user->point - $this->total_point;
+        $point->point = -$totalPoint;
+        $point->balance = $user->point - $totalPoint;
         $point->user_id = $user->id;
         $point->order_id = $this->id;
         $point->type = PointType::PAY;
@@ -621,7 +626,7 @@ class Order extends Model
         $user->point = $point->balance;
         $user->save();
 
-        $subPoint = $this->total_point;
+        $subPoint = $totalPoint;
         $points = Point::where('user_id', $user->id)
             ->where('balance', '>', 0)
             ->whereIn('type', [PointType::BUY, PointType::AUTO_CHARGE])
