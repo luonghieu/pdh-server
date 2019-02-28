@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class AddCouponMaxPointToOrdersTable extends Migration
+class AlterTableOrderCouponFields extends Migration
 {
     /**
      * Run the migrations.
@@ -14,7 +14,9 @@ class AddCouponMaxPointToOrdersTable extends Migration
     public function up()
     {
         Schema::table('orders', function (Blueprint $table) {
-            $table->integer('coupon_max_point')->after('coupon_value')->nullable();
+            $table->tinyInteger('coupon_type')->after('coupon_id')->nullable();
+            $table->string('coupon_name')->after('coupon_id')->nullable();
+            $table->float('coupon_value')->after('coupon_type')->nullable();
         });
     }
 
@@ -26,7 +28,7 @@ class AddCouponMaxPointToOrdersTable extends Migration
     public function down()
     {
         Schema::table('orders', function (Blueprint $table) {
-            $table->dropColumn('coupon_max_point');
+            $table->dropColumn(['coupon_type', 'coupon_name', 'coupon_value']);
         });
     }
 }

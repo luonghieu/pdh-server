@@ -4,6 +4,7 @@ namespace App;
 
 use App\Enums\CastOrderStatus;
 use App\Enums\CastOrderType;
+use App\Enums\CouponType;
 use App\Enums\OrderStatus;
 use App\Enums\OrderType;
 use App\Enums\PointType;
@@ -45,6 +46,10 @@ class Order extends Model
         'status',
         'canceled_at',
         'is_changed',
+        'coupon_id',
+        'coupon_name',
+        'coupon_type',
+        'coupon_value'
     ];
 
     public function user()
@@ -432,7 +437,7 @@ class Order extends Model
         return 0;
     }
 
-    public function orderPoint($cast = null, $startedAt = null, $stoppedAt = null)
+    public function orderPoint($cast = null, $startedAt = null, $stoppedAt = null, $orderDuration = null)
     {
         if (OrderType::NOMINATION != $this->type) {
             $cost = $this->castClass->cost;
@@ -444,7 +449,9 @@ class Order extends Model
             }
         }
 
-        $orderDuration = $this->duration * 60;
+        if (empty($orderDuration)) {
+            $orderDuration = $this->duration * 60;
+        }
 
         return ($cost / 2) * floor($orderDuration / 15);
     }
@@ -588,9 +595,14 @@ class Order extends Model
     public function settle()
     {
         $user = $this->user;
+        $totalPoint = $this->total_point;
+        
+        if ($this->coupon_id) {
+            $totalPoint = $totalPoint - $this->discount_point;
+        }
 
-        if ($user->point < $this->total_point) {
-            $subPoint = $this->total_point - $user->point;
+        if ($user->point < $totalPoint) {
+            $subPoint = $totalPoint - $user->point;
             $pointAmount = $subPoint;
             $point = $user->autoCharge($pointAmount);
 
@@ -603,8 +615,8 @@ class Order extends Model
         $tempPoints = Point::withTrashed()->where('order_id', $this->id)->where('type', PointType::TEMP)->forceDelete();
 
         $point = new Point;
-        $point->point = -$this->total_point;
-        $point->balance = $user->point - $this->total_point;
+        $point->point = -$totalPoint;
+        $point->balance = $user->point - $totalPoint;
         $point->user_id = $user->id;
         $point->order_id = $this->id;
         $point->type = PointType::PAY;
@@ -614,7 +626,7 @@ class Order extends Model
         $user->point = $point->balance;
         $user->save();
 
-        $subPoint = $this->total_point;
+        $subPoint = $totalPoint;
         $points = Point::where('user_id', $user->id)
             ->where('balance', '>', 0)
             ->whereIn('type', [PointType::BUY, PointType::AUTO_CHARGE])
@@ -690,5 +702,64 @@ class Order extends Model
             LogService::writeErrorLog('Nominee Point Error. Order Id: ' . $this->id);
             LogService::writeErrorLog($this->nomineesWithTrashed->first());
         }
+    }
+
+    public function getDiscountPointAttribute()
+    {
+        $discountPoint = 0;
+
+        if ($this->coupon_id) {
+            switch ($this->coupon_type) {
+                case CouponType::POINT:
+                    $discountPoint = (int)$this->coupon_value;
+                    break;
+                case CouponType::PERCENT:
+                    $discountPoint = $this->total_point * $this->coupon_value / 100;
+                    break;
+                case CouponType::TIME:
+                    $casts = $this->casts()->get();
+                    $discountPoint = $this->orderPointDiscount($casts, (int)$this->coupon_value) + $this->orderFeeDiscount($casts, (int)$this->coupon_value);
+                    break;
+                
+                default:break;
+            }
+        }
+
+        return $discountPoint;
+    }
+
+    public function orderPointDiscount($casts, $orderDuration)
+    {
+        $point = 0;
+
+        foreach ($casts as $key => $cast) {
+            $point += $this->orderPoint($cast, $startedAt = null, $stoppedAt = null, $orderDuration);
+        }
+
+        return $point;
+    }
+
+    public function orderFeeDiscount($casts, $orderDuration)
+    {
+        $point = 0;
+
+        foreach ($casts as $cast) {
+            $orderFee = 0;
+
+            if (OrderType::NOMINATION != $this->type && CastOrderType::NOMINEE == $cast->pivot->type) {
+                $multiplier = 0;
+
+                while ($orderDuration / 15 >= 1) {
+                    $multiplier++;
+                    $orderDuration -= 15;
+                }
+
+                $orderFee = 500 * $multiplier;
+            }
+
+            $point += $orderFee;
+        }
+
+        return $point;
     }
 }
