@@ -13,13 +13,13 @@ class DatabaseSeeder extends Seeder
     {
         Schema::disableForeignKeyConstraints();
 
-        // $this->call(PrefecturesTableSeeder::class);
-        // $this->call(MunicipalitiesTableSeeder::class);
-        // $this->call(BodyTypesTableSeeder::class);
-        // $this->call(JobsTableSeeder::class);
-        // $this->call(CastClassesTableSeeder::class);
-        // $this->call(UsersTableSeeder::class);
-        // $this->call(SalariesTableSeeder::class);
+        $this->call(PrefecturesTableSeeder::class);
+        $this->call(MunicipalitiesTableSeeder::class);
+        $this->call(BodyTypesTableSeeder::class);
+        $this->call(JobsTableSeeder::class);
+        $this->call(CastClassesTableSeeder::class);
+        $this->call(UsersTableSeeder::class);
+        $this->call(SalariesTableSeeder::class);
         $this->call(TagsTableSeeder::class);
     }
 }
