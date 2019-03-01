@@ -19,7 +19,7 @@ class TagsTableSeeder extends Seeder
                 'type' => TagType::DESIRE,
                 'name' => [
                     '聞き上手',
-                    '話上手',
+                    '話し上手',
                     'カラオケ上手',
                     'お酒が飲める',
                     '学生',
