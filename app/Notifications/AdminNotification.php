@@ -196,7 +196,7 @@ class AdminNotification extends Notification implements ShouldQueue
         $castIds = array_filter($this->schedule->cast_ids);
         if (env('ENABLE_LINE_IMAGE_CAROUSEL') && $castIds) {
             $columns = [];
-            $page = env('LINE_LIFF_REDIRECT_PAGE') . '?cast=';
+            $page = env('LINE_LIFF_REDIRECT_PAGE') . '?page=cast&cast_id=';
             $casts = Cast::whereIn('id', array_filter($castIds))->get();
             foreach ($casts as $item) {
                 $columns[] = [
