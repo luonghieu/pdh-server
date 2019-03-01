@@ -272,6 +272,10 @@ class User extends Authenticatable implements JWTSubject
     {
         if ($this->attributes['class_id']) {
             if (!$this->attributes['cost_rate']) {
+                if (in_array($this->attributes['prefecture_id'], [13, 14, 11])) {
+                    return 0.8;
+                }
+
                 return config('common.default_cost_rate')[$this->attributes['class_id']];
             } else {
                 return $this->attributes['cost_rate'];
