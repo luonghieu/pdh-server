@@ -1,7 +1,7 @@
 <?php
 
-use App\Enums\TagType;
 use Illuminate\Database\Seeder;
+use App\Enums\TagType;
 
 class TagsTableSeeder extends Seeder
 {
@@ -21,9 +21,26 @@ class TagsTableSeeder extends Seeder
                     '聞き上手',
                     '話し上手',
                     'カラオケ上手',
+                    '盛り上げ上手',
+                    'ノリが良い',
                     'お酒が飲める',
+                    '清楚系',
+                    'ギャル系',
+                    '癒し系',
+                    '可愛い系',
+                    '綺麗系',
+                    '童顔',
+                    '小柄',
+                    '普通な身長',
+                    '背高め',
+                    'スレンダー',
+                    '普通な体型',
+                    'グラマー',
+                    '英語OK',
                     '学生',
-                    '社会人',
+                    '20代前半',
+                    '20代後半',
+                    '30代',
                 ],
             ],
             [
@@ -39,9 +56,6 @@ class TagsTableSeeder extends Seeder
                     'カラオケ',
                     'クラブ',
                     'ランチ',
-                    'バー',
-                    '映画',
-                    'ショッピング',
                 ],
             ],
         ];
