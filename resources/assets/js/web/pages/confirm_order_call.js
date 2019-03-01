@@ -22,13 +22,14 @@ function showCoupons(coupon, params)
   html += '</div> </div> </section>';
 
   $('#show-coupons-order').html(html);
+
   var view = '<div class="details-total__content show_point-coupon">';
   view += '<div class="details-list__header">';
   view += '<div class="">通常料金</div> </div>';
   view += '<div class="details-total__marks" id="current-total-point"></div> </div>';
   view += '<div class="details-total__content show_point-coupon">';
   view += '<div class="details-list__header"> <div class="">割引額</div> </div>';
-  view += '<div class="details-total__marks" id="sale_point-coupon"></div> </div>';
+  view += '<div class="details-total__marks sale-point-coupon" id="sale_point-coupon" ></div> </div>';
           
   $('#show-point-coupon').html(view);
 

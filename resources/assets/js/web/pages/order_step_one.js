@@ -8,7 +8,6 @@ const couponType = {
 
 function loadCouponsOrderCall()
 {
-
   if(localStorage.getItem("order_call")) {
       var orderCall = JSON.parse(localStorage.getItem("order_call"));
       if(orderCall.current_duration) {
@@ -56,7 +55,7 @@ function loadCouponsOrderCall()
       html += '<div class="caption">';
       html += '<h2>クーポン</h2> </div>';
       html += '<div class="form-grpup" >';
-      html += '<select id="coupon-order">';
+      html += '<select id="coupon-order" class="select-coupon" > ';
       html += '<option>クーポンを使用しない</option>';
       coupons.forEach(function (coupon) {
         var id = coupon.id;
@@ -65,7 +64,7 @@ function loadCouponsOrderCall()
       })
 
       html += '</select>';
-      html += '<p class = "max-point-coupon" > ※割引されるポイントは最大10,000Pになります。</p> </div>';
+      html += '<p class = "max-point-coupon" > ※割引されるポイントは最大10,000Pになります。</p> </div> </div>';
     }
 
     $('#show-coupon-order-call').html(html);
@@ -496,7 +495,7 @@ function handlerSelectedDuration()
         html += '<div class="caption">';
         html += '<h2>クーポン</h2> </div>';
         html += '<div class="form-grpup" >';
-        html += '<select id="coupon-order">';
+        html += '<select id="coupon-order" class="select-coupon" >';
         html += '<option value="">クーポンを使用しない</option>';
 
         coupons.forEach(function (coupon) {
@@ -506,7 +505,7 @@ function handlerSelectedDuration()
         })
 
         html += '</select>';
-        html += '<p class = "max-point-coupon" > ※割引されるポイントは最大10,000Pになります。</p> </div>';
+        html += '<p class = "max-point-coupon" > ※割引されるポイントは最大10,000Pになります。</p> </div> </div>';
       }
 
 
@@ -545,7 +544,7 @@ function handlerSelectedDuration()
         html += '<div class="caption">';
         html += '<h2>クーポン</h2> </div>';
         html += '<div class="form-grpup" > ';
-        html += '<select id="coupon-order">';
+        html += '<select id="coupon-order" class="select-coupon" >';
         html += '<option value="">クーポンを使用しない</option>';
 
         coupons.forEach(function (coupon) {
@@ -555,7 +554,7 @@ function handlerSelectedDuration()
         })
 
         html += '</select>';
-        html += '<p class = "max-point-coupon" > ※割引されるポイントは最大10,000Pになります。</p> </div>';
+        html += '<p class = "max-point-coupon" > ※割引されるポイントは最大10,000Pになります。</p> </div> </div>';
       }
 
       $('#show-coupon-order-call').html(html);

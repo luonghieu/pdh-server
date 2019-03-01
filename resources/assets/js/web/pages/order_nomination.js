@@ -1,6 +1,250 @@
-$(document).ready(function(){
-  const helper = require('./helper');
+const helper = require('./helper');
+let couponNominee = [];
+const couponType = {
+  'POINT': 1,
+  'DURATION': 2,
+  'PERCENT': 3
+};
 
+function loadCouponsOrderNominate()
+{
+  if(localStorage.getItem("order_params")) {
+      var orderNominate = JSON.parse(localStorage.getItem("order_params"));
+      if(orderNominate.current_duration) {
+        var duration = orderNominate.current_duration;
+
+        if ('other_time_set' == duration) {
+          duration = 4;
+
+          if(orderNominate.select_duration) {
+            duration = orderNominate.select_duration;
+          }
+        }
+      } else {
+        var duration = $("input:radio[name='time_set_nomination']:checked").val();
+
+        if(duration) {
+          if ('other_time_set' == duration) {
+            duration = $('.select-duration option:selected').val();
+          }
+        } else {
+          duration = null;
+        }
+      }
+  } else {
+    var duration = $("input:radio[name='time_set_nomination']:checked").val();
+
+    if(duration) {
+      if ('other_time_set' == duration) {
+        duration = $('.select-duration option:selected').val();
+      }
+    } else {
+      duration = null;
+    }
+  }
+
+  var paramCoupon = {
+    duration : duration,
+  };
+
+  window.axios.get('/api/v1/coupons', {params: paramCoupon})
+  .then(function(response) {
+    couponNominee = response.data['data'];
+    if (couponNominee.length) {
+      var html =  `<div class="reservation-item">
+                    <div class="caption">
+                      <h2>クーポン</h2>
+                    </div>
+                    <div class="form-grpup" >
+                      <select id="coupon-order-nominate" class="select-coupon">
+                      <option value="" >クーポンを使用しない</option> `;
+
+      couponNominee.forEach(function (coupon) {
+        var id = coupon.id;
+        var name = coupon.name;
+        html += '<option value="'+ id +'">'+ name +'</option>';
+      })
+
+      html += `</select>
+              <p class = "max-point-coupon" > ※割引されるポイントは最大10,000Pになります。</p> </div> </div>`;
+              
+    $('#show-coupon-order-nominate').html(html);
+    }
+
+  }).catch(function(error) {
+    console.log(error);
+    if (error.response.status == 401) {
+      window.location = '/login';
+    }
+  });
+}
+
+function selectedCouponsNominate(helper)
+{
+  $('body').on('change', "#coupon-order-nominate", function(){
+
+    var duration = $("input:radio[name='time_set_nomination']:checked").val();
+
+    if(duration) {
+      if ('other_time_set' == duration) {
+        duration = $('.select-duration option:selected').val();
+      }
+      var couponId = parseInt($(this).val());
+
+      if(couponId) {
+
+        var time = $("input:radio[name='time_join_nomination']:checked").val();
+
+        var cost = $('.cost-order').val();
+        var totalPoint=cost*(duration*6)/3;
+
+        cost = parseInt(cost).toLocaleString(undefined,{ minimumFractionDigits: 0 });
+
+        if(time){
+          var currentDate = new Date();
+          utc = currentDate.getTime() + (currentDate.getTimezoneOffset() * 60000);
+          nd = new Date(utc + (3600000*9));
+
+          var year = nd.getFullYear();
+          
+          if ((time == 'other_time')) {
+            var month = $('.select-month').val();
+            var checkMonth = nd.getMonth();
+
+            if (month <= checkMonth) {
+              var year = nd.getFullYear() + 1;
+            }
+
+            if(month<10) {
+              month = '0'+month;
+            }
+
+            var day = $('.select-date').val();
+
+            if(day<10) {
+              day = '0'+day;
+            }
+
+            var hour = $('.select-hour').val();
+
+            if(hour<10) {
+              hour = '0'+hour;
+            }
+
+            var minute = $('.select-minute').val();
+            if(minute<10) {
+              minute = '0'+minute;
+            }
+
+            var date = year+'-'+month+'-'+day;
+            var time = hour+':'+minute;
+          } else{
+            var selectDate = helper.add_minutes(nd,time);
+
+            if (helper.add_minutes(nd, 30) > selectDate) {
+              selectDate = helper.add_minutes(nd, 30);
+            }
+
+            var day = selectDate.getDate();
+            if(day<10) {
+              day = '0'+day;
+            }
+
+            var month = selectDate.getMonth() +1;
+            if(month<10) {
+              month = '0'+month;
+            }
+            var hour = selectDate.getHours();
+            if(hour<10) {
+              hour = '0'+hour;
+            }
+
+            var minute = selectDate.getMinutes();
+            if(minute<10) {
+              minute = '0'+minute;
+            }
+            var date = year+'-'+month+'-'+day;
+            var time = hour+':'+minute;
+          }
+
+          $castId = $('.cast-id').val();
+
+          var params = {
+            date : date,
+            start_time : time,
+            type :3,
+            duration :duration,
+            total_cast :1,
+            nominee_ids : $castId
+          };
+
+          var couponId = parseInt($(this).val());
+
+          if(!couponNominee) {
+            window.location = '/mypage';
+          }
+
+          var couponIds = couponNominee.map(function (e) {
+            return e.id; 
+          });
+
+          if(couponIds.indexOf(couponId) > -1) {
+
+            var coupon = {};
+            couponNominee.forEach(function (e) {
+              if(e.id == couponId) {
+                coupon = e;
+              }
+            });
+          }
+
+          if(couponType.POINT == coupon.type) {
+            params.duration_coupon = 0;
+          }
+
+          if(couponType.DURATION == coupon.type) {
+            params.duration_coupon = coupon.time;
+          }
+
+          if(couponType.PERCENT == coupon.type) {
+            params.duration_coupon = 0;
+          }
+
+          window.axios.post('/api/v1/orders/price',params)
+            .then(function(response) {
+              totalPoint = response.data['data'];
+              console.log(totalPoint);
+              // totalPoint = parseInt(totalPoint).toLocaleString(undefined,{ minimumFractionDigits: 0 });
+              // $('.total-point').text(totalPoint +'P~');
+            }).catch(function(error) {
+              console.log(error);
+              if (error.response.status == 401) {
+                window.location = '/login';
+              }
+            });
+        } else {
+
+
+          totalPoint = parseInt(totalPoint).toLocaleString(undefined,{ minimumFractionDigits: 0 });
+          $('.total-point').text(totalPoint +'P~');
+
+          var params = {
+              current_total_point: totalPoint,
+            };
+
+          helper.updateLocalStorageValue('order_params', params);
+        }
+
+
+
+      }
+    }
+
+  })
+}
+
+$(document).ready(function(){
+  selectedCouponsNominate(helper);
   $('body').on('change', ".checked-order",function(event){
     if ($(this).is(':checked')) {
         var time = $("input:radio[name='time_join_nomination']:checked").val();
@@ -145,32 +389,32 @@ $(document).ready(function(){
         var time = hour+':'+minute;
       } else{
 
-          var selectDate = helper.add_minutes(nd,time);
+        var selectDate = helper.add_minutes(nd,time);
 
-          if (helper.add_minutes(nd, 30) > selectDate) {
-            selectDate = helper.add_minutes(nd, 30);
-          }
+        if (helper.add_minutes(nd, 30) > selectDate) {
+          selectDate = helper.add_minutes(nd, 30);
+        }
 
-          var day = selectDate.getDate();
-          if(day<10) {
-            day = '0'+day;
-          }
+        var day = selectDate.getDate();
+        if(day<10) {
+          day = '0'+day;
+        }
 
-          var month = selectDate.getMonth() +1;
-          if(month<10) {
-            month = '0'+month;
-          }
-          var hour = selectDate.getHours();
-          if(hour<10) {
-            hour = '0'+hour;
-          }
+        var month = selectDate.getMonth() +1;
+        if(month<10) {
+          month = '0'+month;
+        }
+        var hour = selectDate.getHours();
+        if(hour<10) {
+          hour = '0'+hour;
+        }
 
-          var minute = selectDate.getMinutes();
-          if(minute<10) {
-            minute = '0'+minute;
-          }
-          var date = year+'-'+month+'-'+day;
-          var time = hour+':'+minute;
+        var minute = selectDate.getMinutes();
+        if(minute<10) {
+          minute = '0'+minute;
+        }
+        var date = year+'-'+month+'-'+day;
+        var time = hour+':'+minute;
       }
 
       $castId = $('.cast-id').val();
@@ -200,16 +444,16 @@ $(document).ready(function(){
             window.location = '/login';
           }
         });
-      } else {
-        totalPoint = parseInt(totalPoint).toLocaleString(undefined,{ minimumFractionDigits: 0 });
-        $('.total-point').text(totalPoint +'P~');
+    } else {
+      totalPoint = parseInt(totalPoint).toLocaleString(undefined,{ minimumFractionDigits: 0 });
+      $('.total-point').text(totalPoint +'P~');
 
-        var params = {
-            current_total_point: totalPoint,
-          };
+      var params = {
+          current_total_point: totalPoint,
+        };
 
-        helper.updateLocalStorageValue('order_params', params);
-      }
+      helper.updateLocalStorageValue('order_params', params);
+    }
   })
 
   $('.select-duration').on("change",function(){
@@ -333,7 +577,7 @@ $(document).ready(function(){
 
     cost = parseInt(cost).toLocaleString(undefined,{ minimumFractionDigits: 0 });
 
-    $('.reservation-total__text').text('内訳：'+cost+ '(キャストP/30分)✖'+(duration)+'時間')
+    $('.reservation-total__text').text('内訳：'+cost+ '(キャストP/30分)✖'+(duration)+'時間');
   })
 
 //timejoin
@@ -745,5 +989,9 @@ $(document).ready(function(){
         }
       });
   });
+
+  if($('#show-coupon-order-nominate').length) {
+    loadCouponsOrderNominate();
+  }
 
 })
