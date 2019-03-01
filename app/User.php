@@ -77,8 +77,14 @@ class User extends Authenticatable implements JWTSubject
 
     public function getCostAttribute($value)
     {
-        if (!$value) {
-            return 0;
+        if ($this->class_id && $this->class_id == 1) {
+            if ($value < 5000) {
+                return 5000;
+            }
+        } else {
+            if (!$value) {
+                return 0;
+            }
         }
 
         return $value;
