@@ -32,67 +32,28 @@ function showCoupons(coupon, params)
           
   $('#show-point-coupon').html(view);
 
-  if (couponType.PERCENT == coupon.type) {
-    window.axios.post('/api/v1/orders/price',params)
-    .then(function(response) {
-      var tempPoint = response.data['data'];
-      var pointCoupon = (coupon.percent/100)*tempPoint;
-
-      if(COUPONPOINT.max < pointCoupon) {
-        pointCoupon = COUPONPOINT.max;
-      }
-
-      $('#temp_point_order_call').val(tempPoint-pointCoupon);
-
-      totalPoint = parseInt(tempPoint-pointCoupon).toLocaleString(undefined,{ minimumFractionDigits: 0 });
-      pointCoupon = parseInt(pointCoupon).toLocaleString(undefined,{ minimumFractionDigits: 0 });
-      tempPoint = parseInt(tempPoint).toLocaleString(undefined,{ minimumFractionDigits: 0 });
-
-      $('#current-total-point').text(tempPoint +'P~');
-      $('#sale_point-coupon').text('-' + pointCoupon +'P~');
-      $('#total_point-order-call').text(totalPoint +'P~');
-    }).catch(function(error) {
-      console.log(error);
-      if (error.response.status == 401) {
-        window.location = '/login';
-      }
-    });
-  }
-
-  if (couponType.POINT == coupon.type) {
-    window.axios.post('/api/v1/orders/price',params)
-    .then(function(response) {
-      var tempPoint = response.data['data'];
-      var pointCoupon = coupon.point;
-
-      if(COUPONPOINT.max < pointCoupon) {
-        pointCoupon = COUPONPOINT.max;
-      }
-
-      $('#temp_point_order_call').val(tempPoint-pointCoupon);
-
-      totalPoint = parseInt(tempPoint-pointCoupon).toLocaleString(undefined,{ minimumFractionDigits: 0 });
-      pointCoupon = parseInt(pointCoupon).toLocaleString(undefined,{ minimumFractionDigits: 0 });
-      tempPoint = parseInt(tempPoint).toLocaleString(undefined,{ minimumFractionDigits: 0 });
-
-      $('#current-total-point').text(tempPoint +'P~');
-      $('#sale_point-coupon').text('-' + pointCoupon +'P~');
-      $('#total_point-order-call').text(totalPoint +'P~');
-    }).catch(function(error) {
-      console.log(error);
-      if (error.response.status == 401) {
-        window.location = '/login';
-      }
-    });
-  }
-
   if (couponType.DURATION == coupon.type) {
     params.duration_coupon = coupon.time;
-    window.axios.post('/api/v1/orders/price',params)
+  }
+  
+  window.axios.post('/api/v1/orders/price',params)
     .then(function(response) {
-      var totalCouponPoint = response.data['data'];
-      var tempPoint = totalCouponPoint.total_point;
-      var pointCoupon = totalCouponPoint.order_point_coupon + totalCouponPoint.order_fee_coupon;
+
+      if (couponType.PERCENT == coupon.type) {
+        var tempPoint = response.data['data'];
+        var pointCoupon = (parseInt(coupon.percent)/100)*tempPoint;
+      }
+
+      if (couponType.POINT == coupon.type) {
+        var tempPoint = response.data['data'];
+        var pointCoupon = coupon.point;
+      }
+
+      if (couponType.DURATION == coupon.type) {
+        var totalCouponPoint = response.data['data'];
+        var tempPoint = totalCouponPoint.total_point;
+        var pointCoupon = totalCouponPoint.order_point_coupon + totalCouponPoint.order_fee_coupon;
+      }
 
       if(COUPONPOINT.max < pointCoupon) {
         pointCoupon = COUPONPOINT.max;
@@ -101,8 +62,8 @@ function showCoupons(coupon, params)
       $('#temp_point_order_call').val(tempPoint-pointCoupon);
 
       totalPoint = parseInt(tempPoint-pointCoupon).toLocaleString(undefined,{ minimumFractionDigits: 0 });
-      tempPoint = parseInt(tempPoint).toLocaleString(undefined,{ minimumFractionDigits: 0 });
       pointCoupon = parseInt(pointCoupon).toLocaleString(undefined,{ minimumFractionDigits: 0 });
+      tempPoint = parseInt(tempPoint).toLocaleString(undefined,{ minimumFractionDigits: 0 });
 
       $('#current-total-point').text(tempPoint +'P~');
       $('#sale_point-coupon').text('-' + pointCoupon +'P~');
@@ -113,7 +74,6 @@ function showCoupons(coupon, params)
         window.location = '/login';
       }
     });
-  }
 }
 
 $(document).ready(function(){
