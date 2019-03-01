@@ -19,7 +19,7 @@
 @endsection
   <div class="reservation-item">
     <div class="caption"><!-- 見出し用div -->
-      <h2>キャストのタイプ</h2>
+      <h2>希望するキャスト</h2>
     </div>
     <div class="form-grpup"><!-- フォーム内容 -->
       @if(count($desires['data']))
