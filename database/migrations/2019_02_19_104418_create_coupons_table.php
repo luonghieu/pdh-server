@@ -15,11 +15,11 @@ class CreateCouponsTable extends Migration
     {
         Schema::create('coupons', function (Blueprint $table) {
             $table->increments('id');
-            $table->string('name')->nullable();
+            $table->string('name', 255)->nullable();
             $table->tinyInteger('type')->nullable();
             $table->integer('point')->nullable();
             $table->integer('time')->nullable();
-            $table->string('note')->unique()->nullable();
+            $table->text('note')->nullable();
             $table->boolean('is_filter_after_created_date')->default(false);
             $table->tinyInteger('filter_after_created_date')->nullable();
             $table->boolean('is_filter_order_duration')->default(false);
