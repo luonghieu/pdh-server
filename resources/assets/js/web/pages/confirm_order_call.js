@@ -17,7 +17,7 @@ function showCoupons(coupon, params)
   html += '<div class="details-list__header">';
   html += '<div class="details-header__title">クーポン</div> </div>';
   html += '<div class="details-list__content show"> <div class="details-list-box">';
-  html += '<ul class="details-info-list" id="show-name-coupon">'+ coupon.name +'</ul>';
+  html += '<ul class="" id="show-name-coupon">'+ coupon.name +'</ul>';
   html += '<div class="btn2-s"><a href="'+ linkStepOne +'">変更</a></div>';
   html += '</div> </div> </section>';
 
@@ -35,7 +35,7 @@ function showCoupons(coupon, params)
   if (couponType.DURATION == coupon.type) {
     params.duration_coupon = coupon.time;
   }
-  
+
   window.axios.post('/api/v1/orders/price',params)
     .then(function(response) {
 
