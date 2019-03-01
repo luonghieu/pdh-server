@@ -3151,6 +3151,55 @@ padding-top: 65px !important;
   opacity: .9;
 }
 
+#coupon-order {
+  -webkit-appearance: none !important;
+  background: none ;
+  width: 100% !important;
+  background-image: url(../../web/images/common/arrow.svg) !important;
+  background-repeat: no-repeat, repeat !important;
+  background-position: 98% !important;
+  border: none;
+  border-bottom: 1px solid #e8e6e6 !important;
+  padding-left: 15px ;
+  padding-bottom: 6px !important;
+  background-size: 11px 11px !important;
+  outline: none ;
+  font-size: 14px;
+  color: #222222 !important;
+  margin-top: 15px;
+}
+
+#point-coupon {
+  margin-bottom: 20px;
+  color: red;
+  font-size: 20px;
+  line-height: 1;
+  font-weight: bold;
+}
+
+.max-point-coupon {
+  margin-top: 6px;
+  padding: 0px 12px;
+  margin-bottom: -10px;
+}
+
+#total_point-order-call {
+  margin-bottom: 10px;
+}
+
+.show_point-coupon{
+  margin-bottom: 10px;
+}
+
+.show_point-coupon .details-total__marks{
+  font-size: 15px !important;
+  font-weight: normal !important ;
+}
+
+#sale_point-coupon {
+  color: red !important;
+}
+
 .red-color {
   color: red!important;
 }

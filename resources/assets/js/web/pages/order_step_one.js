@@ -1,4 +1,81 @@
 const helper = require('./helper');
+let coupons = [];
+const couponType = {
+  'POINT': 1,
+  'DURATION': 2,
+  'PERCENT': 3
+};
+
+function loadCouponsOrderCall()
+{
+
+  if(localStorage.getItem("order_call")) {
+      var orderCall = JSON.parse(localStorage.getItem("order_call"));
+      if(orderCall.current_duration) {
+        var duration = orderCall.current_duration;
+
+        if ('other_duration' == duration) {
+          duration = 4;
+
+          if(orderCall.select_duration) {
+            duration = orderCall.select_duration;
+          }
+        }
+      } else {
+        var duration = $("input:radio[name='time_set']:checked").val();
+
+        if(duration) {
+          if ('other_duration' == duration) {
+            duration = $('#select-duration-call option:selected').val();
+          }
+        } else {
+          duration = null;
+        }
+      }
+  } else {
+    var duration = $("input:radio[name='time_set']:checked").val();
+
+    if(duration) {
+      if ('other_duration' == duration) {
+        duration = $('#select-duration-call option:selected').val();
+      }
+    } else {
+      duration = null;
+    }
+  }
+
+  var paramCoupon = {
+    duration : duration,
+  };
+  window.axios.get('/api/v1/coupons', {params: paramCoupon})
+  .then(function(response) {
+    coupons = response.data['data'];
+    var html = '';
+    if (coupons.length) {
+      html += '<div class="reservation-item">';
+      html += '<div class="caption">';
+      html += '<h2>クーポン</h2> </div>';
+      html += '<div class="form-grpup" >';
+      html += '<select id="coupon-order">';
+      html += '<option>クーポンを使用しない</option>';
+      coupons.forEach(function (coupon) {
+        var id = coupon.id;
+        var name = coupon.name;
+        html += '<option value="'+ id +'">'+ name +'</option>';
+      })
+
+      html += '</select>';
+      html += '<p class = "max-point-coupon" > ※割引されるポイントは最大10,000Pになります。</p> </div>';
+    }
+
+    $('#show-coupon-order-call').html(html);
+  }).catch(function(error) {
+    console.log(error);
+    if (error.response.status == 401) {
+      window.location = '/login';
+    }
+  });
+}
 
 function handlerSelectedArea()
 {
@@ -398,6 +475,48 @@ function handlerSelectedDuration()
       $("#step1-create-call").prop('disabled', false);
     }
 
+
+    //show coupon 
+   
+    if ('other_duration' == duration) {
+      duration = $('#select-duration-call option:selected').val();
+    }
+
+    var paramCoupon = {
+      duration : duration,
+    };
+
+    window.axios.get('/api/v1/coupons', {params: paramCoupon})
+    .then(function(response) {
+      coupons = response.data['data'];
+      var html = '';
+
+      if (coupons.length) {
+        html += '<div class="reservation-item">';
+        html += '<div class="caption">';
+        html += '<h2>クーポン</h2> </div>';
+        html += '<div class="form-grpup" >';
+        html += '<select id="coupon-order">';
+        html += '<option value="">クーポンを使用しない</option>';
+
+        coupons.forEach(function (coupon) {
+          var id = coupon.id;
+          var name = coupon.name;
+          html += '<option value="'+ id +'">'+ name +'</option>';
+        })
+
+        html += '</select>';
+        html += '<p class = "max-point-coupon" > ※割引されるポイントは最大10,000Pになります。</p> </div>';
+      }
+
+
+      $('#show-coupon-order-call').html(html);
+    }).catch(function(error) {
+      console.log(error);
+      if (error.response.status == 401) {
+        window.location = '/login';
+      }
+    });
   })
 
   //select-duration 
@@ -409,6 +528,43 @@ function handlerSelectedDuration()
       };
 
     helper.updateLocalStorageValue('order_call', params);
+
+    //show coupon 
+
+    var paramCoupon = {
+      duration : duration,
+    };
+
+    window.axios.get('/api/v1/coupons', {params: paramCoupon})
+    .then(function(response) {
+      coupons = response.data['data'];
+      var html = '';
+
+      if (coupons.length) {
+        html += '<div class="reservation-item">';
+        html += '<div class="caption">';
+        html += '<h2>クーポン</h2> </div>';
+        html += '<div class="form-grpup" > ';
+        html += '<select id="coupon-order">';
+        html += '<option value="">クーポンを使用しない</option>';
+
+        coupons.forEach(function (coupon) {
+          var id = coupon.id;
+          var name = coupon.name;
+          html += '<option value="'+ id +'">'+ name +'</option>';
+        })
+
+        html += '</select>';
+        html += '<p class = "max-point-coupon" > ※割引されるポイントは最大10,000Pになります。</p> </div>';
+      }
+
+      $('#show-coupon-order-call').html(html);
+    }).catch(function(error) {
+      console.log(error);
+      if (error.response.status == 401) {
+        window.location = '/login';
+      }
+    });
   })
 }
 
@@ -612,6 +768,80 @@ function handlerSelectedPrefecture()
   });
 }
 
+function handleStepOne()
+{
+  $('body').on('click', "#step1-create-call",function(){
+    if(localStorage.getItem("order_call")) {
+      var orderCall = JSON.parse(localStorage.getItem("order_call"));
+      if(!orderCall.countIds) {
+        var number_val = parseInt( $(".cast-number__value input").val());
+
+        var params = {
+          countIds: number_val,
+        };
+
+        helper.updateLocalStorageValue('order_call', params);
+      }
+
+      if (!orderCall.current_time_set) {
+        var timeJoin = $("input:radio[name='time_join']:checked").val()
+        var params = {
+          current_time_set: timeJoin,
+        };
+
+        helper.updateLocalStorageValue('order_call', params);
+      }
+
+      if (!orderCall.select_duration) {
+        var duration = $('#select-duration-call option:selected').val();
+        var params = {
+          select_duration: duration,
+        };
+
+        helper.updateLocalStorageValue('order_call', params);
+      }
+
+      if($('#coupon-order').length) {
+        var couponId = parseInt($('#coupon-order').val());
+        
+        if(couponId) {
+          if(!coupons.length) {
+            window.location = '/mypage';
+          }
+
+          var couponIds = coupons.map(function (e) {
+            return e.id; 
+          });
+
+          if(couponIds.indexOf(couponId) > -1) {
+            var coupon = {};
+            coupons.forEach(function (e) {
+              if(e.id == couponId) {
+                coupon = e;
+              }
+            });
+          }
+
+          if(coupon) {
+            var params = {
+              coupon: coupon,
+            };
+
+            helper.updateLocalStorageValue('order_call', params);
+          }
+        }
+      } else {
+        if (orderCall.coupon) {
+          helper.deleteLocalStorageValue('order_call','coupon');
+        }
+      }
+
+    } else {
+      window.location = '/mypage';
+    }
+  })
+}
+
 $(document).ready(function () {
   handlerSelectedArea();
   handlerCustomArea();
@@ -620,4 +850,10 @@ $(document).ready(function () {
   handlerSelectedCastClass();
   handlerNumberCasts();
   handlerSelectedPrefecture();
+
+  if($('#step1-create-call').length) {
+    loadCouponsOrderCall();
+    handleStepOne();
+  }
+
 });

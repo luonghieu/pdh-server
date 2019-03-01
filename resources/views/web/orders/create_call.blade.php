@@ -112,6 +112,9 @@
       </label>
     </div>
   </div>
+  <!-- show coupon -->
+  <div id="show-coupon-order-call"></div>
+
   <div class="reservation-item">
     <div class="caption"><!-- 見出し用div -->
       <h2>キャストのクラス</h2>
