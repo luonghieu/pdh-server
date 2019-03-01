@@ -65,7 +65,7 @@
                 @foreach ($coupons as $key => $coupon)
                   <tr>
                     <td>{{ $coupons->firstItem() +$key }}</td>
-                    <td>{{ $coupon->name }}</td>
+                    <td class="long-text">{{ $coupon->name }}</td>
                     <td>
                       @if($coupon->is_filter_after_created_date)
                       登録時から{{ $coupon->filter_after_created_date }}日間以内

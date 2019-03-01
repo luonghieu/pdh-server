@@ -47,15 +47,15 @@ class CouponController extends Controller
 
     public function store(Request $request) {
         $rules = [
-            'name' => 'required|string',
+            'name' => 'required|max:255',
             'type' => 'required|numeric|in:1,2,3',
-            'point' => 'numeric|required_if:type,1|nullable',
-            'time' => 'numeric|required_if:type,2|nullable',
-            'percent' => 'numeric|required_if:type,3|nullable',
-            'max_point' => 'numeric',
-            'note' => 'string|nullable',
+            'point' => 'numeric|nullable',
+            'time' => 'numeric|min:1|max:9999|nullable',
+            'percent' => 'numeric|nullable',
+            'max_point' => 'required_with:time,percent',
+            'note' => 'string|max:500|nullable',
             'is_filter_after_created_date' => 'numeric|nullable',
-            'filter_after_created_date' => 'numeric|nullable',
+            'filter_after_created_date' => 'numeric|min:1|max:7|nullable',
             'is_filter_order_duration' => 'numeric|nullable',
             'filter_order_duration' => 'numeric|nullable',
         ];
@@ -112,15 +112,15 @@ class CouponController extends Controller
     public function update(Request $request, Coupon $coupon)
     {
         $rules = [
-            'name' => 'string',
+            'name' => 'string||max:255',
             'type' => 'numeric|in:1,2,3',
-            'point' => 'numeric|required_if:type,1|nullable',
-            'time' => 'numeric|required_if:type,2|nullable',
-            'percent' => 'numeric|required_if:type,3|nullable',
-            'max_point' => 'numeric',
-            'note' => 'string|nullable',
+            'point' => 'numeric|nullable',
+            'time' => 'numeric|min:1|max:9999|nullable',
+            'percent' => 'numeric|nullable',
+            'max_point' => 'required_with:time,percent',
+            'note' => 'string|max:500|nullable',
             'is_filter_after_created_date' => 'numeric|nullable',
-            'filter_after_created_date' => 'numeric|nullable',
+            'filter_after_created_date' => 'numeric|min:1|max:7|nullable',
             'is_filter_order_duration' => 'numeric|nullable',
             'filter_order_duration' => 'numeric|nullable',
         ];
