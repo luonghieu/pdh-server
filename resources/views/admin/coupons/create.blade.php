@@ -109,19 +109,19 @@
                     <td>
                       <div class="wrap-td-coupon">
                         <label class="switch switch-primary">
-                          <input type="checkbox" class="switch-input" checked="" id="checkbox-after-created-date-filter" name="is_filter_after_created_date" value="1">
+                          <input type="checkbox" class="switch-input" id="checkbox-after-created-date-filter" name="is_filter_after_created_date" value="1">
                           <span class="switch-label" data-on="On" data-off="Off"></span>
                           <span class="switch-handle"></span>
                         </label>
                         <p>登録時から</p>
                         <div class="wrap-object-coupon after-created-date">
-                          <input type="text" class="object-coupon" name="filter_after_created_date" placeholder="0">
+                          <input type="text" class="object-coupon" name="filter_after_created_date" placeholder="0" readonly>
                           @if ($errors->has('filter_after_created_date'))
                             <div class="error pull-left">
                               <span>{{ $errors->first('filter_after_created_date') }}</span>
                             </div>
                           @endif
-                          <span>日間以内</span>
+                          <span class="invalid-element-coupon">日間以内</span>
                         </div>
                       </div>
                     </td>
@@ -131,17 +131,17 @@
                     <td>
                       <div class="wrap-td-coupon">
                         <label class="switch switch-primary">
-                          <input type="checkbox" class="switch-input" checked="" id="checkbox-time-order-filter" name="is_filter_order_duration" value="1">
+                          <input type="checkbox" class="switch-input" id="checkbox-time-order-filter" name="is_filter_order_duration" value="1">
                           <span class="switch-label" data-on="On" data-off="Off"></span>
                           <span class="switch-handle"></span>
                         </label>
                         <div class="wrap-object-coupon time-order-filter">
-                          <select class="object-coupon" name="filter_order_duration">
+                          <select class="object-coupon" name="filter_order_duration" disabled>
                             @for($i = 0.5; $i <= 10; $i += 0.5)
                             <option value="{{ $i }}">{{ $i  }}</option>
                             @endfor
                           </select>
-                          <span>時間以上</span>
+                          <span class="invalid-element-coupon">時間以上</span>
                         </div>
                       </div>
                     </td>
