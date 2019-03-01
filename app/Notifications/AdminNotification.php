@@ -193,10 +193,11 @@ class AdminNotification extends Notification implements ShouldQueue
 
     private function imageCarouselMessage()
     {
-        if (env('ENABLE_LINE_IMAGE_CAROUSEL') && $this->schedule->cast_ids) {
+        $castIds = array_filter($this->schedule->cast_ids);
+        if (env('ENABLE_LINE_IMAGE_CAROUSEL') && $castIds) {
             $columns = [];
             $page = env('LINE_LIFF_REDIRECT_PAGE') . '?cast=';
-            $casts = Cast::whereIn('id', $this->schedule->cast_ids)->get();
+            $casts = Cast::whereIn('id', array_filter($castIds))->get();
             foreach ($casts as $item) {
                 $columns[] = [
                     'imageUrl' => $item->avatars->first()->path,
@@ -208,14 +209,19 @@ class AdminNotification extends Notification implements ShouldQueue
                 ];
             }
 
-            return [
-                'type' => 'template',
-                'altText' => 'this is a image carousel template',
-                'template' => [
-                    'type' => 'image_carousel',
-                    'columns' => $columns
-                ]
-            ];
+            if ($columns) {
+                return [
+                    'type' => 'template',
+                    'altText' => 'this is a image carousel template',
+                    'template' => [
+                        'type' => 'image_carousel',
+                        'columns' => $columns
+                    ]
+                ];
+            }
+
+            return [];
+
         }
 
         return [];
