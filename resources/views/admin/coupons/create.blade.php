@@ -33,7 +33,7 @@
                         <div class="wrap-radio-coupon">
                           <input type="radio" name="type" value="1" checked> ポイント数<br>
                           <div class="wrap-object-coupon coupon-point">
-                            <input type="text" class="object-coupon" name="point" placeholder="0">
+                            <input type="number" class="object-coupon" name="point" placeholder="0">
                             @if ($errors->has('point'))
                               <div class="error pull-left">
                                 <span>{{ $errors->first('point') }}</span>
@@ -45,7 +45,7 @@
                         <div class="wrap-radio-coupon">
                           <input type="radio" name="type" value="2"> 時間<br>
                           <div class="wrap-object-coupon coupon-time">
-                            <input type="text" class="object-coupon" name="time" readonly placeholder="0">
+                            <input type="number" class="object-coupon invalid-element-coupon-input" name="time" readonly placeholder="0" min="1" max="9999">
                             @if ($errors->has('time'))
                               <div class="error pull-left">
                                 <span>{{ $errors->first('time') }}</span>
@@ -57,7 +57,7 @@
                         <div class="wrap-radio-coupon">
                           <input type="radio" name="type" value="3">%<br>
                           <div class="wrap-object-coupon coupon-percent">
-                            <input type="text" class="object-coupon" name="percent" readonly placeholder="0">
+                            <input type="number" class="object-coupon invalid-element-coupon-input" name="percent" readonly placeholder="0">
                             @if ($errors->has('percent'))
                               <div class="error pull-left">
                                 <span>{{ $errors->first('percent') }}</span>
@@ -75,7 +75,7 @@
                       <div class="wrap-td-coupon">
                         <div class="wrap-radio-coupon">
                           <div class="wrap-object-coupon">
-                            <input type="text" class="object-coupon" name="max_point" placeholder="0">
+                            <input type="number" class="object-coupon" name="max_point" placeholder="0" min="1" max="99999">
                             @if ($errors->has('max_point'))
                               <div class="error pull-left">
                                 <span>{{ $errors->first('max_point') }}</span>
@@ -115,7 +115,7 @@
                         </label>
                         <p>登録時から</p>
                         <div class="wrap-object-coupon after-created-date">
-                          <input type="text" class="object-coupon" name="filter_after_created_date" placeholder="0" readonly>
+                          <input type="number" class="object-coupon invalid-element-coupon-input" name="filter_after_created_date" placeholder="0" min="1" max="7">
                           @if ($errors->has('filter_after_created_date'))
                             <div class="error pull-left">
                               <span>{{ $errors->first('filter_after_created_date') }}</span>
