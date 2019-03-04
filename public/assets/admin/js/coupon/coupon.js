@@ -58,9 +58,11 @@ $(document).ready(function(){
         if ($('#checkbox-time-order-filter:checked').length > 0) {
             $('.wrap-object-coupon.time-order-filter select').attr('disabled', false);
             $('.wrap-object-coupon.time-order-filter span').removeClass('invalid-element-coupon');
+            $('.wrap-object-coupon.time-order-filter select').removeClass('.invalid-element-coupon-input');
         } else {
             $('.wrap-object-coupon.time-order-filter select').attr('disabled', true);
             $('.wrap-object-coupon.time-order-filter span').addClass('invalid-element-coupon');
+            $('.wrap-object-coupon.time-order-filter select').addClass('.invalid-element-coupon-input');
         }
     });
 });
