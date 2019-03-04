@@ -204,7 +204,7 @@ class AdminNotification extends Notification implements ShouldQueue
                     'action' => [
                         'type' => 'uri',
                         'label' => 'プロフィールを見る',
-                        'uri' => $page . $item->id
+                        'uri' => "line://app/$page" . $item->id
                     ]
                 ];
             }
