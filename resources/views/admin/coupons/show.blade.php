@@ -140,7 +140,7 @@
                           <span class="switch-handle"></span>
                         </label>
                         <div class="wrap-object-coupon time-order-filter">
-                          <select class="object-coupon {{$coupon->is_filter_order_duration? '': 'invalid-element-coupon-input'}}" name="filter_order_duration" {{$coupon->is_filter_order_duration ? '' : 'disabled'}}>
+                          <select class="object-coupon" name="filter_order_duration" {{$coupon->is_filter_order_duration ? '' : 'disabled'}}>
                             @for($i = 0.5; $i <= 10; $i += 0.5)
                               <option value="{{ $i }}" {{$coupon->filter_order_duration == $i ? 'selected="selected"': ''}}>{{ $i  }}</option>
                             @endfor
