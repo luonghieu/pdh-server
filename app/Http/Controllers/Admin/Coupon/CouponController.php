@@ -96,7 +96,7 @@ class CouponController extends Controller
             'is_filter_order_duration',
             'filter_order_duration',
         ]);
-        dd($input);
+
         $coupon = new Coupon;
         $coupon = $coupon->create($input);
 
@@ -176,7 +176,7 @@ class CouponController extends Controller
             'is_filter_order_duration',
             'filter_order_duration',
         ]);
-        dd($input);
+
         if (!isset($input['is_filter_after_created_date'])) {
             $input['is_filter_after_created_date'] = 0;
         }
