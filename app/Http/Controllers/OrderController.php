@@ -398,6 +398,24 @@ class OrderController extends Controller
             $duration = $request->sl_duration_nominition;
         }
 
+        $input = [
+            'type' => OrderType::NOMINATION,
+            'class_id' => $classId,
+            'duration' => $duration,
+            'date' => $date,
+            'start_time' => $time,
+            'total_cast' => 1,
+            'nominee_ids' => $request->cast_id,
+        ];
+
+        if ($request->select_coupon) {
+            $input['coupon_id'] = $request->select_coupon;
+            $input['coupon_name'] = $request->name_coupon;
+            $input['coupon_value'] = $request->value_coupon;
+            $input['coupon_type'] = $request->type_coupon;
+            $input['max_point'] = $request->max_point_coupon;
+        }
+
         $client = new Client(['base_uri' => config('common.api_url')]);
         $user = Auth::user();
 
@@ -410,15 +428,7 @@ class OrderController extends Controller
         ];
 
         try {
-            $tempPoint = $client->post(route('orders.price', [
-                'type' => OrderType::NOMINATION,
-                'class_id' => $classId,
-                'duration' => $duration,
-                'date' => $date,
-                'start_time' => $time,
-                'total_cast' => 1,
-                'nominee_ids' => $request->cast_id,
-            ]), $option);
+            $tempPoint = $client->post(route('orders.price', $input), $option);
 
             $tempPoint = json_decode(($tempPoint->getBody())->getContents(), JSON_NUMERIC_CHECK);
         } catch (\Exception $e) {

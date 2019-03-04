@@ -46,6 +46,7 @@ function loadCouponsOrderCall()
   var paramCoupon = {
     duration : duration,
   };
+  
   window.axios.get('/api/v1/coupons', {params: paramCoupon})
   .then(function(response) {
     coupons = response.data['data'];
@@ -56,7 +57,7 @@ function loadCouponsOrderCall()
       html += '<h2>クーポン</h2> </div>';
       html += '<div class="form-grpup" >';
       html += '<select id="coupon-order" class="select-coupon" > ';
-      html += '<option>クーポンを使用しない</option>';
+      html += '<option value="" >クーポンを使用しない</option>';
       coupons.forEach(function (coupon) {
         var id = coupon.id;
         var name = coupon.name;
@@ -64,7 +65,7 @@ function loadCouponsOrderCall()
       })
 
       html += '</select>';
-      html += '<p class = "max-point-coupon" > ※割引されるポイントは最大10,000Pになります。</p> </div> </div>';
+      html += '<div id="show_point-sale-coupon"></div> </div></div>';
     }
 
     $('#show-coupon-order-call').html(html);
@@ -74,6 +75,45 @@ function loadCouponsOrderCall()
       window.location = '/login';
     }
   });
+}
+
+function selectedCouponsOrderCall()
+{
+  $('body').on('change', "#coupon-order", function(){
+    var couponId = parseInt($(this).val());
+    if(couponId) {
+      if(!coupons) {
+        window.location = '/mypage';
+      }
+
+      var couponIds = coupons.map(function (e) {
+        return e.id; 
+      });
+
+      var coupon = {};
+      if(couponIds.indexOf(parseInt(couponId)) > -1) {
+        coupons.forEach(function (e) {
+          if(e.id == couponId) {
+            coupon = e;
+          }
+        });
+      } else {
+        window.location = '/mypage';
+      }
+
+      if(coupon.max_point) {
+        if($('#show_point-sale-coupon').length) {
+          var max_point = coupon.max_point;
+          var html = `<p class = "max-point-coupon" > ※割引されるポイントは最大${max_point}Pになります。</p> `;
+          $('#show_point-sale-coupon').html(html);
+        }
+      } else {
+        $('#show_point-sale-coupon').html('');
+      }
+    } else {
+      $('#show_point-sale-coupon').html('');
+    }
+  })
 }
 
 function handlerSelectedArea()
@@ -205,7 +245,7 @@ function handlerSelectedTime()
     });
   });
 
-  $(".date-select__ok").on("click",function(){
+  $('body').on('click', ".date-select__ok",function(){
     var month = $('.select-month').val();
     var date = $('.select-date').val();
 
@@ -220,7 +260,6 @@ function handlerSelectedTime()
     }else {
       var minute = $('.select-minute').val();
     }
-
 
     var currentDate = new Date();
     utc = currentDate.getTime() + (currentDate.getTimezoneOffset() * 60000);
@@ -244,7 +283,6 @@ function handlerSelectedTime()
     } else {
       var selectDate = new Date(year +'-' + month +'-'+ date +' ' + hour +':' + minute);
     }
-
 
     if (month > checkMonth) {
       if(helper.add_minutes(nd, 30) > selectDate) {
@@ -271,8 +309,6 @@ function handlerSelectedTime()
       year +=1;
     }
 
-    var time = hour +':' +minute;
-    
     if (month <10) {
       month = '0'+month;
     }
@@ -280,6 +316,19 @@ function handlerSelectedTime()
     if (date <10) {
       date = '0'+date;
     }
+
+    if($('#create-nomination-form').length) {
+      var updateOtherTime = {
+          current_month: month,
+          current_date: date,
+          current_hour: hour,
+          current_minute: minute,
+        };
+
+      helper.updateLocalStorageValue('order_params', updateOtherTime);
+    }
+
+    var time = hour +':' +minute;
 
     if($("input:radio[name='area']").length) {
       var params = {
@@ -313,132 +362,6 @@ function handlerSelectedTime()
 
     $(".overlay").fadeOut();
   });
-
-  //select-time order 1-1
-  $('.choose-time').on("click",function(){
-    var cost = $('.cost-order').val();
-    var time = $("input:radio[name='time_join_nomination']:checked").val();
-    var currentDate = new Date();
-    utc = currentDate.getTime() + (currentDate.getTimezoneOffset() * 60000);
-    nd = new Date(utc + (3600000*9));
-    
-    var year = nd.getFullYear();
-    if ((time == 'other_time')) {
-      var month = $('.select-month').val();
-      var checkMonth = nd.getMonth();
-
-      if (month <= checkMonth) {
-        var year = nd.getFullYear() + 1;
-      }
-
-      if(month<10) {
-        month = '0'+month;
-      }
-
-      var day = $('.select-date').val();
-
-      if(day<10) {
-        day = '0'+day;
-      }
-
-      var hour = $('.select-hour').val();
-
-      if(hour<10) {
-        hour = '0'+hour;
-      }
-
-      var minute = $('.select-minute').val();
-      if(minute<10) {
-        minute = '0'+minute;
-      }
-
-    var updateOtherTime = {
-        current_month: month,
-        current_date: day,
-        current_hour: hour,
-        current_minute: minute,
-      };
-
-    helper.updateLocalStorageValue('order_params', updateOtherTime);
-
-    var date = year+'-'+month+'-'+day;
-    var time = hour+':'+minute;
-  } else{
-
-      var selectDate = helper.add_minutes(nd,time);
-
-      if (helper.add_minutes(nd, 30) > selectDate) {
-        selectDate = helper.add_minutes(nd, 30);
-      }
-
-      var day = selectDate.getDate();
-      if(day<10) {
-        day = '0'+day;
-      }
-
-      var month = selectDate.getMonth() +1;
-      if(month<10) {
-        month = '0'+month;
-      }
-      var hour = selectDate.getHours();
-      if(hour<10) {
-        hour = '0'+hour;
-      }
-
-      var minute = selectDate.getMinutes();
-      if(minute<10) {
-        minute = '0'+minute;
-      }
-
-      var date = year+'-'+month+'-'+day;
-      var time = hour+':'+minute;
-
-      var updateSelectedDate = {
-        current_date: day,
-        current_month: month,
-        current_time: time,
-      };
-
-      helper.updateLocalStorageValue('order_params', updateSelectedDate);
-    }
-
-    if ($("input:radio[name='time_set_nomination']:checked").length) {
-      var duration = $("input:radio[name='time_set_nomination']:checked").val();
-
-      if('other_time_set' == duration) {
-        duration = $('.select-duration option:selected').val();
-      }
-
-      $castId = $('.cast-id').val();
-      var params = {
-        date : date,
-        start_time : time,
-        type :3,
-        duration :duration,
-        total_cast :1,
-        nominee_ids : $castId
-      };
-
-      window.axios.post('/api/v1/orders/price',params)
-        .then(function(response) {
-          var totalPoint=cost*(duration*6)/3;
-          totalPoint = response.data['data'];
-          totalPoint = parseInt(totalPoint).toLocaleString(undefined,{ minimumFractionDigits: 0 });
-          $('.total-point').text(totalPoint +'P~');
-
-          var params = {
-            current_total_point: totalPoint,
-          };
-
-          helper.updateLocalStorageValue('order_params', params);
-        }).catch(function(error) {
-          console.log(error);
-          if (error.response.status == 401) {
-            window.location = '/login';
-          }
-      });
-    }
-  })
 }
   
 function handlerSelectedDuration()
@@ -474,9 +397,7 @@ function handlerSelectedDuration()
       $("#step1-create-call").prop('disabled', false);
     }
 
-
     //show coupon 
-   
     if ('other_duration' == duration) {
       duration = $('#select-duration-call option:selected').val();
     }
@@ -505,9 +426,8 @@ function handlerSelectedDuration()
         })
 
         html += '</select>';
-        html += '<p class = "max-point-coupon" > ※割引されるポイントは最大10,000Pになります。</p> </div> </div>';
+        html += '<div id="show_point-sale-coupon"></div> </div></div>';
       }
-
 
       $('#show-coupon-order-call').html(html);
     }).catch(function(error) {
@@ -554,7 +474,7 @@ function handlerSelectedDuration()
         })
 
         html += '</select>';
-        html += '<p class = "max-point-coupon" > ※割引されるポイントは最大10,000Pになります。</p> </div> </div>';
+        html += '<div id="show_point-sale-coupon"></div> </div></div>';
       }
 
       $('#show-coupon-order-call').html(html);
@@ -853,6 +773,7 @@ $(document).ready(function () {
   if($('#step1-create-call').length) {
     loadCouponsOrderCall();
     handleStepOne();
+    selectedCouponsOrderCall();
   }
 
 });

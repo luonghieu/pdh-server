@@ -147,17 +147,10 @@
 
         <div id="show-coupon-order-nominate"></div>
 
- <!--        <div class="reservation-item">
-          <div class="caption">
-            <h2>クーポン</h2>
-          </div>
-          <div class="form-grpup" >
-            <select id="coupon-order" class="select-coupon">
-              <option>クーポンを使用しない</option>
-            </select>
-            <p class = "max-point-coupon" > ※割引されるポイントは最大10,000Pになります。</p>
-          </div>
-        </div> -->
+        <input type="hidden" name="max_point_coupon" id="max_point-coupon">
+        <input type="hidden" name="type_coupon" id="type-coupon" >
+        <input type="hidden" name="value_coupon" id="value-coupon" >
+        <input type="hidden" name="name_coupon" id="name-coupon" >
 
         <div class="reservation-attention"><a href="{{ route('guest.orders.nominate_step2') }}" style="margin: 10px 0px -7px;">予約前の注意事項</a></div>
 
@@ -165,12 +158,8 @@
         <div class="reservation-total">
           <div class="reservation-total__content">
 
-          <div class="details-total__content show_point-coupon">
-            <div class="reservation-total__sum content-coupon">通常料金<span class="details-total__marks">1000P~</span></div>
-          </div>
-
-          <div class="details-total__content show_point-coupon">
-            <div class="reservation-total__sum content-coupon">割引額<span class="details-total__marks sale-point-coupon">1000P~</span></div>
+          <!-- show point coupon -->
+          <div id="detail_point-coupon">
           </div>
 
             <div class="reservation-total__sum">合計<span class="total-point">0P~</span></div>
@@ -300,7 +289,7 @@
       }
 
       if (409 == $statusCode) {
-        $content = 'すでに予約があります';
+        $content = 'クーポンが無効です';
       }
 
       if (422 == $statusCode) {

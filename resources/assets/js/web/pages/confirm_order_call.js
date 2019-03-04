@@ -5,11 +5,6 @@ const couponType = {
   'PERCENT': 3
 };
 
-const COUPONPOINT = {
-  'max': 10000,
-};
-
-
 function showCoupons(coupon, params)
 {
   var html = '<section class="details-list">';
@@ -56,8 +51,10 @@ function showCoupons(coupon, params)
         var pointCoupon = totalCouponPoint.order_point_coupon + totalCouponPoint.order_fee_coupon;
       }
 
-      if(COUPONPOINT.max < pointCoupon) {
-        pointCoupon = COUPONPOINT.max;
+      if(coupon.max_point) {
+        if(coupon.max_point < pointCoupon) {
+          pointCoupon = coupon.max_point;
+        }
       }
 
       $('#temp_point_order_call').val(tempPoint-pointCoupon);
@@ -322,7 +319,10 @@ $(document).ready(function(){
           params.coupon_id = coupon.id;
           params.coupon_name = coupon.name;
           params.coupon_type = coupon.type;
-          params.coupon_max_point = coupon.max_point;
+          
+          if(coupon.max_point) {
+            params.coupon_max_point = coupon.max_point;
+          }
 
           switch(coupon.type) {
             case couponType.POINT:
@@ -377,7 +377,7 @@ $(document).ready(function(){
                   }
 
                   if(error.response.status == 409) {
-                    var title = 'すでに予約があります';
+                    var title = 'クーポンが無効です';
                   }
 
                   $('.show-message-order-call h2').html(title);
