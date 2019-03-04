@@ -19,7 +19,7 @@ final class AppVersionType extends Enum
     {
         switch ($value) {
             case self::IOS:
-                return 'iso';
+                return 'ios';
                 break;
             case self::ANDROID:
                 return 'android';

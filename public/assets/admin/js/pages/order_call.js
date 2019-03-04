@@ -277,9 +277,9 @@ function orderChanged() {
             }
         }
         $('#order-type').text(orderTypeDesc[currentOrderType]);
-        if (numOfCast < $('#total-cast').val()) {
+        if ((getListCastMatching().length + getListCastCandidates().length) < $('#total-cast').val()) {
             $('#submit-popup-content').html(`
-            <h2> ${ $('#total-cast').val() - numOfCast}名をコールとして募集します</h2>
+            <h2> ${ $('#total-cast').val() - (getListCastMatching().length + getListCastCandidates().length)}名をコールとして募集します</h2>
             <h2> "OK"をタップすると、キャストに通知が送られます</h2>
             `);
         } else if(selectedNomination.length) {
@@ -682,7 +682,8 @@ jQuery(document).ready(function ($) {
                 'totalCast': $('#total-cast').val(),
                 'type': currentOrderType,
                 'temp_point': currentTempPoint,
-                'status': currentOrderStatus
+                'status': currentOrderStatus,
+                'old_status': orderStatus
             },
             success: function (response) {
                 if (response.success) {

@@ -1880,6 +1880,18 @@ tbody td {
 .invalid-element-coupon {
   color: #A5A5A5;
 }
+
+.invalid-element-coupon-input {
+  background-color: #F1F4F8;
+  border: 1px solid #DFE6EE;
+  padding: 2px;
+  color: #d6d3d3;
+}
+
 .rank-schedule-cast-ids {
   margin-bottom: 10px;
+}
+
+.table-coupon input::placeholder {
+  color: #d6d3d3;
 }

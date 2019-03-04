@@ -28,6 +28,8 @@
   <div class="cast-list">
     @include('web.users.load_more_list_casts_favorite', compact('favorites'))
     <input type="hidden" id="next_page" value="{{ $favorites['next_page_url'] }}">
+    <!-- loading_page -->
+    @include('web.partials.loading_icon')
   </div> <!-- /list_wrap -->
   </div>
   @endif
@@ -62,16 +64,24 @@
         var url = $('#next_page').val();
 
         if (url) {
+          // Hide page loading icon
+          $('.js-loading').removeClass('css-loading-none');
           requesting = true;
+
           window.axios.get("<?php echo env('APP_URL')  . '/cast/favorite/more' ?>", {
             params: { next_page: url },
           }).then(function (res) {
             res = res.data;
             $('#next_page').val(res.next_page || '');
             $('#next_page').before(res.view);
+
             requesting = false;
+            // Add page loading icon
+            $('.js-loading').addClass('css-loading-none');
           }).catch(function () {
             requesting = false;
+            // Add page loading icon
+            $('.js-loading').addClass('css-loading-none');
           });
         }
       }

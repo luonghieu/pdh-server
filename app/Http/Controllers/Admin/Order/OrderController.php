@@ -18,6 +18,8 @@ use App\Notification;
 use App\Notifications\AdminEditOrder;
 use App\Notifications\AdminRemoveCastInOrder;
 use App\Notifications\CallOrdersCreated;
+use App\Notifications\CastAcceptNominationOrders;
+use App\Notifications\CastApplyOrders;
 use App\Notifications\CreateNominationOrdersForCast;
 use App\Order;
 use App\PaymentRequest;
@@ -262,7 +264,7 @@ class OrderController extends Controller
             // Update temp point for previous casts matched
             $matchedCasts = $order->casts;
             foreach ($matchedCasts as $cast) {
-                if (CastOrderType::NOMINEE == $cast->pivot->type) {
+                if ($cast->pivot->type == CastOrderType::NOMINEE) {
                     $orderFee = $order->orderFee($cast, $orderStartTime, $orderEndTime);
                     $orderPoint = $order->orderPoint($cast);
                     $order->castOrder()->updateExistingPivot(
@@ -303,7 +305,7 @@ class OrderController extends Controller
             // Add/Remove casts in room
             $room = $order->room;
             if ($room) {
-                if (1 == $order->total_cast) {
+                if ($order->total_cast == 1) {
                     $cast = $order->casts()->first();
                     if ($cast) {
                         $ownerId = $order->user_id;
@@ -316,7 +318,7 @@ class OrderController extends Controller
                 }
 
                 if ($order->total_cast > 1) {
-                    if (RoomType::GROUP == $room->type) {
+                    if ($room->type == RoomType::GROUP) {
                         $users = $order->casts()->get()->pluck('id')->toArray();
                         $users[] = $order->user_id;
                         $room->users()->sync($users);
@@ -347,7 +349,7 @@ class OrderController extends Controller
                         $room->users()->attach($users);
                     }
 
-                    if (1 == $order->total_cast) {
+                    if ($order->total_cast == 1) {
                         $cast = $order->casts()->first();
                         $ownerId = $order->user_id;
                         $room = $this->createDirectRoom($ownerId, $cast->id);
@@ -358,34 +360,46 @@ class OrderController extends Controller
                     $order->save();
                 }
             }
+
             \DB::commit();
 
-            // Send notification to new nominees
-            \Notification::send(
-                $newNominees,
-                (new CreateNominationOrdersForCast($order->id))->delay(now()->addSeconds(3))
-            );
-            // Send notification to casts removed
-            \Notification::send(
-                $castsRemoved,
-                (new AdminRemoveCastInOrder())->delay(now()->addSeconds(3))
-            );
-            // Send notification to user and casts.
-            $order->user->notify((new AdminEditOrder())->delay(now()->addSeconds(3)));
-            \Notification::send(
-                $matchedCasts,
-                (new AdminEditOrder())->delay(now()->addSeconds(3))
-            );
-
-            // Send notification to other casts
-            if ($order->total_cast != $currentTotalCast) {
-                $castInOrder = $order->castOrder()->get()->pluck('id')->toArray();
-                $casts = Cast::where('class_id', $order->class_id)->whereNotIn('id', $castInOrder)->get();
+            if ($request->old_status != $order->status && $order->status == OrderStatus::ACTIVE ) {
+                $casts = $order->casts;
+                $involvedUsers = [$order->user];
+                foreach ($casts as $cast) {
+                    $involvedUsers[] = $cast;
+                    $cast->notify(new CastApplyOrders($order, $cast->pivot->temp_point));
+                }
+                \Notification::send($involvedUsers, new CastAcceptNominationOrders($order));
+            } else {
+                // Send notification to new nominees
                 \Notification::send(
-                    $casts,
-                    (new CallOrdersCreated($order->id))->delay(now()->addSeconds(3))
+                    $newNominees,
+                    (new CreateNominationOrdersForCast($order->id))->delay(now()->addSeconds(3))
                 );
+                // Send notification to casts removed
+                \Notification::send(
+                    $castsRemoved,
+                    (new AdminRemoveCastInOrder())->delay(now()->addSeconds(3))
+                );
+                // Send notification to user and casts.
+                $order->user->notify((new AdminEditOrder())->delay(now()->addSeconds(3)));
+                \Notification::send(
+                    $matchedCasts,
+                    (new AdminEditOrder())->delay(now()->addSeconds(3))
+                );
+
+                // Send notification to other casts
+                if ($order->total_cast != $currentTotalCast) {
+                    $castInOrder = $order->castOrder()->get()->pluck('id')->toArray();
+                    $casts = Cast::where('class_id', $order->class_id)->whereNotIn('id', $castInOrder)->get();
+                    \Notification::send(
+                        $casts,
+                        (new CallOrdersCreated($order->id))->delay(now()->addSeconds(3))
+                    );
+                }
             }
+
             return response()->json(['success' => true], 200);
         } catch (\Exception $e) {
             \DB::rollBack();

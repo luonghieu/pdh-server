@@ -12,6 +12,7 @@ use App\Enums\OfferStatus;
 use App\Enums\OrderStatus;
 use App\Enums\OrderType;
 use App\Enums\RoomType;
+use App\Enums\TagType;
 use App\Http\Resources\OrderResource;
 use App\Notifications\AcceptedOffer;
 use App\Notifications\CallOrdersCreated;
@@ -131,7 +132,7 @@ class OrderController extends ApiController
 
             if ($request->tags) {
                 $listTags = explode(",", trim($request->tags, ","));
-                $tagIds = Tag::whereIn('name', $listTags)->pluck('id');
+                $tagIds = Tag::whereIn('name', $listTags)->whereIn('type', [TagType::DESIRE, TagType::SITUATION])->pluck('id');
                 $order->tags()->attach($tagIds);
             }
 
