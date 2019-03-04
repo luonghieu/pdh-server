@@ -17,7 +17,7 @@
                     <th>クーポン名*</th>
                     <td>
                       <div class="wrap-td-coupon">
-                        <input type="text" name="name" placeholder="クーポン名を入力してください">
+                        <input type="text" name="name" placeholder="クーポン名を入力してください" value="{{request()->old('name')}}">
                         @if ($errors->has('name'))
                           <div class="error pull-left">
                             <span>{{ $errors->first('name') }}</span>
@@ -31,9 +31,9 @@
                     <td>
                       <div class="wrap-td-coupon">
                         <div class="wrap-radio-coupon">
-                          <input type="radio" name="type" value="1" checked> ポイント数<br>
+                          <input type="radio" name="type" value="1" {{request()->old('type') == '' ? 'checked' : (request()->old('type') == App\Enums\CouponType::POINT ? 'checked': '')}}> ポイント数<br>
                           <div class="wrap-object-coupon coupon-point">
-                            <input type="number" class="object-coupon" name="point" placeholder="0">
+                            <input type="number" class="object-coupon {{request()->old('type') == '' ? '' : (request()->old('type') != App\Enums\CouponType::POINT ? 'invalid-element-coupon-input': '')}}" name="point" placeholder="0" value="{{request()->old('point')}}">
                             @if ($errors->has('point'))
                               <div class="error pull-left">
                                 <span>{{ $errors->first('point') }}</span>
@@ -43,9 +43,9 @@
                           </div>
                         </div>
                         <div class="wrap-radio-coupon">
-                          <input type="radio" name="type" value="2"> 時間<br>
+                          <input type="radio" name="type" value="2" {{request()->old('type') == App\Enums\CouponType::TIME ? 'checked': ''}}> 時間<br>
                           <div class="wrap-object-coupon coupon-time">
-                            <input type="number" class="object-coupon invalid-element-coupon-input" name="time" readonly placeholder="0" min="1" max="9999">
+                            <input type="number" class="object-coupon {{request()->old('type') != App\Enums\CouponType::TIME ? 'invalid-element-coupon-input': ''}}" name="time" value="{{request()->old('time')}}" readonly placeholder="0" min="1" max="9999">
                             @if ($errors->has('time'))
                               <div class="error pull-left">
                                 <span>{{ $errors->first('time') }}</span>
@@ -55,9 +55,9 @@
                           </div>
                         </div>
                         <div class="wrap-radio-coupon">
-                          <input type="radio" name="type" value="3">%<br>
+                          <input type="radio" name="type" value="3" {{request()->old('type') == App\Enums\CouponType::PERCENT ? 'checked': ''}}>%<br>
                           <div class="wrap-object-coupon coupon-percent">
-                            <input type="number" class="object-coupon invalid-element-coupon-input" name="percent" readonly placeholder="0">
+                            <input type="number" class="object-coupon {{request()->old('type') != App\Enums\CouponType::PERCENT ? 'invalid-element-coupon-input': ''}}" name="percent" value="{{request()->old('percent')}}" readonly placeholder="0">
                             @if ($errors->has('percent'))
                               <div class="error pull-left">
                                 <span>{{ $errors->first('percent') }}</span>
@@ -75,7 +75,7 @@
                       <div class="wrap-td-coupon">
                         <div class="wrap-radio-coupon">
                           <div class="wrap-object-coupon">
-                            <input type="number" class="object-coupon" name="max_point" placeholder="0" min="1" max="99999">
+                            <input type="number" class="object-coupon" name="max_point" value="{{request()->old('max_point')}}"  placeholder="0" min="1" max="99999">
                             @if ($errors->has('max_point'))
                               <div class="error pull-left">
                                 <span>{{ $errors->first('max_point') }}</span>
@@ -91,7 +91,7 @@
                     <th>備考</th>
                     <td>
                       <div class="wrap-td-coupon">
-                        <textarea rows="4" cols="50" name="note"></textarea>
+                        <textarea rows="4" cols="50" name="note">{{request()->old('note')}}</textarea>
                         @if ($errors->has('note'))
                           <div class="error pull-left">
                             <span>{{ $errors->first('note') }}</span>
@@ -115,7 +115,7 @@
                         </label>
                         <p class="title-filter_after_created_date">登録時から</p>
                         <div class="wrap-object-coupon after-created-date">
-                          <input type="number" class="object-coupon invalid-element-coupon-input" name="filter_after_created_date" placeholder="0" min="1" max="7">
+                          <input type="number" class="object-coupon invalid-element-coupon-input" name="filter_after_created_date" value="{{request()->old('filter_after_created_date')}}" placeholder="0" min="1" max="7">
                           @if ($errors->has('filter_after_created_date'))
                             <div class="error pull-left">
                               <span>{{ $errors->first('filter_after_created_date') }}</span>
