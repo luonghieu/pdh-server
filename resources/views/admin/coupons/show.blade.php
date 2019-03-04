@@ -117,7 +117,7 @@
                           <span class="switch-label" data-on="On" data-off="Off"></span>
                           <span class="switch-handle"></span>
                         </label>
-                        <p>登録時から</p>
+                        <p class="title-filter_after_created_date {{$coupon->is_filter_after_created_date? '': 'invalid-element-coupon'}}">登録時から</p>
                         <div class="wrap-object-coupon after-created-date">
                           <input type="text" class="object-coupon {{$coupon->is_filter_after_created_date? '': 'invalid-element-coupon-input'}}" name="filter_after_created_date" placeholder="0" value="{{$coupon->filter_after_created_date ? $coupon->filter_after_created_date : '0'}}" {{$coupon->is_filter_after_created_date ? '' : 'readOnly'}}>
                           @if ($errors->has('filter_after_created_date'))
