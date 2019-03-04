@@ -212,7 +212,7 @@ class AdminNotification extends Notification implements ShouldQueue
             if ($columns) {
                 return [
                     'type' => 'template',
-                    'altText' => 'this is a image carousel template',
+                    'altText' => 'Cheersで会える女性を写真でご紹介！本日以降のご予約も可能です！',
                     'template' => [
                         'type' => 'image_carousel',
                         'columns' => $columns
