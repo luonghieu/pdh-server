@@ -16,7 +16,7 @@ class TagsTableSeeder extends Seeder
 
         $data = [
             [
-                'type' => 0,
+                'type' => TagType::DESIRE,
                 'name' => [
                     '聞き上手',
                     '話し上手',
@@ -44,7 +44,7 @@ class TagsTableSeeder extends Seeder
                 ],
             ],
             [
-                'type' => 0,
+                'type' => TagType::SITUATION,
                 'name' => [
                     'プライベート',
                     '接待',
@@ -59,7 +59,7 @@ class TagsTableSeeder extends Seeder
                 ],
             ],
             [
-                'type' => TagType::DESIRE,
+                'type' => 0,
                 'name' => [
                     '聞き上手',
                     '話し上手',
@@ -70,7 +70,7 @@ class TagsTableSeeder extends Seeder
                 ],
             ],
             [
-                'type' => TagType::SITUATION,
+                'type' => 0,
                 'name' => [
                     'プライベート',
                     '接待',
