@@ -148,7 +148,21 @@
                   </tr>
                 </table>
                 <div class="btn-create-coupon">
-                  <button type="submit" class="btn btn-info">保存する</button>
+                  <button type="button" class="btn btn-info" data-toggle="modal" data-target="#create_coupon_modal" >保存する</button>
+                </div>
+                <div class="modal fade" id="create_coupon_modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                  <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                      <div class="modal-body">
+                        <p>クーポンを保存しますか？</p>
+                        <p>"はい"をタップすると、クーポンが新しく作成されます</p>
+                      </div>
+                      <div class="modal-footer">
+                        <button type="button" class="btn btn-canceled" data-dismiss="modal">キャンセル</button>
+                        <button type="submit" class="btn btn-accept">はい</button>
+                      </div>
+                    </div>
+                  </div>
                 </div>
               </form>
             </div>
