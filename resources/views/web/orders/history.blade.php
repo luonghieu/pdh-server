@@ -249,10 +249,10 @@
                 <button class="btn-l" type="submit" id="payment-submit">決済を確定する</button>
             </div>
 
-                @if ($order->payment_status != \App\Enums\OrderPaymentStatus::EDIT_REQUESTING)
-                    <a href="javascript:void(0)" class="point-fix"
-                       onclick="openRequestUpdatePoint('{{ $order->id }}')">決済ポイントの修正を依頼する場合はこちら</a>
-                @endif
+            @if ($order->payment_status != \App\Enums\OrderPaymentStatus::EDIT_REQUESTING)
+                <a href="javascript:void(0)" class="point-fix"
+                   onclick="openRequestUpdatePoint('{{ $order->id }}')">決済ポイントの修正を依頼する場合はこちら</a>
+            @endif
         @endif
     </form>
     @endif
@@ -261,7 +261,7 @@
 
 @section('web.extra_js')
     <script>
-        const orderTotalPoint = parseInt('<?php echo $orderTotalPoint ?>');
+        const orderTotalPoint = parseInt('<?php echo $orderTotalPoint - $order->discount_point ?>');
         const guestTotalPoint = parseInt('<?php echo $user->point ?>');
 
         const orderId = '<?php echo $order->id; ?>';
