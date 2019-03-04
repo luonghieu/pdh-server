@@ -11,7 +11,7 @@
               <form action="{{ route('admin.coupons.store') }}" method="POST">
                 {{ csrf_field() }}
                 <p>クーポン設定</p>
-                <table class="table table-bordered">
+                <table class="table table-bordered table-coupon">
                   <!--  table-striped -->
                   <tr>
                     <th>クーポン名*</th>

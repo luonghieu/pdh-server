@@ -1890,3 +1890,7 @@ tbody td {
 .rank-schedule-cast-ids {
   margin-bottom: 10px;
 }
+
+.table-coupon input::placeholder {
+  color: #d6d3d3;
+}
