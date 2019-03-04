@@ -37,37 +37,37 @@
                         <div class="wrap-radio-coupon">
                           <input type="radio" name="type" value="1" {{$coupon->type == App\Enums\CouponType::POINT ? 'checked': ''}}> ポイント数<br>
                           <div class="wrap-object-coupon coupon-point">
-                            <input type="number" class="object-coupon" name="point" placeholder="0" value="{{$coupon->point}}" {{$coupon->type == App\Enums\CouponType::POINT ? '': 'readOnly'}}>
+                            <input type="number" class="object-coupon {{$coupon->type != App\Enums\CouponType::POINT ? 'invalid-element-coupon-input': ''}}" name="point" placeholder="0" value="{{$coupon->point}}" {{$coupon->type == App\Enums\CouponType::POINT ? '': 'readOnly'}}>
                             @if ($errors->has('point'))
                               <div class="error pull-left">
                                 <span>{{ $errors->first('point') }}</span>
                               </div>
                             @endif
-                            <span class="{{$coupon->type == App\Enums\CouponType::TIME ? 'invalid-element-coupon': ''}}">ポイント引き</span>
+                            <span class="{{$coupon->type != App\Enums\CouponType::POINT ? 'invalid-element-coupon': ''}}">ポイント引き</span>
                           </div>
                         </div>
                         <div class="wrap-radio-coupon">
                           <input type="radio" name="type" value="2" {{$coupon->type == App\Enums\CouponType::TIME ? 'checked': ''}}> 時間<br>
                           <div class="wrap-object-coupon coupon-time">
-                            <input type="number" class="object-coupon" name="time" placeholder="0" value="{{$coupon->time}}" {{$coupon->type == App\Enums\CouponType::TIME ? '': 'readOnly'}} min="1" max="9999">
+                            <input type="number" class="object-coupon {{$coupon->type != App\Enums\CouponType::TIME ? 'invalid-element-coupon-input': ''}}" name="time" placeholder="0" value="{{$coupon->time}}" {{$coupon->type == App\Enums\CouponType::TIME ? '': 'readOnly'}} min="1" max="9999">
                             @if ($errors->has('time'))
                               <div class="error pull-left">
                                 <span>{{ $errors->first('time') }}</span>
                               </div>
                             @endif
-                            <span class="{{$coupon->type == App\Enums\CouponType::POINT ? 'invalid-element-coupon': ''}}">分無料</span>
+                            <span class="{{$coupon->type != App\Enums\CouponType::TIME ? 'invalid-element-coupon': ''}}">分無料</span>
                           </div>
                         </div>
                         <div class="wrap-radio-coupon">
                           <input type="radio" name="type" value="3" {{$coupon->type == App\Enums\CouponType::PERCENT ? 'checked': ''}}>%<br>
                           <div class="wrap-object-coupon coupon-percent">
-                            <input type="number" class="object-coupon" name="percent" placeholder="0" value="{{$coupon->percent}}" {{$coupon->type == App\Enums\CouponType::PERCENT ? '': 'readOnly'}}>
+                            <input type="number" class="object-coupon {{$coupon->type != App\Enums\CouponType::PERCENT ? 'invalid-element-coupon-input': ''}}" name="percent" placeholder="0" value="{{$coupon->percent}}" {{$coupon->type == App\Enums\CouponType::PERCENT ? '': 'readOnly'}}>
                             @if ($errors->has('percent'))
                               <div class="error pull-left">
                                 <span>{{ $errors->first('percent') }}</span>
                               </div>
                             @endif
-                            <span class="invalid-element-coupon">%Off</span>
+                            <span class="{{$coupon->type != App\Enums\CouponType::PERCENT ? 'invalid-element-coupon': ''}}">%Off</span>
                           </div>
                         </div>
                       </div>
