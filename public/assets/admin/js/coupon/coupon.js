@@ -45,10 +45,12 @@ $(document).ready(function(){
             $('.wrap-object-coupon.after-created-date input').attr('readonly', false);
             $('.wrap-object-coupon.after-created-date input').removeClass('invalid-element-coupon-input');
             $('.wrap-object-coupon.after-created-date span').removeClass('invalid-element-coupon');
+            $('.wrap-td-coupon .title-filter_after_created_date').removeClass('invalid-element-coupon');
         } else {
             $('.wrap-object-coupon.after-created-date input').attr('readonly', true);
             $('.wrap-object-coupon.after-created-date input').addClass('invalid-element-coupon-input');
             $('.wrap-object-coupon.after-created-date span').addClass('invalid-element-coupon');
+            $('.wrap-td-coupon .title-filter_after_created_date').addClass('invalid-element-coupon');
         }
     });
 
