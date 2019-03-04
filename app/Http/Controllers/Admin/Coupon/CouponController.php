@@ -49,9 +49,9 @@ class CouponController extends Controller
         $rules = [
             'name' => 'required|max:255',
             'type' => 'required|numeric|in:1,2,3',
-            'point' => 'numeric|nullable',
-            'time' => 'numeric|min:1|max:9999|nullable',
-            'percent' => 'numeric|nullable',
+            'point' => 'numeric|required_if:type,1|nullable',
+            'time' => 'numeric|min:1|max:9999|required_if:type,2|nullable',
+            'percent' => 'numeric|required_if:type,3|nullable',
             'max_point' => 'required_with:time,percent',
             'note' => 'string|max:500|nullable',
             'is_filter_after_created_date' => 'numeric|nullable',
@@ -60,7 +60,24 @@ class CouponController extends Controller
             'filter_order_duration' => 'numeric|nullable',
         ];
 
-        $validator = validator(request()->all(), $rules);
+        $messages = [
+            'name.required' => 'クーポン名は、必ず指定してください',
+            'name.max' => 'クーポン名には、255以下の数字を指定してください。',
+            'type.required' => '適用対象は、必ず指定してください。',
+            'type.numeric' => '適用対象には、数字を指定してください。',
+            'type.in' => '選択された適用対象は、有効ではありません。',
+            'point.numeric' => 'ポイント数には、数字を指定してください。',
+            'time.numeric' => '時間には、数字を指定してください。',
+            'time.min' => '時間には、1以上の数字を指定してください。',
+            'time.max' => '時間には、9999以上の数字を指定してください。',
+            'percent.numeric' => '%Offには、数字を指定してください。',
+            'max_point.required_with' => '時間, %Offが指定されている場合、クーポン適用最高上限額も指定してください。',
+            'note.string' => '備考には、文字を指定してください。',
+            'note.max' => '備考は、500文字以下にしてください。',
+
+        ];
+
+        $validator = validator(request()->all(), $rules, $messages);
 
         if ($validator->fails()) {
             return back()->withErrors($validator->errors())->withInput();
@@ -112,20 +129,35 @@ class CouponController extends Controller
     public function update(Request $request, Coupon $coupon)
     {
         $rules = [
-            'name' => 'string||max:255',
+            'name' => 'string|max:255',
             'type' => 'numeric|in:1,2,3',
-            'point' => 'numeric|nullable',
-            'time' => 'numeric|min:1|max:9999|nullable',
-            'percent' => 'numeric|nullable',
+            'point' => 'numeric|required_if:type,1|nullable',
+            'time' => 'numeric|min:1|max:9999|required_if:type,2|nullable',
+            'percent' => 'numeric|required_if:type,3|nullable',
             'max_point' => 'required_with:time,percent',
             'note' => 'string|max:500|nullable',
             'is_filter_after_created_date' => 'numeric|nullable',
-            'filter_after_created_date' => 'numeric|min:1|max:7|nullable',
+            'filter_after_created_date' => 'numeric|required_if:is_filter_after_created_date,1|nullable',
             'is_filter_order_duration' => 'numeric|nullable',
-            'filter_order_duration' => 'numeric|nullable',
+            'filter_order_duration' => 'numeric|required_if:is_filter_order_duration,1|nullable',
         ];
 
-        $validator = validator(request()->all(), $rules);
+        $messages = [
+            'name.max' => 'クーポン名には、255以下の数字を指定してください。',
+            'type.numeric' => '適用対象には、数字を指定してください。',
+            'type.in' => '選択された適用対象は、有効ではありません。',
+            'point.numeric' => 'ポイント数には、数字を指定してください。',
+            'time.numeric' => '時間には、数字を指定してください。',
+            'time.min' => '時間には、1以上の数字を指定してください。',
+            'time.max' => '時間には、9999以上の数字を指定してください。',
+            'percent.numeric' => '%Offには、数字を指定してください。',
+            'max_point.required_with' => '時間, %Offが指定されている場合、クーポン適用最高上限額も指定してください。',
+            'note.string' => '備考には、文字を指定してください。',
+            'note.max' => '備考は、500文字以下にしてください。',
+
+        ];
+
+        $validator = validator(request()->all(), $rules, $messages);
 
         if ($validator->fails()) {
             return back()->withErrors($validator->errors())->withInput();
