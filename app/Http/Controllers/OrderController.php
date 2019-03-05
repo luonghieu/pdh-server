@@ -450,7 +450,7 @@ class OrderController extends Controller
             $statusCode = $e->getResponse()->getStatusCode();
 
             if (401 == $statusCode) {
-                dd(1);
+                return redirect()->route('web.login');
             } else {
                 $request->session()->flash('status_code', $statusCode);
 
