@@ -99,7 +99,9 @@ function loadCouponsOrderNominate()
           $('#name-coupon').val(coupon.name);
 
           if(coupon.max_point) {
-            $('#max_point-coupon').val(coupon.max_point)
+            $('#max_point-coupon').val(coupon.max_point);
+          } else {
+            $('#max_point-coupon').val('');
           }
 
         } else {
@@ -284,15 +286,18 @@ function priceCoupon(duration, time = null, helper, couponId)
               }
             }
 
-            totalPoint = parseInt(tempPoint-pointCoupon).toLocaleString(undefined,{ minimumFractionDigits: 0 });
-            pointCoupon = parseInt(pointCoupon).toLocaleString(undefined,{ minimumFractionDigits: 0 });
-            tempPoint = parseInt(tempPoint).toLocaleString(undefined,{ minimumFractionDigits: 0 });
+            $('#current-temp-point').val(tempPoint-pointCoupon);
 
             var params = {
               current_total_point: tempPoint,
             };
 
             helper.updateLocalStorageValue('order_params', params);
+
+            totalPoint = parseInt(tempPoint-pointCoupon).toLocaleString(undefined,{ minimumFractionDigits: 0 });
+            pointCoupon = parseInt(pointCoupon).toLocaleString(undefined,{ minimumFractionDigits: 0 });
+            tempPoint = parseInt(tempPoint).toLocaleString(undefined,{ minimumFractionDigits: 0 });
+
 
             var html = `<div class="details-total__content show_point-coupon">
                             <div class="reservation-total__sum content-coupon">通常料金
@@ -315,8 +320,9 @@ function priceCoupon(duration, time = null, helper, couponId)
             }
           });
       } else {
+
         var paramCoupon = {
-          duration : duration
+          duration : parseInt(duration)
         }
 
         window.axios.get('/api/v1/coupons', {params: paramCoupon})
@@ -341,6 +347,8 @@ function priceCoupon(duration, time = null, helper, couponId)
 
             html += `</div> </div>`;
             $('#show-coupon-order-nominate').html(html);
+          } else {
+            $('#show-coupon-order-nominate').html('');
           }
 
         }).catch(function(error) {
@@ -356,14 +364,17 @@ function priceCoupon(duration, time = null, helper, couponId)
         window.axios.post('/api/v1/orders/price',params)
         .then(function(response) {
           totalPoint = response.data['data'];
-          totalPoint = parseInt(totalPoint).toLocaleString(undefined,{ minimumFractionDigits: 0 });
-          $('.total-point').text(totalPoint +'P~');
+          $('#current-temp-point').val(totalPoint);
 
           var params = {
             current_total_point: totalPoint,
           };
 
           helper.updateLocalStorageValue('order_params', params);
+
+          totalPoint = parseInt(totalPoint).toLocaleString(undefined,{ minimumFractionDigits: 0 });
+          $('.total-point').text(totalPoint +'P~');
+
         }).catch(function(error) {
           console.log(error);
           if (error.response.status == 401) {
@@ -378,16 +389,18 @@ function priceCoupon(duration, time = null, helper, couponId)
       cost = parseInt(cost).toLocaleString(undefined,{ minimumFractionDigits: 0 });
 
       $('.reservation-total__text').text('内訳：'+cost+ '(キャストP/30分)✖'+(duration)+'時間');
-
-      totalPoint = parseInt(totalPoint).toLocaleString(undefined,{ minimumFractionDigits: 0 });
-
-      $('.total-point').text(totalPoint +'P~');
+      $('#current-temp-point').val(totalPoint);
 
       var params = {
       current_total_point: totalPoint,
       };
 
       helper.updateLocalStorageValue('order_params', params);
+
+      totalPoint = parseInt(totalPoint).toLocaleString(undefined,{ minimumFractionDigits: 0 });
+
+      $('.total-point').text(totalPoint +'P~');
+
     }
   }
 }
@@ -443,6 +456,8 @@ function selectedCouponsNominate(helper)
 
         if(coupon.max_point) {
           $('#max_point-coupon').val(coupon.max_point)
+        } else {
+          $('#max_point-coupon').val('');
         }
 
       } else {
@@ -713,7 +728,9 @@ $(document).ready(function(){
       var orderParams = JSON.parse(localStorage.getItem("order_params"));
 
       if(orderParams.current_total_point){
-          $('.total-point').text(orderParams.current_total_point +'P~');
+          $('#current-temp-point').val(parseInt(orderParams.current_total_point));
+          var currenttempPoint = parseInt(orderParams.current_total_point).toLocaleString(undefined,{ minimumFractionDigits: 0 });
+          $('.total-point').text(currenttempPoint + 'P~');
       }
 
         //duration

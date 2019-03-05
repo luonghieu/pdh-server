@@ -398,12 +398,17 @@ class OrderController extends Controller
             $duration = $request->sl_duration_nominition;
         }
 
+        $tempPoint = $request->current_temp_point;
+
         $input = [
+            'prefecture_id' => $prefecture,
+            'address' => $area,
             'type' => OrderType::NOMINATION,
             'class_id' => $classId,
             'duration' => $duration,
             'date' => $date,
             'start_time' => $time,
+            'temp_point' => $tempPoint,
             'total_cast' => 1,
             'nominee_ids' => $request->cast_id,
         ];
@@ -413,7 +418,11 @@ class OrderController extends Controller
             $input['coupon_name'] = $request->name_coupon;
             $input['coupon_value'] = $request->value_coupon;
             $input['coupon_type'] = $request->type_coupon;
-            $input['max_point'] = $request->max_point_coupon;
+
+            $input['coupon_max_point'] = null;
+            if ($request->max_point_coupon) {
+                $input['coupon_max_point'] = $request->max_point_coupon;
+            }
         }
 
         $client = new Client(['base_uri' => config('common.api_url')]);
@@ -428,29 +437,7 @@ class OrderController extends Controller
         ];
 
         try {
-            $tempPoint = $client->post(route('orders.price', $input), $option);
-
-            $tempPoint = json_decode(($tempPoint->getBody())->getContents(), JSON_NUMERIC_CHECK);
-        } catch (\Exception $e) {
-            LogService::writeErrorLog($e);
-            abort(500);
-        }
-
-        $tempPoint = $tempPoint['data'];
-
-        try {
-            $order = $client->post(route('orders.create', [
-                'prefecture_id' => $prefecture,
-                'address' => $area,
-                'class_id' => $classId,
-                'duration' => $duration,
-                'date' => $date,
-                'start_time' => $time,
-                'total_cast' => 1,
-                'temp_point' => $tempPoint,
-                'type' => OrderType::NOMINATION,
-                'nominee_ids' => $request->cast_id,
-            ]), $option);
+            $order = $client->post(route('orders.create', $input), $option);
 
             $order = json_decode(($order->getBody())->getContents(), JSON_NUMERIC_CHECK);
             $order = $order['data'];

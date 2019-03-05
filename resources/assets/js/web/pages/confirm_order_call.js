@@ -322,6 +322,8 @@ $(document).ready(function(){
           
           if(coupon.max_point) {
             params.coupon_max_point = coupon.max_point;
+          } else {
+            params.coupon_max_point = null;
           }
 
           switch(coupon.type) {
