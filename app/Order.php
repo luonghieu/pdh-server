@@ -718,7 +718,7 @@ class Order extends Model
                     break;
                 case CouponType::TIME:
                     $casts = $this->casts()->get();
-                    $discountPoint = $this->orderPointDiscount($casts, (int)$this->coupon_value) + $this->orderFeeDiscount($casts, (int)$this->coupon_value);
+                    $discountPoint = $this->orderPointDiscount($casts, $this->coupon_value * 60) + $this->orderFeeDiscount($casts, $this->coupon_value * 60);
                     break;
                 
                 default:break;
