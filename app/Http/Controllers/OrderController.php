@@ -425,19 +425,21 @@ class OrderController extends Controller
             }
         }
 
-        $client = new Client(['base_uri' => config('common.api_url')]);
         $user = Auth::user();
-
         $accessToken = JWTAuth::fromUser($user);
 
-        $option = [
-            'headers' => ['Authorization' => 'Bearer ' . $accessToken],
-            'form_params' => [],
-            'allow_redirects' => false,
-        ];
+        $client = new Client([
+            'base_uri' => config('common.api_url'),
+            'headers' => [
+                'Content-Type' => 'application/json',
+                'Authorization' => 'Bearer ' . $accessToken,
+            ],
+        ]);
 
         try {
-            $order = $client->post(route('orders.create', $input), $option);
+            $order = $client->request('POST', route('orders.create'), [
+                'form_params' => $input,
+            ]);
 
             $order = json_decode(($order->getBody())->getContents(), JSON_NUMERIC_CHECK);
             $order = $order['data'];
@@ -447,9 +449,13 @@ class OrderController extends Controller
             LogService::writeErrorLog($e);
             $statusCode = $e->getResponse()->getStatusCode();
 
-            $request->session()->flash('status_code', $statusCode);
+            if (401 == $statusCode) {
+                dd(1);
+            } else {
+                $request->session()->flash('status_code', $statusCode);
 
-            return redirect()->back();
+                return redirect()->back();
+            }
         }
     }
 
