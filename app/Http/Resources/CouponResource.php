@@ -22,7 +22,7 @@ class CouponResource extends Resource
             'name' => $this->name,
             'type' => $this->type,
             'point' => $this->point,
-            'time' => $this->time,
+            'time' => $this->time * 60,
             'percent' => $this->percent,
             'max_point' => $this->max_point,
             'note' => $this->note,

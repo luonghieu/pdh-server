@@ -95,7 +95,9 @@
                           @endphp
                           <input type="radio" name="type" value="2" {{$checkedTime}}> 時間<br>
                           <div class="wrap-object-coupon coupon-time">
-                            <input type="number" class="object-coupon {{$classInvalidInputTime}}" name="time" placeholder="0" value="{{request()->old('time') == '' ? $coupon->time: request()->old('time')}}" {{$readOnlyTime}} min="1" max="9999">
+                            <input type="number" class="object-coupon {{$classInvalidInputTime}}" name="time"
+                                   placeholder="0" value="{{request()->old('time') == '' ? $coupon->time * 60: request()
+                                   ->old('time')}}" {{$readOnlyTime}} min="1" max="9999">
                             @if ($errors->has('time'))
                               <div class="error pull-left">
                                 <span>{{ $errors->first('time') }}</span>
