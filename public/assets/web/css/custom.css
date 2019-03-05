@@ -3151,7 +3151,7 @@ padding-top: 65px !important;
   opacity: .9;
 }
 
-#coupon-order {
+.select-coupon {
   -webkit-appearance: none !important;
   background: none ;
   width: 100% !important;
@@ -3196,7 +3196,13 @@ padding-top: 65px !important;
   font-weight: normal !important ;
 }
 
-#sale_point-coupon {
+.content-coupon {
+  font-size: 14px !important;
+  font-weight: normal !important;
+  color: #303030 !important;
+}
+
+.sale-point-coupon {
   color: red !important;
 }
 
