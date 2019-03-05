@@ -18,7 +18,7 @@ class CreateCouponsTable extends Migration
             $table->string('name', 255)->nullable();
             $table->tinyInteger('type')->nullable();
             $table->integer('point')->nullable();
-            $table->integer('time')->nullable();
+            $table->float('time')->nullable();
             $table->text('note')->nullable();
             $table->boolean('is_filter_after_created_date')->default(false);
             $table->tinyInteger('filter_after_created_date')->nullable();
