@@ -483,6 +483,10 @@ class OrderController extends ApiController
 
     private function isValidCoupon($coupon, $user, $input)
     {
+        if (!isset($input['coupon_max_point']) || 'null' == $input['coupon_max_point']) {
+            $input['coupon_max_point'] = null;
+        }
+
         $now = now();
         $createdAtOfUser = Carbon::parse($user->created_at);
         $isValid = true;

@@ -286,7 +286,12 @@ function priceCoupon(duration, time = null, helper, couponId)
               }
             }
 
-            $('#current-temp-point').val(tempPoint-pointCoupon);
+            var currentPoint = tempPoint-pointCoupon;
+            if(currentPoint<0) {
+              currentPoint = 0;
+            }
+
+            $('#current-temp-point').val(currentPoint);
 
             var params = {
               current_total_point: tempPoint,
@@ -294,7 +299,7 @@ function priceCoupon(duration, time = null, helper, couponId)
 
             helper.updateLocalStorageValue('order_params', params);
 
-            totalPoint = parseInt(tempPoint-pointCoupon).toLocaleString(undefined,{ minimumFractionDigits: 0 });
+            totalPoint = parseInt(currentPoint).toLocaleString(undefined,{ minimumFractionDigits: 0 });
             pointCoupon = parseInt(pointCoupon).toLocaleString(undefined,{ minimumFractionDigits: 0 });
             tempPoint = parseInt(tempPoint).toLocaleString(undefined,{ minimumFractionDigits: 0 });
 

@@ -8,7 +8,6 @@ use App\Enums\CouponType;
 use App\Enums\OrderStatus;
 use App\Enums\OrderType;
 use App\Enums\PointType;
-use App\Enums\ProviderType;
 use App\Enums\RoomType;
 use App\Jobs\CancelOrder;
 use App\Jobs\ProcessOrder;
@@ -49,7 +48,7 @@ class Order extends Model
         'coupon_id',
         'coupon_name',
         'coupon_type',
-        'coupon_value'
+        'coupon_value',
     ];
 
     public function user()
@@ -596,9 +595,13 @@ class Order extends Model
     {
         $user = $this->user;
         $totalPoint = $this->total_point;
-        
+
         if ($this->coupon_id) {
             $totalPoint = $totalPoint - $this->discount_point;
+        }
+
+        if ($totalPoint < 0) {
+            $totalPoint = 0;
         }
 
         if ($user->point < $totalPoint) {
@@ -711,16 +714,16 @@ class Order extends Model
         if ($this->coupon_id) {
             switch ($this->coupon_type) {
                 case CouponType::POINT:
-                    $discountPoint = (int)$this->coupon_value;
+                    $discountPoint = (int) $this->coupon_value;
                     break;
                 case CouponType::PERCENT:
                     $discountPoint = $this->total_point * $this->coupon_value / 100;
                     break;
                 case CouponType::TIME:
                     $casts = $this->casts()->get();
-                    $discountPoint = $this->orderPointDiscount($casts, (int)$this->coupon_value) + $this->orderFeeDiscount($casts, (int)$this->coupon_value);
+                    $discountPoint = $this->orderPointDiscount($casts, (int) $this->coupon_value) + $this->orderFeeDiscount($casts, (int) $this->coupon_value);
                     break;
-                
+
                 default:break;
             }
 

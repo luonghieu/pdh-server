@@ -164,6 +164,7 @@
 
             <div class="reservation-total__sum">合計<span class="total-point">0P~</span></div>
             <p class="reservation-total__text">内訳：{{ number_format($cast['cost']) }}(キャストP/30分)✖0時間</p>
+            <input type="hidden" name="current_temp_point" id="current-temp-point">
           </div>
 
         </div>
@@ -298,6 +299,10 @@
 
       if (500 == $statusCode) {
         $content = 'サーバーエラーが発生しました';
+      }
+
+      if (404 == $statusCode) {
+        $content = '支払い方法が未登録です';
       }
 
     @endphp

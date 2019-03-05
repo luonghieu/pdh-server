@@ -57,9 +57,14 @@ function showCoupons(coupon, params)
         }
       }
 
-      $('#temp_point_order_call').val(tempPoint-pointCoupon);
+      var currentPoint = tempPoint-pointCoupon;
+      if(currentPoint<0) {
+        currentPoint = 0;
+      }
 
-      totalPoint = parseInt(tempPoint-pointCoupon).toLocaleString(undefined,{ minimumFractionDigits: 0 });
+      $('#temp_point_order_call').val(currentPoint);
+
+      totalPoint = parseInt(currentPoint).toLocaleString(undefined,{ minimumFractionDigits: 0 });
       pointCoupon = parseInt(pointCoupon).toLocaleString(undefined,{ minimumFractionDigits: 0 });
       tempPoint = parseInt(tempPoint).toLocaleString(undefined,{ minimumFractionDigits: 0 });
 
