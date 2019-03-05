@@ -99,7 +99,9 @@ class CouponController extends Controller
             'is_filter_order_duration',
             'filter_order_duration',
         ]);
-
+        if (isset($input['time'])) {
+            $input['time'] = $input['time'] / 60;
+        }
         $coupon = new Coupon;
         $coupon = $coupon->create($input);
 
@@ -189,6 +191,10 @@ class CouponController extends Controller
         }
 
         try {
+            if (isset($input['time'])) {
+                $input['time'] = $input['time'] / 60;
+            }
+
             $coupon->update($input);
 
             return redirect()->route('admin.coupons.index');

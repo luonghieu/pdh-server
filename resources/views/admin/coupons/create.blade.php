@@ -39,7 +39,7 @@
                                 <span>{{ $errors->first('point') }}</span>
                               </div>
                             @endif
-                            <span>ポイント引き</span>
+                            <span class="{{request()->old('type') != App\Enums\CouponType::POINT ? 'invalid-element-coupon' : ''}}">ポイント引き</span>
                           </div>
                         </div>
                         <div class="wrap-radio-coupon">
@@ -51,7 +51,7 @@
                                 <span>{{ $errors->first('time') }}</span>
                               </div>
                             @endif
-                            <span class="invalid-element-coupon">分無料</span>
+                            <span class="{{request()->old('type') != App\Enums\CouponType::TIME ? 'invalid-element-coupon' : ''}}">分無料</span>
                           </div>
                         </div>
                         <div class="wrap-radio-coupon">
@@ -63,7 +63,7 @@
                                 <span>{{ $errors->first('percent') }}</span>
                               </div>
                             @endif
-                            <span class="invalid-element-coupon">%Off</span>
+                            <span class="{{request()->old('type') != App\Enums\CouponType::PERCENT ? 'invalid-element-coupon' : ''}}">%Off</span>
                           </div>
                         </div>
                       </div>
@@ -106,42 +106,66 @@
                   <!--  table-striped -->
                   <tr>
                     <th>対象ゲスト</th>
+                    @php
+                      $checkedIsFilterAfterCreatedDate = '';
+                      $classInvalidInputCreateDate = '';
+                      $classInvalidSpanCreateDate = '';
+                      if (request()->old('is_filter_after_created_date') != null) {
+                        $checkedIsFilterAfterCreatedDate = 'checked';
+                      } else {
+                        $classInvalidInputCreateDate = 'invalid-element-coupon-input';
+                        $classInvalidSpanCreateDate = 'invalid-element-coupon';
+                      }
+                    @endphp
                     <td>
                       <div class="wrap-td-coupon">
                         <label class="switch switch-primary">
-                          <input type="checkbox" class="switch-input" id="checkbox-after-created-date-filter" name="is_filter_after_created_date" value="1">
+                          <input type="checkbox" class="switch-input" id="checkbox-after-created-date-filter" name="is_filter_after_created_date" value="1" {{$checkedIsFilterAfterCreatedDate}}>
                           <span class="switch-label" data-on="On" data-off="Off"></span>
                           <span class="switch-handle"></span>
                         </label>
                         <p class="title-filter_after_created_date">登録時から</p>
                         <div class="wrap-object-coupon after-created-date">
-                          <input type="number" class="object-coupon invalid-element-coupon-input" name="filter_after_created_date" value="{{request()->old('filter_after_created_date')}}" placeholder="0" min="1" max="7">
+                          <input type="number" class="object-coupon {{$classInvalidInputCreateDate}}" name="filter_after_created_date" value="{{request()->old('filter_after_created_date')}}" placeholder="0" min="1" max="7">
                           @if ($errors->has('filter_after_created_date'))
                             <div class="error pull-left">
                               <span>{{ $errors->first('filter_after_created_date') }}</span>
                             </div>
                           @endif
-                          <span class="invalid-element-coupon">日間以内</span>
+                          <span class="{{$classInvalidSpanCreateDate}}">日間以内</span>
                         </div>
                       </div>
                     </td>
                   </tr>
                   <tr>
                     <th>予約時間</th>
+                    @php
+                      $checkedIsFilterOrderDuration = '';
+                      $classInvalidInputOrderDuration = '';
+                      $classInvalidSpanOrderDuration = '';
+                      $disableInput = '';
+                      if (request()->old('is_filter_order_duration') != null) {
+                        $checkedIsFilterOrderDuration = 'checked';
+                      } else {
+                        $classInvalidInputOrderDuration = 'invalid-element-coupon-input';
+                        $classInvalidSpanOrderDuration = 'invalid-element-coupon';
+                        $disableInput = 'disabled';
+                      }
+                    @endphp
                     <td>
                       <div class="wrap-td-coupon">
                         <label class="switch switch-primary">
-                          <input type="checkbox" class="switch-input" id="checkbox-time-order-filter" name="is_filter_order_duration" value="1">
+                          <input type="checkbox" class="switch-input" id="checkbox-time-order-filter" name="is_filter_order_duration" value="1" {{$checkedIsFilterOrderDuration}}>
                           <span class="switch-label" data-on="On" data-off="Off"></span>
                           <span class="switch-handle"></span>
                         </label>
                         <div class="wrap-object-coupon time-order-filter">
-                          <select class="object-coupon" name="filter_order_duration" disabled>
+                          <select class="object-coupon" name="filter_order_duration" {{$disableInput}}>
                             @for($i = 0.5; $i <= 10; $i += 0.5)
-                            <option value="{{ $i }}">{{ $i  }}</option>
+                            <option value="{{ $i }}" {{request()->old('filter_order_duration') == $i ? 'selected' : ''}}>{{ $i  }}</option>
                             @endfor
                           </select>
-                          <span class="invalid-element-coupon">時間以上</span>
+                          <span class="{{$classInvalidSpanOrderDuration}}">時間以上</span>
                         </div>
                       </div>
                     </td>
