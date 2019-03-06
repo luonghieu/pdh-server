@@ -4,7 +4,7 @@ namespace App\Console\Commands;
 
 use App\FailedJob;
 use Illuminate\Console\Command;
-use Laravel\Horizon\Jobs\RetryFailedJob;
+use Illuminate\Support\Facades\Artisan;
 
 class RetryFailedJobs extends Command
 {
@@ -44,7 +44,7 @@ class RetryFailedJobs extends Command
         $jobs = FailedJob::where('failed_at', '>=', $failedAt);
 
         foreach ($jobs->cursor() as $job) {
-            dispatch(new RetryFailedJob($job->id));
+            Artisan::call('queue:retry', ['id' => [$job->id]]);
         }
     }
 }
