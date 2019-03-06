@@ -3167,6 +3167,7 @@ padding-top: 65px !important;
   font-size: 14px;
   color: #222222 !important;
   margin-top: 15px;
+  padding-right: 20px;
 }
 
 #point-coupon {
@@ -3208,7 +3209,7 @@ padding-top: 65px !important;
   color: #303030 !important;
 }
 
-.sale-point-coupon {
+#sale-point-coupon {
   color: red !important;
 }
 

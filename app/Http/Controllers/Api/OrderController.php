@@ -321,9 +321,10 @@ class OrderController extends ApiController
                 'order_point' => $orderPoint,
                 'order_fee' => $orderFee,
                 'allowance_point' => $allowancePoint,
+                'order_point_coupon' => $orderPointCoupon,
+                'order_fee_coupon' => $orderFeeCoupon,
             ]);
         } else {
-
             if ($couponDuration) {
                 return $this->respondWithData([
                     'order_point_coupon' => $orderPointCoupon,
@@ -368,7 +369,7 @@ class OrderController extends ApiController
         }
 
         if (!$user->is_card_registered) {
-            return $this->respondErrorMessage(trans('messages.card_not_exist'), 409);
+            return $this->respondErrorMessage(trans('messages.card_not_exist'), 404);
         }
 
         if ($offer->total_cast != $request->total_cast) {
@@ -412,6 +413,20 @@ class OrderController extends ApiController
 
         if ($now->second(0)->diffInMinutes($start_time, false) < 29) {
             return $this->respondErrorMessage(trans('messages.time_invalid'), 400);
+        }
+
+        $coupon = null;
+        if ($request->coupon_id) {
+            $coupon = $user->coupons()->where('coupon_id', $request->coupon_id)->first();
+
+            if ($coupon) {
+                return $this->respondErrorMessage(trans('messages.coupon_invalid'), 409);
+            }
+
+            $coupon = Coupon::find($request->coupon_id);
+            if (!$this->isValidCoupon($coupon, $user, $request->all())) {
+                return $this->respondErrorMessage(trans('messages.coupon_invalid'), 409);
+            }
         }
 
         $input['end_time'] = $end_time->format('H:i');
@@ -464,6 +479,16 @@ class OrderController extends ApiController
             }
 
             $order->room_id = $room->id;
+            if ($coupon) {
+                $order->coupon_id = $request->coupon_id;
+                $order->coupon_name = $request->coupon_name;
+                $order->coupon_type = $request->coupon_type;
+                $order->coupon_value = $request->coupon_value;
+                $order->coupon_max_point = $request->coupon_max_point;
+
+                $user->coupons()->attach($request->coupon_id, ['order_id' => $order->id]);
+            }
+
             $order->update();
 
             $offer->status = OfferStatus::DONE;
@@ -496,7 +521,7 @@ class OrderController extends ApiController
             }
         }
 
-        if ($coupon->type != $input['coupon_type'] || $coupon->name != $input['coupon_name'] || $coupon->max_point
+        if ($coupon->type != $input['coupon_type'] || trim($coupon->name) != trim($input['coupon_name']) || $coupon->max_point
             != $input['coupon_max_point']) {
             $isValid = false;
         }

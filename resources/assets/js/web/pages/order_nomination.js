@@ -116,7 +116,8 @@ function loadCouponsOrderNominate()
 
       if(selectedCoupon) {
         if(selectedCoupon.max_point) {
-          html += `<p class = "max-point-coupon" > ※割引されるポイントは最大${selectedCoupon.max_point}Pになります。</p> </div>`;
+          var max_point = parseInt(selectedCoupon.max_point).toLocaleString(undefined,{ minimumFractionDigits: 0 });
+          html += `<p class = "max-point-coupon" > ※割引されるポイントは最大${max_point}Pになります。</p> </div>`;
         }
       }
 
@@ -242,7 +243,7 @@ function priceCoupon(duration, time = null, helper, couponId)
 
         if(coupon.max_point) {
           if($('#show_point-sale-coupon').length) {
-            var max_point = coupon.max_point;
+            var max_point = parseInt(coupon.max_point).toLocaleString(undefined,{ minimumFractionDigits: 0 });
             var html = `<p class = "max-point-coupon" > ※割引されるポイントは最大${max_point}Pになります。</p> `;
             $('#show_point-sale-coupon').html(html);
           }

@@ -103,8 +103,8 @@ function selectedCouponsOrderCall()
 
       if(coupon.max_point) {
         if($('#show_point-sale-coupon').length) {
-          var max_point = coupon.max_point;
-          var html = `<p class = "max-point-coupon" > ※割引されるポイントは最大${max_point}Pになります。</p> `;
+          var maxPoint = parseInt(coupon.max_point).toLocaleString(undefined,{ minimumFractionDigits: 0 });
+          var html = `<p class = "max-point-coupon" > ※割引されるポイントは最大${maxPoint}Pになります。</p> `;
           $('#show_point-sale-coupon').html(html);
         }
       } else {
