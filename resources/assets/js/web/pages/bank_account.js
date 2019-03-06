@@ -183,4 +183,8 @@ $(document).ready(function(){
   $('#bank-name').focusout(function () {
     $('#form-get-name-bank').submit();
   });
+
+  $('.input-branch-name').focusout(function () {
+    $('#form-get-name-branch-bank').submit();
+  });
 });
