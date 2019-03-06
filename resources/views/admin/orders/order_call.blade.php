@@ -123,17 +123,7 @@
               </tr>
               @endif
 
-              @if($order->coupon_id)
-                <tr>
-                  <th>クーポン利用</th>
-                  <td>{{ $order->coupon_name }}</td>
-                </tr>
 
-                <tr>
-                  <th>割引ポイント</th>
-                  <td>{{ $order->discount_point }}</td>
-                </tr>
-              @endif
 
               @if ($order->status >= App\Enums\OrderStatus::PROCESSING || $order->status >= App\Enums\OrderStatus::ACTIVE)
                 <tr>
@@ -155,7 +145,7 @@
 
                   <tr>
                     <th>割引ポイント</th>
-                    <td>{{ $order->discount_point }}</td>
+                    <td>{{ number_format($order->discount_point) .'P' }}</td>
                   </tr>
                 @endif
 
@@ -223,6 +213,18 @@
                 <td>{{ Carbon\Carbon::parse($order->created_at)->format('Y/m/d H:i') }}</td>
               </tr>
               @if ($order->status >= App\Enums\OrderStatus::DONE)
+                @if($order->coupon_id)
+                  <tr>
+                    <th>クーポン利用</th>
+                    <td>{{ $order->coupon_name }}</td>
+                  </tr>
+
+                  <tr>
+                    <th>割引ポイント</th>
+                    <td>{{ number_format($order->discount_point) .'P' }}</td>
+                  </tr>
+                @endif
+
                 <tr>
                   <th>実績合計ポイント</th>
                   <td>
