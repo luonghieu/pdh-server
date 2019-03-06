@@ -25,6 +25,7 @@ use App\Order;
 use App\PaymentRequest;
 use App\Point;
 use App\Room;
+use App\Services\CSVExport;
 use App\Services\LogService;
 use App\Traits\DirectRoom;
 use Carbon\Carbon;
@@ -113,10 +114,174 @@ class OrderController extends Controller
             }
         }
 
+        // Export all order
+        if ('export_orders' == $request->submit) {
+            $ordersExport = $orders->get();
+
+            $this->exportOrders($ordersExport);
+        }
+
+        // Export order done
+        if ('export_real_orders' == $request->submit) {
+            $realOrdersExport = $orders->where('status', OrderStatus::DONE)->get();
+
+            $this->exportRealOrders($realOrdersExport);
+        }
+
         $orders = $orders->paginate($request->limit ?: 10);
 
         return view('admin.orders.index', compact('orders'));
     }
+
+    public function exportOrders($ordersExport)
+    {
+        $data = collect($ordersExport)->map(function ($item) {
+            return [
+                $item->user_id,
+                $item->user ? $item->user->nickname : '',
+                $item->user ? $item->user->created_at : '',
+                $item->id,
+                OrderType::getDescription($item->type),
+                $item->address,
+                Carbon::parse($item->created_at)->format('Y年m月d日 H:i'),
+                Carbon::parse($item->date)->format('Y年m月d日') . Carbon::parse($item->start_time)->format('H:i'),
+                $item->total_cast . '名',
+                $item->type == OrderType::CALL ? $item->castClass->name : '',
+                $item->duration,
+                $item->temp_point,
+                ($item->total_cast > 1) ? round(($item->total_time / 60) / $item->total_cast, 2) : round($item->total_time / 60, 2),
+                $item->total_point,
+                OrderStatus::getDescription($item->status),
+            ];
+        })->toArray();
+
+        $header = [
+            '予約者ID',
+            '予約者名',
+            '予約者の登録日',
+            '予約ID',
+            '予約区分',
+            '開催エリア',
+            '予約発生時間',
+            '予約開始時間',
+            '希望人数',
+            'キャストクラス',
+            '予約時間',
+            '基本料金',
+            '合流時間の平均実績(ｈ)',
+            '実績合計ポイント',
+            'ステータス',
+        ];
+
+        try {
+            $file = CSVExport::toCSV($data, $header);
+        } catch (\Exception $e) {
+            LogService::writeErrorLog($e);
+            $request->session()->flash('msg', trans('messages.server_error'));
+
+            return redirect()->route('admin.orders.index');
+        }
+        $file->output('orders_' . Carbon::now()->format('Ymd_Hi') . '.csv');
+
+        return;
+    }
+
+    public function exportRealOrders($realOrdersExport)
+    {
+        $data = [];
+        foreach ($realOrdersExport as $item) {
+            $casts = $item->casts;
+
+            $startTime = Carbon::parse($item->date . ' ' . $item->start_time);
+            $stoppedAt = $startTime->copy()->addHours($item->duration);
+            $totalCast = $item->total_cast;
+
+            foreach ($casts as $cast) {
+                if ($cast) {
+                    $array = [
+                        $item->id,
+                        OrderType::getDescription($item->type),
+                        $cast->id,
+                        $item->castClass->name,
+                        $item->actual_started_at,
+                        $item->actual_ended_at,
+                        round($item->extra_time / 60, 2),
+                        $item->orderFee($cast, $item->started_at, $item->stopped_at),
+                        $this->allowanceNight($startTime, $stoppedAt, $totalCast),
+                        $item->total_point,
+                    ];
+
+                    array_push($data, $array);
+                }
+            }
+        }
+
+        $header = [
+            '予約ID',
+            '予約区分',
+            'マッチングしたキャストID',
+            'キャストクラス',
+            '合流時刻',
+            '解散時刻',
+            '延長時間',
+            '指名料',
+            '深夜手当',
+            '実績合計ポイント',
+        ];
+
+        try {
+            $file = CSVExport::toCSV($data, $header);
+        } catch (\Exception $e) {
+            LogService::writeErrorLog($e);
+            $request->session()->flash('msg', trans('messages.server_error'));
+
+            return redirect()->route('admin.orders.index');
+        }
+        $file->output('real_orders_' . Carbon::now()->format('Ymd_Hi') . '.csv');
+
+        return;
+    }
+
+    public function allowanceNight($startTime, $stoppedAt, $totalCast)
+    {
+        // NightTime
+        $nightTime = 0;
+        $allowanceStartTime = Carbon::parse('00:01:00');
+        $allowanceEndTime = Carbon::parse('04:00:00');
+
+        $startDay = Carbon::parse($startTime)->startOfDay();
+        $endDay = Carbon::parse($stoppedAt)->startOfDay();
+
+        $timeStart = Carbon::parse(Carbon::parse($startTime->format('H:i:s')));
+        $timeEnd = Carbon::parse(Carbon::parse($stoppedAt->format('H:i:s')));
+
+        $allowance = false;
+
+        if ($startDay->diffInDays($endDay) != 0 && $stoppedAt->diffInMinutes($endDay) != 0) {
+            $allowance = true;
+        }
+
+        if ($timeStart->between($allowanceStartTime, $allowanceEndTime) || $timeEnd->between($allowanceStartTime, $allowanceEndTime)) {
+            $allowance = true;
+        }
+
+        if ($timeStart < $allowanceStartTime && $timeEnd > $allowanceEndTime) {
+            $allowance = true;
+        }
+
+        if ($allowance) {
+            $nightTime = $stoppedAt->diffInMinutes($endDay);
+        }
+
+        // Allowance
+        $allowancePoint = 0;
+        if ($nightTime) {
+            $allowancePoint = $totalCast * 4000;
+        }
+
+        return $allowancePoint;
+    }
+
 
     public function deleteOrder(Request $request)
     {
