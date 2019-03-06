@@ -36,7 +36,7 @@ class CouponController extends ApiController
             $coupons = $coupons->where([
                 ['is_filter_order_duration', '=', true],
                 ['filter_order_duration', '<=', $params['duration']],
-            ])->where(function($q) {
+            ])->orWhere(function($q) {
                 $q->where('is_filter_order_duration', false)->orWhere('is_filter_order_duration', null);
             });
         } else {
