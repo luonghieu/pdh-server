@@ -724,7 +724,7 @@ class Order extends Model
                         $orderDuration = $this->duration * 60;
                         $orderStartedAt = Carbon::parse($this->date . ' ' . $this->start_time);
                         $orderStoppeddAt = $orderStartedAt->copy()->addMinutes($orderDuration);
-                        if ($casts->count() != $this->total_cast) {
+                        if ($casts->count() == $this->total_cast) {
                             $orderNightTime = $this->nightTime($orderStoppeddAt);
                             $orderAllowance = $this->allowance($orderNightTime);
                             foreach ($casts as $cast) {
