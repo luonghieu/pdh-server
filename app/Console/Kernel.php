@@ -31,6 +31,7 @@ class Kernel extends ConsoleKernel
         Commands\NotificationSchedules::class,
         Commands\SetTimeOutForOffer::class,
         Commands\MarketingOperation::class,
+        Commands\RetryFailedJobs::class,
     ];
 
     /**
@@ -58,6 +59,7 @@ class Kernel extends ConsoleKernel
         $schedule->command('cheers:notification_schedules')->everyMinute()->onOneServer()->runInBackground();
         $schedule->command('cheers:set_timeout_for_offer')->everyMinute()->onOneServer()->runInBackground();
         $schedule->command('cheers:marketing')->dailyAt(env('CAMPAIGN_SEND_TIME'))->onOneServer()->runInBackground();
+        $schedule->command('cheers:retry_failed_jobs')->everyMinute()->onOneServer()->runInBackground();
     }
 
     /**

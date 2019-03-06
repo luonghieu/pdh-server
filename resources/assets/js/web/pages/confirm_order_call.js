@@ -68,8 +68,8 @@ function showCoupons(coupon, params)
       pointCoupon = parseInt(pointCoupon).toLocaleString(undefined,{ minimumFractionDigits: 0 });
       tempPoint = parseInt(tempPoint).toLocaleString(undefined,{ minimumFractionDigits: 0 });
 
-      $('#current-total-point').text(tempPoint +'P~');
-      $('#sale_point-coupon').text('-' + pointCoupon +'P~');
+      $('#current-total-point').text(tempPoint +'P');
+      $('#sale_point-coupon').text('-' + pointCoupon +'P');
       $('#total_point-order-call').text(totalPoint +'P~');
     }).catch(function(error) {
       console.log(error);

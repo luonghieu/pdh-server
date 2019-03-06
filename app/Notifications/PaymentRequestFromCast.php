@@ -94,7 +94,12 @@ class PaymentRequestFromCast extends Notification implements ShouldQueue
             PaymentRequestStatus::REQUESTED,
             PaymentRequestStatus::UPDATED,
         ];
-        $totalPoint = Order::find($this->order->id)->paymentRequests()->whereIn('status', $requestedStatuses)->sum('total_point');
+        $order = Order::find($this->order->id);
+        $totalPoint = $order->paymentRequests()->whereIn('status', $requestedStatuses)->sum('total_point');
+        $totalPoint = $totalPoint - $order->discount_point;
+        if ($totalPoint < 0) {
+            $totalPoint = 0;
+        }
         $content = 'Cheersをご利用いただきありがとうございました♪'
             . PHP_EOL . $orderStartDate->format('Y/m/d H:i') . '~' . 'の合計ポイントは' . number_format($totalPoint) . 'Pointです。'
             . PHP_EOL . 'お手数ですがコチラから、本日の飲み会の評価と決済を行ってください。'
@@ -157,7 +162,12 @@ class PaymentRequestFromCast extends Notification implements ShouldQueue
             PaymentRequestStatus::REQUESTED,
             PaymentRequestStatus::UPDATED,
         ];
-        $totalPoint = Order::find($this->order->id)->paymentRequests()->whereIn('status', $requestedStatuses)->sum('total_point');
+        $order = Order::find($this->order->id);
+        $totalPoint = $order->paymentRequests()->whereIn('status', $requestedStatuses)->sum('total_point');
+        $totalPoint = $totalPoint - $order->discount_point;
+        if ($totalPoint < 0) {
+            $totalPoint = 0;
+        }
         $content = 'Cheersをご利用いただきありがとうございました♪'
             . PHP_EOL . $orderStartDate->format('Y/m/d H:i') . '~' . 'の合計ポイントは' . number_format($totalPoint) . 'Pointです。'
             . PHP_EOL . 'お手数ですがコチラから、本日の飲み会の評価と決済を行ってください。'
