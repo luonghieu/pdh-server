@@ -177,7 +177,7 @@
                   </tr>
                 </table>
                 <p>オプショナルフィルター</p>
-                <table class="table table-bordered">
+                <table class="table table-bordered table-coupon">
                   <!--  table-striped -->
                   <tr>
                     <th>対象ゲスト</th>
