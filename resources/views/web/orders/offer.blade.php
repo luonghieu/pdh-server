@@ -331,7 +331,7 @@
               </li>
               <li class="details-info-list__itme" id="show-point-coupon-offer" style="display: none;">
                 <p class="details-info-list__text">割引額</p>
-                <p class="details-info-list__marks" id="sale-point-coupon"></p>
+                <p class="details-info-list__marks sale-point-coupon" id="sale-point-coupon"></p>
               </li>
               <li class="details-info-list__itme">
                 <p class="details-info-list__text--subtotal">小計</p>
