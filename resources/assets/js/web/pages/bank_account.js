@@ -179,4 +179,8 @@ $(document).ready(function(){
       });
     }
   });
+
+  $('#bank-name').focusout(function () {
+    $('#form-get-name-bank').submit();
+  });
 });
