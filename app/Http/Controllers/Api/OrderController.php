@@ -521,7 +521,7 @@ class OrderController extends ApiController
             }
         }
 
-        if ($coupon->type != $input['coupon_type'] || $coupon->name != $input['coupon_name'] || $coupon->max_point
+        if ($coupon->type != $input['coupon_type'] || trim($coupon->name) != trim($input['coupon_name']) || $coupon->max_point
             != $input['coupon_max_point']) {
             $isValid = false;
         }
