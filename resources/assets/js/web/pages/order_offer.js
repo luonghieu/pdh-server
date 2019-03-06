@@ -861,11 +861,6 @@ $(document).ready(function(){
             coupon = e;
           }
         });
-        var paramCoupon = {
-          coupon : parseInt(couponId)
-        }
-
-        helper.updateLocalStorageKey('order_offer', paramCoupon, offerId);
 
         switch(coupon.type) {
           case couponType.POINT:
