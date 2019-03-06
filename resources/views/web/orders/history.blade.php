@@ -263,7 +263,7 @@
 
 @section('web.extra_js')
     <script>
-        const orderTotalPoint = parseInt('<?php echo ($orderTotalPoint < $order->discount_point) ? 0 : number_format($orderTotalPoint - $order->discount_point) ?>');
+        const orderTotalPoint = parseInt('<?php echo ($orderTotalPoint < $order->discount_point) ? 0 : ($orderTotalPoint - $order->discount_point) ?>');
         const guestTotalPoint = parseInt('<?php echo $user->point ?>');
 
         const orderId = '<?php echo $order->id; ?>';
