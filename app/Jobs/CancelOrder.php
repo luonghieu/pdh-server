@@ -89,6 +89,13 @@ class CancelOrder implements ShouldQueue
                 $percent = 1;
             }
 
+            if ($this->order->coupon_id) {
+                $orderPoint = $orderPoint - $this->order->discount_point;
+
+                if ($orderPoint < 0) {
+                    $orderPoint = 0;
+                }
+            }
             $cancelFee = $orderPoint * $percent;
 
             $this->order->total_point = $cancelFee;
