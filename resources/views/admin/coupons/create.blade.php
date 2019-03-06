@@ -102,7 +102,7 @@
                   </tr>
                 </table>
                 <p>オプショナルフィルター</p>
-                <table class="table table-bordered">
+                <table class="table table-bordered table-coupon">
                   <!--  table-striped -->
                   <tr>
                     <th>対象ゲスト</th>
@@ -110,11 +110,15 @@
                       $checkedIsFilterAfterCreatedDate = '';
                       $classInvalidInputCreateDate = '';
                       $classInvalidSpanCreateDate = '';
+                      $readOnlyIsFilterAfterCreatedDateInput = '';
+                      $textIsFilterAfterCreatedDate = '';
                       if (request()->old('is_filter_after_created_date') != null) {
                         $checkedIsFilterAfterCreatedDate = 'checked';
                       } else {
                         $classInvalidInputCreateDate = 'invalid-element-coupon-input';
                         $classInvalidSpanCreateDate = 'invalid-element-coupon';
+                        $readOnlyIsFilterAfterCreatedDateInput = 'readOnly';
+                        $textIsFilterAfterCreatedDate = 'invalid-element-coupon';
                       }
                     @endphp
                     <td>
@@ -124,9 +128,9 @@
                           <span class="switch-label" data-on="On" data-off="Off"></span>
                           <span class="switch-handle"></span>
                         </label>
-                        <p class="title-filter_after_created_date">登録時から</p>
+                        <p class="title-filter_after_created_date {{$textIsFilterAfterCreatedDate}}">登録時から</p>
                         <div class="wrap-object-coupon after-created-date">
-                          <input type="number" class="object-coupon {{$classInvalidInputCreateDate}}" name="filter_after_created_date" value="{{request()->old('filter_after_created_date')}}" placeholder="0" min="1" max="7">
+                          <input type="number" class="object-coupon {{$classInvalidInputCreateDate}}" name="filter_after_created_date" value="{{request()->old('filter_after_created_date')}}" placeholder="0" min="1" max="7" {{$readOnlyIsFilterAfterCreatedDateInput}}>
                           @if ($errors->has('filter_after_created_date'))
                             <div class="error pull-left">
                               <span>{{ $errors->first('filter_after_created_date') }}</span>
