@@ -301,48 +301,55 @@
     @else
     <a class="link-arrow link-arrow--left tc-verification-link" href="#" style="color: #222222;">登録済み</a>
     @endif
-    <div class="form-group">
-      <div id="detail-point-offer">
-        <div class="settlement-confirm">
-          <section class="details-header">
-            <div class="details-list__line"><p></p></div>
-            <div class="details-total__content">
-              <div class="details-total__text">合計</div>
-              <div class="details-total__marks total-amount">{{ number_format($offer->temp_point) }}P</div>
-               <input type="hidden" value="{{ $offer->temp_point }} " id="temp-point-offer">
-              <span class="details-list__button"></span>
-             </div>
-          </section>
-          <section class="details-list">
-            <div class="details-list__line"><p></p></div>
-            <div class="details-list__content show">
-              <ul class="details-info-list">
-                <li class="details-info-list__itme">
-                  <p class="details-info-list__text">合流{{ $offer->duration*60 }}分</p>
-                  <p class="details-info-list__marks" id="order-point"></p>
-                </li>
-                <li class="details-info-list__itme">
-                  <p class="details-info-list__text">深夜手当</p>
-                  <p class="details-info-list__marks" id="night-fee"></p>
-                </li>
-                <li class="details-info-list__itme">
-                  <p class="details-info-list__text--subtotal">小計</p>
-                  <p class="details-info-list__marks--subtotal" id="total-point-order"></p>
-                </li>
-              </ul>
-             </div>
-          </section>
-         </div>
-       </div>
 
-      <div class="reservation-policy">
-        <label class="checkbox">
-          <input type="checkbox" class="checked-order-offer" name="confrim_order_offer">
-          <span class="sp-disable" id="sp-cancel"></span>
-          <p><a href="{{ route('guest.orders.cancel') }}">キャンセルポリシー</a>、及び<a href="{{ route('guest.orders.offers_attention') }}">予約前の注意事項</a>
-          に同意する</p>
-        </label>
+    <div id="show-coupon-order-offer">
+
+    </div>
+
+    <div id="detail-point-offer">
+      <div class="settlement-confirm">
+        <section class="details-header">
+          <div class="details-list__line"><p></p></div>
+          <div class="details-total__content">
+            <div class="details-total__text">合計</div>
+            <div class="details-total__marks total-amount">{{ number_format($offer->temp_point) }}P</div>
+             <input type="hidden" value="{{ $offer->temp_point }} " id="temp-point-offer">
+            <span class="details-list__button"></span>
+           </div>
+        </section>
+        <section class="details-list">
+          <div class="details-list__line"><p></p></div>
+          <div class="details-list__content show">
+            <ul class="details-info-list">
+              <li class="details-info-list__itme">
+                <p class="details-info-list__text">合流{{ $offer->duration*60 }}分</p>
+                <p class="details-info-list__marks" id="order-point"></p>
+              </li>
+              <li class="details-info-list__itme">
+                <p class="details-info-list__text">深夜手当</p>
+                <p class="details-info-list__marks" id="night-fee"></p>
+              </li>
+              <li class="details-info-list__itme" id="show-point-coupon-offer" style="display: none;">
+                <p class="details-info-list__text">割引額</p>
+                <p class="details-info-list__marks" id="sale-point-coupon"></p>
+              </li>
+              <li class="details-info-list__itme">
+                <p class="details-info-list__text--subtotal">小計</p>
+                <p class="details-info-list__marks--subtotal" id="total-point-order"></p>
+              </li>
+            </ul>
+          </div>
+        </section>
       </div>
+    </div>
+
+    <div class="reservation-policy">
+      <label class="checkbox">
+        <input type="checkbox" class="checked-order-offer" name="confrim_order_offer">
+        <span class="sp-disable" id="sp-cancel"></span>
+        <p><a href="{{ route('guest.orders.cancel') }}">キャンセルポリシー</a>、及び<a href="{{ route('guest.orders.offers_attention') }}">予約前の注意事項</a>
+        に同意する</p>
+      </label>
     </div>
   </div>
 </form>

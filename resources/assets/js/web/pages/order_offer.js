@@ -1,8 +1,353 @@
+const helper = require('./helper');
+let couponOffer = [];
+
+const couponType = {
+  'POINT': 1,
+  'DURATION': 2,
+  'PERCENT': 3
+};
+
+function firstLoad() {
+  var hour = $(".select-hour-offer option:selected").val();
+  var minute = $(".select-minute-offer option:selected").val();
+  var offerId = $('.offer-id').val();
+  var date = $('#current-date-offer').val();
+  var duration = parseInt($('#duration-offer').val());
+  var classId = $('#current-class-id-offer').val();
+  var castIds = $('#current-cast-id-offer').val();
+  var totalCast = castIds.split(',').length;
+
+  var couponId = null;
+
+  if(!duration) {
+    window.location = '/login';
+  }
+
+  if(localStorage.getItem("order_offer")){
+    var offerId = $('.offer-id').val();
+    var orderOffer = JSON.parse(localStorage.getItem("order_offer"));
+    if(orderOffer[offerId]) {
+      orderOffer = orderOffer[offerId];
+
+      if(orderOffer.coupon) {
+        couponId = orderOffer.coupon.id;
+      }
+
+      if(orderOffer.current_date) {
+        date = orderOffer.current_date;
+        hour = orderOffer.hour;
+        minute = orderOffer.minute;
+
+        if (23 < hour) {
+          switch(hour) {
+            case '24':
+                hour = '00';
+                break;
+            case '25':
+                hour = '01';
+                break;
+            case '26':
+                hour = '02';
+                break;
+          }
+        }
+      }
+    }
+  }
+
+  var time = hour + ':' + minute;
+
+  var input = {
+    date: date,
+    start_time: time,
+    duration: duration,
+    type: 2,
+    class_id: classId,
+    total_cast: totalCast,
+    nominee_ids: castIds,
+    offer: 1,
+  }
+
+  var paramCoupon = {
+    duration : duration,
+  };
+
+  window.axios.get('/api/v1/coupons', {params: paramCoupon})
+  .then(function(response) {
+    couponOffer = response.data['data'];
+
+    var selectedCoupon = null;
+    if (couponOffer.length) {
+      var html = `<div class="caption">
+                    <h2>クーポン</h2>
+                  </div>
+                  <div class="form-grpup" >
+                    <select id="coupon-order-offer" class="select-coupon" name='select_coupon'>
+                      <option value="" >クーポンを使用しない</option>`;
+
+      couponOffer.forEach(function (coupon) {
+        var selected = '';
+        var id = coupon.id;
+        var name = coupon.name;
+
+        if(couponId == id) {
+
+          var paramCoupon = {
+            coupon : coupon
+          }
+
+          helper.updateLocalStorageKey('order_offer', paramCoupon, offerId);
+
+          selectedCoupon = coupon;
+          selected = 'selected';
+
+          switch(coupon.type) {
+            case couponType.POINT:
+              input.duration_coupon = 0;
+              break;
+
+            case couponType.DURATION:
+              input.duration_coupon = coupon.time;
+              break;
+
+            case couponType.PERCENT:
+              input.duration_coupon = 0;
+              break;
+
+            default:
+              window.location.href = '/mypage';
+          }
+        } else {
+          selected = '';
+        }
+
+        html += '<option value="'+ id +'"'+ selected +' >'+ name +'</option>';
+      })
+
+      html += `</select>`;
+      html += `<div id='show_point-sale-coupon' > `;
+
+      if(selectedCoupon) {
+        if(selectedCoupon.max_point) {
+          var maxPoint = parseInt(selectedCoupon.max_point).toLocaleString(undefined,{ minimumFractionDigits: 0 });
+          html += `<p class = "max-point-coupon" > ※割引されるポイントは最大${maxPoint}Pになります。</p> </div>`;
+        }
+      }
+
+      html += `</div> </div>`;
+      $('#show-coupon-order-offer').html(html);
+    }
+
+    showPoint(input, offerId, selectedCoupon);
+  }).catch(function(error) {
+    console.log(error);
+    if (error.response.status == 401) {
+      window.location = '/login';
+    }
+  });
+}
+
+function selectedCouponsOffer()
+{
+  $('body').on('change', "#coupon-order-offer", function(){
+    var hour = $(".select-hour-offer option:selected").val();
+    var minute = $(".select-minute-offer option:selected").val();
+    var offerId = $('.offer-id').val();
+    var date = $('#current-date-offer').val();
+    var duration = parseInt($('#duration-offer').val());
+    var classId = $('#current-class-id-offer').val();
+    var castIds = $('#current-cast-id-offer').val();
+    var totalCast = castIds.split(',').length;
+
+    var couponId = $(this).val();
+
+    if(!duration) {
+      window.location = '/login';
+    }
+
+    if(localStorage.getItem("order_offer")){
+      var offerId = $('.offer-id').val();
+      var orderOffer = JSON.parse(localStorage.getItem("order_offer"));
+      if(orderOffer[offerId]) {
+        orderOffer = orderOffer[offerId];
+
+        if(orderOffer.current_date) {
+          date = orderOffer.current_date;
+          hour = orderOffer.hour;
+          minute = orderOffer.minute;
+
+          if (23 < hour) {
+            switch(hour) {
+              case '24':
+                  hour = '00';
+                  break;
+              case '25':
+                  hour = '01';
+                  break;
+              case '26':
+                  hour = '02';
+                  break;
+            }
+          }
+        }
+      }
+    }
+
+    var time = hour + ':' + minute;
+
+    var input = {
+      date: date,
+      start_time: time,
+      duration: duration,
+      type: 2,
+      class_id: classId,
+      total_cast: totalCast,
+      nominee_ids: castIds,
+      offer: 1,
+    }
+
+    if(!couponOffer) {
+      window.location = '/mypage';
+    }
+
+    var couponIds = couponOffer.map(function (e) {
+      return e.id; 
+    });
+
+    var coupon = null;
+    if(parseInt(couponId)) {
+      if(couponIds.indexOf(parseInt(couponId)) > -1) {
+        couponOffer.forEach(function (e) {
+          if(e.id == couponId) {
+            coupon = e;
+          }
+        });
+
+        var paramCoupon = {
+          coupon : coupon
+        }
+
+        helper.updateLocalStorageKey('order_offer', paramCoupon, offerId);
+
+        if($('#show_point-sale-coupon').length) {
+          if(coupon.max_point) {
+            var maxPoint = parseInt(coupon.max_point).toLocaleString(undefined,{ minimumFractionDigits: 0 });
+            var html = `<p class = "max-point-coupon" > ※割引されるポイントは最大${maxPoint}Pになります。</p> </div>`;
+            $('#show_point-sale-coupon').html(html);
+          }
+        }
+
+        switch(coupon.type) {
+          case couponType.POINT:
+            input.duration_coupon = 0;
+            break;
+
+          case couponType.DURATION:
+            input.duration_coupon = coupon.time;
+            break;
+
+          case couponType.PERCENT:
+            input.duration_coupon = 0;
+            break;
+
+          default:
+            window.location.href = '/mypage';
+        }
+      } else {
+        window.location = '/mypage';
+      }
+    } else {
+      if($('#show_point-sale-coupon').length) {
+        $('#show_point-sale-coupon').html('');
+      }
+
+      if(localStorage.getItem("order_offer")){
+        var orderOffer = JSON.parse(localStorage.getItem("order_offer"));
+        if(orderOffer[offerId]) {
+          orderOffer = orderOffer[offerId];
+          if(orderOffer.coupon) {
+            helper.deleteLocalStorageKey('order_offer','coupon', offerId);
+          }
+        }
+      }
+    }
+
+    showPoint(input, offerId, coupon);
+  })
+}
+
+function showPoint(input, offerId, coupon = null)
+{
+  window.axios.post('/api/v1/orders/price',input)
+    .then(function(response) {
+      if (response.data.data) {
+        var result = response.data.data;
+        var nightFee = parseInt(result.allowance_point).toLocaleString(undefined,{ minimumFractionDigits: 0 });
+        var orderPoint = parseInt(result.order_point + result.order_fee).toLocaleString(undefined,{ minimumFractionDigits: 0 });
+        var tempPoint = result.allowance_point + result.order_point + result.order_fee;
+        var currentPoint = tempPoint;
+
+        $('#order-point').html(orderPoint + 'P');
+        $('#night-fee').html(nightFee+'P');
+        
+        if (coupon) {
+          if (couponType.PERCENT == coupon.type) {
+              var pointCoupon = (parseInt(coupon.percent)/100)*tempPoint;
+            }
+
+            if (couponType.POINT == coupon.type) {
+              var pointCoupon = coupon.point;
+            }
+
+            if (couponType.DURATION == coupon.type) {
+              var pointCoupon = result.order_point_coupon + result.order_fee_coupon;
+            }
+
+            if(coupon.max_point) {
+              if(coupon.max_point < pointCoupon) {
+                pointCoupon = coupon.max_point;
+              }
+            }
+
+            currentPoint = tempPoint-pointCoupon;
+            if(currentPoint<0) {
+              currentPoint = 0;
+            }
+
+          pointCoupon = parseInt(pointCoupon).toLocaleString(undefined,{ minimumFractionDigits: 0 });
+          $('#sale-point-coupon').text('-' + pointCoupon +'P');
+
+          $('#show-point-coupon-offer').css('display', 'flex');
+        } else {
+          $('#sale-point-coupon').text('');
+          $('#show-point-coupon-offer').css('display', 'none');
+        }
+
+        var data = {
+          current_total_point: currentPoint,
+        };
+        
+        helper.updateLocalStorageKey('order_offer', data, offerId);
+        $('#temp-point-offer').val(currentPoint);
+        
+        currentPoint = parseInt(currentPoint).toLocaleString(undefined,{ minimumFractionDigits: 0 });
+        $('#total-point-order').html(currentPoint+'P');
+        $('.total-amount').text(currentPoint +'P');
+
+      }
+    }).catch(function(error) {
+      console.log(error);
+      if (error.response.status == 401) {
+        window.location = '/login';
+      }
+  });
+}
+
 $(document).ready(function(){
-  const helper = require('./helper');
   function dayOfWeek() {
     return ['日', '月', '火', '水', '木', '金', '土'];
   }
+
   var checkApp = {
       isAppleDevice : function() {
         if (navigator.userAgent.match(/(iPhone|iPod|iPad)/) != null) {
@@ -34,6 +379,7 @@ $(document).ready(function(){
       })
     }
   }
+
   $('body').on('change', ".checked-order-offer",function(event){
     if ($(this).is(':checked')) {
       if(localStorage.getItem("order_offer")){
@@ -88,7 +434,7 @@ $(document).ready(function(){
     $('#show-attention').prop('checked',true);
   })
 
-  $('#lb-order-offer').on("click",function(event){
+  $('body').on('click', "#lb-order-offer", function(event){
     $('.modal-confirm-offer').css('display','none');
     $('#confirm-orders-offer').prop('disabled', true);
 
@@ -151,6 +497,36 @@ $(document).ready(function(){
       offer_id: offerId
     }
 
+    if(orderOffer.coupon) {
+      var coupon = orderOffer.coupon;            
+      params.coupon_id = coupon.id;
+      params.coupon_name = coupon.name;
+      params.coupon_type = coupon.type;
+      
+      if(coupon.max_point) {
+        params.coupon_max_point = coupon.max_point;
+      } else {
+        params.coupon_max_point = null;
+      }
+
+      switch(coupon.type) {
+        case couponType.POINT:
+          params.coupon_value = coupon.point;
+          break;
+
+        case couponType.DURATION:
+          params.coupon_value = coupon.time;
+          break;
+
+        case couponType.PERCENT:
+          params.coupon_value = coupon.percent;
+          break;
+
+        default:
+          window.location.href = '/mypage';
+      }
+    }
+
     window.axios.post('/api/v1/orders/create_offer', params)
       .then(function(response) {
         $('#order-offer-popup').prop('checked',false);
@@ -198,11 +574,11 @@ $(document).ready(function(){
                 }
 
                 if(error.response.status == 404) {
-                  var err = '予約が存在しません';
+                  var err = '支払い方法が未登録です';
                 }
 
                 if(error.response.status == 409) {
-                  var err = '支払い方法が未登録です';
+                  var err = 'クーポンが無効です';
                 }
 
                 $('#err-offer-message h2').html(err);
@@ -309,7 +685,8 @@ $(document).ready(function(){
   });
 
   //time
-  $('.date-select-offer').on("click",function(){
+
+  $('body').on('click', ".date-select-offer", function(){
     var hour = $(".select-hour-offer option:selected").val();
     var minute = $(".select-minute-offer option:selected").val();
     var currentDate = $('#current-date-offer').val();
@@ -404,12 +781,15 @@ $(document).ready(function(){
     if (minuteOffer<10) {
       minuteOffer = '0'+minuteOffer;
     }
+
     var time = yearOffer + '-' + monthOffer + '-' +  dateOffer;
+
     if (checkApp.isAppleDevice()) {
       var dateFolowDevice = new Date(monthOffer +'/' + dateOffer +'/'+ yearOffer);
     } else {
       var dateFolowDevice = new Date(yearOffer +'-' + monthOffer +'-'+ dateOffer);
     }
+
     var getDayOfWeek = dateFolowDevice.getDay();
     var dayOfWeekString = dayOfWeek()[getDayOfWeek];
 
@@ -448,6 +828,7 @@ $(document).ready(function(){
     var castIds = $('#current-cast-id-offer').val();
     var totalCast = castIds.split(',');
     var classId = $('#current-class-id-offer').val();
+
     var input = {
       date : time,
       start_time : check + ':' + minuteOffer,
@@ -459,29 +840,55 @@ $(document).ready(function(){
       offer : 1
     };
 
-    window.axios.post('/api/v1/orders/price',input)
-      .then(function(response) {
-        if (response.data.data) {
-          var nightFee = parseInt(response.data.data.allowance_point).toLocaleString(undefined,{ minimumFractionDigits: 0 });
-          var orderPoint = parseInt(response.data.data.order_point + response.data.data.order_fee).toLocaleString(undefined,{ minimumFractionDigits: 0 });
-          totalPoint = parseInt(response.data.data.allowance_point + response.data.data.order_point + response.data.data.order_fee).toLocaleString(undefined,{ minimumFractionDigits: 0 });
-          $('#order-point').html(orderPoint + 'P');
-          $('#night-fee').html(nightFee+'P');
-          $('#total-point-order').html(totalPoint+'P');
-          $('#temp-point-offer').val(response.data.data.allowance_point + response.data.data.order_point + response.data.data.order_fee);
+    if(!couponOffer) {
+      window.location = '/mypage';
+    }
 
-          var data = {
-            current_total_point: response.data.data.allowance_point + response.data.data.order_point + response.data.data.order_fee,
-          };
-          $('.total-amount').text(totalPoint +'P');
-          helper.updateLocalStorageKey('order_offer', data, offerId);
-        }
-      }).catch(function(error) {
-        console.log(error);
-        if (error.response.status == 401) {
-          window.location = '/login';
-        }
+    var couponId = null;
+    if($('#coupon-order-offer').length) {
+      couponId = $('#coupon-order-offer').val();
+    }
+
+    var couponIds = couponOffer.map(function (e) {
+      return e.id; 
     });
+
+    var coupon = null;
+    if(parseInt(couponId)) {
+      if(couponIds.indexOf(parseInt(couponId)) > -1) {
+        couponOffer.forEach(function (e) {
+          if(e.id == couponId) {
+            coupon = e;
+          }
+        });
+        var paramCoupon = {
+          coupon : parseInt(couponId)
+        }
+
+        helper.updateLocalStorageKey('order_offer', paramCoupon, offerId);
+
+        switch(coupon.type) {
+          case couponType.POINT:
+            input.duration_coupon = 0;
+            break;
+
+          case couponType.DURATION:
+            input.duration_coupon = coupon.time;
+            break;
+
+          case couponType.PERCENT:
+            input.duration_coupon = 0;
+            break;
+
+          default:
+            window.location.href = '/mypage';
+        }
+      } else {
+        window.location = '/mypage';
+      }
+    }
+
+    showPoint(input, offerId, coupon);
   })
 
   if($('#temp-point-offer').length) {
@@ -492,11 +899,11 @@ $(document).ready(function(){
       if(orderOffer[offerId]) {
         orderOffer = orderOffer[offerId];
 
-        if(orderOffer.current_total_point){
-          totalPoint = parseInt(orderOffer.current_total_point).toLocaleString(undefined,{ minimumFractionDigits: 0 });
-          $('.total-amount').text(totalPoint +'P');
-          $('#temp-point-offer').val(orderOffer.current_total_point);
-        }
+        // if(orderOffer.current_total_point){
+        //   totalPoint = parseInt(orderOffer.current_total_point).toLocaleString(undefined,{ minimumFractionDigits: 0 });
+        //   $('.total-amount').text(totalPoint +'P');
+        //   $('#temp-point-offer').val(orderOffer.current_total_point);
+        // }
 
         if(orderOffer.current_date) {
           currentDate = orderOffer.current_date.split('-');
@@ -646,74 +1053,13 @@ $(document).ready(function(){
       display: 'none',
     });
 
-    function caculatorPoint() {
-      var hour = $(".select-hour-offer option:selected").val();
-      var minute = $(".select-minute-offer option:selected").val();
-      var offerId = $('.offer-id').val();
-      var date = $('#current-date-offer').val();
-      var duration = $("#duration-offer").val();
-      var classId = $('#current-class-id-offer').val();
-      var castIds = $('#current-cast-id-offer').val();
-      var totalCast = castIds.split(',').length;
 
-      if(localStorage.getItem("order_offer")){
-        var orderOffer = JSON.parse(localStorage.getItem("order_offer"));
-        if(orderOffer[offerId]) {
-          orderOffer = orderOffer[offerId];
-          if(orderOffer.current_date) {
-            date = orderOffer.current_date;
-            hour = orderOffer.hour;
-            minute = orderOffer.minute;
-            if (23 < hour) {
-              switch(hour) {
-                case '24':
-                    hour = '00';
-                    break;
-                case '25':
-                    hour = '01';
-                    break;
-                case '26':
-                    hour = '02';
-                    break;
-              }
-            }
-          }
-        }
-      }
 
-      var time = hour + ':' + minute;
 
-      var params = {
-        date: date,
-        start_time: time,
-        duration: duration,
-        type: 2,
-        class_id: classId,
-        total_cast: totalCast,
-        nominee_ids: castIds,
-        offer: 1,
-      }
 
-      window.axios.post('/api/v1/orders/price', params)
-      .then(function(response) {
-        if(response.data.data) {
-          var nightFee = parseInt(response.data.data.allowance_point).toLocaleString(undefined,{ minimumFractionDigits: 0 });
-          var orderPoint = parseInt(response.data.data.order_point + response.data.data.order_fee).toLocaleString(undefined,{ minimumFractionDigits: 0 });
-          var totalOrderPoint = parseInt(response.data.data.allowance_point + response.data.data.order_point + response.data.data.order_fee).toLocaleString(undefined,{ minimumFractionDigits: 0 });
 
-          $('#order-point').html(orderPoint + 'P');
-          $('#night-fee').html(nightFee+'P');
-          $('#total-point-order').html(totalOrderPoint+'P');
-        }
-      })
-      .catch(function(error) {
-        if (error.response.status == 401) {
-          window.location = '/login';
-        }
-      });
-    }
 
-    caculatorPoint();
+
 
     // Set the date we're counting down to
     var date = $('#expired-date').val();
@@ -809,4 +1155,9 @@ $(document).ready(function(){
         }
       });
   });
+
+  if($('#temp-point-offer').length) {
+    firstLoad();
+    selectedCouponsOffer();
+  }
 })
