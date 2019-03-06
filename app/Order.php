@@ -211,7 +211,6 @@ class Order extends Model
             ]);
 
             CancelOrder::dispatchNow($this->id);
-
             return true;
         } catch (\Exception $e) {
             LogService::writeErrorLog($e);
@@ -710,7 +709,6 @@ class Order extends Model
     public function getDiscountPointAttribute()
     {
         $discountPoint = 0;
-
         if ($this->coupon_id) {
             switch ($this->coupon_type) {
                 case CouponType::POINT:
@@ -724,9 +722,9 @@ class Order extends Model
                         $orderDuration = $this->duration * 60;
                         $orderStartedAt = Carbon::parse($this->date . ' ' . $this->start_time);
                         $orderStoppeddAt = $orderStartedAt->copy()->addMinutes($orderDuration);
+                        $orderNightTime = $this->nightTime($orderStoppeddAt);
+                        $orderAllowance = $this->allowance($orderNightTime);
                         if ($casts->count() == $this->total_cast) {
-                            $orderNightTime = $this->nightTime($orderStoppeddAt);
-                            $orderAllowance = $this->allowance($orderNightTime);
                             foreach ($casts as $cast) {
                                 $orderFee = $this->orderFee($cast, $orderStartedAt, $orderStoppeddAt);
                                 $orderPoint += $this->orderPoint($cast) + $orderAllowance + $orderFee;
@@ -735,12 +733,12 @@ class Order extends Model
                             for ($i = 0; $i < $this->total_cast; $i++) {
                                 $cost = $this->castClass->cost;
                                 $orderDuration = $this->duration * 60;
-                                $orderPoint += ($cost / 2) * floor($orderDuration / 15);
+                                $orderPoint += ($cost / 2) * floor($orderDuration / 15) + $orderAllowance;
                             }
                         }
                     }
-                    $discountPoint = $orderPoint * $this->coupon_value / 100;
 
+                    $discountPoint = $orderPoint * $this->coupon_value / 100;
                     break;
                 case CouponType::TIME:
                     $casts = $this->casts()->get();
