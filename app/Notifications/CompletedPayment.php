@@ -86,9 +86,14 @@ class CompletedPayment extends Notification implements ShouldQueue
         $orderStartDate = Carbon::parse($this->order->actual_started_at);
         $orderEndDate = Carbon::parse($this->order->actual_ended_at);
         $guestNickname = $this->order->user->nickname ? $this->order->user->nickname . '様' : 'お客様';
+
+        $totalPoint = $this->order->total_point - $this->order->discount_point;
+        if ($totalPoint < 0) {
+            $totalPoint = 0;
+        }
         $content = 'Cheersをご利用いただきありがとうございました♪'
         . PHP_EOL . $orderStartDate->format('Y/m/d H:i') . '~' . $orderEndDate->format('H:i') . 'のご利用ポイント、' .
-            number_format($this->order->total_point - $this->order->discount_point) . 'Pointのご清算が完了いたしました。'
+            number_format($totalPoint) . 'Pointのご清算が完了いたしました。'
             . PHP_EOL . PHP_EOL . 'マイページの「ポイント履歴」から領収書の発行が可能です。'
             . PHP_EOL . PHP_EOL . $guestNickname . 'のまたのご利用をお待ちしております♪';
         $room = $notifiable->rooms()
@@ -142,9 +147,14 @@ class CompletedPayment extends Notification implements ShouldQueue
         $orderEndDate = Carbon::parse($this->order->actual_ended_at);
         $guestNickname = $this->order->user->nickname ? $this->order->user->nickname . '様' : 'お客様';
 
+        $totalPoint = $this->order->total_point - $this->order->discount_point;
+
+        if ($totalPoint < 0) {
+            $totalPoint = 0;
+        }
         $content = 'Cheersをご利用いただきありがとうございました♪'
             . PHP_EOL . $orderStartDate->format('Y/m/d H:i') . '~' . $orderEndDate->format('H:i') . 'のご利用ポイント、' .
-            number_format($this->order->total_point - $this->order->discount_point) . 'Pointのご清算が完了いたしました。'
+            number_format($totalPoint) . 'Pointのご清算が完了いたしました。'
             . PHP_EOL . PHP_EOL . 'マイページの「ポイント履歴」から領収書の発行が可能です。'
             . PHP_EOL . PHP_EOL . $guestNickname . 'のまたのご利用をお待ちしております♪';
         $room = $notifiable->rooms()
