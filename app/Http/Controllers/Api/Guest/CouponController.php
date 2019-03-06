@@ -47,7 +47,7 @@ class CouponController extends ApiController
             $createdAtOfUser = Carbon::parse($user->created_at);
 
             $bool = false;
-            if ($item->is_filter_after_created_date && $item->filter_after_created_date) {
+            if ($item->is_filter_after_created_date && $item->filter_after_created_date >= 0) {
                 if ($now->diffInDays($createdAtOfUser) > $item->filter_after_created_date) {
                     $bool = true;
                 }
