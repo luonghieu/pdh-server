@@ -718,7 +718,7 @@ class Order extends Model
                     break;
                 case CouponType::PERCENT:
                     $orderPoint = $this->total_point;
-                    if (!$orderPoint) {
+                    if (isset($orderPoint) && $orderPoint > 0) {
                         $casts = $this->casts()->get();
                         $orderPoint = 0;
                         $orderDuration = $this->duration * 60;
