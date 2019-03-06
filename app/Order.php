@@ -753,6 +753,8 @@ class Order extends Model
                             $orderDuration = $this->coupon_value * 60;
                             $orderPoint += ($cost / 2) * floor($orderDuration / 15);
                         }
+
+                        $discountPoint = $orderPoint;
                     }
                     break;
 
