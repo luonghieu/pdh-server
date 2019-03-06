@@ -707,10 +707,6 @@ class Order extends Model
         }
     }
 
-    public function bobo() {
-        return $this->belongsToMany(Cast::class)
-            ->withTimestamps();
-    }
     public function getDiscountPointAttribute()
     {
         $discountPoint = 0;
