@@ -120,7 +120,7 @@
   <div class="top-header-user">
     <div class="wrap-user">
       <div class="wrap-user-left">
-        @if (Auth::user()->avatars && !empty(Auth::user()->avatars->first()->thumbnail))
+        @if (Auth::user()->avatars && !empty(Auth::user()->avatars->first()))
           <img src="{{ Auth::user()->avatars->first()->thumbnail }}" alt="">
         @else
           <img src="{{ asset('assets/web/images/ge1/user_icon.svg') }}" alt="">
@@ -176,7 +176,7 @@
         @foreach($order->casts as $cast)
           <li>
             <div class="top-image">
-              @if ($cast->avatars->first()->thumbnail)
+              @if ($cast->avatars->first())
               <img class="lazy" data-src="{{ $cast->avatars->first()->thumbnail }}" alt="">
               @else
               <img class="lazy" data-src="{{ asset('assets/web/images/gm1/ic_default_avatar@3x.png') }}" alt="">
