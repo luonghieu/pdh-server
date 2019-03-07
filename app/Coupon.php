@@ -28,6 +28,6 @@ class Coupon extends Model
 
     public function orders()
     {
-        return $this->belongsToMany('App\Order', 'coupon_users', 'coupon_id','order_id');
+        return $this->hasMany(Order::class, 'coupon_id');
     }
 }

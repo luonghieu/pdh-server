@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Admin\Coupon;
 
+use App\Services\LogService;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Coupon;
