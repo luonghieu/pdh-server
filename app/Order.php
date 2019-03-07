@@ -162,6 +162,12 @@ class Order extends Model
                 $this->save();
 
                 $cast = User::find($userId);
+
+                if ($this->coupon_id) {
+                    $user = $this->user;
+
+                    $user->coupons()->detach([$this->coupon_id]);
+                }
                 $this->user->notify(new CastDenyOrders($this, $cast));
             }
 
