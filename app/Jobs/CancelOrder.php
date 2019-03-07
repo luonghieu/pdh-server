@@ -102,6 +102,14 @@ class CancelOrder implements ShouldQueue
             $this->order->cancel_fee_percent = $percent * 100;
             $this->order->save();
 
+            if ($this->order->cancel_fee_percent == 0) {
+                if ($this->order->coupon_id) {
+                    $user = $this->order->user;
+
+                    $user->coupons()->detach([$this->order->coupon_id]);
+                }
+            }
+
             $this->sendPushNotification($involvedUsers, $pointWithDiscount);
         }
     }
