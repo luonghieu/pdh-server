@@ -193,6 +193,11 @@ class Order extends Model
             $this->canceled_at = Carbon::now();
             $this->save();
 
+            if ($this->coupon_id) {
+                $user = $this->user;
+
+                $user->coupons()->detach([$this->coupon_id]);
+            }
             $cast = User::find($userId);
             $owner = $this->user;
             $involvedUsers = [];
