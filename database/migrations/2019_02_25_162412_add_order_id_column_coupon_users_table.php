@@ -18,8 +18,7 @@ class AddOrderIdColumnCouponUsersTable extends Migration
 
             $table->foreign('order_id')
                 ->references('id')
-                ->on('orders')
-                ->onDelete('cascade');
+                ->on('orders');
         });
     }
 
