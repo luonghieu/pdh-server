@@ -595,12 +595,14 @@ class Order extends Model
         $user = $this->user;
         $totalPoint = $this->total_point;
 
-        if ($this->coupon_id) {
-            $totalPoint = $totalPoint - $this->discount_point;
-        }
+        if ($this->status != OrderStatus::CANCELED) {
+            if ($this->coupon_id) {
+                $totalPoint = $totalPoint - $this->discount_point;
+            }
 
-        if ($totalPoint < 0) {
-            $totalPoint = 0;
+            if ($totalPoint < 0) {
+                $totalPoint = 0;
+            }
         }
 
         if ($user->point < $totalPoint) {
