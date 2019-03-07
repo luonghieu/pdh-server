@@ -205,14 +205,17 @@ class Order extends Model
     public function cancel()
     {
         try {
+            \DB::beginTransaction();
             $this->update([
                 'status' => OrderStatus::CANCELED,
                 'canceled_at' => Carbon::now(),
             ]);
 
             CancelOrder::dispatchNow($this->id);
+            \DB::commit();
             return true;
         } catch (\Exception $e) {
+            \DB::rollBack();
             LogService::writeErrorLog($e);
 
             return false;
@@ -747,7 +750,12 @@ class Order extends Model
                     } else {
                         $orderPoint = 0;
                         for ($i = 0; $i < $this->total_cast; $i++) {
-                            $cost = $this->castClass->cost;
+                            if ($this->type == OrderType::NOMINATION) {
+                                $cast = $this->castOrder()->first();
+                                $cost = $cast->cost;
+                            } else {
+                                $cost = $this->castClass->cost;
+                            }
                             $orderDuration = $this->coupon_value * 60;
                             $orderPoint += ($cost / 2) * floor($orderDuration / 15);
                         }
