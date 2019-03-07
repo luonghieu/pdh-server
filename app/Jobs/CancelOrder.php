@@ -60,10 +60,17 @@ class CancelOrder implements ShouldQueue
                 $orderFee = $this->order->orderFee($cast, $orderStartedAt, $orderStoppeddAt);
                 $orderPoint += $this->order->orderPoint($cast) + $orderAllowance + $orderFee;
             }
-
             $castIds = $this->order->castOrder()
                 ->pluck('cast_order.user_id')
                 ->toArray();
+
+
+            if ($this->order->coupon_id) {
+                $orderPoint = $orderPoint - $this->order->discount_point;
+                if ($orderPoint < 0) {
+                    $orderPoint = 0;
+                }
+            }
 
             foreach ($castIds as $id) {
                 $this->order->castOrder()->updateExistingPivot(
@@ -75,7 +82,6 @@ class CancelOrder implements ShouldQueue
                     false
                 );
             }
-
             $percent = 0;
             if ($orderCancelDate->diffInDays($orderStartDate) <= 7) {
                 $percent = 0.3;
@@ -89,16 +95,7 @@ class CancelOrder implements ShouldQueue
                 $percent = 1;
             }
 
-            if ($this->order->coupon_id) {
-                $orderPoint = $orderPoint - $this->order->discount_point;
-
-                if ($orderPoint < 0) {
-                    $orderPoint = 0;
-                }
-            }
-
             $cancelFee = $orderPoint * $percent;
-
             $this->order->total_point = $cancelFee;
             $this->order->cancel_fee_percent = $percent * 100;
             $this->order->save();
