@@ -136,21 +136,18 @@
                     @endif
                   </td>
                 </tr>
-
-                @if($order->coupon_id)
-                  <tr>
-                    <th>クーポン利用</th>
-                    <td>{{ $order->coupon_name }}</td>
-                  </tr>
-
-                  <tr>
-                    <th>割引ポイント</th>
-                    <td>{{ number_format($order->discount_point) .'P' }}</td>
-                  </tr>
-                @endif
-
               @endif
+              @if($order->coupon_id)
+                <tr>
+                  <th>クーポン利用</th>
+                  <td>{{ $order->coupon_name }}</td>
+                </tr>
 
+                <tr>
+                  <th>割引ポイント</th>
+                  <td>{{'-' . number_format($order->discount_point) .'P' }}</td>
+                </tr>
+              @endif
               <tr>
                 <th>　予定合計ポイント</th>
                 <td>

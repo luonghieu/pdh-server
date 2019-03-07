@@ -79,7 +79,7 @@
                 </tr>
                 <tr>
                   <th>クーポン割引額</th>
-                  <td>{{ number_format($order->discount_point) .'P' }}</td>
+                  <td>{{ '-' . number_format($order->discount_point) .'P' }}</td>
                 </tr>
               @endif
               <tr>
