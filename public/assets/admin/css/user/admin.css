@@ -1895,3 +1895,7 @@ tbody td {
 .table-coupon input::placeholder {
   color: #d6d3d3;
 }
+
+.asterisk {
+  color: #d04437;
+}

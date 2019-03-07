@@ -18,7 +18,7 @@
                     <td>{{$coupon->id}}</td>
                   </tr>
                   <tr>
-                    <th>クーポン名*</th>
+                    <th>クーポン名 <span class="asterisk">*</span></th>
                     <td>
                       <div class="wrap-td-coupon">
                         <input type="text" name="name" value="{{request()->old('name') == '' ? $coupon->name : request()->old('name')}}" placeholder="クーポン名を入力してください">
@@ -31,7 +31,7 @@
                     </td>
                   </tr>
                   <tr>
-                    <th>適用対象*</th>
+                    <th>適用対象 <span class="asterisk">*</span></th>
                     <td>
                       <div class="wrap-td-coupon">
                         <div class="wrap-radio-coupon">
