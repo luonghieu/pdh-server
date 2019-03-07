@@ -175,17 +175,6 @@
                 <td>{{ (count($order->casts) > 0) ? number_format($order->casts[0]->pivot->allowance_point).'P' : '' }}</td>
               </tr>
               <tr>
-              @if($order->coupon_id)
-                <tr>
-                  <th>クーポン利用</th>
-                  <td>{{ $order->coupon_name }}</td>
-                </tr>
-                <tr>
-                  <th>クーポン割引額</th>
-                  <td>{{ number_format($order->discount_point) .'P' }}</td>
-                </tr>
-              @endif
-
                 <th>実績合計ポイント</th>
                 <td>
                   @php
