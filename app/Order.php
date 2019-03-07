@@ -746,10 +746,17 @@ class Order extends Model
                         $discountPoint = $this->orderPointDiscount($casts, $this->coupon_value * 60) + $this->orderFeeDiscount($casts, $this->coupon_value * 60);
                     } else {
                         $orderPoint = 0;
-                        for ($i = 0; $i < $this->total_cast; $i++) {
-                            $cost = $this->castClass->cost;
+                        if ($this->type == OrderType::NOMINATION) {
+                            $cast = $this->castOrder()->first();
+                            $cost = $cast->cost;
                             $orderDuration = $this->coupon_value * 60;
                             $orderPoint += ($cost / 2) * floor($orderDuration / 15);
+                        } else {
+                            for ($i = 0; $i < $this->total_cast; $i++) {
+                                $cost = $this->castClass->cost;
+                                $orderDuration = $this->coupon_value * 60;
+                                $orderPoint += ($cost / 2) * floor($orderDuration / 15);
+                            }
                         }
 
                         $discountPoint = $orderPoint;
