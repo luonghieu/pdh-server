@@ -126,7 +126,17 @@ class OrderController extends Controller
             $checkOrderIdExist = Order::whereIn('id', $orderIds)->exists();
 
             if ($checkOrderIdExist) {
-                Order::whereIn('id', $orderIds)->delete();
+                $orders = Order::whereIn('id', $orderIds)->get();
+
+                foreach ($orders as $order) {
+                    if ($order->coupon_id) {
+                        $user = $order->user;
+
+                        $user->coupons()->detach([$order->coupon_id]);
+                    }
+
+                    $order->delete();
+                }
             }
         }
 
