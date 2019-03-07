@@ -205,17 +205,14 @@ class Order extends Model
     public function cancel()
     {
         try {
-            \DB::beginTransaction();
             $this->update([
                 'status' => OrderStatus::CANCELED,
                 'canceled_at' => Carbon::now(),
             ]);
 
             CancelOrder::dispatchNow($this->id);
-            \DB::commit();
             return true;
         } catch (\Exception $e) {
-            \DB::rollBack();
             LogService::writeErrorLog($e);
 
             return false;
