@@ -86,7 +86,6 @@
                 <th>予定合計ポイント</th>
                 <td>
                   @php
-
                     $tempPoint = 0;
                     if (in_array($order->status, [App\Enums\OrderStatus::ACTIVE, App\Enums\OrderStatus::PROCESSING, App\Enums\OrderStatus::DONE])) {
                       $tempPoint = count($order->casts) > 0 ? $order->casts[0]->pivot->temp_point : 0 ;
@@ -101,8 +100,6 @@
                     } else {
                       $tempPoint = $order->temp_point;
                     }
-
-
                   @endphp
 
                   {{ number_format($tempPoint).'P' }}
@@ -212,9 +209,9 @@
                     if($totalPoint < 0 ) {
                       $totalPoint = 0;
                     }
-
                   @endphp
-                  {{ number_format($tempPoint).'P' }}
+
+                  {{ number_format($totalPoint).'P' }}
                 </td>
               </tr>
               @endif

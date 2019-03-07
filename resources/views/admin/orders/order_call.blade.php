@@ -158,7 +158,7 @@
                     @php
                       $tempPoint = 0;
                       foreach ($order->casts as $cast) {
-                        $tempPoint+=$cast->pivot->temp_point;
+                        $tempPoint += $cast->pivot->temp_point;
                       }
 
                       if($order->coupon_id) {
@@ -228,42 +228,43 @@
                 <tr>
                   <th>実績合計ポイント</th>
                   <td>
-                    @if ($order->payment_status == App\Enums\OrderPaymentStatus::REQUESTING || $order->status == App\Enums\OrderStatus::CANCELED)
-                      $totalPoint = $order->total_point;
+                    @php
+                     $totalPoint = 0;
 
-                      if($order->coupon_id) {
-                        $totalPoint -= $order->discount_point;
-                      }
+                      if ($order->payment_status == App\Enums\OrderPaymentStatus::REQUESTING || $order->status == App\Enums\OrderStatus::CANCELED) {
+                          $totalPoint = $order->total_point;
+                          if($order->coupon_id) {
+                            $totalPoint -= $order->discount_point;
+                          }
 
-                      if ($totalPoint < 0 ) {
-                        $totalPoint = 0;
-                      }
+                          if ($totalPoint < 0 ) {
+                            $totalPoint = 0;
+                          }
 
-                      {{ number_format($totalPoint).'P' }}
-                    @else
-                      @php
+                          $totalPoint = number_format($totalPoint).'P' ;
+                      } else {
                         if (count($order->casts) > 0) {
-                          $tempPoint = 0;
                           foreach ($order->casts as $cast) {
-                            $tempPoint += $cast->pivot->total_point;
+                            $totalPoint += $cast->pivot->total_point;
                           }
 
                           if($order->coupon_id) {
-                            $tempPoint -= $order->discount_point;
+                            $totalPoint -= $order->discount_point;
                           }
 
-                          if ($tempPoint < 0 ) {
-                            $tempPoint = 0;
+                          if ($totalPoint < 0 ) {
+                            $totalPoint = 0;
                           }
 
-                          $tempPoint = number_format($tempPoint).'P';
+                          $totalPoint = number_format($totalPoint).'P' ;
                         } else {
-                          $tempPoint = '-';
+                          $totalPoint = '-';
                         }
-                      @endphp
+                      }
 
-                    {{ $tempPoint }}
-                    @endif
+                    @endphp
+
+                    {{ $totalPoint }}
                   </td>
                 </tr>
                 <tr>
