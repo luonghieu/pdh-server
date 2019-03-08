@@ -237,7 +237,9 @@
         @endif
         <div class="details-total__content mt-2">
             <div class="details-total__text">合計</div>
-            <div class="details-total__marks">{{ number_format($orderTotalPoint - $order->discount_point) . 'P' }}</div>
+            <div class="details-total__marks">
+                {{ ($orderTotalPoint < $order->discount_point) ? 0 : number_format($orderTotalPoint - $order->discount_point) }}P
+            </div>
         </div>
         <span class="details-total-desc">❉1P=1.1円で決済が実行されます</span>
     </section>
@@ -261,7 +263,7 @@
 
 @section('web.extra_js')
     <script>
-        const orderTotalPoint = parseInt('<?php echo $orderTotalPoint - $order->discount_point ?>');
+        const orderTotalPoint = parseInt('<?php echo ($orderTotalPoint < $order->discount_point) ? 0 : ($orderTotalPoint - $order->discount_point) ?>');
         const guestTotalPoint = parseInt('<?php echo $user->point ?>');
 
         const orderId = '<?php echo $order->id; ?>';

@@ -27,18 +27,24 @@ class CouponController extends ApiController
         ]);
 
         $user = $this->guard()->user();
-
-        $coupons = Coupon::whereDoesntHave('users', function($q) use ($user) {
+        $coupons = Coupon::query();
+        $coupons = $coupons->whereDoesntHave('users', function($q) use ($user) {
             $q->where('user_id', '=', $user->id);
         });
 
         if (isset($params['duration'])) {
-            $coupons = $coupons->where([
-                ['is_filter_order_duration', '=', true],
-                ['filter_order_duration', '<=', $params['duration']],
-            ])->orWhere('is_filter_order_duration', false)->orWhere('is_filter_order_duration', null);
+            $coupons = $coupons->where(function($q) use ($params) {
+                $q->where([
+                    ['is_filter_order_duration', '=', true],
+                    ['filter_order_duration', '<=', $params['duration']],
+                ])->orWhere(function($sq) {
+                    $sq->where('is_filter_order_duration', false)->orWhere('is_filter_order_duration', null);
+                });
+            });
         } else {
-            $coupons = $coupons->where('is_filter_order_duration', false)->orWhere('is_filter_order_duration', null);
+            $coupons = $coupons->where(function($q) {
+                $q->where('is_filter_order_duration', false)->orWhere('is_filter_order_duration', null);
+            });
         }
 
         $coupons = $coupons->get();
@@ -47,7 +53,7 @@ class CouponController extends ApiController
             $createdAtOfUser = Carbon::parse($user->created_at);
 
             $bool = false;
-            if ($item->is_filter_after_created_date && $item->filter_after_created_date) {
+            if ($item->is_filter_after_created_date && $item->filter_after_created_date >= 0) {
                 if ($now->diffInDays($createdAtOfUser) > $item->filter_after_created_date) {
                     $bool = true;
                 }

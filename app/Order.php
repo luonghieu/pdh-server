@@ -162,6 +162,12 @@ class Order extends Model
                 $this->save();
 
                 $cast = User::find($userId);
+
+                if ($this->coupon_id) {
+                    $user = $this->user;
+
+                    $user->coupons()->detach([$this->coupon_id]);
+                }
                 $this->user->notify(new CastDenyOrders($this, $cast));
             }
 
@@ -187,6 +193,11 @@ class Order extends Model
             $this->canceled_at = Carbon::now();
             $this->save();
 
+            if ($this->coupon_id) {
+                $user = $this->user;
+
+                $user->coupons()->detach([$this->coupon_id]);
+            }
             $cast = User::find($userId);
             $owner = $this->user;
             $involvedUsers = [];
@@ -211,7 +222,6 @@ class Order extends Model
             ]);
 
             CancelOrder::dispatchNow($this->id);
-
             return true;
         } catch (\Exception $e) {
             LogService::writeErrorLog($e);
@@ -710,19 +720,65 @@ class Order extends Model
     public function getDiscountPointAttribute()
     {
         $discountPoint = 0;
-
         if ($this->coupon_id) {
             switch ($this->coupon_type) {
                 case CouponType::POINT:
                     $discountPoint = (int) $this->coupon_value;
                     break;
                 case CouponType::PERCENT:
-                    $discountPoint = $this->total_point * $this->coupon_value / 100;
+                    $orderPoint = $this->total_point;
+                    if (!isset($orderPoint) || $orderPoint == 0) {
+                        $casts = $this->casts()->get();
+                        $orderPoint = 0;
+                        $orderDuration = $this->duration * 60;
+                        $orderStartedAt = Carbon::parse($this->date . ' ' . $this->start_time);
+                        $orderStoppeddAt = $orderStartedAt->copy()->addMinutes($orderDuration);
+                        $orderNightTime = $this->nightTime($orderStoppeddAt);
+                        $orderAllowance = $this->allowance($orderNightTime);
+                        if ($casts->count() == $this->total_cast) {
+                            foreach ($casts as $cast) {
+                                $orderFee = $this->orderFee($cast, $orderStartedAt, $orderStoppeddAt);
+                                $orderPoint += $this->orderPoint($cast) + $orderAllowance + $orderFee;
+                            }
+                        } else {
+                            for ($i = 0; $i < $this->total_cast; $i++) {
+                                $cost = $this->castClass->cost;
+                                $orderDuration = $this->duration * 60;
+                                $orderPoint += ($cost / 2) * floor($orderDuration / 15) + $orderAllowance;
+                            }
+                        }
+                    }
+
+                    $discountPoint = $orderPoint * $this->coupon_value / 100;
                     break;
                 case CouponType::TIME:
                     $casts = $this->casts()->get();
+                    if ($casts->count() == $this->total_cast) {
+                        $discountPoint = $this->orderPointDiscount($casts, $this->coupon_value * 60) + $this->orderFeeDiscount($casts, $this->coupon_value * 60);
+                    } else {
+                        $orderPoint = 0;
+                        if ($this->type == OrderType::NOMINATION) {
+                            $cast = \DB::table('cast_order')->where('order_id', $this->id)->first();
+                            if ($cast) {
+                                $cost = $cast->cost;
+                                if ($cost === null) {
+                                    $cost = $this->castClass->cost;
+                                }
+                            } else {
+                                $cost = $this->castClass->cost;
+                            }
+                            $orderDuration = $this->coupon_value * 60;
+                            $orderPoint += ($cost / 2) * floor($orderDuration / 15);
+                        } else {
+                            for ($i = 0; $i < $this->total_cast; $i++) {
+                                $cost = $this->castClass->cost;
+                                $orderDuration = $this->coupon_value * 60;
+                                $orderPoint += ($cost / 2) * floor($orderDuration / 15);
+                            }
+                        }
 
-                    $discountPoint = $this->orderPointDiscount($casts, $this->coupon_value) + $this->orderFeeDiscount($casts, $this->coupon_value);
+                        $discountPoint = $orderPoint;
+                    }
                     break;
 
                 default:break;

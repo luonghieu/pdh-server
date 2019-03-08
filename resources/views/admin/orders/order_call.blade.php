@@ -122,6 +122,9 @@
                 @endif
               </tr>
               @endif
+
+
+
               @if ($order->status >= App\Enums\OrderStatus::PROCESSING || $order->status >= App\Enums\OrderStatus::ACTIVE)
                 <tr>
                   <th>マッチングしたキャスト</th>
@@ -134,19 +137,40 @@
                   </td>
                 </tr>
               @endif
+              @if($order->coupon_id)
+                <tr>
+                  <th>クーポン利用</th>
+                  <td>{{ $order->coupon_name }}</td>
+                </tr>
+
+                <tr>
+                  <th>割引ポイント</th>
+                  <td>{{'-' . number_format($order->discount_point) .'P' }}</td>
+                </tr>
+              @endif
               <tr>
                 <th>　予定合計ポイント</th>
                 <td>
                   @if (in_array($order->status, [App\Enums\OrderStatus::ACTIVE, App\Enums\OrderStatus::PROCESSING, App\Enums\OrderStatus::DONE]))
-                  @php
-                    $tempPoint = 0;
-                    foreach ($order->casts as $cast) {
-                      $tempPoint+=$cast->pivot->temp_point;
-                    }
-                  @endphp
-                  {{ number_format($tempPoint).'P' }}
+                    @php
+                      $tempPoint = 0;
+                      foreach ($order->casts as $cast) {
+                        $tempPoint += $cast->pivot->temp_point;
+                      }
+
+                      if($order->coupon_id) {
+                        $tempPoint -= $order->discount_point;
+                      }
+
+                      if($tempPoint < 0 ) {
+                        $tempPoint = 0;
+                      }
+
+                    @endphp
+                    {{ number_format($tempPoint).'P' }}
                   @else
-                  {{ number_format($order->temp_point).'P' }}
+
+                    {{ number_format($order->temp_point).'P' }}
                   @endif
               </tr>
               <tr>
@@ -189,22 +213,43 @@
                 <tr>
                   <th>実績合計ポイント</th>
                   <td>
-                    @if ($order->payment_status == App\Enums\OrderPaymentStatus::REQUESTING || $order->status == App\Enums\OrderStatus::CANCELED)
-                    {{ number_format($order->total_point).'P' }}
-                    @else
-                      @php
-                        if (count($order->casts) > 0) {
-                          $tempPoint = 0;
-                          foreach ($order->casts as $cast) {
-                            $tempPoint+=$cast->pivot->total_point;
+                    @php
+                     $totalPoint = 0;
+
+                      if ($order->payment_status == App\Enums\OrderPaymentStatus::REQUESTING || $order->status == App\Enums\OrderStatus::CANCELED) {
+                          $totalPoint = $order->total_point;
+                          if($order->coupon_id) {
+                            $totalPoint -= $order->discount_point;
                           }
-                          $tempPoint = number_format($tempPoint).'P';
+
+                          if ($totalPoint < 0 ) {
+                            $totalPoint = 0;
+                          }
+
+                          $totalPoint = number_format($totalPoint).'P' ;
+                      } else {
+                        if (count($order->casts) > 0) {
+                          foreach ($order->casts as $cast) {
+                            $totalPoint += $cast->pivot->total_point;
+                          }
+
+                          if($order->coupon_id) {
+                            $totalPoint -= $order->discount_point;
+                          }
+
+                          if ($totalPoint < 0 ) {
+                            $totalPoint = 0;
+                          }
+
+                          $totalPoint = number_format($totalPoint).'P' ;
                         } else {
-                          $tempPoint = '-';
+                          $totalPoint = '-';
                         }
-                      @endphp
-                    {{ $tempPoint }}
-                    @endif
+                      }
+
+                    @endphp
+
+                    {{ $totalPoint }}
                   </td>
                 </tr>
                 <tr>

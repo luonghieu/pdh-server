@@ -3,9 +3,11 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Coupon extends Model
 {
+    use SoftDeletes;
     protected $fillable = [
         'name',
         'type',
@@ -26,6 +28,6 @@ class Coupon extends Model
 
     public function orders()
     {
-        return $this->belongsToMany('App\Order', 'coupon_users', 'coupon_id','order_id');
+        return $this->hasMany(Order::class, 'coupon_id');
     }
 }

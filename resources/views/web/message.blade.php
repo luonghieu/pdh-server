@@ -119,6 +119,12 @@
                     foreach ($messages['order']['casts'] as $cast) {
                       $tempPoint += $cast['cast_order']['temp_point'];
                     }
+
+                    $tempPoint -= $messages['order']['discount_point'];
+
+                    if ($tempPoint < 0) {
+                      $tempPoint = 0;
+                    }
                   } else {
                     $tempPoint = $messages['order']['temp_point'];
                   }

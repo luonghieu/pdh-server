@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Admin\Coupon;
 
+use App\Services\LogService;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Coupon;
@@ -11,7 +12,6 @@ class CouponController extends Controller
 {
     public function index(Request $request) {
         $keyword = $request->search;
-
         $coupons = Coupon::with('users');
 
         if ($request->has('search')) {
@@ -22,21 +22,19 @@ class CouponController extends Controller
 
         if ($request->has('from_date') && !empty($request->from_date)) {
             $fromDate = Carbon::parse($request->from_date)->startOfDay();
-            $toDate = Carbon::parse($request->to_date)->endOfDay();
-            $coupons->where(function ($query) use ($fromDate, $toDate) {
+            $coupons->where(function ($query) use ($fromDate) {
                 $query->where('created_at', '>=', $fromDate);
             });
         }
 
         if ($request->has('to_date') && !empty($request->to_date)) {
-            $fromDate = Carbon::parse($request->from_date)->startOfDay();
             $toDate = Carbon::parse($request->to_date)->endOfDay();
-            $coupons->where(function ($query) use ($fromDate, $toDate) {
+            $coupons->where(function ($query) use ($toDate) {
                 $query->where('created_at', '<=', $toDate);
             });
         }
 
-        $coupons = $coupons->paginate();
+        $coupons = $coupons->paginate($request->limit ?: 10);
 
         return view('admin.coupons.index', compact('coupons'));
     }

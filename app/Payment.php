@@ -96,4 +96,9 @@ class Payment extends Model
     {
         return $this->belongsTo(Card::class);
     }
+
+    public function setAmountAttribute($value)
+    {
+        $this->attributes['amount'] = (int)$value;
+    }
 }
