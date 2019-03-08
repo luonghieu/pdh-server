@@ -50,7 +50,7 @@ class CouponController extends Controller
             'point' => 'numeric|required_if:type,1|nullable',
             'time' => 'numeric|min:1|max:9999|required_if:type,2|nullable',
             'percent' => 'numeric|required_if:type,3|nullable',
-            'max_point' => 'required_with:time,percent',
+            'max_point' => 'required_if:type,2|required_if:type,3',
             'note' => 'string|max:500|nullable',
             'is_filter_after_created_date' => 'numeric|nullable',
             'filter_after_created_date' => 'numeric|min:1|max:7|nullable',
@@ -72,14 +72,13 @@ class CouponController extends Controller
             'time.max' => '時間には、9999以上の数字を指定してください。',
             'percent.numeric' => 'パーセントには、数字を指定してください。',
             'percent.required_if' => 'パーセントを指定してください',
-            'max_point.required_with' => '時間, %Offが指定されている場合、クーポン適用最高上限額も指定してください。',
+            'max_point.required_if' => '時間, %Offが指定されている場合、クーポン適用最高上限額も指定してください。',
             'note.string' => '備考には、文字を指定してください。',
             'note.max' => '備考は、500文字以下にしてください。',
 
         ];
 
         $validator = validator(request()->all(), $rules, $messages);
-
         if ($validator->fails()) {
             return back()->withErrors($validator->errors())->withInput();
         }
@@ -97,6 +96,7 @@ class CouponController extends Controller
             'is_filter_order_duration',
             'filter_order_duration',
         ]);
+       
         if (isset($input['time'])) {
             $input['time'] = $input['time'] / 60;
         }
