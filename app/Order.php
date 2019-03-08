@@ -113,6 +113,13 @@ class Order extends Model
             ->withTimestamps();
     }
 
+    public function castOrderWithTrash()
+    {
+        return $this->belongsToMany(Cast::class)
+            ->withPivot('status', 'type', 'started_at', 'cost', 'temp_point')
+            ->withTimestamps();
+    }
+
     public function paymentRequests()
     {
         return $this->hasMany(PaymentRequest::class);
@@ -758,7 +765,7 @@ class Order extends Model
                     } else {
                         $orderPoint = 0;
                         if ($this->type == OrderType::NOMINATION) {
-                            $cast = $this->castOrder()->first();
+                            $cast = $this->castOrderWithTrash()->first();
                             $cost = $cast->cost;
                             $orderDuration = $this->coupon_value * 60;
                             $orderPoint += ($cost / 2) * floor($orderDuration / 15);
