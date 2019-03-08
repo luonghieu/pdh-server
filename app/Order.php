@@ -115,7 +115,7 @@ class Order extends Model
 
     public function castOrderWithTrash()
     {
-        return $this->belongsToMany(Cast::class)
+        return $this->belongsToMany(User::class)
             ->withPivot('status', 'type', 'started_at', 'cost', 'temp_point')
             ->withTimestamps();
     }
