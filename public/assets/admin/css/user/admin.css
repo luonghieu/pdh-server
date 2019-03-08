@@ -1896,6 +1896,18 @@ tbody td {
   color: #d6d3d3;
 }
 
+.init-btn-del-order {
+  display: inline-block;
+  position: absolute;
+  right: 32px;
+  top: 90px;
+}
+
+.init-dis {
+  display: inline-block;
+  position: inherit;
+ }
+
 .asterisk {
   color: #d04437;
 }
