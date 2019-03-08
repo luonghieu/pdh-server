@@ -136,6 +136,21 @@ class OrderController extends Controller
     public function exportOrders($ordersExport)
     {
         $data = collect($ordersExport)->map(function ($item) {
+            $status = OrderStatus::getDescription($item->status);
+            
+            if (OrderStatus::DENIED == $item->status || OrderStatus::CANCELED == $item->status) {
+                if ($item->type == OrderType::NOMINATION && (count($item->nominees) > 0 ? empty
+                    ($item->nominees[0]->pivot->accepted_at) : false)) {
+                    $status = '提案キャンセル';
+                } else {
+                    if ($item->cancel_fee_percent == 0) {
+                        $status = '確定後キャンセル (キャンセル料なし)';
+                    } else {
+                        $status = '確定後キャンセル (キャンセル料あり)';
+                    }
+                }
+            }
+
             return [
                 $item->user_id,
                 $item->user ? $item->user->nickname : '',
@@ -151,7 +166,7 @@ class OrderController extends Controller
                 $item->temp_point,
                 ($item->total_cast > 1) ? round(($item->total_time / 60) / $item->total_cast, 2) : round($item->total_time / 60, 2),
                 $item->total_point,
-                OrderStatus::getDescription($item->status),
+                $status,
             ];
         })->toArray();
 
