@@ -81,7 +81,7 @@ class RequestTransferController extends Controller
                         $cast->gender = UserGender::FEMALE;
                         $cast->type = UserType::CAST;
                         $cast->class_id = $castClass->id;
-                        $cast->cost = $castClass->cost;
+                        $cast->cost = config('common.cost_default');
                         $cast->save();
                         break;
 
