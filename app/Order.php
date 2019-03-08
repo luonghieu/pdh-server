@@ -758,8 +758,15 @@ class Order extends Model
                     } else {
                         $orderPoint = 0;
                         if ($this->type == OrderType::NOMINATION) {
-                            $cast = \DB::table('cast_order')->where('order_id', $this->order_id)->get();
-                            $cost = $cast->cost;
+                            $cast = \DB::table('cast_order')->where('order_id', $this->id)->first();
+                            if ($cast) {
+                                $cost = $cast->cost;
+                                if ($cost === null) {
+                                    $cost = $this->castClass->cost;
+                                }
+                            } else {
+                                $cost = $this->castClass->cost;
+                            }
                             $orderDuration = $this->coupon_value * 60;
                             $orderPoint += ($cost / 2) * floor($orderDuration / 15);
                         } else {
