@@ -53,6 +53,24 @@
                     <span>{{ $errors->first('content') }}</span>
                   </div>
                 @endif
+                @if (env('ENABLE_LINE_IMAGE_CAROUSEL'))
+                  <div class="row">
+                    <div class="col-sm-12 init-inline-flex init-mt">
+                      <label class="col-sm-2 init-m-auto">キャストID: </label>
+                      <div class="col-sm-10 p-0">
+                        @foreach($notificationSchedule->cast_ids as $item)
+                          <input class="col-sm-2 mr-1 rank-schedule-cast-ids" type="text" name="cast_ids[]" value="{{$item}}">
+                        @endforeach
+                        @if (count($notificationSchedule->cast_ids) < 10)
+                          @php $missingInput = 10 - count($notificationSchedule->cast_ids); @endphp
+                          @for($i = 0; $i < $missingInput; $i++)
+                            <input class="col-sm-2 mr-1 rank-schedule-cast-ids" type="text" name="cast_ids[]">
+                          @endfor
+                        @endif
+                      </div>
+                    </div>
+                  </div>
+                @endif
                 <div class="col-sm-12 p-0 wrap-input-info-send-push">
                   <div class="init-m">
                     <label class="css-m-auto">ステータスを変更: </label>

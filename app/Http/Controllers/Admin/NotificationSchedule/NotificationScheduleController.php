@@ -49,7 +49,8 @@ class NotificationScheduleController extends Controller
                 'content' => $request->content,
                 'type' => $request->type,
                 'status' => $request->status,
-                'send_to' => $request->send_to
+                'send_to' => $request->send_to,
+                'cast_ids' => $request->cast_ids
             ];
 
             $notificationSchedule->create($input);
@@ -101,7 +102,8 @@ class NotificationScheduleController extends Controller
                 'content' => $request->content,
                 'type' => $request->type,
                 'status' => $request->status,
-                'send_to' => $request->send_to
+                'send_to' => $request->send_to,
+                'cast_ids' => $request->cast_ids
             ];
 
             $notificationSchedule->update($input);

@@ -44,6 +44,12 @@ class RetryFailedJobs extends Command
         $jobs = FailedJob::where('failed_at', '>=', $failedAt);
 
         foreach ($jobs->cursor() as $job) {
+            $payload = json_decode($job->payload, true);
+
+            if (isset($payload['attempts']) && $payload['attempts'] > 3) {
+                continue;
+            }
+
             Artisan::call('queue:retry', ['id' => [$job->id]]);
         }
     }

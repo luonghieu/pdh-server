@@ -1,7 +1,7 @@
 <?php
 
-use Illuminate\Database\Seeder;
 use App\Enums\TagType;
+use Illuminate\Database\Seeder;
 
 class TagsTableSeeder extends Seeder
 {
@@ -16,7 +16,7 @@ class TagsTableSeeder extends Seeder
 
         $data = [
             [
-                'type' => TagType::DESIRE,
+                'type' => 0,
                 'name' => [
                     '聞き上手',
                     '話し上手',
@@ -44,6 +44,32 @@ class TagsTableSeeder extends Seeder
                 ],
             ],
             [
+                'type' => 0,
+                'name' => [
+                    'プライベート',
+                    '接待',
+                    'わいわい',
+                    'しっぽり',
+                    'さくっと',
+                    '終電まで',
+                    '朝まで',
+                    'カラオケ',
+                    'クラブ',
+                    'ランチ',
+                ],
+            ],
+            [
+                'type' => TagType::DESIRE,
+                'name' => [
+                    '聞き上手',
+                    '話し上手',
+                    'カラオケ上手',
+                    'お酒が飲める',
+                    '学生',
+                    '社会人',
+                ],
+            ],
+            [
                 'type' => TagType::SITUATION,
                 'name' => [
                     'プライベート',
@@ -56,6 +82,9 @@ class TagsTableSeeder extends Seeder
                     'カラオケ',
                     'クラブ',
                     'ランチ',
+                    'バー',
+                    '映画',
+                    'ショッピング',
                 ],
             ],
         ];

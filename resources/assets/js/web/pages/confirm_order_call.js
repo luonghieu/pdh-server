@@ -1,3 +1,84 @@
+let coupons = [];
+const couponType = {
+  'POINT': 1,
+  'DURATION': 2,
+  'PERCENT': 3
+};
+
+function showCoupons(coupon, params)
+{
+  var html = '<section class="details-list">';
+  html += '<div class="details-list__line"><p></p></div>';
+  html += '<div class="details-list__header">';
+  html += '<div class="details-header__title">クーポン</div> </div>';
+  html += '<div class="details-list__content show"> <div class="details-list-box">';
+  html += '<ul class="" id="show-name-coupon">'+ coupon.name +'</ul>';
+  html += '<div class="btn2-s"><a href="'+ linkStepOne +'">変更</a></div>';
+  html += '</div> </div> </section>';
+
+  $('#show-coupons-order').html(html);
+
+  var view = '<div class="details-total__content show_point-coupon">';
+  view += '<div class="details-list__header">';
+  view += '<div class="">通常料金</div> </div>';
+  view += '<div class="details-total__marks" id="current-total-point"></div> </div>';
+  view += '<div class="details-total__content show_point-coupon">';
+  view += '<div class="details-list__header"> <div class="">割引額</div> </div>';
+  view += '<div class="details-total__marks sale-point-coupon" id="sale_point-coupon" ></div> </div>';
+          
+  $('#show-point-coupon').html(view);
+
+  if (couponType.DURATION == coupon.type) {
+    params.duration_coupon = coupon.time;
+  }
+
+  window.axios.post('/api/v1/orders/price',params)
+    .then(function(response) {
+
+      if (couponType.PERCENT == coupon.type) {
+        var tempPoint = response.data['data'];
+        var pointCoupon = (parseInt(coupon.percent)/100)*tempPoint;
+      }
+
+      if (couponType.POINT == coupon.type) {
+        var tempPoint = response.data['data'];
+        var pointCoupon = coupon.point;
+      }
+
+      if (couponType.DURATION == coupon.type) {
+        var totalCouponPoint = response.data['data'];
+        var tempPoint = totalCouponPoint.total_point;
+        var pointCoupon = totalCouponPoint.order_point_coupon + totalCouponPoint.order_fee_coupon;
+      }
+
+      if(coupon.max_point) {
+        if(coupon.max_point < pointCoupon) {
+          pointCoupon = coupon.max_point;
+        }
+      }
+
+      var currentPoint = tempPoint-pointCoupon;
+      if(currentPoint<0) {
+        currentPoint = 0;
+      }
+
+      $('#temp_point_order_call').val(currentPoint);
+
+      totalPoint = parseInt(currentPoint).toLocaleString(undefined,{ minimumFractionDigits: 0 });
+      pointCoupon = parseInt(pointCoupon).toLocaleString(undefined,{ minimumFractionDigits: 0 });
+      tempPoint = parseInt(tempPoint).toLocaleString(undefined,{ minimumFractionDigits: 0 });
+
+      $('#current-total-point').text(tempPoint +'P');
+      $('#sale_point-coupon').text('-' + pointCoupon +'P');
+      $('#total_point-order-call').text(totalPoint +'P~');
+    }).catch(function(error) {
+      console.log(error);
+      if (error.response.status == 401) {
+        window.location = '/login';
+      }
+    });
+}
+
 $(document).ready(function(){
   const helper = require('./helper');
   if($('#btn-confirm-orders').length) {
@@ -147,19 +228,26 @@ $(document).ready(function(){
           nominee_ids : castIds,
         };
 
-        window.axios.post('/api/v1/orders/price',params)
-        .then(function(response) {
-          var tempPoint = response.data['data'];
-          $('#temp_point_order_call').val(tempPoint);
+        if (orderCall.coupon) {
+          var coupon = orderCall.coupon;
+          showCoupons(coupon, params);
+        } else {
+          window.axios.post('/api/v1/orders/price',params)
+          .then(function(response) {
+            var tempPoint = response.data['data'];
 
-          tempPoint = parseInt(tempPoint).toLocaleString(undefined,{ minimumFractionDigits: 0 });
-          $('.details-total__marks').text(tempPoint +'P~');
-        }).catch(function(error) {
-          console.log(error);
-          if (error.response.status == 401) {
-            window.location = '/login';
-          }
-        });
+            $('#temp_point_order_call').val(tempPoint);
+
+            tempPoint = parseInt(tempPoint).toLocaleString(undefined,{ minimumFractionDigits: 0 });
+            $('#total_point-order-call').text(tempPoint +'P~');
+          }).catch(function(error) {
+            console.log(error);
+            if (error.response.status == 401) {
+              window.location = '/login';
+            }
+          });
+        }
+
       } else {
         window.location.href = '/mypage';
       }
@@ -216,6 +304,7 @@ $(document).ready(function(){
           time = hour + ':' + minute;
         }
 
+
         var params = {
           prefecture_id : orderCall.prefecture_id,
           address : area,
@@ -227,9 +316,39 @@ $(document).ready(function(){
           type :type,
           total_cast :orderCall.countIds,
           tags : tags,
-          temp_point : $('#temp_point_order_call').val()
+          temp_point : $('#temp_point_order_call').val(),
         };
 
+        if(orderCall.coupon) {
+          var coupon = orderCall.coupon;            
+          params.coupon_id = coupon.id;
+          params.coupon_name = coupon.name;
+          params.coupon_type = coupon.type;
+          
+          if(coupon.max_point) {
+            params.coupon_max_point = coupon.max_point;
+          } else {
+            params.coupon_max_point = null;
+          }
+
+          switch(coupon.type) {
+            case couponType.POINT:
+              params.coupon_value = coupon.point;
+              break;
+
+            case couponType.DURATION:
+              params.coupon_value = coupon.time;
+              break;
+
+            case couponType.PERCENT:
+              params.coupon_value = coupon.percent;
+              break;
+
+            default:
+              window.location.href = '/mypage';
+          }
+        }
+        
         window.axios.post('/api/v1/orders', params)
         .then(function(response) {
           $('#orders').prop('checked',false);
@@ -265,7 +384,7 @@ $(document).ready(function(){
                   }
 
                   if(error.response.status == 409) {
-                    var title = 'すでに予約があります';
+                    var title = 'クーポンが無効です';
                   }
 
                   $('.show-message-order-call h2').html(title);

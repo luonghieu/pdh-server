@@ -75,7 +75,6 @@ class CancelOrder implements ShouldQueue
                     false
                 );
             }
-
             $percent = 0;
             if ($orderCancelDate->diffInDays($orderStartDate) <= 7) {
                 $percent = 0.3;
@@ -90,12 +89,28 @@ class CancelOrder implements ShouldQueue
             }
 
             $cancelFee = $orderPoint * $percent;
-
             $this->order->total_point = $cancelFee;
+            $pointWithDiscount = $cancelFee;
+
+            if ($this->order->coupon_id) {
+                $pointWithDiscount = $cancelFee - $this->order->discount_point;
+                if ($pointWithDiscount < 0) {
+                    $pointWithDiscount = 0;
+                }
+            }
+
             $this->order->cancel_fee_percent = $percent * 100;
             $this->order->save();
 
-            $this->sendPushNotification($involvedUsers, $orderPoint);
+            if ($this->order->cancel_fee_percent == 0) {
+                if ($this->order->coupon_id) {
+                    $user = $this->order->user;
+
+                    $user->coupons()->detach([$this->order->coupon_id]);
+                }
+            }
+
+            $this->sendPushNotification($involvedUsers, $pointWithDiscount);
         }
     }
 

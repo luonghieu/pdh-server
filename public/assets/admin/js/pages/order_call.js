@@ -277,9 +277,9 @@ function orderChanged() {
             }
         }
         $('#order-type').text(orderTypeDesc[currentOrderType]);
-        if (numOfCast < $('#total-cast').val()) {
+        if ((getListCastMatching().length + getListCastCandidates().length) < $('#total-cast').val()) {
             $('#submit-popup-content').html(`
-            <h2> ${ $('#total-cast').val() - numOfCast}名をコールとして募集します</h2>
+            <h2> ${ $('#total-cast').val() - (getListCastMatching().length + getListCastCandidates().length)}名をコールとして募集します</h2>
             <h2> "OK"をタップすると、キャストに通知が送られます</h2>
             `);
         } else if(selectedNomination.length) {
@@ -526,18 +526,21 @@ function handleChoosenCastClassEvent() {
     $('#choosen-cast-class').change(function (event) {
         classId = $(this).children("option:selected").val();
         let isSameClass = true;
-        if (selectedMatching.length || selectedNomination.length || selectedCandidate.length) {
-            if (selectedMatching.findIndex(i => i.class_id == classId) == -1) {
-                isSameClass = false;
-            }
-            if (selectedNomination.findIndex(i => i.class_id == classId) == -1) {
-                isSameClass = false;
-            }
-            if (selectedCandidate.findIndex(i => i.class_id == classId) == -1) {
-                isSameClass = false;
-            }
-        }
+        // if (selectedMatching.length || selectedNomination.length || selectedCandidate.length) {
+        //     if (selectedMatching.findIndex(i => i.class_id == classId) == -1) {
+        //         isSameClass = false;
+        //     }
+        //     if (selectedNomination.findIndex(i => i.class_id == classId) == -1) {
+        //         isSameClass = false;
+        //     }
+        //     if (selectedCandidate.findIndex(i => i.class_id == classId) == -1) {
+        //         isSameClass = false;
+        //     }
+        // }
 
+        if (getListCastMatching().length || getListCastNominees().length || getListCastCandidates().length) {
+            isSameClass = false;
+        }
         if (!isSameClass) {
             alert('設定している"キャストクラス"と選択されているキャストのキャストクラスが異なります。編集してください。');
             $(this).val(clastIdPrevious);
@@ -679,7 +682,8 @@ jQuery(document).ready(function ($) {
                 'totalCast': $('#total-cast').val(),
                 'type': currentOrderType,
                 'temp_point': currentTempPoint,
-                'status': currentOrderStatus
+                'status': currentOrderStatus,
+                'old_status': orderStatus
             },
             success: function (response) {
                 if (response.success) {

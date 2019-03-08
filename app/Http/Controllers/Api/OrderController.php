@@ -4,12 +4,15 @@ namespace App\Http\Controllers\Api;
 
 use App\Cast;
 use App\CastClass;
+use App\Coupon;
 use App\Enums\CastOrderStatus;
 use App\Enums\CastOrderType;
+use App\Enums\CouponType;
 use App\Enums\OfferStatus;
 use App\Enums\OrderStatus;
 use App\Enums\OrderType;
 use App\Enums\RoomType;
+use App\Enums\TagType;
 use App\Http\Resources\OrderResource;
 use App\Notifications\AcceptedOffer;
 use App\Notifications\CallOrdersCreated;
@@ -96,6 +99,20 @@ class OrderController extends ApiController
             $input['prefecture_id'] = 13;
         }
 
+        $coupon = null;
+        if ($request->coupon_id) {
+            $coupon = $user->coupons()->where('coupon_id', $request->coupon_id)->first();
+
+            if ($coupon) {
+                return $this->respondErrorMessage(trans('messages.coupon_invalid'), 409);
+            }
+
+            $coupon = Coupon::find($request->coupon_id);
+            if (!$this->isValidCoupon($coupon, $user, $request->all())) {
+                return $this->respondErrorMessage(trans('messages.coupon_invalid'), 409);
+            }
+        }
+
         $input['status'] = OrderStatus::OPEN;
 
         try {
@@ -103,9 +120,19 @@ class OrderController extends ApiController
             DB::beginTransaction();
             $order = $user->orders()->create($input);
 
+            if ($coupon) {
+                $order->coupon_id = $request->coupon_id;
+                $order->coupon_name = $request->coupon_name;
+                $order->coupon_type = $request->coupon_type;
+                $order->coupon_value = $request->coupon_value;
+                $order->coupon_max_point = $request->coupon_max_point;
+                $order->save();
+                $user->coupons()->attach($request->coupon_id, ['order_id' => $order->id]);
+            }
+
             if ($request->tags) {
                 $listTags = explode(",", trim($request->tags, ","));
-                $tagIds = Tag::whereIn('name', $listTags)->pluck('id');
+                $tagIds = Tag::whereIn('name', $listTags)->whereIn('type', [TagType::DESIRE, TagType::SITUATION])->pluck('id');
                 $order->tags()->attach($tagIds);
             }
 
@@ -187,6 +214,11 @@ class OrderController extends ApiController
             $offer = $request->offer;
         }
 
+        $couponDuration = 0;
+        if (isset($request->duration_coupon)) {
+            $couponDuration = $request->duration_coupon;
+        }
+
         $rules = [
             'date' => 'required|date|date_format:Y-m-d|after_or_equal:today',
             'start_time' => 'required|date_format:H:i',
@@ -245,7 +277,7 @@ class OrderController extends ApiController
         }
 
         //orderPoint
-
+        $orderPointCoupon = 0;
         $orderPoint = 0;
         $orderDuration = $request->duration * 60;
         $nomineeIds = explode(",", trim($request->nominee_ids, ","));
@@ -253,19 +285,33 @@ class OrderController extends ApiController
         if (OrderType::NOMINATION != $request->type) {
             $cost = CastClass::find($request->class_id)->cost;
             $orderPoint = $totalCast * (($cost / 2) * floor($orderDuration / 15));
+
+            if ($couponDuration) {
+                $orderPointCoupon = $totalCast * (($cost / 2) * floor(($couponDuration * 60) / 15));
+            }
         } else {
             $cost = Cast::find($nomineeIds[0])->cost;
             $orderPoint = ($cost / 2) * floor($orderDuration / 15);
+
+            if ($couponDuration) {
+                $orderPointCoupon = ($cost / 2) * floor(($couponDuration * 60) / 15);
+            }
         }
 
         //ordersFee
 
         $orderFee = 0;
+        $orderFeeCoupon = 0;
         if (OrderType::NOMINATION != $request->type) {
             if (!isset($offer)) {
                 if (!empty($nomineeIds[0])) {
                     $multiplier = floor($orderDuration / 15);
                     $orderFee = 500 * $multiplier * count($nomineeIds);
+
+                    if ($couponDuration) {
+                        $multiplierCoupon = floor($couponDuration / 15);
+                        $orderFeeCoupon = 500 * $multiplierCoupon * count($nomineeIds);
+                    }
                 }
             }
         }
@@ -275,9 +321,21 @@ class OrderController extends ApiController
                 'order_point' => $orderPoint,
                 'order_fee' => $orderFee,
                 'allowance_point' => $allowancePoint,
+                'order_point_coupon' => $orderPointCoupon,
+                'order_fee_coupon' => $orderFeeCoupon,
             ]);
         } else {
-            return $this->respondWithData($orderPoint + $orderFee + $allowancePoint);
+            if ($couponDuration) {
+                return $this->respondWithData([
+                    'order_point_coupon' => $orderPointCoupon,
+                    'order_fee_coupon' => $orderFeeCoupon,
+                    'allowance_point' => $allowancePoint,
+                    'total_point' => $orderPoint + $orderFee + $allowancePoint,
+                ]);
+            } else {
+
+                return $this->respondWithData($orderPoint + $orderFee + $allowancePoint);
+            }
         }
     }
 
@@ -311,7 +369,7 @@ class OrderController extends ApiController
         }
 
         if (!$user->is_card_registered) {
-            return $this->respondErrorMessage(trans('messages.card_not_exist'), 409);
+            return $this->respondErrorMessage(trans('messages.card_not_exist'), 404);
         }
 
         if ($offer->total_cast != $request->total_cast) {
@@ -355,6 +413,20 @@ class OrderController extends ApiController
 
         if ($now->second(0)->diffInMinutes($start_time, false) < 29) {
             return $this->respondErrorMessage(trans('messages.time_invalid'), 400);
+        }
+
+        $coupon = null;
+        if ($request->coupon_id) {
+            $coupon = $user->coupons()->where('coupon_id', $request->coupon_id)->first();
+
+            if ($coupon) {
+                return $this->respondErrorMessage(trans('messages.coupon_invalid'), 409);
+            }
+
+            $coupon = Coupon::find($request->coupon_id);
+            if (!$this->isValidCoupon($coupon, $user, $request->all())) {
+                return $this->respondErrorMessage(trans('messages.coupon_invalid'), 409);
+            }
         }
 
         $input['end_time'] = $end_time->format('H:i');
@@ -407,6 +479,16 @@ class OrderController extends ApiController
             }
 
             $order->room_id = $room->id;
+            if ($coupon) {
+                $order->coupon_id = $request->coupon_id;
+                $order->coupon_name = $request->coupon_name;
+                $order->coupon_type = $request->coupon_type;
+                $order->coupon_value = $request->coupon_value;
+                $order->coupon_max_point = $request->coupon_max_point;
+
+                $user->coupons()->attach($request->coupon_id, ['order_id' => $order->id]);
+            }
+
             $order->update();
 
             $offer->status = OfferStatus::DONE;
@@ -422,5 +504,47 @@ class OrderController extends ApiController
 
             return $this->respondServerError();
         }
+    }
+
+    private function isValidCoupon($coupon, $user, $input)
+    {
+        if (!isset($input['coupon_max_point']) || 'null' == $input['coupon_max_point']) {
+            $input['coupon_max_point'] = null;
+        }
+
+        $now = now();
+        $createdAtOfUser = Carbon::parse($user->created_at);
+        $isValid = true;
+        if ($coupon->is_filter_after_created_date && $coupon->filter_after_created_date) {
+            if ($now->diffInDays($createdAtOfUser) > $coupon->filter_after_created_date) {
+                $isValid = false;
+            }
+        }
+
+        if ($coupon->type != $input['coupon_type'] || trim($coupon->name) != trim($input['coupon_name']) || $coupon->max_point
+            != $input['coupon_max_point']) {
+            $isValid = false;
+        }
+
+        switch ($coupon->type) {
+            case CouponType::POINT:
+                if ($coupon->point != $input['coupon_value']) {
+                    $isValid = false;
+                }
+                break;
+            case CouponType::TIME:
+                if ($coupon->time != $input['coupon_value']) {
+                    $isValid = false;
+                }
+                break;
+            case CouponType::PERCENT:
+                if ($coupon->percent != $input['coupon_value']) {
+                    $isValid = false;
+                }
+                break;
+            default:break;
+        }
+
+        return $isValid;
     }
 }

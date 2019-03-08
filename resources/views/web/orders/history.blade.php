@@ -222,15 +222,24 @@
                         </p>
                     </li>
                 </ul>
+                
             </div>
         </section>
     @endforeach
-
+    
     <section class="details-total">
         <div class="details-list__line"><p></p></div>
+        @if ($order->discount_point > 0)
         <div class="details-total__content">
+            <div class="details-total__text font-size_15">クーポン適用</div>
+            <div class="details-total__marks red-color font-size_15">-{{ number_format($order->discount_point) . 'P' }}</div>
+        </div>
+        @endif
+        <div class="details-total__content mt-2">
             <div class="details-total__text">合計</div>
-            <div class="details-total__marks">{{ number_format($orderTotalPoint) . 'P' }}</div>
+            <div class="details-total__marks">
+                {{ ($orderTotalPoint < $order->discount_point) ? 0 : number_format($orderTotalPoint - $order->discount_point) }}P
+            </div>
         </div>
         <span class="details-total-desc">❉1P=1.1円で決済が実行されます</span>
     </section>
@@ -242,10 +251,10 @@
                 <button class="btn-l" type="submit" id="payment-submit">決済を確定する</button>
             </div>
 
-                @if ($order->payment_status != \App\Enums\OrderPaymentStatus::EDIT_REQUESTING)
-                    <a href="javascript:void(0)" class="point-fix"
-                       onclick="openRequestUpdatePoint('{{ $order->id }}')">決済ポイントの修正を依頼する場合はこちら</a>
-                @endif
+            @if ($order->payment_status != \App\Enums\OrderPaymentStatus::EDIT_REQUESTING)
+                <a href="javascript:void(0)" class="point-fix"
+                   onclick="openRequestUpdatePoint('{{ $order->id }}')">決済ポイントの修正を依頼する場合はこちら</a>
+            @endif
         @endif
     </form>
     @endif
@@ -254,7 +263,7 @@
 
 @section('web.extra_js')
     <script>
-        const orderTotalPoint = parseInt('<?php echo $orderTotalPoint ?>');
+        const orderTotalPoint = parseInt('<?php echo ($orderTotalPoint < $order->discount_point) ? 0 : ($orderTotalPoint - $order->discount_point) ?>');
         const guestTotalPoint = parseInt('<?php echo $user->point ?>');
 
         const orderId = '<?php echo $order->id; ?>';
