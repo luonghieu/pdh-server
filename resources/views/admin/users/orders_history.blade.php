@@ -29,7 +29,7 @@
                 <td>{{ $order->user->nickname }}</td>
                 <td><a href="{{ route('admin.orders.call', ['order' => $order->id]) }}">{{ $order->id }}</a></td>
                 <td>{{ Carbon\Carbon::parse($order->date)->format('Y/m/d') }} {{ Carbon\Carbon::parse($order->start_time)->format('H:i') }}</td>
-                <td>{{ number_format($order->total_point) }}P</td>
+                <td>{{ ($order->total_point < $order->discount_point) ? 0 : number_format($order->total_point - $order->discount_point) }}P</td>
                 <td>{{ App\Enums\OrderType::getDescription($order->type) }}</td>
                 @if ($order->type == App\Enums\OrderType::NOMINATION)
                   <td><a href="{{ route('admin.orders.order_nominee', ['order' => $order->id]) }}" class="btn btn-detail">詳細</a></td>
