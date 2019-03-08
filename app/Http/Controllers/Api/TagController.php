@@ -23,7 +23,7 @@ class TagController extends ApiController
         if (TagType::DESIRE == $type || TagType::SITUATION == $type) {
             $tags = $this->repository->findByField('type', $type);
         } else {
-            $tags = $this->repository->all();
+            $tags = $this->repository->findWhereIn('type', [TagType::DESIRE, TagType::SITUATION]);
         }
 
         return $this->respondWithData(TagResource::collection($tags));

@@ -2,6 +2,7 @@
 
 namespace App\Notifications;
 
+use App\Cast;
 use App\Enums\DeviceType;
 use App\Enums\NotificationScheduleSendTo;
 use App\Enums\ProviderType;
@@ -183,6 +184,46 @@ class AdminNotification extends Notification implements ShouldQueue
             }
         }
 
+        if ($this->imageCarouselMessage()) {
+            $pushData[] = $this->imageCarouselMessage();
+        }
+
         return $pushData;
+    }
+
+    private function imageCarouselMessage()
+    {
+        $castIds = array_filter($this->schedule->cast_ids);
+        if (env('ENABLE_LINE_IMAGE_CAROUSEL') && $castIds) {
+            $columns = [];
+            $page = env('LINE_LIFF_REDIRECT_PAGE') . '?page=cast&cast_id=';
+            $casts = Cast::whereIn('id', array_filter($castIds))->get();
+            foreach ($casts as $item) {
+                $columns[] = [
+                    'imageUrl' => $item->avatars->first()->path,
+                    'action' => [
+                        'type' => 'uri',
+                        'label' => 'プロフィールを見る',
+                        'uri' => "line://app/$page" . $item->id
+                    ]
+                ];
+            }
+
+            if ($columns) {
+                return [
+                    'type' => 'template',
+                    'altText' => 'Cheersで会える女性を写真でご紹介！本日以降のご予約も可能です！',
+                    'template' => [
+                        'type' => 'image_carousel',
+                        'columns' => $columns
+                    ]
+                ];
+            }
+
+            return [];
+
+        }
+
+        return [];
     }
 }

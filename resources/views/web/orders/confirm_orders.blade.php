@@ -71,27 +71,23 @@
         </div>
       </div>
     </section>
+    <!-- coupons -->
+    <div id="show-coupons-order"></div>
+
     <section class="details-total">
       <div class="details-list__line"><p></p></div>
+
+      <!-- show-point-coupon -->
+      <div id="show-point-coupon"></div>
+
       <div class="details-total__content">
-      <div class="details-list__header">
-        <div class="details-header__title">合計</div>
-      </div>
-        <div class="details-total__marks"></div>
-      </div>
-      <input type="hidden" id="temp_point_order_call" value="">
-      @php
-        $campaignFrom = Carbon\Carbon::parse(env('CAMPAIGN_FROM'));
-        $campaignTo = Carbon\Carbon::parse(env('CAMPAIGN_TO'));
-        $timeCreateGuest = Carbon\Carbon::parse(Auth::user()->created_at);
-        $timeDisplay = now()->subDay(7);
-      @endphp
-      @if (Auth::user()->is_guest && Auth::user()->is_verified && !Auth::user()->campaign_participated
-        && now()->between($campaignFrom, $campaignTo) && $timeCreateGuest > $timeDisplay)
-        <div class="notify-campaign-confirm">
-          <span>※キャンペーンが適用される場合、キャストと合流後に無料時間分のポイントが付与され、解散後に不足分のポイントのみが決済されます。</span>
+        <div class="details-list__header">
+          <div class="details-header__title">合計</div>
         </div>
-      @endif
+        <div class="details-total__marks" id="total_point-order-call"></div>
+      </div>
+
+      <input type="hidden" id="temp_point_order_call" value="">
     </section>
   </div>
   <div class="reservation-policy">
@@ -175,6 +171,7 @@
 
   <script>
     var avatarsDefault = "<?php echo asset('assets/web/images/gm1/ic_default_avatar@3x.png'); ?>";
+    var linkStepOne = "<?php echo route('guest.orders.call'); ?>";
   </script>
 
 @endsection

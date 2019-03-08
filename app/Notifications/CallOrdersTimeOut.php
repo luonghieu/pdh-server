@@ -112,7 +112,7 @@ class CallOrdersTimeOut extends Notification implements ShouldQueue
             ]);
             $roomMessage->recipients()->attach($notifiable->id, ['room_id' => $room->id]);
         } else {
-            $nominees = $this->order->nomineesWithTrashed->first();
+            $nominees = $this->order->nomineesWithTrashed()->first();
             $room = $this->createDirectRoom($this->order->user_id, $nominees->id);
             $roomMesage = '提案がキャンセルされました。';
             $roomMessage = $room->messages()->create([
@@ -186,7 +186,7 @@ class CallOrdersTimeOut extends Notification implements ShouldQueue
             ]);
             $roomMessage->recipients()->attach($notifiable->id, ['room_id' => $room->id]);
         } else {
-            $nominees = $this->order->nomineesWithTrashed->first();
+            $nominees = $this->order->nomineesWithTrashed()->first();
             $room = $this->createDirectRoom($this->order->user_id, $nominees->id);
             $roomMesage = '提案がキャンセルされました。';
             $roomMessage = $room->messages()->create([

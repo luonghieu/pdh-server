@@ -72,14 +72,37 @@
                 <th>キャストを呼ぶ時間</th>
                 <td>{{ $order->duration }}時間</td>
               </tr>
+              @if($order->coupon_id)
+                <tr>
+                  <th>クーポン利用</th>
+                  <td>{{ $order->coupon_name }}</td>
+                </tr>
+                <tr>
+                  <th>クーポン割引額</th>
+                  <td>{{ '-' . number_format($order->discount_point) .'P' }}</td>
+                </tr>
+              @endif
               <tr>
                 <th>予定合計ポイント</th>
                 <td>
-                  @if (in_array($order->status, [App\Enums\OrderStatus::ACTIVE, App\Enums\OrderStatus::PROCESSING, App\Enums\OrderStatus::DONE]))
-                  {{ count($order->casts) > 0 ? number_format($order->casts[0]->pivot->temp_point).'P' : '0P' }}
-                  @else
-                  {{ number_format($order->temp_point).'P' }}
-                  @endif
+                  @php
+                    $tempPoint = 0;
+                    if (in_array($order->status, [App\Enums\OrderStatus::ACTIVE, App\Enums\OrderStatus::PROCESSING, App\Enums\OrderStatus::DONE])) {
+                      $tempPoint = count($order->casts) > 0 ? $order->casts[0]->pivot->temp_point : 0 ;
+
+                      if($order->coupon_id) {
+                        $tempPoint -= $order->discount_point;
+                      }
+
+                      if($tempPoint < 0 ) {
+                        $tempPoint = 0;
+                      }
+                    } else {
+                      $tempPoint = $order->temp_point;
+                    }
+                  @endphp
+
+                  {{ number_format($tempPoint).'P' }}
                 </td>
               </tr>
               <tr>
@@ -154,16 +177,30 @@
               <tr>
                 <th>実績合計ポイント</th>
                 <td>
-                  @if ($order->status == App\Enums\OrderStatus::PROCESSING)
-                  {{ count($order->casts) > 0 ? number_format($order->casts[0]->pivot->temp_point).'P' : '0P' }}
-                  @endif
-                  @if ($order->status >= App\Enums\OrderStatus::DONE)
-                    @if ($order->payment_status)
-                    {{ number_format($order->total_point).'P' }}
-                    @else
-                    {{ count($order->casts) > 0 ? number_format($order->casts[0]->pivot->total_point).'P' : '0P' }}
-                    @endif
-                  @endif
+                  @php
+                    $totalPoint = 0;
+                    if ($order->status == App\Enums\OrderStatus::PROCESSING) {
+                      $totalPoint = count($order->casts) > 0 ? $order->casts[0]->pivot->temp_point : 0;
+                    }
+
+                    if ($order->status >= App\Enums\OrderStatus::DONE) {
+                      if ($order->payment_status) {
+                        $totalPoint = $order->total_point;
+                      } else {
+                        $totalPoint = count($order->casts) > 0 ? $order->casts[0]->pivot->total_point : 0;
+                      }
+                    }
+
+                    if($order->coupon_id) {
+                      $totalPoint -= $order->discount_point;
+                    }
+
+                    if($totalPoint < 0 ) {
+                      $totalPoint = 0;
+                    }
+                  @endphp
+
+                  {{ number_format($totalPoint).'P' }}
                 </td>
               </tr>
               @endif

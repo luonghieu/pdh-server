@@ -83,6 +83,12 @@ class SetTimeOutForCallOrder extends Command
         $order->canceled_at = now();
         $order->save();
 
+        if ($order->coupon_id) {
+            $user = $order->user;
+
+            $user->coupons()->detach([$order->coupon_id]);
+        }
+
         $castIds = $order->castOrder()
             ->pluck('cast_order.user_id')
             ->toArray();

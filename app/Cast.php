@@ -32,7 +32,7 @@ class Cast extends User
     public function orders()
     {
         return $this->belongsToMany(Order::class, 'cast_order', 'user_id', 'order_id')
-            ->withPivot('created_at', 'updated_at');
+            ->withPivot('status', 'created_at', 'updated_at');
     }
 
     public function getLatestOrderAttribute()

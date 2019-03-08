@@ -398,49 +398,48 @@ class OrderController extends Controller
             $duration = $request->sl_duration_nominition;
         }
 
-        $client = new Client(['base_uri' => config('common.api_url')]);
-        $user = Auth::user();
+        $tempPoint = $request->current_temp_point;
 
-        $accessToken = JWTAuth::fromUser($user);
-
-        $option = [
-            'headers' => ['Authorization' => 'Bearer ' . $accessToken],
-            'form_params' => [],
-            'allow_redirects' => false,
+        $input = [
+            'prefecture_id' => $prefecture,
+            'address' => $area,
+            'type' => OrderType::NOMINATION,
+            'class_id' => $classId,
+            'duration' => $duration,
+            'date' => $date,
+            'start_time' => $time,
+            'temp_point' => $tempPoint,
+            'total_cast' => 1,
+            'nominee_ids' => $request->cast_id,
         ];
 
-        try {
-            $tempPoint = $client->post(route('orders.price', [
-                'type' => OrderType::NOMINATION,
-                'class_id' => $classId,
-                'duration' => $duration,
-                'date' => $date,
-                'start_time' => $time,
-                'total_cast' => 1,
-                'nominee_ids' => $request->cast_id,
-            ]), $option);
+        if ($request->select_coupon) {
+            $input['coupon_id'] = $request->select_coupon;
+            $input['coupon_name'] = $request->name_coupon;
+            $input['coupon_value'] = $request->value_coupon;
+            $input['coupon_type'] = $request->type_coupon;
 
-            $tempPoint = json_decode(($tempPoint->getBody())->getContents(), JSON_NUMERIC_CHECK);
-        } catch (\Exception $e) {
-            LogService::writeErrorLog($e);
-            abort(500);
+            $input['coupon_max_point'] = null;
+            if ($request->max_point_coupon) {
+                $input['coupon_max_point'] = $request->max_point_coupon;
+            }
         }
 
-        $tempPoint = $tempPoint['data'];
+        $user = Auth::user();
+        $accessToken = JWTAuth::fromUser($user);
+
+        $client = new Client([
+            'base_uri' => config('common.api_url'),
+            'headers' => [
+                'Content-Type' => 'application/json',
+                'Authorization' => 'Bearer ' . $accessToken,
+            ],
+        ]);
 
         try {
-            $order = $client->post(route('orders.create', [
-                'prefecture_id' => $prefecture,
-                'address' => $area,
-                'class_id' => $classId,
-                'duration' => $duration,
-                'date' => $date,
-                'start_time' => $time,
-                'total_cast' => 1,
-                'temp_point' => $tempPoint,
-                'type' => OrderType::NOMINATION,
-                'nominee_ids' => $request->cast_id,
-            ]), $option);
+            $order = $client->request('POST', route('orders.create'), [
+                'form_params' => $input,
+            ]);
 
             $order = json_decode(($order->getBody())->getContents(), JSON_NUMERIC_CHECK);
             $order = $order['data'];
@@ -450,9 +449,13 @@ class OrderController extends Controller
             LogService::writeErrorLog($e);
             $statusCode = $e->getResponse()->getStatusCode();
 
-            $request->session()->flash('status_code', $statusCode);
+            if (401 == $statusCode) {
+                return redirect()->route('web.login');
+            } else {
+                $request->session()->flash('status_code', $statusCode);
 
-            return redirect()->back();
+                return redirect()->back();
+            }
         }
     }
 
