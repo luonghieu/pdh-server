@@ -17,37 +17,37 @@
     </div>
   </div>
 @endsection
-  <div class="reservation-item">
-    <div class="caption"><!-- 見出し用div -->
-      <h2>キャストのタイプ</h2>
-    </div>
-    <div class="form-grpup"><!-- フォーム内容 -->
-      @if(count($desires['data']))
-       @foreach($desires['data'] as $tag)
-       <label class="button button--green checkbox-tags">
-       <input type="checkbox" name="desires[]" value="{{ $tag['name'] }}" class="tags-name">{{ $tag['name'] }}</label>
-       @endforeach
-      @endif
-    </div>
+<div class="reservation-item">
+  <div class="caption"><!-- 見出し用div -->
+    <h2>キャストのタイプ</h2>
   </div>
+  <div class="form-grpup"><!-- フォーム内容 -->
+    @if(count($desires['data']))
+      @foreach($desires['data'] as $tag)
+        <label class="button button--green checkbox-tags">
+          <input type="checkbox" name="desires[]" value="{{ $tag['name'] }}" class="tags-name">{{ $tag['name'] }}</label>
+      @endforeach
+    @endif
+  </div>
+</div>
 
-  <div class="reservation-item">
-    <div class="caption"><!-- 見出し用div -->
-      <h2>シチュエーション</h2>
-    </div>
-    <div class="form-grpup"><!-- フォーム内容 -->
-      @if(count($situations['data']))
-       @foreach($situations['data'] as $tag)
-       <label class="button button--green checkbox-tags ">
-        <input type="checkbox" name="situations[]" value="{{ $tag['name'] }}" class="tags-name">{{ $tag['name'] }}</label>
-       @endforeach
-      @endif
-    </div>
+<div class="reservation-item">
+  <div class="caption"><!-- 見出し用div -->
+    <h2>シチュエーション</h2>
   </div>
-  <button type="button" class="form_footer ct-button"><a href="{{ route('guest.orders.get_step4') }}">次に進む　(2/3)</a></button>
+  <div class="form-grpup"><!-- フォーム内容 -->
+    @if(count($situations['data']))
+      @foreach($situations['data'] as $tag)
+        <label class="button button--green checkbox-tags ">
+          <input type="checkbox" name="situations[]" value="{{ $tag['name'] }}" class="tags-name">{{ $tag['name'] }}</label>
+      @endforeach
+    @endif
+  </div>
+</div>
+<button type="button" class="form_footer ct-button"><a href="{{ route('guest.orders.get_step4') }}">次に進む　(2/3)</a></button>
 @endsection
 <script>
     if(!localStorage.getItem("order_call")){
-      window.location.href = '/mypage';
+        window.location.href = '/mypage';
     }
 </script>
