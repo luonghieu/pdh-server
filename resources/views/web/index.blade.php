@@ -187,7 +187,11 @@
       </ul>
       <div class="btn-m cast-message">
         @if (Auth::user()->status)
-        <a href="{{ route('message.messages', $order->room_id) }}">メッセージを確認する</a>
+          @if ($order->casts->first() && $order->room_id)
+            <a href="{{ route('message.messages', $order->room_id) }}">メッセージを確認する</a>
+          @else
+            <a href="{{ route('message.index') }}">メッセージを確認する</a>
+          @endif
         @else
         <a href="javascript:void(0)" id="popup-freezed-account">メッセージを確認する</a>
         @endif
