@@ -3,10 +3,11 @@
 namespace App\Http\Controllers\Admin\Coupon;
 
 use App\Services\LogService;
-use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Coupon;
 use Carbon\Carbon;
+use DB;
+use Illuminate\Http\Request;
 
 class CouponController extends Controller
 {
@@ -34,7 +35,7 @@ class CouponController extends Controller
             });
         }
 
-        $coupons = $coupons->paginate($request->limit ?: 10);
+        $coupons = $coupons->orderBy('sort_index')->get();
 
         return view('admin.coupons.index', compact('coupons'));
     }
@@ -204,6 +205,54 @@ class CouponController extends Controller
             $request->session()->flash('err', trans('messages.server_error'));
 
             return redirect()->route('admin.coupons.show', compact('coupon'));
+        }
+    }
+
+    public function updateSortIndex(Request $request)
+    {
+        try {
+            $coupons = Coupon::getModel()->getTable();
+
+            $ids = [];
+            $cases = [];
+            $params = [];
+
+            $couponIds = $request->couponIds;
+
+            foreach ($couponIds as $key => $couponId) {
+                $id = (int) $couponId;
+                $ids[] = $id;
+                $cases[] = "WHEN {$id} then ?";
+                $params[] = $key + 1;
+            }
+
+            $ids = implode(',', $ids);
+            $cases = implode(' ', $cases);
+            $params[] = Carbon::now();
+
+            DB::update("UPDATE `{$coupons}` SET `sort_index` = CASE `id` {$cases} END, `updated_at` = ? WHERE `id` in ({$ids})", $params);
+
+            return response()->json(['success' => true]);
+        } catch (\Exception $e) {
+            LogService::writeErrorLog($e);
+            $request->session()->flash('msg', trans('messages.server_error'));
+        }
+        
+    }
+
+    public function updateIsActive(Request $request)
+    {
+        try {
+            $couponId = $request->couponId;
+            $coupon = Coupon::findOrFail($couponId);
+
+            $coupon->is_active = !$coupon->is_active;
+            $coupon->update();
+
+            return response()->json(['success' => true]);
+        } catch (\Exception $e) {
+            LogService::writeErrorLog($e);
+            $request->session()->flash('msg', trans('messages.server_error'));
         }
     }
 }
