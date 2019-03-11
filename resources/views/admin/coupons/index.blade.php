@@ -75,7 +75,20 @@
                     <td>{{ $coupon->created_at }}</td>
                     <td>
                       <a href="{{route('admin.coupons.show', ['coupon' => $coupon->id])}}" class="btn btn-info">詳細</a>
-                      <a href="{{route('admin.coupons.delete', ['coupon' => $coupon->id])}}" data-method="delete" class="btn btn-info">削除</a>
+                      <button type="button" class="btn btn-info" data-toggle="modal" data-target="#delete_coupon_modal_{{$coupon->id}}" >削除</button>
+                      <div class="modal fade" id="delete_coupon_modal_{{$coupon->id}}" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                        <div class="modal-dialog" role="document">
+                          <div class="modal-content">
+                            <div class="modal-body">
+                              <p>「クーポンタイトル名が入ります」を削除しますか？？</p>
+                            </div>
+                            <div class="modal-footer">
+                              <button type="button" class="btn btn-canceled" data-dismiss="modal">キャンセル</button>
+                              <a href="{{route('admin.coupons.delete', ['coupon' => $coupon->id])}}" data-method="delete" class="btn btn-info">はい</a>
+                            </div>
+                          </div>
+                        </div>
+                      </div>
                     </td>
                   </tr>
                 @endforeach
