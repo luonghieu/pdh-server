@@ -425,6 +425,7 @@ class OrderController extends Controller
             $order->total_cast = $request->totalCast;
             $order->date = $orderDate->format('Y-m-d');
             $order->start_time = $orderDate->format('H:i');
+            $order->end_time = $orderDate->copy()->addMinutes($order->duration * 60)->format('H:i');
             $order->type = $request->type;
             $order->temp_point = $request->temp_point;
             $order->status = $request->status;
