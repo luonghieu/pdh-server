@@ -1911,3 +1911,7 @@ tbody td {
 .asterisk {
   color: #d04437;
 }
+
+#css-init-hover td:hover {
+  cursor:move;
+}

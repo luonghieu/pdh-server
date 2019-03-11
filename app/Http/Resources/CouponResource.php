@@ -30,6 +30,8 @@ class CouponResource extends Resource
             'filter_after_created_date' => $this->filter_after_created_date,
             'is_filter_order_duration' => $this->is_filter_order_duration,
             'filter_order_duration' => $this->filter_order_duration,
+            'is_active' => $this->is_active,
+            'sort_index' => $this->sort_index,
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
         ]);
