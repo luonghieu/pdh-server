@@ -206,8 +206,8 @@ class LineController extends Controller
             . PHP_EOL . '【現在対応可能エリア】'
             . PHP_EOL . '東京都23区'
             . PHP_EOL . '※随時エリア拡大予定';
-        $firstButton = env('LINE_LIFF_REDIRECT_PAGE');
-        $secondButton = env('LINE_LIFF_REDIRECT_PAGE') . '?page=call';
+        $messageTwoFirstButton = env('LINE_LIFF_REDIRECT_PAGE');
+        $messageTwoSecondButton = env('LINE_LIFF_REDIRECT_PAGE') . '?page=call';
 
         $messages = [
             [
@@ -237,12 +237,12 @@ class LineController extends Controller
                         [
                             'type' => 'uri',
                             'label' => 'ログイン',
-                            'uri' => "line://app/$firstButton"
+                            'uri' => "line://app/$messageTwoFirstButton"
                         ],
                         [
                             'type' => 'uri',
                             'label' => '今すぐキャストを呼ぶ',
-                            'uri' => "line://app/$secondButton"
+                            'uri' => "line://app/$messageTwoSecondButton"
                         ]
                     ]
                 ]
