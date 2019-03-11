@@ -301,6 +301,18 @@ function orderChanged() {
             <h2>通知が送られます。</h2>
             `);
         }
+
+        if (orderStatus == 3 && ($('#total-cast').val() > (getListCastMatching().length + getListCastCandidates().length))) {
+            $('#submit-popup-content').html(`
+            <p>【キャストの人数が足りません。"別のキャストを追加する"からキャストを追加して下さい】</p>
+            `);
+
+            $('#btn-submit').hide();
+        } else {
+            $('#btn-submit').show();
+        }
+
+
         if (orderStatus != 3) {
             let currentNomineeList = getListCastNominees();
             let currentCandidateList = getListCastCandidates();
