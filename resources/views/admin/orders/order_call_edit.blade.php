@@ -466,6 +466,7 @@
         const orderStatusDesc = JSON.parse('<?php echo json_encode($orderStatusDesc) ?>');
         const orderStatus = '<?php echo $order->status ?>';
         const redirectBackUrl = '<?php echo route('admin.orders.call', ['order' => $order->id])?>';
+        const orderCreatedAt = '<?php echo $order->created_at ?>';
     </script>
     <script src="/assets/admin/js/pages/order_call.js"></script>
 @stop
