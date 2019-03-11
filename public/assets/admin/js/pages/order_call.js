@@ -301,18 +301,6 @@ function orderChanged() {
             `);
         }
 
-        if (orderStatus == 3 && ($('#total-cast').val() > (getListCastMatching().length + getListCastCandidates().length))) {
-            $('#submit-popup-content').html(`
-            <p>【キャストの人数が足りません。"別のキャストを追加する"からキャストを追加して下さい】</p>
-            `);
-
-            $('#btn-submit').hide();
-        } else {
-            $('#btn-submit').show();
-        }
-
-        validateOrderTime();
-
         if (orderStatus != 3) {
             let currentNomineeList = getListCastNominees();
             let currentCandidateList = getListCastCandidates();
@@ -657,30 +645,48 @@ function validateOrderTime() {
     const orderStartDate = moment(orderDate);
     const createdAt = moment(orderCreatedAt);
     const timeApply = orderStartDate.diff(createdAt, 'minutes');
-    const text = '予約開始時間でキャストの応募が締め切りっています。キャスト応募するのに予約開始時間を変更してください。';
-    if (orderStartDate.diff(now, 'minutes') < 10) {
+    const validateTimeText = '予約開始時間でキャストの応募が締め切りっています。キャスト応募するのに予約開始時間を変更してください。';
+    const validateTotalCastText = 'キャストの人数が足りません。"別のキャストを追加する"からキャストを追加して下さい';
+    let valid = true;
+
+    if (orderStatus == 3 && ($('#total-cast').val() > (getListCastMatching().length + getListCastCandidates().length))) {
         $('#submit-popup-content').html(`
-            <p>${text}</p>
+            <p>${validateTotalCastText}</p>
             `);
         $('#btn-submit').hide();
+        valid = false;
+    }
+
+    if (orderStartDate.diff(now, 'minutes') < 10) {
+        $('#submit-popup-content').html(`
+            <p>${validateTimeText}</p>
+            `);
+        $('#btn-submit').hide();
+        valid = false;
     }
 
     if (timeApply > 30) {
         if (orderStartDate.diff(now, 'minutes') < 15) {
             $('#submit-popup-content').html(`
-            <p>${text}</p>
+            <p>${validateTimeText}</p>
             `);
             $('#btn-submit').hide();
+            valid = false;
         }
     }
 
     if (timeApply > 60) {
         if (orderStartDate.diff(now, 'minutes') < 30) {
             $('#submit-popup-content').html(`
-            <p>${text}</p>
+            <p>${validateTimeText}</p>
             `);
             $('#btn-submit').hide();
+            valid = false;
         }
+    }
+
+    if (valid) {
+        $('#btn-submit').show();
     }
 }
 
