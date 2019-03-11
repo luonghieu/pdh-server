@@ -5,7 +5,7 @@
   <title>ギャラ飲みマッチングアプリ「Cheers」〜いつもの飲み会にちょっとした刺激を。〜</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
   <meta name="keyword" content="ギャラ飲み,アプリ,マッチング">
-  <meta name="description" content="業界初！いつでもどこでも最短20分でキャストに会えるギャラ飲みマッチングアプリ。大学生からモデルまで様々なジャンルのキャストが駆けつけ、飲み会を盛り上げてくれます。">
+  <meta name="description" content="業界初！いつでもどこでも最短30分でキャストに会えるギャラ飲みマッチングアプリ。大学生からモデルまで様々なジャンルのキャストが駆けつけ、飲み会を盛り上げてくれます。">
   <link rel="profile" href="http://gmpg.org/xfn/11">
   <link rel="stylesheet" href="{{ asset('/ld/css/common.css') }}">
   <link rel="stylesheet" href="{{ asset('/ld/css/guest.css') }}">
@@ -73,14 +73,14 @@
       <div class="gTop-phone bil animated">
         <div class="gTop-phone-01 g-pcOnly">
           <div class="gTop-phne-phone animated pulse">
-            <img src="{{ asset('/ld/images/guest/top-phone.png') }}" alt="画像" class="animated pulse">
+            <img src="{{ asset('/ld/images/guest/①④⑪画像変更.png') }}" alt="画像" class="animated pulse">
           </div>
           <div class="gTop-phne-fukidashi animated pulse">
             <img src="{{ asset('/ld/images/guest/top-fukidashi.svg') }}" alt="Facebookには一切表示・投稿されません">
           </div>
         </div>
         <div class="gTop-phone-02 g-spOnly">
-          <img src="{{ asset('/ld/images/guest/top-phone-sp.png') }}" alt="画像">
+          <img src="{{ asset('/ld/images/guest/①④⑪画像変更1.png') }}" alt="画像">
         </div>
       </div>
       <div class="gTop-atcl">
@@ -143,7 +143,7 @@
           <p><span>ギャラ飲み会</span><br>最短</p>
         </div>
         <h2>いつでも、どこでも<br>最短30分で<br class="g-spOnly"><span>※</span>キャストに会える！</h2>
-        <p class="guest01-atcl01"><span class="font-w">関東・関西の主要エリアを中心に、<br class="g-pcOnly">呼びたい時にすぐキャストが駆けつけその場を盛り上げてくれます。</p>
+        <p class="guest01-atcl01"><span class="font-w">関東、関西の主要エリアを中心に、<br class="g-pcOnly">呼びたい時に自分のホームグラウンドなど好きな場所にキャストを呼べるギャラ飲みマッチングアプリです。</p>
       <p class="guest01-atcl02">プライベートの飲み会から接待まで、様々なシーンでご利用いただけます。モーニングやランチにキャストを呼ぶ方も♪</span>
           <p class="guest01-atcl03">※キャストとは飲み会に参加してくれる方のことを指します</p>
       </div>
@@ -216,13 +216,16 @@
           </div>
         </div>
       </div>
-      <h4>その日の気分に合わせて<br class="g-spOnly">自分好みの呼び方を選択できます♪</h4>
+
+
+
+      <h4>その日の気分やシチュエーションに合わせて <br><br class="g-spOnly">ギャラ飲みが開催できます♩</h4>
     </section>
     <div id="guest-ad">
       <div class="g-inner">
         <div class="ad-conts">
           <div class="ad-conts-img g-pcOnly"><img src="{{ asset('/ld/images/guest/guestAd-01.png') }}" alt="画像"></div>
-          <div class="ad-conts-img2 g-spOnly"><img src="{{ asset('/ld/images/guest/ad-spPhone.png') }}" alt="画像"></div>
+          <div class="ad-conts-img2 g-spOnly"><img src="{{ asset('/ld/images/guest/ad-spPhone1.png') }}" alt="画像"></div>
           <div class="ad-conts-atcl">
             <div class="ad-logo"><img src="{{ asset('/ld/images/guest/ad-logo.svg') }}" alt="Cheers"></div>
             <div class="ad-app">
@@ -291,7 +294,7 @@
         <h2>Cheersの3つの特徴</h2>
         <ul class="guest04-melit">
           <li class="guest04-melit-li melit-01">
-            <h3>最短20分でキャストがあなたの元に！</h3>
+            <h3>最短30分でキャストがあなたの元に！</h3>
             <p class="g-pcOnly">ギャラ飲み会初！予約から最短30分でキャストと合流できます。面倒くさい手間はなし！アプリ、LINE一つでスムーズにキャストを呼ぶことができます。</p>
             <p class="g-spOnly">ギャラ飲みには数少ないアプリ化で、アプリひとつでスムーズにキャストを呼べるようになりました。</p>
           </li>
@@ -300,8 +303,8 @@
             <p>ポイント購入制、利用後のアプリ内の決済のため現金のやり取りは一切ありません。合流中の時間もタイマー式で、正確な時間を計ることができます。</p>
           </li>
           <li class="guest04-melit-li melit-03">
-            <h3>お気に入りのキャストと<br class="g-spOnly">１対１で</h3>
-            <p>お気に入りのキャストが見つかればメッセージを送ってみましょう。</p>
+            <h3>領収書発行可能</h3>
+            <p>キャストと解散・決済完了後、アプリからボタン一つで領収書を発行することができます。接待や社内でのイベントにもご利用いただけます。</p>
           </li>
         </ul>
       </div>
@@ -323,6 +326,9 @@
               </div>
             </div>
           </li>
+
+
+
           <li class="guest05-voice animated">
             <div class="voice-number"></div>
             <div class="voice-box">
@@ -332,8 +338,8 @@
               <div class="voice-atcl">
                 <h3>キャストのレベルが高い！</h3>
                 <p class="voice-atcl-name">医者　K.Kさん<br>45歳</p>
-                <p>キャストのレベルも高く、その日のシチュエーションや気分に合わせて集まってくれるので毎回どんな子がくるのか楽しみです。高いお酒を頼む必要もなく、アプリで好きなところに呼べるので<span class="g-pcOnly">キャバクラやラウンジに行く時のようなハードルや堅苦しさがないため</span>すっかりリピーターです
-                  (笑)</p>
+                <p>キャストのレベルも高く、その日の気分に合った子が集まってくれるので、プライベートだけでなく会食などにも安心して利用できます。
+                初めてのギャラ飲みは緊張しましたが、今ではすっかりリピーターです（笑）</p>
               </div>
             </div>
           </li>
@@ -357,7 +363,7 @@
       <div class="g-inner">
         <div class="ad-conts">
           <div class="ad-conts-img g-pcOnly"><img src="{{ asset('/ld/images/guest/guestAd-01.png') }}" alt="画像"></div>
-          <div class="ad-conts-img2 g-spOnly"><img src="{{ asset('/ld/images/guest/ad-spPhone.png') }}" alt="画像"></div>
+          <div class="ad-conts-img2 g-spOnly"><img src="{{ asset('/ld/images/guest/ad-spPhone1.png') }}" alt="画像"></div>
           <div class="ad-conts-atcl">
             <div class="ad-logo"><img src="{{ asset('/ld/images/guest/ad-logo.svg') }}" alt="Cheers"></div>
             <div class="ad-app">
