@@ -34,18 +34,23 @@ class LineController extends Controller
         ];
         $client = new Client(['headers' => $header]);
         $response = null;
-
+        LogService::writeErrorLog($request->events[0]['source']);
         try {
             if ($request->events[0]['type'] == 'follow') {
-//                $body = [
-//                    'replyToken' => $request->events[0]['replyToken'],
-//                    'messages' => $this->addfriendMessages()
-//                ];
-//                $body = \GuzzleHttp\json_encode($body);
-//                $response = $client->post(env('LINE_REPLY_URL'),
-//                    ['body' => $body]
-//                );
-//                return $response;
+                if (isset($request->events[0]['replyToken'])) {
+                    $userInfo = $request->events[0]['source'];
+                    $response = $client->get('https://api.line.me/v2/bot/profile/' . $userInfo['userId']);
+                    $user = json_decode($response->getBody()->getContents());
+                    $body = [
+                        'replyToken' => $request->events[0]['replyToken'],
+                        'messages' => $this->addfriendMessages($user)
+                    ];
+                    $body = \GuzzleHttp\json_encode($body);
+                    $response = $client->post(env('LINE_REPLY_URL'),
+                        ['body' => $body]
+                    );
+                    return $response;
+                }
             } else {
                 $message = '申し訳ございませんが、このアカウントでは個別の返信ができません。'
                     . PHP_EOL . PHP_EOL . 'サービスや予約などに関するお問い合わせは、下記からCheers運営局宛にご連絡ください。';
@@ -191,23 +196,43 @@ class LineController extends Controller
         return ['user' => $user, 'first_time' => false];
     }
 
-    private function addfriendMessages()
+    private function addfriendMessages($user)
     {
-        $message = 'Cheersへようこそ！'
+        $messageOne = 'こんにちは！' . $user->displayName . 'さん🌼';
+        $messageOneButton = env('LINE_LIFF_REDIRECT_PAGE') . '?page=call';
+
+        $messageTwo = 'Cheersへようこそ！'
             . PHP_EOL . 'Cheersは飲み会や接待など様々なシーンに素敵なキャストを呼べるマッチングアプリです♪'
             . PHP_EOL . '【現在対応可能エリア】'
             . PHP_EOL . '東京都23区'
             . PHP_EOL . '※随時エリア拡大予定';
         $firstButton = env('LINE_LIFF_REDIRECT_PAGE');
         $secondButton = env('LINE_LIFF_REDIRECT_PAGE') . '?page=call';
+
         $messages = [
             [
                 'type' => 'template',
-                'altText' => $message,
-                'text' => $message,
+                'altText' => $messageOne,
+                'text' => $messageOne,
                 'template' => [
                     'type' => 'buttons',
-                    'text' => $message,
+                    'text' => $messageOne,
+                    'actions' => [
+                        [
+                            'type' => 'uri',
+                            'label' => '今すぐキャストを呼ぶ ',
+                            'uri' => "line://app/$messageOneButton"
+                        ],
+                    ]
+                ]
+            ],
+            [
+                'type' => 'template',
+                'altText' => $messageTwo,
+                'text' => $messageTwo,
+                'template' => [
+                    'type' => 'buttons',
+                    'text' => $messageTwo,
                     'actions' => [
                         [
                             'type' => 'uri',
@@ -223,53 +248,6 @@ class LineController extends Controller
                 ]
             ]
         ];
-
-        $now = Carbon::now()->startOfDay();
-        $limitedMessageFromDate = Carbon::parse(env('CAMPAIGN_FROM'))->startOfDay();
-        $limitedMessageToDate = Carbon::parse(env('CAMPAIGN_TO'))->endOfDay();
-        if ($now->between($limitedMessageFromDate, $limitedMessageToDate)) {
-
-            $pricesSrc = Storage::url('add_friend_price_063112.png');
-            $bannerSrc = Storage::url('add_friend_banner_063112.jpg');
-            if (!@getimagesize($pricesSrc)) {
-                $fileContents = Storage::disk('local')->get("system_images/add_friend_price_063112.png");
-                $fileName = 'add_friend_price_063112.png';
-                Storage::put($fileName, $fileContents, 'public');
-            }
-            if (!@getimagesize($bannerSrc)) {
-                $fileContents = Storage::disk('local')->get("system_images/add_friend_banner_063112.jpg");
-                $fileName = 'add_friend_banner_063112.jpg';
-                Storage::put($fileName, $fileContents, 'public');
-            }
-
-            $message = '【新規ユーザー様限定！ギャラ飲み1時間無料🥂💕】'
-                . PHP_EOL . PHP_EOL . 'Cheersにご登録いただいてから1週間以内のゲスト様限定で、1時間無料キャンペーンを実施中！✨'
-                . PHP_EOL . PHP_EOL . '※予約方法は、コール予約、指名予約問いません。'
-                . PHP_EOL . '2時間以上のご予約で1時間無料となります（最大11,000円OFF）'
-                . PHP_EOL . PHP_EOL . 'ギャラ飲み初めての方も安心！'
-                . PHP_EOL . 'Cheersのキャストが盛り上げます🙋‍♀️❤️'
-                . PHP_EOL . PHP_EOL . 'ご登録から1週間を超えてしまうとキャンペーン対象外となりますのでお早めにご予約ください。'
-                . PHP_EOL . PHP_EOL . 'ご不明点はメッセージ内の運営者チャットからご連絡ください！';
-            $opMessages = [
-                [
-                    'type' => 'text',
-                    'text' => $message
-                ],
-                [
-                    'type' => 'image',
-                    'originalContentUrl' => $pricesSrc,
-                    'previewImageUrl' => $pricesSrc
-
-                ],
-                [
-                    'type' => 'image',
-                    'originalContentUrl' => $bannerSrc,
-                    'previewImageUrl' => $bannerSrc
-                ]
-            ];
-
-            return array_merge($messages, $opMessages);
-        }
 
         return $messages;
     }

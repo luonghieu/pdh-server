@@ -13,7 +13,10 @@ class LineBotNotificationChannel
         $lineBot = new Line();
 
         $data = $notification->lineBotPushData($notifiable);
+        if ($data) {
+            return $lineBot->push($notifiable->line_user_id, $data);
+        }
 
-        return $lineBot->push($notifiable->line_user_id, $data);
+        return;
     }
 }

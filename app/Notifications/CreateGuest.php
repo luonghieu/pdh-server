@@ -158,30 +158,8 @@ class CreateGuest extends Notification implements ShouldQueue
 
         $roomMessage->recipients()->attach($notifiable->id, ['room_id' => $room->id]);
 
-        $name = $notifiable->nickname ? $notifiable->nickname : $notifiable->name;
-        $content = 'こんにちは！' . $name . 'さん🌼';
-        $page = env('LINE_LIFF_REDIRECT_PAGE') . '?page=call';
+        $messages = $this->limitedLineMessage();
 
-        $baseMessage = [
-            [
-                'type' => 'template',
-                'altText' => $content,
-                'text' => $content,
-                'template' => [
-                    'type' => 'buttons',
-                    'text' => $content,
-                    'actions' => [
-                        [
-                            'type' => 'uri',
-                            'label' => '今すぐキャストを呼ぶ ',
-                            'uri' => "line://app/$page"
-                        ]
-                    ]
-                ]
-            ]
-        ];
-
-        $messages = array_merge($baseMessage, $this->limitedLineMessage());
         return $messages;
     }
 
@@ -245,37 +223,6 @@ class CreateGuest extends Notification implements ShouldQueue
 
     private function limitedLineMessage()
     {
-        $message = 'Cheersへようこそ！'
-            . PHP_EOL . 'Cheersは飲み会や接待など様々なシーンに素敵なキャストを呼べるマッチングアプリです♪'
-            . PHP_EOL . '【現在対応可能エリア】'
-            . PHP_EOL . '東京都23区'
-            . PHP_EOL . '※随時エリア拡大予定';
-        $firstButton = env('LINE_LIFF_REDIRECT_PAGE');
-        $secondButton = env('LINE_LIFF_REDIRECT_PAGE') . '?page=call';
-        $messages = [
-            [
-                'type' => 'template',
-                'altText' => $message,
-                'text' => $message,
-                'template' => [
-                    'type' => 'buttons',
-                    'text' => $message,
-                    'actions' => [
-                        [
-                            'type' => 'uri',
-                            'label' => 'ログイン',
-                            'uri' => "line://app/$firstButton"
-                        ],
-                        [
-                            'type' => 'uri',
-                            'label' => '今すぐキャストを呼ぶ',
-                            'uri' => "line://app/$secondButton"
-                        ]
-                    ]
-                ]
-            ]
-        ];
-
         $now = Carbon::now()->startOfDay();
         $limitedMessageFromDate = Carbon::parse(env('CAMPAIGN_FROM'))->startOfDay();
         $limitedMessageToDate = Carbon::parse(env('CAMPAIGN_TO'))->endOfDay();
@@ -320,9 +267,9 @@ class CreateGuest extends Notification implements ShouldQueue
                 ]
             ];
 
-            return array_merge($messages, $opMessages);
+            return $opMessages;
         }
 
-        return $messages;
+        return [];
     }
 }
