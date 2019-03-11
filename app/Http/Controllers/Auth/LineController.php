@@ -34,7 +34,6 @@ class LineController extends Controller
         ];
         $client = new Client(['headers' => $header]);
         $response = null;
-        LogService::writeErrorLog($request->events[0]['source']);
         try {
             if ($request->events[0]['type'] == 'follow') {
                 if (isset($request->events[0]['replyToken'])) {
