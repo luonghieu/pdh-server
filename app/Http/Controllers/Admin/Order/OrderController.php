@@ -133,7 +133,7 @@ class OrderController extends Controller
         return view('admin.orders.index', compact('orders'));
     }
 
-    public function exportOrders($ordersExport)
+    public function exportOrders($ordersExport, Request $request)
     {
         $data = collect($ordersExport)->map(function ($item) {
             $status = OrderStatus::getDescription($item->status);
@@ -201,7 +201,7 @@ class OrderController extends Controller
         return;
     }
 
-    public function exportRealOrders($realOrdersExport)
+    public function exportRealOrders($realOrdersExport, Request $request)
     {
         $data = [];
         foreach ($realOrdersExport as $item) {
