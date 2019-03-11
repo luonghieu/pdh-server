@@ -129,7 +129,6 @@ function allowance() {
     const duration = $('#order-duration').val();
     const orderStartDate = moment(orderDate);
     const orderEndDate = moment(orderDate).clone().add(duration, 'hours');
-
     const orderStartTime = moment().set({
         hour: orderStartDate.get('hour'),
         minute: orderStartDate.get('minute'),
@@ -301,17 +300,6 @@ function orderChanged() {
             <h2>通知が送られます。</h2>
             `);
         }
-
-        if (orderStatus == 3 && ($('#total-cast').val() > (getListCastMatching().length + getListCastCandidates().length))) {
-            $('#submit-popup-content').html(`
-            <p>【キャストの人数が足りません。"別のキャストを追加する"からキャストを追加して下さい】</p>
-            `);
-
-            $('#btn-submit').hide();
-        } else {
-            $('#btn-submit').show();
-        }
-
 
         if (orderStatus != 3) {
             let currentNomineeList = getListCastNominees();
@@ -651,6 +639,57 @@ function handleChangeTotalCastEvent() {
     });
 }
 
+function validateOrderTime() {
+    const now = moment();
+    const orderDate = $('#order-date').val();
+    const orderStartDate = moment(orderDate);
+    const createdAt = moment(orderCreatedAt);
+    const timeApply = orderStartDate.diff(createdAt, 'minutes');
+    const validateTimeText = '予約開始時間でキャストの応募が締め切りっています。キャスト応募するのに予約開始時間を変更してください。';
+    const validateTotalCastText = 'キャストの人数が足りません。"別のキャストを追加する"からキャストを追加して下さい';
+    let valid = true;
+
+    if (orderStatus == 3 && ($('#total-cast').val() > (getListCastMatching().length + getListCastCandidates().length))) {
+        $('#submit-popup-content').html(`
+            <p>${validateTotalCastText}</p>
+            `);
+        $('#btn-submit').hide();
+        valid = false;
+    }
+
+    if (orderStartDate.diff(now, 'minutes') < 10) {
+        $('#submit-popup-content').html(`
+            <p>${validateTimeText}</p>
+            `);
+        $('#btn-submit').hide();
+        valid = false;
+    }
+
+    if (timeApply > 30) {
+        if (orderStartDate.diff(now, 'minutes') < 15) {
+            $('#submit-popup-content').html(`
+            <p>${validateTimeText}</p>
+            `);
+            $('#btn-submit').hide();
+            valid = false;
+        }
+    }
+
+    if (timeApply > 60) {
+        if (orderStartDate.diff(now, 'minutes') < 30) {
+            $('#submit-popup-content').html(`
+            <p>${validateTimeText}</p>
+            `);
+            $('#btn-submit').hide();
+            valid = false;
+        }
+    }
+
+    if (valid) {
+        $('#btn-submit').show();
+    }
+}
+
 jQuery(document).ready(function ($) {
     renderListCast(classId, getListCastMatching(), getListCastNominees(), getListCastCandidates());
     handleOpenPopupSelectCastEvent();
@@ -660,7 +699,11 @@ jQuery(document).ready(function ($) {
     handleSearchCastEvent();
     handleChangeOrderDurationEvent();
     handleChangeTotalCastEvent();
+    validateOrderTime();
 
+    $('#btn-submit-popup').on('click', function() {
+        validateOrderTime();
+    });
     $('#btn-submit').on('click', function () {
         let addedNomineCast = [];
         let addedCandidateCast = [];
