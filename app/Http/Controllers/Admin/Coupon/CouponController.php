@@ -101,6 +101,10 @@ class CouponController extends Controller
         if (isset($input['time'])) {
             $input['time'] = $input['time'] / 60;
         }
+
+        $couponLast = Coupon::orderByDesc('sort_index')->first();
+        $input['sort_index'] = $couponLast->sort_index + 1;
+        
         $coupon = new Coupon;
         $coupon = $coupon->create($input);
 

@@ -16,7 +16,7 @@ class AddIsActiveToCouponsTable extends Migration
     {
         Schema::table('coupons', function (Blueprint $table) {
             $table->boolean('is_active')->default(true)->after('filter_order_duration');
-            $table->integer('sort_index')->default(true)->after('is_active')->nullable();
+            $table->integer('sort_index')->after('is_active')->nullable();
         });
 
         $index = 1;
