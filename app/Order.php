@@ -488,7 +488,7 @@ class Order extends Model
             $orderFee = 500 * $multiplier;
             return $orderFee;
         }
-
+        
         return $orderFee;
     }
 

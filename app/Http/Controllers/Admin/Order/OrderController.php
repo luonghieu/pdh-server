@@ -118,14 +118,14 @@ class OrderController extends Controller
         if ('export_orders' == $request->submit) {
             $ordersExport = $orders->get();
 
-            $this->exportOrders($ordersExport);
+            return $this->exportOrders($ordersExport);
         }
 
         // Export order done
         if ('export_real_orders' == $request->submit) {
-            $realOrdersExport = $orders->where('status', OrderStatus::DONE)->get();
+            $realOrdersExport = $orders->where('payment_status', OrderPaymentStatus::PAYMENT_FINISHED)->get();
 
-            $this->exportRealOrders($realOrdersExport);
+            return $this->exportRealOrders($realOrdersExport);
         }
 
         $orders = $orders->paginate($request->limit ?: 10);
@@ -151,10 +151,18 @@ class OrderController extends Controller
                 }
             }
 
+            $totalTime = 0;
+            foreach ($item->casts as $cast) {
+                $start = Carbon::parse($cast->pivot->started_at);
+                $stop = Carbon::parse($cast->pivot->stopped_at);
+                
+                $totalTime += $stop->diffInMinutes($start);
+            }
+
             return [
                 $item->user_id,
                 $item->user ? $item->user->nickname : '',
-                $item->user ? $item->user->created_at : '',
+                $item->user ? Carbon::parse($item->created_at)->format('Y年m月d日') : '',
                 $item->id,
                 OrderType::getDescription($item->type),
                 $item->address,
@@ -164,8 +172,8 @@ class OrderController extends Controller
                 $item->type == OrderType::CALL ? $item->castClass->name : '',
                 $item->duration,
                 $item->temp_point,
-                ($item->total_cast > 1) ? round(($item->total_time / 60) / $item->total_cast, 2) : round($item->total_time / 60, 2),
-                $item->total_point,
+                ($item->total_cast > 1) ? round(($totalTime / 60) / $item->total_cast, 2) : round($totalTime / 60, 2),
+                ($item->total_point < $item->discount_point) ? 0 : ($item->total_point - $item->discount_point),
                 $status,
             ];
         })->toArray();
@@ -207,23 +215,22 @@ class OrderController extends Controller
         foreach ($realOrdersExport as $item) {
             $casts = $item->casts;
 
-            $startTime = Carbon::parse($item->date . ' ' . $item->start_time);
-            $stoppedAt = $startTime->copy()->addHours($item->duration);
-            $totalCast = $item->total_cast;
-
             foreach ($casts as $cast) {
                 if ($cast) {
+                    $startTime = Carbon::parse($cast->pivot->started_at);
+                    $stoppedAt = Carbon::parse($cast->pivot->stopped_at);
+
                     $array = [
                         $item->id,
                         OrderType::getDescription($item->type),
                         $cast->id,
                         $item->castClass->name,
-                        $item->actual_started_at,
-                        $item->actual_ended_at,
-                        round($item->extra_time / 60, 2),
-                        $item->orderFee($cast, $item->started_at, $item->stopped_at),
-                        $this->allowanceNight($startTime, $stoppedAt, $totalCast),
-                        $item->total_point,
+                        $startTime->format('Y年m月d日 H:i'),
+                        $stoppedAt->format('Y年m月d日 H:i'),
+                        round($cast->pivot->extra_time / 60, 2),
+                        $item->orderFee($cast, $cast->pivot->started_at, $cast->pivot->stopped_at),
+                        $this->allowanceNight($startTime, $stoppedAt),
+                        ($item->total_point < $item->discount_point) ? 0 : ($item->total_point - $item->discount_point),
                     ];
 
                     array_push($data, $array);
@@ -257,7 +264,7 @@ class OrderController extends Controller
         return;
     }
 
-    public function allowanceNight($startTime, $stoppedAt, $totalCast)
+    public function allowanceNight($startTime, $stoppedAt)
     {
         // NightTime
         $nightTime = 0;
@@ -291,7 +298,7 @@ class OrderController extends Controller
         // Allowance
         $allowancePoint = 0;
         if ($nightTime) {
-            $allowancePoint = $totalCast * 4000;
+            $allowancePoint = 4000;
         }
 
         return $allowancePoint;
