@@ -224,7 +224,7 @@
     <div id="guest-ad">
       <div class="g-inner">
         <div class="ad-conts">
-          <div class="ad-conts-img g-pcOnly"><img src="{{ asset('/ld/images/guest/guestAd-01.png') }}" alt="画像"></div>
+          <div class="ad-conts-img g-pcOnly"><img src="{{ asset('/ld/images/guest/guestAd-02.png') }}" alt="画像"></div>
           <div class="ad-conts-img2 g-spOnly"><img src="{{ asset('/ld/images/guest/ad-spPhone1.png') }}" alt="画像"></div>
           <div class="ad-conts-atcl">
             <div class="ad-logo"><img src="{{ asset('/ld/images/guest/ad-logo.svg') }}" alt="Cheers"></div>
@@ -362,7 +362,7 @@
     <div id="guest-ad" class="ad-02">
       <div class="g-inner">
         <div class="ad-conts">
-          <div class="ad-conts-img g-pcOnly"><img src="{{ asset('/ld/images/guest/guestAd-01.png') }}" alt="画像"></div>
+          <div class="ad-conts-img g-pcOnly"><img src="{{ asset('/ld/images/guest/guestAd-02.png') }}" alt="画像"></div>
           <div class="ad-conts-img2 g-spOnly"><img src="{{ asset('/ld/images/guest/ad-spPhone1.png') }}" alt="画像"></div>
           <div class="ad-conts-atcl">
             <div class="ad-logo"><img src="{{ asset('/ld/images/guest/ad-logo.svg') }}" alt="Cheers"></div>
