@@ -59,7 +59,7 @@
                         <div class="modal-dialog" role="document">
                           <div class="modal-content">
                             <div class="modal-body">
-                              <p>「クーポンタイトル名が入ります」を削除しますか？？</p>
+                              <p>{{$coupon->name}}を削除しますか？？</p>
                             </div>
                             <div class="modal-footer">
                               <button type="button" class="btn btn-canceled" data-dismiss="modal">キャンセル</button>
