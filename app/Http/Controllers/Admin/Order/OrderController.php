@@ -133,7 +133,7 @@ class OrderController extends Controller
         return view('admin.orders.index', compact('orders'));
     }
 
-    public function exportOrders($ordersExport, Request $request)
+    public function exportOrders($ordersExport)
     {
         $data = collect($ordersExport)->map(function ($item) {
             $status = OrderStatus::getDescription($item->status);
@@ -192,7 +192,7 @@ class OrderController extends Controller
             $file = CSVExport::toCSV($data, $header);
         } catch (\Exception $e) {
             LogService::writeErrorLog($e);
-            $request->session()->flash('msg', trans('messages.server_error'));
+            request()->session()->flash('msg', trans('messages.server_error'));
 
             return redirect()->route('admin.orders.index');
         }
@@ -201,7 +201,7 @@ class OrderController extends Controller
         return;
     }
 
-    public function exportRealOrders($realOrdersExport, Request $request)
+    public function exportRealOrders($realOrdersExport)
     {
         $data = [];
         foreach ($realOrdersExport as $item) {
@@ -248,7 +248,7 @@ class OrderController extends Controller
             $file = CSVExport::toCSV($data, $header);
         } catch (\Exception $e) {
             LogService::writeErrorLog($e);
-            $request->session()->flash('msg', trans('messages.server_error'));
+            request()->session()->flash('msg', trans('messages.server_error'));
 
             return redirect()->route('admin.orders.index');
         }
