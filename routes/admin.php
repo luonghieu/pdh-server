@@ -155,6 +155,8 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.'], function () {
         Route::get('/delete/{coupon}', ['as' => 'delete', 'uses' => 'CouponController@delete'])->where('coupon', '[0-9]+');
         Route::post('/edit/{coupon}', ['as' => 'update', 'uses' => 'CouponController@update']);
         Route::get('/history/{coupon}', ['as' => 'history', 'uses' => 'CouponController@history'])->where('coupon', '[0-9]+');
+        Route::put('/update_sort_index', ['as' => 'update_sort_index', 'uses' => 'CouponController@updateSortIndex']);
+        Route::put('/update_is_active', ['as' => 'update_is_active', 'uses' => 'CouponController@updateIsActive'])->where('coupon', '[0-9]+');
     });
 
     Route::group(['prefix' => 'app_versions', 'as' => 'app_versions.', 'middleware' => 'is_admin'], function () {
