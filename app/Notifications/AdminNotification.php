@@ -200,8 +200,13 @@ class AdminNotification extends Notification implements ShouldQueue
                 $page = env('LINE_LIFF_REDIRECT_PAGE') . '?page=cast&cast_id=';
                 $casts = Cast::whereIn('id', array_filter($castIds))->get();
                 foreach ($casts as $item) {
+                    if ($item->avatars->first()) {
+                        $path = $item->avatars->first()->path;
+                    } else {
+                        $path = url('/assets/web/images/gm1/ic_default_avatar@3x.png');
+                    }
                     $columns[] = [
-                        'imageUrl' => $item->avatars->first()->path,
+                        'imageUrl' => $path,
                         'action' => [
                             'type' => 'uri',
                             'label' => 'プロフィールを見る',
