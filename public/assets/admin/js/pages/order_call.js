@@ -646,6 +646,7 @@ function validateOrderTime() {
     const timeApply = orderStartDate.diff(createdAt, 'minutes');
     const validateTimeText = '予約開始時間でキャストの応募が締め切りっています。キャスト応募するのに予約開始時間を変更してください。';
     const validateTotalCastText = 'キャストの人数が足りません。"別のキャストを追加する"からキャストを追加して下さい';
+    const oldTotalCast = totalCast;
     let valid = true;
 
     if ((orderStatus == 2 || orderStatus == 3) && ($('#total-cast').val() > (getListCastMatching().length + getListCastCandidates().length))) {
@@ -657,9 +658,8 @@ function validateOrderTime() {
         $('#validate-confirm-btn').show();
         valid = false;
     }
-
     if (orderStartDate.diff(now, 'minutes') < 10) {
-        if ($('#total-cast').val() > (getListCastMatching().length + getListCastCandidates().length)) {
+        if (oldTotalCast != $('#total-cast').val() || $('#total-cast').val() > (getListCastMatching().length + getListCastCandidates().length)) {
             $('#submit-popup-content').html(`
                 <p>${validateTimeText}</p>
                 `);
@@ -672,7 +672,7 @@ function validateOrderTime() {
 
     if (timeApply >= 30) {
         if (orderStartDate.diff(now, 'minutes') < 15) {
-            if ($('#total-cast').val() > (getListCastMatching().length + getListCastCandidates().length)) {
+            if (oldTotalCast != $('#total-cast').val() || $('#total-cast').val() > (getListCastMatching().length + getListCastCandidates().length)) {
                 $('#submit-popup-content').html(`
                     <p>${validateTimeText}</p>
                     `);
@@ -686,7 +686,7 @@ function validateOrderTime() {
 
     if (timeApply >= 60) {
         if (orderStartDate.diff(now, 'minutes') < 30) {
-            if ($('#total-cast').val() > (getListCastMatching().length + getListCastCandidates().length)) {
+            if (oldTotalCast != $('#total-cast').val() || $('#total-cast').val() > (getListCastMatching().length + getListCastCandidates().length)) {
                 $('#submit-popup-content').html(`
                     <p>${validateTimeText}</p>
                     `);
@@ -715,8 +715,11 @@ jQuery(document).ready(function ($) {
     handleChangeOrderDurationEvent();
     handleChangeTotalCastEvent();
     validateOrderTime();
-
+    $("#datetimepicker").on("dp.change", function(e) {
+        $('#btn-submit-popup').prop('disabled', false);
+    });
     $('#btn-submit-popup').on('click', function() {
+        orderChanged();
         validateOrderTime();
     });
     $('#btn-submit').on('click', function () {
