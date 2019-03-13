@@ -58,8 +58,8 @@ class CastApplyOrders extends Notification implements ShouldQueue
     {
         $orderStartTime = Carbon::parse($this->order->date . ' ' . $this->order->start_time);
 
-        $content = 'おめでとう！以下の内容で予約が確定しました♪'
-            . PHP_EOL . '--------------------------------------------------'
+        $content = '以下の内容で予約が確定しました♪'
+            . PHP_EOL . '----'
             . PHP_EOL . '- 提案内容 -'
             . PHP_EOL . '日時：' . $orderStartTime->format('Y/m/d H:i') . '~'
             . PHP_EOL . '時間：' . $this->order->duration . '時間'
@@ -67,8 +67,11 @@ class CastApplyOrders extends Notification implements ShouldQueue
             . PHP_EOL . '人数：' . $this->order->total_cast . '人'
             . PHP_EOL . '場所：' . $this->order->address
             . PHP_EOL . '予定獲得ポイント：' . ($this->orderPoint * 0.8) . ' Point'
-            . PHP_EOL . '--------------------------------------------------'
-            . PHP_EOL . 'ゲストとのチャットが作成されるのでそちらにて場所等の詳細確認をお願いします♪';
+            . PHP_EOL . '----'
+            . PHP_EOL . 'ゲストとのチャットが作成されるので、場所の詳細確認をお願いします♪'
+            . PHP_EOL . PHP_EOL . 'また、合流開始時刻の1時間前にはゲストとのチャット画面にスタートボタンが出現します。'
+            . PHP_EOL . 'ゲストと合流後、ゲストに確認してからスタートボタンを押してください！'
+            . PHP_EOL . PHP_EOL . '予定時刻に遅れそうな場合は、チャットルームで遅れる旨を必ず伝えましょう！';
 
         $room = $notifiable->rooms()
             ->where('rooms.type', RoomType::SYSTEM)

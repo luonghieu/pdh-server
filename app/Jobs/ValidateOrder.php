@@ -130,12 +130,12 @@ class ValidateOrder implements ShouldQueue
             $room = Room::find($this->order->room_id);
 
             $startTime = Carbon::parse($this->order->date . ' ' . $this->order->start_time);
-            $message = '\\\\ おめでとうございます！マッチングが確定しました♪ //'
+            $message = '\\\\ マッチングが確定しました♩ //'
             . PHP_EOL . PHP_EOL . '- ご予約内容 - '
             . PHP_EOL . '場所：' . $this->order->address
             . PHP_EOL . '合流予定時間：' . $startTime->format('H:i') . '～'
-            . PHP_EOL . PHP_EOL . 'ゲストの方はキャストに来て欲しい場所の詳細をお伝えください。'
-            . PHP_EOL . '尚、ご不明点がある場合は運営までお問い合わせください。'
+            . PHP_EOL . PHP_EOL . 'ゲストの方はキャストに来て欲しい場所の詳細を本チャットにてお送りください。'
+            . PHP_EOL . '尚、ご不明点がある場合は「Cheers運営者」チャットまでお問い合わせください。'
             . PHP_EOL . PHP_EOL . 'それでは素敵な時間をお楽しみください♪';
 
             $roomMessage = $room->messages()->create([

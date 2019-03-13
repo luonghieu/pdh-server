@@ -87,7 +87,7 @@ class CreateNominatedOrdersForGuest extends Notification implements ShouldQueue
 
         $content = 'Cheersをご利用いただきありがとうございます！'
         . PHP_EOL . 'キャストのご予約を承りました。'
-        . PHP_EOL . '------------------------------------------'
+        . PHP_EOL . '-----'
         . PHP_EOL . PHP_EOL . '- ご予約内容 -'
         . PHP_EOL . '日時：' . $startTime->format('Y/m/d H:i') . '~'
         . PHP_EOL . '時間：' . $startTime->diffInMinutes($endTime) / 60 . '時間'
@@ -148,7 +148,7 @@ class CreateNominatedOrdersForGuest extends Notification implements ShouldQueue
 
         $content = 'Cheersをご利用いただきありがとうございます！'
             . PHP_EOL . 'キャストのご予約を承りました。'
-            . PHP_EOL . '------------------------------------------'
+            . PHP_EOL . '-----'
             . PHP_EOL . PHP_EOL . '- ご予約内容 -'
             . PHP_EOL . '日時：' . $startTime->format('Y/m/d H:i') . '~'
             . PHP_EOL . '時間：' . $startTime->diffInMinutes($endTime) / 60 . '時間'
@@ -171,7 +171,7 @@ class CreateNominatedOrdersForGuest extends Notification implements ShouldQueue
 
         $content = 'Cheersをご利用いただきありがとうございます！'
             . PHP_EOL . 'キャストのご予約を承りました。'
-            . PHP_EOL . '--------------------------------------'
+            . PHP_EOL . '-----'
             . PHP_EOL . PHP_EOL . '- ご予約内容 -'
             . PHP_EOL . '日時：' . $startTime->format('Y/m/d H:i') . '~'
             . PHP_EOL . '時間：' . $startTime->diffInMinutes($endTime) / 60 . '時間'
