@@ -162,7 +162,7 @@ class OrderController extends Controller
             return [
                 $item->user_id,
                 $item->user ? $item->user->nickname : '',
-                $item->user ? Carbon::parse($item->created_at)->format('Y年m月d日') : '',
+                $item->user ? Carbon::parse($item->user->created_at)->format('Y年m月d日') : '',
                 $item->id,
                 OrderType::getDescription($item->type),
                 $item->address,
@@ -229,7 +229,7 @@ class OrderController extends Controller
                         $stoppedAt->format('Y年m月d日 H:i'),
                         round($cast->pivot->extra_time / 60, 2),
                         $item->orderFee($cast, $cast->pivot->started_at, $cast->pivot->stopped_at),
-                        $this->allowanceNight($startTime, $stoppedAt),
+                        $cast->pivot->allowance_point,
                         ($item->total_point < $item->discount_point) ? 0 : ($item->total_point - $item->discount_point),
                     ];
 
@@ -263,47 +263,6 @@ class OrderController extends Controller
 
         return;
     }
-
-    public function allowanceNight($startTime, $stoppedAt)
-    {
-        // NightTime
-        $nightTime = 0;
-        $allowanceStartTime = Carbon::parse('00:01:00');
-        $allowanceEndTime = Carbon::parse('04:00:00');
-
-        $startDay = Carbon::parse($startTime)->startOfDay();
-        $endDay = Carbon::parse($stoppedAt)->startOfDay();
-
-        $timeStart = Carbon::parse(Carbon::parse($startTime->format('H:i:s')));
-        $timeEnd = Carbon::parse(Carbon::parse($stoppedAt->format('H:i:s')));
-
-        $allowance = false;
-
-        if ($startDay->diffInDays($endDay) != 0 && $stoppedAt->diffInMinutes($endDay) != 0) {
-            $allowance = true;
-        }
-
-        if ($timeStart->between($allowanceStartTime, $allowanceEndTime) || $timeEnd->between($allowanceStartTime, $allowanceEndTime)) {
-            $allowance = true;
-        }
-
-        if ($timeStart < $allowanceStartTime && $timeEnd > $allowanceEndTime) {
-            $allowance = true;
-        }
-
-        if ($allowance) {
-            $nightTime = $stoppedAt->diffInMinutes($endDay);
-        }
-
-        // Allowance
-        $allowancePoint = 0;
-        if ($nightTime) {
-            $allowancePoint = 4000;
-        }
-
-        return $allowancePoint;
-    }
-
 
     public function deleteOrder(Request $request)
     {
