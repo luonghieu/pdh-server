@@ -230,7 +230,7 @@ class OrderController extends Controller
                         round($cast->pivot->extra_time / 60, 2),
                         $item->orderFee($cast, $cast->pivot->started_at, $cast->pivot->stopped_at),
                         $cast->pivot->allowance_point,
-                        ($item->total_point < $item->discount_point) ? 0 : ($item->total_point - $item->discount_point),
+                        $cast->pivot->total_point,
                     ];
 
                     array_push($data, $array);
