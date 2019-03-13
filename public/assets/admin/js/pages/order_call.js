@@ -125,7 +125,7 @@ function orderFee() {
 }
 
 function allowance() {
-    const orderDate = $('#').val();
+    const orderDate = $('#order-date').val();
     const duration = $('#order-duration').val();
     const orderStartDate = moment(orderDate);
     const orderEndDate = moment(orderDate).clone().add(duration, 'hours');
@@ -230,7 +230,7 @@ function orderChanged() {
         isChanged = true;
     }
 
-    if (orderStartTime != moment($('#').val()).format('YYYY-MM-DD HH:mm:ss')) {
+    if (orderStartTime != moment($('#order-date').val()).format('YYYY-MM-DD HH:mm:ss')) {
         isChanged = true;
     }
 
