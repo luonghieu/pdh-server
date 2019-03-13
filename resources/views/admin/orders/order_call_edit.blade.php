@@ -57,7 +57,7 @@
                                         <th>キャストとの合流時間</th>
                                         <td>
                                             <div class="col-lg-3 input-group date edit-datetime-order-call"
-                                                 id="orderdatetimepicker">
+                                                 id="datetimepicker">
                                                 <input type="text" id="order-date" name="date_time" class="form-control"
                                                        data-date-format="YYYY/MM/DD HH:mm"
                                                        value="{{ Carbon\Carbon::parse($order->date . ' ' . $order->start_time)->format('Y/m/d H:i') }}"
@@ -419,7 +419,11 @@
                                             </div>
                                         </div>
                                         <div class="modal-footer">
-                                            <button type="button" class="btn btn-canceled" data-dismiss="modal">いいえ
+                                            <button type="button" class="btn btn-accept" id="validate-confirm-btn"
+                                                    data-dismiss="modal">OK
+                                            </button>
+                                            <button type="button" class="btn btn-canceled" id="cancel-action-btn"
+                                                    data-dismiss="modal">いいえ
                                             </button>
                                             <button type="submit" class="btn btn-accept" id="btn-submit">
                                                 OK

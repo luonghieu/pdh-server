@@ -196,9 +196,10 @@ class AdminNotification extends Notification implements ShouldQueue
         if ($this->schedule->cast_ids) {
             $castIds = array_filter($this->schedule->cast_ids);
             if (env('ENABLE_LINE_IMAGE_CAROUSEL') && $castIds) {
+                $castIdStr = implode(',', $castIds);
                 $columns = [];
                 $page = env('LINE_LIFF_REDIRECT_PAGE') . '?page=cast&cast_id=';
-                $casts = Cast::whereIn('id', array_filter($castIds))->get();
+                $casts = Cast::whereIn('id', array_filter($castIds))->orderByRaw(\DB::raw("FIELD(id, $castIdStr)"))->get();
                 foreach ($casts as $item) {
                     $columns[] = [
                         'imageUrl' => $item->avatars->first()->path,
