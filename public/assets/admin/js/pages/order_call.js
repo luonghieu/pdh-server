@@ -294,7 +294,6 @@ function orderChanged() {
             `);
         } else {
             $('#submit-popup-content').html(`
-            <p>キャストを選択してください</p>
             <h2>変更を実行しますか？</h2>
             <h2>"OK"をタップすると、対象のゲスト/キャストに</h2>
             <h2>通知が送られます。</h2>
@@ -665,7 +664,7 @@ function validateOrderTime() {
         valid = false;
     }
 
-    if (timeApply > 30) {
+    if (timeApply >= 30) {
         if (orderStartDate.diff(now, 'minutes') < 15) {
             $('#submit-popup-content').html(`
             <p>${validateTimeText}</p>
@@ -675,7 +674,7 @@ function validateOrderTime() {
         }
     }
 
-    if (timeApply > 60) {
+    if (timeApply >= 60) {
         if (orderStartDate.diff(now, 'minutes') < 30) {
             $('#submit-popup-content').html(`
             <p>${validateTimeText}</p>
