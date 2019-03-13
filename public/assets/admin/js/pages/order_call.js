@@ -649,7 +649,7 @@ function validateOrderTime() {
     const validateTotalCastText = 'キャストの人数が足りません。"別のキャストを追加する"からキャストを追加して下さい';
     let valid = true;
 
-    if (orderStatus == 3 && ($('#total-cast').val() > (getListCastMatching().length + getListCastCandidates().length))) {
+    if ((orderStatus == 2 || orderStatus == 3) && ($('#total-cast').val() > (getListCastMatching().length + getListCastCandidates().length))) {
         $('#submit-popup-content').html(`
             <p>${validateTotalCastText}</p>
             `);
