@@ -1,0 +1,59 @@
+main {
+  padding-top: 0 !important;
+}
+
+.hide-content {
+  display: none;
+}
+
+.image-main {
+  margin: 20px 0;
+}
+
+.image-main img {
+  width: 240px;
+  height: auto;
+  padding-top: 0;
+  margin: 25px auto 5px;
+}
+
+.image-main p {
+  margin-top: 5px;
+}
+
+.tc-form .number input {
+  padding-top: 21px;
+  padding-bottom: 2px;
+}
+
+.tc-form .date-select {
+  padding-top: 15px;
+}
+
+.sub-title {
+  height: 42px !important;
+}
+
+.sub-title.secondary {
+  margin-top: 20px !important;
+  height: 30px !important;
+  padding: 2px 0;
+}
+
+.sub-title.secondary p {
+  padding-top: 5px !important;
+}
+
+.tc-notice {
+  padding: 5px 11px;
+}
+
+.tc-notice .sub-title.secondary {
+  margin: 8px 0 !important;
+}
+
+.tc-notice p a {
+  display: inline;
+  color: #30CCC3;
+  text-decoration: underline;
+}

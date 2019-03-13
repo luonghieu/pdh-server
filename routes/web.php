@@ -121,3 +121,5 @@ Route::group(['middleware' => ['auth', 'cast'], 'prefix' => 'cast_mypage'], func
         });
     });
 });
+
+Route::view('tc_regiser_card', 'web.cards.telecom_credit');
