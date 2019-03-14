@@ -82,10 +82,11 @@ class CreateGuest extends Notification implements ShouldQueue
         $content = 'ようこそCheersへ！'
             . PHP_EOL . 'Cheersはプライベートでの飲み会や接待など様々なシーンにキャストを呼べるギャラ飲みマッチングアプリです。'
             . PHP_EOL . PHP_EOL . '面接通過率25%のクオリティの高いキャストと今すぐ出会えるのはCheersだけ！'
-            . PHP_EOL . PHP_EOL . 'HOMEの「キャストを呼ぶ」から、呼びたいときに、呼びたい人数・場所を入力するだけ。'
+            . PHP_EOL . PHP_EOL . '呼びたいときに、呼びたい人数・場所を入力するだけ。'
             . PHP_EOL . '最短30分でキャストがゲストの元に駆けつけます♪'
-            . PHP_EOL . PHP_EOL . '「キャストを探す」からお気に入りのキャストを見つけて1対1でギャラ飲みすることも可能です！'
-            . PHP_EOL . PHP_EOL . 'ご不明点は、本チャットにてお気軽にお問い合わせください。';
+            . PHP_EOL . PHP_EOL . '「探す」からお気に入りのキャストを見つけてアピールすることも可能です！'
+            . PHP_EOL . PHP_EOL . 'まずはHomeの「キャストを呼ぶ」からキャストを呼んで素敵な時間をお過ごし下さい♪'
+            . PHP_EOL . PHP_EOL . 'ご不明点はお気軽にお問い合わせください。';
 
         $room = Room::create([
             'owner_id' => $notifiable->id
@@ -137,10 +138,11 @@ class CreateGuest extends Notification implements ShouldQueue
         $content = 'ようこそCheersへ！'
             . PHP_EOL . 'Cheersはプライベートでの飲み会や接待など様々なシーンにキャストを呼べるギャラ飲みマッチングアプリです。'
             . PHP_EOL . PHP_EOL . '面接通過率25%のクオリティの高いキャストと今すぐ出会えるのはCheersだけ！'
-            . PHP_EOL . PHP_EOL . 'HOMEの「キャストを呼ぶ」から、呼びたいときに、呼びたい人数・場所を入力するだけ。'
+            . PHP_EOL . PHP_EOL . '呼びたいときに、呼びたい人数・場所を入力するだけ。'
             . PHP_EOL .'最短30分でキャストがゲストの元に駆けつけます♪'
-            . PHP_EOL . PHP_EOL . '「キャストを探す」からお気に入りのキャストを見つけて1対1でギャラ飲みすることも可能です！'
-            . PHP_EOL . PHP_EOL . 'ご不明点は、本チャットにてお気軽にお問い合わせください。';
+            . PHP_EOL . PHP_EOL . '「探す」からお気に入りのキャストを見つけてアピールすることも可能です！'
+            . PHP_EOL . PHP_EOL . 'まずはHomeの「キャストを呼ぶ」からキャストを呼んで素敵な時間をお過ごし下さい♪'
+            . PHP_EOL . PHP_EOL . 'ご不明点はお気軽にお問い合わせください。';
 
         $room = Room::create([
             'owner_id' => $notifiable->id
