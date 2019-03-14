@@ -12,6 +12,7 @@ let currentTempPoint = 0;
 let currentOrderStatus = orderStatus;
 let deletedCast = [];
 let addedNominee = [];
+
 function debounce(func, wait, immediate) {
     let timeout;
     return function () {
@@ -281,7 +282,7 @@ function orderChanged() {
             <h2> ${ $('#total-cast').val() - (getListCastMatching().length + getListCastCandidates().length)}名をコールとして募集します</h2>
             <h2> "OK"をタップすると、キャストに通知が送られます</h2>
             `);
-        } else if(selectedNomination.length) {
+        } else if (selectedNomination.length) {
             let title = 'ユーザーID ';
             selectedNomination.forEach(item => {
                 title += item.id + ',';
@@ -321,7 +322,7 @@ function orderChanged() {
                 });
                 totalAcceptedCast = nominee + currentCandidateList.length + currentMatchingList.length;
 
-                if (totalAcceptedCast == $('#total-cast').val())  {
+                if (totalAcceptedCast == $('#total-cast').val()) {
                     currentOrderStatus = 2;
                 }
             }
@@ -659,23 +660,21 @@ function validateOrderTime() {
         valid = false;
     }
 
-    if (timeApply >= 20 && timeApply < 30) {
-      if (curentOrderStartDate.diff(now, 'minutes') < 10) {
+    if (curentOrderStartDate.diff(now, 'minutes') < 10) {
         if (oldTotalCast != $('#total-cast').val() || $('#total-cast').val() > (getListCastMatching().length + getListCastCandidates().length)) {
-          $('#submit-popup-content').html(`
-                <p>${validateTimeText}</p>
-                `);
-          $('#btn-submit').hide();
-          $('#cancel-action-btn').hide();
-          $('#validate-confirm-btn').show();
-          valid = false;
+            $('#submit-popup-content').html(`
+            <p>${validateTimeText}</p>
+            `);
+            $('#btn-submit').hide();
+            $('#cancel-action-btn').hide();
+            $('#validate-confirm-btn').show();
+            valid = false;
         }
-      }
     }
 
     if (timeApply >= 30 && timeApply < 60) {
         if (curentOrderStartDate.diff(now, 'minutes') < 15) {
-          if (oldTotalCast != $('#total-cast').val() || $('#total-cast').val() > (getListCastMatching().length + getListCastCandidates().length)) {
+            if (oldTotalCast != $('#total-cast').val() || $('#total-cast').val() > (getListCastMatching().length + getListCastCandidates().length)) {
                 $('#submit-popup-content').html(`
                     <p>${validateTimeText}</p>
                     `);
@@ -718,10 +717,10 @@ jQuery(document).ready(function ($) {
     handleChangeOrderDurationEvent();
     handleChangeTotalCastEvent();
     validateOrderTime();
-    $("#datetimepicker").on("dp.change", function(e) {
+    $("#datetimepicker").on("dp.change", function (e) {
         $('#btn-submit-popup').prop('disabled', false);
     });
-    $('#btn-submit-popup').on('click', function() {
+    $('#btn-submit-popup').on('click', function () {
         orderChanged();
         validateOrderTime();
     });
@@ -783,7 +782,7 @@ jQuery(document).ready(function ($) {
 
     $('#orderdatetimepicker').datetimepicker({
         minDate: 'now',
-    }).on('dp.change',function(event){
+    }).on('dp.change', function (event) {
         updateTotalPoint();
         orderChanged();
     });
