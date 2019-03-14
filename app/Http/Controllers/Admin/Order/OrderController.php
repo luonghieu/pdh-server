@@ -466,16 +466,17 @@ class OrderController extends Controller
                     $cast = $order->casts()->first();
                     if ($cast) {
                         if ($room->type == RoomType::GROUP) {
-                            $room->users()->sync([]);
-                            $room->delete();
+                            $users = $order->casts()->get()->pluck('id')->toArray();
+                            $users[] = $order->user_id;
+                            $room->users()->sync($users);
+                        } else {
+                            $ownerId = $order->user_id;
+                            $room = $this->createDirectRoom($ownerId, $cast->id);
+                            $room->save();
+
+                            $order->room_id = $room->id;
+                            $order->save();
                         }
-
-                        $ownerId = $order->user_id;
-                        $room = $this->createDirectRoom($ownerId, $cast->id);
-                        $room->save();
-
-                        $order->room_id = $room->id;
-                        $order->save();
                     }
                 }
 
