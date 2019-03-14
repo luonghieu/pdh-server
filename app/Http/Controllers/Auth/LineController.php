@@ -201,11 +201,10 @@ class LineController extends Controller
         $messageOneButton = env('LINE_LIFF_REDIRECT_PAGE') . '?page=call';
 
         $messageTwo = 'Cheersへようこそ！'
-            . PHP_EOL . 'Cheersはプライベートや複数人の飲み会や接待など様々なシーンにキャストを呼べるギャラ飲みマッチングアプリです♪'
+            . PHP_EOL . 'Cheersは飲み会や接待など様々なシーンに素敵なキャストを呼べるギャラ飲みサービスです♪'
             . PHP_EOL . PHP_EOL . '【現在対応可能エリア】'
-            . PHP_EOL . '関東エリア'
-            . PHP_EOL . '関西エリア'
-            . PHP_EOL . '※随時エリア拡大予定';
+            . PHP_EOL . '関東・関西エリア'
+            . PHP_EOL . '※随時エリア拡大中';
         $messageTwoFirstButton = env('LINE_LIFF_REDIRECT_PAGE');
         $messageTwoSecondButton = env('LINE_LIFF_REDIRECT_PAGE') . '?page=call';
 
