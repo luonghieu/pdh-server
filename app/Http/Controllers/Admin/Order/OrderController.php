@@ -600,7 +600,7 @@ class OrderController extends Controller
                             $involvedUsers[] = $cast;
                             $cast->notify(new CastApplyOrders($order, $cast->pivot->temp_point));
                         }
-                        $this->sendMessageToMatchingOrder($casts, $involvedUsers);
+                        $this->sendMessageToMatchingOrder($order, $involvedUsers);
                         \Notification::send($involvedUsers, new CastAcceptNominationOrders($order));
                     }
                 }
