@@ -554,16 +554,18 @@ class OrderController extends Controller
 
             \DB::commit();
 
-            if ($allRequestPayment) {
-                $requestedStatuses = [
-                    PaymentRequestStatus::REQUESTED,
-                    PaymentRequestStatus::UPDATED,
-                ];
-                $order->total_point = $order->paymentRequests()
-                    ->whereIn('status', $requestedStatuses)
-                    ->sum('total_point');
-                $order->save();
-                $order->user->notify(new PaymentRequestFromCast($order, $order->total_point));
+            if ($isDone) {
+                if ($allRequestPayment) {
+                    $requestedStatuses = [
+                        PaymentRequestStatus::REQUESTED,
+                        PaymentRequestStatus::UPDATED,
+                    ];
+                    $order->total_point = $order->paymentRequests()
+                        ->whereIn('status', $requestedStatuses)
+                        ->sum('total_point');
+                    $order->save();
+                    $order->user->notify(new PaymentRequestFromCast($order, $order->total_point));
+                }
             }
 
             if ($request->old_status != $order->status && $order->status == OrderStatus::ACTIVE ) {
