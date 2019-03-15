@@ -20,6 +20,7 @@ class CreateInviteCodeHistoriesTable extends Migration
             $table->integer('receive_user_id')->unsigned();
             $table->integer('order_id')->unsigned()->nullable();
             $table->integer('point_id')->unsigned()->nullable();
+            $table->tinyInteger('status')->default(1);
             $table->timestamps();
 
             $table->foreign('invite_code_id')->references('id')->on('invite_codes');
