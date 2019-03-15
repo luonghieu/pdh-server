@@ -471,6 +471,7 @@
         const orderStatus = '<?php echo $order->status ?>';
         const redirectBackUrl = '<?php echo route('admin.orders.call', ['order' => $order->id])?>';
         const orderCreatedAt = '<?php echo \Carbon\Carbon::parse($order->created_at)->second(0) ?>';
+        const paymentRequest = JSON.parse('<?php echo json_encode($paymentRequest) ?>');
     </script>
     <script src="/assets/admin/js/pages/order_call.js"></script>
 @stop
