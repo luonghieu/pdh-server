@@ -21,4 +21,9 @@ class InviteCodeHistory extends Model
     {
         return $this->belongsTo(Order::class);
     }
+
+    public function points()
+    {
+        return $this->hasMany(Point::class);
+    }
 }
