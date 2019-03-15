@@ -548,6 +548,7 @@ class OrderController extends Controller
                 $order->status = OrderStatus::DONE;
                 if ($allRequestPayment) {
                     $order->payment_status = OrderPaymentStatus::REQUESTING;
+                    $order->payment_requested_at = now();
                 }
                 $order->save();
             }
@@ -560,6 +561,7 @@ class OrderController extends Controller
                         PaymentRequestStatus::REQUESTED,
                         PaymentRequestStatus::UPDATED,
                     ];
+                    $order->payment_requested_at = now();
                     $order->total_point = $order->paymentRequests()
                         ->whereIn('status', $requestedStatuses)
                         ->sum('total_point');
