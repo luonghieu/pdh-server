@@ -527,7 +527,7 @@ class OrderController extends Controller
             \DB::commit();
 
             if ($request->old_status != $order->status && $order->status == OrderStatus::ACTIVE ) {
-                $casts = $order->casts;
+                $casts = $order->casts()->get();
                 $involvedUsers = [$order->user];
                 foreach ($casts as $cast) {
                     $involvedUsers[] = $cast;
