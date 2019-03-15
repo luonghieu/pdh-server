@@ -538,12 +538,16 @@ class OrderController extends Controller
                     $isDone = false;
                 }
                 $paymentRequest = $order->paymentRequests()->where('cast_id', $cast->id)->first();
-
-                if (!in_array($paymentRequest->status, [PaymentRequestStatus::REQUESTED,
-                    PaymentRequestStatus::UPDATED])) {
+                if ($paymentRequest) {
+                    if (!in_array($paymentRequest->status, [PaymentRequestStatus::REQUESTED,
+                        PaymentRequestStatus::UPDATED])) {
+                        $allRequestPayment = false;
+                    }
+                } else {
                     $allRequestPayment = false;
                 }
             }
+
             if ($isDone) {
                 $order->status = OrderStatus::DONE;
                 if ($allRequestPayment) {
