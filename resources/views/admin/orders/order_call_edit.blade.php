@@ -17,7 +17,7 @@
                     <div class="clearfix"></div>
                     <div class="panel-body">
                         <div class="clearfix"></div>
-                        <div class="info-table col-lg-10">
+                        <div class="info-table col-lg-12">
                             <form action="">
                                 <table class="table table-bordered change-width-th">
                                     <!--  table-striped -->
@@ -56,7 +56,7 @@
                                     <tr>
                                         <th>キャストとの合流時間</th>
                                         <td>
-                                            <div class="col-lg-3 input-group date edit-datetime-order-call"
+                                            <div class="col-lg-4 input-group date edit-datetime-order-call"
                                                  id="datetimepicker">
                                                 <input type="text" id="order-date" name="date_time" class="form-control"
                                                        data-date-format="YYYY/MM/DD HH:mm"
