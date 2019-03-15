@@ -19,7 +19,6 @@ class CreateInviteCodeHistoriesTable extends Migration
             $table->integer('point');
             $table->integer('receive_user_id')->unsigned();
             $table->integer('order_id')->unsigned()->nullable();
-            $table->integer('point_id')->unsigned()->nullable();
             $table->tinyInteger('status')->default(1);
             $table->timestamps();
 
@@ -37,7 +36,7 @@ class CreateInviteCodeHistoriesTable extends Migration
     public function down()
     {
         Schema::create('invite_code_histories', function (Blueprint $table) {
-            $table->dropForeign(['invite_code_id', 'receive_user_id', 'order_id', 'point_id']);
+            $table->dropForeign(['invite_code_id', 'receive_user_id', 'order_id']);
         });
         Schema::dropIfExists('invite_code_histories');
     }
