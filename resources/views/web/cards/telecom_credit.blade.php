@@ -4,7 +4,7 @@
 @section('web.content')
 <div class="border-bottom header-webview">
   <div class="btn-back header-item">
-    <a href="#"><img src="{{ asset('/assets/webview/images/back.png') }}" alt=""></a>
+    <a href="#"><img src="{{ asset('/assets/web/images/card/back.png') }}" alt=""></a>
   </div>
   <div class="title-main header-item">
     <span>クレジットカード登録</span>
@@ -43,52 +43,62 @@
       <p>カード情報</p>
     </div>
   <div class="card-number border-bottom">
-    <span class="left">カード番号</span>
-    <div class="right number">
-      <span id="error">カード番号を正しく入力してください</span>
-      <input type="tel" pattern="[0-9]*" maxlength="16" name="cardnumber" id="number-card" value="" placeholder="0000 0000 0000 0000" required>
+    <div class="card-outside">
+      <div class="left"><span>カード番号</span></div>
+      <div class="right number">
+        <input type="tel" pattern="[0-9]*" maxlength="16" name="cardnumber" id="number-card" value="" placeholder="0000 0000 0000 0000" required>
+      </div>
     </div>
   </div>
   <div class="clear"></div>
   <div class="expiration-date border-bottom">
-    <span class="left">有効期限</span>
-    <div class="date-select right">
-      <select name="expmm" id="month-select">
-        <OPTION VALUE="01" <% FORM{expmm_01} %>>01月
-        <OPTION VALUE="02" <% FORM{expmm_02} %>>02月
-        <OPTION VALUE="03" <% FORM{expmm_03} %>>03月
-        <OPTION VALUE="04" <% FORM{expmm_04} %>>04月
-        <OPTION VALUE="05" <% FORM{expmm_05} %>>05月
-        <OPTION VALUE="06" <% FORM{expmm_06} %>>06月
-        <OPTION VALUE="07" <% FORM{expmm_07} %>>07月
-        <OPTION VALUE="08" <% FORM{expmm_08} %>>08月
-        <OPTION VALUE="09" <% FORM{expmm_09} %>>09月
-        <OPTION VALUE="10" <% FORM{expmm_10} %>>10月
-        <OPTION VALUE="11" <% FORM{expmm_11} %>>11月
-        <OPTION VALUE="12" <% FORM{expmm_12} %>>12月
-      </select>
+    <div class="card-outside">
+      <div class="left"><span>有効期限</span></div>
+      <div class="right date-select">
+        <select name="expmm" id="month-select">
+          <OPTION VALUE="01" <% FORM{expmm_01} %>>01月
+          <OPTION VALUE="02" <% FORM{expmm_02} %>>02月
+          <OPTION VALUE="03" <% FORM{expmm_03} %>>03月
+          <OPTION VALUE="04" <% FORM{expmm_04} %>>04月
+          <OPTION VALUE="05" <% FORM{expmm_05} %>>05月
+          <OPTION VALUE="06" <% FORM{expmm_06} %>>06月
+          <OPTION VALUE="07" <% FORM{expmm_07} %>>07月
+          <OPTION VALUE="08" <% FORM{expmm_08} %>>08月
+          <OPTION VALUE="09" <% FORM{expmm_09} %>>09月
+          <OPTION VALUE="10" <% FORM{expmm_10} %>>10月
+          <OPTION VALUE="11" <% FORM{expmm_11} %>>11月
+          <OPTION VALUE="12" <% FORM{expmm_12} %>>12月
+        </select>
 
-      <select name="expyy" id="year-select">
-        <% year %>
-        <span class="year-text">年</span>
-      </select>
+          <select name="expyy" id="year-select">
+            <% year %>
+            <span class="year-text">年</span>
+          </select>
+      </div>
     </div>
   </div>
   <div class="sub-title secondary">
     <p>セキュリティコード</p>
   </div>
   <div class="security-code border-bottom">
-    <img src="{{ asset('/assets/webview/images/ic_card_cvv.png') }}" alt="" class="left">
-
-    <div id="cvv-field">
-      <% cvv_check2_s %>
+    <div class="security-code-outside">
+      <div class="left">
+        <img src="{{ asset('/assets/webview/images/ic_card_cvv.png') }}" alt="" >
+      </div>
+      <div id="cvv-field" class="right">
+        <% cvv_check2_s %>
+      </div>
     </div>
   </div>
   <div class="sub-title secondary">
     <p>お名前</p>
   </div>
-  <div class="security-code border-bottom">
-    <input type="text" placeholder="TARO YAMADA" class="right" name="username" id="username" maxlength="50" required>
+  <div class="security-code border-bottom card-name">
+    <div class="security-code-outside">
+      <div class="right">
+        <input type="text" placeholder="TARO YAMADA" name="username" id="username" maxlength="50" required>
+      </div>
+    </div>
   </div>
   <div class="tc-notice">
     <p>※クレジットカードに記載されている名前を半角英数字で入力してください。</p>
