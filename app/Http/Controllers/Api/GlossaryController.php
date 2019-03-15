@@ -16,7 +16,6 @@ class GlossaryController extends ApiController
 {
     public function glossary()
     {
-
         $drinkVolumes = [];
         $smokings = [];
         $siblings = [];
