@@ -23,6 +23,7 @@ use App\Notifications\CallOrdersCreated;
 use App\Notifications\CastAcceptNominationOrders;
 use App\Notifications\CastApplyOrders;
 use App\Notifications\CreateNominationOrdersForCast;
+use App\Notifications\PaymentRequestFromCast;
 use App\Order;
 use App\PaymentRequest;
 use App\Point;
@@ -531,17 +532,39 @@ class OrderController extends Controller
 
             $currentCasts = $order->casts()->get();
             $isDone = true;
+            $allRequestPayment = true;
             foreach ($currentCasts as  $cast) {
                 if (!$cast->pivot->stopped_at) {
                     $isDone = false;
                 }
+                $paymentRequest = $order->paymentRequests()->where('cast_id', $cast->id)->first();
+
+                if (!in_array($paymentRequest->status, [PaymentRequestStatus::REQUESTED,
+                    PaymentRequestStatus::UPDATED])) {
+                    $allRequestPayment = false;
+                }
             }
             if ($isDone) {
                 $order->status = OrderStatus::DONE;
+                if ($allRequestPayment) {
+                    $order->payment_status = OrderPaymentStatus::REQUESTING;
+                }
                 $order->save();
             }
 
             \DB::commit();
+
+            if ($allRequestPayment) {
+                $requestedStatuses = [
+                    PaymentRequestStatus::REQUESTED,
+                    PaymentRequestStatus::UPDATED,
+                ];
+                $order->total_point = $order->paymentRequests()
+                    ->whereIn('status', $requestedStatuses)
+                    ->sum('total_point');
+                $order->save();
+                $order->user->notify(new PaymentRequestFromCast($order, $order->total_point));
+            }
 
             if ($request->old_status != $order->status && $order->status == OrderStatus::ACTIVE ) {
                 $casts = $order->casts()->get();
@@ -561,6 +584,19 @@ class OrderController extends Controller
                         $involvedUsers[] = $currentCast;
                         $currentCast->notify(new CastApplyOrders($order, $currentCast->pivot->temp_point));
                         $this->sendMessageToMatchingOrder($order, $involvedUsers);
+                        \Notification::send($involvedUsers, new CastAcceptNominationOrders($order));
+                    }
+                } else {
+                    if ($request->addedCandidateCast) {
+                        $newCastIds = $request->addedCandidateCast;
+                        $casts = $order->casts()->whereIn('cast_order.user_id', $newCastIds)->get();
+                        $involvedUsers = [$order->user];
+
+                        foreach ($casts as $cast) {
+                            $involvedUsers[] = $cast;
+                            $cast->notify(new CastApplyOrders($order, $cast->pivot->temp_point));
+                        }
+                        $this->sendMessageToMatchingOrder($casts, $involvedUsers);
                         \Notification::send($involvedUsers, new CastAcceptNominationOrders($order));
                     }
                 }
