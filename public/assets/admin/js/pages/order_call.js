@@ -663,52 +663,48 @@ function validateOrderTime() {
         $('#validate-confirm-btn').show();
         valid = false;
     }
-    let isCastRequestPayment = false;
-    if (paymentRequest.length) {
-        isCastRequestPayment = true;
-    }
 
-    if (!isCastRequestPayment) {
-        if (curentOrderStartDate.diff(now, 'minutes') < 10) {
-            if (oldTotalCast != $('#total-cast').val() || $('#total-cast').val() > (getListCastMatching().length + getListCastCandidates().length)) {
-                $('#submit-popup-content').html(`
-            <p>${validateTimeText}</p>
-            `);
-                $('#btn-submit').hide();
-                $('#cancel-action-btn').hide();
-                $('#validate-confirm-btn').show();
-                valid = false;
-            }
-        }
-
-        if (timeApply >= 30 && timeApply < 60) {
-            if (curentOrderStartDate.diff(now, 'minutes') < 15) {
-                if (oldTotalCast != $('#total-cast').val() || $('#total-cast').val() > (getListCastMatching().length + getListCastCandidates().length)) {
-                    $('#submit-popup-content').html(`
-                    <p>${validateTimeText}</p>
-                    `);
-                    $('#btn-submit').hide();
-                    $('#cancel-action-btn').hide();
-                    $('#validate-confirm-btn').show();
-                    valid = false;
-                }
-            }
-        }
-
-        if (timeApply >= 60) {
-            if (curentOrderStartDate.diff(now, 'minutes') < 30) {
-                if (oldTotalCast != $('#total-cast').val() || $('#total-cast').val() > (getListCastMatching().length + getListCastCandidates().length)) {
-                    $('#submit-popup-content').html(`
-                    <p>${validateTimeText}</p>
-                    `);
-                    $('#btn-submit').hide();
-                    $('#cancel-action-btn').hide();
-                    $('#validate-confirm-btn').show();
-                    valid = false;
-                }
-            }
-        }
-    }
+    // if (oldTotalCast > $('#total-cast').val()) {
+    //     if (curentOrderStartDate.diff(now, 'minutes') < 10) {
+    //         if (oldTotalCast != $('#total-cast').val() || $('#total-cast').val() > (getListCastMatching().length + getListCastCandidates().length)) {
+    //             $('#submit-popup-content').html(`
+    //         <p>${validateTimeText}</p>
+    //         `);
+    //             $('#btn-submit').hide();
+    //             $('#cancel-action-btn').hide();
+    //             $('#validate-confirm-btn').show();
+    //             valid = false;
+    //         }
+    //     }
+    //
+    //     if (timeApply >= 30 && timeApply < 60) {
+    //         if (curentOrderStartDate.diff(now, 'minutes') < 15) {
+    //             if (oldTotalCast != $('#total-cast').val() || $('#total-cast').val() > (getListCastMatching().length + getListCastCandidates().length)) {
+    //                 $('#submit-popup-content').html(`
+    //                 <p>${validateTimeText}</p>
+    //                 `);
+    //                 $('#btn-submit').hide();
+    //                 $('#cancel-action-btn').hide();
+    //                 $('#validate-confirm-btn').show();
+    //                 valid = false;
+    //             }
+    //         }
+    //     }
+    //
+    //     if (timeApply >= 60) {
+    //         if (curentOrderStartDate.diff(now, 'minutes') < 30) {
+    //             if (oldTotalCast != $('#total-cast').val() || $('#total-cast').val() > (getListCastMatching().length + getListCastCandidates().length)) {
+    //                 $('#submit-popup-content').html(`
+    //                 <p>${validateTimeText}</p>
+    //                 `);
+    //                 $('#btn-submit').hide();
+    //                 $('#cancel-action-btn').hide();
+    //                 $('#validate-confirm-btn').show();
+    //                 valid = false;
+    //             }
+    //         }
+    //     }
+    // }
 
 
     if (valid) {

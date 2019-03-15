@@ -379,9 +379,7 @@ class OrderController extends Controller
             OrderStatus::TIMEOUT => OrderStatus::getDescription(OrderStatus::TIMEOUT),
         ];
 
-        $paymentRequest = $order->paymentRequests()->get();
-
-        return view('admin.orders.order_call_edit', compact('order', 'castClasses', 'castsMatching', 'castsNominee', 'castsCandidates', 'orderTypeDesc', 'orderStatusDesc', 'paymentRequest'));
+        return view('admin.orders.order_call_edit', compact('order', 'castClasses', 'castsMatching', 'castsNominee', 'castsCandidates', 'orderTypeDesc', 'orderStatusDesc'));
     }
 
     public function updateOrderCall(Request $request, $id)
