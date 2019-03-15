@@ -386,6 +386,9 @@ class OrderController extends Controller
 
         try {
             \DB::beginTransaction();
+            $oldCast = $order->casts()->first();
+            $oldTotalCast = $order->total_cast;
+
             $order->duration = $request->orderDuration;
             $order->class_id = $request->class_id;
             $order->total_cast = $request->totalCast;
@@ -534,6 +537,16 @@ class OrderController extends Controller
                     $cast->notify(new CastApplyOrders($order, $cast->pivot->temp_point));
                 }
                 \Notification::send($involvedUsers, new CastAcceptNominationOrders($order));
+            } else if ($request->old_status == $order->status && $order->status == OrderStatus::ACTIVE) {
+                if ($oldTotalCast == $order->total_cast && $order->total_cast == 1) {
+                    $currentCast = $order->casts()->first();
+                    if ($oldCast->id != $currentCast->id) {
+                        $involvedUsers = [$order->user];
+                        $involvedUsers[] = $currentCast;
+                        $currentCast->notify(new CastApplyOrders($order, $currentCast->pivot->temp_point));
+                        \Notification::send($involvedUsers, new CastAcceptNominationOrders($order));
+                    }
+                }
             } else {
                 // Send notification to new nominees
                 \Notification::send(
