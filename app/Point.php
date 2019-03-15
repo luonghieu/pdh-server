@@ -87,4 +87,9 @@ class Point extends Model
         }
         $this->save();
     }
+
+    public function inviteCodeHistory()
+    {
+        return $this->belongsTo(InviteCodeHistory::class);
+    }
 }
