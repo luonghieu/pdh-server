@@ -20,7 +20,7 @@
   </div>
 </div>
 <div class="content">
-  <form action="{{ route('cast_mypage.bank_account.bank_name') }}" method="POST">
+  <form action="{{ route('cast_mypage.bank_account.bank_name') }}" id="form-get-name-bank" method="POST">
       <input type="hidden" name="bank_name"  value="{{ request()->bank_name }}">
       <input type="hidden" name="bank_code"  value="{{ request()->bank_code }}">
       <input type="hidden" name="branch_name"  value="{{ request()->branch_name }}">

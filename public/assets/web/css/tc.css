@@ -52,6 +52,7 @@ main {
 #gl1 .card-number {
   margin-top: 10px;
 }
+
 .tc-form .card-outside {
   margin-top: 18px;
   margin-right: 8px;
@@ -80,6 +81,7 @@ main {
 .tc-form .date-select {
   padding: 0;
 }
+
 .tc-form .date-select select {
   font-family: NotoSansCJKjp;
   font-size: 15px;
@@ -163,6 +165,7 @@ main {
   letter-spacing: normal;
   color: #505050;
 }
+
 .tc-notice p a {
   display: inline;
   color: #30CCC3;

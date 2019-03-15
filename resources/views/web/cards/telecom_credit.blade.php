@@ -80,7 +80,6 @@
   <div class="sub-title secondary">
     <p>セキュリティコード</p>
   </div>
-  {{-- <div class="clear"></div> --}}
   <div class="security-code border-bottom">
     <div class="security-code-outside">
       <div class="left">
