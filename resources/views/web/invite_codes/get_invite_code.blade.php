@@ -4,6 +4,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <meta name="robots" content="noimageindex">
   <link rel="stylesheet" href="assets/web/css/invite_code.css">
+  <script src="/assets/admin/js/jquery-2.1.0.min.js"></script>
   <link href="https://fonts.googleapis.com/css?family=Noto+Sans+JP" rel="stylesheet">
 </head>
 <body>
@@ -17,7 +18,7 @@
           あなたが招待した友達がCheersを利用後、<br>次回Cheersでご利用いただけるポイント10,000Pが<br>あなたに付与されます。<br>友達にも2回目以降にご利用いただける<br>ポイント10,000Pが付与されます。
         </p>
         <img src="assets/web/images/invite_code/herodesc-01.jpg" alt="">
-        <button class="invite-btn buruburu" name=""><img src="assets/web/images/invite_code/btn.png" alt="LINEで招待コードを送る"></button>
+        <button class="invite-btn buruburu btn-invite-via-line" name=""><img src="assets/web/images/invite_code/btn.png" alt="LINEで招待コードを送る"></button>
       </article>
     </section>
   </div>
@@ -35,9 +36,9 @@
           <img src="assets/web/images/invite_code/howto01.jpg" alt="">
           <div class="howto-desc_box">
             <div class="ttl-h4"><h4>招待コード</h4></div>
-            <P><span>{{$inviteCode->code}}</span></P>
+            <P><span id="invite-code">{{$inviteCode->code}}</span></P>
           </div>
-          <button class="invite-btn" name=""><img src="assets/web/images/invite_code/btn.png" alt="LINEで招待コードを送る"></button>
+          <button class="invite-btn btn-invite-via-line" name=""><img src="assets/web/images/invite_code/btn.png" alt="LINEで招待コードを送る"></button>
           <div class="triangle"></div>
         </li>
         <li class="howto-desc">
@@ -73,6 +74,6 @@
 
 </main>
 <footer><small>Copyright © 2019 Cheers</small></footer>
-
+<script src="/assets/web/js/invite_code.js"></script>
 </body>
 </html>
