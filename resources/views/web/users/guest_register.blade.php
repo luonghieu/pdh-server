@@ -58,7 +58,9 @@
               <i></i>
             </div>
           </li>
-          <label data-field="date_of_birth" id="date-of-birth-error" class="error help-block" for="date-of-birth"></label>
+          <div class="show-message-error">
+            <label data-field="date_of_birth" class="error help-block" for="date-of-birth"></label>
+          </div>
           <div data-field="cohabitant_type" class="help-block"></div>
         </ul>
       </div>
@@ -99,9 +101,6 @@
       <div class="portlet-content">
         <input type="text" name="" placeholder="招待コードを入力してください" id="input_invite-code">
       </div>
-      <div id="invalid-invite-code">
-        <label data-field="date_of_birth" id="date-of-birth-error" class="error help-block"></label>
-      </div>
       <div>
         <p>
           ※友達紹介キャンペーンの招待コードをお持ちの場合は、こちらにご入力ください <br>
@@ -115,11 +114,4 @@
 </form>
 @endsection
 @section('web.script')
-<script>
-//prefectures selected
-$("#select-date_of_birth").on("change", function() {
-  $(this).css("color", "black");
-});
-
-</script>
 @stop
