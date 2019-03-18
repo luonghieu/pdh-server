@@ -32,6 +32,11 @@
                 <input type="hidden" name="from_date" value="{{ request()->from_date }}" />
                 <input type="hidden" name="to_date" value="{{ request()->to_date }}" />
                 <input type="hidden" name="search" value="{{ request()->search }}" />
+                <input type="hidden" name="user_id" value="{{ request()->user_id }}" />
+                <input type="hidden" name="receive_user_id" value="{{ request()->receive_user_id }}" />
+                <input type="hidden" name="created_at" value="{{ request()->created_at }}" />
+                <input type="hidden" name="order_id" value="{{ request()->order_id }}" />
+                <input type="hidden" name="status" value="{{ request()->status }}" />
               </div>
             </div>
           </form>
@@ -40,31 +45,52 @@
           @include('admin.partials.notification')
           <table class="table table-striped table-bordered bootstrap-datatable">
             <thead>
+              @php 
+                $request = [
+                  'page' => request()->page,
+                  'limit' => request()->limit,
+                  'search' => request()->search,
+                  'from_date' => request()->from_date,
+                  'to_date' => request()->to_date,
+                ]; 
+              @endphp
               <tr>
                 <th>No.</th>
-                <th class="">
-                  <a href="">招待者ID
-                  </a>
-                </th>
-                <th class="">
-                  <a href="">利用者ID
+                <th class="sorting{{ (request()->user_id) ? '_' . request()->user_id: '' }}">
+                  <a href="{{ route('admin.invite_code_histories.index',
+                    array_merge($request, ['user_id' => (request()->user_id == 'asc') ? 'desc' : 'asc',])
+                    ) }}">招待者ID
                    </a>
                 </th>
-                <th class="">
-                  <a href="">招待コード入力日時
+                <th class="sorting{{ (request()->receive_user_id) ? '_' . request()->receive_user_id: '' }}">
+                  <a href="{{ route('admin.invite_code_histories.index',
+                    array_merge($request, ['receive_user_id' => (request()->receive_user_id == 'asc') ? 'desc' : 'asc',])
+                    ) }}">利用者ID
                    </a>
                 </th>
-                <th class="">
-                  <a href="">適用対象予約ID
+                <th class="sorting{{ (request()->created_at) ? '_' . request()->created_at: '' }}">
+                  <a href="{{ route('admin.invite_code_histories.index',
+                    array_merge($request, ['created_at' => (request()->created_at == 'asc') ? 'desc' : 'asc',])
+                    ) }}">招待コード入力日時
                    </a>
                 </th>
-                <th class="">
-                  <a href="">招待者へのポイント付与
+                <th class="sorting{{ (request()->order_id) ? '_' . request()->order_id: '' }}">
+                  <a href="{{ route('admin.invite_code_histories.index',
+                    array_merge($request, ['order_id' => (request()->order_id == 'asc') ? 'desc' : 'asc',])
+                    ) }}">適用対象予約ID
+                   </a>
+                </th>
+                <th class="sorting{{ (request()->status) ? '_' . request()->status: '' }}">
+                  <a href="{{ route('admin.invite_code_histories.index',
+                    array_merge($request, ['status' => (request()->status == 'asc') ? 'desc' : 'asc',])
+                    ) }}">招待者へのポイント付与
                    </a>
                 </th>
                 <th>招待者の購入ID</th>
-                <th class="">
-                  <a href="">利用者へのポイント付与
+                <th class="sorting{{ (request()->status) ? '_' . request()->status: '' }}">
+                  <a href="{{ route('admin.invite_code_histories.index',
+                    array_merge($request, ['status' => (request()->status == 'asc') ? 'desc' : 'asc',])
+                    ) }}">利用者へのポイント付与
                    </a>
                 </th>
                 <th>利用者の購入ID</th>

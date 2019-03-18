@@ -6,11 +6,14 @@ use App\InviteCodeHistory;
 use App\Http\Controllers\Controller;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use Illuminate\Pagination\LengthAwarePaginator;
 
 class InviteCodeHistoryController extends Controller
 {
     public function index(Request $request)
     {
+        $orderBy = $request->only('user_id', 'receive_user_id', 'created_at', 'order_id', 'status');
+
         $inviteCodeHistories = InviteCodeHistory::with('inviteCode', 'user', 'order', 'points');
 
         $keyword = $request->search;
@@ -43,7 +46,43 @@ class InviteCodeHistoryController extends Controller
             });
         }
 
-        $inviteCodeHistories = $inviteCodeHistories->paginate($request->limit ?: 10);
+        if (!empty($orderBy)) {
+            $inviteCodeHistories = $inviteCodeHistories->get();
+
+            foreach ($orderBy as $key => $value) {
+                $isDesc = ($value == 'asc') ? false : true;
+
+                switch ($key) {
+                    case 'user_id':
+                        $inviteCodeHistories = $inviteCodeHistories->sortBy('inviteCode.user_id', SORT_REGULAR, $isDesc);
+                        break;
+                    case 'receive_user_id':
+                        $inviteCodeHistories = $inviteCodeHistories->sortBy($key, SORT_REGULAR, $isDesc);
+                        break;
+                    case 'created_at':
+                        $inviteCodeHistories = $inviteCodeHistories->sortBy($key, SORT_REGULAR, $isDesc);
+                        break;
+                    case 'order_id':
+                        $inviteCodeHistories = $inviteCodeHistories->sortBy($key, SORT_REGULAR, $isDesc);
+                        break;
+                    case 'status':
+                        $inviteCodeHistories = $inviteCodeHistories->sortBy($key, SORT_REGULAR, $isDesc);
+                        break;
+                    
+                    default:break;
+                }
+
+            }
+
+            $total = $inviteCodeHistories->count();
+            $inviteCodeHistories = $inviteCodeHistories->forPage($request->page, $request->limit ?: 10);
+
+            $inviteCodeHistories = new LengthAwarePaginator($inviteCodeHistories, $total, $request->limit ?: 10);
+            $inviteCodeHistories = $inviteCodeHistories->withPath('');
+        } else {
+            $inviteCodeHistories->orderByDesc('created_at');
+            $inviteCodeHistories = $inviteCodeHistories->paginate($request->limit ?: 10);
+        }
 
         return view('admin.invite_code_histories.index', compact('inviteCodeHistories'));
     }
