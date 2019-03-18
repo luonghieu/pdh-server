@@ -3,32 +3,33 @@
 namespace App\Notifications;
 
 use App\Enums\DeviceType;
-use App\Order;
-use Carbon\Carbon;
-use App\Enums\RoomType;
-use App\Enums\UserType;
 use App\Enums\MessageType;
+use App\Enums\OrderType;
 use App\Enums\ProviderType;
-use Illuminate\Bus\Queueable;
+use App\Enums\RoomType;
 use App\Enums\SystemMessageType;
+use App\Enums\UserType;
+use App\Order;
+use App\Traits\DirectRoom;
+use Carbon\Carbon;
+use Illuminate\Bus\Queueable;
 use Illuminate\Notifications\Notification;
 use Illuminate\Contracts\Queue\ShouldQueue;
+use Illuminate\Notifications\Messages\MailMessage;
 
-class CreateNominatedOrdersForGuest extends Notification implements ShouldQueue
+class CallOrdersTimeOutForCast extends Notification implements ShouldQueue
 {
-    use Queueable;
+    use Queueable, DirectRoom;
 
     public $order;
 
     /**
      * Create a new notification instance.
      *
-     * @param $orderId
+     * @param $order
      */
-    public function __construct($orderId)
+    public function __construct(Order $order)
     {
-        $order = Order::onWriteConnection()->findOrFail($orderId);
-
         $this->order = $order;
     }
 
@@ -41,10 +42,6 @@ class CreateNominatedOrdersForGuest extends Notification implements ShouldQueue
     public function via($notifiable)
     {
         if ($notifiable->provider == ProviderType::LINE) {
-            if ($notifiable->type == UserType::GUEST && $notifiable->device_type == null) {
-                return [LineBotNotificationChannel::class];
-            }
-
             if ($notifiable->type == UserType::CAST && $notifiable->device_type == null) {
                 return [PushNotificationChannel::class];
             }
@@ -82,20 +79,17 @@ class CreateNominatedOrdersForGuest extends Notification implements ShouldQueue
 
     public function pushData($notifiable)
     {
-        $startTime = Carbon::parse($this->order->date . ' ' . $this->order->start_time);
-        $endTime = Carbon::parse($this->order->date . ' ' . $this->order->end_time);
-
-        $content = 'Cheersをご利用いただきありがとうございます！'
-        . PHP_EOL . 'キャストのご予約を承りました。'
-        . PHP_EOL . '-----'
-        . PHP_EOL . PHP_EOL . '- ご予約内容 -'
-        . PHP_EOL . '日時：' . $startTime->format('Y/m/d H:i') . '~'
-        . PHP_EOL . '時間：' . $startTime->diffInMinutes($endTime) / 60 . '時間'
-        . PHP_EOL . 'クラス：' . $this->order->castClass->name
-        . PHP_EOL . '人数：' . $this->order->total_cast . '人'
-        . PHP_EOL . '場所：' . $this->order->address
-        . PHP_EOL . PHP_EOL . '現在、キャストの調整を行っております。'
-        . PHP_EOL . 'しばらくお待ちください☆';
+        $message = '人数が揃わなかったため、下記の予約が無効となりました。'
+            . PHP_EOL . '----'
+            . PHP_EOL . '- キャンセル内容 -'
+            . PHP_EOL . '日時：' . Carbon::parse($this->order->date . ' ' . $this->order->start_time)->format('Y/m/d H:i') . '~'
+            . PHP_EOL . '時間：' . $this->order->duration . '時間'
+            . PHP_EOL . 'クラス：' . $this->order->castClass->name
+            . PHP_EOL . '人数：' . $this->order->total_cast . '人'
+            . PHP_EOL . '場所：' .  $this->order->address
+            . PHP_EOL . '予定合計ポイント：' . number_format($this->order->temp_point) . ' Point'
+            . PHP_EOL . '----'
+            . PHP_EOL . '別のコールに募集し直してください！><';
 
         $room = $notifiable->rooms()
             ->where('rooms.type', RoomType::SYSTEM)
@@ -103,21 +97,21 @@ class CreateNominatedOrdersForGuest extends Notification implements ShouldQueue
         $roomMessage = $room->messages()->create([
             'user_id' => 1,
             'type' => MessageType::SYSTEM,
-            'message' => $content,
-            'system_type' => SystemMessageType::NORMAL,
+            'message' => $message,
+            'system_type' => SystemMessageType::NORMAL
         ]);
         $roomMessage->recipients()->attach($notifiable->id, ['room_id' => $room->id]);
 
         $namedUser = 'user_' . $notifiable->id;
         $send_from = UserType::ADMIN;
-        $pushId = 'g_2';
+        $pushId = 'g_12';
 
         return [
             'audienceOptions' => ['named_user' => $namedUser],
             'notificationOptions' => [
-                'alert' => $content,
+                'alert' => $message,
                 'ios' => [
-                    'alert' => $content,
+                    'alert' => $message,
                     'sound' => 'cat.caf',
                     'badge' => '+1',
                     'content-available' => true,
@@ -129,7 +123,7 @@ class CreateNominatedOrdersForGuest extends Notification implements ShouldQueue
                     ],
                 ],
                 'android' => [
-                    'alert' => $content,
+                    'alert' => $message,
                     'extra' => [
                         'push_id' => $pushId,
                         'send_from' => $send_from,
@@ -143,20 +137,17 @@ class CreateNominatedOrdersForGuest extends Notification implements ShouldQueue
 
     public function lineBotPushData($notifiable)
     {
-        $startTime = Carbon::parse($this->order->date . ' ' . $this->order->start_time);
-        $endTime = Carbon::parse($this->order->date . ' ' . $this->order->end_time);
-
-        $content = 'Cheersをご利用いただきありがとうございます！'
-            . PHP_EOL . 'キャストのご予約を承りました。'
-            . PHP_EOL . '-----'
-            . PHP_EOL . PHP_EOL . '- ご予約内容 -'
-            . PHP_EOL . '日時：' . $startTime->format('Y/m/d H:i') . '~'
-            . PHP_EOL . '時間：' . $startTime->diffInMinutes($endTime) / 60 . '時間'
+        $message = '人数が揃わなかったため、下記の予約が無効となりました。'
+            . PHP_EOL . '----'
+            . PHP_EOL . '- キャンセル内容 -'
+            . PHP_EOL . '日時：' . Carbon::parse($this->order->date . ' ' . $this->order->start_time)->format('Y/m/d H:i') . '~'
+            . PHP_EOL . '時間：' . $this->order->duration . '時間'
             . PHP_EOL . 'クラス：' . $this->order->castClass->name
             . PHP_EOL . '人数：' . $this->order->total_cast . '人'
-            . PHP_EOL . '場所：' . $this->order->address
-            . PHP_EOL . PHP_EOL . '現在、キャストの調整を行っております。'
-            . PHP_EOL . 'しばらくお待ちください☆';
+            . PHP_EOL . '場所：' .  $this->order->address
+            . PHP_EOL . '予定合計ポイント：' . number_format($this->order->temp_point) . ' Point'
+            . PHP_EOL . '----'
+            . PHP_EOL . '別のコールに募集し直してください！><';
 
         $room = $notifiable->rooms()
             ->where('rooms.type', RoomType::SYSTEM)
@@ -164,27 +155,16 @@ class CreateNominatedOrdersForGuest extends Notification implements ShouldQueue
         $roomMessage = $room->messages()->create([
             'user_id' => 1,
             'type' => MessageType::SYSTEM,
-            'message' => $content,
-            'system_type' => SystemMessageType::NORMAL,
+            'message' => $message,
+            'system_type' => SystemMessageType::NORMAL
         ]);
         $roomMessage->recipients()->attach($notifiable->id, ['room_id' => $room->id]);
 
-        $content = 'Cheersをご利用いただきありがとうございます！'
-            . PHP_EOL . 'キャストのご予約を承りました。'
-            . PHP_EOL . '-----'
-            . PHP_EOL . PHP_EOL . '- ご予約内容 -'
-            . PHP_EOL . '日時：' . $startTime->format('Y/m/d H:i') . '~'
-            . PHP_EOL . '時間：' . $startTime->diffInMinutes($endTime) / 60 . '時間'
-            . PHP_EOL . 'クラス：' . $this->order->castClass->name
-            . PHP_EOL . '人数：' . $this->order->total_cast . '人'
-            . PHP_EOL . '場所：' . $this->order->address
-            . PHP_EOL . PHP_EOL . '現在、キャストの調整を行っております。'
-            . PHP_EOL . 'しばらくお待ちください☆';
 
         return [
             [
                 'type' => 'text',
-                'text' => $content
+                'text' => $message,
             ]
         ];
     }

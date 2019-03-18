@@ -80,12 +80,12 @@ class CreateGuest extends Notification implements ShouldQueue
     public function pushData($notifiable)
     {
         $content = 'ようこそCheersへ！'
-            . PHP_EOL . 'Cheersはプライベートでの飲み会や接待など様々なシーンにキャストを呼べるマッチングアプリです。'
-            . PHP_EOL . PHP_EOL . 'クオリティの高いキャストと今すぐ出会えるのはCheersだけ！'
+            . PHP_EOL . 'Cheersはプライベートでの飲み会や接待など様々なシーンにキャストを呼べるギャラ飲みマッチングアプリです。'
+            . PHP_EOL . PHP_EOL . '面接通過率25%のクオリティの高いキャストと今すぐ出会えるのはCheersだけ！'
             . PHP_EOL . PHP_EOL . '呼びたいときに、呼びたい人数・場所を入力するだけ。'
-            . PHP_EOL . PHP_EOL . '最短20分でキャストがゲストの元に駆けつけます♪'
-            . PHP_EOL . PHP_EOL . '「キャスト一覧」からお気に入りのキャストを見つけてアピールすることも可能です！'
-            . PHP_EOL . PHP_EOL . 'まずはHomeの「今すぐキャストを呼ぶ」からキャストを呼んで素敵な時間をお過ごし下さい♪'
+            . PHP_EOL . '最短30分でキャストがゲストの元に駆けつけます♪'
+            . PHP_EOL . PHP_EOL . '「探す」からお気に入りのキャストを見つけてアピールすることも可能です！'
+            . PHP_EOL . PHP_EOL . 'まずはHomeの「キャストを呼ぶ」からキャストを呼んで素敵な時間をお過ごし下さい♪'
             . PHP_EOL . PHP_EOL . 'ご不明点はお気軽にお問い合わせください。';
 
         $room = Room::create([
@@ -136,12 +136,12 @@ class CreateGuest extends Notification implements ShouldQueue
     public function lineBotPushData($notifiable)
     {
         $content = 'ようこそCheersへ！'
-            . PHP_EOL . 'Cheersはプライベートでの飲み会や接待など様々なシーンにキャストを呼べるマッチングアプリです。'
-            . PHP_EOL . PHP_EOL . 'クオリティの高いキャストと今すぐ出会えるのはCheersだけ！'
+            . PHP_EOL . 'Cheersはプライベートでの飲み会や接待など様々なシーンにキャストを呼べるギャラ飲みマッチングアプリです。'
+            . PHP_EOL . PHP_EOL . '面接通過率25%のクオリティの高いキャストと今すぐ出会えるのはCheersだけ！'
             . PHP_EOL . PHP_EOL . '呼びたいときに、呼びたい人数・場所を入力するだけ。'
-            . PHP_EOL . PHP_EOL . '最短20分でキャストがゲストの元に駆けつけます♪'
-            . PHP_EOL . PHP_EOL . '「キャスト一覧」からお気に入りのキャストを見つけてアピールすることも可能です！'
-            . PHP_EOL . PHP_EOL . 'まずはHomeの「今すぐキャストを呼ぶ」からキャストを呼んで素敵な時間をお過ごし下さい♪'
+            . PHP_EOL .'最短30分でキャストがゲストの元に駆けつけます♪'
+            . PHP_EOL . PHP_EOL . '「探す」からお気に入りのキャストを見つけてアピールすることも可能です！'
+            . PHP_EOL . PHP_EOL . 'まずはHomeの「キャストを呼ぶ」からキャストを呼んで素敵な時間をお過ごし下さい♪'
             . PHP_EOL . PHP_EOL . 'ご不明点はお気軽にお問い合わせください。';
 
         $room = Room::create([

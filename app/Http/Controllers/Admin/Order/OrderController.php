@@ -6,12 +6,14 @@ use App\Cast;
 use App\CastClass;
 use App\Enums\CastOrderStatus;
 use App\Enums\CastOrderType;
+use App\Enums\MessageType;
 use App\Enums\OrderPaymentStatus;
 use App\Enums\OrderStatus;
 use App\Enums\OrderType;
 use App\Enums\PaymentRequestStatus;
 use App\Enums\PointType;
 use App\Enums\RoomType;
+use App\Enums\SystemMessageType;
 use App\Http\Controllers\Controller;
 use App\Jobs\PointSettlement;
 use App\Notification;
@@ -21,6 +23,7 @@ use App\Notifications\CallOrdersCreated;
 use App\Notifications\CastAcceptNominationOrders;
 use App\Notifications\CastApplyOrders;
 use App\Notifications\CreateNominationOrdersForCast;
+use App\Notifications\PaymentRequestFromCast;
 use App\Order;
 use App\PaymentRequest;
 use App\Point;
@@ -118,14 +121,14 @@ class OrderController extends Controller
         if ('export_orders' == $request->submit) {
             $ordersExport = $orders->get();
 
-            $this->exportOrders($ordersExport);
+            return $this->exportOrders($ordersExport);
         }
 
         // Export order done
         if ('export_real_orders' == $request->submit) {
-            $realOrdersExport = $orders->where('status', OrderStatus::DONE)->get();
+            $realOrdersExport = $orders->where('payment_status', OrderPaymentStatus::PAYMENT_FINISHED)->get();
 
-            $this->exportRealOrders($realOrdersExport);
+            return $this->exportRealOrders($realOrdersExport);
         }
 
         $orders = $orders->paginate($request->limit ?: 10);
@@ -151,10 +154,18 @@ class OrderController extends Controller
                 }
             }
 
+            $totalTime = 0;
+            foreach ($item->casts as $cast) {
+                $start = Carbon::parse($cast->pivot->started_at);
+                $stop = Carbon::parse($cast->pivot->stopped_at);
+                
+                $totalTime += $stop->diffInMinutes($start);
+            }
+
             return [
                 $item->user_id,
                 $item->user ? $item->user->nickname : '',
-                $item->user ? $item->user->created_at : '',
+                $item->user ? Carbon::parse($item->user->created_at)->format('Y年m月d日') : '',
                 $item->id,
                 OrderType::getDescription($item->type),
                 $item->address,
@@ -164,8 +175,8 @@ class OrderController extends Controller
                 $item->type == OrderType::CALL ? $item->castClass->name : '',
                 $item->duration,
                 $item->temp_point,
-                ($item->total_cast > 1) ? round(($item->total_time / 60) / $item->total_cast, 2) : round($item->total_time / 60, 2),
-                $item->total_point,
+                ($item->total_cast > 1) ? round(($totalTime / 60) / $item->total_cast, 2) : round($totalTime / 60, 2),
+                ($item->total_point < $item->discount_point) ? 0 : ($item->total_point - $item->discount_point),
                 $status,
             ];
         })->toArray();
@@ -207,23 +218,22 @@ class OrderController extends Controller
         foreach ($realOrdersExport as $item) {
             $casts = $item->casts;
 
-            $startTime = Carbon::parse($item->date . ' ' . $item->start_time);
-            $stoppedAt = $startTime->copy()->addHours($item->duration);
-            $totalCast = $item->total_cast;
-
             foreach ($casts as $cast) {
                 if ($cast) {
+                    $startTime = Carbon::parse($cast->pivot->started_at);
+                    $stoppedAt = Carbon::parse($cast->pivot->stopped_at);
+
                     $array = [
                         $item->id,
                         OrderType::getDescription($item->type),
                         $cast->id,
                         $item->castClass->name,
-                        $item->actual_started_at,
-                        $item->actual_ended_at,
-                        round($item->extra_time / 60, 2),
-                        $item->orderFee($cast, $item->started_at, $item->stopped_at),
-                        $this->allowanceNight($startTime, $stoppedAt, $totalCast),
-                        $item->total_point,
+                        $startTime->format('Y年m月d日 H:i'),
+                        $stoppedAt->format('Y年m月d日 H:i'),
+                        round($cast->pivot->extra_time / 60, 2),
+                        $item->orderFee($cast, $cast->pivot->started_at, $cast->pivot->stopped_at),
+                        $cast->pivot->allowance_point,
+                        $cast->pivot->total_point,
                     ];
 
                     array_push($data, $array);
@@ -256,47 +266,6 @@ class OrderController extends Controller
 
         return;
     }
-
-    public function allowanceNight($startTime, $stoppedAt, $totalCast)
-    {
-        // NightTime
-        $nightTime = 0;
-        $allowanceStartTime = Carbon::parse('00:01:00');
-        $allowanceEndTime = Carbon::parse('04:00:00');
-
-        $startDay = Carbon::parse($startTime)->startOfDay();
-        $endDay = Carbon::parse($stoppedAt)->startOfDay();
-
-        $timeStart = Carbon::parse(Carbon::parse($startTime->format('H:i:s')));
-        $timeEnd = Carbon::parse(Carbon::parse($stoppedAt->format('H:i:s')));
-
-        $allowance = false;
-
-        if ($startDay->diffInDays($endDay) != 0 && $stoppedAt->diffInMinutes($endDay) != 0) {
-            $allowance = true;
-        }
-
-        if ($timeStart->between($allowanceStartTime, $allowanceEndTime) || $timeEnd->between($allowanceStartTime, $allowanceEndTime)) {
-            $allowance = true;
-        }
-
-        if ($timeStart < $allowanceStartTime && $timeEnd > $allowanceEndTime) {
-            $allowance = true;
-        }
-
-        if ($allowance) {
-            $nightTime = $stoppedAt->diffInMinutes($endDay);
-        }
-
-        // Allowance
-        $allowancePoint = 0;
-        if ($nightTime) {
-            $allowancePoint = $totalCast * 4000;
-        }
-
-        return $allowancePoint;
-    }
-
 
     public function deleteOrder(Request $request)
     {
@@ -420,6 +389,9 @@ class OrderController extends Controller
 
         try {
             \DB::beginTransaction();
+            $oldCast = $order->casts()->first();
+            $oldTotalCast = $order->total_cast;
+
             $order->duration = $request->orderDuration;
             $order->class_id = $request->class_id;
             $order->total_cast = $request->totalCast;
@@ -453,7 +425,7 @@ class OrderController extends Controller
             $orderPoint = $order->orderPoint();
 
             // Update temp point for previous casts matched
-            $matchedCasts = $order->casts;
+            $matchedCasts = $order->casts()->get();
             foreach ($matchedCasts as $cast) {
                 if ($cast->pivot->type == CastOrderType::NOMINEE) {
                     $orderFee = $order->orderFee($cast, $orderStartTime, $orderEndTime);
@@ -499,12 +471,18 @@ class OrderController extends Controller
                 if ($order->total_cast == 1) {
                     $cast = $order->casts()->first();
                     if ($cast) {
-                        $ownerId = $order->user_id;
-                        $room = $this->createDirectRoom($ownerId, $cast->id);
-                        $room->save();
+                        if ($room->type == RoomType::GROUP) {
+                            $users = $order->casts()->get()->pluck('id')->toArray();
+                            $users[] = $order->user_id;
+                            $room->users()->sync($users);
+                        } else {
+                            $ownerId = $order->user_id;
+                            $room = $this->createDirectRoom($ownerId, $cast->id);
+                            $room->save();
 
-                        $order->room_id = $room->id;
-                        $order->save();
+                            $order->room_id = $room->id;
+                            $order->save();
+                        }
                     }
                 }
 
@@ -552,16 +530,84 @@ class OrderController extends Controller
                 }
             }
 
+            $currentCasts = $order->casts()->get();
+            $isDone = true;
+            $allRequestPayment = true;
+            foreach ($currentCasts as  $cast) {
+                if (!$cast->pivot->stopped_at) {
+                    $isDone = false;
+                }
+                $paymentRequest = $order->paymentRequests()->where('cast_id', $cast->id)->first();
+                if ($paymentRequest) {
+                    if (!in_array($paymentRequest->status, [PaymentRequestStatus::REQUESTED,
+                        PaymentRequestStatus::UPDATED])) {
+                        $allRequestPayment = false;
+                    }
+                } else {
+                    $allRequestPayment = false;
+                }
+            }
+
+            if ($isDone) {
+                $order->status = OrderStatus::DONE;
+                if ($allRequestPayment) {
+                    $order->payment_status = OrderPaymentStatus::REQUESTING;
+                    $order->payment_requested_at = now();
+                }
+                $order->save();
+            }
+
             \DB::commit();
 
+            if ($isDone) {
+                if ($allRequestPayment) {
+                    $requestedStatuses = [
+                        PaymentRequestStatus::REQUESTED,
+                        PaymentRequestStatus::UPDATED,
+                    ];
+                    $order->payment_requested_at = now();
+                    $order->total_point = $order->paymentRequests()
+                        ->whereIn('status', $requestedStatuses)
+                        ->sum('total_point');
+                    $order->save();
+                    $order->user->notify(new PaymentRequestFromCast($order, $order->total_point));
+                }
+            }
+
             if ($request->old_status != $order->status && $order->status == OrderStatus::ACTIVE ) {
-                $casts = $order->casts;
+                $casts = $order->casts()->get();
                 $involvedUsers = [$order->user];
                 foreach ($casts as $cast) {
                     $involvedUsers[] = $cast;
                     $cast->notify(new CastApplyOrders($order, $cast->pivot->temp_point));
                 }
+
+                $this->sendMessageToMatchingOrder($order, $involvedUsers);
                 \Notification::send($involvedUsers, new CastAcceptNominationOrders($order));
+            } else if ($request->old_status == $order->status && $order->status == OrderStatus::ACTIVE) {
+                if ($oldTotalCast == $order->total_cast && $order->total_cast == 1) {
+                    $currentCast = $order->casts()->first();
+                    if ($oldCast->id != $currentCast->id) {
+                        $involvedUsers = [$order->user];
+                        $involvedUsers[] = $currentCast;
+                        $currentCast->notify(new CastApplyOrders($order, $currentCast->pivot->temp_point));
+                        $this->sendMessageToMatchingOrder($order, $involvedUsers);
+                        \Notification::send($involvedUsers, new CastAcceptNominationOrders($order));
+                    }
+                } else {
+                    if ($request->addedCandidateCast) {
+                        $newCastIds = $request->addedCandidateCast;
+                        $casts = $order->casts()->whereIn('cast_order.user_id', $newCastIds)->get();
+                        $involvedUsers = [$order->user];
+
+                        foreach ($casts as $cast) {
+                            $involvedUsers[] = $cast;
+                            $cast->notify(new CastApplyOrders($order, $cast->pivot->temp_point));
+                        }
+                        $this->sendMessageToMatchingOrder($order, $involvedUsers);
+                        \Notification::send($involvedUsers, new CastAcceptNominationOrders($order));
+                    }
+                }
             } else {
                 // Send notification to new nominees
                 \Notification::send(
@@ -902,5 +948,33 @@ class OrderController extends Controller
         } else {
             return redirect(route('admin.orders.call', compact('order')));
         }
+    }
+
+    private function sendMessageToMatchingOrder($order, $users)
+    {
+        $room = Room::find($order->room_id);
+
+        $startTime = Carbon::parse($order->date . ' ' . $order->start_time);
+        $message = '\\\\ マッチングが確定しました♪ //'
+            . PHP_EOL . PHP_EOL . '- ご予約内容 - '
+            . PHP_EOL . '場所：' . $order->address
+            . PHP_EOL . '合流予定時間：' . $startTime->format('H:i') . '～'
+            . PHP_EOL . PHP_EOL . 'ゲストの方はキャストに来て欲しい場所の詳細をお伝えください。'
+            . PHP_EOL . '尚、ご不明点がある場合は「Cheers運営者」チャットまでお問い合わせください。'
+            . PHP_EOL . PHP_EOL . 'それでは素敵な時間をお楽しみください♪';
+
+        $roomMessage = $room->messages()->create([
+            'user_id' => 1,
+            'type' => MessageType::SYSTEM,
+            'system_type' => SystemMessageType::NORMAL,
+            'message' => $message,
+        ]);
+
+        $userIds = [];
+        foreach ($users as $user) {
+            $userIds[] = $user->id;
+        }
+
+        $roomMessage->recipients()->attach($userIds, ['room_id' => $room->id]);
     }
 }

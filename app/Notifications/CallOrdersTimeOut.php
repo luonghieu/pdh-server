@@ -90,7 +90,7 @@ class CallOrdersTimeOut extends Notification implements ShouldQueue
         if ($this->order->type != OrderType::NOMINATION) {
             $message = 'ご希望の人数のキャストが揃わなかったため、'
                 . PHP_EOL . '下記の予約が無効となりました。'
-                . PHP_EOL . '--------------------------------------------------'
+                . PHP_EOL . '----'
                 . PHP_EOL . '- キャンセル内容 -'
                 . PHP_EOL . '日時：' . Carbon::parse($this->order->date . ' ' . $this->order->start_time)->format('Y/m/d H:i') . '~'
                 . PHP_EOL . '時間：' . $this->order->duration . '時間'
@@ -98,8 +98,8 @@ class CallOrdersTimeOut extends Notification implements ShouldQueue
                 . PHP_EOL . '人数：' . $this->order->total_cast . '人'
                 . PHP_EOL . '場所：' .  $this->order->address
                 . PHP_EOL . '予定合計ポイント：' . number_format($this->order->temp_point) . ' Point'
-                . PHP_EOL . '--------------------------------------------------'
-                . PHP_EOL . 'お手数ですが、再度コールをし直してください。';
+                . PHP_EOL . '----'
+                . PHP_EOL . 'お手数ですが、再度場所や時刻を変更してコールをし直してください。';
 
             $room = $notifiable->rooms()
                 ->where('rooms.type', RoomType::SYSTEM)
@@ -164,7 +164,7 @@ class CallOrdersTimeOut extends Notification implements ShouldQueue
         if ($this->order->type != OrderType::NOMINATION) {
             $message = 'ご希望の人数のキャストが揃わなかったため、'
                 . PHP_EOL . '下記の予約が無効となりました。'
-                . PHP_EOL . '--------------------------------------------------'
+                . PHP_EOL . '----'
                 . PHP_EOL . '- キャンセル内容 -'
                 . PHP_EOL . '日時：' . Carbon::parse($this->order->date . ' ' . $this->order->start_time)->format('Y/m/d H:i') . '~'
                 . PHP_EOL . '時間：' . $this->order->duration . '時間'
@@ -172,8 +172,8 @@ class CallOrdersTimeOut extends Notification implements ShouldQueue
                 . PHP_EOL . '人数：' . $this->order->total_cast . '人'
                 . PHP_EOL . '場所：' .  $this->order->address
                 . PHP_EOL . '予定合計ポイント：' . number_format($this->order->temp_point) . ' Point'
-                . PHP_EOL . '--------------------------------------------------'
-                . PHP_EOL . 'お手数ですが、再度コールをし直してください。';
+                . PHP_EOL . '----'
+                . PHP_EOL . 'お手数ですが、再度場所や時刻を変更してコールをし直してください。';
 
             $room = $notifiable->rooms()
                 ->where('rooms.type', RoomType::SYSTEM)

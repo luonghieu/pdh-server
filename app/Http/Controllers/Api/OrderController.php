@@ -101,7 +101,10 @@ class OrderController extends ApiController
 
         $coupon = null;
         if ($request->coupon_id) {
-            $coupon = $user->coupons()->where('coupon_id', $request->coupon_id)->first();
+            $coupon = $user->coupons()
+                ->where('coupon_id', $request->coupon_id)
+                ->where('is_active', true)
+                ->first();
 
             if ($coupon) {
                 return $this->respondErrorMessage(trans('messages.coupon_invalid'), 409);
