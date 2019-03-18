@@ -14,6 +14,7 @@ use App\Jobs\CancelOrder;
 use App\Jobs\ProcessOrder;
 use App\Jobs\StopOrder;
 use App\Jobs\ValidateOrder;
+use App\Notifications\AddedInvitePoint;
 use App\Notifications\CancelOrderFromCast;
 use App\Notifications\CastDenyOrders;
 use App\Services\LogService;
@@ -693,6 +694,9 @@ class Order extends Model
 
                 $inviteCodeHistory->status = InviteCodeHistoryStatus::RECEIVED;
                 $inviteCodeHistory->save();
+
+                $userInvite->notify(new AddedInvitePoint());
+                $user->notify(new AddedInvitePoint(true));
             }
         }
 
