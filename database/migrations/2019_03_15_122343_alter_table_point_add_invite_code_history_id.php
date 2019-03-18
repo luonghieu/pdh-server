@@ -15,6 +15,7 @@ class AlterTablePointAddInviteCodeHistoryId extends Migration
     {
         Schema::table('points', function (Blueprint $table) {
             $table->integer('invite_code_history_id')->unsigned()->nullable()->after('order_id');
+            $table->foreign('invite_code_history_id')->references('id')->on('invite_code_histories');
         });
     }
 
