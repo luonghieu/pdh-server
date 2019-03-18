@@ -97,7 +97,7 @@
         <h2>招待コード</h2>
       </div>
       <div class="portlet-content">
-        <input type="text" name="" placeholder="招待コードを入力してください" id="input_invite-code" maxlength='6'>
+        <input type="text" name="" placeholder="招待コードを入力してください" id="input_invite-code">
       </div>
       <div id="invalid-invite-code">
         <label data-field="date_of_birth" id="date-of-birth-error" class="error help-block"></label>
