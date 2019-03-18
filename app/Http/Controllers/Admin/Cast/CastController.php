@@ -185,6 +185,7 @@ class CastController extends Controller
             'type' => UserType::CAST,
             'prefecture_id' => $request->prefecture,
             'rank' => $request->cast_rank,
+            'accept_request_transfer_date' => now(),
         ];
 
         $user->update($data);
@@ -198,7 +199,7 @@ class CastController extends Controller
             ]);
         }
 
-        $user->notify(new CreateCast());
+//        $user->notify(new CreateCast());
 
         return redirect()->route('admin.casts.index');
     }
