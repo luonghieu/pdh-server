@@ -677,6 +677,7 @@ class Order extends Model
                 $point->status = true;
                 $point->save();
                 $userInvite->point = $userInvite->point + $inviteCodeHistory->point;
+                $userInvite->save();
 
                 $point = new Point;
                 $point->point = $inviteCodeHistory->point;
@@ -688,6 +689,7 @@ class Order extends Model
                 $point->status = true;
                 $point->save();
                 $user->point = $user->point + $inviteCodeHistory->point;
+                $user->save();
 
                 $inviteCodeHistory->status = InviteCodeHistoryStatus::RECEIVED;
                 $inviteCodeHistory->save();
