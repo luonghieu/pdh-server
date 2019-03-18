@@ -3423,3 +3423,6 @@ padding-top: 65px !important;
   padding-top: 0px !important;
 }
 
+.register-date-of-birth input[type="date"] {
+  outline: none;
+}
