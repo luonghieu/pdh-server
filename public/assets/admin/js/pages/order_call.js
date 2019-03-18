@@ -12,6 +12,7 @@ let currentTempPoint = 0;
 let currentOrderStatus = orderStatus;
 let deletedCast = [];
 let addedNominee = [];
+
 function debounce(func, wait, immediate) {
     let timeout;
     return function () {
@@ -129,7 +130,6 @@ function allowance() {
     const duration = $('#order-duration').val();
     const orderStartDate = moment(orderDate);
     const orderEndDate = moment(orderDate).clone().add(duration, 'hours');
-
     const orderStartTime = moment().set({
         hour: orderStartDate.get('hour'),
         minute: orderStartDate.get('minute'),
@@ -282,7 +282,7 @@ function orderChanged() {
             <h2> ${ $('#total-cast').val() - (getListCastMatching().length + getListCastCandidates().length)}名をコールとして募集します</h2>
             <h2> "OK"をタップすると、キャストに通知が送られます</h2>
             `);
-        } else if(selectedNomination.length) {
+        } else if (selectedNomination.length) {
             let title = 'ユーザーID ';
             selectedNomination.forEach(item => {
                 title += item.id + ',';
@@ -295,12 +295,12 @@ function orderChanged() {
             `);
         } else {
             $('#submit-popup-content').html(`
-            <p>キャストを選択してください</p>
             <h2>変更を実行しますか？</h2>
             <h2>"OK"をタップすると、対象のゲスト/キャストに</h2>
             <h2>通知が送られます。</h2>
             `);
         }
+
         if (orderStatus != 3) {
             let currentNomineeList = getListCastNominees();
             let currentCandidateList = getListCastCandidates();
@@ -322,7 +322,7 @@ function orderChanged() {
                 });
                 totalAcceptedCast = nominee + currentCandidateList.length + currentMatchingList.length;
 
-                if (totalAcceptedCast == $('#total-cast').val())  {
+                if (totalAcceptedCast == $('#total-cast').val()) {
                     currentOrderStatus = 2;
                 }
             }
@@ -639,6 +639,81 @@ function handleChangeTotalCastEvent() {
     });
 }
 
+function validateOrderTime() {
+    const now = moment();
+    const oldOrderStartDate = moment(orderStartTime);
+    const curentOrderStartDate = moment($('#order-date').val());
+    const createdAt = moment(orderCreatedAt);
+    const timeApply = oldOrderStartDate.diff(createdAt, 'minutes');
+    const validateTimeText = '予約開始時間でキャストの応募が締め切りっています。キャスト応募するのに予約開始時間を変更してください。';
+    const validateTotalCastText = 'キャストの人数が足りません。"別のキャストを追加する"からキャストを追加して下さい';
+    const oldTotalCast = totalCast;
+    let valid = true;
+    const paymentRequestStatus = {
+        open: 1,
+        requested: 2,
+        updated: 3
+    };
+    if ((orderStatus == 2 || orderStatus == 3) && ($('#total-cast').val() > (getListCastMatching().length + getListCastCandidates().length))) {
+        $('#submit-popup-content').html(`
+            <p>${validateTotalCastText}</p>
+            `);
+        $('#btn-submit').hide();
+        $('#cancel-action-btn').hide();
+        $('#validate-confirm-btn').show();
+        valid = false;
+    }
+
+    // if (oldTotalCast > $('#total-cast').val()) {
+    //     if (curentOrderStartDate.diff(now, 'minutes') < 10) {
+    //         if (oldTotalCast != $('#total-cast').val() || $('#total-cast').val() > (getListCastMatching().length + getListCastCandidates().length)) {
+    //             $('#submit-popup-content').html(`
+    //         <p>${validateTimeText}</p>
+    //         `);
+    //             $('#btn-submit').hide();
+    //             $('#cancel-action-btn').hide();
+    //             $('#validate-confirm-btn').show();
+    //             valid = false;
+    //         }
+    //     }
+    //
+    //     if (timeApply >= 30 && timeApply < 60) {
+    //         if (curentOrderStartDate.diff(now, 'minutes') < 15) {
+    //             if (oldTotalCast != $('#total-cast').val() || $('#total-cast').val() > (getListCastMatching().length + getListCastCandidates().length)) {
+    //                 $('#submit-popup-content').html(`
+    //                 <p>${validateTimeText}</p>
+    //                 `);
+    //                 $('#btn-submit').hide();
+    //                 $('#cancel-action-btn').hide();
+    //                 $('#validate-confirm-btn').show();
+    //                 valid = false;
+    //             }
+    //         }
+    //     }
+    //
+    //     if (timeApply >= 60) {
+    //         if (curentOrderStartDate.diff(now, 'minutes') < 30) {
+    //             if (oldTotalCast != $('#total-cast').val() || $('#total-cast').val() > (getListCastMatching().length + getListCastCandidates().length)) {
+    //                 $('#submit-popup-content').html(`
+    //                 <p>${validateTimeText}</p>
+    //                 `);
+    //                 $('#btn-submit').hide();
+    //                 $('#cancel-action-btn').hide();
+    //                 $('#validate-confirm-btn').show();
+    //                 valid = false;
+    //             }
+    //         }
+    //     }
+    // }
+
+
+    if (valid) {
+        $('#btn-submit').show();
+        $('#cancel-action-btn').show();
+        $('#validate-confirm-btn').hide();
+    }
+}
+
 jQuery(document).ready(function ($) {
     renderListCast(classId, getListCastMatching(), getListCastNominees(), getListCastCandidates());
     handleOpenPopupSelectCastEvent();
@@ -648,7 +723,14 @@ jQuery(document).ready(function ($) {
     handleSearchCastEvent();
     handleChangeOrderDurationEvent();
     handleChangeTotalCastEvent();
-
+    validateOrderTime();
+    $("#datetimepicker").on("dp.change", function (e) {
+        $('#btn-submit-popup').prop('disabled', false);
+    });
+    $('#btn-submit-popup').on('click', function () {
+        orderChanged();
+        validateOrderTime();
+    });
     $('#btn-submit').on('click', function () {
         let addedNomineCast = [];
         let addedCandidateCast = [];
@@ -707,7 +789,7 @@ jQuery(document).ready(function ($) {
 
     $('#orderdatetimepicker').datetimepicker({
         minDate: 'now',
-    }).on('dp.change',function(event){
+    }).on('dp.change', function (event) {
         updateTotalPoint();
         orderChanged();
     });

@@ -20,7 +20,7 @@
   </div>
 </div>
 <div class="content">
-  <form action="{{ route('cast_mypage.bank_account.branch_bank_name') }}" method="POST">
+  <form action="{{ route('cast_mypage.bank_account.branch_bank_name') }}" id="form-get-name-branch-bank" method="POST">
     <input type="hidden" name="bank_name" value="{{ request()->bank_name }}">
     <input type="hidden" name="bank_code" value="{{ request()->bank_code }}">
     <input type="hidden" name="branch_name" value="{{ request()->branch_name }}">
@@ -31,7 +31,7 @@
       <div class="account-holder border-bottom row">
         <span class="left color-green">支店名</span>
         <div class="right">
-          <input type="search" id="bank-name" name="branch_name" value="{{ request()->branch_name }}" placeholder="例）渋谷">
+          <input type="search" id="bank-name" class="input-branch-name" name="branch_name" value="{{ request()->branch_name }}" placeholder="例）渋谷">
         </div>
       </div>
       <div class="clear"></div>

@@ -3,6 +3,7 @@
 namespace App\Console\Commands;
 
 use App\Notifications\CallOrdersTimeOut;
+use App\Notifications\CallOrdersTimeOutForCast;
 use App\Order;
 use App\User;
 use Carbon\Carbon;
@@ -89,12 +90,14 @@ class SetTimeOutForCallOrder extends Command
             $user->coupons()->detach([$order->coupon_id]);
         }
 
-        $castIds = $order->castOrder()
-            ->pluck('cast_order.user_id')
-            ->toArray();
+        $casts = $order->castOrder();
+        $castIds = $casts->pluck('cast_order.user_id')->toArray();
 
         $user = User::find($order->user_id);
         $user->notify(new CallOrdersTimeOut($order));
+
+        $listCast = $casts->get();
+        \Notification::send($listCast, new CallOrdersTimeOutForCast($order));
 
         foreach ($castIds as $id) {
             $order->castOrder()->updateExistingPivot(

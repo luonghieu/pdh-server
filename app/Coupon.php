@@ -20,6 +20,8 @@ class Coupon extends Model
         'filter_after_created_date',
         'is_filter_order_duration',
         'filter_order_duration',
+        'is_active',
+        'sort_index',
     ];
     public function users()
     {

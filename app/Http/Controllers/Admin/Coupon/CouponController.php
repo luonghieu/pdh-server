@@ -3,10 +3,11 @@
 namespace App\Http\Controllers\Admin\Coupon;
 
 use App\Services\LogService;
-use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Coupon;
 use Carbon\Carbon;
+use DB;
+use Illuminate\Http\Request;
 
 class CouponController extends Controller
 {
@@ -34,7 +35,7 @@ class CouponController extends Controller
             });
         }
 
-        $coupons = $coupons->paginate($request->limit ?: 10);
+        $coupons = $coupons->orderBy('sort_index')->get();
 
         return view('admin.coupons.index', compact('coupons'));
     }
@@ -50,7 +51,7 @@ class CouponController extends Controller
             'point' => 'numeric|required_if:type,1|nullable',
             'time' => 'numeric|min:1|max:9999|required_if:type,2|nullable',
             'percent' => 'numeric|required_if:type,3|nullable',
-            'max_point' => 'required_with:time,percent',
+            'max_point' => 'required_if:type,2|required_if:type,3',
             'note' => 'string|max:500|nullable',
             'is_filter_after_created_date' => 'numeric|nullable',
             'filter_after_created_date' => 'numeric|min:1|max:7|nullable',
@@ -72,14 +73,13 @@ class CouponController extends Controller
             'time.max' => '時間には、9999以上の数字を指定してください。',
             'percent.numeric' => 'パーセントには、数字を指定してください。',
             'percent.required_if' => 'パーセントを指定してください',
-            'max_point.required_with' => '時間, %Offが指定されている場合、クーポン適用最高上限額も指定してください。',
+            'max_point.required_if' => '時間, %Offが指定されている場合、クーポン適用最高上限額も指定してください。',
             'note.string' => '備考には、文字を指定してください。',
             'note.max' => '備考は、500文字以下にしてください。',
 
         ];
 
         $validator = validator(request()->all(), $rules, $messages);
-
         if ($validator->fails()) {
             return back()->withErrors($validator->errors())->withInput();
         }
@@ -97,9 +97,14 @@ class CouponController extends Controller
             'is_filter_order_duration',
             'filter_order_duration',
         ]);
+       
         if (isset($input['time'])) {
             $input['time'] = $input['time'] / 60;
         }
+
+        $couponLast = Coupon::orderByDesc('sort_index')->first();
+        $input['sort_index'] = $couponLast ? ($couponLast->sort_index + 1) : 1;
+        
         $coupon = new Coupon;
         $coupon = $coupon->create($input);
 
@@ -204,6 +209,54 @@ class CouponController extends Controller
             $request->session()->flash('err', trans('messages.server_error'));
 
             return redirect()->route('admin.coupons.show', compact('coupon'));
+        }
+    }
+
+    public function updateSortIndex(Request $request)
+    {
+        try {
+            $coupons = Coupon::getModel()->getTable();
+
+            $ids = [];
+            $cases = [];
+            $params = [];
+
+            $couponIds = $request->couponIds;
+
+            foreach ($couponIds as $key => $couponId) {
+                $id = (int) $couponId;
+                $ids[] = $id;
+                $cases[] = "WHEN {$id} then ?";
+                $params[] = $key + 1;
+            }
+
+            $ids = implode(',', $ids);
+            $cases = implode(' ', $cases);
+            $params[] = Carbon::now();
+
+            DB::update("UPDATE `{$coupons}` SET `sort_index` = CASE `id` {$cases} END, `updated_at` = ? WHERE `id` in ({$ids})", $params);
+
+            return response()->json(['success' => true]);
+        } catch (\Exception $e) {
+            LogService::writeErrorLog($e);
+            $request->session()->flash('msg', trans('messages.server_error'));
+        }
+        
+    }
+
+    public function updateIsActive(Request $request)
+    {
+        try {
+            $couponId = $request->couponId;
+            $coupon = Coupon::findOrFail($couponId);
+
+            $coupon->is_active = !$coupon->is_active;
+            $coupon->update();
+
+            return response()->json(['success' => true]);
+        } catch (\Exception $e) {
+            LogService::writeErrorLog($e);
+            $request->session()->flash('msg', trans('messages.server_error'));
         }
     }
 }

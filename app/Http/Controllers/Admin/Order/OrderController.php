@@ -6,12 +6,14 @@ use App\Cast;
 use App\CastClass;
 use App\Enums\CastOrderStatus;
 use App\Enums\CastOrderType;
+use App\Enums\MessageType;
 use App\Enums\OrderPaymentStatus;
 use App\Enums\OrderStatus;
 use App\Enums\OrderType;
 use App\Enums\PaymentRequestStatus;
 use App\Enums\PointType;
 use App\Enums\RoomType;
+use App\Enums\SystemMessageType;
 use App\Http\Controllers\Controller;
 use App\Jobs\PointSettlement;
 use App\Notification;
@@ -21,10 +23,12 @@ use App\Notifications\CallOrdersCreated;
 use App\Notifications\CastAcceptNominationOrders;
 use App\Notifications\CastApplyOrders;
 use App\Notifications\CreateNominationOrdersForCast;
+use App\Notifications\PaymentRequestFromCast;
 use App\Order;
 use App\PaymentRequest;
 use App\Point;
 use App\Room;
+use App\Services\CSVExport;
 use App\Services\LogService;
 use App\Traits\DirectRoom;
 use Carbon\Carbon;
@@ -113,9 +117,154 @@ class OrderController extends Controller
             }
         }
 
+        // Export all order
+        if ('export_orders' == $request->submit) {
+            $ordersExport = $orders->get();
+
+            return $this->exportOrders($ordersExport);
+        }
+
+        // Export order done
+        if ('export_real_orders' == $request->submit) {
+            $realOrdersExport = $orders->where('payment_status', OrderPaymentStatus::PAYMENT_FINISHED)->get();
+
+            return $this->exportRealOrders($realOrdersExport);
+        }
+
         $orders = $orders->paginate($request->limit ?: 10);
 
         return view('admin.orders.index', compact('orders'));
+    }
+
+    public function exportOrders($ordersExport)
+    {
+        $data = collect($ordersExport)->map(function ($item) {
+            $status = OrderStatus::getDescription($item->status);
+            
+            if (OrderStatus::DENIED == $item->status || OrderStatus::CANCELED == $item->status) {
+                if ($item->type == OrderType::NOMINATION && (count($item->nominees) > 0 ? empty
+                    ($item->nominees[0]->pivot->accepted_at) : false)) {
+                    $status = '提案キャンセル';
+                } else {
+                    if ($item->cancel_fee_percent == 0) {
+                        $status = '確定後キャンセル (キャンセル料なし)';
+                    } else {
+                        $status = '確定後キャンセル (キャンセル料あり)';
+                    }
+                }
+            }
+
+            $totalTime = 0;
+            foreach ($item->casts as $cast) {
+                $start = Carbon::parse($cast->pivot->started_at);
+                $stop = Carbon::parse($cast->pivot->stopped_at);
+                
+                $totalTime += $stop->diffInMinutes($start);
+            }
+
+            return [
+                $item->user_id,
+                $item->user ? $item->user->nickname : '',
+                $item->user ? Carbon::parse($item->user->created_at)->format('Y年m月d日') : '',
+                $item->id,
+                OrderType::getDescription($item->type),
+                $item->address,
+                Carbon::parse($item->created_at)->format('Y年m月d日 H:i'),
+                Carbon::parse($item->date)->format('Y年m月d日') . Carbon::parse($item->start_time)->format('H:i'),
+                $item->total_cast . '名',
+                $item->type == OrderType::CALL ? $item->castClass->name : '',
+                $item->duration,
+                $item->temp_point,
+                ($item->total_cast > 1) ? round(($totalTime / 60) / $item->total_cast, 2) : round($totalTime / 60, 2),
+                ($item->total_point < $item->discount_point) ? 0 : ($item->total_point - $item->discount_point),
+                $status,
+            ];
+        })->toArray();
+
+        $header = [
+            '予約者ID',
+            '予約者名',
+            '予約者の登録日',
+            '予約ID',
+            '予約区分',
+            '開催エリア',
+            '予約発生時間',
+            '予約開始時間',
+            '希望人数',
+            'キャストクラス',
+            '予約時間',
+            '基本料金',
+            '合流時間の平均実績(ｈ)',
+            '実績合計ポイント',
+            'ステータス',
+        ];
+
+        try {
+            $file = CSVExport::toCSV($data, $header);
+        } catch (\Exception $e) {
+            LogService::writeErrorLog($e);
+            request()->session()->flash('msg', trans('messages.server_error'));
+
+            return redirect()->route('admin.orders.index');
+        }
+        $file->output('orders_' . Carbon::now()->format('Ymd_Hi') . '.csv');
+
+        return;
+    }
+
+    public function exportRealOrders($realOrdersExport)
+    {
+        $data = [];
+        foreach ($realOrdersExport as $item) {
+            $casts = $item->casts;
+
+            foreach ($casts as $cast) {
+                if ($cast) {
+                    $startTime = Carbon::parse($cast->pivot->started_at);
+                    $stoppedAt = Carbon::parse($cast->pivot->stopped_at);
+
+                    $array = [
+                        $item->id,
+                        OrderType::getDescription($item->type),
+                        $cast->id,
+                        $item->castClass->name,
+                        $startTime->format('Y年m月d日 H:i'),
+                        $stoppedAt->format('Y年m月d日 H:i'),
+                        round($cast->pivot->extra_time / 60, 2),
+                        $item->orderFee($cast, $cast->pivot->started_at, $cast->pivot->stopped_at),
+                        $cast->pivot->allowance_point,
+                        $cast->pivot->total_point,
+                    ];
+
+                    array_push($data, $array);
+                }
+            }
+        }
+
+        $header = [
+            '予約ID',
+            '予約区分',
+            'マッチングしたキャストID',
+            'キャストクラス',
+            '合流時刻',
+            '解散時刻',
+            '延長時間',
+            '指名料',
+            '深夜手当',
+            '実績合計ポイント',
+        ];
+
+        try {
+            $file = CSVExport::toCSV($data, $header);
+        } catch (\Exception $e) {
+            LogService::writeErrorLog($e);
+            request()->session()->flash('msg', trans('messages.server_error'));
+
+            return redirect()->route('admin.orders.index');
+        }
+        $file->output('real_orders_' . Carbon::now()->format('Ymd_Hi') . '.csv');
+
+        return;
     }
 
     public function deleteOrder(Request $request)
@@ -240,11 +389,15 @@ class OrderController extends Controller
 
         try {
             \DB::beginTransaction();
+            $oldCast = $order->casts()->first();
+            $oldTotalCast = $order->total_cast;
+
             $order->duration = $request->orderDuration;
             $order->class_id = $request->class_id;
             $order->total_cast = $request->totalCast;
             $order->date = $orderDate->format('Y-m-d');
             $order->start_time = $orderDate->format('H:i');
+            $order->end_time = $orderDate->copy()->addMinutes($order->duration * 60)->format('H:i');
             $order->type = $request->type;
             $order->temp_point = $request->temp_point;
             $order->status = $request->status;
@@ -272,7 +425,7 @@ class OrderController extends Controller
             $orderPoint = $order->orderPoint();
 
             // Update temp point for previous casts matched
-            $matchedCasts = $order->casts;
+            $matchedCasts = $order->casts()->get();
             foreach ($matchedCasts as $cast) {
                 if ($cast->pivot->type == CastOrderType::NOMINEE) {
                     $orderFee = $order->orderFee($cast, $orderStartTime, $orderEndTime);
@@ -318,12 +471,18 @@ class OrderController extends Controller
                 if ($order->total_cast == 1) {
                     $cast = $order->casts()->first();
                     if ($cast) {
-                        $ownerId = $order->user_id;
-                        $room = $this->createDirectRoom($ownerId, $cast->id);
-                        $room->save();
+                        if ($room->type == RoomType::GROUP) {
+                            $users = $order->casts()->get()->pluck('id')->toArray();
+                            $users[] = $order->user_id;
+                            $room->users()->sync($users);
+                        } else {
+                            $ownerId = $order->user_id;
+                            $room = $this->createDirectRoom($ownerId, $cast->id);
+                            $room->save();
 
-                        $order->room_id = $room->id;
-                        $order->save();
+                            $order->room_id = $room->id;
+                            $order->save();
+                        }
                     }
                 }
 
@@ -371,16 +530,84 @@ class OrderController extends Controller
                 }
             }
 
+            $currentCasts = $order->casts()->get();
+            $isDone = true;
+            $allRequestPayment = true;
+            foreach ($currentCasts as  $cast) {
+                if (!$cast->pivot->stopped_at) {
+                    $isDone = false;
+                }
+                $paymentRequest = $order->paymentRequests()->where('cast_id', $cast->id)->first();
+                if ($paymentRequest) {
+                    if (!in_array($paymentRequest->status, [PaymentRequestStatus::REQUESTED,
+                        PaymentRequestStatus::UPDATED])) {
+                        $allRequestPayment = false;
+                    }
+                } else {
+                    $allRequestPayment = false;
+                }
+            }
+
+            if ($isDone) {
+                $order->status = OrderStatus::DONE;
+                if ($allRequestPayment) {
+                    $order->payment_status = OrderPaymentStatus::REQUESTING;
+                    $order->payment_requested_at = now();
+                }
+                $order->save();
+            }
+
             \DB::commit();
 
+            if ($isDone) {
+                if ($allRequestPayment) {
+                    $requestedStatuses = [
+                        PaymentRequestStatus::REQUESTED,
+                        PaymentRequestStatus::UPDATED,
+                    ];
+                    $order->payment_requested_at = now();
+                    $order->total_point = $order->paymentRequests()
+                        ->whereIn('status', $requestedStatuses)
+                        ->sum('total_point');
+                    $order->save();
+                    $order->user->notify(new PaymentRequestFromCast($order, $order->total_point));
+                }
+            }
+
             if ($request->old_status != $order->status && $order->status == OrderStatus::ACTIVE ) {
-                $casts = $order->casts;
+                $casts = $order->casts()->get();
                 $involvedUsers = [$order->user];
                 foreach ($casts as $cast) {
                     $involvedUsers[] = $cast;
                     $cast->notify(new CastApplyOrders($order, $cast->pivot->temp_point));
                 }
+
+                $this->sendMessageToMatchingOrder($order, $involvedUsers);
                 \Notification::send($involvedUsers, new CastAcceptNominationOrders($order));
+            } else if ($request->old_status == $order->status && $order->status == OrderStatus::ACTIVE) {
+                if ($oldTotalCast == $order->total_cast && $order->total_cast == 1) {
+                    $currentCast = $order->casts()->first();
+                    if ($oldCast->id != $currentCast->id) {
+                        $involvedUsers = [$order->user];
+                        $involvedUsers[] = $currentCast;
+                        $currentCast->notify(new CastApplyOrders($order, $currentCast->pivot->temp_point));
+                        $this->sendMessageToMatchingOrder($order, $involvedUsers);
+                        \Notification::send($involvedUsers, new CastAcceptNominationOrders($order));
+                    }
+                } else {
+                    if ($request->addedCandidateCast) {
+                        $newCastIds = $request->addedCandidateCast;
+                        $casts = $order->casts()->whereIn('cast_order.user_id', $newCastIds)->get();
+                        $involvedUsers = [$order->user];
+
+                        foreach ($casts as $cast) {
+                            $involvedUsers[] = $cast;
+                            $cast->notify(new CastApplyOrders($order, $cast->pivot->temp_point));
+                        }
+                        $this->sendMessageToMatchingOrder($order, $involvedUsers);
+                        \Notification::send($involvedUsers, new CastAcceptNominationOrders($order));
+                    }
+                }
             } else {
                 // Send notification to new nominees
                 \Notification::send(
@@ -721,5 +948,33 @@ class OrderController extends Controller
         } else {
             return redirect(route('admin.orders.call', compact('order')));
         }
+    }
+
+    private function sendMessageToMatchingOrder($order, $users)
+    {
+        $room = Room::find($order->room_id);
+
+        $startTime = Carbon::parse($order->date . ' ' . $order->start_time);
+        $message = '\\\\ マッチングが確定しました♪ //'
+            . PHP_EOL . PHP_EOL . '- ご予約内容 - '
+            . PHP_EOL . '場所：' . $order->address
+            . PHP_EOL . '合流予定時間：' . $startTime->format('H:i') . '～'
+            . PHP_EOL . PHP_EOL . 'ゲストの方はキャストに来て欲しい場所の詳細をお伝えください。'
+            . PHP_EOL . '尚、ご不明点がある場合は「Cheers運営者」チャットまでお問い合わせください。'
+            . PHP_EOL . PHP_EOL . 'それでは素敵な時間をお楽しみください♪';
+
+        $roomMessage = $room->messages()->create([
+            'user_id' => 1,
+            'type' => MessageType::SYSTEM,
+            'system_type' => SystemMessageType::NORMAL,
+            'message' => $message,
+        ]);
+
+        $userIds = [];
+        foreach ($users as $user) {
+            $userIds[] = $user->id;
+        }
+
+        $roomMessage->recipients()->attach($userIds, ['room_id' => $room->id]);
     }
 }

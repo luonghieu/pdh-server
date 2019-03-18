@@ -12,8 +12,21 @@
               <input type="text" class="form-control date-picker input-search" name="from_date" id="date01" data-date-format="yyyy/mm/dd" value="{{request()->from_date}}" placeholder="yyyy/mm/dd" />
               <label for="">To date: </label>
               <input type="text" class="form-control date-picker" name="to_date" id="date01" data-date-format="yyyy/mm/dd" value="{{request()->to_date}}" placeholder="yyyy/mm/dd"/>
-              <button type="submit" class="fa fa-search btn-search"></button>
+              <button type="submit" class="btn fa fa-search btn-search"></button>
               <input type="hidden" name="limit" value="{{ request()->limit }}" />
+
+              <!-- export orders -->
+              <div class="row col-sm-10 form-group init-mt init-dis">
+                <div class="pull-left init-m mr-1">
+                  <input type="hidden" name="is_export_orders" value="1">
+                  <button type="submit" class="btn btn-info" name="submit" value="export_orders">全予約データ出力</button>
+                </div>
+                <div class="pull-left init-m">
+                  <input type="hidden" name="is_export_real_orders" value="1">
+                  <button type="submit" class="btn btn-info" name="submit" value="export_real_orders">予約実績データ出力</button>
+                </div>
+              </div><!-- /export orders -->
+
               @include('admin.orders.request_sort')
             </form>
           </div>
@@ -37,8 +50,8 @@
             </div>
           </form>
         </div>
-        <div class="btn-delete-order">
-          <button data-toggle="modal" data-target="#deleteOrder">チェックした予約を無効する</button>
+        <div class="init-btn-del-order">
+          <button class="btn btn-info" data-toggle="modal" data-target="#deleteOrder">チェックした予約を無効する</button>
         </div>
         <div class="panel-body">
           @include('admin.partials.notification')
@@ -162,7 +175,7 @@
                     @endif
                   @endif
                   <td>
-                    @if ($order->payment_status != null)
+                    @if ((App\Enums\OrderStatus::DONE == $order->status || App\Enums\OrderStatus::CANCELED == $order->status) && $order->payment_status != null)
                     {{ App\Enums\OrderPaymentStatus::getDescription($order->payment_status) }}
                     @else
                       @if (App\Enums\OrderStatus::DENIED == $order->status || App\Enums\OrderStatus::CANCELED == $order->status)

@@ -17,7 +17,7 @@
                     <div class="clearfix"></div>
                     <div class="panel-body">
                         <div class="clearfix"></div>
-                        <div class="info-table col-lg-10">
+                        <div class="info-table col-lg-12">
                             <form action="">
                                 <table class="table table-bordered change-width-th">
                                     <!--  table-striped -->
@@ -56,8 +56,8 @@
                                     <tr>
                                         <th>キャストとの合流時間</th>
                                         <td>
-                                            <div class="col-lg-3 input-group date edit-datetime-order-call"
-                                                 id="orderdatetimepicker">
+                                            <div class="col-lg-4 input-group date edit-datetime-order-call"
+                                                 id="datetimepicker">
                                                 <input type="text" id="order-date" name="date_time" class="form-control"
                                                        data-date-format="YYYY/MM/DD HH:mm"
                                                        value="{{ Carbon\Carbon::parse($order->date . ' ' . $order->start_time)->format('Y/m/d H:i') }}"
@@ -419,7 +419,11 @@
                                             </div>
                                         </div>
                                         <div class="modal-footer">
-                                            <button type="button" class="btn btn-canceled" data-dismiss="modal">いいえ
+                                            <button type="button" class="btn btn-accept" id="validate-confirm-btn"
+                                                    data-dismiss="modal">OK
+                                            </button>
+                                            <button type="button" class="btn btn-canceled" id="cancel-action-btn"
+                                                    data-dismiss="modal">いいえ
                                             </button>
                                             <button type="submit" class="btn btn-accept" id="btn-submit">
                                                 OK
@@ -466,6 +470,7 @@
         const orderStatusDesc = JSON.parse('<?php echo json_encode($orderStatusDesc) ?>');
         const orderStatus = '<?php echo $order->status ?>';
         const redirectBackUrl = '<?php echo route('admin.orders.call', ['order' => $order->id])?>';
+        const orderCreatedAt = '<?php echo \Carbon\Carbon::parse($order->created_at)->second(0) ?>';
     </script>
     <script src="/assets/admin/js/pages/order_call.js"></script>
 @stop

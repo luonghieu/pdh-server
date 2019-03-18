@@ -47,7 +47,8 @@ class CouponController extends ApiController
             });
         }
 
-        $coupons = $coupons->get();
+        $coupons = $coupons->where('is_active', true)->orderBy('sort_index')->get();
+        
         $now = now();
         $collection = $coupons->reject(function ($item) use ($user, $now) {
             $createdAtOfUser = Carbon::parse($user->created_at);

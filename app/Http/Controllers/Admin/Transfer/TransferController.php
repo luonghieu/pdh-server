@@ -80,19 +80,19 @@ class TransferController extends Controller
         }
 
         if ('export' == $request->submit) {
-            $transfers = $transfers->get();
+            $transfersExport = $transfers->get();
 
-            if (!$transfers->count()) {
+            if (!$transfersExport->count()) {
                 return redirect(route('admin.transfers.non_transfers'));
             }
 
-            $data = collect($transfers)->map(function ($item) {
+            $data = collect($transfersExport)->map(function ($item) {
                 return [
                     $item->order_id,
-                    Carbon::parse($item->updated_at)->format('Y年m月d日'),
+                    $item->order ? Carbon::parse($item->order->created_at)->format('Y年m月d日') : Carbon::parse($item->created_at)->format('Y年m月d日'),
                     $item->user_id,
-                    $item->user->nickname,
-                    '¥ ' . $item->point,
+                    $item->user ? $item->user->nickname : " ",
+                    '￥'.number_format($item->point),
                 ];
             })->toArray();
 
@@ -101,14 +101,14 @@ class TransferController extends Controller
                 '',
                 '',
                 '',
-                '¥ ' . $transfers->sum('point'),
+                '¥ ' . $transfersExport->sum('point'),
             ];
 
             array_push($data, $sum);
 
             $header = [
                 '予約ID',
-                '日付',
+                '予約開始日時',
                 'ユーザーID',
                 'ユーザー名',
                 '振込金額',
@@ -193,55 +193,35 @@ class TransferController extends Controller
         }
 
         if ('transfers' == $request->submit) {
-            $transfers = $transfers->select(DB::raw('sum(point) as sum_amount,  user_id'))->groupBy('user_id')->get();
+            $nonTransfersExport = $transfers->get();
+
             $header = [
-                '1',
-                '21',
-                '0',
-                '0000000000',
-                str_pad('ｶ)ﾘｽﾃｨﾙ', 40, " ", STR_PAD_RIGHT),
-                '都度連携',
-                '1333',
-                'ﾄｳｷﾖｳｻﾝｷﾖｳｼﾝｷﾝ',
-                '012',
-                str_pad('ｼﾝｼﾞﾕｸ', 15, " ", STR_PAD_RIGHT),
-                '普通',
-                str_pad('1023474', 7, "0", STR_PAD_LEFT),
-                str_repeat(" ", 17),
+                '予約ID',
+                '予約開始日時',
+                'ユーザーID',
+                'ユーザー名',
+                '振込金額',
             ];
 
-            $data = collect($transfers)->map(function ($item) {
+            $data = collect($nonTransfersExport)->map(function ($item) {
                 return [
-                    2,
-                    $item->user->bankAccount ? str_pad($item->user->bankAccount->bank_code, 4, "0", STR_PAD_LEFT) : "",
-                    str_repeat(" ", 15),
-                    $item->user->bankAccount ? str_pad($item->user->bankAccount->branch_code, 3, "0", STR_PAD_LEFT) : "",
-                    str_repeat(" ", 15),
-                    str_repeat(" ", 4),
-                    $item->user->bankAccount ? (BankAccountType::SAVING == $item->user->bankAccount->type ? '4' : $item->user->bankAccount->type) : " ",
-                    $item->user->bankAccount ? str_pad($item->user->bankAccount->number, 7, "0", STR_PAD_LEFT) : "",
-                    $item->user->bankAccount ? str_pad($item->user->bankAccount->holder, 30, " ", STR_PAD_RIGHT) : "",
-                    str_pad($item->sum_amount, 10, "0", STR_PAD_LEFT),
-                    0,
-                    str_repeat(" ", 10),
-                    str_repeat(" ", 10),
-                    str_repeat(" ", 9),
+                    $item->order_id,
+                    $item->order ? Carbon::parse($item->order->created_at)->format('Y年m月d日') : Carbon::parse($item->created_at)->format('Y年m月d日'),
+                    $item->user_id,
+                    $item->user ? $item->user->nickname : " ",
+                    '￥'.number_format($item->point),
                 ];
             })->toArray();
 
-            $trailer = [
-                8,
-                str_pad(count($data), 6, "0", STR_PAD_LEFT),
-                str_pad($transfers->sum('point'), 12, "0", STR_PAD_LEFT),
-                str_repeat(" ", 101),
-            ];
-
             $end = [
-                9,
-                str_repeat(" ", 119),
+                '合計',
+                '',
+                '',
+                '',
+                '¥'.number_format($nonTransfersExport->sum('point')),
             ];
 
-            array_push($data, $trailer, $end);
+            array_push($data, $end);
 
             try {
                 $file = CSVExport::toCSV($data, $header);
