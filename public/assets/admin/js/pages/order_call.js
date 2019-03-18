@@ -649,7 +649,11 @@ function validateOrderTime() {
     const validateTotalCastText = 'キャストの人数が足りません。"別のキャストを追加する"からキャストを追加して下さい';
     const oldTotalCast = totalCast;
     let valid = true;
-
+    const paymentRequestStatus = {
+        open: 1,
+        requested: 2,
+        updated: 3
+    };
     if ((orderStatus == 2 || orderStatus == 3) && ($('#total-cast').val() > (getListCastMatching().length + getListCastCandidates().length))) {
         $('#submit-popup-content').html(`
             <p>${validateTotalCastText}</p>
@@ -660,45 +664,48 @@ function validateOrderTime() {
         valid = false;
     }
 
-    if (curentOrderStartDate.diff(now, 'minutes') < 10) {
-        if (oldTotalCast != $('#total-cast').val() || $('#total-cast').val() > (getListCastMatching().length + getListCastCandidates().length)) {
-            $('#submit-popup-content').html(`
-            <p>${validateTimeText}</p>
-            `);
-            $('#btn-submit').hide();
-            $('#cancel-action-btn').hide();
-            $('#validate-confirm-btn').show();
-            valid = false;
-        }
-    }
+    // if (oldTotalCast > $('#total-cast').val()) {
+    //     if (curentOrderStartDate.diff(now, 'minutes') < 10) {
+    //         if (oldTotalCast != $('#total-cast').val() || $('#total-cast').val() > (getListCastMatching().length + getListCastCandidates().length)) {
+    //             $('#submit-popup-content').html(`
+    //         <p>${validateTimeText}</p>
+    //         `);
+    //             $('#btn-submit').hide();
+    //             $('#cancel-action-btn').hide();
+    //             $('#validate-confirm-btn').show();
+    //             valid = false;
+    //         }
+    //     }
+    //
+    //     if (timeApply >= 30 && timeApply < 60) {
+    //         if (curentOrderStartDate.diff(now, 'minutes') < 15) {
+    //             if (oldTotalCast != $('#total-cast').val() || $('#total-cast').val() > (getListCastMatching().length + getListCastCandidates().length)) {
+    //                 $('#submit-popup-content').html(`
+    //                 <p>${validateTimeText}</p>
+    //                 `);
+    //                 $('#btn-submit').hide();
+    //                 $('#cancel-action-btn').hide();
+    //                 $('#validate-confirm-btn').show();
+    //                 valid = false;
+    //             }
+    //         }
+    //     }
+    //
+    //     if (timeApply >= 60) {
+    //         if (curentOrderStartDate.diff(now, 'minutes') < 30) {
+    //             if (oldTotalCast != $('#total-cast').val() || $('#total-cast').val() > (getListCastMatching().length + getListCastCandidates().length)) {
+    //                 $('#submit-popup-content').html(`
+    //                 <p>${validateTimeText}</p>
+    //                 `);
+    //                 $('#btn-submit').hide();
+    //                 $('#cancel-action-btn').hide();
+    //                 $('#validate-confirm-btn').show();
+    //                 valid = false;
+    //             }
+    //         }
+    //     }
+    // }
 
-    if (timeApply >= 30 && timeApply < 60) {
-        if (curentOrderStartDate.diff(now, 'minutes') < 15) {
-            if (oldTotalCast != $('#total-cast').val() || $('#total-cast').val() > (getListCastMatching().length + getListCastCandidates().length)) {
-                $('#submit-popup-content').html(`
-                    <p>${validateTimeText}</p>
-                    `);
-                $('#btn-submit').hide();
-                $('#cancel-action-btn').hide();
-                $('#validate-confirm-btn').show();
-                valid = false;
-            }
-        }
-    }
-
-    if (timeApply >= 60) {
-        if (curentOrderStartDate.diff(now, 'minutes') < 30) {
-            if (oldTotalCast != $('#total-cast').val() || $('#total-cast').val() > (getListCastMatching().length + getListCastCandidates().length)) {
-                $('#submit-popup-content').html(`
-                    <p>${validateTimeText}</p>
-                    `);
-                $('#btn-submit').hide();
-                $('#cancel-action-btn').hide();
-                $('#validate-confirm-btn').show();
-                valid = false;
-            }
-        }
-    }
 
     if (valid) {
         $('#btn-submit').show();
