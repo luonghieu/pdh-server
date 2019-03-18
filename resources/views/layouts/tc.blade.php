@@ -4,6 +4,9 @@
   <title>@yield('title')</title>
   <meta http-equiv="Content-Type" content="text/html; charset=shift_jis" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+  <meta http-equiv="Pragma" content="no-cache" />
+  <meta http-equiv="Expires" content="0" />
   <link rel="shortcut icon" href="{{ asset('/ld/images/cast/favicon/favicon.png') }}">
   <link href="{{ asset('assets/web/css/web.css') }}" rel="stylesheet">
   <link href="{{ asset('assets/web/css/tc.css') }}" rel="stylesheet">
