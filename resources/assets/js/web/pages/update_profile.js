@@ -133,6 +133,9 @@ $(document).ready(function() {
     }
   });
 
+  $('body').on('change', "#prefecture-id",function(){
+    $(this).css('color', 'black');
+  })
 
   $('#update-date-of-birth').submit(function(e) {
     e.preventDefault();
@@ -142,17 +145,19 @@ $(document).ready(function() {
         required: true,
         max: maxYear,
       },
+
       prefecture_id: {
         required: true,
       },
     },
+
     messages: {
       date_of_birth: {
-        required: "生年月日は、必ず指定してください。",
-        max: '年齢は20歳以上で入力してください。',
+        required: "生年月日を入力してください",
+        max: '20歳未満の方は、ご利用いただけません',
       },
       prefecture_id: {
-        required: "居住地は、必ず指定してください。",
+        required: "ご利用エリアを入力してください",
       },
     },
 
@@ -160,9 +165,8 @@ $(document).ready(function() {
       var param = {
         date_of_birth: $('#date-of-birth').val(),
         prefecture_id: $('#prefecture-id').val(),
+        invite_code: $('#input_invite-code').val(),
       };
-
-      const day = $('#day').val();
 
       if (!param['date_of_birth']) {
         delete param['date_of_birth'];
@@ -186,13 +190,13 @@ $(document).ready(function() {
             window.location = '/login/line';
           }
 
-          if (error.response.data.error) {
-            var errors = error.response.data.error;
+          if(error.response.status == 404) {
+            $('#invite-code-error').prop('checked',true);
+          }
 
-            Object.keys(errors).forEach(function(field) {
-              $(`[data-field="${field}"].help-block`).html(errors[field][0]);
-            });
-          };
+          if(error.response.status == 409) {
+            $('#date-of-birth-error').prop('checked',true);
+          }
         });
     }
   });

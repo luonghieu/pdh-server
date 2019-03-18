@@ -5,8 +5,11 @@ namespace App\Http\Controllers\Api;
 use App\Enums\UserType;
 use App\Http\Resources\CastResource;
 use App\Http\Resources\GuestResource;
+use App\InviteCode;
+use App\InviteCodeHistory;
 use App\Rules\CheckHeight;
 use App\Services\LogService;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Webpatser\Uuid\Uuid;
@@ -119,6 +122,14 @@ class AuthController extends ApiController
             //            }
         }
 
+        if ($request->date_of_birth) {
+            $inputDate = Carbon::parse($request->date_of_birth);
+            $max = Carbon::parse(now())->subYear(20);
+
+            if ($inputDate->gt($max)) {
+                return $this->respondErrorMessage(trans('messages.date_of_birth_error'), 409);
+            }
+        }
         $input = request()->only([
             'nickname',
             'date_of_birth',
@@ -143,8 +154,22 @@ class AuthController extends ApiController
             'fullname_kana',
             'fullname',
             'prefecture_id',
-            'is_guest_active'
+            'is_guest_active',
         ]);
+
+        if ($request->invite_code) {
+            $checkInviteCode = InviteCode::where('code', $request->invite_code)->first();
+
+            if (!isset($checkInviteCode)) {
+                return $this->respondErrorMessage(trans('messages.invite_code_error'), 404);
+            }
+
+            InviteCodeHistory::create([
+                'invite_code_id' => $checkInviteCode->id,
+                'point' => config('common.invite_code_point'),
+                'receive_user_id' => $user->id,
+            ]);
+        }
 
         try {
             $frontImage = $request->file('front_id_image');

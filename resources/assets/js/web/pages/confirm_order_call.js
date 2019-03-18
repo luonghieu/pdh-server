@@ -376,11 +376,11 @@ $(document).ready(function(){
                   }
 
                   if(error.response.status == 422) {
-                  var title = 'この操作は実行できません';
+                    var title = 'この操作は実行できません';
                   }
 
                   if(error.response.status == 500) {
-                  var title = 'サーバーエラーが発生しました';
+                    var title = 'サーバーエラーが発生しました';
                   }
 
                   if(error.response.status == 409) {
