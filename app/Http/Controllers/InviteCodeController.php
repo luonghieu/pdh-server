@@ -2,10 +2,9 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
 use Auth;
 use App\Services\LogService;
-
+use App\InviteCode;
 class InviteCodeController extends Controller
 {
     public function inviteCode()
@@ -14,10 +13,11 @@ class InviteCodeController extends Controller
             $user = Auth::user();
             $inviteCode = $user->inviteCode;
             if (!$inviteCode) {
-                $permitted_chars = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
+                do {
+                    $code = generateInviteCode();
+                    $checkCodeExist = InviteCode::where('code', $code)->first();
+                } while($checkCodeExist);
 
-                $code = str_shuffle($permitted_chars);
-                $code = substr($code, 0, 6);
                 $data = [
                     'code' => $code,
                 ];

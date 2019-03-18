@@ -6,7 +6,7 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use JWTAuth;
 use Auth;
-
+use App\InviteCode;
 class InviteCodeController extends Controller
 {
     public function inviteCode(Request $request)
@@ -19,9 +19,10 @@ class InviteCodeController extends Controller
 
                     $inviteCode = $user->inviteCode;
                     if (!$inviteCode) {
-                        $permitted_chars = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
-                        $code = str_shuffle($permitted_chars);
-                        $code = substr($code, 0, 6);
+                        do {
+                            $code = generateInviteCode();
+                            $checkCodeExist = InviteCode::where('code', $code)->fisrt();
+                        } while($checkCodeExist);
 
                         $data = [
                             'code' => $code,
