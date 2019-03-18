@@ -199,7 +199,7 @@ class CastController extends Controller
             ]);
         }
 
-//        $user->notify(new CreateCast());
+        $user->notify(new CreateCast());
 
         return redirect()->route('admin.casts.index');
     }
