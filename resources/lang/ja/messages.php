@@ -77,4 +77,6 @@ return [
     'admin_edited_order' => '予約情報が変更になっているので、再度予約内容を確認してください',
     'bank_account_not_found' => '振込口座情報はまだ登録されていません',
     'coupon_invalid' => 'クーポンが無効です',
+    'invite_code_error' => '招待コードが正しくありません' . PHP_EOL . '招待コードが間違っているか、存在しません',
+    'date_of_birth_error' => '20歳未満の方は、ご利用いただけません',
 ];
