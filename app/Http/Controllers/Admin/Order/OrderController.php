@@ -6,12 +6,14 @@ use App\Cast;
 use App\CastClass;
 use App\Enums\CastOrderStatus;
 use App\Enums\CastOrderType;
+use App\Enums\MessageType;
 use App\Enums\OrderPaymentStatus;
 use App\Enums\OrderStatus;
 use App\Enums\OrderType;
 use App\Enums\PaymentRequestStatus;
 use App\Enums\PointType;
 use App\Enums\RoomType;
+use App\Enums\SystemMessageType;
 use App\Http\Controllers\Controller;
 use App\Jobs\PointSettlement;
 use App\Notification;
@@ -21,6 +23,7 @@ use App\Notifications\CallOrdersCreated;
 use App\Notifications\CastAcceptNominationOrders;
 use App\Notifications\CastApplyOrders;
 use App\Notifications\CreateNominationOrdersForCast;
+use App\Notifications\PaymentRequestFromCast;
 use App\Order;
 use App\PaymentRequest;
 use App\Point;
@@ -386,6 +389,9 @@ class OrderController extends Controller
 
         try {
             \DB::beginTransaction();
+            $oldCast = $order->casts()->first();
+            $oldTotalCast = $order->total_cast;
+
             $order->duration = $request->orderDuration;
             $order->class_id = $request->class_id;
             $order->total_cast = $request->totalCast;
@@ -419,7 +425,7 @@ class OrderController extends Controller
             $orderPoint = $order->orderPoint();
 
             // Update temp point for previous casts matched
-            $matchedCasts = $order->casts;
+            $matchedCasts = $order->casts()->get();
             foreach ($matchedCasts as $cast) {
                 if ($cast->pivot->type == CastOrderType::NOMINEE) {
                     $orderFee = $order->orderFee($cast, $orderStartTime, $orderEndTime);
@@ -524,16 +530,84 @@ class OrderController extends Controller
                 }
             }
 
+            $currentCasts = $order->casts()->get();
+            $isDone = true;
+            $allRequestPayment = true;
+            foreach ($currentCasts as  $cast) {
+                if (!$cast->pivot->stopped_at) {
+                    $isDone = false;
+                }
+                $paymentRequest = $order->paymentRequests()->where('cast_id', $cast->id)->first();
+                if ($paymentRequest) {
+                    if (!in_array($paymentRequest->status, [PaymentRequestStatus::REQUESTED,
+                        PaymentRequestStatus::UPDATED])) {
+                        $allRequestPayment = false;
+                    }
+                } else {
+                    $allRequestPayment = false;
+                }
+            }
+
+            if ($isDone) {
+                $order->status = OrderStatus::DONE;
+                if ($allRequestPayment) {
+                    $order->payment_status = OrderPaymentStatus::REQUESTING;
+                    $order->payment_requested_at = now();
+                }
+                $order->save();
+            }
+
             \DB::commit();
 
+            if ($isDone) {
+                if ($allRequestPayment) {
+                    $requestedStatuses = [
+                        PaymentRequestStatus::REQUESTED,
+                        PaymentRequestStatus::UPDATED,
+                    ];
+                    $order->payment_requested_at = now();
+                    $order->total_point = $order->paymentRequests()
+                        ->whereIn('status', $requestedStatuses)
+                        ->sum('total_point');
+                    $order->save();
+                    $order->user->notify(new PaymentRequestFromCast($order, $order->total_point));
+                }
+            }
+
             if ($request->old_status != $order->status && $order->status == OrderStatus::ACTIVE ) {
-                $casts = $order->casts;
+                $casts = $order->casts()->get();
                 $involvedUsers = [$order->user];
                 foreach ($casts as $cast) {
                     $involvedUsers[] = $cast;
                     $cast->notify(new CastApplyOrders($order, $cast->pivot->temp_point));
                 }
+
+                $this->sendMessageToMatchingOrder($order, $involvedUsers);
                 \Notification::send($involvedUsers, new CastAcceptNominationOrders($order));
+            } else if ($request->old_status == $order->status && $order->status == OrderStatus::ACTIVE) {
+                if ($oldTotalCast == $order->total_cast && $order->total_cast == 1) {
+                    $currentCast = $order->casts()->first();
+                    if ($oldCast->id != $currentCast->id) {
+                        $involvedUsers = [$order->user];
+                        $involvedUsers[] = $currentCast;
+                        $currentCast->notify(new CastApplyOrders($order, $currentCast->pivot->temp_point));
+                        $this->sendMessageToMatchingOrder($order, $involvedUsers);
+                        \Notification::send($involvedUsers, new CastAcceptNominationOrders($order));
+                    }
+                } else {
+                    if ($request->addedCandidateCast) {
+                        $newCastIds = $request->addedCandidateCast;
+                        $casts = $order->casts()->whereIn('cast_order.user_id', $newCastIds)->get();
+                        $involvedUsers = [$order->user];
+
+                        foreach ($casts as $cast) {
+                            $involvedUsers[] = $cast;
+                            $cast->notify(new CastApplyOrders($order, $cast->pivot->temp_point));
+                        }
+                        $this->sendMessageToMatchingOrder($order, $involvedUsers);
+                        \Notification::send($involvedUsers, new CastAcceptNominationOrders($order));
+                    }
+                }
             } else {
                 // Send notification to new nominees
                 \Notification::send(
@@ -874,5 +948,33 @@ class OrderController extends Controller
         } else {
             return redirect(route('admin.orders.call', compact('order')));
         }
+    }
+
+    private function sendMessageToMatchingOrder($order, $users)
+    {
+        $room = Room::find($order->room_id);
+
+        $startTime = Carbon::parse($order->date . ' ' . $order->start_time);
+        $message = '\\\\ マッチングが確定しました♪ //'
+            . PHP_EOL . PHP_EOL . '- ご予約内容 - '
+            . PHP_EOL . '場所：' . $order->address
+            . PHP_EOL . '合流予定時間：' . $startTime->format('H:i') . '～'
+            . PHP_EOL . PHP_EOL . 'ゲストの方はキャストに来て欲しい場所の詳細をお伝えください。'
+            . PHP_EOL . '尚、ご不明点がある場合は「Cheers運営者」チャットまでお問い合わせください。'
+            . PHP_EOL . PHP_EOL . 'それでは素敵な時間をお楽しみください♪';
+
+        $roomMessage = $room->messages()->create([
+            'user_id' => 1,
+            'type' => MessageType::SYSTEM,
+            'system_type' => SystemMessageType::NORMAL,
+            'message' => $message,
+        ]);
+
+        $userIds = [];
+        foreach ($users as $user) {
+            $userIds[] = $user->id;
+        }
+
+        $roomMessage->recipients()->attach($userIds, ['room_id' => $room->id]);
     }
 }
