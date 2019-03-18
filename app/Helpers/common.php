@@ -189,3 +189,13 @@ if (!function_exists('getUniqueArray')) {
         return $uniqueArray;
     }
 }
+
+if (!function_exists('generateInviteCode')) {
+    function generateInviteCode() {
+        $permitted_chars = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
+
+        $code = str_shuffle($permitted_chars);
+
+        return substr($code, 0, 6);;
+    }
+}
