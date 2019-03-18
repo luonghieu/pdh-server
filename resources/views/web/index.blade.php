@@ -97,6 +97,9 @@
   </div>
 @endsection
 @section('web.content')
+  @if(Auth::user() && (Auth::user()->type == \App\Enums\UserType::GUEST))
+    <a href="{{route('invite_code.get_invite_code')}}"><img src="/assets/web/images/invite_code/banner_top.png" alt=""></a>
+  @endif
   @if (!Auth::check())
     <a href="{{ route('auth.line') }}">
       <img src="{{ asset('images/btn_login_base.png') }}" alt="">
