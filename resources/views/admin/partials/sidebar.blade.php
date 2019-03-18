@@ -202,6 +202,17 @@ $routes = [
         ],
     ],
 
+    'cost_enterprise' => [
+        [
+            'name' => 'admin.cost_enterprises.index',
+            'value' => '販管費管理',
+            'url' => route('admin.cost_enterprises.index'),
+            'submenu' => [
+                
+            ],
+        ]
+    ],
+
     'app_version' => [
         [
             'name' => 'admin.app_versions.index',

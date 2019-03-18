@@ -6,7 +6,6 @@ use Illuminate\Database\Eloquent\Model;
 
 class InviteCodeHistory extends Model
 {
-
     public function inviteCode()
     {
         return $this->belongsTo(InviteCode::class);
