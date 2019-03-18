@@ -13,6 +13,8 @@
               <label for="">To date: </label>
               <input type="text" class="form-control date-picker" name="to_date" id="date01" data-date-format="yyyy/mm/dd" value="{{request()->to_date}}" placeholder="yyyy/mm/dd"/>
               <button type="submit" class="fa fa-search btn btn-search"></button>
+
+              <input type="hidden" name="limit" value="{{ request()->limit }}" />
             </form>
           </div>
         </div>
@@ -89,18 +91,18 @@
                   <td>{{ \App\Enums\InviteCodeHistoryStatus::getDescription($inviteCodeHistory->status) }}</td>
                   @php
                   $pointId = ''; 
-                  $pointReciveId = ''; 
+                  $pointReceiveId = ''; 
                   foreach($inviteCodeHistory->points as $point)
                     if ($point->user_id == $inviteCodeHistory->inviteCode->user_id) {
                       $pointId = $point->id;
                     } else {
-                      $pointReciveId = $point->id;
+                      $pointReceiveId = $point->id;
                     }
                   @endphp
                   <td>{{ $pointId }}</td>
                   <td>{{ \App\Enums\InviteCodeHistoryStatus::getDescription($inviteCodeHistory->status) }}</td>
-                  <td>{{ $pointReciveId }}</td>
-                  <td><a href="" class=" btn btn-detail">詳細</a></td>
+                  <td>{{ $pointReceiveId }}</td>
+                  <td><a href="{{ route('admin.invite_code_histories.show', ['invite_code_history' => $inviteCodeHistory->id]) }}" class=" btn btn-detail">詳細</a></td>
                 </tr>
                 @endforeach
               @endif

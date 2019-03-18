@@ -208,7 +208,7 @@ $routes = [
             'value' => 'お友達紹介管理',
             'url' => route('admin.invite_code_histories.index'),
             'submenu' => [
-              
+              'admin.invite_code_histories.show'
             ],
         ],
     ],

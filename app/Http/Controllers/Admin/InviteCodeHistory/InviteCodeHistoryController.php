@@ -11,9 +11,9 @@ class InviteCodeHistoryController extends Controller
 {
     public function index(Request $request)
     {
-    	$inviteCodeHistories = InviteCodeHistory::with('inviteCode', 'user', 'order', 'points');
+        $inviteCodeHistories = InviteCodeHistory::with('inviteCode', 'user', 'order', 'points');
 
-    	$keyword = $request->search;
+        $keyword = $request->search;
         $fromDate = $request->from_date ? Carbon::parse($request->from_date)->startOfDay() : null;
         $toDate = $request->to_date ? Carbon::parse($request->to_date)->endOfDay() : null;
 
@@ -32,19 +32,24 @@ class InviteCodeHistoryController extends Controller
         if ($keyword) {
             $inviteCodeHistories->where(function ($query) use ($keyword) {
                 $query->where('id', "$keyword")
-	                ->orWhereHas('user', function ($q) use ($keyword) {
-	                    $q->where('users.nickname', 'like', "%$keyword%");
-	                })
-	                ->orWhereHas('inviteCode', function ($q) use ($keyword) {
-	                	$q->whereHas('user', function ($sq) use ($keyword) {
-	                		$sq->where('users.nickname', 'like', "%$keyword%");
-	                	});
-	                });
+                    ->orWhereHas('user', function ($q) use ($keyword) {
+                        $q->where('users.nickname', 'like', "%$keyword%");
+                    })
+                    ->orWhereHas('inviteCode', function ($q) use ($keyword) {
+                        $q->whereHas('user', function ($sq) use ($keyword) {
+                            $sq->where('users.nickname', 'like', "%$keyword%");
+                        });
+                    });
             });
         }
 
-    	$inviteCodeHistories = $inviteCodeHistories->paginate($request->limit ?: 10);
+        $inviteCodeHistories = $inviteCodeHistories->paginate($request->limit ?: 10);
 
-    	return view('admin.invite_code_histories.index', compact('inviteCodeHistories'));
+        return view('admin.invite_code_histories.index', compact('inviteCodeHistories'));
+    }
+
+    public function show(InviteCodeHistory $inviteCodeHistory)
+    {
+        return view('admin.invite_code_histories.show', compact('inviteCodeHistory'));
     }
 }
