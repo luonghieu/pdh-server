@@ -38,13 +38,11 @@
   <h1 class="text-bold">プロフィール登録</h1>
 </div>
 
-  <form action="#" method="GET" id="update-date-of-birth">
-    {{ csrf_field() }}
+<form action="#" method="POST" id="update-date-of-birth">
   <div class="cast-profile">
-
     <section class="portlet register-date-of-birth">
       <div class="portlet-header">
-        <h2 class="portlet-header__title">基本情報<span class="color-error">*</span></h2>
+        <h2 class="portlet-header__title">生年月日<span class="color-error">*</span></h2>
       </div>
       <div class="portlet-content">
         <ul class="portlet-content__list">
