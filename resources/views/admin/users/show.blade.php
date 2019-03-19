@@ -424,6 +424,10 @@
                   </form>
                 </td>
               </tr>
+              <tr>
+                <th>キャスト登録日時</th>
+                <td>{{ ($user->accept_request_transfer_date == null) ? '' : Carbon\Carbon::parse($user->accept_request_transfer_date)->format('Y/m/d H:i') }}</td>
+              </tr>
               @endif
               <tr>
                 <th>登録日時</th>
