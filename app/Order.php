@@ -747,6 +747,7 @@ class Order extends Model
                 $user->save();
 
                 $inviteCodeHistory->status = InviteCodeHistoryStatus::RECEIVED;
+                $inviteCodeHistory->order_id = $this->id;
                 $inviteCodeHistory->save();
 
                 $userInvite->notify(new AddedInvitePoint());
