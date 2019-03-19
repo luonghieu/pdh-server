@@ -3413,6 +3413,7 @@ padding-top: 65px !important;
 
 .select-prefecture #prefecture-id {
   outline: none;
+  color: #ccc;
 }
 
 .color-error {
