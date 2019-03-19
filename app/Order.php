@@ -655,8 +655,62 @@ class Order extends Model
                 $value->balance = $value->balance - $subPoint;
                 $value->update();
 
+                $arr = $value->histories;
+                if ($arr) {
+                    $arr[$this->id] = [
+                        'point_id' => $value->id,
+                        'point' => $subPoint,
+                        'user_id' => $value->user_id,
+                        'order_id' => $this->id,
+                        'order_type' => $this->type,
+                        'created_at' => Carbon::now()->format('Y/m/d H:i'),
+                    ];
+
+                    $value->histories = $arr;
+                    $value->update();
+                } else {
+                    $value->histories = [
+                        $this->id => [
+                            'point_id' => $value->id,
+                            'point' => $subPoint,
+                            'user_id' => $value->user_id,
+                            'order_id' => $this->id,
+                            'order_type' => $this->type,
+                            'created_at' => Carbon::now()->format('Y/m/d H:i'),
+                        ]
+                    ];
+                    $value->update();
+                }
+
                 break;
             } elseif ($value->balance <= $subPoint) {
+                $arr = $value->histories;
+                if ($arr) {
+                    $arr[$this->id] = [
+                        'point_id' => $value->id,
+                        'point' => $value->balance,
+                        'user_id' => $value->user_id,
+                        'order_id' => $this->id,
+                        'order_type' => $this->type,
+                        'created_at' => Carbon::now()->format('Y/m/d H:i'),
+                    ];
+
+                    $value->histories = $arr;
+                    $value->update();
+                } else {
+                    $value->histories = [
+                        $this->id => [
+                            'point_id' => $value->id,
+                            'point' => $value->balance,
+                            'user_id' => $value->user_id,
+                            'order_id' => $this->id,
+                            'order_type' => $this->type,
+                            'created_at' => Carbon::now()->format('Y/m/d H:i'),
+                        ]
+                    ];
+                    $value->update();
+                }
+
                 $subPoint -= $value->balance;
 
                 $value->balance = 0;
