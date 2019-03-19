@@ -126,7 +126,7 @@ class CostEnterpriseController extends Controller
                         case PointType::EVICT:
                             $type = $pointDescription['expired'];
                             $pointIncrease = '-';
-                            $pointDecrease = $item->point;
+                            $pointDecrease = -$item->point;
                             break;
                         
                         default:break;
