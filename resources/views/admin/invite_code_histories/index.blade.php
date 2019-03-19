@@ -32,11 +32,6 @@
                 <input type="hidden" name="from_date" value="{{ request()->from_date }}" />
                 <input type="hidden" name="to_date" value="{{ request()->to_date }}" />
                 <input type="hidden" name="search" value="{{ request()->search }}" />
-                <input type="hidden" name="user_id" value="{{ request()->user_id }}" />
-                <input type="hidden" name="receive_user_id" value="{{ request()->receive_user_id }}" />
-                <input type="hidden" name="created_at" value="{{ request()->created_at }}" />
-                <input type="hidden" name="order_id" value="{{ request()->order_id }}" />
-                <input type="hidden" name="status" value="{{ request()->status }}" />
               </div>
             </div>
           </form>
