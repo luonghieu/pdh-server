@@ -14,6 +14,7 @@ use App\Jobs\CancelOrder;
 use App\Jobs\ProcessOrder;
 use App\Jobs\StopOrder;
 use App\Jobs\ValidateOrder;
+use App\Notifications\AddedInvitePoint;
 use App\Notifications\CancelOrderFromCast;
 use App\Notifications\CastDenyOrders;
 use App\Services\LogService;
@@ -661,7 +662,6 @@ class Order extends Model
                             'point_id' => $value->id,
                             'point' => $subPoint,
                             'user_id' => $value->user_id,
-                            'nickname' => $value->user->nickname,
                             'order_id' => $this->id,
                             'order_type' => $this->type,
                             'created_at' => Carbon::now()->format('Y/m/d H:i'),
@@ -675,7 +675,6 @@ class Order extends Model
                                 'point_id' => $value->id,
                                 'point' => $subPoint,
                                 'user_id' => $value->user_id,
-                                'nickname' => $value->user->nickname,
                                 'order_id' => $this->id,
                                 'order_type' => $this->type,
                                 'created_at' => Carbon::now()->format('Y/m/d H:i'),
@@ -694,7 +693,6 @@ class Order extends Model
                             'point_id' => $value->id,
                             'point' => $value->balance,
                             'user_id' => $value->user_id,
-                            'nickname' => $value->user->nickname,
                             'order_id' => $this->id,
                             'order_type' => $this->type,
                             'created_at' => Carbon::now()->format('Y/m/d H:i'),
@@ -708,7 +706,6 @@ class Order extends Model
                                 'point_id' => $value->id,
                                 'point' => $value->balance,
                                 'user_id' => $value->user_id,
-                                'nickname' => $value->user->nickname,
                                 'order_id' => $this->id,
                                 'order_type' => $this->type,
                                 'created_at' => Carbon::now()->format('Y/m/d H:i'),
@@ -756,6 +753,9 @@ class Order extends Model
 
                 $inviteCodeHistory->status = InviteCodeHistoryStatus::RECEIVED;
                 $inviteCodeHistory->save();
+
+                $userInvite->notify(new AddedInvitePoint());
+                $user->notify(new AddedInvitePoint(true));
             }
         }
 

@@ -175,7 +175,7 @@
                     @endif
                   @endif
                   <td>
-                    @if ($order->payment_status != null)
+                    @if ((App\Enums\OrderStatus::DONE == $order->status || App\Enums\OrderStatus::CANCELED == $order->status) && $order->payment_status != null)
                     {{ App\Enums\OrderPaymentStatus::getDescription($order->payment_status) }}
                     @else
                       @if (App\Enums\OrderStatus::DENIED == $order->status || App\Enums\OrderStatus::CANCELED == $order->status)

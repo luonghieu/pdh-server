@@ -6,6 +6,12 @@ use Illuminate\Database\Eloquent\Model;
 
 class InviteCodeHistory extends Model
 {
+    protected $fillable = [
+        'invite_code_id',
+        'point',
+        'receive_user_id',
+    ];
+
     public function inviteCode()
     {
         return $this->belongsTo(InviteCode::class);

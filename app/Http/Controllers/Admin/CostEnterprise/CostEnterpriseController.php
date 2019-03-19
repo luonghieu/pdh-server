@@ -5,7 +5,6 @@ namespace App\Http\Controllers\Admin\CostEnterprise;
 use App\Http\Controllers\Controller;
 use App\Enums\PointType;
 use App\Point;
-use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Pagination\LengthAwarePaginator;
 
@@ -32,21 +31,9 @@ class CostEnterpriseController extends Controller
             }
         }
 
-        $collection = collect($arr);
-
-        $fromDate = $request->from_date ? Carbon::parse($request->from_date)->startOfDay() : null;
-        $toDate = $request->to_date ? Carbon::parse($request->to_date)->endOfDay() : null;
-
-        if ($fromDate) {
-            $collection = $collection->where('created_at', '>=', $fromDate);
-        }
-
-        if ($toDate) {
-            $collection = $collection->where('created_at', '<=', $toDate);
-        }
-
-        $total = $collection->count();
-        $costEnterprises = $collection->forPage($request->page, $request->limit ?: 10);
+        $costEnterprises = collect($arr);
+        $total = $costEnterprises->count();
+        $costEnterprises = $costEnterprises->forPage($request->page, $request->limit ?: 10);
 
         $costEnterprises = new LengthAwarePaginator($costEnterprises, $total, $request->limit ?: 10);
         $costEnterprises = $costEnterprises->withPath('');

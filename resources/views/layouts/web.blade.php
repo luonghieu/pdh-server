@@ -14,7 +14,7 @@
   <link href="{{ mix('assets/web/css/web.css') }}" rel="stylesheet">
 
   <link rel="shortcut icon" href="{{ asset('/ld/images/cast/favicon/favicon.png') }}">
-  
+
   @yield('web.extra_css')
   <script>
       (function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
@@ -36,9 +36,15 @@
                   height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
   @yield('web.extra')
   <div id="page">
-    @if (Auth::check())
-      @include('web.partials.header')
-    @endif
+      @if (Auth::check())
+        @php
+          $user = Auth::user();
+        @endphp
+
+        @if (!empty($user->date_of_birth))
+          @include('web.partials.header')
+        @endif
+      @endif
     <main id="@yield('screen.id')" class="@yield('screen.class')">
       @yield('web.content')
     </main>
