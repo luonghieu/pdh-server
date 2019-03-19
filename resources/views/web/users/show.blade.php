@@ -6,7 +6,9 @@
 @section('web.extra')
 @endsection
 <div class="cast-call">
+  @if($cast['is_new_user'])
   <img src="/assets/web/images/common/ic_new_user.png" class="ic-new-show-user" alt="">
+  @endif
   <section class="cast-photo">
     <div class="slider cast-photo__show">
       @if($cast['avatars'])
@@ -14,7 +16,7 @@
           @if (($avatar['path']))
           <img data-lazy="{{ $avatar['path'] }}">
           @else
-            <img data-lazy="{{ asset('assets/web/images/gm1/ic_default_avatar@3x.png') }}">
+          <img data-lazy="{{ asset('assets/web/images/gm1/ic_default_avatar@3x.png') }}">
           @endif
         @endforeach
       @else
