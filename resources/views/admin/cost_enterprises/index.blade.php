@@ -130,7 +130,7 @@
                         case App\Enums\PointType::EVICT:
                             $type = $pointDescription['expired'];
                             $pointIncrease = '-';
-                            $pointDecrease = $costEnterprise->point;
+                            $pointDecrease = -$costEnterprise->point;
                             break;
                         
                         default:break;

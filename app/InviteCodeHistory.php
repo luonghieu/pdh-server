@@ -19,7 +19,7 @@ class InviteCodeHistory extends Model
 
     public function user()
     {
-        return $this->belongsTo(User::class, 'receive_user_id');
+        return $this->belongsTo(User::class, 'receive_user_id')->withTrashed();
     }
 
     public function order()
