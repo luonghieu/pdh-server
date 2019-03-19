@@ -104,10 +104,14 @@
                   <td><a href="{{ route('admin.users.show', ['user' => $inviteCodeHistory->inviteCode->user_id]) }}">{{ $inviteCodeHistory->inviteCode->user_id }}</a></td>
                   <td><a href="{{ route('admin.users.show', ['user' => $inviteCodeHistory->receive_user_id]) }}">{{ $inviteCodeHistory->receive_user_id }}</a></td>
                   <td>{{ Carbon\Carbon::parse($inviteCodeHistory->created_at)->format('Y/m/d H:i') }}</td>
-                  @if ($inviteCodeHistory->order->type == App\Enums\OrderType::NOMINATION)
-                    <td><a href="{{ route('admin.orders.order_nominee', ['order' => $inviteCodeHistory->order_id]) }}">{{ $inviteCodeHistory->order_id }}</a></td>
+                  @if ($inviteCodeHistory->order)
+                    @if ($inviteCodeHistory->order->type == App\Enums\OrderType::NOMINATION)
+                      <td><a href="{{ route('admin.orders.order_nominee', ['order' => $inviteCodeHistory->order_id]) }}">{{ $inviteCodeHistory->order_id }}</a></td>
+                    @else
+                      <td><a href="{{ route('admin.orders.call', ['order' => $inviteCodeHistory->order_id]) }}">{{ $inviteCodeHistory->order_id }}</a></td>
+                    @endif
                   @else
-                    <td><a href="{{ route('admin.orders.call', ['order' => $inviteCodeHistory->order_id]) }}">{{ $inviteCodeHistory->order_id }}</a></td>
+                    <td>-</td>
                   @endif
                   <td>{{ \App\Enums\InviteCodeHistoryStatus::getDescription($inviteCodeHistory->status) }}</td>
                   @php
