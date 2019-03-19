@@ -2,9 +2,11 @@
 
 namespace App\Http\Controllers\Admin\CostEnterprise;
 
-use App\Http\Controllers\Controller;
 use App\Enums\PointType;
+use App\Http\Controllers\Controller;
 use App\Point;
+use App\Services\CSVExport;
+use App\Services\LogService;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Pagination\LengthAwarePaginator;
@@ -13,6 +15,12 @@ class CostEnterpriseController extends Controller
 {
     public function index(Request $request)
     {
+        $pointDescription = [
+            'grant' => 'ポイント付与',
+            'consumption' => 'ポイント消費',
+            'expired' => 'ポイント失効',
+        ];
+
         $orderBy = $request->only('user_id', 'order_id', 'created_at', 'type');
         $keyword = $request->search;
         $fromDate = $request->from_date ? Carbon::parse($request->from_date)->startOfDay() : null;
@@ -89,12 +97,82 @@ class CostEnterpriseController extends Controller
             }
         }
 
+        if ('export' == $request->submit) {
+            if (!$collection->count()) {
+                return redirect(route('admin.cost_enterprises.index'));
+            }
+
+            $data = $collection->map(function ($item) use ($pointDescription) {
+                if (is_array($item)) {
+                    return [
+                        $item['point_id'],
+                        $item['user_id'],
+                        $item['order_id'],
+                        Carbon::parse($item['created_at'])->format('Y/m/d H:i'),
+                        $pointDescription['consumption'],
+                        '-',
+                        $item['point'],
+                    ];
+                } else {
+                    switch ($item->type) {
+                        case PointType::INVITE_CODE:
+                            $type = $pointDescription['grant'];
+                            $pointIncrease = $item->point;
+                            $pointDecrease = '-';
+
+                            break;
+                        case PointType::EVICT:
+                            $type = $pointDescription['expired'];
+                            $pointIncrease = '-';
+                            $pointDecrease = $item->point;
+                            break;
+                        
+                        default:break;
+                    }
+
+                    return [
+                        $item->id,
+                        $item->user_id,
+                        (!$item->order_id) ? '-' : $item->order_id,
+                        Carbon::parse($item->created_at)->format('Y/m/d H:i'),
+                        $type,
+                        $pointIncrease,
+                        $pointDecrease,
+                    ];
+                }
+
+            })->toArray();
+
+            $header = [
+                '購入ID',
+                'ゲストID',
+                '予約ID',
+                '日時',
+                '種別',
+                '増加ポイント',
+                '減少ポイント',
+            ];
+
+            try {
+                $file = CSVExport::toCSV($data, $header);
+            } catch (\Exception $e) {
+                LogService::writeErrorLog($e);
+                $request->session()->flash('msg', trans('messages.server_error'));
+
+                return redirect()->route('admin.cost_enterprises.index');
+            }
+
+            $file->output('cost_enterprises_' . Carbon::now()->format('Ymd_Hi') . '.csv');
+
+            return;
+        }
+
         $total = $collection->count();
         $costEnterprises = $collection->forPage($request->page, $request->limit ?: 10);
 
         $costEnterprises = new LengthAwarePaginator($costEnterprises, $total, $request->limit ?: 10);
         $costEnterprises = $costEnterprises->withPath('');
 
-        return view('admin.cost_enterprises.index', compact('costEnterprises'));
+        return view('admin.cost_enterprises.index', compact('costEnterprises', 'pointDescription'));
     }
 }
