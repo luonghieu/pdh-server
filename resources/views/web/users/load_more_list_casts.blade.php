@@ -15,7 +15,9 @@
               break;
       }
       @endphp
-
+      @if($cast['is_new_user'])
+        <img src="/assets/web/images/common/ic_new_user.png" class="ic-new-user" alt="">
+      @endif
       @if ($cast['avatars'] && isset($cast['avatars'][0]) && $cast['avatars'][0]['thumbnail'])
       <img class="lazy" data-src="{{ $cast['avatars'][0]['thumbnail'] }}">
       @else
