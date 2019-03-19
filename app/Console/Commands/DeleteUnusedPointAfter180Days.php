@@ -89,7 +89,7 @@ class DeleteUnusedPointAfter180Days extends Command
                 $point->balance = 0;
                 $point->save();
 
-                $user = User::find($point->user->id);
+                $user = User::withTrashed()->find($point->user->id);
                 $user->point -= $balancePoint;
                 $user->save();
 
