@@ -1,5 +1,6 @@
 $(document).ready(function(){
     var inviteCode = $('#invite-code').text();
+
     $('.btn-invite-via-line').on('click', function () {
         let message = '【招待コード：'+inviteCode+'】\n' +
             '登録から1週間以内にご利用いただくと2時間以上のご利用で1時間無料キャンペーン中！\n' +
@@ -9,7 +10,7 @@ $(document).ready(function(){
             '会員登録時に、忘れずに招待コードを入力してください。\n' +
             '\n' +
             'ご登録はこちら\n' +
-            '👉https://cheers.style/';
+            '👉'+window.location.origin;
         let encodeMessage = encodeURI(message);
         window.location.href = 'line://msg/text/?'+encodeMessage;
     })
