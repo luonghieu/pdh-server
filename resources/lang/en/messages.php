@@ -75,5 +75,6 @@ return [
     'data_not_found' => 'Data not found',
     'admin_edited_order' => 'Admin edited this order',
     'bank_account_not_found' => 'Bank account not found',
-    'coupon_invalid' => 'coupon_invalid'
+    'coupon_invalid' => 'Coupon invalid',
+    'invite_code_history_not_found' => 'Invite code history not found',
 ];
