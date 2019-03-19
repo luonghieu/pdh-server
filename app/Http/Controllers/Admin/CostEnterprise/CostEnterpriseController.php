@@ -95,6 +95,8 @@ class CostEnterpriseController extends Controller
                 }
 
             }
+        } else {
+            $collection = $collection->sortByDesc('created_at');
         }
 
         if ('export' == $request->submit) {
