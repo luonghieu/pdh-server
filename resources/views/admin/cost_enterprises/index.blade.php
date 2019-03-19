@@ -14,6 +14,11 @@
               <input type="text" class="form-control date-picker" name="to_date" id="date01" data-date-format="yyyy/mm/dd" value="{{request()->to_date}}" placeholder="yyyy/mm/dd"/>
               <button type="submit" class="fa fa-search btn btn-search"></button>
 
+              <div class="export-csv">
+                <input type="hidden" name="is_export" value="1">
+                <button type="submit" class="btn btn-info" name="submit" value="export">CSV出力</button>
+              </div>
+
               <input type="hidden" name="limit" value="{{ request()->limit }}" />
             </form>
           </div>
@@ -98,7 +103,7 @@
                       <td><a href="{{ route('admin.orders.call', ['order' => $costEnterprise['order_id']]) }}">{{ $costEnterprise['order_id'] }}</a></td>
                     @endif
                     <td>{{ Carbon\Carbon::parse($costEnterprise['created_at'])->format('Y/m/d H:i') }}</td>
-                    <td>ポイント消費</td>
+                    <td>{{ $pointDescription['consumption'] }}</td>
                     <td>-</td>
                     <td>{{ $costEnterprise['point'] }}</td> 
                   @else
@@ -117,13 +122,13 @@
                     @php
                     switch ($costEnterprise->type) {
                         case App\Enums\PointType::INVITE_CODE:
-                            $type = 'ポイント付与';
+                            $type = $pointDescription['grant'];
                             $pointIncrease = $costEnterprise->point;
                             $pointDecrease = '-';
 
                             break;
                         case App\Enums\PointType::EVICT:
-                            $type = 'ポイント失効';
+                            $type = $pointDescription['expired'];
                             $pointIncrease = '-';
                             $pointDecrease = $costEnterprise->point;
                             break;
