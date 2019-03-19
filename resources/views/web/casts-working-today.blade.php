@@ -40,6 +40,9 @@
         <span class="tag-today">今日OK</span>
       @endif
       <img src="{{ ($cast->avatars && isset($cast->avatars[0]) && $cast->avatars[0]->thumbnail) ? $cast->avatars[0]->thumbnail :'/assets/web/images/gm1/ic_default_avatar@3x.png' }}">
+      @if($cast->is_new_user)
+        <img src="/assets/web/images/common/ic_new_user.png" class="ic-new-user" alt="">
+      @endif
       <div class="info">
         <span class="tick {{ $cast->is_online == 1? 'tick-online':'tick-offline' }}"></span>
         <span class="title-info">{{ $jobName }}  {{ $cast->age }}歳</span>
