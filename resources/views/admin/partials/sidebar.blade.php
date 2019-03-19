@@ -202,6 +202,17 @@ $routes = [
         ],
     ],
 
+    'invite_code_history' => [
+        [
+            'name' => 'admin.invite_code_histories.index',
+            'value' => 'お友達紹介管理',
+            'url' => route('admin.invite_code_histories.index'),
+            'submenu' => [
+              'admin.invite_code_histories.show'
+            ],
+        ],
+    ],
+
     'app_version' => [
         [
             'name' => 'admin.app_versions.index',
