@@ -40,23 +40,40 @@
           @include('admin.partials.notification')
           <table class="table table-striped table-bordered bootstrap-datatable">
             <thead>
+              @php 
+                $request = [
+                  'page' => request()->page,
+                  'limit' => request()->limit,
+                  'search' => request()->search,
+                  'from_date' => request()->from_date,
+                  'to_date' => request()->to_date,
+                ]; 
+              @endphp
               <tr>
                 <th>No.</th>
                 <th>購入ID</th>
-                <th class="">
-                  <a href="">ゲストID
-                  </a>
-                </th>
-                <th class="">
-                  <a href="">予約ID
+                <th class="sorting{{ (request()->user_id) ? '_' . request()->user_id: '' }}">
+                  <a href="{{ route('admin.cost_enterprises.index',
+                    array_merge($request, ['user_id' => (request()->user_id == 'asc') ? 'desc' : 'asc',])
+                    ) }}">ゲストID
                    </a>
                 </th>
-                <th class="">
-                  <a href="">日時
+                <th class="sorting{{ (request()->order_id) ? '_' . request()->order_id: '' }}">
+                  <a href="{{ route('admin.cost_enterprises.index',
+                    array_merge($request, ['order_id' => (request()->order_id == 'asc') ? 'desc' : 'asc',])
+                    ) }}">予約ID
                    </a>
                 </th>
-                <th class="">
-                  <a href="">種別
+                <th class="sorting{{ (request()->created_at) ? '_' . request()->created_at: '' }}">
+                  <a href="{{ route('admin.cost_enterprises.index',
+                    array_merge($request, ['created_at' => (request()->created_at == 'asc') ? 'desc' : 'asc',])
+                    ) }}">日時
+                   </a>
+                </th>
+                <th class="sorting{{ (request()->type) ? '_' . request()->type: '' }}">
+                  <a href="{{ route('admin.cost_enterprises.index',
+                    array_merge($request, ['type' => (request()->type == 'asc') ? 'desc' : 'asc',])
+                    ) }}">種別
                    </a>
                 </th>
                 <th>増加ポイント</th>
@@ -71,7 +88,7 @@
               @else
                 @foreach ($costEnterprises as $key => $costEnterprise)
                 <tr>
-                  <td>{{ $costEnterprises->firstItem() + $key }}</td>
+                  <td>{{ $key + 1 }}</td>
                   @if (is_array($costEnterprise))
                     <td>{{ $costEnterprise['point_id'] }}</td>
                     <td><a href="{{ route('admin.users.show', ['user' => $costEnterprise['user_id']]) }}">{{ $costEnterprise['user_id'] }}</a></td>
