@@ -19,10 +19,10 @@ final class InviteCodeHistoryStatus extends Enum
     {
         switch ($value) {
             case self::PENDING:
-                return '完了';
+                return '未完了';
                 break;
             case self::RECEIVED:
-                return '未完了';
+                return '完了';
                 break;
                 
             default:break;

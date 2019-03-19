@@ -27,6 +27,9 @@
           case \App\Enums\PointType::EVICT:
               $type = 'ポイント失効';
               break;
+          case \App\Enums\PointType::INVITE_CODE:
+              $type = 'ポイント付与';
+              break;
 
           default:
               $type = '';

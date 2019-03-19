@@ -42,10 +42,14 @@
               </tr>
               <tr>
                 <th>適用対象予約ID</th>
-                @if ($inviteCodeHistory->order->type == App\Enums\OrderType::NOMINATION)
-                  <td><a href="{{ route('admin.orders.order_nominee', ['order' => $inviteCodeHistory->order_id]) }}">{{ $inviteCodeHistory->order_id }}</a></td>
-                @else
-                  <td><a href="{{ route('admin.orders.call', ['order' => $inviteCodeHistory->order_id]) }}">{{ $inviteCodeHistory->order_id }}</a></td>
+                @if ($inviteCodeHistory->order)
+                  @if ($inviteCodeHistory->order->type == App\Enums\OrderType::NOMINATION)
+                    <td><a href="{{ route('admin.orders.order_nominee', ['order' => $inviteCodeHistory->order_id]) }}">{{ $inviteCodeHistory->order_id }}</a></td>
+                  @else
+                    <td><a href="{{ route('admin.orders.call', ['order' => $inviteCodeHistory->order_id]) }}">{{ $inviteCodeHistory->order_id }}</a></td>
+                  @endif
+                @else 
+                <td>-</td>
                 @endif
               </tr>
               <tr>
