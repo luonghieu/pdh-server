@@ -18,15 +18,13 @@ class CostEnterpriseController extends Controller
         $fromDate = $request->from_date ? Carbon::parse($request->from_date)->startOfDay() : null;
         $toDate = $request->to_date ? Carbon::parse($request->to_date)->endOfDay() : null;
 
-        $points = Point::where(
-            [
-               ['type', '=', PointType::INVITE_CODE],
-            ],
-            [
-                ['type', '=', PointType::EVICT],
-                ['invite_code_history_id', '<>', null],
-            ]
-        );
+        $points = Point::where(function ($q) {
+            $q->where('type', PointType::INVITE_CODE)
+                ->orWhere([
+                   ['type', '=', PointType::EVICT],
+                   ['invite_code_history_id', '<>', null],
+                ]);
+            });
 
         if ($keyword) {
             $points->where(function ($q) use ($keyword) {
