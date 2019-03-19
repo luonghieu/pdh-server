@@ -137,6 +137,10 @@ $(document).ready(function() {
     $(this).css('color', 'black');
   })
 
+  $('body').on('change', "#date-of-birth",function(){
+    $('.show-message-error').css('display','none');
+  })
+
   $('#update-date-of-birth').submit(function(e) {
     e.preventDefault();
   }).validate({
