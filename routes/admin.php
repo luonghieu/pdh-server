@@ -164,6 +164,10 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.'], function () {
         Route::put('/{app_version}', ['as' => 'update', 'uses' => 'AppVersionController@update'])->where('app_version', '[0-9]+');
     });
 
+    Route::group(['namespace' => 'CostEnterprise', 'prefix' => 'cost_enterprises', 'as' => 'cost_enterprises.', 'middleware' => 'is_admin'], function () {
+        Route::get('/', ['as' => 'index', 'uses' => 'CostEnterpriseController@index']);
+    });
+
     Route::group(['namespace' => 'InviteCodeHistory', 'prefix' => 'invite_code_histories', 'as' => 'invite_code_histories.', 'middleware' => 'is_admin'], function () {
         Route::get('/', ['as' => 'index', 'uses' => 'InviteCodeHistoryController@index']);
         Route::get('/{invite_code_history}', ['as' => 'show', 'uses' => 'InviteCodeHistoryController@show'])->where('invite_code_history', '[0-9]+');

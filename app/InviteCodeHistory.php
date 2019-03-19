@@ -6,7 +6,6 @@ use Illuminate\Database\Eloquent\Model;
 
 class InviteCodeHistory extends Model
 {
-
     protected $fillable = [
         'invite_code_id',
         'point',

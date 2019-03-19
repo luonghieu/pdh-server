@@ -10,6 +10,10 @@ class Point extends Model
 {
     use SoftDeletes;
 
+    protected $casts = [
+        'histories' => 'array',
+    ];
+
     protected $fillable = [
         'point',
         'balance',
@@ -22,6 +26,7 @@ class Point extends Model
         'is_cast_adjusted',
         'created_at',
         'updated_at',
+        'histories',
     ];
 
     public function user()
