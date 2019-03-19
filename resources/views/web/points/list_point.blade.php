@@ -44,7 +44,7 @@
         {{ number_format($pointView) }}P
       </span>
     </div>
-    @if ($point['type'] == \App\Enums\PointType::EVICT)
+    @if ($point['type'] == \App\Enums\PointType::EVICT || $point['type'] == \App\Enums\PointType::INVITE_CODE)
       <div class="item_right">
       </div>
     @elseif ($pointView <= 0)
