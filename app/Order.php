@@ -208,9 +208,9 @@ class Order extends Model
             $involvedUsers = [];
             $involvedUsers[] = $owner;
             $involvedUsers[] = $cast;
-            $this->updateInvateCodeHistory($this->id);
 
             \Notification::send($involvedUsers, new CancelOrderFromCast($this));
+            $this->updateInvateCodeHistory($this->id);
             return true;
         } catch (\Exception $e) {
             LogService::writeErrorLog($e);
@@ -226,8 +226,8 @@ class Order extends Model
                 'status' => OrderStatus::CANCELED,
                 'canceled_at' => Carbon::now(),
             ]);
-            $this->updateInvateCodeHistory($this->id);
             CancelOrder::dispatchNow($this->id);
+            $this->updateInvateCodeHistory($this->id);
             return true;
         } catch (\Exception $e) {
             LogService::writeErrorLog($e);
