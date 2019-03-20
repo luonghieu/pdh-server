@@ -27,6 +27,9 @@
           case \App\Enums\PointType::EVICT:
               $type = 'ポイント失効';
               break;
+          case \App\Enums\PointType::INVITE_CODE:
+              $type = 'ポイント付与';
+              break;
 
           default:
               $type = '';
@@ -44,7 +47,7 @@
         {{ number_format($pointView) }}P
       </span>
     </div>
-    @if ($point['type'] == \App\Enums\PointType::EVICT)
+    @if ($point['type'] == \App\Enums\PointType::EVICT || $point['type'] == \App\Enums\PointType::INVITE_CODE)
       <div class="item_right">
       </div>
     @elseif ($pointView <= 0)

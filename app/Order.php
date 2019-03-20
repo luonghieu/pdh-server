@@ -5,6 +5,7 @@ namespace App;
 use App\Enums\CastOrderStatus;
 use App\Enums\CastOrderType;
 use App\Enums\CouponType;
+use App\Enums\InviteCodeHistoryStatus;
 use App\Enums\OrderStatus;
 use App\Enums\OrderType;
 use App\Enums\PointType;
@@ -13,6 +14,7 @@ use App\Jobs\CancelOrder;
 use App\Jobs\ProcessOrder;
 use App\Jobs\StopOrder;
 use App\Jobs\ValidateOrder;
+use App\Notifications\AddedInvitePoint;
 use App\Notifications\CancelOrderFromCast;
 use App\Notifications\CastDenyOrders;
 use App\Services\LogService;
@@ -642,7 +644,7 @@ class Order extends Model
         $subPoint = $totalPoint;
         $points = Point::where('user_id', $user->id)
             ->where('balance', '>', 0)
-            ->whereIn('type', [PointType::BUY, PointType::AUTO_CHARGE])
+            ->whereIn('type', [PointType::BUY, PointType::AUTO_CHARGE, PointType::INVITE_CODE])
             ->orderBy('created_at')
             ->get();
 
@@ -653,12 +655,105 @@ class Order extends Model
                 $value->balance = $value->balance - $subPoint;
                 $value->update();
 
+                $arr = $value->histories;
+                if ($arr) {
+                    $arr[$this->id] = [
+                        'point_id' => $value->id,
+                        'point' => $subPoint,
+                        'user_id' => $value->user_id,
+                        'order_id' => $this->id,
+                        'order_type' => $this->type,
+                        'created_at' => Carbon::now()->format('Y/m/d H:i'),
+                    ];
+
+                    $value->histories = $arr;
+                    $value->update();
+                } else {
+                    $value->histories = [
+                        $this->id => [
+                            'point_id' => $value->id,
+                            'point' => $subPoint,
+                            'user_id' => $value->user_id,
+                            'order_id' => $this->id,
+                            'order_type' => $this->type,
+                            'created_at' => Carbon::now()->format('Y/m/d H:i'),
+                        ]
+                    ];
+                    $value->update();
+                }
+
                 break;
             } elseif ($value->balance <= $subPoint) {
+                $arr = $value->histories;
+                if ($arr) {
+                    $arr[$this->id] = [
+                        'point_id' => $value->id,
+                        'point' => $value->balance,
+                        'user_id' => $value->user_id,
+                        'order_id' => $this->id,
+                        'order_type' => $this->type,
+                        'created_at' => Carbon::now()->format('Y/m/d H:i'),
+                    ];
+
+                    $value->histories = $arr;
+                    $value->update();
+                } else {
+                    $value->histories = [
+                        $this->id => [
+                            'point_id' => $value->id,
+                            'point' => $value->balance,
+                            'user_id' => $value->user_id,
+                            'order_id' => $this->id,
+                            'order_type' => $this->type,
+                            'created_at' => Carbon::now()->format('Y/m/d H:i'),
+                        ]
+                    ];
+                    $value->update();
+                }
+
                 $subPoint -= $value->balance;
 
                 $value->balance = 0;
                 $value->update();
+            }
+        }
+
+        $inviteCodeHistory = $user->inviteCodeHistory;
+        if ($inviteCodeHistory) {
+            if ($inviteCodeHistory->status == InviteCodeHistoryStatus::PENDING) {
+                $userInvite = $inviteCodeHistory->inviteCode->user;
+                $point = new Point;
+                $point->point = $inviteCodeHistory->point;
+                $point->balance = $inviteCodeHistory->point;
+                $point->user_id = $userInvite->id;
+                $point->order_id = $this->id;
+                $point->type = PointType::INVITE_CODE;
+                $point->invite_code_history_id = $inviteCodeHistory->id;
+                $point->status = true;
+                $point->created_at = now()->addSeconds(3);
+                $point->save();
+                $userInvite->point = $userInvite->point + $inviteCodeHistory->point;
+                $userInvite->save();
+
+                $point = new Point;
+                $point->point = $inviteCodeHistory->point;
+                $point->balance = $inviteCodeHistory->point;
+                $point->user_id = $user->id;
+                $point->order_id = $this->id;
+                $point->type = PointType::INVITE_CODE;
+                $point->invite_code_history_id = $inviteCodeHistory->id;
+                $point->status = true;
+                $point->created_at = now()->addSeconds(3);
+                $point->save();
+                $user->point = $user->point + $inviteCodeHistory->point;
+                $user->save();
+
+                $inviteCodeHistory->status = InviteCodeHistoryStatus::RECEIVED;
+                $inviteCodeHistory->order_id = $this->id;
+                $inviteCodeHistory->save();
+
+                $userInvite->notify(new AddedInvitePoint());
+                $user->notify(new AddedInvitePoint(true));
             }
         }
 
