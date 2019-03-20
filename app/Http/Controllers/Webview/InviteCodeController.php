@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Webview;
 
+use App\Services\LogService;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use JWTAuth;
@@ -37,6 +38,7 @@ class InviteCodeController extends Controller
                 return abort(403);
             }
         } catch (\Exception $e) {
+            LogService::writeErrorLog($e);
             return abort(403);
         }
     }
