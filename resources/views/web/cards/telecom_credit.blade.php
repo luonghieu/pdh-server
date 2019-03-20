@@ -14,6 +14,9 @@
   <img src="{{ asset('/assets/web/images/card/card_brands.png') }}" alt="">
 
   <p>＋その他各社クレジットカード</p>
+  <div class="urgent-announcement">
+    <% urgent_announcement %>
+  </div>
 </div>
 <div class="notify" id="notify">
   <span></span>
@@ -70,10 +73,9 @@
           <OPTION VALUE="12" <% FORM{expmm_12} %>>12月
         </select>
 
-          <select name="expyy" id="year-select">
-            <% year %>
-            <span class="year-text">年</span>
-          </select>
+        <select name="expyy" id="year-select">
+          <% year %>
+        </select>
       </div>
     </div>
   </div>
@@ -86,9 +88,14 @@
         <img src="{{ asset('/assets/webview/images/ic_card_cvv.png') }}" alt="" >
       </div>
       <div id="cvv-field" class="right">
-        <% cvv_check2_s %>
+        <INPUT TYPE="TEL" NAME="code_number" class="textbox2" MAXLENGTH="4" VALUE="" autocomplete="off" style="ime-mode: disabled;"
+          placeholder="３桁または４桁の数字" required>
       </div>
     </div>
+  </div>
+  <div class="tc-notice">
+    <p>※クレジットカードの裏に記載の3桁数字</p>
+    <p>※アメックスの場合は表の右上に記載の4桁数字</p>
   </div>
   <div class="sub-title secondary">
     <p>お名前</p>
@@ -106,6 +113,14 @@
 
     <div class="sub-title secondary">
       <p>確認事項</p>
+    </div>
+    <div class="maintenance-info">
+      <div class="maintenance-info1">
+        <% maintenance_info1 %>
+      </div>
+      <div class="maintenance-info2">
+        <% maintenance_info2 %>
+      </div>
     </div>
     <p>・エムアイカードまたはビューカードをご利用の方は<a href="https://secure.telecomcredit.co.jp/notes/credituser_tc2.html" target="_blank">重要なお知らせ</a>を確認ください。</p>
     <p>・個人情報の取扱については必ず<a href="https://secure.telecomcredit.co.jp/notes/credituser_tc2.html" target="_blank">こちらをお読みください。</a></p>
