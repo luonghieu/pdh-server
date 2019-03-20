@@ -31,12 +31,13 @@ use App\Room;
 use App\Services\CSVExport;
 use App\Services\LogService;
 use App\Traits\DirectRoom;
+use App\Traits\InviteCode;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 
 class OrderController extends Controller
 {
-    use DirectRoom;
+    use DirectRoom, InviteCode;
 
     public function index(Request $request)
     {
@@ -284,6 +285,7 @@ class OrderController extends Controller
                         $user->coupons()->detach([$order->coupon_id]);
                     }
 
+                    $this->updateInvateCodeHistory($order->id);
                     $order->delete();
                 }
             }
