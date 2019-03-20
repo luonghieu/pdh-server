@@ -35,6 +35,7 @@ class OrderController extends ApiController
 
     public function create(Request $request)
     {
+
         $user = $this->guard()->user();
         $rules = [
             'prefecture_id' => 'nullable|exists:prefectures,id',
@@ -181,14 +182,6 @@ class OrderController extends ApiController
                         (new CreateNominatedOrdersForCast($order->id))->delay(now()->addSeconds(3))
                     );
                 }
-
-                $inviteCodeHistory = $user->inviteCodeHistory;
-                if ($inviteCodeHistory) {
-                    if ($inviteCodeHistory->status == InviteCodeHistoryStatus::PENDING && $inviteCodeHistory->order_id == null) {
-                        $inviteCodeHistory->order_id = $order->id;
-                        $inviteCodeHistory->save();
-                    }
-                }
             } else {
                 $casts = Cast::where('class_id', $request->class_id)->get();
 
@@ -196,6 +189,14 @@ class OrderController extends ApiController
                     $casts,
                     (new CallOrdersCreated($order->id))->delay(now()->addSeconds(3))
                 );
+            }
+
+            $inviteCodeHistory = $user->inviteCodeHistory;
+            if ($inviteCodeHistory) {
+                if ($inviteCodeHistory->status == InviteCodeHistoryStatus::PENDING && $inviteCodeHistory->order_id == null) {
+                    $inviteCodeHistory->order_id = $order->id;
+                    $inviteCodeHistory->save();
+                }
             }
 
             DB::commit();
