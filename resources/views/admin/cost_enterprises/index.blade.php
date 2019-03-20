@@ -91,9 +91,12 @@
                   <td colspan="8">{{ trans('messages.point_not_found') }}</td>
                 </tr>
               @else
+                @php
+                  $index = 1;
+                @endphp
                 @foreach ($costEnterprises as $key => $costEnterprise)
                 <tr>
-                  <td>{{ $key + 1 }}</td>
+                  <td>{{ (request()->limit ?: 10) * ((request()->page ?: 1) - 1) + $index++ }}</td>
                   @if (is_array($costEnterprise))
                     <td>{{ $costEnterprise['point_id'] }}</td>
                     <td><a href="{{ route('admin.users.show', ['user' => $costEnterprise['user_id']]) }}">{{ $costEnterprise['user_id'] }}</a></td>
