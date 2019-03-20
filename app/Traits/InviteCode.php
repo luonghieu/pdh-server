@@ -15,7 +15,7 @@ trait InviteCode
         $user = $order->user;
         $inviteCodeHistory = $user->inviteCodeHistory;
         if ($inviteCodeHistory) {
-            if ($inviteCodeHistory->status == InviteCodeHistoryStatus::PENDING) {
+            if ($inviteCodeHistory->status == InviteCodeHistoryStatus::PENDING && $inviteCodeHistory->order_id == $order->id) {
                 $nextOrder = $user->orders()->where('id', '>', $order->id)
                     ->whereIn('status', [OrderStatus::OPEN, OrderStatus::ACTIVE, OrderStatus::DONE])
                     ->where(function($q) {
