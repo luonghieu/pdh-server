@@ -11,8 +11,8 @@
             <table class="table table-bordered">
               <!--  table-striped -->
               @php
-                $pointInviteId = ''; 
-                $pointReceiveId = ''; 
+                $pointInviteId = '';
+                $pointReceiveId = '';
                 foreach($inviteCodeHistory->points as $point)
                   if ($point->user_id == $inviteCodeHistory->inviteCode->user_id) {
                     $pointInviteId = $point->id;
@@ -48,13 +48,21 @@
                   @else
                     <td><a href="{{ route('admin.orders.call', ['order' => $inviteCodeHistory->order_id]) }}">{{ $inviteCodeHistory->order_id }}</a></td>
                   @endif
-                @else 
+                @else
                 <td>-</td>
                 @endif
               </tr>
               <tr>
                 <th>適用対象予約の予約ステータス</th>
-                <td>{{ App\Enums\OrderStatus::getDescription($inviteCodeHistory->order->status) }}</td>
+                @if ($inviteCodeHistory->order)
+                  @if ($inviteCodeHistory->order->payment_status)
+                  <td>{{ App\Enums\OrderPaymentStatus::getDescription($inviteCodeHistory->order->payment_status) }}</td>
+                  @else
+                  <td>{{ App\Enums\OrderStatus::getDescription($inviteCodeHistory->order->status) }}</td>
+                  @endif
+                @else
+                <td>-</td>
+                @endif
               </tr>
               <tr>
                 <th>招待者へのポイント付与</th>
