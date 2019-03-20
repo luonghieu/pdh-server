@@ -172,7 +172,7 @@ class Order extends Model
                     $user->coupons()->detach([$this->coupon_id]);
                 }
 
-                $this->updateInvateCodeHistory($this->id);
+                $this->updateInviteCodeHistory($this->id);
                 $this->user->notify(new CastDenyOrders($this, $cast));
             }
 
@@ -210,7 +210,7 @@ class Order extends Model
             $involvedUsers[] = $cast;
 
             \Notification::send($involvedUsers, new CancelOrderFromCast($this));
-            $this->updateInvateCodeHistory($this->id);
+            $this->updateInviteCodeHistory($this->id);
             return true;
         } catch (\Exception $e) {
             LogService::writeErrorLog($e);
@@ -227,7 +227,7 @@ class Order extends Model
                 'canceled_at' => Carbon::now(),
             ]);
             CancelOrder::dispatchNow($this->id);
-            $this->updateInvateCodeHistory($this->id);
+            $this->updateInviteCodeHistory($this->id);
             return true;
         } catch (\Exception $e) {
             LogService::writeErrorLog($e);

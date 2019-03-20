@@ -14,9 +14,9 @@ use App\Room;
 
 trait InviteCode
 {
-    public function updateInvateCodeHistory($orderId)
+    public function updateInviteCodeHistory($orderId)
     {
-        $order = Order::find($orderId);
+        $order = Order::withTrashed()->find($orderId);
         $user = $order->user;
         $inviteCodeHistory = $user->inviteCodeHistory;
         if ($inviteCodeHistory) {

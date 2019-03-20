@@ -113,7 +113,7 @@ class ValidateOrder implements ShouldQueue
             if ($repliesCount == $nomineesCount && $nomineesCount > 0) {
                 if (OrderType::NOMINATION == $this->order->type) {
                     $this->order->status = OrderStatus::DENIED;
-                    $this->updateInvateCodeHistory($this->order->id);
+                    $this->updateInviteCodeHistory($this->order->id);
                 } else {
                     if (OrderType::HYBRID != $this->order->type) {
                         $this->order->type = OrderType::CALL;

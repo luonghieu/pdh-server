@@ -100,7 +100,7 @@ class SetTimeOutForCallOrder extends Command
 
         $listCast = $casts->get();
         \Notification::send($listCast, new CallOrdersTimeOutForCast($order));
-        $this->updateInvateCodeHistory($order->id);
+        $this->updateInviteCodeHistory($order->id);
         foreach ($castIds as $id) {
             $order->castOrder()->updateExistingPivot(
                 $id,
