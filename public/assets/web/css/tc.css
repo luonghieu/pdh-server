@@ -1,5 +1,5 @@
 html, body {
-  min-height: 800px;
+  min-height: 880px;
 }
 
 main {
@@ -103,9 +103,13 @@ main {
   color: #c8c8c8;
 }
 
-.date-select select:first-child {
-  padding: 0;
-  background: none;
+.date-select select#month-select {
+  padding-left: 6px;
+}
+
+.date-select select#year-select {
+  width: 65px;
+  background-position: 52px 11px;
 }
 
 .security-code img {
@@ -118,6 +122,10 @@ main {
 
 .security-code .security-code-outside #cvv-field {
   margin-right: 8px;
+}
+
+.security-code .security-code-outside #cvv-field input {
+  margin-right: 10px;
 }
 
 .security-code input {

@@ -6,4 +6,10 @@ $(document).ready(function() {
   } else {
     $('.btn-back.header-item a').attr('href', 'cheers://back');
   }
+
+  $('#year-select')
+  .find('option')
+  .each(function (index, value) {
+    $(value).text($(value).text() + '年');
+  });
 });
