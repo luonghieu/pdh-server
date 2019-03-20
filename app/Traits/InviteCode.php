@@ -20,7 +20,7 @@ trait InviteCode
                     ->whereIn('status', [OrderStatus::OPEN, OrderStatus::ACTIVE, OrderStatus::DONE])
                     ->where(function($q) {
                         $q->where('payment_status', null)
-                            ->orWhere('payment_status', [OrderPaymentStatus::WAITING, OrderPaymentStatus::REQUESTING, OrderPaymentStatus::EDIT_REQUESTING]);
+                            ->orWhereIn('payment_status', [OrderPaymentStatus::WAITING, OrderPaymentStatus::REQUESTING, OrderPaymentStatus::EDIT_REQUESTING]);
                     })->first();
 
                 if ($nextOrder) {
