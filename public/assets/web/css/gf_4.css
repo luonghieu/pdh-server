@@ -68,6 +68,7 @@
   padding: 3px;
   background-image: linear-gradient(-120deg, #DCA561 0%, #FFDB23 100%);
   border-radius: 10px;
+  height: 164px;
 }
 
 #gf4 .cast-rank .first-place figcaption {
