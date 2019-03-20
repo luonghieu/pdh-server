@@ -8,6 +8,7 @@ use App\Coupon;
 use App\Enums\CastOrderStatus;
 use App\Enums\CastOrderType;
 use App\Enums\CouponType;
+use App\Enums\InviteCodeHistoryStatus;
 use App\Enums\OfferStatus;
 use App\Enums\OrderStatus;
 use App\Enums\OrderType;
@@ -179,6 +180,14 @@ class OrderController extends ApiController
                         $nominees,
                         (new CreateNominatedOrdersForCast($order->id))->delay(now()->addSeconds(3))
                     );
+                }
+
+                $inviteCodeHistory = $user->inviteCodeHistory;
+                if ($inviteCodeHistory) {
+                    if ($inviteCodeHistory->status == InviteCodeHistoryStatus::PENDING && $inviteCodeHistory->order_id != null) {
+                        $inviteCodeHistory->order_id = $order->id;
+                        $inviteCodeHistory->save();
+                    }
                 }
             } else {
                 $casts = Cast::where('class_id', $request->class_id)->get();
@@ -498,6 +507,14 @@ class OrderController extends ApiController
             $offer->update();
             $delay = Carbon::now()->addSeconds(3);
             $order->user->notify((new AcceptedOffer($order->id))->delay($delay));
+
+            $inviteCodeHistory = $user->inviteCodeHistory;
+            if ($inviteCodeHistory) {
+                if ($inviteCodeHistory->status == InviteCodeHistoryStatus::PENDING && $inviteCodeHistory->order_id != null) {
+                    $inviteCodeHistory->order_id = $order->id;
+                    $inviteCodeHistory->save();
+                }
+            }
             DB::commit();
 
             return $this->respondWithData(new OrderResource($order));
