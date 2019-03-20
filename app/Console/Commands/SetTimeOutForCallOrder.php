@@ -5,6 +5,7 @@ namespace App\Console\Commands;
 use App\Notifications\CallOrdersTimeOut;
 use App\Notifications\CallOrdersTimeOutForCast;
 use App\Order;
+use App\Traits\InviteCode;
 use App\User;
 use Carbon\Carbon;
 use App\Enums\OrderType;
@@ -14,6 +15,7 @@ use Illuminate\Console\Command;
 
 class SetTimeOutForCallOrder extends Command
 {
+    use InviteCode;
     /**
      * The name and signature of the console command.
      *
@@ -83,7 +85,7 @@ class SetTimeOutForCallOrder extends Command
         $order->status = OrderStatus::TIMEOUT;
         $order->canceled_at = now();
         $order->save();
-
+        $this->updateInvateCodeHistory($order->id);
         if ($order->coupon_id) {
             $user = $order->user;
 
