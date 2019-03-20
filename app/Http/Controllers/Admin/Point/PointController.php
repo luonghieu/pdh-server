@@ -86,7 +86,7 @@ class PointController extends Controller
         $with['user'] = function ($query) {
             return $query->withTrashed();
         };
-        $points = Point::with($with)->whereIn('type', [PointType::BUY, PointType::AUTO_CHARGE, PointType::ADJUSTED]);
+        $points = Point::with($with)->whereIn('type', [PointType::BUY, PointType::AUTO_CHARGE, PointType::ADJUSTED, PointType::INVITE_CODE]);
 
         $fromDate = $request->from_date ? Carbon::parse($request->from_date)->startOfDay() : null;
         $toDate = $request->to_date ? Carbon::parse($request->to_date)->endOfDay() : null;

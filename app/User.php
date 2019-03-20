@@ -567,4 +567,14 @@ class User extends Authenticatable implements JWTSubject
     {
         return $this->belongsToMany('App\Coupon', 'coupon_users', 'user_id','coupon_id')->withTimestamps();
     }
+
+    public function inviteCode()
+    {
+        return $this->hasOne(InviteCode::class);
+    }
+
+    public function inviteCodeHistory()
+    {
+        return $this->hasOne(InviteCodeHistory::class, 'receive_user_id');
+    }
 }

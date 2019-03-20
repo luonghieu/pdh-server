@@ -44,7 +44,7 @@ class DeleteUnusedPointAfter180Days extends Command
     public function handle()
     {
         $dateTime = Carbon::now()->subDays(180)->format('Y-m-d H');
-        $points = Point::whereIn('type', [PointType::BUY, PointType::AUTO_CHARGE])
+        $points = Point::whereIn('type', [PointType::BUY, PointType::AUTO_CHARGE, PointType::INVITE_CODE])
             ->where(\DB::raw('DATE_FORMAT(created_at, "%Y-%m-%d %H") '), '<=', $dateTime)
             ->where('balance', '>', 0);
 
@@ -59,6 +59,11 @@ class DeleteUnusedPointAfter180Days extends Command
                     'user_id' => $point->user_id,
                     'type' => PointType::EVICT,
                 ];
+
+                if ($point->invite_code_history_id) {
+                    $data['invite_code_history_id'] = $point->invite_code_history_id;
+                }
+
                 if ($point->order_id) {
                     $data['order_id'] = $point->order_id;
                 }
@@ -84,7 +89,7 @@ class DeleteUnusedPointAfter180Days extends Command
                 $point->balance = 0;
                 $point->save();
 
-                $user = User::find($point->user->id);
+                $user = User::withTrashed()->find($point->user->id);
                 $user->point -= $balancePoint;
                 $user->save();
 

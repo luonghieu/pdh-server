@@ -61,6 +61,8 @@ class RedirectController extends Controller
                 return \Redirect::to(route('cast.show', ['id' => $request->cast_id]));
             case 'offers':
                 return \Redirect::to(route('guest.orders.offers', ['id' => $request->offer_id]));
+            case 'purchase':
+                return \Redirect::to(route('purchase.index'));
             default:
                 return \Redirect::to(route('web.index'));
         }

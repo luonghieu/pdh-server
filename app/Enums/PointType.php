@@ -14,6 +14,7 @@ final class PointType extends Enum
     const TRANSFER = 6;
     const EVICT = 7;
     const TEMP = 8;
+    const INVITE_CODE = 9;
 
     /**
      * Get the description for an enum value
@@ -44,6 +45,9 @@ final class PointType extends Enum
                 break;
             case self::EVICT:
                 return 'ポイント失効';
+                break;
+            case self::INVITE_CODE:
+                return 'ポイント付与';
                 break;
 
             default:break;
