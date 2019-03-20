@@ -28,6 +28,7 @@ class HomeController extends Controller
     {
         if (Auth::check()) {
             $user = Auth::user();
+            $token = JWTAuth::fromUser($user);
 
             $verification = $user->verification;
             if (!$user->is_verified && $verification && !$verification->status) {
@@ -64,7 +65,6 @@ class HomeController extends Controller
                 $order = OrderResource::make($order);
 
                 $newIntros = Cast::active()->whereNotNull('intro')->orderByDesc('intro_updated_at')->limit(10)->get();
-
                 return view('web.index', compact('token', 'order', 'newIntros', 'prefectures'));
             }
 
