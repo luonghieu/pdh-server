@@ -85,7 +85,9 @@ class CostEnterpriseController extends Controller
                         $collection = $collection->sortBy($key, SORT_REGULAR, $isDesc);
                         break;
                     case 'created_at':
-                        $collection = $collection->sortBy($key, SORT_REGULAR, $isDesc);
+                        $collection = $collection->sortBy(function ($point, $key) {
+                            return Carbon::parse($point['created_at'])->timestamp;
+                        }, SORT_REGULAR, $isDesc);
                         break;
                     case 'type':
                         $collection = $collection->sortBy($key, SORT_REGULAR, $isDesc);
@@ -96,7 +98,9 @@ class CostEnterpriseController extends Controller
 
             }
         } else {
-            $collection = $collection->sortBy('created_at', SORT_REGULAR, true);
+            $collection = $collection->sortByDesc(function ($point, $key) {
+                return Carbon::parse($point['created_at'])->timestamp;
+            });
         }
 
         if ('export' == $request->submit) {
