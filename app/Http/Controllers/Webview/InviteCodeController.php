@@ -22,7 +22,7 @@ class InviteCodeController extends Controller
                     if (!$inviteCode) {
                         do {
                             $code = generateInviteCode();
-                            $checkCodeExist = InviteCode::where('code', $code)->fisrt();
+                            $checkCodeExist = InviteCode::where('code', $code)->first();
                         } while($checkCodeExist);
 
                         $data = [
