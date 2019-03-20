@@ -85,7 +85,7 @@ class SetTimeOutForCallOrder extends Command
         $order->status = OrderStatus::TIMEOUT;
         $order->canceled_at = now();
         $order->save();
-        $this->updateInvateCodeHistory($order->id);
+
         if ($order->coupon_id) {
             $user = $order->user;
 
@@ -100,7 +100,7 @@ class SetTimeOutForCallOrder extends Command
 
         $listCast = $casts->get();
         \Notification::send($listCast, new CallOrdersTimeOutForCast($order));
-
+        $this->updateInviteCodeHistory($order->id);
         foreach ($castIds as $id) {
             $order->castOrder()->updateExistingPivot(
                 $id,
