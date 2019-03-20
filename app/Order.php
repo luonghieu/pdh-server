@@ -752,8 +752,8 @@ class Order extends Model
                 $inviteCodeHistory->order_id = $this->id;
                 $inviteCodeHistory->save();
 
-//                $userInvite->notify(new AddedInvitePoint());
-//                $user->notify(new AddedInvitePoint(true));
+                $userInvite->notify(new AddedInvitePoint());
+                $user->notify(new AddedInvitePoint(true));
             }
         }
 
