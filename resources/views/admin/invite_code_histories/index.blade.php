@@ -98,9 +98,12 @@
                   <td colspan="10">{{ trans('messages.invite_code_history_not_found') }}</td>
                 </tr>
               @else
+                @php
+                  $index = 1;
+                @endphp
                 @foreach ($inviteCodeHistories as $key => $inviteCodeHistory)
                 <tr>
-                  <td>{{ $key + 1 }}</td>
+                  <td>{{ (request()->limit ?: 10) * ((request()->page ?: 1) - 1) + $index++ }}</td>
                   <td><a href="{{ route('admin.users.show', ['user' => $inviteCodeHistory->inviteCode->user_id]) }}">{{ $inviteCodeHistory->inviteCode->user_id }}</a></td>
                   <td><a href="{{ route('admin.users.show', ['user' => $inviteCodeHistory->receive_user_id]) }}">{{ $inviteCodeHistory->receive_user_id }}</a></td>
                   <td>{{ Carbon\Carbon::parse($inviteCodeHistory->created_at)->format('Y/m/d H:i') }}</td>
