@@ -12,6 +12,6 @@ $(document).ready(function(){
             'ご登録はこちら\n' +
             '👉'+window.location.origin;
         let encodeMessage = encodeURI(message);
-        window.location.href = 'line://msg/text/?'+encodeMessage;
+        window.location.href = 'https://line.me/R/msg/text/?'+encodeMessage;
     })
 });
