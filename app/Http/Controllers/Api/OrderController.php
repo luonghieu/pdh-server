@@ -184,7 +184,7 @@ class OrderController extends ApiController
 
                 $inviteCodeHistory = $user->inviteCodeHistory;
                 if ($inviteCodeHistory) {
-                    if ($inviteCodeHistory->status == InviteCodeHistoryStatus::PENDING && $inviteCodeHistory->order_id != null) {
+                    if ($inviteCodeHistory->status == InviteCodeHistoryStatus::PENDING && $inviteCodeHistory->order_id == null) {
                         $inviteCodeHistory->order_id = $order->id;
                         $inviteCodeHistory->save();
                     }
@@ -510,7 +510,7 @@ class OrderController extends ApiController
 
             $inviteCodeHistory = $user->inviteCodeHistory;
             if ($inviteCodeHistory) {
-                if ($inviteCodeHistory->status == InviteCodeHistoryStatus::PENDING && $inviteCodeHistory->order_id != null) {
+                if ($inviteCodeHistory->status == InviteCodeHistoryStatus::PENDING && $inviteCodeHistory->order_id == null) {
                     $inviteCodeHistory->order_id = $order->id;
                     $inviteCodeHistory->save();
                 }
