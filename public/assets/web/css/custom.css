@@ -3353,8 +3353,6 @@ padding-top: 65px !important;
   display: none;
 }/* /page loading */
 
-<<<<<<< HEAD
-=======
 .ic-new-user {
   position: absolute !important;
   top: 0;
@@ -3374,7 +3372,6 @@ padding-top: 65px !important;
   z-index: 1;
 }
 
->>>>>>> feature/display-new-user
 #guest-register {
   position: relative;
   width: 100%;
