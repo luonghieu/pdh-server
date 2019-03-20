@@ -730,6 +730,7 @@ class Order extends Model
                 $point->type = PointType::INVITE_CODE;
                 $point->invite_code_history_id = $inviteCodeHistory->id;
                 $point->status = true;
+                $point->created_at = now()->addSeconds(3);
                 $point->save();
                 $userInvite->point = $userInvite->point + $inviteCodeHistory->point;
                 $userInvite->save();
@@ -742,6 +743,7 @@ class Order extends Model
                 $point->type = PointType::INVITE_CODE;
                 $point->invite_code_history_id = $inviteCodeHistory->id;
                 $point->status = true;
+                $point->created_at = now()->addSeconds(3);
                 $point->save();
                 $user->point = $user->point + $inviteCodeHistory->point;
                 $user->save();
