@@ -724,7 +724,7 @@ class Order extends Model
 
         $inviteCodeHistory = $user->inviteCodeHistory;
         if ($inviteCodeHistory) {
-            if ($inviteCodeHistory->status == InviteCodeHistoryStatus::PENDING) {
+            if ($inviteCodeHistory->status == InviteCodeHistoryStatus::PENDING && $inviteCodeHistory->order_id == $this->id) {
                 $userInvite = $inviteCodeHistory->inviteCode->user;
                 $point = new Point;
                 $point->point = $inviteCodeHistory->point;
