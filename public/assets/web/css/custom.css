@@ -3360,7 +3360,7 @@ padding-top: 65px !important;
   height: 40px !important;
   right: 0;
   z-index: 1;
-  border-radius: 0 10px 0 0 !important;
+  border-radius: 0px !important;
 }
 
 .ic-new-show-user {
