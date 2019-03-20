@@ -19,6 +19,7 @@ use App\Notifications\CancelOrderFromCast;
 use App\Notifications\CastDenyOrders;
 use App\Services\LogService;
 use App\Traits\DirectRoom;
+use App\Traits\InviteCode;
 use Auth;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
@@ -26,7 +27,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Order extends Model
 {
-    use DirectRoom;
+    use DirectRoom, InviteCode;
 
     use SoftDeletes;
 
@@ -170,6 +171,8 @@ class Order extends Model
 
                     $user->coupons()->detach([$this->coupon_id]);
                 }
+
+                $this->updateInvateCodeHistory($this->id);
                 $this->user->notify(new CastDenyOrders($this, $cast));
             }
 
@@ -205,6 +208,7 @@ class Order extends Model
             $involvedUsers = [];
             $involvedUsers[] = $owner;
             $involvedUsers[] = $cast;
+            $this->updateInvateCodeHistory($this->id);
 
             \Notification::send($involvedUsers, new CancelOrderFromCast($this));
             return true;
@@ -222,7 +226,7 @@ class Order extends Model
                 'status' => OrderStatus::CANCELED,
                 'canceled_at' => Carbon::now(),
             ]);
-
+            $this->updateInvateCodeHistory($this->id);
             CancelOrder::dispatchNow($this->id);
             return true;
         } catch (\Exception $e) {
