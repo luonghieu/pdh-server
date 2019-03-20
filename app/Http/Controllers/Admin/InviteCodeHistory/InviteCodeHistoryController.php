@@ -34,14 +34,15 @@ class InviteCodeHistoryController extends Controller
 
         if ($keyword) {
             $inviteCodeHistories->where(function ($query) use ($keyword) {
-                $query->where('id', "$keyword")
+                $query->where('receive_user_id', 'like', "$keyword")
                     ->orWhereHas('user', function ($q) use ($keyword) {
-                        $q->where('users.nickname', 'like', "%$keyword%");
+                        $q->where('nickname', 'like', "%$keyword%");
                     })
                     ->orWhereHas('inviteCode', function ($q) use ($keyword) {
-                        $q->whereHas('user', function ($sq) use ($keyword) {
-                            $sq->where('users.nickname', 'like', "%$keyword%");
-                        });
+                        $q->where('user_id', 'like', "$keyword")
+                            ->orWhereHas('user', function ($sq) use ($keyword) {
+                                $sq->where('nickname', 'like', "%$keyword%");
+                            });
                     });
             });
         }
@@ -80,8 +81,7 @@ class InviteCodeHistoryController extends Controller
             $inviteCodeHistories = new LengthAwarePaginator($inviteCodeHistories, $total, $request->limit ?: 10);
             $inviteCodeHistories = $inviteCodeHistories->withPath('');
         } else {
-            $inviteCodeHistories->orderByDesc('created_at');
-            $inviteCodeHistories = $inviteCodeHistories->paginate($request->limit ?: 10);
+            $inviteCodeHistories = $inviteCodeHistories->orderByDesc('created_at')->paginate($request->limit ?: 10);
         }
 
         return view('admin.invite_code_histories.index', compact('inviteCodeHistories'));
