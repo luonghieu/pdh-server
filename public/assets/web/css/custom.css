@@ -2107,6 +2107,7 @@ padding-top: 65px !important;
 
 #top .cast-list .cast-body img {
   height: 74%;
+  border-radius: 10px;
   -o-object-fit: cover;
   object-fit: cover;
 
@@ -3136,8 +3137,8 @@ padding-top: 65px !important;
 
 .tag-today {
   position: absolute;
-  right: 0px;
-  top: 3px;
+  bottom: 65px;
+  left: 5px;
   display: block;
   width: 55px;
   height: 24px;
@@ -3352,6 +3353,24 @@ padding-top: 65px !important;
   display: none;
 }/* /page loading */
 
+.ic-new-user {
+  position: absolute !important;
+  top: 0;
+  width: 40px !important;
+  height: 40px !important;
+  right: 0;
+  z-index: 1;
+  border-radius: 0 10px 0 0 !important;
+}
+
+.ic-new-show-user {
+  position: absolute !important;
+  top: 46px;
+  width: 60px !important;
+  height: 60px !important;
+  right: 0;
+  z-index: 1;
+}
 
 #guest-register {
   position: relative;
