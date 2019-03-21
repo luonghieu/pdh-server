@@ -58,7 +58,8 @@
     <div class="card-outside">
       <div class="left"><span>有効期限</span></div>
       <div class="right date-select">
-        <select name="expmm" id="month-select">
+        <select name="expmm" id="month-select" required>
+          <option value="" disabled selected>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ー</option>
           <OPTION VALUE="01" <% FORM{expmm_01} %>>01月
           <OPTION VALUE="02" <% FORM{expmm_02} %>>02月
           <OPTION VALUE="03" <% FORM{expmm_03} %>>03月
@@ -73,7 +74,8 @@
           <OPTION VALUE="12" <% FORM{expmm_12} %>>12月
         </select>
 
-        <select name="expyy" id="year-select">
+        <select name="expyy" id="year-select" required>
+          <option value="" disabled selected>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;ー</option>
           <% year %>
         </select>
       </div>

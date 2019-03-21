@@ -10,6 +10,8 @@ $(document).ready(function() {
   $('#year-select')
   .find('option')
   .each(function (index, value) {
-    $(value).text($(value).text() + '年');
+    if (index > 0) {
+      $(value).text($(value).text() + '年');
+    }
   });
 });

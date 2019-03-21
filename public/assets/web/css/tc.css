@@ -104,6 +104,10 @@ main {
   line-height: normal;
   letter-spacing: -0.3px;
   text-align: right;
+  color: #222222;
+}
+
+.tc-form .date-select select:required:invalid {
   color: #c8c8c8;
 }
 
