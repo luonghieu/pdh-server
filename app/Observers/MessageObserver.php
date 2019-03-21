@@ -29,7 +29,9 @@ class MessageObserver
             if (RoomType::DIRECT == $room->type) {
                 $otherId = $room->owner_id == $room->users[0]->id ? $room->users[1]->id : $room->users[0]->id;
                 if (!$room->checkBlocked($otherId)) {
-                    \Notification::send($users, new MessageCreated($message->id));
+                    if ($message->user_id != 1) {
+                        \Notification::send($users, new MessageCreated($message->id));
+                    }
 
                     $other = $users->first();
                     if ($other->line_user_id != null && $other->type == UserType::GUEST) {
