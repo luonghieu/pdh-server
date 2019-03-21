@@ -35,7 +35,9 @@ class MessageObserver
 
                     $other = $users->first();
                     if ($other->line_user_id != null && $other->type == UserType::GUEST) {
-                        $other->notify(new DirectMessageNotifyToLine($message->id));
+                        if ($message->user_id != 1) {
+                            $other->notify(new DirectMessageNotifyToLine($message->id));
+                        }
                     }
                 }
             } else {
