@@ -36,7 +36,6 @@ trait InviteCode
                                 OrderPaymentStatus::PAYMENT_FINISHED
                             ]);
                     })->get();
-
                 $orderFinished = null;
                 $nextOrder = null;
                 $counter = 1;
@@ -58,7 +57,7 @@ trait InviteCode
                     $point->point = $inviteCodeHistory->point;
                     $point->balance = $inviteCodeHistory->point;
                     $point->user_id = $userInvite->id;
-                    $point->order_id = $this->id;
+                    $point->order_id = $orderFinished->id;
                     $point->type = PointType::INVITE_CODE;
                     $point->invite_code_history_id = $inviteCodeHistory->id;
                     $point->status = true;
@@ -71,7 +70,7 @@ trait InviteCode
                     $point->point = $inviteCodeHistory->point;
                     $point->balance = $inviteCodeHistory->point;
                     $point->user_id = $user->id;
-                    $point->order_id = $this->id;
+                    $point->order_id = $orderFinished->id;
                     $point->type = PointType::INVITE_CODE;
                     $point->invite_code_history_id = $inviteCodeHistory->id;
                     $point->status = true;
@@ -81,7 +80,7 @@ trait InviteCode
                     $user->save();
 
                     $inviteCodeHistory->status = InviteCodeHistoryStatus::RECEIVED;
-                    $inviteCodeHistory->order_id = $order->id;
+                    $inviteCodeHistory->order_id = $orderFinished->id;
                     $inviteCodeHistory->save();
 
                     $userInvite->notify(new AddedInvitePoint());
