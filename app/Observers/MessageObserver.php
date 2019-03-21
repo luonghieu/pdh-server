@@ -23,7 +23,7 @@ class MessageObserver
         if (MessageType::SYSTEM == $message->type || MessageType::LIKE == $message->type) {
             broadcast(new BroadcastMessage($message->id));
         }
-        if (MessageType::SYSTEM != $message->type) {
+        if (MessageType::SYSTEM != $message->type || MessageType::INVITE_CODE != $message->type) {
             $users = $room->users->except([$message->user_id]);
 
             if (RoomType::DIRECT == $room->type) {
