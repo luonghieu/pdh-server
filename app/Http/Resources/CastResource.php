@@ -93,6 +93,7 @@ class CastResource extends Resource
             'address' => $this->address,
             'rank' => $this->rank,
             'deleted_at' => $this->deleted_at,
+            'is_new_user' => $this->is_new_user,
         ]);
     }
 }

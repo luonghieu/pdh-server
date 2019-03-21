@@ -1,3 +1,7 @@
+html, body {
+  min-height: 800px;
+}
+
 main {
   padding-top: 0 !important;
 }
@@ -5,6 +9,10 @@ main {
 .header-webview {
   padding: 8px;
   margin: 0 !important;
+}
+
+.header-webview .title-main {
+  margin-left: -32px;
 }
 
 #gl1 .border-bottom {
@@ -80,6 +88,7 @@ main {
 
 .tc-form .date-select {
   padding: 0;
+  margin-right: 8px;
 }
 
 .tc-form .date-select select {
@@ -107,6 +116,10 @@ main {
   margin-right: 8px;
 }
 
+.security-code .security-code-outside #cvv-field {
+  margin-right: 8px;
+}
+
 .security-code input {
   width: auto;
   font-family: NotoSansCJKjp;
@@ -131,6 +144,8 @@ main {
   letter-spacing: normal;
   text-align: center;
   color: #ffffff;
+  position: absolute;
+  bottom: 0;
 }
 
 .sub-title {

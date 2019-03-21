@@ -184,7 +184,6 @@
     </div>
 
     <div class="cast-body">
-      @include('web.casts-working-today',compact('casts'))
     </div>
   </div>
 <!-- Timeline -->

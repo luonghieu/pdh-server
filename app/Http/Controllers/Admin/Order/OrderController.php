@@ -285,7 +285,7 @@ class OrderController extends Controller
                         $user->coupons()->detach([$order->coupon_id]);
                     }
 
-                    $this->updateInvateCodeHistory($order->id);
+                    $this->updateInviteCodeHistory($order->id);
                     $order->delete();
                 }
             }

@@ -28,7 +28,6 @@ class HomeController extends Controller
     {
         if (Auth::check()) {
             $user = Auth::user();
-            $token = '';
             $token = JWTAuth::fromUser($user);
 
             $verification = $user->verification;
@@ -65,20 +64,8 @@ class HomeController extends Controller
 
                 $order = OrderResource::make($order);
 
-                $client = new Client(['base_uri' => config('common.api_url')]);
-                $option = [
-                    'headers' => ['Authorization' => 'Bearer ' . $token],
-                    'form_params' => [],
-                    'allow_redirects' => false,
-                ];
-
-                $response = $client->get(route('casts.index', ['working_today' => 1, 'device' => 3]), $option);
-                $getContents = json_decode($response->getBody()->getContents());
-                $casts = $getContents->data;
-
                 $newIntros = Cast::active()->whereNotNull('intro')->orderByDesc('intro_updated_at')->limit(10)->get();
-
-                return view('web.index', compact('token', 'order', 'casts', 'newIntros', 'prefectures'));
+                return view('web.index', compact('token', 'order', 'newIntros', 'prefectures'));
             }
 
             if ($user->is_cast) {
