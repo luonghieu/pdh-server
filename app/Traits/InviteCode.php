@@ -82,9 +82,6 @@ trait InviteCode
                     $inviteCodeHistory->status = InviteCodeHistoryStatus::RECEIVED;
                     $inviteCodeHistory->order_id = $orderFinished->id;
                     $inviteCodeHistory->save();
-
-                    $userInvite->notify(new AddedInvitePoint());
-                    $user->notify(new AddedInvitePoint(true));
                 } else {
                     if ($nextOrder) {
                         $inviteCodeHistory->order_id = $nextOrder->id;
