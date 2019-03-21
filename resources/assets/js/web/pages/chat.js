@@ -45,7 +45,7 @@ $(document).ready(function() {
           avatar = '/assets/web/images/gm1/ic_default_avatar@3x.png'
         }
 
-        if(e.message.type == 2 || (e.message.type == 1 && e.message.system_type == 1) || e.message.type == 4) {
+        if(e.message.type == 2 || (e.message.type == 1 && e.message.system_type == 1) || e.message.type == 4 || e.message.type == 6) {
           $("#message-box").append(`
             <div class="msg-left msg-wrap">
             <figure>

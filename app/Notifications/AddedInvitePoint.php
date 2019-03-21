@@ -78,7 +78,7 @@ class AddedInvitePoint extends Notification implements ShouldQueue
 
         $namedUser = 'user_' . $notifiable->id;
         $send_from = UserType::ADMIN;
-        $pushId = 'g_18';
+        $pushId = 'g_19';
 
         return [
             'audienceOptions' => ['named_user' => $namedUser],
