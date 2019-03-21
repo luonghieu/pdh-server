@@ -66,13 +66,15 @@ class AddedInvitePoint extends Notification implements ShouldQueue
         $room = $notifiable->rooms()
             ->where('rooms.type', RoomType::SYSTEM)
             ->where('rooms.is_active', true)->first();
-        $roomMessage = $room->messages()->create([
-            'user_id' => 1,
-            'type' => MessageType::INVITE_CODE,
-            'message' => $content,
-            'system_type' => SystemMessageType::NORMAL,
-        ]);
-        $roomMessage->recipients()->attach($notifiable->id, ['room_id' => $room->id]);
+        if ($room) {
+            $roomMessage = $room->messages()->create([
+                'user_id' => 1,
+                'type' => MessageType::INVITE_CODE,
+                'message' => $content,
+                'system_type' => SystemMessageType::NORMAL,
+            ]);
+            $roomMessage->recipients()->attach($notifiable->id, ['room_id' => $room->id]);
+        }
 
         $namedUser = 'user_' . $notifiable->id;
         $send_from = UserType::ADMIN;
@@ -118,13 +120,15 @@ class AddedInvitePoint extends Notification implements ShouldQueue
         $room = $notifiable->rooms()
             ->where('rooms.type', RoomType::SYSTEM)
             ->where('rooms.is_active', true)->first();
-        $roomMessage = $room->messages()->create([
-            'user_id' => 1,
-            'type' => MessageType::INVITE_CODE,
-            'message' => $content,
-            'system_type' => SystemMessageType::NORMAL,
-        ]);
-        $roomMessage->recipients()->attach($notifiable->id, ['room_id' => $room->id]);
+        if ($room) {
+            $roomMessage = $room->messages()->create([
+                'user_id' => 1,
+                'type' => MessageType::INVITE_CODE,
+                'message' => $content,
+                'system_type' => SystemMessageType::NORMAL,
+            ]);
+            $roomMessage->recipients()->attach($notifiable->id, ['room_id' => $room->id]);
+        }
 
         $page = env('LINE_LIFF_REDIRECT_PAGE') . '?page=purchase';
         return [
