@@ -25,7 +25,7 @@ class RoomController extends Controller
         $accessToken = JWTAuth::fromUser(Auth::user());
 
         $response = $this
-            ->get(route('rooms.room'), [
+            ->get(route('rooms.list_room'), [
                 'HTTP_Authorization' => 'Bearer ' . $accessToken
             ])->getContent();
 
