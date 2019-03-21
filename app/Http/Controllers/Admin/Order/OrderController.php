@@ -549,6 +549,10 @@ class OrderController extends Controller
                     $allRequestPayment = false;
                 }
             }
+            if (!count($currentCasts)) {
+                $isDone = false;
+                $allRequestPayment = false;
+            }
 
             if ($isDone) {
                 $order->status = OrderStatus::DONE;
