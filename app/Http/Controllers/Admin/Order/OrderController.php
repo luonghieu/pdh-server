@@ -339,7 +339,7 @@ class OrderController extends Controller
         return view('admin.orders.order_call', compact('order'));
     }
 
-        public function editOrderCall(Order $order)
+    public function editOrderCall(Order $order)
     {
         $castClasses = CastClass::all();
         $castsNominee = [];
