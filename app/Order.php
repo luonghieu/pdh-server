@@ -648,7 +648,7 @@ class Order extends Model
         $subPoint = $totalPoint;
         $points = Point::where('user_id', $user->id)
             ->where('balance', '>', 0)
-            ->whereIn('type', [PointType::BUY, PointType::AUTO_CHARGE, PointType::INVITE_CODE])
+            ->whereIn('type', [PointType::BUY, PointType::AUTO_CHARGE, PointType::INVITE_CODE, PointType::DIRECT_TRANSFER])
             ->orderBy('created_at')
             ->get();
 
