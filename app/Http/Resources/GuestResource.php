@@ -82,6 +82,7 @@ class GuestResource extends Resource
             'cast_transfer_status' => $this->cast_transfer_status,
             'is_guest_active' => $this->is_guest_active,
             'is_new_user' => $this->is_new_user,
+            'is_multi_payment_method' => $this->is_multi_payment_method,
         ]);
     }
 }
