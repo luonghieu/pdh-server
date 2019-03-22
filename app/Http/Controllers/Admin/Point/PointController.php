@@ -17,10 +17,17 @@ class PointController extends Controller
 {
     public function sumAmount($points)
     {
+        $pointRate = config('common.point_rate');
+        $directTransferPointIds = $points->where('type', PointType::DIRECT_TRANSFER)->pluck('id');
+        $sumDirectTransferPoint = Point::whereIn('id', $directTransferPointIds)->sum('point');
+        $sumDirectTransferAmount = $sumDirectTransferPoint * $pointRate;
+
         $pointIds = $points->where('type', '<>', PointType::ADJUSTED)->pluck('id');
         $sumAmount = Payment::whereIn('point_id', $pointIds)->sum('amount');
 
-        return $sumAmount;
+        $sum = $sumDirectTransferAmount + $sumAmount;
+
+        return $sum;
     }
 
     public function sumPointBuy($points)
@@ -86,7 +93,13 @@ class PointController extends Controller
         $with['user'] = function ($query) {
             return $query->withTrashed();
         };
-        $points = Point::with($with)->whereIn('type', [PointType::BUY, PointType::AUTO_CHARGE, PointType::ADJUSTED, PointType::INVITE_CODE]);
+        $points = Point::with($with)->whereIn('type', [
+            PointType::BUY, 
+            PointType::AUTO_CHARGE, 
+            PointType::ADJUSTED, 
+            PointType::INVITE_CODE,
+            PointType::DIRECT_TRANSFER,
+        ]);
 
         $fromDate = $request->from_date ? Carbon::parse($request->from_date)->startOfDay() : null;
         $toDate = $request->to_date ? Carbon::parse($request->to_date)->endOfDay() : null;
@@ -120,13 +133,24 @@ class PointController extends Controller
 
         if ('export' == $request->submit) {
             $data = collect($pointsExport)->map(function ($item) {
+                $amount = '-';
+                if ($item->type == PointType::DIRECT_TRANSFER) {
+                    $amount = '¥ ' . number_format($item->point * config('common.point_rate'));
+                } else {
+                    if ($item->type == PointType::ADJUSTED || !$item->payment) {
+                        //
+                    } else {
+                        $amount = '¥ ' . number_format($item->payment->amount);
+                    }
+                }
+
                 return [
                     $item->id,
                     Carbon::parse($item->created_at)->format('Y年m月d日'),
                     $item->user_id,
                     $item->user->fullname,
                     PointType::getDescription($item->type),
-                    (PointType::ADJUSTED == $item->type) ? '-' : '¥ ' . number_format($item->payment->amount),
+                    $amount,
                     number_format($item->point),
                 ];
             })->toArray();

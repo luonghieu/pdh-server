@@ -79,6 +79,11 @@ class Point extends Model
         return PointType::TRANSFER == $this->type;
     }
 
+    public function getIsDirectTransferAttribute()
+    {
+        return PointType::DIRECT_TRANSFER == $this->type;
+    }
+
     public function createPoint($data = [], $status = false)
     {
         $this->point = $data['point'];
