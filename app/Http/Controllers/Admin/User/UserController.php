@@ -157,4 +157,13 @@ class UserController extends Controller
 
         return redirect(route('admin.users.show', ['user' => $user->id]));
     }
+
+    public function changePaymentMethod(User $user)
+    {
+        $user->is_multi_payment_method = !$user->is_multi_payment_method;
+
+        $user->save();
+
+        return redirect(route('admin.users.show', ['user' => $user->id]));
+    }
 }
