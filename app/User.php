@@ -577,4 +577,10 @@ class User extends Authenticatable implements JWTSubject
     {
         return $this->hasOne(InviteCodeHistory::class, 'receive_user_id');
     }
+
+    public function shifts()
+    {
+        return $this->belongsToMany(Shift::class)
+            ->withPivot('day_shift', 'night_shift', 'off_shift')->withTimestamps();
+    }
 }

@@ -165,6 +165,28 @@
     </div>
   </div>
 </div>
+@if($user->is_guest)
+<div class="modal fade" id="change-payment-method" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-body">
+        @if(!$user->is_multi_payment_method)
+        <p>現金決済を可能にしますか？</p>
+        @else
+          <p>現金決済を不可にしますか？</p>
+        @endif
+      </div>
+      <div class="modal-footer">
+        <form action="{{ route('admin.users.change_payment_method',['user' => $user->id]) }}" method="post">
+          {{ csrf_field() }}
+          <button type="button" class="btn btn-canceled" data-dismiss="modal">キャンセル</button>
+          <button type="submit" class="btn btn-accept">はい</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+@endif
 @stop
 @section('admin.content')
 <div class="col-md-10 col-sm-11 main">
@@ -452,6 +474,13 @@
                 }
               @endphp
               @if($user->is_guest)
+                <button type="button" class="btn btn-info" data-toggle="modal" data-target="#change-payment-method">
+                  @if(!$user->is_multi_payment_method)
+                  銀行振込を可能にする
+                  @else
+                  銀行振込を不可にする
+                  @endif
+                </button>
                 <button type="button" class="btn {{ !$user->campaign_participated ? 'btn-info' : 'btn-default' }}"
                   data-toggle="modal" data-target="#campaign_participated" {{ !$user->campaign_participated ?: 'disabled' }}>
                   11月キャンペーン利用完了
