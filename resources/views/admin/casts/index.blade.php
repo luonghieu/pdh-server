@@ -7,7 +7,7 @@
         <div class="panel-body handling">
           <div class="search">
             <form class="navbar-form navbar-left form-search" action="{{ route('admin.casts.index') }}" method="GET">
-              <input type="text" class="form-control input-search" placeholder="ユーザーID,名前" name="search" value="{{ request()->search }}">
+              <input type="text" class="form-control input-search" placeholder="ユーザーID,名前,クラス" name="search" value="{{ request()->search }}">
               <label for="">From date: </label>
               <input type="text" class="form-control date-picker input-search" name="from_date" id="date01" data-date-format="yyyy/mm/dd" value="{{ request()->from_date }}" placeholder="yyyy/mm/dd" />
               <label for="">To date: </label>
@@ -68,6 +68,12 @@
                     ) }}">優先ランク
                   </a>
                 </th>
+                <th class="sorting{{ (request()->class_id) ? '_' . request()->class_id: '' }}">
+                  <a href="{{ route('admin.casts.index',
+                    array_merge($request, ['class_id' => (request()->class_id == 'asc') ? 'desc' : 'asc',])
+                    ) }}">キャストクラス
+                  </a>
+                </th>
                 <th>会員区分</th>
                 <th>アカウント連携状況</th>
                 <th>ステータス</th>
@@ -100,6 +106,7 @@
                   </td>
                   <td>{{ $cast->age }}</td>
                   <td>{{ App\Enums\UserRank::getKey($cast->rank) }}</td>
+                  <td>{{ $cast->castClass->name }}</td>
                   <td>{{ App\Enums\UserType::getDescription($cast->type) }}</td>
                   <td>
                     @if((App\Enums\DeviceType::IOS == $cast->device_type || App\Enums\DeviceType::WEB == $cast->device_type) && App\Enums\ProviderType::FACEBOOK == $cast->provider)
