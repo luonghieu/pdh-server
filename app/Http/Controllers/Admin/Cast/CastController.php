@@ -30,7 +30,7 @@ class CastController extends Controller
     public function index(Request $request)
     {
         $keyword = $request->search;
-        $orderBy = $request->only('last_active_at', 'rank');
+        $orderBy = $request->only('last_active_at', 'rank', 'class_id');
         $casts = Cast::query();
 
         if ($request->has('from_date') && !empty($request->from_date)) {
@@ -50,7 +50,10 @@ class CastController extends Controller
         if ($request->has('search') && !empty($request->search)) {
             $casts->where(function ($query) use ($keyword) {
                 $query->where('id', "$keyword")
-                    ->orWhere('nickname', 'like', "%$keyword%");
+                    ->orWhere('nickname', 'like', "%$keyword%")
+                    ->orWhereHas('castClass', function ($sq) use ($keyword) {
+                        $sq->where('name', 'like', "%$keyword%");
+                    });
             });
         }
 
