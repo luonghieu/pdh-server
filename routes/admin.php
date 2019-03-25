@@ -19,6 +19,7 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.'], function () {
         Route::post('{user}/change_cost', ['as' => 'change_cost', 'uses' => 'UserController@changeCost'])->where('user', '[0-9]+');
         Route::post('{user}/change_rank', ['as' => 'change_rank', 'uses' => 'UserController@changeRank'])->where('user', '[0-9]+');
         Route::post('{user}/campaign_participated', ['as' => 'campaign_participated', 'uses' => 'UserController@campaignParticipated'])->where('user', '[0-9]+');
+        Route::post('{user}/change_payment_method', ['as' => 'change_payment_method', 'uses' => 'UserController@changePaymentMethod'])->where('user', '[0-9]+');
         Route::delete('{user}', ['as' => 'delete', 'uses' => 'UserController@delete'])->where('user', '[0-9]+');
     });
 
