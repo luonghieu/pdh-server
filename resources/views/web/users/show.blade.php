@@ -150,6 +150,45 @@
           </li>
         </ul>
       </div>
+
+    </section>
+
+    <section class="portlet">
+      <input type="hidden" id="cast-id" value="{{$cast['id']}}">
+      <div class="portlet-header">
+        <h2 class="portlet-header__title">スケジュール</h2>
+      </div>
+      <div class="portlet-content">
+        <ul class="portlet-content__list">
+          <li class="portlet-content__item">
+            <p class="portlet-content__text--list">身長 <span>thuong</span></p>
+            <p class="portlet-content__text--list">深夜OK</p>
+            <p class="portlet-content__value"><img src="/assets/web/images/ge1/cast_icon.svg" alt=""></p>
+          </li><li class="portlet-content__item">
+            <p class="portlet-content__text--list">身長</p>
+            <p class="portlet-content__value"><span>123</span></p>
+          </li><li class="portlet-content__item">
+            <p class="portlet-content__text--list">身長</p>
+            <p class="portlet-content__value"><span>123</span></p>
+          </li><li class="portlet-content__item">
+            <p class="portlet-content__text--list">身長</p>
+            <p class="portlet-content__value"><span>123</span></p>
+          </li><li class="portlet-content__item">
+            <p class="portlet-content__text--list">身長</p>
+            <p class="portlet-content__value"><span>123</span></p>
+          </li><li class="portlet-content__item">
+            <p class="portlet-content__text--list">身長</p>
+            <p class="portlet-content__value"><span>123</span></p>
+          </li><li class="portlet-content__item">
+            <p class="portlet-content__text--list">身長</p>
+            <p class="portlet-content__value"><span>123</span></p>
+          </li><li class="portlet-content__item">
+            <p class="portlet-content__text--list">身長</p>
+            <p class="portlet-content__value"><span>123</span></p>
+          </li>
+        </ul>
+      </div>
+
     </section>
     <!-- profile-word -->
   </div>
