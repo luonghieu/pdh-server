@@ -18,8 +18,8 @@ class ShiftUserResource extends JsonResource
             'user_id' => $this->user_id,
             'shift_id' => $this->shift_id,
             'day_shift' => $this->day_shift,
-            'night_shift' => $this->day_shift,
-            'off_shift' => $this->day_shift
+            'night_shift' => $this->night_shift,
+            'off_shift' => $this->off_shift
         ];
     }
 }
