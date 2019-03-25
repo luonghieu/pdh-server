@@ -6,7 +6,6 @@ use App\Http\Controllers\Api\ApiController;
 use App\Http\Resources\ShiftResource;
 use App\Services\LogService;
 use Illuminate\Http\Request;
-use App\Shift;
 class ShiftController extends ApiController
 {
 

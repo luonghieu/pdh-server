@@ -138,7 +138,7 @@ Route::group(['prefix' => 'v1'], function () {
 
         Route::group(['prefix' => 'shifts', 'as' => 'shifts.'], function () {
             Route::get('/', ['as' => 'index', 'uses' => 'Cast\ShiftController@index']);
-            Route::post('/update', ['as' => 'update', 'uses' => 'Cast\ShiftController@update']);
+            Route::post('/', ['as' => 'update', 'uses' => 'Cast\ShiftController@update']);
         });
     });
 
@@ -166,5 +166,9 @@ Route::group(['prefix' => 'v1'], function () {
 
     Route::group(['middleware' => ['auth:api'], 'prefix' => 'receipts', 'as' => 'receipts.'], function () {
         Route::post('/', ['as' => 'create', 'uses' => 'ReceiptController@create']);
+    });
+
+    Route::group(['middleware' => ['auth:api'], 'prefix' => 'shifts', 'as' => 'shifts.'], function () {
+        Route::get('/', ['as' => 'index', 'uses' => 'ShiftController@index']);
     });
 });
