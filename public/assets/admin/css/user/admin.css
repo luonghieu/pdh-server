@@ -1915,3 +1915,9 @@ tbody td {
 #css-init-hover td:hover {
   cursor:move;
 }
+
+.init-option-search {
+  min-height: 3.5rem;
+  margin-right: 3%;
+  min-width: 11rem;
+}
