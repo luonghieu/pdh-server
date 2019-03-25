@@ -135,10 +135,6 @@ Route::group(['prefix' => 'v1'], function () {
             Route::get('/{id}/payment_request', ['as' => 'get_payment_request', 'uses' => 'Cast\PaymentRequestController@payment'])
                 ->where('id', '[0-9]+');
         });
-
-        Route::group(['prefix' => 'shifts', 'as' => 'shifts.'], function () {
-            Route::get('/', ['as' => 'index', 'uses' => 'Cast\ShiftController@index']);
-        });
     });
 
     Route::group(['middleware' => ['auth:api', 'guest']], function () {
@@ -165,5 +161,9 @@ Route::group(['prefix' => 'v1'], function () {
 
     Route::group(['middleware' => ['auth:api'], 'prefix' => 'receipts', 'as' => 'receipts.'], function () {
         Route::post('/', ['as' => 'create', 'uses' => 'ReceiptController@create']);
+    });
+
+    Route::group(['middleware' => ['auth:api'], 'prefix' => 'shifts', 'as' => 'shifts.'], function () {
+        Route::get('/', ['as' => 'index', 'uses' => 'ShiftController@index']);
     });
 });
