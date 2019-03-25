@@ -17,6 +17,7 @@ use App\Notifications\CreateCast;
 use App\Prefecture;
 use App\Services\CSVExport;
 use App\Services\LogService;
+use App\Shift;
 use App\User;
 use Carbon\Carbon;
 use DB;
@@ -197,6 +198,20 @@ class CastController extends Controller
                 'branch_name' => $request->branch_name,
                 'number' => $request->number,
             ]);
+        }
+
+        if (count($user->shifts)) {
+            $castLatestShift = $user->shifts()->orderBy('id', 'desc')->first();
+            $castShiftDate = Carbon::parse($castLatestShift->date);
+            $shifts = Shift::whereDate('date', '>', $castShiftDate)->pluck('id');
+
+            if (count($shifts)) {
+                $user->shifts()->attach($shifts);
+            }
+        } else {
+            $now = now()->startOfDay();
+            $shifts = Shift::whereDate('date', '>=', $now)->pluck('id');
+            $user->shifts()->attach($shifts);
         }
 
         $user->notify(new CreateCast());
