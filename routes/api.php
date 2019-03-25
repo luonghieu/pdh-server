@@ -138,6 +138,7 @@ Route::group(['prefix' => 'v1'], function () {
 
         Route::group(['prefix' => 'shifts', 'as' => 'shifts.'], function () {
             Route::get('/', ['as' => 'index', 'uses' => 'Cast\ShiftController@index']);
+            Route::post('/update', ['as' => 'update', 'uses' => 'Cast\ShiftController@update']);
         });
     });
 
