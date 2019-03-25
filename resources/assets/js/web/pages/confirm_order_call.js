@@ -280,7 +280,7 @@ $(document).ready(function(){
 
                 window.location.href = '/payment/transfer';
 
-                return false;
+                return ;
               }
             }
           } else {
