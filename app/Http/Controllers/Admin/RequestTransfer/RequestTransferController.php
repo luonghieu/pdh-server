@@ -9,6 +9,7 @@ use App\Enums\UserType;
 use App\Http\Controllers\Controller;
 use App\Notifications\RequestTransferNotify;
 use App\Services\LogService;
+use App\Shift;
 use App\User;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -84,6 +85,19 @@ class RequestTransferController extends Controller
                         $cast->cost = config('common.cost_default');
                         $cast->accept_request_transfer_date = now();
                         $cast->save();
+
+                        if (count($cast->shifts)) {
+                            $castLatestShift = $cast->shifts()->orderBy('id', 'desc')->first();
+                            $castShiftDate = Carbon::parse($castLatestShift->date);
+                            $shifts = Shift::whereDate('date', '>', $castShiftDate)->pluck('id');
+                            if (count($shifts)) {
+                                $cast->shifts()->attach($shifts);
+                            }
+                        } else {
+                            $now = now()->startOfDay();
+                            $shifts = Shift::whereDate('date', '>=', $now)->pluck('id');
+                            $cast->shifts()->attach($shifts);
+                        }
                         break;
 
                     case 'denied-female':
