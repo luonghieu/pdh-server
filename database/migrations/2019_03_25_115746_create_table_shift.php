@@ -22,7 +22,7 @@ class CreateTableShift extends Migration
 
         $now = Carbon::now();
         $from = $now->copy();
-        $to = $now->copy()->addDays(30);
+        $to = $now->copy()->addDays(15);
         $shiftData = [];
         for ($date = $from; $date->lte($to); $date->addDay()) {
             $shiftData[] = ['date' => $date->format('Y-m-d'), 'created_at' => $now, 'updated_at' => $now];
