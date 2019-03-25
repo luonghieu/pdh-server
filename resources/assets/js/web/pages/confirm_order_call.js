@@ -5,6 +5,11 @@ const couponType = {
   'PERCENT': 3
 };
 
+const OrderPaymentMethod = {
+  'Credit_Card': 1,
+  'Direct_Payment': 2
+};
+
 function showCoupons(coupon, params)
 {
   var html = '<section class="details-list">';
@@ -260,6 +265,29 @@ $(document).ready(function(){
       }
 
       $('.sb-form-orders').on('click',function(){
+        if($("input[name='transfer_order']").length) {
+          var transfer = parseInt($("input[name='transfer_order']:checked").val());
+        }
+
+        var currentPointUser = $('#current-point').val();
+        var tempPointOrder = $('#temp_point_order_call').val();
+
+        if (transfer) {
+          if (OrderPaymentMethod.Credit_Card == transfer || OrderPaymentMethod.Direct_Payment == transfer) {
+            if (OrderPaymentMethod.Direct_Payment == transfer) {
+              if (parseInt(tempPointOrder) > parseInt(currentPointUser)) {
+                $('.cb-cancel').prop('checked', false);
+
+                window.location.href = '/payment/transfer';
+
+                return false;
+              }
+            }
+          } else {
+              window.location.href = '/mypage';
+          }
+        }
+
         $('.modal-confirm').css('display', 'none');
         $('#btn-confirm-orders').prop('disabled', true);
 
@@ -316,8 +344,12 @@ $(document).ready(function(){
           type :type,
           total_cast :orderCall.countIds,
           tags : tags,
-          temp_point : $('#temp_point_order_call').val(),
+          temp_point : tempPointOrder,
         };
+
+        if(transfer) {
+          params.payment_method = transfer;
+        }
 
         if(orderCall.coupon) {
           var coupon = orderCall.coupon;            
@@ -348,7 +380,7 @@ $(document).ready(function(){
               window.location.href = '/mypage';
           }
         }
-        
+
         window.axios.post('/api/v1/orders', params)
         .then(function(response) {
           $('#orders').prop('checked',false);

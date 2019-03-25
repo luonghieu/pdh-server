@@ -120,6 +120,10 @@ class OrderController extends ApiController
 
         $input['status'] = OrderStatus::OPEN;
 
+        if ($request->payment_method) {
+            $input['payment_method'] = $request->payment_method;
+        }
+
         try {
             $when = Carbon::now()->addSeconds(3);
             DB::beginTransaction();
@@ -193,7 +197,7 @@ class OrderController extends ApiController
 
             $inviteCodeHistory = $user->inviteCodeHistory;
             if ($inviteCodeHistory) {
-                if ($inviteCodeHistory->status == InviteCodeHistoryStatus::PENDING && $inviteCodeHistory->order_id == null) {
+                if (InviteCodeHistoryStatus::PENDING == $inviteCodeHistory->status && null == $inviteCodeHistory->order_id) {
                     $inviteCodeHistory->order_id = $order->id;
                     $inviteCodeHistory->save();
                 }
@@ -511,7 +515,7 @@ class OrderController extends ApiController
 
             $inviteCodeHistory = $user->inviteCodeHistory;
             if ($inviteCodeHistory) {
-                if ($inviteCodeHistory->status == InviteCodeHistoryStatus::PENDING && $inviteCodeHistory->order_id == null) {
+                if (InviteCodeHistoryStatus::PENDING == $inviteCodeHistory->status && null == $inviteCodeHistory->order_id) {
                     $inviteCodeHistory->order_id = $order->id;
                     $inviteCodeHistory->save();
                 }

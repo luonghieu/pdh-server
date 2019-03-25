@@ -54,6 +54,31 @@
         </div>
       </div>
     </section> --}}
+
+    @if (Auth::check() && Auth::user()->is_guest)
+      <input type="hidden" id="current-point" value="{{ Auth::user()->point }}">
+      <section class="details-list">
+        <div class="details-list__line"><p></p></div>
+        <div class="details-list__header">
+          <div class="details-header__title">決済方法選択</div>
+        </div>
+        <div class="grade-list transfer-order">
+          <div class="transfer-left">
+            <label>
+              <input type="radio" name="transfer_order" class="grade-radio" value="{{ \App\Enums\OrderPaymentMethod::CREDIT_CARD }}" checked="checked" >
+            </label>
+            <p>クレジットカード</p>
+          </div>
+          <div class="transfer-right">
+            <label>
+              <input type="radio" name="transfer_order" class="grade-radio" value="{{ \App\Enums\OrderPaymentMethod::DIRECT_PAYMENT }}">
+            </label>
+            <p>銀行振込</p>
+          </div>
+        </div>
+      </section>
+    @endif
+
     <section class="details-list">
       <div class="details-list__line"><p></p></div>
       <div class="details-list__header">
