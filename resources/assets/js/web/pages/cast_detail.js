@@ -20,16 +20,4 @@ $(document).ready(function() {
         }
       });
   });
-
-    var paramShift = {
-        cast_id : $('#cast-id').val(),
-    };
-    window.axios.get('/api/v1/shifts',  {params: paramShift})
-        .then(function(response) {
-            console.log(response.data.data);
-        })
-        .catch(function(error) {
-            console.log(12);
-        });
-
 });
