@@ -12,8 +12,8 @@ class ShiftController extends ApiController
     public function index(Request $request)
     {
         $user = $this->guard()->user();
-        $from = now();
-        $to = now()->copy()->addDays(14);
+        $from = now()->copy()->startOfDay();
+        $to = now()->copy()->addDays(14)->startOfDay();
         $shifts = $user->shifts()->whereBetween('date', [$from, $to])->get();
 
         return $this->respondWithData(ShiftResource::collection($shifts));
