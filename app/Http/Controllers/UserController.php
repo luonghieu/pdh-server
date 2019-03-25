@@ -178,8 +178,12 @@ class UserController extends Controller
         try {
             $contents = $this->getApi('/api/v1/users/' . $id);
             $cast = $contents['data'];
-
-            return view('web.users.show', compact('cast'));
+            $paramsShift = [
+                'cast_id' => $id,
+            ];
+            $contentShifts = $this->getApi('/api/v1/shifts', $paramsShift);
+            $shifts = array_slice($contentShifts['data'], 0, 6);
+            return view('web.users.show', compact('cast', 'shifts'));
         } catch (\Exception $e) {
             LogService::writeErrorLog($e);
             abort(500);
