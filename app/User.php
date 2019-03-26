@@ -68,10 +68,6 @@ class User extends Authenticatable implements JWTSubject
 
     public function getIsWorkingTodayAttribute()
     {
-        if ($this->working_today == 1) {
-            return 1;
-        }
-
         $today = Carbon::today();
         $shiftToday = $this->shifts()->where('date', $today)->first();
 
