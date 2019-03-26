@@ -183,6 +183,7 @@ class UserController extends Controller
             ];
             $contentShifts = $this->getApi('/api/v1/shifts', $paramsShift);
             $shifts = array_slice($contentShifts['data'], 0, 6);
+
             return view('web.users.show', compact('cast', 'shifts'));
         } catch (\Exception $e) {
             LogService::writeErrorLog($e);
