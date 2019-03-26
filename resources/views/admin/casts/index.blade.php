@@ -58,6 +58,7 @@
               'search' => request()->search,
               'from_date' => request()->from_date,
               'to_date' => request()->to_date,
+              'is_schedule' => request()->is_schedule,
            ];
           @endphp
           <table class="table table-striped table-bordered bootstrap-datatable">
@@ -96,7 +97,7 @@
             <tbody>
               @if (empty($casts->count()))
                 <tr>
-                  <td colspan="10">{{ trans('messages.cast_not_found') }}</td>
+                  <td colspan="13">{{ trans('messages.cast_not_found') }}</td>
                 </tr>
               @else
                 @foreach ($casts as $key => $cast)
