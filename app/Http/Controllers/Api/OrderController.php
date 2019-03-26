@@ -10,6 +10,7 @@ use App\Enums\CastOrderType;
 use App\Enums\CouponType;
 use App\Enums\InviteCodeHistoryStatus;
 use App\Enums\OfferStatus;
+use App\Enums\OrderPaymentMethod;
 use App\Enums\OrderStatus;
 use App\Enums\OrderType;
 use App\Enums\RoomType;
@@ -80,8 +81,10 @@ class OrderController extends ApiController
             return $this->respondErrorMessage(trans('messages.time_invalid'), 400);
         }
 
-        if (!$user->is_card_registered) {
-            return $this->respondErrorMessage(trans('messages.card_not_exist'), 404);
+        if (!$request->payment_method || OrderPaymentMethod::DIRECT_PAYMENT != $request->payment_method) {
+            if (!$user->is_card_registered) {
+                return $this->respondErrorMessage(trans('messages.card_not_exist'), 404);
+            }
         }
 
         if (!$request->nominee_ids) {
@@ -119,6 +122,10 @@ class OrderController extends ApiController
         }
 
         $input['status'] = OrderStatus::OPEN;
+
+        if ($request->payment_method) {
+            $input['payment_method'] = $request->payment_method;
+        }
 
         try {
             $when = Carbon::now()->addSeconds(3);
@@ -193,7 +200,7 @@ class OrderController extends ApiController
 
             $inviteCodeHistory = $user->inviteCodeHistory;
             if ($inviteCodeHistory) {
-                if ($inviteCodeHistory->status == InviteCodeHistoryStatus::PENDING && $inviteCodeHistory->order_id == null) {
+                if (InviteCodeHistoryStatus::PENDING == $inviteCodeHistory->status && null == $inviteCodeHistory->order_id) {
                     $inviteCodeHistory->order_id = $order->id;
                     $inviteCodeHistory->save();
                 }
@@ -381,8 +388,10 @@ class OrderController extends ApiController
             return $this->respondErrorMessage(trans('messages.order_timeout'), 422);
         }
 
-        if (!$user->is_card_registered) {
-            return $this->respondErrorMessage(trans('messages.card_not_exist'), 404);
+        if (!$request->payment_method || OrderPaymentMethod::DIRECT_PAYMENT != $request->payment_method) {
+            if (!$user->is_card_registered) {
+                return $this->respondErrorMessage(trans('messages.card_not_exist'), 404);
+            }
         }
 
         if ($offer->total_cast != $request->total_cast) {
@@ -511,7 +520,7 @@ class OrderController extends ApiController
 
             $inviteCodeHistory = $user->inviteCodeHistory;
             if ($inviteCodeHistory) {
-                if ($inviteCodeHistory->status == InviteCodeHistoryStatus::PENDING && $inviteCodeHistory->order_id == null) {
+                if (InviteCodeHistoryStatus::PENDING == $inviteCodeHistory->status && null == $inviteCodeHistory->order_id) {
                     $inviteCodeHistory->order_id = $order->id;
                     $inviteCodeHistory->save();
                 }
