@@ -34,6 +34,7 @@
         {{ $cast['is_online'] ? 'オンライン' : $cast['last_active'] }}
       </span>
     @endif
+    <img src="/assets/web/images/gf1/ic_pick_calendar.svg" alt="" class="ic_pick_calendar">
   </section>
   <div class="cast-set">
     <section class="cast-info">
@@ -153,17 +154,27 @@
 
     </section>
 
-    <section class="portlet">
+    <section class="portlet" id="list-shift-of-cast">
       <input type="hidden" id="cast-id" value="{{$cast['id']}}">
       <div class="portlet-header">
-        <h2 class="portlet-header__title">スケジュール</h2>
+        <h2 class="portlet-header__title title-shifts">スケジュール</h2>
       </div>
       <div class="portlet-content">
         <ul class="portlet-content__list">
           @foreach($shifts as $shift)
           <li class="portlet-content__item">
-            <p class="portlet-content__text--list">{{\Carbon\Carbon::parse($shift['date'])->format('m/d')}} <span>{{dayOfWeek()[\Carbon\Carbon::parse($shift['date'])->dayOfWeek]}}</span></p>
-            <p class="portlet-content__text--list">
+            @php
+            $classColorDay = '';
+            if (\Carbon\Carbon::parse($shift['date'])->dayOfWeek == 0) {
+              $classColorDay = 'color-day-shift-red';
+            }
+
+            if (\Carbon\Carbon::parse($shift['date'])->dayOfWeek == 6) {
+              $classColorDay = 'color-day-shift-blue';
+            }
+            @endphp
+            <p class="portlet-content__text--list color-shift">{{\Carbon\Carbon::parse($shift['date'])->format('m/d')}}&nbsp;&nbsp; <span class="{{$classColorDay}}">{{dayOfWeek()[\Carbon\Carbon::parse($shift['date'])->dayOfWeek]}}</span></p>
+            <p class="portlet-content__text--list color-shift">
               @if($shift['users']['day_shift'])
               <span>OK</span>
               @endif
@@ -179,8 +190,8 @@
           @endforeach
         </ul>
       </div>
-
     </section>
+
     <!-- profile-word -->
   </div>
 </div>
@@ -214,7 +225,12 @@
     if (!workingToday && isOnline) {
       $('.init-status').addClass('init-last');
     }
+
+    $('.ic_pick_calendar').on('click', function () {
+        $("html, body").animate({scrollTop: $('#list-shift-of-cast').offset().top }, 1000);
+    });
   });
+
 </script>
 @stop
 @section('web.extra_css')
