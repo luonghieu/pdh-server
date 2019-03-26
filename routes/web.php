@@ -2,6 +2,7 @@
 
 Route::group(['namespace' => 'Webview', 'prefix' => 'webview', 'as' => 'webview.'], function () {
     Route::get('card/create', ['as' => 'create', 'uses' => 'CreditCardController@create']);
+    Route::get('invite_code', ['as' => 'get_invite_code', 'uses' => 'InviteCodeController@inviteCode']);
     Route::group(['middleware' => ['auth', 'guest']], function () {
         Route::post('card/create', ['as' => 'add_card', 'uses' => 'CreditCardController@addCard']);
         Route::get('card/{card}', ['as' => 'show', 'uses' => 'CreditCardController@show'])->where('card', '[0-9]+');
@@ -102,6 +103,9 @@ Route::group(['middleware' => ['auth', 'guest', 'check_info', 'is_active']], fun
 
     Route::get('/history', ['as' => 'points.history', 'uses' => 'PointController@history']);
     Route::get('/point_history/more', ['as' => 'points.history.more', 'uses' => 'PointController@loadMore']);
+    Route::group(['prefix' => 'invite_code', 'as' => 'invite_code.'], function () {
+        Route::get('/', ['as' => 'get_invite_code', 'uses' => 'InviteCodeController@inviteCode']);
+    });
 });
 
 Route::group(['middleware' => ['auth', 'cast'], 'prefix' => 'cast_mypage'], function () {

@@ -11,6 +11,7 @@ final class MessageType extends Enum
     const IMAGE = 3;
     const THANKFUL = 4;
     const LIKE = 5;
+    const INVITE_CODE = 6;
 
     /**
      * Get the description for an enum value

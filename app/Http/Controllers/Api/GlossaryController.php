@@ -69,6 +69,8 @@ class GlossaryController extends ApiController
 
         $data['payment']['url'] = '';
 
+        $data['enable_invite_code_banner'] = true;
+
         if ($token = request()->bearerToken()) {
             $user = auth('api')->setToken($token)->user();
 

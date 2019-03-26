@@ -82,6 +82,7 @@ class RequestTransferController extends Controller
                         $cast->type = UserType::CAST;
                         $cast->class_id = $castClass->id;
                         $cast->cost = config('common.cost_default');
+                        $cast->accept_request_transfer_date = now();
                         $cast->save();
                         break;
 

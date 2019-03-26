@@ -15,6 +15,7 @@ use App\Order;
 use App\Room;
 use App\Services\LogService;
 use App\Traits\DirectRoom;
+use App\Traits\InviteCode;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Bus\Dispatchable;
@@ -24,7 +25,7 @@ use Illuminate\Support\Carbon;
 
 class ValidateOrder implements ShouldQueue
 {
-    use Dispatchable, InteractsWithQueue, Queueable, SerializesModels, DirectRoom;
+    use Dispatchable, InteractsWithQueue, Queueable, SerializesModels, DirectRoom, InviteCode;
 
     public $order;
 
@@ -112,6 +113,7 @@ class ValidateOrder implements ShouldQueue
             if ($repliesCount == $nomineesCount && $nomineesCount > 0) {
                 if (OrderType::NOMINATION == $this->order->type) {
                     $this->order->status = OrderStatus::DENIED;
+                    $this->updateInviteCodeHistory($this->order->id);
                 } else {
                     if (OrderType::HYBRID != $this->order->type) {
                         $this->order->type = OrderType::CALL;

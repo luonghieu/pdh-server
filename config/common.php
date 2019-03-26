@@ -80,4 +80,5 @@ return [
 
     'cost_default' => 5000,
 
+    'invite_code_point' => 10000,
 ];
