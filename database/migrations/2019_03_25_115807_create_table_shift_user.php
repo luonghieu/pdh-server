@@ -32,10 +32,21 @@ class CreateTableShiftUser extends Migration
         $shifts = Shift::all();
         Cast::chunk(100, function($users) use ($shifts)
         {
+            $today = \Carbon\Carbon::today();
             foreach ($users as $user)
             {
+                $bool = false;
+                if ($user->working_today) {
+                    $bool = true;
+                }
+
                 foreach ($shifts as $shift) {
-                    $user->shifts()->attach($shift->id);
+                    $shiftDate = \Carbon\Carbon::parse($shift->date)->startOfDay();
+                    if ($bool && $today->eq($shiftDate)) {
+                        $user->shifts()->attach($shift->id, ['day_shift' => true]);
+                    } else {
+                        $user->shifts()->attach($shift->id);
+                    }
                 }
             }
         });
