@@ -3485,3 +3485,26 @@ div.user-data span.total-point-cast{
   background: -o-linear-gradient(70deg, #42E4B2 0%, #00C3C3 100%);
   background: linear-gradient(20deg, #42E4B2 0%, #00C3C3 100%); 
 }
+
+.title-shifts {
+  background-color: #D8F2F2 !important;
+}
+
+.color-shift {
+  color: #222222 !important;
+}
+
+.color-day-shift-blue {
+  color: blue !important;
+}
+
+.color-day-shift-red {
+  color: red !important;
+}
+
+.ic_pick_calendar {
+  position: absolute;
+  width: 67px !important;
+  bottom: 81px;
+  right: 0;
+}

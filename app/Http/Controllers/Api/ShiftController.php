@@ -28,7 +28,7 @@ class ShiftController extends ApiController
 
         $from = now()->copy()->startOfDay();
         $to = now()->copy()->addDays(14)->startOfDay();
-        $shifts = $user->shifts()->whereBetween('date', [$from, $to])->get();
+        $shifts = $user->shifts()->whereBetween('date', [$from, $to])->limit(14)->get();
 
         return $this->respondWithData(ShiftResource::collection($shifts));
     }
