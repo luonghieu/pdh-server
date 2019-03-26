@@ -14,7 +14,7 @@ $(document).ready(function() {
     e.preventDefault();
 
     if (/android/i.test(userAgent)) {
-      window.location = 'cheers://back';
+      window.location = 'cheers://home';
     } else {
       window.location = mypage;
     }
