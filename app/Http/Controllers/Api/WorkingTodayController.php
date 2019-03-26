@@ -17,7 +17,6 @@ class WorkingTodayController extends ApiController
         $user->working_today = !$user->working_today;
         $shiftToday = $user->shifts()->where('date', $today)->first();
         $shiftToday->pivot->day_shift = $user->working_today;
-        $shiftToday->pivot->night_shift = $user->working_today;
         $shiftToday->pivot->save();
         $user->update();
 

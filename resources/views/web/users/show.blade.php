@@ -168,7 +168,7 @@
               <span>OK</span>
               @endif
               @if($shift['users']['night_shift'])
-              <span>{{$shift['users']['day_shift'] ? '/': ''}}深夜OK</span>
+              <span>{{$shift['users']['day_shift'] ? '・': ''}}深夜OK</span>
               @endif
               @if((!$shift['users']['day_shift'] && !$shift['users']['night_shift']) || $shift['users']['off_shift'])
               <span>-</span>
