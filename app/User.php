@@ -66,6 +66,22 @@ class User extends Authenticatable implements JWTSubject
         }
     }
 
+    public function getIsWorkingTodayAttribute()
+    {
+        if ($this->working_today == 1) {
+            return 1;
+        }
+
+        $today = Carbon::today();
+        $shiftToday = $this->shifts()->where('date', $today)->first();
+
+        if ($shiftToday->pivot->day_shift || $shiftToday->pivot->night_shift) {
+            return $this->working_today = 1;
+        }
+
+        return $this->working_today = 0;
+    }
+
     public function getIsNewUserAttribute($value)
     {
         $sevenDaysAgo = Carbon::now()->subDays(7);
