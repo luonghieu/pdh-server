@@ -7,13 +7,13 @@
         <div class="panel-body handling">
           <div class="search">
             <form class="navbar-form navbar-left form-search" action="{{ route('admin.casts.index') }}" method="GET">
-              <input type="text" class="form-control input-search" placeholder="ユーザーID,名前,クラス" name="search" value="{{ request()->search }}">
+              <input type="text" class="form-control init-input-search" placeholder="ユーザーID,名前,クラス" name="search" value="{{ request()->search }}">
               <select name="is_schedule" class="form-control init-option-search">
                 <option value="date" {{ request()->is_schedule == 'date' ? 'selected' : '' }}>登録日</option>
                 <option value="schedule" {{ request()->is_schedule == 'schedule' ? 'selected' : '' }}>スケジュール</option>
               </select>
               <label for="">From date: </label>
-              <input type="text" class="form-control date-picker input-search" name="from_date" id="date01" data-date-format="yyyy/mm/dd" value="{{ request()->from_date }}" placeholder="yyyy/mm/dd" />
+              <input type="text" class="form-control date-picker init-input-search" name="from_date" id="date01" data-date-format="yyyy/mm/dd" value="{{ request()->from_date }}" placeholder="yyyy/mm/dd" />
               <label for="">To date: </label>
               <input type="text" class="form-control date-picker" name="to_date" id="date01" data-date-format="yyyy/mm/dd" value="{{ request()->to_date }}" placeholder="yyyy/mm/dd"/>
               <button type="submit" class="fa fa-search btn btn-search"></button>

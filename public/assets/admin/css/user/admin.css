@@ -1916,8 +1916,24 @@ tbody td {
   cursor:move;
 }
 
-.init-option-search {
+select.init-option-search {
   min-height: 3.5rem;
   margin-right: 3%;
-  min-width: 11rem;
+  min-width: 12rem;
+  border: 1px solid #0000006e !important;
+}
+
+.init-input-search {
+  margin-right: 3%;
+}
+
+@media (max-width: 1280px) {
+  select.init-option-search {
+    margin-right: 1%;
+    min-width: 12rem;
+  }
+
+  .init-input-search {
+    margin-right: 1%;
+  }
 }
