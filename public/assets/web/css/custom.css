@@ -3446,3 +3446,28 @@ div.user-data span.total-point-cast{
 .register-date-of-birth input[type="date"] {
   outline: none;
 }
+
+.title-shifts {
+  background-color: #D8F2F2 !important;
+}
+
+.color-shift {
+  color: #303030 !important;
+}
+
+.color-day-shift-blue {
+color: blue !important;
+}
+
+.color-day-shift-red {
+color: red !important;
+}
+
+.ic_pick_calendar {
+  position: absolute;
+  width: 67px !important;
+  bottom: 81px;
+  right: 0;
+}
+
+
