@@ -150,6 +150,36 @@
           </li>
         </ul>
       </div>
+
+    </section>
+
+    <section class="portlet">
+      <input type="hidden" id="cast-id" value="{{$cast['id']}}">
+      <div class="portlet-header">
+        <h2 class="portlet-header__title">スケジュール</h2>
+      </div>
+      <div class="portlet-content">
+        <ul class="portlet-content__list">
+          @foreach($shifts as $shift)
+          <li class="portlet-content__item">
+            <p class="portlet-content__text--list">{{\Carbon\Carbon::parse($shift['date'])->format('m/d')}} <span>{{dayOfWeek()[\Carbon\Carbon::parse($shift['date'])->dayOfWeek]}}</span></p>
+            <p class="portlet-content__text--list">
+              @if($shift['users']['day_shift'])
+              <span>OK</span>
+              @endif
+              @if($shift['users']['night_shift'])
+              <span>深夜OK</span>
+              @endif
+              @if((!$shift['users']['day_shift'] && !$shift['users']['night_shift']) || $shift['users']['off_shift'])
+              <span>-</span>
+              @endif
+            </p>
+            <p class="portlet-content__value"><img src="/assets/web/images/gf1/ic_shift.svg" alt=""></p>
+          </li>
+          @endforeach
+        </ul>
+      </div>
+
     </section>
     <!-- profile-word -->
   </div>

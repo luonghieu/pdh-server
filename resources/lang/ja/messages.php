@@ -80,4 +80,5 @@ return [
     'invite_code_history_not_found' => '招待コードが存在しません',
     'invite_code_error' => '招待コードが正しくありません' . PHP_EOL . '招待コードが間違っているか、存在しません',
     'date_of_birth_error' => '20歳未満の方は、ご利用いただけません',
+    'update_shifts_success' => 'スケジュールの登録が完了しました',
 ];

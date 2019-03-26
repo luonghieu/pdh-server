@@ -17,6 +17,7 @@ use App\Notifications\CreateCast;
 use App\Prefecture;
 use App\Services\CSVExport;
 use App\Services\LogService;
+use App\Shift;
 use App\User;
 use Carbon\Carbon;
 use DB;
@@ -30,27 +31,71 @@ class CastController extends Controller
     public function index(Request $request)
     {
         $keyword = $request->search;
-        $orderBy = $request->only('last_active_at', 'rank');
+        $isSchedule = $request->is_schedule;
+        $orderBy = $request->only('last_active_at', 'rank', 'class_id');
         $casts = Cast::query();
 
-        if ($request->has('from_date') && !empty($request->from_date)) {
-            $fromDate = Carbon::parse($request->from_date)->startOfDay();
-            $casts->where(function ($query) use ($fromDate) {
-                $query->where('created_at', '>=', $fromDate);
-            });
+        $fromDate = $request->from_date ? Carbon::parse($request->from_date)->startOfDay() : null;
+        $toDate = $request->to_date ? Carbon::parse($request->to_date)->endOfDay() : null;
+
+        switch ($isSchedule) {
+            case 'date':
+                if ($fromDate) {
+                    $casts->where(function ($query) use ($fromDate) {
+                        $query->where('created_at', '>=', $fromDate);
+                    });
+                }
+
+                if ($toDate) {
+                    $casts->where(function ($query) use ($toDate) {
+                        $query->where('created_at', '<=', $toDate);
+                    });
+                }
+                break;
+
+            case 'schedule':
+                if ($fromDate && $toDate) {
+                    $casts->where(function ($query) use ($fromDate, $toDate) {
+                        $query->whereHas('shifts', function ($sq) use ($fromDate, $toDate) {
+                            $sq->whereBetween('date', [$fromDate, $toDate]);
+                        });
+                    });
+                } else {
+                    if ($fromDate) {
+                        $casts->where(function ($query) use ($fromDate) {
+                            $query->whereHas('shifts', function ($sq) use ($fromDate) {
+                                $sq->where('date', '>=', $fromDate);
+                            });
+                        });
+                    }
+
+                    if ($toDate) {
+                        $casts->where(function ($query) use ($toDate) {
+                            $query->whereHas('shifts', function ($sq) use ($toDate) {
+                                $sq->where('date', '<=', $toDate);
+                            });
+                        });
+                    }
+                }
+
+                $casts->where(function ($query) {
+                    $query->whereHas('shifts', function ($sq) {
+                        $sq->where('shift_user.day_shift', true)
+                            ->orWhere('shift_user.night_shift', true);
+                    });
+                });
+                break;
+            
+            default:break;
         }
 
-        if ($request->has('to_date') && !empty($request->to_date)) {
-            $toDate = Carbon::parse($request->to_date)->endOfDay();
-            $casts->where(function ($query) use ($toDate) {
-                $query->where('created_at', '<=', $toDate);
-            });
-        }
-
-        if ($request->has('search') && !empty($request->search)) {
+        if ($keyword) {
             $casts->where(function ($query) use ($keyword) {
                 $query->where('id', "$keyword")
-                    ->orWhere('nickname', 'like', "%$keyword%");
+                    ->orWhere('nickname', 'like', "%$keyword%")
+                    ->orWhereHas('castClass', function ($sq) use ($keyword) {
+                        $sq->where('name', 'like', "%$keyword%");
+                    });
             });
         }
 
@@ -197,6 +242,20 @@ class CastController extends Controller
                 'branch_name' => $request->branch_name,
                 'number' => $request->number,
             ]);
+        }
+
+        if (count($user->shifts)) {
+            $castLatestShift = $user->shifts()->orderBy('id', 'desc')->first();
+            $castShiftDate = Carbon::parse($castLatestShift->date);
+            $shifts = Shift::whereDate('date', '>', $castShiftDate)->pluck('id');
+
+            if (count($shifts)) {
+                $user->shifts()->attach($shifts);
+            }
+        } else {
+            $now = now()->startOfDay();
+            $shifts = Shift::whereDate('date', '>=', $now)->pluck('id');
+            $user->shifts()->attach($shifts);
         }
 
         $user->notify(new CreateCast());

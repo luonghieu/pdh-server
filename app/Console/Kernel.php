@@ -60,6 +60,7 @@ class Kernel extends ConsoleKernel
         $schedule->command('cheers:set_timeout_for_offer')->everyMinute()->onOneServer()->runInBackground();
         $schedule->command('cheers:marketing')->dailyAt(env('CAMPAIGN_SEND_TIME'))->onOneServer()->runInBackground();
         $schedule->command('cheers:retry_failed_jobs')->everyMinute()->onOneServer()->runInBackground();
+        $schedule->command('cheers:add_shift')->dailyAt('05:00')->onOneServer()->runInBackground();
     }
 
     /**
