@@ -78,24 +78,25 @@
         </div>
       </section>
     @endif
-
-    <section class="details-list">
-      <div class="details-list__line"><p></p></div>
-      <div class="details-list__header">
-        <div class="details-header__title">クレジットカードの登録</div>
-      </div>
-      <div class="details-list__content show">
-        <div class="details-list-box">
-          <div class="btn2-s">
-            @if(!Auth::user()->is_card_registered)
-            <a class="link-arrow link-arrow--left link-credit-card tc-verification-link inactive-button-order" href="#" style="color: #222222;">未登録</a>
-            @else
-            <a class="link-arrow link-arrow--left link-credit-card tc-verification-link" href="#" style="color: #222222;">登録済み</a>
-            @endif
+    <div id="show-registered-card">
+      <section class="details-list">
+        <div class="details-list__line"><p></p></div>
+        <div class="details-list__header">
+          <div class="details-header__title">クレジットカードの登録</div>
+        </div>
+        <div class="details-list__content show">
+          <div class="details-list-box">
+            <div class="btn2-s">
+              @if(!Auth::user()->is_card_registered)
+              <a class="link-arrow link-arrow--left link-credit-card tc-verification-link inactive-button-order" href="#" style="color: #222222;">未登録</a>
+              @else
+              <a class="link-arrow link-arrow--left link-credit-card tc-verification-link" href="#" style="color: #222222;">登録済み</a>
+              @endif
+            </div>
           </div>
         </div>
-      </div>
-    </section>
+      </section>
+    </div>
     <!-- coupons -->
     <div id="show-coupons-order"></div>
 
