@@ -6,6 +6,7 @@ use App\Cast;
 use App\Job;
 use App\CastClass;
 use App\Http\Resources\CastResource;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 
 class CastController extends ApiController
@@ -47,6 +48,23 @@ class CastController extends ApiController
 
         if ($request->order) {
             $casts = $casts->orderByDesc('working_today');
+        }
+
+        if ($request->schedule) {
+            $scheduleDate = Carbon::parse($request->schedule);
+
+            $casts->where(function ($query) use ($scheduleDate) {
+                $query->whereHas('shifts', function ($sq) use ($scheduleDate) {
+                    $sq->whereDate('date', $scheduleDate);
+                });
+            });
+
+            $casts->where(function ($query) {
+                $query->whereHas('shifts', function ($sq) {
+                    $sq->where('shift_user.day_shift', true)
+                        ->orWhere('shift_user.night_shift', true);
+                });
+            });
         }
 
         if ($request->favorited) {

@@ -37,6 +37,23 @@
     <figcaption>キャストが見つかりません</figcaption>
   </div>
   @else
+  <!-- schedule -->
+  @php $today = Carbon\Carbon::today(); @endphp
+  <div class="cast-list">
+    <label class="button button--green js-schedule {{ (request()->schedule == null) ? 'active' : '' }}">
+      <input type="radio" name="schedule_date" value="" {{ (request()->schedule == null) ? 'checked' : '' }}>全て
+    </label>
+    <label class="button button--green js-schedule {{ (request()->schedule == $today->format('Y-m-d')) ? 'active' : '' }}">
+      <input type="radio" name="schedule_date" value="{{ $today->format('Y-m-d') }}" {{ (request()->schedule == $today->format('Y-m-d')) ? 'checked' : '' }}>今日OK
+    </label>
+    @for($i = 1; $i <= 5; $i++)
+    <label class="button button--green js-schedule {{ (request()->schedule == $today->copy()->addDays($i)->format('Y-m-d')) ? 'active' : '' }}">
+      <input type="radio" name="schedule_date" value="{{ $today->copy()->addDays($i)->format('Y-m-d') }}" {{ (request()->schedule == $today->copy()->addDays($i)->format('Y-m-d')) ? 'checked' : '' }}>
+      {{ $today->copy()->addDays($i)->format('m/d') }} ({{ dayOfWeek()[$today->copy()->addDays($i)->dayOfWeek] }})
+    </label>
+    @endfor
+    <input type="hidden" name="schedule" value="{{ request()->schedule }}" id="schedule" />
+  </div><!-- /schedule -->
   <div class="cast-list">
     @include('web.users.load_more_list_casts', compact('casts'))
     <input type="hidden" id="next_page" value="{{ $casts['next_page_url'] }}">
@@ -104,4 +121,27 @@
     $(document).ready(handleOnLoadMore);
   });
 </script>
+
+<!-- Js schedule -->
+<script>
+  $(function () {
+    $('input[name=schedule_date]').click(function(event) {
+      $('#gf1 label.button--green.js-schedule').removeClass('active');
+      $(this).parent().addClass('active');
+
+      params = {
+        schedule: $(this).val(),
+      };
+
+      window.axios.get('/api/v1/casts', {params})
+        .then(function(response) {
+          console.log(params.schedule);
+          window.location.href = '/cast?schedule=' + params.schedule;
+        })
+        .catch(function(error) {
+          console.log(error);
+        });
+    });
+  });
+</script><!-- /Js schedule -->
 @endsection
