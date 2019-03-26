@@ -780,6 +780,9 @@ $(document).ready(function(){
 
         if (parseInt(tempPoint) > parseInt(pointUser)) {
           $('.checked-order').prop('checked',false);
+          window.location = '/payment/transfer';
+
+          return;
         }
       }
 
