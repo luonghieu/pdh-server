@@ -66,6 +66,25 @@ class User extends Authenticatable implements JWTSubject
         }
     }
 
+    public function getIsNewUserAttribute($value)
+    {
+        $sevenDaysAgo = Carbon::now()->subDays(7);
+
+        if (UserType::GUEST == $this->type) {
+            if ($this->created_at > $sevenDaysAgo) {
+                return true;
+            }
+        }
+
+        if (UserType::CAST == $this->type) {
+            if ($this->accept_request_transfer_date  > $sevenDaysAgo) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
     public function getPointAttribute($value)
     {
         if (!$value) {
@@ -547,5 +566,15 @@ class User extends Authenticatable implements JWTSubject
     public function coupons()
     {
         return $this->belongsToMany('App\Coupon', 'coupon_users', 'user_id','coupon_id')->withTimestamps();
+    }
+
+    public function inviteCode()
+    {
+        return $this->hasOne(InviteCode::class);
+    }
+
+    public function inviteCodeHistory()
+    {
+        return $this->hasOne(InviteCodeHistory::class, 'receive_user_id');
     }
 }

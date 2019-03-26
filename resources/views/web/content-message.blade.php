@@ -46,7 +46,7 @@
             @endif
           </figure>
           <div class="{{ $className }}-text">
-            @if (in_array($element['type'], [App\Enums\MessageType::MESSAGE, App\Enums\MessageType::THANKFUL]))
+            @if (in_array($element['type'], [App\Enums\MessageType::MESSAGE, App\Enums\MessageType::THANKFUL, App\Enums\MessageType::INVITE_CODE]))
             <div class="text">
               <div class="text-wrapper">
                 <p>

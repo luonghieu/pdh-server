@@ -5,36 +5,6 @@
 <link rel="stylesheet" href="{{ mix('assets/web/css/ge_1.min.css') }}">
 @endsection
 @section('web.extra')
-  <form action="#" method="GET" id="update-date-of-birth">
-    {{ csrf_field() }}
-    <div class="modal_wrap modal5" id="popup-top">
-      <input id="popup-date-of-birth" type="checkbox">
-      <div class="modal_overlay">
-        <div class="modal_content modal_content-btn5">
-          <div class="text-box">
-            <h2>生年月日の登録をしよう!</h2>
-            <div>
-              @php
-                $max = \Carbon\Carbon::parse(now())->subYear(20);
-              @endphp
-              <input type="date" id="date-of-birth" name="date_of_birth" data-date="" max="{{ $max->format('Y-m-d') }}" data-date-format="YYYY年MM月DD日" value="{{ \Carbon\Carbon::parse(Auth::user()->date_of_birth)->format('Y-m-d') }}">
-            </div>
-            <label data-field="date_of_birth" id="date-of-birth-error" class="error help-block" for="date-of-birth"></label>
-            <div class="set-usage-area">
-              <h2>ご利用のエリアを設定しましょう！</h2>
-              <select id="prefecture-id">
-                @foreach($prefectures as $prefecture)
-                  <option value="{{ $prefecture->id }}" {{ ($prefecture->id == 13) ? 'selected':''}}>{{ $prefecture->name }}</option>
-                @endforeach
-              </select>
-            </div>
-            <p class="color-gray">※別エリアのご利用も可能です</p>
-          </div>
-          <button type="submit" for="popup-date-of-birth" class="close_button">登録する</button>
-        </div>
-      </div>
-    </div>
-  </form>
   <div class="modal_wrap" id="input_birthday_modal">
     <input id="trigger3" type="checkbox">
       <div class="modal_overlay">
@@ -97,6 +67,9 @@
   </div>
 @endsection
 @section('web.content')
+  @if(Auth::user() && (Auth::user()->type == \App\Enums\UserType::GUEST))
+    <a href="{{route('invite_code.get_invite_code')}}"><img src="/assets/web/images/invite_code/banner_top.png" alt=""></a>
+  @endif
   @if (!Auth::check())
     <a href="{{ route('auth.line') }}">
       <img src="{{ asset('images/btn_login_base.png') }}" alt="">
@@ -113,10 +86,6 @@
       }, 500)
     </script>
   @endif
-
-  <section class="button-box" style="display: none;">
-    <label for="popup-date-of-birth" class="open_button button-settlement"></label>
-  </section>
   <div class="top-header-user">
     <div class="wrap-user">
       <div class="wrap-user-left">
@@ -215,7 +184,6 @@
     </div>
 
     <div class="cast-body">
-      @include('web.casts-working-today',compact('casts'))
     </div>
   </div>
 <!-- Timeline -->
@@ -244,13 +212,6 @@
   </div>
 @endsection
 @section('web.script')
-  @if(empty(Auth::user()->date_of_birth) && Auth::user()->is_verified)
-    <script>
-      $(function () {
-        $('.open_button').trigger('click');
-      });
-    </script>
-  @endif
   @if (Session::has('no_active'))
     <script>
       jQuery(document).ready(function($) {

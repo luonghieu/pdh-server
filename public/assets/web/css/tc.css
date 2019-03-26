@@ -1,3 +1,7 @@
+html, body {
+  min-height: 880px;
+}
+
 main {
   padding-top: 0 !important;
 }
@@ -5,6 +9,10 @@ main {
 .header-webview {
   padding: 8px;
   margin: 0 !important;
+}
+
+.header-webview .title-main {
+  margin-left: -32px;
 }
 
 #gl1 .border-bottom {
@@ -73,6 +81,10 @@ main {
   right: 0;
 }
 
+.tc-form input {
+  color: #222222 !important;
+}
+
 .tc-form .expiration-date {
   height: 40px;
   margin-top: 10px !important;
@@ -80,6 +92,7 @@ main {
 
 .tc-form .date-select {
   padding: 0;
+  margin-right: 8px;
 }
 
 .tc-form .date-select select {
@@ -91,12 +104,20 @@ main {
   line-height: normal;
   letter-spacing: -0.3px;
   text-align: right;
+  color: #222222;
+}
+
+.tc-form .date-select select:required:invalid {
   color: #c8c8c8;
 }
 
-.date-select select:first-child {
-  padding: 0;
-  background: none;
+.date-select select#month-select {
+  padding-left: 6px;
+}
+
+.date-select select#year-select {
+  width: 65px;
+  background-position: 52px 11px;
 }
 
 .security-code img {
@@ -105,6 +126,14 @@ main {
 
 .security-code .security-code-outside {
   margin-right: 8px;
+}
+
+.security-code .security-code-outside #cvv-field {
+  margin-right: 8px;
+}
+
+.security-code .security-code-outside #cvv-field input {
+  margin-right: 10px;
 }
 
 .security-code input {
@@ -131,6 +160,8 @@ main {
   letter-spacing: normal;
   text-align: center;
   color: #ffffff;
+  position: absolute;
+  bottom: 0;
 }
 
 .sub-title {
