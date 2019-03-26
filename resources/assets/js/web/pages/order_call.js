@@ -55,8 +55,6 @@ $(document).ready(function(){
     }
   });
 
-  $('.checked-order').prop('checked',false);
-
   if($('.select-prefecture').length) {
     if(!localStorage.getItem("order_call")) {
 
