@@ -185,7 +185,7 @@
               <span>-</span>
               @endif
             </p>
-            <p class="portlet-content__value"><img src="/assets/web/images/gf1/ic_shift.svg" alt=""></p>
+            <p class="portlet-content__value"><a href="{{route('guest.orders.nominate',['id' => $cast['id'] ])}}"><img src="/assets/web/images/gf1/ic_shift.svg" alt=""></a></p>
           </li>
           @endforeach
         </ul>
