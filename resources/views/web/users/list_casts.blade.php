@@ -39,7 +39,7 @@
   @else
   <!-- schedule -->
   @php $today = Carbon\Carbon::today(); @endphp
-  <div class="cast-list">
+  <div class="cast-list init-scroll-x">
     <label class="button button--green js-schedule {{ (request()->schedule == null) ? 'active' : '' }}">
       <input type="radio" name="schedule_date" value="" {{ (request()->schedule == null) ? 'checked' : '' }}>全て
     </label>

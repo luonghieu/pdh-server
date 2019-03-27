@@ -85,7 +85,7 @@ class CastController extends Controller
                     });
                 });
                 break;
-            
+
             default:break;
         }
 
@@ -658,7 +658,7 @@ class CastController extends Controller
         }
     }
 
-    public function updateCostRate(User $user, Request $request) 
+    public function updateCostRate(User $user, Request $request)
     {
         $user->cost_rate = $request->cost_rate;
         $user->save();

@@ -3462,7 +3462,8 @@ div.user-data span.total-point-cast{
   align-items: center;
   justify-content: center;
   margin-top: 10px;
-  margin-right: 5px; 
+  margin-right: 5px;
+  min-width: 3.5rem;
 }
     
 #gf1 label.button input {
@@ -3476,7 +3477,6 @@ div.user-data span.total-point-cast{
 }
 
 #gf1 label.button--green.active {
-  display: inline-flex;
   color: white;
   background: -webkit-linear-gradient(20deg, #42E4B2 0%, #00C3C3 100%);
   background: -o-linear-gradient(20deg, #42E4B2 0%, #00C3C3 100%);
@@ -3484,6 +3484,11 @@ div.user-data span.total-point-cast{
   background: -webkit-linear-gradient(70deg, #42E4B2 0%, #00C3C3 100%);
   background: -o-linear-gradient(70deg, #42E4B2 0%, #00C3C3 100%);
   background: linear-gradient(20deg, #42E4B2 0%, #00C3C3 100%); 
+}
+
+#gf1 .cast-list.init-scroll-x {
+  display: flex;
+  overflow-x: scroll;
 }
 
 .title-shifts {
