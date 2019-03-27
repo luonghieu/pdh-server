@@ -72,7 +72,7 @@ class CastController extends Controller
                                 });
                         });
                     }
-                }
+                });
                 break;
 
             default:break;
