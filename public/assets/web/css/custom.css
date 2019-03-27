@@ -3513,3 +3513,7 @@ div.user-data span.total-point-cast{
   bottom: 81px;
   right: 0;
 }
+
+.wrap-ic-shift {
+  width: 40px !important;
+}
