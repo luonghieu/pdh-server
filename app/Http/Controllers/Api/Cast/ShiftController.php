@@ -22,8 +22,11 @@ class ShiftController extends ApiController
 
             if ($shiftToday) {
                 $user->working_today = true;
-                $user->save();
+            } else {
+                $user->working_today = false;
             }
+            $user->save();
+
             return $this->respondWithNoData(trans('messages.update_shifts_success'));
         }catch (\Exception $e) {
             LogService::writeErrorLog($e);
