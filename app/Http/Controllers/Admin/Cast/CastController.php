@@ -54,38 +54,27 @@ class CastController extends Controller
                 break;
 
             case 'schedule':
-                if ($fromDate && $toDate) {
-                    $casts->where(function ($query) use ($fromDate, $toDate) {
-                        $query->whereHas('shifts', function ($sq) use ($fromDate, $toDate) {
-                            $sq->whereBetween('date', [$fromDate, $toDate]);
-                        });
-                    });
-                } else {
+                $casts->whereHas('shifts', function ($query) use ($fromDate, $toDate) {
                     if ($fromDate) {
-                        $casts->where(function ($query) use ($fromDate) {
-                            $query->whereHas('shifts', function ($sq) use ($fromDate) {
-                                $sq->where('date', '>=', $fromDate);
-                            });
+                        $query->where(function($q) use ($fromDate) {
+                            $q->where('date', '>=', $fromDate)
+                                ->where(function ($sq) {
+                                    $sq->where('day_shift', true)->orWhere('night_shift', true);
+                                });
                         });
                     }
 
                     if ($toDate) {
-                        $casts->where(function ($query) use ($toDate) {
-                            $query->whereHas('shifts', function ($sq) use ($toDate) {
-                                $sq->where('date', '<=', $toDate);
-                            });
+                        $query->where(function ($q) use ($toDate) {
+                            $q->where('date', '<=', $toDate)
+                                ->where(function ($sq) {
+                                    $sq->where('day_shift', true)->orWhere('night_shift', true);
+                                });
                         });
                     }
                 }
-
-                $casts->where(function ($query) {
-                    $query->whereHas('shifts', function ($sq) {
-                        $sq->where('shift_user.day_shift', true)
-                            ->orWhere('shift_user.night_shift', true);
-                    });
-                });
                 break;
-            
+
             default:break;
         }
 
@@ -463,8 +452,21 @@ class CastController extends Controller
     public function changeStatusWork(Cast $user)
     {
         try {
+            $today = Carbon::today();
             $user->working_today = !$user->working_today;
-            $user->save();
+            $shiftToday = $user->shifts()->where('date', $today)->first();
+            if ($user->working_today) {
+                $shiftToday->pivot->day_shift = $user->working_today;
+                $shiftToday->pivot->off_shift = false;
+                $shiftToday->pivot->save();
+            } else {
+                $shiftToday->pivot->day_shift = $user->working_today;
+                $shiftToday->pivot->night_shift = $user->working_today;
+                $shiftToday->pivot->off_shift = true;
+                $shiftToday->pivot->save();
+            }
+
+            $user->update();
 
             return back();
         } catch (\Exception $e) {
@@ -658,7 +660,7 @@ class CastController extends Controller
         }
     }
 
-    public function updateCostRate(User $user, Request $request) 
+    public function updateCostRate(User $user, Request $request)
     {
         $user->cost_rate = $request->cost_rate;
         $user->save();

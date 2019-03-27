@@ -18,6 +18,25 @@
     </div>
     <h1 class="text-bold">お気に入りキャスト</h1>
   </div>
+  
+  <!-- schedule -->
+  @php $today = Carbon\Carbon::today(); @endphp
+  <div class="cast-list init-scroll-x pb-2">
+    <label class="button button--green js-schedule {{ (request()->schedule == null) ? 'active' : '' }}">
+      <input type="radio" name="schedule_date" value="" {{ (request()->schedule == null) ? 'checked' : '' }}>全て
+    </label>
+    <label class="button button--green js-schedule {{ (request()->schedule == $today->format('Y-m-d')) ? 'active' : '' }}">
+      <input type="radio" name="schedule_date" value="{{ $today->format('Y-m-d') }}" {{ (request()->schedule == $today->format('Y-m-d')) ? 'checked' : '' }}>今日OK
+    </label>
+    @for($i = 1; $i <= 6; $i++)
+    @php $date = $today->copy()->addDays($i); @endphp
+    <label class="button button--green js-schedule {{ (request()->schedule == $date->format('Y-m-d')) ? 'active' : '' }}">
+      <input type="radio" name="schedule_date" value="{{ $date->format('Y-m-d') }}" {{ (request()->schedule == $date->format('Y-m-d')) ? 'checked' : '' }}>
+      {{ $date->format('m/d') }} ({{ dayOfWeek()[$date->dayOfWeek] }})
+    </label>
+    @endfor
+    <input type="hidden" name="schedule" value="{{ request()->schedule }}" id="schedule" />
+  </div><!-- /schedule -->
 
   @if (!$favorites['data'])
   <div class="no-cast">
@@ -91,4 +110,26 @@
     $(document).ready(handleOnLoadMore);
   });
 </script>
+
+<!-- Js schedule -->
+<script>
+  $(function () {
+    $('input[name=schedule_date]').click(function(event) {
+      $('#gf1 label.button--green.js-schedule').removeClass('active');
+      $(this).parent().addClass('active');
+
+      params = {
+        schedule: $(this).val(),
+      };
+
+      window.axios.get('/api/v1/casts', {params})
+        .then(function(response) {
+          window.location.href = '/cast/favorite?schedule=' + params.schedule;
+        })
+        .catch(function(error) {
+          console.log(error);
+        });
+    });
+  });
+</script><!-- /Js schedule -->
 @endsection

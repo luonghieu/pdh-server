@@ -126,9 +126,9 @@
                   <td>{{ $cast->last_active }}</td>
                   @endif
                   <td>
-                    {{ App\Enums\WorkingType::getDescription($cast->working_today) }}
+                    {{ App\Enums\WorkingType::getDescription($cast->is_working_today) }}
                     @php
-                      if ($cast->working_today == App\Enums\WorkingType::LEAVING_WORK) {
+                      if ($cast->is_working_today == App\Enums\WorkingType::LEAVING_WORK) {
                         $workStatus = 'on-work';
                       } else {
                         $workStatus = 'leaving-work';

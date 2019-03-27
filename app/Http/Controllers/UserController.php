@@ -40,7 +40,11 @@ class UserController extends Controller
     public function listCasts(Request $request)
     {
         try {
-            $params = ['latest' => 1];
+            $params = [
+                'latest' => 1,
+                'schedule' => $request->schedule,
+            ];
+
             if ($request->all()) {
                 !$request->prefecture_id ?: $params['prefecture_id'] = $request->prefecture_id;
                 !$request->class_id ?: $params['class_id'] = $request->class_id;
@@ -100,6 +104,7 @@ class UserController extends Controller
             $params = [
                 'favorited' => 1,
                 'latest' => 1,
+                'schedule' => $request->schedule,
             ];
             if ($request->all()) {
                 !$request->prefecture_id ?: $params['prefecture_id'] = $request->prefecture_id;
@@ -182,7 +187,8 @@ class UserController extends Controller
                 'cast_id' => $id,
             ];
             $contentShifts = $this->getApi('/api/v1/shifts', $paramsShift);
-            $shifts = array_slice($contentShifts['data'], 0, 6);
+            $shifts = array_slice($contentShifts['data'], 0, 7);
+
             return view('web.users.show', compact('cast', 'shifts'));
         } catch (\Exception $e) {
             LogService::writeErrorLog($e);
