@@ -6,6 +6,7 @@ use App\Http\Controllers\Api\ApiController;
 use App\Services\LogService;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
+
 class ShiftController extends ApiController
 {
     public function update(Request $request) {
