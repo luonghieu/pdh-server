@@ -19,7 +19,7 @@
 @section('web.content')
   <form id="search" method="GET" action="{{ route('cast.favorite') }}">
     @foreach (request()->all() as $key => $value)
-    <input type="hidden" name="{{ $key }}" value="{{ $value }}">
+    <input type="hidden" name="{{ $key }}" value="{{ $value }}" id="{{ $key }}">
     @endforeach
   </form>
   <div class="page-header">
@@ -133,12 +133,15 @@
 
       params = {
         schedule: $(this).val(),
+        prefecture_id: $('#prefecture_id').val(),
+        class_id: $('#class_id').val(),
+        point: $('#point').val(),
       };
 
       window.axios.get('/api/v1/casts', {params})
         .then(function(response) {
-          console.log(params.schedule);
-          window.location.href = '/cast?schedule=' + params.schedule;
+          var link = '/cast?schedule=' + params.schedule + '&prefecture_id=' + params.prefecture_id + '&class_id=' + params.class_id + '&point=' + params.point;
+          window.location.href = link;
         })
         .catch(function(error) {
           console.log(error);
