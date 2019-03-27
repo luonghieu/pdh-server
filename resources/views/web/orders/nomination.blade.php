@@ -78,7 +78,7 @@
             @if(isset($orderOptions['call_time']))
               @foreach($orderOptions['call_time'] as $callTime)
               <label class="button button--green date {{ $callTime['value'] == 30 ? 'active' : '' }} {{ !$callTime['is_active'] ? 'inactive' : '' }}">
-                <input class="input-time-join" type="radio" name="time_join_nomination" value="{{ $callTime['value'] }}" {{ !$callTime['is_active'] ? 'disabled' : '' }} {{ $callTime['value'] == 30 ? 'checked' : '' }} >
+                <input class="input-time-join input-time-number" type="radio" name="time_join_nomination" value="{{ $callTime['value'] }}" {{ !$callTime['is_active'] ? 'disabled' : '' }} {{ $callTime['value'] == 30 ? 'checked' : '' }} >
                 {{ $callTime['name'] }}
               </label>
               @endforeach
