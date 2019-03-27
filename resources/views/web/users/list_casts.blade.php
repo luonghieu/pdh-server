@@ -31,12 +31,6 @@
     <h1 class="text-bold">キャスト一覧</h1>
   </div>
 
-  @if (!$casts['data'])
-  <div class="no-cast">
-    <figure><img src="{{ asset('assets/web/images/common/woman2.svg') }}"></figure>
-    <figcaption>キャストが見つかりません</figcaption>
-  </div>
-  @else
   <!-- schedule -->
   @php $today = Carbon\Carbon::today(); @endphp
   <div class="cast-list init-scroll-x">
@@ -47,13 +41,21 @@
       <input type="radio" name="schedule_date" value="{{ $today->format('Y-m-d') }}" {{ (request()->schedule == $today->format('Y-m-d')) ? 'checked' : '' }}>今日OK
     </label>
     @for($i = 1; $i <= 5; $i++)
-    <label class="button button--green js-schedule {{ (request()->schedule == $today->copy()->addDays($i)->format('Y-m-d')) ? 'active' : '' }}">
-      <input type="radio" name="schedule_date" value="{{ $today->copy()->addDays($i)->format('Y-m-d') }}" {{ (request()->schedule == $today->copy()->addDays($i)->format('Y-m-d')) ? 'checked' : '' }}>
-      {{ $today->copy()->addDays($i)->format('m/d') }} ({{ dayOfWeek()[$today->copy()->addDays($i)->dayOfWeek] }})
+    @php $date = $today->copy()->addDays($i); @endphp
+    <label class="button button--green js-schedule {{ (request()->schedule == $date->format('Y-m-d')) ? 'active' : '' }}">
+      <input type="radio" name="schedule_date" value="{{ $date->format('Y-m-d') }}" {{ (request()->schedule == $date->format('Y-m-d')) ? 'checked' : '' }}>
+      {{ $date->format('m/d') }} ({{ dayOfWeek()[$date->dayOfWeek] }})
     </label>
     @endfor
     <input type="hidden" name="schedule" value="{{ request()->schedule }}" id="schedule" />
   </div><!-- /schedule -->
+
+  @if (!$casts['data'])
+  <div class="no-cast">
+    <figure><img src="{{ asset('assets/web/images/common/woman2.svg') }}"></figure>
+    <figcaption>キャストが見つかりません</figcaption>
+  </div>
+  @else
   <div class="cast-list">
     @include('web.users.load_more_list_casts', compact('casts'))
     <input type="hidden" id="next_page" value="{{ $casts['next_page_url'] }}">

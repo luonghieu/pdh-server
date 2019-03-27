@@ -53,16 +53,12 @@ class CastController extends ApiController
         if ($request->schedule) {
             $scheduleDate = Carbon::parse($request->schedule);
 
-            $casts->where(function ($query) use ($scheduleDate) {
-                $query->whereHas('shifts', function ($sq) use ($scheduleDate) {
-                    $sq->whereDate('date', $scheduleDate);
-                });
-            });
-
-            $casts->where(function ($query) {
-                $query->whereHas('shifts', function ($sq) {
-                    $sq->where('shift_user.day_shift', true)
-                        ->orWhere('shift_user.night_shift', true);
+            $casts->whereHas('shifts', function ($query) use ($scheduleDate) {
+                $query->where(function ($q) use ($scheduleDate) {
+                    $q->whereDate('date', $scheduleDate)
+                        ->where(function ($sq) {
+                            $sq->where('shift_user.day_shift', true)->orWhere('shift_user.night_shift', true);
+                        });
                 });
             });
         }
