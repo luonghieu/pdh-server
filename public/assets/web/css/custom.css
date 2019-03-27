@@ -2106,7 +2106,6 @@ div.user-data span.total-point-cast{
 }
 
 #top .cast-list .cast-body img {
-  height: 74%;
   border-radius: 10px;
   -o-object-fit: cover;
   object-fit: cover;
@@ -3471,19 +3470,19 @@ div.user-data span.total-point-cast{
 }
 
 #gf1 label.button--green {
-  border-color: #00c3c3;
+  border-color: #30ccc3;
   color: #222222;
   background-color: #fff;
 }
 
 #gf1 label.button--green.active {
   color: white;
-  background: -webkit-linear-gradient(20deg, #42E4B2 0%, #00C3C3 100%);
-  background: -o-linear-gradient(20deg, #42E4B2 0%, #00C3C3 100%);
-  background: -ms-linear-gradient(20deg, #42E4B2 0%, #00C3C3 100%);
-  background: -webkit-linear-gradient(70deg, #42E4B2 0%, #00C3C3 100%);
-  background: -o-linear-gradient(70deg, #42E4B2 0%, #00C3C3 100%);
-  background: linear-gradient(20deg, #42E4B2 0%, #00C3C3 100%); 
+  background: -webkit-linear-gradient(20deg, #42E4B2 0%, #30CCC3 100%);
+  background: -o-linear-gradient(20deg, #42E4B2 0%, #30CCC3 100%);
+  background: -ms-linear-gradient(20deg, #42E4B2 0%, #30CCC3 100%);
+  background: -webkit-linear-gradient(70deg, #42E4B2 0%, #30CCC3 100%);
+  background: -o-linear-gradient(70deg, #42E4B2 0%, #30CCC3 100%);
+  background: linear-gradient(20deg, #42E4B2 0%, #30CCC3 100%); 
 }
 
 #gf1 .cast-list.init-scroll-x {
