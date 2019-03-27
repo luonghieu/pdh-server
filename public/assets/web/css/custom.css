@@ -3447,6 +3447,50 @@ div.user-data span.total-point-cast{
   outline: none;
 }
 
+#gf1 label.button {
+  width: auto;
+  height: 36px;
+  padding: 0 20px;
+  border-width: 1.5px;
+  border-style: solid;
+  font-size: 12px;
+  line-height: 1;
+  cursor: pointer;
+  border-radius: 25px;
+  overflow: hidden;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 10px;
+  margin-right: 5px;
+  min-width: 3.5rem;
+}
+    
+#gf1 label.button input {
+  display: none;
+}
+
+#gf1 label.button--green {
+  border-color: #00c3c3;
+  color: #00c3c3;
+  background-color: #fff;
+}
+
+#gf1 label.button--green.active {
+  color: white;
+  background: -webkit-linear-gradient(20deg, #42E4B2 0%, #00C3C3 100%);
+  background: -o-linear-gradient(20deg, #42E4B2 0%, #00C3C3 100%);
+  background: -ms-linear-gradient(20deg, #42E4B2 0%, #00C3C3 100%);
+  background: -webkit-linear-gradient(70deg, #42E4B2 0%, #00C3C3 100%);
+  background: -o-linear-gradient(70deg, #42E4B2 0%, #00C3C3 100%);
+  background: linear-gradient(20deg, #42E4B2 0%, #00C3C3 100%); 
+}
+
+#gf1 .cast-list.init-scroll-x {
+  display: flex;
+  overflow-x: scroll;
+}
+
 .title-shifts {
   background-color: #D8F2F2 !important;
 }
@@ -3456,11 +3500,11 @@ div.user-data span.total-point-cast{
 }
 
 .color-day-shift-blue {
-color: blue !important;
+  color: blue !important;
 }
 
 .color-day-shift-red {
-color: red !important;
+  color: red !important;
 }
 
 .ic_pick_calendar {
@@ -3473,4 +3517,3 @@ color: red !important;
 .wrap-ic-shift {
   width: 40px !important;
 }
-
