@@ -70,12 +70,15 @@ class User extends Authenticatable implements JWTSubject
     {
         $today = Carbon::today();
         $shiftToday = $this->shifts()->where('date', $today)->first();
+        if ($shiftToday) {
+            if ($shiftToday->pivot->day_shift || $shiftToday->pivot->night_shift) {
+                return $this->working_today = 1;
+            }
 
-        if ($shiftToday->pivot->day_shift || $shiftToday->pivot->night_shift) {
-            return $this->working_today = 1;
+            return $this->working_today = 0;
+        } else {
+            return 0;
         }
-
-        return $this->working_today = 0;
     }
 
     public function getIsNewUserAttribute($value)
