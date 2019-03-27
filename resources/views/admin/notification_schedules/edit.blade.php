@@ -58,12 +58,18 @@
                     <div class="col-sm-12 init-inline-flex init-mt">
                       <label class="col-sm-2 init-m-auto">キャストID: </label>
                       <div class="col-sm-10 p-0">
-                        @foreach($notificationSchedule->cast_ids as $item)
-                          <input class="col-sm-2 mr-1 rank-schedule-cast-ids" type="text" name="cast_ids[]" value="{{$item}}">
-                        @endforeach
-                        @if (count($notificationSchedule->cast_ids) < 10)
-                          @php $missingInput = 10 - count($notificationSchedule->cast_ids); @endphp
-                          @for($i = 0; $i < $missingInput; $i++)
+                        @if (isset($notificationSchedule->cast_ids))
+                          @foreach($notificationSchedule->cast_ids as $item)
+                            <input class="col-sm-2 mr-1 rank-schedule-cast-ids" type="text" name="cast_ids[]" value="{{$item}}">
+                          @endforeach
+                            @if (count($notificationSchedule->cast_ids) < 10)
+                              @php $missingInput = 10 - count($notificationSchedule->cast_ids); @endphp
+                              @for($i = 0; $i < $missingInput; $i++)
+                                <input class="col-sm-2 mr-1 rank-schedule-cast-ids" type="text" name="cast_ids[]">
+                              @endfor
+                            @endif
+                        @else
+                          @for($i = 0; $i < 10; $i++)
                             <input class="col-sm-2 mr-1 rank-schedule-cast-ids" type="text" name="cast_ids[]">
                           @endfor
                         @endif
