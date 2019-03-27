@@ -96,7 +96,7 @@
                     @else
                       <td>￥ {{ $point->payment ? number_format($point->payment->amount) : 0 }}</td>
                     @endif
-                    @if ($point->is_buy || $point->is_autocharge || $point->is_adjusted)
+                    @if ($point->is_buy || $point->is_autocharge || $point->is_adjusted || $point->is_invite_code)
                       <td>{{ number_format($point->point) }}</td>
                     @else
                       <td>-</td>
@@ -117,7 +117,7 @@
                   <td class="result">￥ {{ number_format($sumAmount) }}</td>
                   <td class="result">{{ number_format($sumPointBuy) }}</td>
                   <td class="result">{{ number_format($sumPointPay) }}</td>
-                  <td class="result">{{ number_format($sumBalance) }}</td>
+                  <td class="result">{{ number_format($sumNonTransfer) }}</td>
                 </tr>
               @endif
             </tbody>

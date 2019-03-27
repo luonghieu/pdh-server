@@ -17,7 +17,9 @@ class PointController extends Controller
 {
     public function sumAmount($points)
     {
-        $pointIds = $points->where('type', '<>', PointType::ADJUSTED)->pluck('id');
+        $pointIds = $points->where('type', '<>', PointType::ADJUSTED)
+            ->where('type', '<>', PointType::INVITE_CODE)
+            ->pluck('id');
         $sumAmount = Payment::whereIn('point_id', $pointIds)->sum('amount');
 
         return $sumAmount;
@@ -36,6 +38,10 @@ class PointController extends Controller
             }
 
             if ($product->is_adjusted) {
+                $sum += $product->point;
+            }
+
+            if ($product->is_invite_code) {
                 $sum += $product->point;
             }
 
@@ -126,8 +132,8 @@ class PointController extends Controller
                     $item->user_id,
                     $item->user->fullname,
                     PointType::getDescription($item->type),
-                    (PointType::ADJUSTED == $item->type) ? '-' : '¥ ' . number_format($item->payment->amount),
-                    number_format($item->point),
+                    ($item->is_adjusted || !$item->payment || $item->is_invite_code) ? '-' : '¥ ' . number_format($item->payment->amount),
+                    $item->point,
                 ];
             })->toArray();
 
@@ -138,7 +144,7 @@ class PointController extends Controller
                 '-',
                 '-',
                 '¥ ' . number_format($this->sumAmount($pointsExport)),
-                number_format($this->sumPointBuy($pointsExport)),
+                $this->sumPointBuy($pointsExport),
             ];
 
             array_push($data, $sum);
