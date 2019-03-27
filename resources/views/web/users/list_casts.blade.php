@@ -33,14 +33,14 @@
 
   <!-- schedule -->
   @php $today = Carbon\Carbon::today(); @endphp
-  <div class="cast-list init-scroll-x">
+  <div class="cast-list init-scroll-x pb-2">
     <label class="button button--green js-schedule {{ (request()->schedule == null) ? 'active' : '' }}">
       <input type="radio" name="schedule_date" value="" {{ (request()->schedule == null) ? 'checked' : '' }}>全て
     </label>
     <label class="button button--green js-schedule {{ (request()->schedule == $today->format('Y-m-d')) ? 'active' : '' }}">
       <input type="radio" name="schedule_date" value="{{ $today->format('Y-m-d') }}" {{ (request()->schedule == $today->format('Y-m-d')) ? 'checked' : '' }}>今日OK
     </label>
-    @for($i = 1; $i <= 5; $i++)
+    @for($i = 1; $i <= 6; $i++)
     @php $date = $today->copy()->addDays($i); @endphp
     <label class="button button--green js-schedule {{ (request()->schedule == $date->format('Y-m-d')) ? 'active' : '' }}">
       <input type="radio" name="schedule_date" value="{{ $date->format('Y-m-d') }}" {{ (request()->schedule == $date->format('Y-m-d')) ? 'checked' : '' }}>
