@@ -70,7 +70,7 @@
                     <td>{{ $point->user_id }}</td>
                     <td>{{ $point->user ? $point->user->nickname : '' }}</td>
                     <td>{{ \App\Enums\PointType::getDescription($point->type) }}</td>
-                    @if ($point->type == \App\Enums\PointType::ADJUSTED || !$point->payment)
+                    @if ($point->is_adjusted || $point->is_invite_code || !$point->payment)
                       <td>-</td>
                     @else
                       <td>¥ {{ number_format($point->payment->amount) }}</td>

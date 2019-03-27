@@ -3472,7 +3472,7 @@ div.user-data span.total-point-cast{
 
 #gf1 label.button--green {
   border-color: #00c3c3;
-  color: #00c3c3;
+  color: #222222;
   background-color: #fff;
 }
 
@@ -3489,6 +3489,10 @@ div.user-data span.total-point-cast{
 #gf1 .cast-list.init-scroll-x {
   display: flex;
   overflow-x: scroll;
+}
+
+#gf1 .cast-list.init-scroll-x.pb-2 {
+  padding-bottom: 0.5rem;
 }
 
 .title-shifts {
