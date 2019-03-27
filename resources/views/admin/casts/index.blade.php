@@ -128,7 +128,7 @@
                   <td>
                     {{ App\Enums\WorkingType::getDescription($cast->working_today) }}
                     @php
-                      if ($cast->working_today == App\Enums\WorkingType::LEAVING_WORK) {
+                      if ($cast->is_working_today == App\Enums\WorkingType::LEAVING_WORK) {
                         $workStatus = 'on-work';
                       } else {
                         $workStatus = 'leaving-work';
