@@ -185,7 +185,11 @@
               <span>-</span>
               @endif
             </p>
-            <p class="portlet-content__value"><a href="{{route('guest.orders.nominate',['id' => $cast['id'] ])}}"><img src="/assets/web/images/gf1/ic_shift.svg" alt=""></a></p>
+            <p class="portlet-content__value wrap-ic-shift">
+              @if($shift['users']['off_shift'] == 0 && ($shift['users']['day_shift'] || $shift['users']['night_shift']))
+                <img src="/assets/web/images/gf1/ic_shift.svg" alt="" class="btn-order-nominee" data-shift="{{$shift['date']}}">
+              @endif
+            </p>
           </li>
           @endforeach
         </ul>
