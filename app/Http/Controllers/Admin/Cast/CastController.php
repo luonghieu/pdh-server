@@ -54,26 +54,24 @@ class CastController extends Controller
                 break;
 
             case 'schedule':
-                if ($fromDate) {
-                    $casts->whereHas('shifts', function ($query) use ($fromDate) {
+                $casts->whereHas('shifts', function ($query) use ($fromDate, $toDate) {
+                    if ($fromDate) {
                         $query->where(function($q) use ($fromDate) {
                             $q->where('date', '>=', $fromDate)
                                 ->where(function ($sq) {
                                     $sq->where('day_shift', true)->orWhere('night_shift', true);
                                 });
                         });
-                    });
-                }
+                    }
 
-                if ($toDate) {
-                    $casts->whereHas('shifts', function ($query) use ($toDate) {
+                    if ($toDate) {
                         $query->where(function ($q) use ($toDate) {
                             $q->where('date', '<=', $toDate)
                                 ->where(function ($sq) {
                                     $sq->where('day_shift', true)->orWhere('night_shift', true);
                                 });
                         });
-                    });
+                    }
                 }
                 break;
 
