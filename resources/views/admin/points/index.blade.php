@@ -70,11 +70,19 @@
                     <td>{{ $point->user_id }}</td>
                     <td>{{ $point->user ? $point->user->nickname : '' }}</td>
                     <td>{{ \App\Enums\PointType::getDescription($point->type) }}</td>
-                    @if ($point->type == \App\Enums\PointType::ADJUSTED || !$point->payment)
-                      <td>-</td>
-                    @else
-                      <td>¥ {{ number_format($point->payment->amount) }}</td>
-                    @endif
+                    @php
+                      $amount = '-';
+                      if ($point->type == \App\Enums\PointType::DIRECT_TRANSFER) {
+                          $amount = '¥ ' . number_format($point->point * config('common.point_rate'));
+                      } else {
+                          if ($point->type == \App\Enums\PointType::ADJUSTED || !$point->payment) {
+                              //
+                          } else {
+                              $amount = '¥ ' . number_format($point->payment->amount);
+                          }
+                      }
+                    @endphp
+                    <td>{{ $amount }}</td>
                     <td>{{ number_format($point->point) }}</td>
                   </tr>
                 @endforeach
