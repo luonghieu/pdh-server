@@ -112,7 +112,7 @@ class CastController extends ApiController
                 ->orderBy('last_active_at', 'DESC')
                 ->orderByDesc('co.created_at')
                 ->select('users.*')
-                ->paginate($request->per_page)
+                ->paginate(10)
                 ->appends($request->query());
         }
 
@@ -124,10 +124,18 @@ class CastController extends ApiController
         }
 
         if ('list-cast' == $request->response_type) {
-            $requestData = $request->all();
-            $casts->each->append('class');
-            $casts->each->append('job');
-            return view('web.list_cast', compact('requestData', 'casts'));
+            $collection = $casts->getCollection();
+            $collection->each->append('class_name');
+            $collection->each->append('is_new_user');
+            $collection->each->append('job_name');
+            $collection->each->append('is_working_today');
+            $collection->each->append('age');
+
+            if (isset($request->is_ajax)) {
+                return response()->json($casts);
+            }
+
+            return view('web.list_cast', compact('casts'));
         }
 
         return $this->respondWithData(CastResource::collection($casts));

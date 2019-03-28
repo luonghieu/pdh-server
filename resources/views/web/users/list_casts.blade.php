@@ -36,7 +36,7 @@
 
   <!-- schedule -->
   @php $today = Carbon\Carbon::today(); @endphp
-  <div class="cast-list init-scroll-x pb-2 js-scroll">
+  <div class="cast-list init-scroll-x pb-2 js-scroll" id="cast-list">
     <label class="button button--green js-schedule {{ (request()->schedule == null) ? 'active' : '' }}">
       <input type="radio" name="schedule_date" value="" {{ (request()->schedule == null) ? 'checked' : '' }}>全て
     </label>
@@ -53,19 +53,21 @@
     <input type="hidden" name="schedule" value="{{ request()->schedule }}" id="schedule" />
   </div><!-- /schedule -->
 
-  @if (!$casts['data'])
-  <div class="no-cast">
-    <figure><img src="{{ asset('assets/web/images/common/woman2.svg') }}"></figure>
-    <figcaption>キャストが見つかりません</figcaption>
+  <div id="cast-list-wrapper">
+    @if (!$casts['data'])
+      <div class="no-cast">
+        <figure><img src="{{ asset('assets/web/images/common/woman2.svg') }}"></figure>
+        <figcaption>キャストが見つかりません</figcaption>
+      </div>
+    @else
+      <div class="cast-list" id="cast-list">
+        @include('web.users.load_more_list_casts', compact('casts'))
+        <input type="hidden" id="next_page" value="{{ $casts['next_page_url'] }}">
+        <!-- loading_page -->
+        @include('web.partials.loading_icon')
+      </div> <!-- /list_wrap -->
+    @endif
   </div>
-  @else
-  <div class="cast-list">
-    @include('web.users.load_more_list_casts', compact('casts'))
-    <input type="hidden" id="next_page" value="{{ $casts['next_page_url'] }}">
-    <!-- loading_page -->
-    @include('web.partials.loading_icon')
-  </div> <!-- /list_wrap -->
-  @endif
 @endsection
 @section('web.script')
 <!-- Change favorite -->
@@ -203,8 +205,9 @@
         //     point: point,
         // };
       console.log(params);
-      axios.get('api/v1/casts', { params: {schedule: '2019-03-28', response_type: 'list-cast' } }).then(result => {
-         console.log(result);
+      axios.get('api/v1/casts', { params: {schedule: '2019-03-29', response_type: 'list-cast' } }).then(result => {
+        $('#cast-list-wrapper #cast-list').remove();
+        $('#cast-list-wrapper').append(result.data);
       });
     });
   });

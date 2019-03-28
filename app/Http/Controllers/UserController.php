@@ -85,11 +85,10 @@ class UserController extends Controller
             $result = $apiRequest->getBody();
             $contents = $result->getContents();
             $contents = json_decode($contents, JSON_NUMERIC_CHECK);
-
-            $casts = $contents['data'];
+            $casts = $contents;
 
             return [
-                'next_page' => $casts['next_page_url'],
+                'next_page' => $contents['next_page_url'],
                 'view' => view('web.users.load_more_list_casts', compact('casts'))->render(),
             ];
         } catch (\Exception $e) {
