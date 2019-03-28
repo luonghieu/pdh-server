@@ -3513,10 +3513,14 @@ div.user-data span.total-point-cast{
 .ic_pick_calendar {
   position: absolute;
   width: 67px !important;
-  bottom: 81px;
+  bottom: 80px;
   right: 0;
 }
 
 .wrap-ic-shift {
   width: 40px !important;
+}
+
+#gf3 .selectbox select option:selected {
+  color: #222222;
 }

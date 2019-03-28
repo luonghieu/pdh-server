@@ -42,10 +42,10 @@ class UserController extends Controller
         try {
             $params = [
                 'latest' => 1,
-                'schedule' => $request->schedule,
             ];
 
             if ($request->all()) {
+                !$request->schedule ?: $params['schedule'] = $request->schedule;
                 !$request->prefecture_id ?: $params['prefecture_id'] = $request->prefecture_id;
                 !$request->class_id ?: $params['class_id'] = $request->class_id;
                 !$request->point ?: $params['min_point'] = explode(',', $request->point)[0];
@@ -104,9 +104,9 @@ class UserController extends Controller
             $params = [
                 'favorited' => 1,
                 'latest' => 1,
-                'schedule' => $request->schedule,
             ];
             if ($request->all()) {
+                !$request->schedule ?: $params['schedule'] = $request->schedule;
                 !$request->prefecture_id ?: $params['prefecture_id'] = $request->prefecture_id;
                 !$request->point ?: ($params['min_point'] = explode(',', $request->point)[0]);
                 !$request->point ?: $params['max_point'] = explode(',', $request->point)[1];
