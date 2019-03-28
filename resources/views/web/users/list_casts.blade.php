@@ -130,6 +130,7 @@
 <!-- Scroll center -->
 <script>
   $(function () {
+
     jQuery.fn.scrollCenter = function(elem, speed) {
       var active = jQuery(this).find(elem);
       var activeWidth = active.width() / 2;
@@ -139,13 +140,19 @@
       var elW = jQuery(this).width();
       pos = pos + elpos - elW / 2;
 
-      jQuery(this).animate({
-        scrollLeft: pos
-      }, speed == undefined ? 1000 : speed);
+      jQuery(this).scrollLeft(pos);
+
+      // jQuery(this).animate({
+      //   scrollLeft: pos
+      // }, speed == undefined ? 100 : speed);
       return this;
     };
-    $('.js-scroll').scrollCenter(".active", 300);
+      // $('.cast-list').css("visibility", "hidden");
+    $('.js-scroll').scrollCenter(".active", 100);
+      // $('.cast-list').css("visibility", "hidden");
+
   });
+  // $('.cast-list').css("visibility", "inherit");
 </script><!-- /Scroll center -->
 
 <!-- Js schedule -->
@@ -176,15 +183,29 @@
         point = $('#point').val();
       }
 
-      params = {
-        schedule: schedule,
-        prefecture_id: prefectureId,
-        class_id: classId,
-        point: point,
-      };
+        params = {
+            schedule: schedule,
+            prefecture_id: prefectureId,
+            class_id: classId,
+            point: point,
+        };
+
+
 
       link = '/cast?schedule=' + params.schedule + '&prefecture_id=' + params.prefecture_id + '&class_id=' + params.class_id + '&point=' + params.point;
-      window.location.href = link;
+      // window.location.href = link;
+
+      console.log(params);
+        // parameters = {
+        //     schedule: schedule,
+        //     prefecture_id: prefectureId,
+        //     class_id: classId,
+        //     point: point,
+        // };
+      console.log(params);
+      axios.get('api/v1/casts', { params: {schedule: '2019-03-28', response_type: 'list-cast' } }).then(result => {
+         console.log(result);
+      });
     });
   });
 </script><!-- /Js schedule -->

@@ -31,6 +31,8 @@ class User extends Authenticatable implements JWTSubject
 
     protected $with = ['avatars'];
 
+    protected $appends = ['is_new_user'];
+
     public function getJWTIdentifier()
     {
         return $this->getKey();

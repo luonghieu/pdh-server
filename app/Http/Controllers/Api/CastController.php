@@ -123,6 +123,13 @@ class CastController extends ApiController
             return view('web.casts-working-today', compact('casts', 'jobs', 'castClass'));
         }
 
+        if ('list-cast' == $request->response_type) {
+            $requestData = $request->all();
+            $casts->each->append('class');
+            $casts->each->append('job');
+            return view('web.list_cast', compact('requestData', 'casts'));
+        }
+
         return $this->respondWithData(CastResource::collection($casts));
     }
 
