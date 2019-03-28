@@ -54,23 +54,49 @@
         </div>
       </div>
     </section> --}}
-    <section class="details-list">
-      <div class="details-list__line"><p></p></div>
-      <div class="details-list__header">
-        <div class="details-header__title">クレジットカードの登録</div>
-      </div>
-      <div class="details-list__content show">
-        <div class="details-list-box">
-          <div class="btn2-s">
-            @if(!Auth::user()->is_card_registered)
-            <a class="link-arrow link-arrow--left link-credit-card tc-verification-link inactive-button-order" href="#" style="color: #222222;">未登録</a>
-            @else
-            <a class="link-arrow link-arrow--left link-credit-card tc-verification-link" href="#" style="color: #222222;">登録済み</a>
-            @endif
+
+    @if (Auth::check() && Auth::user()->is_guest && Auth::user()->is_multi_payment_method)
+      <input type="hidden" id="current-point" value="{{ Auth::user()->point }}">
+      <section class="details-list">
+        <div class="details-list__line"><p></p></div>
+        <div class="details-list__header">
+          <div class="details-header__title">決済方法選択</div>
+        </div>
+        <div class="grade-list transfer-order">
+          <div class="transfer-left">
+            <label>
+              <input type="radio" name="transfer_order" class="grade-radio" value="{{ \App\Enums\OrderPaymentMethod::CREDIT_CARD }}" checked="checked" >
+            </label>
+            <p>クレジットカード</p>
+          </div>
+          <div class="transfer-right">
+            <label>
+              <input type="radio" name="transfer_order" class="grade-radio" value="{{ \App\Enums\OrderPaymentMethod::DIRECT_PAYMENT }}">
+            </label>
+            <p>銀行振込</p>
           </div>
         </div>
-      </div>
-    </section>
+      </section>
+    @endif
+    <div id="show-registered-card">
+      <section class="details-list">
+        <div class="details-list__line"><p></p></div>
+        <div class="details-list__header">
+          <div class="details-header__title">クレジットカードの登録</div>
+        </div>
+        <div class="details-list__content show">
+          <div class="details-list-box">
+            <div class="btn2-s">
+              @if(!Auth::user()->is_card_registered)
+              <a class="link-arrow link-arrow--left link-credit-card tc-verification-link inactive-button-order" href="#" style="color: #222222;">未登録</a>
+              @else
+              <a class="link-arrow link-arrow--left link-credit-card tc-verification-link" href="#" style="color: #222222;">登録済み</a>
+              @endif
+            </div>
+          </div>
+        </div>
+      </section>
+    </div>
     <!-- coupons -->
     <div id="show-coupons-order"></div>
 

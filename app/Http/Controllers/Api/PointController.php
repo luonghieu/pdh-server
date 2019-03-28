@@ -12,7 +12,14 @@ class PointController extends ApiController
     {
         $user = $this->guard()->user();
 
-        $types = [PointType::BUY, PointType::PAY, PointType::AUTO_CHARGE, PointType::EVICT, PointType::INVITE_CODE];
+        $types = [
+            PointType::BUY, 
+            PointType::PAY, 
+            PointType::AUTO_CHARGE, 
+            PointType::EVICT, 
+            PointType::INVITE_CODE, 
+            PointType::DIRECT_TRANSFER
+        ];
 
         $points = $user->points()
             ->whereIn('type', $types)

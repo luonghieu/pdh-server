@@ -19,10 +19,20 @@ class PointController extends Controller
 {
     public function sumAmount($points)
     {
-        $pointIds = $points->where('type', '<>', PointType::ADJUSTED)->pluck('id');
+        $pointRate = config('common.point_rate');
+        $directTransferPointIds = $points->where('type', PointType::DIRECT_TRANSFER)->pluck('id');
+        $sumDirectTransferPoint = Point::whereIn('id', $directTransferPointIds)->sum('point');
+        $sumDirectTransferAmount = $sumDirectTransferPoint * $pointRate;
+
+        $pointIds = $points->where('type', '<>', PointType::ADJUSTED)
+            ->where('type', '<>', PointType::INVITE_CODE)
+            ->where('type', '<>', PointType::DIRECT_TRANSFER)
+            ->pluck('id');
         $sumAmount = Payment::whereIn('point_id', $pointIds)->sum('amount');
 
-        return $sumAmount;
+        $sum = $sumDirectTransferAmount + $sumAmount;
+
+        return $sum;
     }
 
     public function sumPointPay($points)
@@ -59,6 +69,10 @@ class PointController extends Controller
                 $sum += $product->point;
             }
 
+            if ($product->is_direct_transfer) {
+                $sum += $product->point;
+            }
+
             return $sum;
         });
 
@@ -81,6 +95,10 @@ class PointController extends Controller
             PointCorrectionType::ACQUISITION => '取得ポイント',
             PointCorrectionType::CONSUMPTION => '消費ポイント',
         ];
+
+        if ($user->is_multi_payment_method) {
+            $pointCorrectionTypes[PointType::DIRECT_TRANSFER] = 'ポイント付与';
+        }
 
         $points = $user->points()->with('payment', 'order')->where('status', Status::ACTIVE);
 
@@ -119,13 +137,24 @@ class PointController extends Controller
 
         if ('export' == $request->submit) {
             $data = collect($pointsExport)->map(function ($item) {
+                $amount = '-';
+                if ($item->is_direct_transfer) {
+                    $amount = '¥ ' . number_format($item->point * config('common.point_rate'));
+                } else {
+                    if ($item->is_adjusted || !$item->payment || $item->is_invite_code) {
+                        //
+                    } else {
+                        $amount = '¥ ' . number_format($item->payment ? $item->payment->amount : 0);
+                    }
+                }
+
                 return [
                     Carbon::parse($item->created_at)->format('Y年m月d日'),
                     PointType::getDescription($item->type),
-                    ($item->is_buy || $item->is_auto_charge) ? $item->id : '-',
+                    ($item->is_buy || $item->is_auto_charge || $item->is_direct_transfer || $item->is_invite_code) ? $item->id : '-',
                     ($item->is_pay) ? $item->order->id : '-',
-                    ($item->is_adjusted || !$item->payment || $item->is_invite_code) ? '-' : '¥ ' . number_format($item->payment->amount),
-                    ($item->is_buy || $item->is_auto_charge || $item->is_adjusted || $item->is_invite_code) ? $item->point : '',
+                    $amount,
+                    ($item->is_buy || $item->is_auto_charge || $item->is_adjusted || $item->is_direct_transfer || $item->is_invite_code) ? $item->point : '',
                     ($item->is_pay) ? (-$item->point) : '-',
                     $item->balance,
                 ];
@@ -193,9 +222,15 @@ class PointController extends Controller
         switch ($request->correction_type) {
             case PointCorrectionType::ACQUISITION:
                 $point = $request->point;
+                $type = PointType::ADJUSTED;
                 break;
             case PointCorrectionType::CONSUMPTION:
                 $point = -$request->point;
+                $type = PointType::ADJUSTED;
+                break;
+            case PointType::DIRECT_TRANSFER:
+                $point = $request->point;
+                $type = PointType::DIRECT_TRANSFER;
                 break;
 
             default:break;
@@ -206,7 +241,7 @@ class PointController extends Controller
         $input = [
             'point' => $point,
             'balance' => $newPoint,
-            'type' => PointType::ADJUSTED,
+            'type' => $type,
             'status' => Status::ACTIVE,
         ];
 
