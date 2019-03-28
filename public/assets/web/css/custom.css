@@ -2106,6 +2106,7 @@ div.user-data span.total-point-cast{
 }
 
 #top .cast-list .cast-body img {
+  height: 74%;
   border-radius: 10px;
   -o-object-fit: cover;
   object-fit: cover;
@@ -3519,4 +3520,8 @@ div.user-data span.total-point-cast{
 
 .wrap-ic-shift {
   width: 40px !important;
+}
+
+#gf3 .selectbox select option:selected {
+  color: #222222;
 }

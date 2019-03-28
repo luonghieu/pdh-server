@@ -11,14 +11,17 @@
     @endforeach
   </form>
   <div class="page-header">
-    <a href="{{ route('cast.search') }}" class="search"><i><img src="{{ asset('assets/web/images/common/search.svg') }}" alt=""></i></a>
+    @php
+      $urlSearch = route('cast.search') . '?schedule=' . request()->schedule . '&prefecture_id=' . request()->prefecture_id . '&class_id=' . request()->class_id . '&point=' . request()->point;
+    @endphp
+    <a href="{{ $urlSearch }}" class="search"><i><img src="{{ asset('assets/web/images/common/search.svg') }}" alt=""></i></a>
     <div class="header-right__menu">
       <a href="{{ route('cast.list_casts') }}" class="heart" id="heart_on"><i><img src="{{ asset('assets/web/images/common/like.svg') }}" alt=""></i></a>
       <a href="{{ route('cast_rank') }}" class="crown"><i><img src="{{ asset('assets/web/images/common/crown.svg') }}" alt=""></i></a>
     </div>
     <h1 class="text-bold">お気に入りキャスト</h1>
   </div>
-  
+
   <!-- schedule -->
   @php $today = Carbon\Carbon::today(); @endphp
   <div class="cast-list init-scroll-x pb-2">
@@ -118,21 +121,36 @@
       $('#gf1 label.button--green.js-schedule').removeClass('active');
       $(this).parent().addClass('active');
 
+      schedule = '';
+      prefectureId = '';
+      classId = '';
+      point = '';
+
+      if ($(this).val()) {
+        schedule = $(this).val();
+      }
+
+      if ($('#prefecture_id').val()) {
+        prefectureId = $('#prefecture_id').val();
+      }
+
+      if ($('#class_id').val()) {
+        classId = $('#class_id').val();
+      }
+
+      if ($('#point').val()) {
+        point = $('#point').val();
+      }
+
       params = {
-        schedule: $(this).val(),
-        prefecture_id: $('#prefecture_id').val(),
-        class_id: $('#class_id').val(),
-        point: $('#point').val(),
+        schedule: schedule,
+        prefecture_id: prefectureId,
+        class_id: classId,
+        point: point,
       };
 
-      window.axios.get('/api/v1/casts', {params})
-        .then(function(response) {
-          var link = '/cast/favorite?schedule=' + params.schedule + '&prefecture_id=' + params.prefecture_id + '&class_id=' + params.class_id + '&point=' + params.point;
-          window.location.href = link;
-        })
-        .catch(function(error) {
-          console.log(error);
-        });
+      link = '/cast/favorite?schedule=' + params.schedule + '&prefecture_id=' + params.prefecture_id + '&class_id=' + params.class_id + '&point=' + params.point;
+      window.location.href = link;
     });
   });
 </script><!-- /Js schedule -->
