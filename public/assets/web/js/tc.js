@@ -24,7 +24,7 @@ $(document).ready(function() {
   .find('option')
   .each(function (index, value) {
     if (index > 0) {
-      $(value).text($(value).text() + 'å¹´');
+      $(value).text($(value).text() + '”N');
     }
   });
 });
