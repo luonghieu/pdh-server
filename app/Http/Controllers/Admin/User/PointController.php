@@ -78,6 +78,10 @@ class PointController extends Controller
             PointCorrectionType::CONSUMPTION => '消費ポイント',
         ];
 
+        if ($user->is_multi_payment_method) {
+            $pointCorrectionTypes[PointType::DIRECT_TRANSFER] = 'ポイント付与';
+        }
+
         $points = $user->points()->with('payment', 'order')->where('status', Status::ACTIVE);
 
         $fromDate = $request->from_date ? Carbon::parse($request->from_date)->startOfDay() : null;
@@ -185,9 +189,15 @@ class PointController extends Controller
         switch ($request->correction_type) {
             case PointCorrectionType::ACQUISITION:
                 $point = $request->point;
+                $type = PointType::ADJUSTED;
                 break;
             case PointCorrectionType::CONSUMPTION:
                 $point = -$request->point;
+                $type = PointType::ADJUSTED;
+                break;
+            case PointType::DIRECT_TRANSFER:
+                $point = $request->point;
+                $type = PointType::DIRECT_TRANSFER;
                 break;
 
             default:break;
@@ -198,7 +208,7 @@ class PointController extends Controller
         $input = [
             'point' => $point,
             'balance' => $newPoint,
-            'type' => PointType::ADJUSTED,
+            'type' => $type,
             'status' => Status::ACTIVE,
         ];
 
