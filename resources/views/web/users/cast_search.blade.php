@@ -10,9 +10,9 @@
     <h1 class="text-bold">絞込み検索</h1>
   </div>
   @php 
-    $urlSearch = route('cast.list_casts') . '?schedule=' . request()->schedule . '&prefecture_id=' . request()->prefecture_id . '&class_id=' . request()->class_id . '&point=' . request()->point;
+    $url = route('cast.list_casts') . '?schedule=' . request()->schedule . '&prefecture_id=' . request()->prefecture_id . '&class_id=' . request()->class_id . '&point=' . request()->point;
   @endphp
-  <form action="{{ $urlSearch }}" method="get">
+  <form action="{{ $url }}" method="get">
     <input type="hidden" name="schedule" value="{{ request()->schedule }}" />
     <div class="cast-search">
       <section class="search">

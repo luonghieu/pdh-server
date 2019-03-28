@@ -149,16 +149,8 @@
         point: point,
       };
 
-      window.axios.get('/api/v1/casts', {params})
-        .then(function(response) {
-          var link = '/cast/favorite?schedule=' + params.schedule + '&prefecture_id=' + params.prefecture_id + '&class_id=' + params.class_id + '&point=' + params.point;
-          window.location.href = link;
-        })
-        .catch(function(error) {
-          if (error.response.status == 401) {
-            window.location = '/login/line';
-          }
-        });
+      link = '/cast/favorite?schedule=' + params.schedule + '&prefecture_id=' + params.prefecture_id + '&class_id=' + params.class_id + '&point=' + params.point;
+      window.location.href = link;
     });
   });
 </script><!-- /Js schedule -->
