@@ -36,7 +36,7 @@
 
   <!-- schedule -->
   @php $today = Carbon\Carbon::today(); @endphp
-  <div class="cast-list init-scroll-x pb-2">
+  <div class="cast-list init-scroll-x pb-2 js-scroll">
     <label class="button button--green js-schedule {{ (request()->schedule == null) ? 'active' : '' }}">
       <input type="radio" name="schedule_date" value="" {{ (request()->schedule == null) ? 'checked' : '' }}>全て
     </label>
@@ -126,6 +126,27 @@
     $(document).ready(handleOnLoadMore);
   });
 </script>
+
+<!-- Scroll center -->
+<script>
+  $(function () {
+    jQuery.fn.scrollCenter = function(elem, speed) {
+      var active = jQuery(this).find(elem);
+      var activeWidth = active.width() / 2;
+      
+      var pos = active.position().left + activeWidth;
+      var elpos = jQuery(this).scrollLeft();
+      var elW = jQuery(this).width();
+      pos = pos + elpos - elW / 2;
+
+      jQuery(this).animate({
+        scrollLeft: pos
+      }, speed == undefined ? 1000 : speed);
+      return this;
+    };
+    $('.js-scroll').scrollCenter(".active", 300);
+  });
+</script><!-- /Scroll center -->
 
 <!-- Js schedule -->
 <script>
