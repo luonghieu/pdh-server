@@ -33,7 +33,7 @@
                         @endif
 
                         @if($shift->pivot->night_shift)
-                          深夜OK
+                          {{$shift->pivot->day_shift ? '・': ''}}深夜OK
                         @endif
 
                         @if(!$shift->pivot->day_shift && !$shift->pivot->night_shift)
