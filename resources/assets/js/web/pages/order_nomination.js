@@ -517,9 +517,7 @@ function loadShift()
             var orderParams = JSON.parse(localStorage.getItem("order_params"));
 
             if(!orderParams.current_minute) {
-              $('select[name=sl_hour_nomination]>option:eq(0)').prop('selected', true);
-              $('select[name=sl_minute_nomination]>option:eq(0)').prop('selected', true);
-              $('select[name=sl_hour_nomination]>option:eq(0)').prop('selected', true);
+              $('select[name=sl_hour_nomination]>option:eq(21)').prop('selected', true);
               $('select[name=sl_minute_nomination]>option:eq(0)').prop('selected', true);
 
               $('#date_input').addClass('active');
@@ -535,9 +533,7 @@ function loadShift()
               helper.updateLocalStorageValue('order_params', updateTime);
             }
           } else {
-            $('select[name=sl_hour_nomination]>option:eq(0)').prop('selected', true);
-            $('select[name=sl_minute_nomination]>option:eq(0)').prop('selected', true);
-            $('select[name=sl_hour_nomination]>option:eq(0)').prop('selected', true);
+            $('select[name=sl_hour_nomination]>option:eq(21)').prop('selected', true);
             $('select[name=sl_minute_nomination]>option:eq(0)').prop('selected', true);
 
             $('#date_input').addClass('active');
