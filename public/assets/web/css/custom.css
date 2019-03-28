@@ -3520,3 +3520,7 @@ div.user-data span.total-point-cast{
 .wrap-ic-shift {
   width: 40px !important;
 }
+
+#gf3 .selectbox select option:selected {
+  color: #222222;
+}
