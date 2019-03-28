@@ -36,7 +36,6 @@ class OrderController extends ApiController
 
     public function create(Request $request)
     {
-
         $user = $this->guard()->user();
         $rules = [
             'prefecture_id' => 'nullable|exists:prefectures,id',
@@ -455,6 +454,10 @@ class OrderController extends ApiController
 
         $input['end_time'] = $end_time->format('H:i');
         $input['status'] = OrderStatus::ACTIVE;
+
+        if ($request->payment_method) {
+            $input['payment_method'] = $request->payment_method;
+        }
 
         try {
             DB::beginTransaction();

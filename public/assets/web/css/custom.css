@@ -3604,3 +3604,23 @@ div.user-data span.total-point-cast{
   color: #303030;
   font-weight: bold;
 }
+
+.transfer_amount-order {
+  padding: 0 20px 0 !important;
+}
+
+.transfer_amount-order p{
+  display: inline-block;
+  font-size: 14px;
+  position: relative;
+  top: -29px;
+  left: 45px;
+}
+
+#transfer_amount{
+  padding: 10px 0 0 0 !important;
+}
+
+.transfer_amount-order .transfer-right {
+  margin-right: 45px;
+}
