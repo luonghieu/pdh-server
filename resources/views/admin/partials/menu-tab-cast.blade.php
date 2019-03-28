@@ -6,6 +6,7 @@
     ['name' => 'admin.casts.guest_ratings', 'value' => '評価', 'url' => route('admin.casts.guest_ratings', ['user' => $user->id])],
     ['name' => '#', 'value' => 'チャットルーム一覧', 'url' => '#'],
     ['name' => 'admin.casts.bank_account', 'value' => '振込口座情報', 'url' => route('admin.casts.bank_account', ['user' => $user->id])],
+    ['name' => 'admin.casts.schedule', 'value' => 'スケジュール', 'url' => route('admin.casts.schedule', ['user' => $user->id])],
   ];
 
 
