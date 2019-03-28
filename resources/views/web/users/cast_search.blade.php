@@ -9,8 +9,11 @@
   <div class="page-header">
     <h1 class="text-bold">絞込み検索</h1>
   </div>
-
-  <form action="{{ route('cast.list_casts') }}" method="get">
+  @php 
+    $urlSearch = route('cast.list_casts') . '?schedule=' . request()->schedule . '&prefecture_id=' . request()->prefecture_id . '&class_id=' . request()->class_id . '&point=' . request()->point;
+  @endphp
+  <form action="{{ $urlSearch }}" method="get">
+    <input type="hidden" name="schedule" value="{{ request()->schedule }}" />
     <div class="cast-search">
       <section class="search">
         <div class="search-header">
@@ -21,10 +24,10 @@
             <li class="search-content__item">
               <p class="search-content__text--list">地域</p>
               <div class="selectbox">
-                <select class="init-select" name="prefecture_id" dir="rtl">
-                  <option value="" selected>選択してください</option>
+                <select class="init-select" name="prefecture_id" id="prefecture-id" dir="rtl">
+                  <option value="">選択してください</option>
                   @foreach ($prefectures as $prefecture )
-                    <option value="{{ $prefecture['id'] }}">{{ $prefecture['name'] }}</option>
+                    <option value="{{ $prefecture['id'] }}" {{ $prefecture['id'] == request()->prefecture_id ? 'selected' : '' }}>{{ $prefecture['name'] }}</option>
                   @endforeach
                 </select>
                 <i class="init-ml-2"></i>
@@ -33,10 +36,10 @@
             <li class="search-content__item">
               <p class="search-content__text--list">キャストクラス</p>
               <div class="selectbox">
-                <select class="init-select" name="class_id" dir="rtl">
-                  <option value="" selected>選択してください</option>
+                <select class="init-select" name="class_id" id="class-id" dir="rtl">
+                  <option value="">選択してください</option>
                   @foreach ($castClasses as $castClass )
-                  <option value="{{ $castClass['id'] }}">{{ $castClass['name'] }}</option>
+                  <option value="{{ $castClass['id'] }}" {{ $castClass['id'] == request()->class_id ? 'selected' : '' }}>{{ $castClass['name'] }}</option>
                   @endforeach
                 </select>
                 <i class="init-ml-2"></i>
@@ -51,7 +54,11 @@
           <h2 class="search-header__title">30分あたりのポイント</h2>
         </div>
         <div class="search-content">
-          <input type="hidden" class="range-slider" name="point" value="0,15000" />
+          @php
+            $minPoint = !request()->point ? '0' : explode(',', request()->point)[0];
+            $maxPoint = !request()->point ? '15000' : explode(',', request()->point)[1];
+          @endphp
+          <input type="hidden" class="range-slider" name="point" value="{{ $minPoint }},{{ $maxPoint }}" />
         </div>
       </section>
     </div>
@@ -66,4 +73,15 @@
 @section('web.extra_js')
   <script src="{{ asset('assets/web/js/jRange/jquery.range.js') }}"></script>
   <script src="{{ mix('assets/web/js/gf-3.min.js') }}"></script>
+  <script>
+    $(function () {
+      if ($('#prefecture-id').val()) {
+        $('#prefecture-id').css('color', '#222222');
+      }
+
+      if ($('#class-id').val()) {
+        $('#class-id').css('color', '#222222');
+      }
+    });
+  </script>
 @endsection
