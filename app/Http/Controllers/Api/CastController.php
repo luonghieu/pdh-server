@@ -114,7 +114,7 @@ class CastController extends ApiController
                 ->orderBy('last_active_at', 'DESC')
                 ->orderByDesc('co.created_at')
                 ->select('users.*')
-                ->paginate(10)
+                ->paginate($request->per_page)
                 ->appends($request->query());
 
         }
