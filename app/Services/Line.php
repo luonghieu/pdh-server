@@ -70,7 +70,12 @@ class Line {
 
             return $response;
         } catch (\Exception $e) {
+
+            LogService::writeErrorLog('-----------------PUSH ERROR-----------------');
+            LogService::writeErrorLog($lineId);
+            LogService::writeErrorLog($messages);
             LogService::writeErrorLog($e);
+            LogService::writeErrorLog('-----------------PUSH ERROR-----------------');
         }
 
         return;
