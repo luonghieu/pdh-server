@@ -48,9 +48,8 @@
               </div>
             </a>
           @endforeach
-          @if ($casts['next_page_url'])
-              <input type="hidden" id="next_page" value="{{ $casts['next_page_url'] . '&is_ajax=1'  }}">
-          @endif
+          <input type="hidden" id="next_page" value="{{ ($casts['next_page_url']) ?  $casts['next_page_url'] .
+          '&is_ajax=1' : null  }}">
           <div class="sk-circle js-loading css-loading-none">
             <div class="sk-circle1 sk-child"></div>
             <div class="sk-circle2 sk-child"></div>

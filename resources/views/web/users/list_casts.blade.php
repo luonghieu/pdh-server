@@ -185,27 +185,19 @@
         point = $('#point').val();
       }
 
-        params = {
-            schedule: schedule,
-            prefecture_id: prefectureId,
-            class_id: classId,
-            point: point,
-        };
-
-
-
-      link = '/cast?schedule=' + params.schedule + '&prefecture_id=' + params.prefecture_id + '&class_id=' + params.class_id + '&point=' + params.point;
+      // link = '/cast?schedule=' + params.schedule + '&prefecture_id=' + params.prefecture_id + '&class_id=' + params.class_id + '&point=' + params.point;
       // window.location.href = link;
 
-      console.log(params);
-        // parameters = {
-        //     schedule: schedule,
-        //     prefecture_id: prefectureId,
-        //     class_id: classId,
-        //     point: point,
-        // };
-      console.log(params);
-      axios.get('api/v1/casts', { params: {schedule: '2019-03-29', response_type: 'list-cast' } }).then(result => {
+      params = {
+          schedule: schedule,
+          prefecture_id: prefectureId,
+          class_id: classId,
+          point: point,
+          response_type: 'list-cast'
+      };
+      Object.keys(params).forEach((key) => (params[key] == '' || params[key] == null) && delete params[key]);
+
+      axios.get('api/v1/casts', { params: params }).then(result => {
         $('#cast-list-wrapper #cast-list').remove();
         $('#cast-list-wrapper').append(result.data);
       });

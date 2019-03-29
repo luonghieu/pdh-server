@@ -1,4 +1,5 @@
-  @foreach ($casts['data'] as $cast)
+@php $casts = (isset($casts['data'])) ? $casts['data'] : $casts; @endphp
+@foreach ($casts as $cast)
     <a href="{{ route('cast.show', $cast['id']) }}" class="cast-items">
       <div class="thumbnail">
         @php
@@ -25,9 +26,16 @@
         @endif
 
         <span class="{{ $class }} text-bold">{{ isset($cast['class']) ? $cast['class'] : $cast['class_name']  }}</span>
-        @if ($cast['working_today'])
-          <span class="today text-bold">今日OK</span>
-        @endif
+          @if (array_key_exists('is_working_today', $casts))
+              @if ($cast['is_working_today'])
+                  <span class="today text-bold">今日OK</span>
+              @endif
+          @else
+              @if ($cast['working_today'])
+                  <span class="today text-bold">今日OK</span>
+              @endif
+          @endif
+
       </div>
       <div class="profile">
         <p class="top">
