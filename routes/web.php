@@ -94,7 +94,7 @@ Route::group(['middleware' => ['auth', 'is_active'], 'as' => 'guest.'], function
 Route::group(['middleware' => ['auth', 'guest', 'check_info', 'is_active']], function () {
     Route::group(['prefix' => 'cast', 'as' => 'cast.'], function () {
         Route::get('/', ['as' => 'list_casts', 'uses' => 'UserController@listCasts']);
-        Route::get('cast/list/more', ['as' => 'list.more', 'uses' => 'UserController@loadMoreListCasts']);
+        Route::get('/list/more', ['as' => 'list.more', 'uses' => 'UserController@loadMoreListCasts']);
         Route::get('/favorite', ['as' => 'favorite', 'uses' => 'UserController@listCastsFavorite']);
         Route::get('/favorite/more', ['as' => 'favorite.more', 'uses' => 'UserController@loadMoreListCastsFavorite']);
         Route::get('/search', ['as' => 'search', 'uses' => 'UserController@search']);
