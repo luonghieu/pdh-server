@@ -35,7 +35,7 @@
     @php $date = $today->copy()->addDays($i); @endphp
     <label class="button button--green js-schedule {{ (request()->schedule == $date->format('Y-m-d')) ? 'active' : '' }}">
       <input type="radio" name="schedule_date" value="{{ $date->format('Y-m-d') }}" {{ (request()->schedule == $date->format('Y-m-d')) ? 'checked' : '' }}>
-      {{ $date->format('m/d') }} ({{ dayOfWeek()[$date->dayOfWeek] }})
+      {{ $date->month . '/' . $date->day }} ({{ dayOfWeek()[$date->dayOfWeek] }})
     </label>
     @endfor
     <input type="hidden" name="schedule" value="{{ request()->schedule }}" id="schedule" />
