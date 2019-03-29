@@ -42,7 +42,7 @@
   </div><!-- /schedule -->
   <div id="cast-list-wrapper">
     @if (!count($casts['data']))
-      <div class="no-cast">
+      <div class="no-cast" id="cast-list">
         <figure><img src="{{ asset('assets/web/images/common/woman2.svg') }}"></figure>
         <figcaption>キャストが見つかりません</figcaption>
       </div>
