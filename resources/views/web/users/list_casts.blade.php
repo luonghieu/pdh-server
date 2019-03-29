@@ -23,7 +23,7 @@
     @endforeach
   </form>
   <div class="page-header">
-    @php 
+    @php
       $urlSearch = route('cast.search') . '?schedule=' . request()->schedule . '&prefecture_id=' . request()->prefecture_id . '&class_id=' . request()->class_id . '&point=' . request()->point;
     @endphp
     <a href="{{ $urlSearch }}" class="search"><i><img src="{{ asset('assets/web/images/common/search.svg') }}" alt=""></i></a>

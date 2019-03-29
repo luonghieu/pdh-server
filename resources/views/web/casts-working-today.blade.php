@@ -60,10 +60,3 @@
     <a href="javascript:void(0)" class="cast-item import" id="popup-freezed-account"></a>
   @endif
 @endif
-<script>
-    function imgError(image) {
-        image.onerror = "";
-        image.src = "/assets/web/images/gm1/ic_default_avatar@3x.png";
-        return true;
-    }
-</script>

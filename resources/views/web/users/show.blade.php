@@ -13,8 +13,8 @@
     <div class="slider cast-photo__show">
       @if($cast['avatars'])
         @foreach ($cast['avatars'] as $avatar)
-          @if (($avatar['path']))
-          <img data-lazy="{{ $avatar['path'] }}">
+          @if (($avatar['thumbnail']))
+          <img data-lazy="{{ $avatar['thumbnail'] }}">
           @else
           <img data-lazy="{{ asset('assets/web/images/gm1/ic_default_avatar@3x.png') }}">
           @endif
@@ -220,7 +220,6 @@
     localStorage.removeItem("order_params");
   }
 </script>
-
 <script>
   $(function () {
     workingToday = $('#working-today').val();
@@ -234,7 +233,6 @@
         $("html, body").animate({scrollTop: $('#list-shift-of-cast').offset().top }, 1000);
     });
   });
-
 </script>
 @stop
 @section('web.extra_css')
