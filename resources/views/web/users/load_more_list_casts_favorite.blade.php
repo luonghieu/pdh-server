@@ -1,9 +1,10 @@
-@foreach ($favorites['data'] as $favorite)
-  <a href="{{ route('cast.show', $favorite['id']) }}" class="cast-items">
+@php $casts = (isset($casts['data'])) ? $casts['data'] : $casts; @endphp
+@foreach ($casts as $cast)
+  <a href="{{ route('cast.show', $cast['id']) }}" class="cast-items">
     <div class="thumbnail">
       @php
       $class = '';
-      switch ($favorite['class_id']) {
+      switch ($cast['class_id']) {
           case 1:
               $class = 'cast-class_b';
               break;
@@ -15,25 +16,32 @@
               break;
       }
       @endphp
-      @if ($favorite['avatars'] && isset($favorite['avatars'][0]) && $favorite['avatars'][0]['thumbnail'])
-      <img class="lazy" data-src="{{ $favorite['avatars'][0]['thumbnail'] }}">
+      @if ($cast['avatars'] && isset($cast['avatars'][0]) && $cast['avatars'][0]['thumbnail'])
+      <img class="lazy" data-src="{{ $cast['avatars'][0]['thumbnail'] }}" src="{{ $cast['avatars'][0]['thumbnail'] }}">
       @else
-      <img class="lazy" data-src="{{ asset('assets/web/images/gm1/ic_default_avatar@3x.png') }}">
+      <img class="lazy" data-src="{{ asset('assets/web/images/gm1/ic_default_avatar@3x.png') }}" src="{{ asset('assets/web/images/gm1/ic_default_avatar@3x.png') }}">
       @endif
 
-      <span class="{{ $class }} text-bold">{{ $favorite['class'] }}</span>
-      @if ($favorite['working_today'])
-        <span class="today text-bold">今日OK</span>
+      <span class="{{ $class }} text-bold">{{ isset($cast['class']) ? $cast['class'] : $cast['class_name'] }}</span>
+      @if (array_key_exists('is_working_today', $cast))
+        @if ($cast['is_working_today'])
+          <span class="today text-bold">今日OK</span>
+        @endif
+      @else
+        @if ($cast['working_today'])
+          <span class="today text-bold">今日OK</span>
+        @endif
       @endif
+
     </div>
     <div class="profile">
       <p class="top">
-        <i class="{{ $favorite['is_online'] ? 'online' : 'offline' }}"></i>
-        <span class="job text-bold">{{ $favorite['job'] }}</span>
-        <span class="age text-bold">{{ $favorite['age'] }}歳</span>
+        <i class="{{ $cast['is_online'] ? 'online' : 'offline' }}"></i>
+        <span class="job text-bold">{{ isset($cast['job']) ? $cast['job'] : $cast['job_name'] }}</span>
+        <span class="age text-bold">{{ $cast['age'] }}歳</span>
       </p>
-      <p class="message">{{ $favorite['intro'] ? $favorite['intro'] : '...' }}</p>
-      <p class="point"><span class="text-bold">{{ number_format($favorite['cost']) }}P</span>/30分</p>
+      <p class="message">{{ $cast['intro'] ? $cast['intro'] : '...' }}</p>
+      <p class="point"><span class="text-bold">{{ number_format($cast['cost']) }}P</span>/30分</p>
     </div>
   </a>
 @endforeach
