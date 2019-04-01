@@ -24,6 +24,7 @@ Route::group(['middleware' => 'auth'], function () {
     Route::group(['middleware' => 'check_info'], function () {
         Route::group(['prefix' => 'purchase', 'as' => 'purchase.'], function () {
             Route::get('/', ['as' => 'index', 'uses' => 'PointController@index']);
+            Route::get('/select_payment_methods', ['as' => 'select_payment_methods', 'uses' => 'PointController@selectPaymentMethods']);
         });
 
         Route::group(['middleware' => 'is_active', 'prefix' => 'message', 'as' => 'message.'], function () {

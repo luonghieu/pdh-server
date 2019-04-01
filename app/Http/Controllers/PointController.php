@@ -82,4 +82,9 @@ class PointController extends Controller
             abort(500);
         }
     }
+
+    public function selectPaymentMethods()
+    {
+        return view('web.payment_methods.index');
+    }
 }
