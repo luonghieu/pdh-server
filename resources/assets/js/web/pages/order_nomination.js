@@ -487,79 +487,6 @@ function selectedCouponsNominate(helper)
   })
 }
 
-<<<<<<< HEAD
-function loadShift()
-{
-  if($('select[name=sl_month_nomination]').length) {
-    if(localStorage.getItem("shifts")){
-      var castId = $('.cast-id').val();
-      var shift = JSON.parse(localStorage.getItem("shifts"));
-      if(shift[castId]) {
-        shift = shift[castId];
-
-        var date = parseInt(shift.date);
-        var month = parseInt(shift.month);
-        var day = shift.dayOfWeekString;
-
-        var htmlMonth = `<option value="${month}" >${month}月</option>`;
-        var htmlDate = `<option value="${date}" >${date}日(${day})</option>`;
-
-        $('select[name=sl_month_nomination]').html(htmlMonth);
-        $('select[name=sl_date_nomination]').html(htmlDate);
-
-
-        var currentDate = new Date();
-        utc = currentDate.getTime() + (currentDate.getTimezoneOffset() * 60000);
-        nd = new Date(utc + (3600000*9));
-
-        var currentDate = parseInt(nd.getDate());
-        
-        if (date != currentDate) {
-          $('.input-time-number').prop('disabled', 'true');
-          $('.input-time-number').parent().removeClass('active');
-          $('.input-time-number').parent().addClass('inactive');
-
-          if(localStorage.getItem("order_params")){
-            var orderParams = JSON.parse(localStorage.getItem("order_params"));
-
-            if(!orderParams.current_minute) {
-              $('select[name=sl_hour_nomination]>option:eq(21)').prop('selected', true);
-              $('select[name=sl_minute_nomination]>option:eq(0)').prop('selected', true);
-
-              $('#date_input').addClass('active');
-              $('.input-other-time').prop('checked', 'true');
-              $('.date-input-nomination').css('display', 'flex');
-              $(".date-input").click();
-              var time = $('.input-other-time').val();
-
-              var updateTime = {
-                    current_time_set: time,
-                  };
-
-              helper.updateLocalStorageValue('order_params', updateTime);
-            }
-          } else {
-            $('select[name=sl_hour_nomination]>option:eq(21)').prop('selected', true);
-            $('select[name=sl_minute_nomination]>option:eq(0)').prop('selected', true);
-
-            $('#date_input').addClass('active');
-            $('.input-other-time').prop('checked', 'true');
-            $('.date-input-nomination').css('display', 'flex');
-            $(".date-input").click();
-            var time = $('.input-other-time').val();
-
-            var updateTime = {
-                  current_time_set: time,
-                };
-
-            helper.updateLocalStorageValue('order_params', updateTime);
-          }
-
-        }
-      }
-    }
-  }
-=======
 function handlerSelectedTransfer()
 {
   var transfer = $("input:radio[name='transfer_order_nominate']");
@@ -587,7 +514,6 @@ function handlerSelectedTransfer()
       }
     }
   })
->>>>>>> feature/payment-method
 }
 
 $(document).ready(function(){
@@ -961,7 +887,7 @@ $(document).ready(function(){
                   })
                 }
     
-                loadShift();
+                helper.loadShift();
               })
               .catch(function (error) {
                 console.log(error);
@@ -976,7 +902,6 @@ $(document).ready(function(){
                 $(this).prop('selected',true);
               }
             })
-
           }
 
           if(orderParams.current_hour) {
@@ -1118,14 +1043,11 @@ $(document).ready(function(){
   if($('#show-coupon-order-nominate').length) {
     loadCouponsOrderNominate();
     selectedCouponsNominate(helper);
-<<<<<<< HEAD
-    loadShift();
+    helper.loadShift();
+    handlerSelectedTransfer();
   } else {
     if(localStorage.getItem("shifts")){
       localStorage.removeItem("shifts");
     }
-=======
-    handlerSelectedTransfer();
->>>>>>> feature/payment-method
   }
 })
