@@ -17,6 +17,13 @@
 <body id="@yield('controller.id')" class="@yield('controller.class')">
   @yield('web.extra')
   <div id="page">
+    <header class="header">
+      <div class="h-wrapper">
+        <div class="h-logo">
+          <a href="{{ route('web.index') }}"><img src="{{ asset('assets/web/images/common/logo.svg') }}" alt="cheers"></a>
+        </div>
+      </div>
+    </header>
     <main id="@yield('screen.id')" class="@yield('screen.class')">
       @yield('web.content')
     </main>

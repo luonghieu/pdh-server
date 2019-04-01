@@ -5,6 +5,11 @@ const couponType = {
   'PERCENT': 3
 };
 
+const OrderPaymentMethod = {
+  'Credit_Card': 1,
+  'Direct_Payment': 2
+};
+
 function showCoupons(coupon, params)
 {
   var html = '<section class="details-list">';
@@ -259,7 +264,96 @@ $(document).ready(function(){
         })
       }
 
+      if (orderCall.payment_method) {
+        const inputPayment = $("input:radio[name='transfer_order']");
+        $.each(inputPayment,function(index,val){
+          if(val.value == orderCall.payment_method) {
+            $(this).prop('checked',true);
+          }
+        })
+
+        if(OrderPaymentMethod.Direct_Payment == orderCall.payment_method) {
+          $('#show-registered-card').css('display', 'none');
+        }
+      }
+
+      $("input:radio[name='transfer_order']").on("change",function(event){
+        var transfer = $("input:radio[name='transfer_order']:checked").val();
+
+        if(OrderPaymentMethod.Direct_Payment == transfer) {
+          $('#show-registered-card').css('display', 'none');
+        } else {
+          $('#show-registered-card').css('display', 'block');
+
+          var checkCard = $('.inactive-button-order').length;
+
+          if(checkCard) {
+            $('.cb-cancel').prop('checked', false);
+            $('#sp-cancel').addClass("sp-disable");
+            $('#btn-confirm-orders').addClass("disable");
+            $('#btn-confirm-orders').prop('disabled', true);
+          }
+        }
+
+        var params = {
+            payment_method : transfer,
+          };
+
+        helper.updateLocalStorageValue('order_call', params);
+      })
+
+      $(".cb-cancel").on("change",function(event){
+        if ($(this).is(':checked')) {
+          var checkCard = $('.inactive-button-order').length;
+          var transfer = $("input:radio[name='transfer_order']:checked").val();
+
+          if(OrderPaymentMethod.Direct_Payment == transfer) {
+            checkCard = false;
+          }
+              
+          if(checkCard) {
+            $(this).prop('checked', false);
+            $('#sp-cancel').addClass("sp-disable");
+            $('#btn-confirm-orders').addClass("disable");
+            $('#btn-confirm-orders').prop('disabled', true);
+          } else {
+            $(this).prop('checked', true);
+            $('#sp-cancel').removeClass('sp-disable');
+            $('#btn-confirm-orders').removeClass('disable');
+            $('#btn-confirm-orders').prop('disabled', false);
+          }
+        } else {
+          $(this).prop('checked', false);
+          $('#sp-cancel').addClass("sp-disable");
+          $('#btn-confirm-orders').addClass("disable");
+          $('#btn-confirm-orders').prop('disabled', true);
+        }
+      });
+
       $('.sb-form-orders').on('click',function(){
+        if($("input[name='transfer_order']").length) {
+          var transfer = parseInt($("input[name='transfer_order']:checked").val());
+        }
+
+        var currentPointUser = $('#current-point').val();
+        var tempPointOrder = $('#temp_point_order_call').val();
+
+        if (transfer) {
+          if (OrderPaymentMethod.Credit_Card == transfer || OrderPaymentMethod.Direct_Payment == transfer) {
+            if (OrderPaymentMethod.Direct_Payment == transfer) {
+              if (parseInt(tempPointOrder) > parseInt(currentPointUser)) {
+                $('.cb-cancel').prop('checked', false);
+
+                window.location.href = '/payment/transfer';
+
+                return ;
+              }
+            }
+          } else {
+              window.location.href = '/mypage';
+          }
+        }
+
         $('.modal-confirm').css('display', 'none');
         $('#btn-confirm-orders').prop('disabled', true);
 
@@ -316,8 +410,12 @@ $(document).ready(function(){
           type :type,
           total_cast :orderCall.countIds,
           tags : tags,
-          temp_point : $('#temp_point_order_call').val(),
+          temp_point : tempPointOrder,
         };
+
+        if(transfer) {
+          params.payment_method = transfer;
+        }
 
         if(orderCall.coupon) {
           var coupon = orderCall.coupon;            
@@ -348,7 +446,7 @@ $(document).ready(function(){
               window.location.href = '/mypage';
           }
         }
-        
+
         window.axios.post('/api/v1/orders', params)
         .then(function(response) {
           $('#orders').prop('checked',false);

@@ -14,7 +14,6 @@ use App\Jobs\CancelOrder;
 use App\Jobs\ProcessOrder;
 use App\Jobs\StopOrder;
 use App\Jobs\ValidateOrder;
-use App\Notifications\AddedInvitePoint;
 use App\Notifications\CancelOrderFromCast;
 use App\Notifications\CastDenyOrders;
 use App\Services\LogService;
@@ -48,6 +47,7 @@ class Order extends Model
         'status',
         'canceled_at',
         'is_changed',
+        'payment_method',
         'coupon_id',
         'coupon_name',
         'coupon_type',
@@ -494,7 +494,7 @@ class Order extends Model
             $orderFee = 500 * $multiplier;
             return $orderFee;
         }
-        
+
         return $orderFee;
     }
 
@@ -648,7 +648,7 @@ class Order extends Model
         $subPoint = $totalPoint;
         $points = Point::where('user_id', $user->id)
             ->where('balance', '>', 0)
-            ->whereIn('type', [PointType::BUY, PointType::AUTO_CHARGE, PointType::INVITE_CODE])
+            ->whereIn('type', [PointType::BUY, PointType::AUTO_CHARGE, PointType::INVITE_CODE, PointType::DIRECT_TRANSFER])
             ->orderBy('created_at')
             ->get();
 
@@ -681,7 +681,7 @@ class Order extends Model
                             'order_id' => $this->id,
                             'order_type' => $this->type,
                             'created_at' => Carbon::now()->format('Y/m/d H:i'),
-                        ]
+                        ],
                     ];
                     $value->update();
                 }
@@ -710,7 +710,7 @@ class Order extends Model
                             'order_id' => $this->id,
                             'order_type' => $this->type,
                             'created_at' => Carbon::now()->format('Y/m/d H:i'),
-                        ]
+                        ],
                     ];
                     $value->update();
                 }
@@ -724,7 +724,7 @@ class Order extends Model
 
         $inviteCodeHistory = $user->inviteCodeHistory;
         if ($inviteCodeHistory) {
-            if ($inviteCodeHistory->status == InviteCodeHistoryStatus::PENDING && $inviteCodeHistory->order_id == $this->id) {
+            if (InviteCodeHistoryStatus::PENDING == $inviteCodeHistory->status && $inviteCodeHistory->order_id == $this->id) {
                 $userInvite = $inviteCodeHistory->inviteCode->user;
                 $point = new Point;
                 $point->point = $inviteCodeHistory->point;
@@ -823,7 +823,7 @@ class Order extends Model
                     break;
                 case CouponType::PERCENT:
                     $orderPoint = $this->total_point;
-                    if (!isset($orderPoint) || $orderPoint == 0) {
+                    if (!isset($orderPoint) || 0 == $orderPoint) {
                         $casts = $this->casts()->get();
                         $orderPoint = 0;
                         $orderDuration = $this->duration * 60;
@@ -853,11 +853,11 @@ class Order extends Model
                         $discountPoint = $this->orderPointDiscount($casts, $this->coupon_value * 60) + $this->orderFeeDiscount($casts, $this->coupon_value * 60);
                     } else {
                         $orderPoint = 0;
-                        if ($this->type == OrderType::NOMINATION) {
+                        if (OrderType::NOMINATION == $this->type) {
                             $cast = \DB::table('cast_order')->where('order_id', $this->id)->first();
                             if ($cast) {
                                 $cost = $cast->cost;
-                                if ($cost === null) {
+                                if (null === $cost) {
                                     $cost = $this->castClass->cost;
                                 }
                             } else {
