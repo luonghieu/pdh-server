@@ -35,26 +35,27 @@
     @php $date = $today->copy()->addDays($i); @endphp
     <label class="button button--green js-schedule {{ (request()->schedule == $date->format('Y-m-d')) ? 'active' : '' }}">
       <input type="radio" name="schedule_date" value="{{ $date->format('Y-m-d') }}" {{ (request()->schedule == $date->format('Y-m-d')) ? 'checked' : '' }}>
-      {{ $date->format('m/d') }} ({{ dayOfWeek()[$date->dayOfWeek] }})
+      {{ $date->month . '/' . $date->day }} ({{ dayOfWeek()[$date->dayOfWeek] }})
     </label>
     @endfor
     <input type="hidden" name="schedule" value="{{ request()->schedule }}" id="schedule" />
   </div><!-- /schedule -->
-
-  @if (!$favorites['data'])
-  <div class="no-cast">
-    <figure><img src="{{ asset('assets/web/images/common/woman2.svg') }}"></figure>
-    <figcaption>キャストが見つかりません</figcaption>
+  <div id="cast-list-wrapper">
+    @if (!count($casts['data']))
+      <div class="no-cast" id="cast-list">
+        <figure><img src="{{ asset('assets/web/images/common/woman2.svg') }}"></figure>
+        <figcaption>キャストが見つかりません</figcaption>
+      </div>
+    @else
+      <div class="cast-list" id="cast-list">
+        @include('web.users.load_more_list_casts_favorite', compact('casts'))
+        <input type="hidden" id="next_page" value="{{ ($casts['next_page_url']) ? $casts['next_page_url'] .
+        '&is_ajax=1' : null }}">
+        <!-- loading_page -->
+        @include('web.partials.loading_icon')
+      </div> <!-- /list_wrap -->
+    @endif
   </div>
-  @else
-  <div class="cast-list">
-    @include('web.users.load_more_list_casts_favorite', compact('favorites'))
-    <input type="hidden" id="next_page" value="{{ $favorites['next_page_url'] }}">
-    <!-- loading_page -->
-    @include('web.partials.loading_icon')
-  </div> <!-- /list_wrap -->
-  </div>
-  @endif
 @endsection
 @section('web.script')
 <script>
@@ -170,8 +171,23 @@
         point: point,
       };
 
-      link = '/cast/favorite?schedule=' + params.schedule + '&prefecture_id=' + params.prefecture_id + '&class_id=' + params.class_id + '&point=' + params.point;
-      window.location.href = link;
+      // link = '/cast/favorite?schedule=' + params.schedule + '&prefecture_id=' + params.prefecture_id + '&class_id=' + params.class_id + '&point=' + params.point;
+      // window.location.href = link;
+
+      params = {
+          schedule: schedule,
+          prefecture_id: prefectureId,
+          class_id: classId,
+          point: point,
+          response_type: 'list-cast',
+          favorited: 1
+      };
+      Object.keys(params).forEach((key) => (params[key] == '' || params[key] == null) && delete params[key]);
+
+      axios.get('api/v1/casts', { params: params }).then(result => {
+          $('#cast-list-wrapper #cast-list').remove();
+          $('#cast-list-wrapper').append(result.data);
+      });
     });
   });
 </script><!-- /Js schedule -->
