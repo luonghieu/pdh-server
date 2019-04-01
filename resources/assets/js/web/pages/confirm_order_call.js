@@ -343,8 +343,8 @@ $(document).ready(function(){
             if (OrderPaymentMethod.Direct_Payment == transfer) {
               if (parseInt(tempPointOrder) > parseInt(currentPointUser)) {
                 $('.cb-cancel').prop('checked', false);
-
-                window.location.href = '/payment/transfer';
+                var point = parseInt(tempPointOrder) - parseInt(currentPointUser);
+                window.location.href = '/payment/transfer?point=' + point;
 
                 return ;
               }
