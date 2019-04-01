@@ -3703,3 +3703,34 @@ div.user-data span.total-point-cast{
 .transfer_amount-order .transfer-right {
   margin-right: 45px;
 }
+
+#gi-4-4 .wrap-radio-payment-methods {
+  width: 100%;
+  height: auto;
+  align-items: center;
+  font-size: 16px;
+  color: #222222;
+}
+
+#gi-4-4 .wrap-payment-methods .title-payment-methods {
+  height: 60px;
+  text-align: center;
+  border-bottom: 1px solid #E8E8E8;
+  margin: 0 8px;
+  font-size: 14px;
+}
+
+#gi-4-4 .wrap-payment-methods .title-payment-methods p {
+  padding-top: 20px;
+}
+
+#gi-4-4 .wrap-radio-payment-methods ul li {
+  border-bottom: 1px solid #e8e8e8;
+  margin: 25px 8px 0 8px;
+}
+
+#gi-4-4 .wrap-radio-payment-methods img {
+  display: inline-block;
+  height: 15px;
+  width: 15px;
+}

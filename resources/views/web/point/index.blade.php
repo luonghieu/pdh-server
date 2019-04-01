@@ -61,6 +61,7 @@
             <figure><img src="{{ asset('assets/web/images/gl4/coin.svg') }}" alt="画像"></figure>
             <p id="total_point">{{ number_format($user->point) }}</p>
             <input type="hidden" id="current_point" value="{{ $user->point }}">
+            <input type="hidden" id="is_multi_payment_method" value="{{ $user->is_multi_payment_method }}">
         </div>
     </div>
     <div class="point_list_wrap">
@@ -120,14 +121,18 @@
     <script>
         var hasCard = '{!! $user->is_card_registered ? 1 : 0 !!}';
         function buyPoint(point) {
-            if (!hasCard) {
-                document.getElementById('popup-require-card').click();
-                return false;
-            }
+            if (localStorage.getItem("payment_method") && (localStorage.getItem("payment_method") == 2)) {
+                window.location.href = '/payment/transfer?point='+point;
+            } else {
+                if (!hasCard) {
+                    document.getElementById('popup-require-card').click();
+                    return false;
+                }
 
-            $('#buypoint-popup').click();
-            $('#popup-amount').html(point.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") + 'P');
-            $('#point-amount').val(point);
+                $('#buypoint-popup').click();
+                $('#popup-amount').html(point.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") + 'P');
+                $('#point-amount').val(point);
+            }
         }
     </script>
 @endsection
