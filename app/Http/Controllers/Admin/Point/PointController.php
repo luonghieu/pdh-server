@@ -160,7 +160,7 @@ class PointController extends Controller
                     $item->id,
                     Carbon::parse($item->created_at)->format('Y年m月d日'),
                     $item->user_id,
-                    $item->user->fullname,
+                    isset($item->user->fullname) ? $item->user->fullname : $item->user_id,
                     PointType::getDescription($item->type),
                     $amount,
                     $item->point,
