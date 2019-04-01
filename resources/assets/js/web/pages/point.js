@@ -21,3 +21,9 @@ $('#buypoint-confirm').on('click', function() {
 $('#buypoint-alert-label').on('click', function() {
     $('#buypoint-alert-label').removeClass('auto-popup');
 });
+
+$(document).ready(function () {
+    if (!localStorage.getItem("payment_method") && ($('#is_multi_payment_method').val() == true)) {
+        window.location.href = 'purchase/select_payment_methods';
+    }
+});
