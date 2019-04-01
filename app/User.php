@@ -5,6 +5,8 @@ namespace App;
 use App\Enums\PaymentStatus;
 use App\Enums\PointType;
 use App\Enums\UserType;
+use App\Repositories\CastClassRepository;
+use App\Repositories\JobRepository;
 use App\Services\LogService;
 use App\Verification;
 use Carbon\Carbon;
@@ -597,5 +599,15 @@ class User extends Authenticatable implements JWTSubject
     {
         return $this->belongsToMany(Shift::class)
             ->withPivot('day_shift', 'night_shift', 'off_shift')->withTimestamps();
+    }
+
+    public function getClassNameAttribute()
+    {
+        return  $this->class_id ? app(CastClassRepository::class)->find($this->class_id)->name : '';
+    }
+
+    public function getJobNameAttribute()
+    {
+        return  $this->job_id ? app(JobRepository::class)->find($this->job_id)->name : '';
     }
 }
