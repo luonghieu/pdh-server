@@ -6,6 +6,11 @@ const couponType = {
   'PERCENT': 3
 };
 
+const OrderPaymentMethod = {
+  'Credit_Card': 1,
+  'Direct_Payment': 2
+};
+
 function loadCouponsOrderNominate()
 {
   var couponId = null;
@@ -482,77 +487,33 @@ function selectedCouponsNominate(helper)
   })
 }
 
-function loadShift()
+function handlerSelectedTransfer()
 {
-  if($('select[name=sl_month_nomination]').length) {
-    if(localStorage.getItem("shifts")){
-      var castId = $('.cast-id').val();
-      var shift = JSON.parse(localStorage.getItem("shifts"));
-      if(shift[castId]) {
-        shift = shift[castId];
+  var transfer = $("input:radio[name='transfer_order_nominate']");
+  transfer.on("change",function(){
+    var transfer = $("input:radio[name='transfer_order_nominate']:checked").val();
 
-        var date = parseInt(shift.date);
-        var month = parseInt(shift.month);
-        var day = shift.dayOfWeekString;
-
-        var htmlMonth = `<option value="${month}" >${month}月</option>`;
-        var htmlDate = `<option value="${date}" >${date}日(${day})</option>`;
-
-        $('select[name=sl_month_nomination]').html(htmlMonth);
-        $('select[name=sl_date_nomination]').html(htmlDate);
-
-
-        var currentDate = new Date();
-        utc = currentDate.getTime() + (currentDate.getTimezoneOffset() * 60000);
-        nd = new Date(utc + (3600000*9));
-
-        var currentDate = parseInt(nd.getDate());
-        
-        if (date != currentDate) {
-          $('.input-time-number').prop('disabled', 'true');
-          $('.input-time-number').parent().removeClass('active');
-          $('.input-time-number').parent().addClass('inactive');
-
-          if(localStorage.getItem("order_params")){
-            var orderParams = JSON.parse(localStorage.getItem("order_params"));
-
-            if(!orderParams.current_minute) {
-              $('select[name=sl_hour_nomination]>option:eq(21)').prop('selected', true);
-              $('select[name=sl_minute_nomination]>option:eq(0)').prop('selected', true);
-
-              $('#date_input').addClass('active');
-              $('.input-other-time').prop('checked', 'true');
-              $('.date-input-nomination').css('display', 'flex');
-              $(".date-input").click();
-              var time = $('.input-other-time').val();
-
-              var updateTime = {
-                    current_time_set: time,
-                  };
-
-              helper.updateLocalStorageValue('order_params', updateTime);
-            }
-          } else {
-            $('select[name=sl_hour_nomination]>option:eq(21)').prop('selected', true);
-            $('select[name=sl_minute_nomination]>option:eq(0)').prop('selected', true);
-
-            $('#date_input').addClass('active');
-            $('.input-other-time').prop('checked', 'true');
-            $('.date-input-nomination').css('display', 'flex');
-            $(".date-input").click();
-            var time = $('.input-other-time').val();
-
-            var updateTime = {
-                  current_time_set: time,
-                };
-
-            helper.updateLocalStorageValue('order_params', updateTime);
-          }
-
+    var param = {
+          payment_method : transfer,
         }
+
+    helper.updateLocalStorageValue('order_params', param);
+
+    if (OrderPaymentMethod.Direct_Payment == parseInt(transfer)) {
+      $('#show-card-registered').css('display', 'none');
+    }
+
+    if (OrderPaymentMethod.Credit_Card == parseInt(transfer)) {
+      $('#show-card-registered').css('display', 'block');
+
+      if ($('.inactive-button-order').length) {
+        $('#confirm-orders-nomination').addClass("disable");
+        $('.checked-order').prop('checked', false);
+        $('#confirm-orders-nomination').prop('disabled', true);
+        $('#sp-cancel').addClass("sp-disable");
       }
     }
-  }
+  })
 }
 
 $(document).ready(function(){
@@ -565,9 +526,16 @@ $(document).ready(function(){
         var cancel=$("input:checkbox[name='confrim_order_nomination']:checked").length;
         var otherArea = $("input:text[name='other_area_nomination']").val();
 
+        var checkCard = $('.inactive-button-order').length;
+        var transfer = $("input:radio[name='transfer_order_nominate']:checked").val();
+
+        if(OrderPaymentMethod.Direct_Payment == transfer) {
+          checkCard = false;
+        }
+
         if((!area || (area=='その他' && !otherArea)) || !time ||
          (!duration || (duration<1 && 'other_time_set' != duration)) || (time=='other_time' && !date) 
-         || $('.inactive-button-order').length) {
+         || checkCard) {
 
           $('#confirm-orders-nomination').addClass("disable");
           $(this).prop('checked', false);
@@ -792,14 +760,37 @@ $(document).ready(function(){
   });
 
   $('.cf-orders-nominate').on('click',function(){
+
+    var checkCard = $('.inactive-button-order').length;
+    var transfer = $("input:radio[name='transfer_order_nominate']:checked").val();
+
+    if(OrderPaymentMethod.Direct_Payment == transfer) {
+      checkCard = false;
+    }
+
+    if(checkCard) {
       if($('#md-require-card').length){
         $('#md-require-card').click();
-      }else {
-        $('.modal-confirm-nominate').css('display','none');
-        $('#confirm-orders-nomination').prop('disabled','disabled');
-        document.getElementById('confirm-order-nomination-submit').click();
-        $('#create-nomination-form').submit();
       }
+    } else {
+      if(OrderPaymentMethod.Direct_Payment == transfer) {
+
+        var tempPoint = $('#current-temp-point').val();
+        var pointUser = $('#current-point').val();
+
+        if (parseInt(tempPoint) > parseInt(pointUser)) {
+          $('.checked-order').prop('checked',false);
+          window.location = '/payment/transfer';
+
+          return;
+        }
+      }
+
+      $('.modal-confirm-nominate').css('display','none');
+      $('#confirm-orders-nomination').prop('disabled','disabled');
+      document.getElementById('confirm-order-nomination-submit').click();
+      $('#create-nomination-form').submit();
+    }
   });
 
   if ($('#create-nomination-form').length) {
@@ -812,7 +803,22 @@ $(document).ready(function(){
           $('.total-point').text(currenttempPoint + 'P~');
       }
 
-        //duration
+      //payment
+
+      if(orderParams.payment_method) {
+        const inputTransfer = $("input:radio[name='transfer_order_nominate']");
+        $.each(inputTransfer,function(index,val){
+          if(val.value == parseInt(orderParams.payment_method)) {
+            $(this).prop('checked',true);
+          }
+        })
+
+        if (OrderPaymentMethod.Direct_Payment == parseInt(orderParams.payment_method)) {
+          $('#show-card-registered').css('display', 'none');
+        }
+      }
+
+      //duration
       var cost = $('.cost-order').val();
       if(orderParams.current_duration){
         if('other_time_set' == orderParams.current_duration) {
@@ -881,7 +887,7 @@ $(document).ready(function(){
                   })
                 }
     
-                loadShift();
+                helper.loadShift();
               })
               .catch(function (error) {
                 console.log(error);
@@ -896,7 +902,6 @@ $(document).ready(function(){
                 $(this).prop('selected',true);
               }
             })
-
           }
 
           if(orderParams.current_hour) {
@@ -1038,7 +1043,8 @@ $(document).ready(function(){
   if($('#show-coupon-order-nominate').length) {
     loadCouponsOrderNominate();
     selectedCouponsNominate(helper);
-    loadShift();
+    helper.loadShift();
+    handlerSelectedTransfer();
   } else {
     if(localStorage.getItem("shifts")){
       localStorage.removeItem("shifts");

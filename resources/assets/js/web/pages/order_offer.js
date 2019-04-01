@@ -7,6 +7,11 @@ const couponType = {
   'PERCENT': 3
 };
 
+const OrderPaymentMethod = {
+  'Credit_Card': 1,
+  'Direct_Payment': 2
+};
+
 function firstLoad() {
   var hour = $(".select-hour-offer option:selected").val();
   var minute = $(".select-minute-offer option:selected").val();
@@ -343,6 +348,37 @@ function showPoint(input, offerId, coupon = null)
   });
 }
 
+
+function selectedTransfer()
+{
+  var transfer = $("input:radio[name='transfer_order_offer']");
+  transfer.on("change",function(){
+    var offerId = $('.offer-id').val();
+    var transfer = $("input:radio[name='transfer_order_offer']:checked").val();
+
+    var param = {
+          payment_method : transfer,
+        }
+
+    helper.updateLocalStorageKey('order_offer', param, offerId);
+
+    if (OrderPaymentMethod.Direct_Payment == parseInt(transfer)) {
+      $('#card-registered').css('display', 'none');
+    }
+
+    if (OrderPaymentMethod.Credit_Card == parseInt(transfer)) {
+      $('#card-registered').css('display', 'block');
+
+      if ($('.inactive-button-order').length) {
+        $('#confirm-orders-offer').addClass("disable");
+        $('.checked-order-offer').prop('checked', false);
+        $('#confirm-orders-offer').prop('disabled', true);
+        $('#sp-cancel').addClass("sp-disable");
+      }
+    }
+  })
+}
+
 $(document).ready(function(){
   function dayOfWeek() {
     return ['日', '月', '火', '水', '木', '金', '土'];
@@ -391,8 +427,14 @@ $(document).ready(function(){
           var area = $("input:radio[name='offer_area']:checked").val();
           var otherArea = $("input:text[name='other_area_offer']").val();
           var checkExpired = $("#check-expired").val();
+          var checkCard = $('.inactive-button-order').length;
+          var transfer = $("input:radio[name='transfer_order_offer']:checked").val();
 
-          if(((checkExpired == 1) || !area || (area=='その他' && !otherArea) || $('.inactive-button-order').length 
+          if(OrderPaymentMethod.Direct_Payment == transfer) {
+            checkCard = false;
+          }
+
+          if(((checkExpired == 1) || !area || (area=='その他' && !otherArea) || checkCard
             || !orderOffer.current_date)) {
             $('#confirm-orders-offer').addClass("disable");
             $(this).prop('checked', false);
@@ -435,6 +477,30 @@ $(document).ready(function(){
   })
 
   $('body').on('click', "#lb-order-offer", function(event){
+    if($("input[name='transfer_order_offer']").length) {
+      var transfer = parseInt($("input[name='transfer_order_offer']:checked").val());
+    }
+
+    var tempPoint = $('#temp-point-offer').val();
+    var currentPointUser = $('#current-point').val();
+
+    if (transfer) {
+      if (OrderPaymentMethod.Credit_Card == transfer || OrderPaymentMethod.Direct_Payment == transfer) {
+        if (OrderPaymentMethod.Direct_Payment == transfer) {
+          if (parseInt(tempPoint) > parseInt(currentPointUser)) {
+            $('.checked-order-offer').prop('checked', false);
+            $('#order-offer-popup').prop('checked',false);
+
+            window.location.href = '/payment/transfer';
+
+            return ;
+          }
+        }
+      } else {
+          window.location.href = '/mypage';
+      }
+    }
+        
     $('.modal-confirm-offer').css('display','none');
     $('#confirm-orders-offer').prop('disabled', true);
 
@@ -480,7 +546,6 @@ $(document).ready(function(){
     var classId = $('#current-class-id-offer').val();
     var castIds = $('#current-cast-id-offer').val();
     var totalCast = castIds.split(',').length;
-    var tempPoint = $('#temp-point-offer').val();
     var offerId = $('.offer-id').val();
 
     var params = {
@@ -495,6 +560,10 @@ $(document).ready(function(){
       nominee_ids: castIds,
       temp_point: tempPoint,
       offer_id: offerId
+    }
+
+    if(transfer) {
+      params.payment_method = transfer;
     }
 
     if(orderOffer.coupon) {
@@ -900,6 +969,22 @@ $(document).ready(function(){
         //   $('#temp-point-offer').val(orderOffer.current_total_point);
         // }
 
+
+        //payment
+
+        if(orderOffer.payment_method) {
+          const inputTransfer = $("input:radio[name='transfer_order_offer']");
+          $.each(inputTransfer,function(index,val){
+            if(val.value == parseInt(orderOffer.payment_method)) {
+              $(this).prop('checked',true);
+            }
+          })
+
+          if (OrderPaymentMethod.Direct_Payment == parseInt(orderOffer.payment_method)) {
+            $('#card-registered').css('display', 'none');
+          }
+        }
+
         if(orderOffer.current_date) {
           currentDate = orderOffer.current_date.split('-');
           if (checkApp.isAppleDevice()) {
@@ -1048,14 +1133,6 @@ $(document).ready(function(){
       display: 'none',
     });
 
-
-
-
-
-
-
-
-
     // Set the date we're counting down to
     var date = $('#expired-date').val();
     var month = $('#expired-month').val();
@@ -1154,5 +1231,6 @@ $(document).ready(function(){
   if($('#temp-point-offer').length) {
     firstLoad();
     selectedCouponsOffer();
+    selectedTransfer();
   }
 })

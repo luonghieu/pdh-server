@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Cast;
 use App\Enums\OfferStatus;
+use App\Enums\OrderPaymentMethod;
 use App\Enums\OrderPaymentStatus;
 use App\Enums\OrderStatus;
 use App\Enums\OrderType;
@@ -320,6 +321,22 @@ class OrderController extends Controller
 
     public function createNominate(Request $request)
     {
+        $user = Auth::user();
+        $tempPoint = $request->current_temp_point;
+        $transfer = $request->transfer_order_nominate;
+
+        if (isset($transfer)) {
+            if (OrderPaymentMethod::CREDIT_CARD == $transfer || OrderPaymentMethod::DIRECT_PAYMENT == $transfer) {
+                if (OrderPaymentMethod::DIRECT_PAYMENT == $transfer) {
+                    if ((float) $tempPoint > (float) $user->point) {
+                        return redirect()->route('guest.transfer');
+                    }
+                }
+            } else {
+                return redirect()->route('web.login');
+            }
+        }
+
         $prefecture = $request->prefecture_nomination;
         $area = $request->nomination_area;
         $otherArea = $request->other_area_nomination;
@@ -398,8 +415,6 @@ class OrderController extends Controller
             $duration = $request->sl_duration_nominition;
         }
 
-        $tempPoint = $request->current_temp_point;
-
         $input = [
             'prefecture_id' => $prefecture,
             'address' => $area,
@@ -425,7 +440,10 @@ class OrderController extends Controller
             }
         }
 
-        $user = Auth::user();
+        if (isset($transfer)) {
+            $input['payment_method'] = $transfer;
+        }
+
         $accessToken = JWTAuth::fromUser($user);
 
         $client = new Client([

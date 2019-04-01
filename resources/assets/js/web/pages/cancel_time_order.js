@@ -228,7 +228,7 @@ $(document).ready(function () {
                   }
                 })
                 $('.select-date').html(html);
-
+                helper.loadShift(true);
                 const inputDate = $('select[name=sl_date_nomination] option');
                 $.each(inputDate,function(index,val){
                   if(val.value == parseInt(orderNomination.current_date)) {
@@ -272,7 +272,7 @@ $(document).ready(function () {
                   }
                 })
                 $('.select-date').html(html);
-
+                helper.loadShift(true);
                 const inputDate = $('select[name=sl_date_nomination] option');
 
                 $.each(inputDate,function(index,val){
