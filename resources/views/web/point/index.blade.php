@@ -119,8 +119,13 @@
 
 @section('web.extra_js')
     <script>
+
         var hasCard = '{!! $user->is_card_registered ? 1 : 0 !!}';
         function buyPoint(point) {
+            if (!localStorage.getItem("payment_method")) {
+                window.location.href = '/purchase/select_payment_methods';
+            }
+
             if (localStorage.getItem("payment_method") && (localStorage.getItem("payment_method") == 2)) {
                 window.location.href = '/payment/transfer?point='+point;
             } else {
