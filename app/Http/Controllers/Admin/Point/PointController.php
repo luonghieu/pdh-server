@@ -19,10 +19,18 @@ class PointController extends Controller
     {
         $pointIds = $points->where('type', '<>', PointType::ADJUSTED)
             ->where('type', '<>', PointType::INVITE_CODE)
+            ->where('type', '<>', PointType::DIRECT_TRANSFER)
             ->pluck('id');
         $sumAmount = Payment::whereIn('point_id', $pointIds)->sum('amount');
 
-        return $sumAmount;
+        $pointRate = config('common.point_rate');
+        $directTransferPointIds = $points->where('type', PointType::DIRECT_TRANSFER)->pluck('id');
+        $sumDirectTransferPoint = Point::whereIn('id', $directTransferPointIds)->sum('point');
+        $sumDirectTransferAmount = $sumDirectTransferPoint * $pointRate;
+
+        $sum = $sumDirectTransferAmount + $sumAmount;
+
+        return $sum;
     }
 
     public function sumPointBuy($points)
@@ -42,6 +50,10 @@ class PointController extends Controller
             }
 
             if ($product->is_invite_code) {
+                $sum += $product->point;
+            }
+
+            if ($product->is_direct_transfer) {
                 $sum += $product->point;
             }
 
@@ -92,7 +104,14 @@ class PointController extends Controller
         $with['user'] = function ($query) {
             return $query->withTrashed();
         };
-        $points = Point::with($with)->whereIn('type', [PointType::BUY, PointType::AUTO_CHARGE, PointType::ADJUSTED]);
+
+        $points = Point::with($with)->whereIn('type', [
+            PointType::BUY, 
+            PointType::AUTO_CHARGE, 
+            PointType::ADJUSTED, 
+            PointType::INVITE_CODE,
+            PointType::DIRECT_TRANSFER,
+        ]);
 
         $fromDate = $request->from_date ? Carbon::parse($request->from_date)->startOfDay() : null;
         $toDate = $request->to_date ? Carbon::parse($request->to_date)->endOfDay() : null;
@@ -126,13 +145,24 @@ class PointController extends Controller
 
         if ('export' == $request->submit) {
             $data = collect($pointsExport)->map(function ($item) {
+                $amount = '-';
+                if ($item->is_direct_transfer) {
+                    $amount = '¥ ' . number_format($item->point * config('common.point_rate'));
+                } else {
+                    if ($item->is_adjusted || !$item->payment || $item->is_invite_code) {
+                        //
+                    } else {
+                        $amount = '¥ ' . number_format($item->payment ? $item->payment->amount : 0)
+                    }
+                }
+
                 return [
                     $item->id,
                     Carbon::parse($item->created_at)->format('Y年m月d日'),
                     $item->user_id,
                     $item->user->fullname,
                     PointType::getDescription($item->type),
-                    ($item->is_adjusted || !$item->payment || $item->is_invite_code) ? '-' : '¥ ' . number_format($item->payment->amount),
+                    $amount,
                     $item->point,
                 ];
             })->toArray();

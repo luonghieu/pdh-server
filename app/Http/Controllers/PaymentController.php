@@ -69,4 +69,9 @@ class PaymentController extends Controller
             abort(500);
         }
     }
+
+    public function transfer()
+    {
+        return view('web.payments.transfer');
+    }
 }
