@@ -780,7 +780,8 @@ $(document).ready(function(){
 
         if (parseInt(tempPoint) > parseInt(pointUser)) {
           $('.checked-order').prop('checked',false);
-          window.location = '/payment/transfer';
+          var pointShow = parseInt(tempPoint) - parseInt(pointUser);
+          window.location.href = '/payment/transfer?point=' + pointShow;
 
           return;
         }

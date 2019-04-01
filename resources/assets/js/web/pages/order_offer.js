@@ -491,7 +491,8 @@ $(document).ready(function(){
             $('.checked-order-offer').prop('checked', false);
             $('#order-offer-popup').prop('checked',false);
 
-            window.location.href = '/payment/transfer';
+            var pointShow = parseInt(tempPoint) - parseInt(currentPointUser);
+            window.location.href = '/payment/transfer?point=' + pointShow;
 
             return ;
           }
