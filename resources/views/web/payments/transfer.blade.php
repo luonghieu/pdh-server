@@ -18,9 +18,7 @@
         <p>購入ポイント</p>
       </div>
       <div class="transfer-right">
-        @if (Auth::check() && Auth::user()->is_guest)
-          <p>{{ number_format(Auth::user()->point).' P' }}</p>
-        @endif
+        <p>{{ number_format(request()->get('point')).' P' }}</p>
       </div>
     </div>
   </section>
@@ -33,9 +31,7 @@
         <p>振込金額</p>
       </div>
       <div class="transfer-right transfer-amount-point">
-        @if (Auth::check() && Auth::user()->is_guest)
-          <p>{{ number_format(Auth::user()->point * 1.1).' 円' }}</p>
-        @endif
+        <p>{{ number_format(request()->get('point') * 1.1).' 円' }}</p>
       </div>
     </div>
   </section>
