@@ -84,7 +84,7 @@
               @endforeach
             @endif
             <label id="date_input" class="button button--green date ">
-              <input class="input-time-join" type="radio" name="time_join_nomination" value="other_time" >それ以外</label>
+              <input class="input-time-join input-other-time" type="radio" name="time_join_nomination" value="other_time" >それ以外</label>
             <label class="date-input date-input-nomination">
               <span>希望日時</span>
               <p class="date-input__text">
