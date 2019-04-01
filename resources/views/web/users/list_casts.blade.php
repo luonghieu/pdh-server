@@ -36,7 +36,7 @@
 
   <!-- schedule -->
   @php $today = Carbon\Carbon::today(); @endphp
-  <div class="cast-list init-scroll-x pb-2">
+  <div class="cast-list init-scroll-x pb-2 js-scroll" id="cast-list">
     <label class="button button--green js-schedule {{ (request()->schedule == null) ? 'active' : '' }}">
       <input type="radio" name="schedule_date" value="" {{ (request()->schedule == null) ? 'checked' : '' }}>全て
     </label>
@@ -47,25 +47,27 @@
     @php $date = $today->copy()->addDays($i); @endphp
     <label class="button button--green js-schedule {{ (request()->schedule == $date->format('Y-m-d')) ? 'active' : '' }}">
       <input type="radio" name="schedule_date" value="{{ $date->format('Y-m-d') }}" {{ (request()->schedule == $date->format('Y-m-d')) ? 'checked' : '' }}>
-      {{ $date->format('m/d') }} ({{ dayOfWeek()[$date->dayOfWeek] }})
+      {{ $date->month . '/' . $date->day }} ({{ dayOfWeek()[$date->dayOfWeek] }})
     </label>
     @endfor
     <input type="hidden" name="schedule" value="{{ request()->schedule }}" id="schedule" />
   </div><!-- /schedule -->
 
-  @if (!$casts['data'])
-  <div class="no-cast">
-    <figure><img src="{{ asset('assets/web/images/common/woman2.svg') }}"></figure>
-    <figcaption>キャストが見つかりません</figcaption>
+  <div id="cast-list-wrapper">
+    @if (!$casts['data'])
+      <div class="no-cast" id="cast-list">
+        <figure><img src="{{ asset('assets/web/images/common/woman2.svg') }}"></figure>
+        <figcaption>キャストが見つかりません</figcaption>
+      </div>
+    @else
+      <div class="cast-list" id="cast-list">
+        @include('web.users.load_more_list_casts', compact('casts'))
+        <input type="hidden" id="next_page" value="{{ $casts['next_page_url'] }}">
+        <!-- loading_page -->
+        @include('web.partials.loading_icon')
+      </div> <!-- /list_wrap -->
+    @endif
   </div>
-  @else
-  <div class="cast-list">
-    @include('web.users.load_more_list_casts', compact('casts'))
-    <input type="hidden" id="next_page" value="{{ $casts['next_page_url'] }}">
-    <!-- loading_page -->
-    @include('web.partials.loading_icon')
-  </div> <!-- /list_wrap -->
-  @endif
 @endsection
 @section('web.script')
 <!-- Change favorite -->
@@ -127,6 +129,34 @@
   });
 </script>
 
+<!-- Scroll center -->
+<script>
+  $(function () {
+
+    jQuery.fn.scrollCenter = function(elem, speed) {
+      var active = jQuery(this).find(elem);
+      var activeWidth = active.width() / 2;
+      
+      var pos = active.position().left + activeWidth;
+      var elpos = jQuery(this).scrollLeft();
+      var elW = jQuery(this).width();
+      pos = pos + elpos - elW / 2;
+
+      jQuery(this).scrollLeft(pos);
+
+      // jQuery(this).animate({
+      //   scrollLeft: pos
+      // }, speed == undefined ? 100 : speed);
+      return this;
+    };
+      // $('.cast-list').css("visibility", "hidden");
+    $('.js-scroll').scrollCenter(".active", 100);
+      // $('.cast-list').css("visibility", "hidden");
+
+  });
+  // $('.cast-list').css("visibility", "inherit");
+</script><!-- /Scroll center -->
+
 <!-- Js schedule -->
 <script>
   $(function () {
@@ -155,15 +185,22 @@
         point = $('#point').val();
       }
 
-      params = {
-        schedule: schedule,
-        prefecture_id: prefectureId,
-        class_id: classId,
-        point: point,
-      };
+      // link = '/cast?schedule=' + params.schedule + '&prefecture_id=' + params.prefecture_id + '&class_id=' + params.class_id + '&point=' + params.point;
+      // window.location.href = link;
 
-      link = '/cast?schedule=' + params.schedule + '&prefecture_id=' + params.prefecture_id + '&class_id=' + params.class_id + '&point=' + params.point;
-      window.location.href = link;
+      params = {
+          schedule: schedule,
+          prefecture_id: prefectureId,
+          class_id: classId,
+          point: point,
+          response_type: 'list-cast'
+      };
+      Object.keys(params).forEach((key) => (params[key] == '' || params[key] == null) && delete params[key]);
+
+      axios.get('api/v1/casts', { params: params }).then(result => {
+        $('#cast-list-wrapper #cast-list').remove();
+        $('#cast-list-wrapper').append(result.data);
+      });
     });
   });
 </script><!-- /Js schedule -->
