@@ -1793,7 +1793,7 @@ div.user-data span.total-point-cast{
   color: #30ccc3 !important;
 }
 
-#gf1 .cast-items .profile .top .offline {
+  #gf1 .cast-items .profile .top .offline {
   border-radius: 10px;
   background-color: #989595;
 }
@@ -1895,6 +1895,21 @@ div.user-data span.total-point-cast{
   border-radius: 10px;
   -o-object-fit: cover;
   object-fit: cover;
+}
+
+#gf1 .thumbnail img:before {
+  content: " ";
+  display: block;
+
+  position: absolute;
+  top: 0px;
+  left: 0;
+  height: calc(100% + 10px);
+  width: 100%;
+  background-color: #FFFFFF;
+  background-image: url("../images/gm1/ic-user-avatar.svg") !important;
+  background-repeat: no-repeat;
+  background-size: contain;
 }
 
 #gf2 .cast-photo .init-today {
@@ -3524,6 +3539,31 @@ div.user-data span.total-point-cast{
 
 #gf3 .selectbox select option:selected {
   color: #222222;
+}
+
+.slide-image {
+  position: relative;
+}
+
+.slide-image:before {
+  content: " ";
+  display: block;
+
+  position: absolute;
+  top: 0px;
+  left: 0;
+  height: calc(100% + 10px);
+  width: 100%;
+  background-color: #FFFFFF;
+  background-image: url("../images/gm1/ic-user-avatar.svg") !important;
+  background-repeat: no-repeat;
+  background-size: contain;
+}
+
+.img-avatar-user {
+  background-image: url("../images/gm1/ic_default_avatar@3x.png") !important;
+  background-repeat: no-repeat;
+  background-size: contain;
 }
 
 .transfer-order {
