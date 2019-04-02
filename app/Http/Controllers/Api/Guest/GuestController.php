@@ -160,11 +160,17 @@ class GuestController extends ApiController
             ->orWhere(function ($query) {
                 $query->where(function ($q) {
                     $q->where('status', OrderStatus::DONE)
-                        ->where('payment_status', '<>', OrderPaymentStatus::PAYMENT_FINISHED);
+                        ->where(function ($sq) {
+                            $sq->whereNull('payment_status')
+                                ->orWhere('payment_status', '<>', OrderPaymentStatus::PAYMENT_FINISHED);
+                        });
                 })
                     ->orWhere(function ($q) {
                         $q->where('status', OrderStatus::CANCELED)
-                            ->where('payment_status', '<>', OrderPaymentStatus::CANCEL_FEE_PAYMENT_FINISHED);
+                            ->where(function ($sq) {
+                                $sq->whereNull('payment_status')
+                                    ->orWhere('payment_status', '<>', OrderPaymentStatus::CANCEL_FEE_PAYMENT_FINISHED);
+                            });
                     });
             });
 
@@ -185,7 +191,7 @@ class GuestController extends ApiController
             }
 
             if (OrderStatus::DONE == $order->status) {
-                if ($order->total_point) {
+                if ($order->temp_point) {
                     $pointUsed += $order->temp_point;
                 }
             }
