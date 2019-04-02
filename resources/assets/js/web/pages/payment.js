@@ -65,6 +65,20 @@ $('#payment-form').on('submit', function (e) {
             .then(function(response) {
                 if (response.data && (response.data.data > guestTotalPoint)) {
                     window.location.href = '/payment/transfer?point='+response.data.data;
+                } else {
+                    const url = $(this).attr('action');
+
+                    window.axios.post(url).then(response => {
+                        const message = helper.getResponseMessage(response.data.message);
+                        $('#alert-payment-content').html(message);
+                        $('#alert-payment-label').trigger('click');
+                        document.getElementById('payment-completed-gtm').click();
+                        setTimeout(() => {
+                            window.location.href = '/mypage';
+                        }, 2000);
+                    }).catch(err => {
+                        $('#payment-failed').trigger('click');
+                    });
                 }
             }).catch(function(error) {
             console.log(error);
