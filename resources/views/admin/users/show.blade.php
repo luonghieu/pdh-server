@@ -474,13 +474,13 @@
                 }
               @endphp
               @if($user->is_guest)
-                {{--<button type="button" class="btn btn-info" data-toggle="modal" data-target="#change-payment-method">--}}
-                  {{--@if(!$user->is_multi_payment_method)--}}
-                  {{--銀行振込を可能にする--}}
-                  {{--@else--}}
-                  {{--銀行振込を不可にする--}}
-                  {{--@endif--}}
-                {{--</button>--}}
+                <button type="button" class="btn btn-info" data-toggle="modal" data-target="#change-payment-method">
+                  @if(!$user->is_multi_payment_method)
+                  銀行振込を可能にする
+                  @else
+                  銀行振込を不可にする
+                  @endif
+                </button>
                 <button type="button" class="btn {{ !$user->campaign_participated ? 'btn-info' : 'btn-default' }}"
                   data-toggle="modal" data-target="#campaign_participated" {{ !$user->campaign_participated ?: 'disabled' }}>
                   11月キャンペーン利用完了
