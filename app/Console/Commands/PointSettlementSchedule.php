@@ -78,6 +78,9 @@ class PointSettlementSchedule extends Command
                     if ($order->coupon_id) {
                         $totalPoint = $order->total_point - $order->discount_point;
                     }
+                    if ($totalPoint < 0) {
+                        $totalPoint = 0;
+                    }
 
                     if ($user->point > $totalPoint) {
                         try {
