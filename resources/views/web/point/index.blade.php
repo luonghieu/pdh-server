@@ -127,7 +127,7 @@
             if (backUrl.match('/purchase/select_payment_methods')) {
                 var point = localStorage.getItem("buy_point");
 
-                if (point && checkMultiPaymentMethod) {
+                if (point && checkMultiPaymentMethod && localStorage.getItem("payment_method")) {
                     if (!hasCard) {
                         document.getElementById('popup-require-card').click();
                         return false;
