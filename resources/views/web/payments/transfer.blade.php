@@ -108,7 +108,13 @@
           ※申告された名義以外で入金を行った場合は、弊社にて入金確認ができない可能性がありますので、お手数ですが、入金後弊社までご連絡くださいますようお願いいたします。
         </p>
       </div>
+
+      <div class="btn-m top-page">
+        <a href="{{ route('web.index') }}">TOPに戻る</a>
+      </div>
+
     </section>
+
     <!-- profile-word -->
   </div>
 @endsection

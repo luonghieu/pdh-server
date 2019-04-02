@@ -3744,6 +3744,10 @@ div.user-data span.total-point-cast{
   margin-right: 45px;
 }
 
+.top-page a {
+  width: 60%;
+}
+
 #gi-4-4 .wrap-radio-payment-methods {
   width: 100%;
   height: auto;
