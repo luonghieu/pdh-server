@@ -129,6 +129,7 @@
     <?php $orderStartTime = \Carbon\Carbon::parse($order->actual_started_at)?>
     <?php $orderEndTime = \Carbon\Carbon::parse($order->actual_ended_at)?>
 @endif
+<input type="hidden" id="is-multi-payment-method" value="{{$user->is_multi_payment_method}}">
 
 <?php $casts = $order->casts;?>
     <div class="settlement-confirm">
