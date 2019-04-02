@@ -1,4 +1,18 @@
+const helper = require('./helper');
 $(document).ready(function() {
+    function dayOfWeek() {
+        return ['日', '月', '火', '水', '木', '金', '土'];
+    }
+
+    var checkApp = {
+        isAppleDevice : function() {
+            if (navigator.userAgent.match(/(iPhone|iPod|iPad)/) != null) {
+                return true;
+            }
+            return false;
+        }
+    };
+
   $('#favorite-cast-detail').on('click', function(e) {
     var _this = $(this);
     id = _this.attr('data-user-id');
@@ -20,4 +34,35 @@ $(document).ready(function() {
         }
       });
   });
+
+  $('.btn-order-nominee').on('click', function () {
+      var castId = $('#cast-id').val();
+      var dateShift = $(this).data('shift');
+      var newdate = dateShift.split('-');
+      var date = newdate[2];
+      var month = newdate[1];
+      var year = newdate[0];
+
+      if (checkApp.isAppleDevice()) {
+          var dateFolowDevice = new Date(month +'/' + date +'/'+ year);
+      } else {
+          var dateFolowDevice = new Date(year +'-' + month +'-'+ date);
+      }
+
+      var getDayOfWeek = dateFolowDevice.getDay();
+      var dayOfWeekString = dayOfWeek()[getDayOfWeek];
+
+      var paramShift = {
+          date : date,
+          month : month,
+          year : year,
+          dayOfWeekString : dayOfWeekString,
+      }
+
+      helper.updateLocalStorageKey('shifts', paramShift, castId);
+
+      window.location = '/nominate?id='+castId;
+  })
 });
+
+

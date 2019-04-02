@@ -6,6 +6,7 @@ use App\Cast;
 use App\Job;
 use App\CastClass;
 use App\Http\Resources\CastResource;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 
 class CastController extends ApiController
@@ -47,6 +48,21 @@ class CastController extends ApiController
 
         if ($request->order) {
             $casts = $casts->orderByDesc('working_today');
+        }
+
+        if ($request->schedule) {
+            $scheduleDate = Carbon::parse($request->schedule);
+            $casts->whereHas('shifts', function ($query) use ($scheduleDate) {
+                $query->where(function ($q) use ($scheduleDate) {
+                    $q->whereDate('date', $scheduleDate)
+                        ->where(function ($sq) {
+                            $sq->where('shift_user.day_shift', true)
+                                ->orWhere('shift_user.night_shift', true);
+                        });
+                });
+            });
+
+
         }
 
         if ($request->favorited) {
@@ -100,6 +116,7 @@ class CastController extends ApiController
                 ->select('users.*')
                 ->paginate($request->per_page)
                 ->appends($request->query());
+
         }
 
         if ('html' == $request->response_type) {
@@ -107,6 +124,21 @@ class CastController extends ApiController
             $castClass = CastClass::pluck('name', 'id');
 
             return view('web.casts-working-today', compact('casts', 'jobs', 'castClass'));
+        }
+
+        if ('list-cast' == $request->response_type) {
+            $collection = $casts->getCollection();
+            $collection->each->append('class_name');
+            $collection->each->append('is_new_user');
+            $collection->each->append('job_name');
+            $collection->each->append('is_working_today');
+            $collection->each->append('age');
+            $casts = $casts->setCollection($collection);
+            if (isset($request->is_ajax)) {
+                return response()->json($casts);
+            }
+
+            return view('web.list_cast', compact('casts'));
         }
 
         return $this->respondWithData(CastResource::collection($casts));

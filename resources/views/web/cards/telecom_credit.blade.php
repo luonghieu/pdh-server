@@ -2,14 +2,6 @@
 @section('screen.id', 'gl1')
 @extends('layouts.tc')
 @section('web.content')
-<div class="border-bottom header-webview">
-  <div class="btn-back header-item">
-    <a href="#"><img src="{{ asset('/assets/web/images/card/back.png') }}" alt=""></a>
-  </div>
-  <div class="title-main header-item">
-    <span>クレジットカード登録</span>
-  </div>
-</div>
 <div class="image-main">
   <img src="{{ asset('/assets/web/images/card/card_brands.png') }}" alt="">
 

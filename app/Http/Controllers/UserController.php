@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Services\LogService;
+use App\User;
 use Auth;
 use GuzzleHttp\Client;
 use Illuminate\Http\Request;
@@ -40,8 +41,12 @@ class UserController extends Controller
     public function listCasts(Request $request)
     {
         try {
-            $params = ['latest' => 1];
+            $params = [
+                'latest' => 1,
+            ];
+
             if ($request->all()) {
+                !$request->schedule ?: $params['schedule'] = $request->schedule;
                 !$request->prefecture_id ?: $params['prefecture_id'] = $request->prefecture_id;
                 !$request->class_id ?: $params['class_id'] = $request->class_id;
                 !$request->point ?: $params['min_point'] = explode(',', $request->point)[0];
@@ -81,11 +86,11 @@ class UserController extends Controller
             $result = $apiRequest->getBody();
             $contents = $result->getContents();
             $contents = json_decode($contents, JSON_NUMERIC_CHECK);
-
-            $casts = $contents['data'];
+            $casts = isset($contents['data']) ? $contents['data'] : $contents;
 
             return [
-                'next_page' => $casts['next_page_url'],
+                'next_page' => (array_key_exists('next_page_url', $contents)) ? $contents['next_page_url'] :
+                    $contents['data']['next_page_url'],
                 'view' => view('web.users.load_more_list_casts', compact('casts'))->render(),
             ];
         } catch (\Exception $e) {
@@ -102,6 +107,7 @@ class UserController extends Controller
                 'latest' => 1,
             ];
             if ($request->all()) {
+                !$request->schedule ?: $params['schedule'] = $request->schedule;
                 !$request->prefecture_id ?: $params['prefecture_id'] = $request->prefecture_id;
                 !$request->point ?: ($params['min_point'] = explode(',', $request->point)[0]);
                 !$request->point ?: $params['max_point'] = explode(',', $request->point)[1];
@@ -109,9 +115,9 @@ class UserController extends Controller
             }
 
             $contents = $this->getApi('/api/v1/casts', $params);
-            $favorites = $contents['data'];
+            $casts = $contents['data'];
 
-            return view('web.users.list_casts_favorite', compact('favorites'));
+            return view('web.users.list_casts_favorite', compact('casts'));
         } catch (\Exception $e) {
             LogService::writeErrorLog($e);
             abort(500);
@@ -142,11 +148,12 @@ class UserController extends Controller
             $contents = $result->getContents();
             $contents = json_decode($contents, JSON_NUMERIC_CHECK);
 
-            $favorites = $contents['data'];
+            $casts = isset($contents['data']) ? $contents['data'] : $contents;
 
             return [
-                'next_page' => $favorites['next_page_url'],
-                'view' => view('web.users.load_more_list_casts_favorite', compact('favorites'))->render(),
+                'next_page' => (array_key_exists('next_page_url', $contents)) ? $contents['next_page_url'] :
+                    $contents['data']['next_page_url'],
+                'view' => view('web.users.load_more_list_casts_favorite', compact('casts'))->render(),
             ];
         } catch (\Exception $e) {
             LogService::writeErrorLog($e);
@@ -178,8 +185,13 @@ class UserController extends Controller
         try {
             $contents = $this->getApi('/api/v1/users/' . $id);
             $cast = $contents['data'];
+            $paramsShift = [
+                'cast_id' => $id,
+            ];
+            $contentShifts = $this->getApi('/api/v1/shifts', $paramsShift);
+            $shifts = array_slice($contentShifts['data'], 0, 7);
 
-            return view('web.users.show', compact('cast'));
+            return view('web.users.show', compact('cast', 'shifts'));
         } catch (\Exception $e) {
             LogService::writeErrorLog($e);
             abort(500);

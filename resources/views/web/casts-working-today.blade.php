@@ -37,7 +37,7 @@
           }
         @endphp
         <span class="tag {{ $class }}">{{ $className }}</span>
-        @if ($cast->working_today)
+        @if ($cast->is_working_today)
           <span class="tag-today">今日OK</span>
         @endif
         <img src="{{ ($cast->avatars && isset($cast->avatars[0]) && $cast->avatars[0]->thumbnail) ? $cast->avatars[0]->thumbnail :'/assets/web/images/gm1/ic_default_avatar@3x.png' }}">

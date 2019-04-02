@@ -1,9 +1,5 @@
 html, body {
-  min-height: 880px;
-}
-
-main {
-  padding-top: 0 !important;
+  min-height: 935px;
 }
 
 .header-webview {
@@ -116,8 +112,8 @@ main {
 }
 
 .date-select select#year-select {
-  width: 65px;
-  background-position: 52px 11px;
+  width: 70px;
+  background-position: 58px 11px;
 }
 
 .security-code img {
@@ -126,14 +122,18 @@ main {
 
 .security-code .security-code-outside {
   margin-right: 8px;
+  width: 100%;
 }
 
 .security-code .security-code-outside #cvv-field {
   margin-right: 8px;
+  text-align: right;
+  width: 200px;
 }
 
 .security-code .security-code-outside #cvv-field input {
   margin-right: 10px;
+  float: right;
 }
 
 .security-code input {

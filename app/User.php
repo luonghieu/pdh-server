@@ -5,6 +5,8 @@ namespace App;
 use App\Enums\PaymentStatus;
 use App\Enums\PointType;
 use App\Enums\UserType;
+use App\Repositories\CastClassRepository;
+use App\Repositories\JobRepository;
 use App\Services\LogService;
 use App\Verification;
 use Carbon\Carbon;
@@ -63,6 +65,21 @@ class User extends Authenticatable implements JWTSubject
     {
         if ($this->date_of_birth) {
             return Carbon::parse($this->date_of_birth)->age;
+        }
+    }
+
+    public function getIsWorkingTodayAttribute()
+    {
+        $today = Carbon::today();
+        $shiftToday = $this->shifts()->where('date', $today)->first();
+        if ($shiftToday) {
+            if ($shiftToday->pivot->day_shift || $shiftToday->pivot->night_shift) {
+                return $this->working_today = 1;
+            }
+
+            return $this->working_today = 0;
+        } else {
+            return 0;
         }
     }
 
@@ -578,5 +595,21 @@ class User extends Authenticatable implements JWTSubject
     public function inviteCodeHistory()
     {
         return $this->hasOne(InviteCodeHistory::class, 'receive_user_id');
+    }
+
+    public function shifts()
+    {
+        return $this->belongsToMany(Shift::class)
+            ->withPivot('day_shift', 'night_shift', 'off_shift')->withTimestamps();
+    }
+
+    public function getClassNameAttribute()
+    {
+        return  $this->class_id ? app(CastClassRepository::class)->find($this->class_id)->name : '';
+    }
+
+    public function getJobNameAttribute()
+    {
+        return  $this->job_id ? app(JobRepository::class)->find($this->job_id)->name : '';
     }
 }

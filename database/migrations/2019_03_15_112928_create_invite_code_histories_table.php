@@ -36,8 +36,11 @@ class CreateInviteCodeHistoriesTable extends Migration
     public function down()
     {
         Schema::create('invite_code_histories', function (Blueprint $table) {
-            $table->dropForeign(['invite_code_id', 'receive_user_id', 'order_id']);
+            $table->dropForeign(['invite_code_id']);
+            $table->dropForeign(['receive_user_id']);
+            $table->dropForeign(['order_id']);
         });
+
         Schema::dropIfExists('invite_code_histories');
     }
 }

@@ -40,6 +40,7 @@ $routes = [
               'admin.casts.operation_history',
               'admin.casts.create',
               'admin.casts.bank_account',
+              'admin.casts.schedule',
             ],
         ],
     ],
