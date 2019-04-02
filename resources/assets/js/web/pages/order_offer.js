@@ -481,20 +481,20 @@ $(document).ready(function(){
       var transfer = parseInt($("input[name='transfer_order_offer']:checked").val());
     }
 
-    var tempPoint = $('#temp-point-offer').val();
-    var currentPointUser = $('#point_used_offer').val();
+    var tempPointOrders = parseInt($('#temp-point-offer').val()) + parseInt($('#point_used_offer').val());
+    var currentPointUser = $('#current-point').val();
 
     if (transfer) {
       if (OrderPaymentMethod.Credit_Card == transfer || OrderPaymentMethod.Direct_Payment == transfer) {
         if (OrderPaymentMethod.Direct_Payment == transfer) {
-          if (parseInt(tempPoint) > parseInt(currentPointUser)) {
+          if (parseInt(tempPointOrders) > parseInt(currentPointUser)) {
             $('#order-offer-popup').prop('checked',false);
             $('.checked-order-offer').prop('checked', false);
             $('#sp-cancel').addClass('sp-disable');
             $('#confirm-orders-offer').prop('disabled', true);
             $('#confirm-orders-offer').addClass('disable');
 
-            var pointShow = parseInt(tempPoint) - parseInt(currentPointUser);
+            var pointShow = parseInt(tempPointOrders) - parseInt(currentPointUser);
             window.location.href = '/payment/transfer?point=' + pointShow;
 
             return ;

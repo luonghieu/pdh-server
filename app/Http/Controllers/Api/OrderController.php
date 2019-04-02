@@ -28,7 +28,9 @@ use App\Tag;
 use App\Traits\DirectRoom;
 use Carbon\Carbon;
 use DB;
+use GuzzleHttp\Client;
 use Illuminate\Http\Request;
+use JWTAuth;
 
 class OrderController extends ApiController
 {
@@ -59,6 +61,39 @@ class OrderController extends ApiController
 
         if (!$user->status) {
             return $this->respondErrorMessage(trans('messages.freezing_account'), 403);
+        }
+
+        $transfer = $request->payment_method;
+
+        if (isset($transfer)) {
+            if (OrderPaymentMethod::CREDIT_CARD == $transfer || OrderPaymentMethod::DIRECT_PAYMENT == $transfer) {
+                if (OrderPaymentMethod::DIRECT_PAYMENT == $transfer) {
+                    $accessToken = JWTAuth::fromUser($user);
+
+                    $client = new Client([
+                        'base_uri' => config('common.api_url'),
+                        'headers' => [
+                            'Content-Type' => 'application/json',
+                            'Authorization' => 'Bearer ' . $accessToken,
+                        ],
+                    ]);
+
+                    try {
+                        $pointUsed = $client->request('GET', route('guest.points_used'));
+
+                        $pointUsed = json_decode(($pointUsed->getBody())->getContents(), JSON_NUMERIC_CHECK);
+                        $pointUsed = $pointUsed['data'];
+                    } catch (\Exception $e) {
+                        return $this->respondErrorMessage(trans('messages.action_not_performed'), 422);
+                    }
+
+                    if ((float) ($request->temp_point + $pointUsed) > (float) $user->point) {
+                        return $this->respondErrorMessage(trans('messages.action_not_performed'), 422);
+                    }
+                }
+            } else {
+                return $this->respondErrorMessage(trans('messages.action_not_performed'), 422);
+            }
         }
 
         $input = $request->only([
