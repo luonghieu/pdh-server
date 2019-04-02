@@ -6,6 +6,7 @@ use App\BankAccount;
 use App\Cast;
 use App\CastClass;
 use App\Enums\BankAccountType;
+use App\Enums\CastTransferStatus;
 use App\Enums\PointCorrectionType;
 use App\Enums\PointType;
 use App\Enums\ProviderType;
@@ -220,6 +221,7 @@ class CastController extends Controller
             'prefecture_id' => $request->prefecture,
             'rank' => $request->cast_rank,
             'accept_request_transfer_date' => now(),
+            'cast_transfer_status' => CastTransferStatus::OFFICIAL
         ];
 
         $user->update($data);
