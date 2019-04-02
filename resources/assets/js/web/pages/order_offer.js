@@ -481,17 +481,20 @@ $(document).ready(function(){
       var transfer = parseInt($("input[name='transfer_order_offer']:checked").val());
     }
 
-    var tempPoint = $('#temp-point-offer').val();
+    var tempPointOrders = parseInt($('#temp-point-offer').val()) + parseInt($('#point_used_offer').val());
     var currentPointUser = $('#current-point').val();
 
     if (transfer) {
       if (OrderPaymentMethod.Credit_Card == transfer || OrderPaymentMethod.Direct_Payment == transfer) {
         if (OrderPaymentMethod.Direct_Payment == transfer) {
-          if (parseInt(tempPoint) > parseInt(currentPointUser)) {
-            $('.checked-order-offer').prop('checked', false);
+          if (parseInt(tempPointOrders) > parseInt(currentPointUser)) {
             $('#order-offer-popup').prop('checked',false);
+            $('.checked-order-offer').prop('checked', false);
+            $('#sp-cancel').addClass('sp-disable');
+            $('#confirm-orders-offer').prop('disabled', true);
+            $('#confirm-orders-offer').addClass('disable');
 
-            var pointShow = parseInt(tempPoint) - parseInt(currentPointUser);
+            var pointShow = parseInt(tempPointOrders) - parseInt(currentPointUser);
             window.location.href = '/payment/transfer?point=' + pointShow;
 
             return ;
@@ -559,7 +562,7 @@ $(document).ready(function(){
       total_cast: totalCast,
       type: 2,
       nominee_ids: castIds,
-      temp_point: tempPoint,
+      temp_point: $('#temp-point-offer').val(),
       offer_id: offerId
     }
 
@@ -1107,6 +1110,8 @@ $(document).ready(function(){
         };
       helper.updateLocalStorageKey('order_offer', params, offerId);
     }
+
+
   }
 
   var currentUrl = window.location.href;
@@ -1230,6 +1235,17 @@ $(document).ready(function(){
   });
 
   if($('#temp-point-offer').length) {
+    window.axios.get('/api/v1/guest/points_used')
+      .then(function(response) {
+        var pointUsed = response.data['data'];
+        $('#point_used_offer').val(pointUsed);
+      }).catch(function(error) {
+        console.log(error);
+        if (error.response.status == 401) {
+          window.location = '/login';
+        }
+      });
+
     firstLoad();
     selectedCouponsOffer();
     selectedTransfer();
