@@ -125,11 +125,9 @@
             var backUrl = $('#path_select_payment_method').val();
 
             if (backUrl.match('/purchase/select_payment_methods')) {
-                var point = localStorage.getItem("buy_point")
+                var point = localStorage.getItem("buy_point");
 
-                if (localStorage.getItem("payment_method") && (localStorage.getItem("payment_method") == 2)) {
-                    window.location.href = '/payment/transfer?point='+point;
-                } else {
+                if (point) {
                     if (!hasCard) {
                         document.getElementById('popup-require-card').click();
                         return false;
