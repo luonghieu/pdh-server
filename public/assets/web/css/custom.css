@@ -3446,3 +3446,82 @@ div.user-data span.total-point-cast{
 .register-date-of-birth input[type="date"] {
   outline: none;
 }
+
+#gf1 label.button {
+  width: auto;
+  height: 36px;
+  padding: 0 20px;
+  border-width: 1.5px;
+  border-style: solid;
+  font-size: 12px;
+  line-height: 1;
+  cursor: pointer;
+  border-radius: 25px;
+  overflow: hidden;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  margin-top: 10px;
+  margin-right: 5px;
+  min-width: 3.5rem;
+}
+    
+#gf1 label.button input {
+  display: none;
+}
+
+#gf1 label.button--green {
+  border-color: #30ccc3;
+  color: #222222;
+  background-color: #fff;
+}
+
+#gf1 label.button--green.active {
+  color: white;
+  background: -webkit-linear-gradient(20deg, #42E4B2 0%, #30CCC3 100%);
+  background: -o-linear-gradient(20deg, #42E4B2 0%, #30CCC3 100%);
+  background: -ms-linear-gradient(20deg, #42E4B2 0%, #30CCC3 100%);
+  background: -webkit-linear-gradient(70deg, #42E4B2 0%, #30CCC3 100%);
+  background: -o-linear-gradient(70deg, #42E4B2 0%, #30CCC3 100%);
+  background: linear-gradient(20deg, #42E4B2 0%, #30CCC3 100%); 
+}
+
+#gf1 .cast-list.init-scroll-x {
+  display: flex;
+  overflow-x: scroll;
+}
+
+#gf1 .cast-list.init-scroll-x.pb-2 {
+  padding-bottom: 0.5rem;
+}
+
+.title-shifts {
+  background-color: #D8F2F2 !important;
+}
+
+.color-shift {
+  color: #222222 !important;
+}
+
+.color-day-shift-blue {
+  color: blue !important;
+}
+
+.color-day-shift-red {
+  color: red !important;
+}
+
+.ic_pick_calendar {
+  position: absolute;
+  width: 67px !important;
+  bottom: 80px;
+  right: 0;
+}
+
+.wrap-ic-shift {
+  width: 40px !important;
+}
+
+#gf3 .selectbox select option:selected {
+  color: #222222;
+}

@@ -7,9 +7,13 @@
         <div class="panel-body handling">
           <div class="search">
             <form class="navbar-form navbar-left form-search" action="{{ route('admin.casts.index') }}" method="GET">
-              <input type="text" class="form-control input-search" placeholder="ユーザーID,名前" name="search" value="{{ request()->search }}">
+              <input type="text" class="form-control init-input-search" placeholder="ユーザーID,名前,クラス" name="search" value="{{ request()->search }}">
+              <select name="is_schedule" class="form-control init-option-search">
+                <option value="date" {{ request()->is_schedule == 'date' ? 'selected' : '' }}>登録日</option>
+                <option value="schedule" {{ request()->is_schedule == 'schedule' ? 'selected' : '' }}>スケジュール</option>
+              </select>
               <label for="">From date: </label>
-              <input type="text" class="form-control date-picker input-search" name="from_date" id="date01" data-date-format="yyyy/mm/dd" value="{{ request()->from_date }}" placeholder="yyyy/mm/dd" />
+              <input type="text" class="form-control date-picker init-input-search" name="from_date" id="date01" data-date-format="yyyy/mm/dd" value="{{ request()->from_date }}" placeholder="yyyy/mm/dd" />
               <label for="">To date: </label>
               <input type="text" class="form-control date-picker" name="to_date" id="date01" data-date-format="yyyy/mm/dd" value="{{ request()->to_date }}" placeholder="yyyy/mm/dd"/>
               <button type="submit" class="fa fa-search btn btn-search"></button>
@@ -31,6 +35,7 @@
                     <input type="hidden" name="from_date" value="{{ request()->from_date }}" />
                     <input type="hidden" name="to_date" value="{{ request()->to_date }}" />
                     <input type="hidden" name="search" value="{{ request()->search }}" />
+                    <input type="hidden" name="is_schedule" value="{{ request()->is_schedule }}" />
                   </div>
                 </div>
             </form>
@@ -53,6 +58,7 @@
               'search' => request()->search,
               'from_date' => request()->from_date,
               'to_date' => request()->to_date,
+              'is_schedule' => request()->is_schedule,
            ];
           @endphp
           <table class="table table-striped table-bordered bootstrap-datatable">
@@ -66,6 +72,12 @@
                   <a href="{{ route('admin.casts.index',
                     array_merge($request, ['rank' => (request()->rank == 'asc') ? 'desc' : 'asc',])
                     ) }}">優先ランク
+                  </a>
+                </th>
+                <th class="sorting{{ (request()->class_id) ? '_' . request()->class_id: '' }}">
+                  <a href="{{ route('admin.casts.index',
+                    array_merge($request, ['class_id' => (request()->class_id == 'asc') ? 'desc' : 'asc',])
+                    ) }}">キャストクラス
                   </a>
                 </th>
                 <th>会員区分</th>
@@ -85,7 +97,7 @@
             <tbody>
               @if (empty($casts->count()))
                 <tr>
-                  <td colspan="10">{{ trans('messages.cast_not_found') }}</td>
+                  <td colspan="13">{{ trans('messages.cast_not_found') }}</td>
                 </tr>
               @else
                 @foreach ($casts as $key => $cast)
@@ -100,6 +112,7 @@
                   </td>
                   <td>{{ $cast->age }}</td>
                   <td>{{ App\Enums\UserRank::getKey($cast->rank) }}</td>
+                  <td>{{ $cast->castClass->name }}</td>
                   <td>{{ App\Enums\UserType::getDescription($cast->type) }}</td>
                   <td>
                     @if((App\Enums\DeviceType::IOS == $cast->device_type || App\Enums\DeviceType::WEB == $cast->device_type) && App\Enums\ProviderType::FACEBOOK == $cast->provider)
@@ -113,9 +126,9 @@
                   <td>{{ $cast->last_active }}</td>
                   @endif
                   <td>
-                    {{ App\Enums\WorkingType::getDescription($cast->working_today) }}
+                    {{ App\Enums\WorkingType::getDescription($cast->is_working_today) }}
                     @php
-                      if ($cast->working_today == App\Enums\WorkingType::LEAVING_WORK) {
+                      if ($cast->is_working_today == App\Enums\WorkingType::LEAVING_WORK) {
                         $workStatus = 'on-work';
                       } else {
                         $workStatus = 'leaving-work';

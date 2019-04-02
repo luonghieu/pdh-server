@@ -19,6 +19,7 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.'], function () {
         Route::post('{user}/change_cost', ['as' => 'change_cost', 'uses' => 'UserController@changeCost'])->where('user', '[0-9]+');
         Route::post('{user}/change_rank', ['as' => 'change_rank', 'uses' => 'UserController@changeRank'])->where('user', '[0-9]+');
         Route::post('{user}/campaign_participated', ['as' => 'campaign_participated', 'uses' => 'UserController@campaignParticipated'])->where('user', '[0-9]+');
+        Route::post('{user}/change_payment_method', ['as' => 'change_payment_method', 'uses' => 'UserController@changePaymentMethod'])->where('user', '[0-9]+');
         Route::delete('{user}', ['as' => 'delete', 'uses' => 'UserController@delete'])->where('user', '[0-9]+');
     });
 
@@ -50,6 +51,7 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.'], function () {
         Route::get('/{user}/bank_account', ['as' => 'bank_account', 'uses' => 'CastController@bankAccount'])->where('user', '[0-9]+');
         Route::put('/{user}/update_note', ['as' => 'update_note', 'uses' => 'CastController@updateNote'])->where('user', '[0-9]+');
         Route::put('/{user}/update_cost_rate', ['as' => 'update_cost_rate', 'uses' => 'CastController@updateCostRate'])->where('user', '[0-9]+');
+        Route::get('/{user}/schedule', ['as' => 'schedule', 'uses' => 'ShiftController@index'])->where('user', '[0-9]+');
     });
 
     Route::group(['middleware' => 'is_admin'], function () {

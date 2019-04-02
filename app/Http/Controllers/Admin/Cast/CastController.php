@@ -6,6 +6,7 @@ use App\BankAccount;
 use App\Cast;
 use App\CastClass;
 use App\Enums\BankAccountType;
+use App\Enums\CastTransferStatus;
 use App\Enums\PointCorrectionType;
 use App\Enums\PointType;
 use App\Enums\ProviderType;
@@ -17,6 +18,7 @@ use App\Notifications\CreateCast;
 use App\Prefecture;
 use App\Services\CSVExport;
 use App\Services\LogService;
+use App\Shift;
 use App\User;
 use Carbon\Carbon;
 use DB;
@@ -30,27 +32,60 @@ class CastController extends Controller
     public function index(Request $request)
     {
         $keyword = $request->search;
-        $orderBy = $request->only('last_active_at', 'rank');
+        $isSchedule = $request->is_schedule;
+        $orderBy = $request->only('last_active_at', 'rank', 'class_id');
         $casts = Cast::query();
 
-        if ($request->has('from_date') && !empty($request->from_date)) {
-            $fromDate = Carbon::parse($request->from_date)->startOfDay();
-            $casts->where(function ($query) use ($fromDate) {
-                $query->where('created_at', '>=', $fromDate);
-            });
+        $fromDate = $request->from_date ? Carbon::parse($request->from_date)->startOfDay() : null;
+        $toDate = $request->to_date ? Carbon::parse($request->to_date)->endOfDay() : null;
+
+        switch ($isSchedule) {
+            case 'date':
+                if ($fromDate) {
+                    $casts->where(function ($query) use ($fromDate) {
+                        $query->where('created_at', '>=', $fromDate);
+                    });
+                }
+
+                if ($toDate) {
+                    $casts->where(function ($query) use ($toDate) {
+                        $query->where('created_at', '<=', $toDate);
+                    });
+                }
+                break;
+
+            case 'schedule':
+                $casts->whereHas('shifts', function ($query) use ($fromDate, $toDate) {
+                    if ($fromDate) {
+                        $query->where(function($q) use ($fromDate) {
+                            $q->where('date', '>=', $fromDate)
+                                ->where(function ($sq) {
+                                    $sq->where('day_shift', true)->orWhere('night_shift', true);
+                                });
+                        });
+                    }
+
+                    if ($toDate) {
+                        $query->where(function ($q) use ($toDate) {
+                            $q->where('date', '<=', $toDate)
+                                ->where(function ($sq) {
+                                    $sq->where('day_shift', true)->orWhere('night_shift', true);
+                                });
+                        });
+                    }
+                });
+                break;
+
+            default:break;
         }
 
-        if ($request->has('to_date') && !empty($request->to_date)) {
-            $toDate = Carbon::parse($request->to_date)->endOfDay();
-            $casts->where(function ($query) use ($toDate) {
-                $query->where('created_at', '<=', $toDate);
-            });
-        }
-
-        if ($request->has('search') && !empty($request->search)) {
+        if ($keyword) {
             $casts->where(function ($query) use ($keyword) {
                 $query->where('id', "$keyword")
-                    ->orWhere('nickname', 'like', "%$keyword%");
+                    ->orWhere('nickname', 'like', "%$keyword%")
+                    ->orWhereHas('castClass', function ($sq) use ($keyword) {
+                        $sq->where('name', 'like', "%$keyword%");
+                    });
             });
         }
 
@@ -186,6 +221,7 @@ class CastController extends Controller
             'prefecture_id' => $request->prefecture,
             'rank' => $request->cast_rank,
             'accept_request_transfer_date' => now(),
+            'cast_transfer_status' => CastTransferStatus::OFFICIAL
         ];
 
         $user->update($data);
@@ -197,6 +233,20 @@ class CastController extends Controller
                 'branch_name' => $request->branch_name,
                 'number' => $request->number,
             ]);
+        }
+
+        if (count($user->shifts)) {
+            $castLatestShift = $user->shifts()->orderBy('id', 'desc')->first();
+            $castShiftDate = Carbon::parse($castLatestShift->date);
+            $shifts = Shift::whereDate('date', '>', $castShiftDate)->pluck('id');
+
+            if (count($shifts)) {
+                $user->shifts()->attach($shifts);
+            }
+        } else {
+            $now = now()->startOfDay();
+            $shifts = Shift::whereDate('date', '>=', $now)->pluck('id');
+            $user->shifts()->attach($shifts);
         }
 
         $user->notify(new CreateCast());
@@ -404,8 +454,21 @@ class CastController extends Controller
     public function changeStatusWork(Cast $user)
     {
         try {
+            $today = Carbon::today();
             $user->working_today = !$user->working_today;
-            $user->save();
+            $shiftToday = $user->shifts()->where('date', $today)->first();
+            if ($user->working_today) {
+                $shiftToday->pivot->day_shift = $user->working_today;
+                $shiftToday->pivot->off_shift = false;
+                $shiftToday->pivot->save();
+            } else {
+                $shiftToday->pivot->day_shift = $user->working_today;
+                $shiftToday->pivot->night_shift = $user->working_today;
+                $shiftToday->pivot->off_shift = true;
+                $shiftToday->pivot->save();
+            }
+
+            $user->update();
 
             return back();
         } catch (\Exception $e) {
@@ -599,7 +662,7 @@ class CastController extends Controller
         }
     }
 
-    public function updateCostRate(User $user, Request $request) 
+    public function updateCostRate(User $user, Request $request)
     {
         $user->cost_rate = $request->cost_rate;
         $user->save();

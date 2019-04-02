@@ -55,6 +55,10 @@ class PointController extends Controller
                 $sum += $product->point;
             }
 
+            if ($product->is_invite_code) {
+                $sum += $product->point;
+            }
+
             return $sum;
         });
 
@@ -111,7 +115,7 @@ class PointController extends Controller
         $sumAmount = $this->sumAmount($points);
         $sumPointBuy = $this->sumPointBuy($points);
         $sumPointPay = -$this->sumPointPay($points);
-        $sumBalance = $points->sum('balance');
+        $sumNonTransfer = $sumPointBuy - $sumPointPay;
 
         if ('export' == $request->submit) {
             $data = collect($pointsExport)->map(function ($item) {
@@ -120,12 +124,16 @@ class PointController extends Controller
                     PointType::getDescription($item->type),
                     ($item->is_buy || $item->is_auto_charge) ? $item->id : '-',
                     ($item->is_pay) ? $item->order->id : '-',
-                    ($item->is_adjusted || !$item->payment) ? '-' : '¥ ' . number_format($item->payment->amount),
-                    ($item->is_buy || $item->is_auto_charge || $item->is_adjusted) ? $item->point : '',
+                    ($item->is_adjusted || !$item->payment || $item->is_invite_code) ? '-' : '¥ ' . number_format($item->payment->amount),
+                    ($item->is_buy || $item->is_auto_charge || $item->is_adjusted || $item->is_invite_code) ? $item->point : '',
                     ($item->is_pay) ? (-$item->point) : '-',
                     $item->balance,
                 ];
             })->toArray();
+
+            $sumPointBuyExport = $this->sumPointBuy($pointsExport);
+            $sumPointPayExport = -$this->sumPointPay($pointsExport);
+            $sumNonTransferExport = $sumPointBuyExport - $sumPointPayExport;
 
             $sum = [
                 '合計',
@@ -133,9 +141,9 @@ class PointController extends Controller
                 '-',
                 '-',
                 '¥ ' . number_format($this->sumAmount($pointsExport)),
-                $this->sumPointBuy($pointsExport),
-                -$this->sumPointPay($pointsExport),
-                $pointsExport->sum('balance'),
+                $sumPointBuyExport,
+                $sumPointPayExport,
+                $sumNonTransferExport,
             ];
 
             array_push($data, $sum);
@@ -165,7 +173,7 @@ class PointController extends Controller
 
         return view('admin.users.points_history', compact(
             'user', 'points', 'sumAmount',
-            'sumPointPay', 'sumPointBuy', 'sumBalance',
+            'sumPointPay', 'sumPointBuy', 'sumNonTransfer',
             'pointTypes', 'pointCorrectionTypes')
         );
     }
