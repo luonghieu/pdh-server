@@ -62,6 +62,7 @@
             <p id="total_point">{{ number_format($user->point) }}</p>
             <input type="hidden" id="current_point" value="{{ $user->point }}">
             <input type="hidden" id="is_multi_payment_method" value="{{ $user->is_multi_payment_method }}">
+            <input type="hidden" id="path_select_payment_method" value="{{ URL::previous() }}">
         </div>
     </div>
     <div class="point_list_wrap">
@@ -119,25 +120,37 @@
 
 @section('web.extra_js')
     <script>
+        $(document).ready(function () {
+            var hasCard = '{!! $user->is_card_registered ? 1 : 0 !!}';
+            var backUrl = $('#path_select_payment_method').val();
 
-        var hasCard = '{!! $user->is_card_registered ? 1 : 0 !!}';
-        function buyPoint(point) {
-            if (!localStorage.getItem("payment_method")) {
-                window.location.href = '/purchase/select_payment_methods';
-            }
+            if (backUrl.match('/purchase/select_payment_methods')) {
+                var point = localStorage.getItem("buy_point")
 
-            if (localStorage.getItem("payment_method") && (localStorage.getItem("payment_method") == 2)) {
-                window.location.href = '/payment/transfer?point='+point;
-            } else {
-                if (!hasCard) {
-                    document.getElementById('popup-require-card').click();
-                    return false;
+                if (localStorage.getItem("payment_method") && (localStorage.getItem("payment_method") == 2)) {
+                    window.location.href = '/payment/transfer?point='+point;
+                } else {
+                    if (!hasCard) {
+                        document.getElementById('popup-require-card').click();
+                        return false;
+                    }
+
+                    $('#buypoint-popup').click();
+                    $('#popup-amount').html(point.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") + 'P');
+                    $('#point-amount').val(point);
                 }
-
-                $('#buypoint-popup').click();
-                $('#popup-amount').html(point.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") + 'P');
-                $('#point-amount').val(point);
             }
+
+        });
+
+        function buyPoint(point) {
+            if (localStorage.getItem("payment_method")) {
+                localStorage.removeItem("payment_method");
+            }
+
+            localStorage.setItem('buy_point', point);
+
+            return window.location.href = '/purchase/select_payment_methods';
         }
     </script>
 @endsection
