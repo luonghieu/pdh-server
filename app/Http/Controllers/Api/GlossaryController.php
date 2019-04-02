@@ -5,16 +5,12 @@ namespace App\Http\Controllers\Api;
 use App\BodyType;
 use App\Enums\CohabitantType;
 use App\Enums\DrinkVolumeType;
-use App\Enums\PointType;
 use App\Enums\SiblingsType;
 use App\Enums\SmokingType;
 use App\Enums\UserGender;
 use App\Job;
-use App\Point;
 use App\Prefecture;
 use App\Salary;
-use App\Transfer;
-use App\User;
 
 class GlossaryController extends ApiController
 {
@@ -74,6 +70,14 @@ class GlossaryController extends ApiController
         $data['payment']['url'] = '';
 
         $data['enable_invite_code_banner'] = true;
+
+        $data['direct_transfer_bank_info'] = [
+            'bank_name' => '東京三協信用金庫',
+            'branch_name' => '新宿支店（012)',
+            'deposit_subject' => '普通',
+            'account_number' => '1023474',
+            'account_holder' => 'リスティル（カ',
+        ];
 
         if ($token = request()->bearerToken()) {
             $user = auth('api')->setToken($token)->user();
