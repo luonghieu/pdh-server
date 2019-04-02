@@ -14,6 +14,7 @@ use App\Notifications\AutoChargeFailedLineNotify;
 use App\Notifications\AutoChargeFailedWorkchatNotify;
 use App\Order;
 use App\Point;
+use App\Services\LogService;
 use App\Transfer;
 use App\User;
 use Carbon\Carbon;
@@ -73,37 +74,49 @@ class PointSettlementSchedule extends Command
             if (!$order->user->trashed()) {
                 if ($order->payment_method == OrderPaymentMethod::DIRECT_PAYMENT) {
                     $user = $order->user;
-                    if ($user->point > $order->total_point) {
-                        $order->settle();
+                    $totalPoint = $order->total_point;
+                    if ($order->coupon_id) {
+                        $totalPoint = $order->total_point - $order->discount_point;
+                    }
 
-                        $order->paymentRequests()->update(['status' => PaymentRequestStatus::CLOSED]);
+                    if ($user->point > $totalPoint) {
+                        try {
+                            \DB::beginTransaction();
+                            $order->settle();
 
-                        $order->payment_status = OrderPaymentStatus::PAYMENT_FINISHED;
-                        $order->paid_at = $now;
-                        $order->update();
+                            $order->paymentRequests()->update(['status' => PaymentRequestStatus::CLOSED]);
 
-                        $adminId = User::where('type', UserType::ADMIN)->first()->id;
+                            $order->payment_status = OrderPaymentStatus::PAYMENT_FINISHED;
+                            $order->paid_at = $now;
+                            $order->update();
 
-                        $order = $order->load('paymentRequests');
+                            $adminId = User::where('type', UserType::ADMIN)->first()->id;
 
-                        $paymentRequests = $order->paymentRequests;
+                            $order = $order->load('paymentRequests');
 
-                        $receiveAdmin = 0;
+                            $paymentRequests = $order->paymentRequests;
 
-                        foreach ($paymentRequests as $paymentRequest) {
-                            $cast = $paymentRequest->cast;
+                            $receiveAdmin = 0;
 
-                            $receiveCast = round($paymentRequest->total_point * $cast->cost_rate);
-                            $receiveAdmin += round($paymentRequest->total_point * (1 - $cast->cost_rate));
+                            foreach ($paymentRequests as $paymentRequest) {
+                                $cast = $paymentRequest->cast;
 
-                            $this->createTransfer($order, $paymentRequest, $receiveCast);
+                                $receiveCast = round($paymentRequest->total_point * $cast->cost_rate);
+                                $receiveAdmin += round($paymentRequest->total_point * (1 - $cast->cost_rate));
 
-                            // receive cast
-                            $this->createPoint($receiveCast, $paymentRequest->cast_id, $order);
+                                $this->createTransfer($order, $paymentRequest, $receiveCast);
+
+                                // receive cast
+                                $this->createPoint($receiveCast, $paymentRequest->cast_id, $order);
+                            }
+
+                            // receive admin
+                            $this->createPoint($receiveAdmin, $adminId, $order);
+                            \DB::commit();
+                        } catch (\Exception $e) {
+                            \DB::rollBack();
+                            LogService::writeErrorLog($e);
                         }
-
-                        // receive admin
-                        $this->createPoint($receiveAdmin, $adminId, $order);
                     } else {
                         if (!$order->send_warning) {
                             $delay = Carbon::now()->addSeconds(3);
