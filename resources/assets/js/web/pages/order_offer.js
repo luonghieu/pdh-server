@@ -562,7 +562,7 @@ $(document).ready(function(){
       total_cast: totalCast,
       type: 2,
       nominee_ids: castIds,
-      temp_point: tempPoint,
+      temp_point: $('#temp-point-offer').val(),
       offer_id: offerId
     }
 

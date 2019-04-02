@@ -157,16 +157,18 @@ class GuestController extends ApiController
         $user = $this->guard()->user();
 
         $orders = $user->orders()->whereIn('status', [OrderStatus::OPEN, OrderStatus::ACTIVE, OrderStatus::PROCESSING])
-            ->orWhere(function ($query) {
-                $query->where(function ($q) {
+            ->orWhere(function ($query) use ($user) {
+                $query->where(function ($q) use ($user) {
                     $q->where('status', OrderStatus::DONE)
+                        ->where('user_id', $user->id)
                         ->where(function ($sq) {
                             $sq->whereNull('payment_status')
                                 ->orWhere('payment_status', '<>', OrderPaymentStatus::PAYMENT_FINISHED);
                         });
                 })
-                    ->orWhere(function ($q) {
+                    ->orWhere(function ($q) use ($user) {
                         $q->where('status', OrderStatus::CANCELED)
+                            ->where('user_id', $user->id)
                             ->where(function ($sq) {
                                 $sq->whereNull('payment_status')
                                     ->orWhere('payment_status', '<>', OrderPaymentStatus::CANCEL_FEE_PAYMENT_FINISHED);
@@ -188,8 +190,10 @@ class GuestController extends ApiController
             }
 
             if (OrderStatus::DONE == $order->status) {
-                if ($order->temp_point) {
+                if (!isset($order->total_point)) {
                     $pointUsed += $order->temp_point;
+                } else {
+                    $pointUsed += $order->total_point - $order->discount_point;
                 }
             }
         }

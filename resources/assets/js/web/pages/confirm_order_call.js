@@ -425,7 +425,7 @@ $(document).ready(function(){
           type :type,
           total_cast :orderCall.countIds,
           tags : tags,
-          temp_point : tempPointOrder,
+          temp_point : $('#temp_point_order_call').val(),
         };
 
         if(transfer) {
