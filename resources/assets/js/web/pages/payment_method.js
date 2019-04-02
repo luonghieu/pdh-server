@@ -6,6 +6,7 @@ $(document).ready(function () {
 
     $('#transfer-method').on('click', function () {
         localStorage.setItem('payment_method', 2);
-        window.location.href = '/purchase';
+        var point = localStorage.getItem("buy_point")
+        window.location.href = '/payment/transfer?point='+point;
     });
 });

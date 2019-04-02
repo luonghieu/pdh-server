@@ -5,12 +5,16 @@ namespace App\Http\Controllers\Api;
 use App\BodyType;
 use App\Enums\CohabitantType;
 use App\Enums\DrinkVolumeType;
+use App\Enums\PointType;
 use App\Enums\SiblingsType;
 use App\Enums\SmokingType;
 use App\Enums\UserGender;
 use App\Job;
+use App\Point;
 use App\Prefecture;
 use App\Salary;
+use App\Transfer;
+use App\User;
 
 class GlossaryController extends ApiController
 {
