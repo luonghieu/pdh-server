@@ -129,7 +129,6 @@
     <?php $orderStartTime = \Carbon\Carbon::parse($order->actual_started_at)?>
     <?php $orderEndTime = \Carbon\Carbon::parse($order->actual_ended_at)?>
 @endif
-<input type="hidden" id="is-multi-payment-method" value="{{$user->is_multi_payment_method}}">
 
 <?php $casts = $order->casts;?>
     <div class="settlement-confirm">
@@ -247,6 +246,7 @@
     @if (!$order->deleted_at)
     <form action="{{ route('point_settement.create', ['id' => $order->id]) }}" method="POST" id="payment-form">
         {{ csrf_field() }}
+        <input type="hidden" id="order-payment-method" value="{{$order->payment_method}}">
         @if ($order->payment_status == \App\Enums\OrderPaymentStatus::REQUESTING || $order->payment_status == \App\Enums\OrderPaymentStatus::PAYMENT_FAILED)
             <div class="action" style="width: 100%; text-align: center;">
                 <button class="btn-l" type="submit" id="payment-submit">決済を確定する</button>
