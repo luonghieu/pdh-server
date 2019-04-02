@@ -123,11 +123,11 @@
         $(document).ready(function () {
             var hasCard = '{!! $user->is_card_registered ? 1 : 0 !!}';
             var backUrl = $('#path_select_payment_method').val();
-
+            var checkMultiPaymentMethod = $('#is_multi_payment_method').val();
             if (backUrl.match('/purchase/select_payment_methods')) {
                 var point = localStorage.getItem("buy_point");
 
-                if (point) {
+                if (point && checkMultiPaymentMethod) {
                     if (!hasCard) {
                         document.getElementById('popup-require-card').click();
                         return false;
@@ -142,13 +142,26 @@
         });
 
         function buyPoint(point) {
-            if (localStorage.getItem("payment_method")) {
-                localStorage.removeItem("payment_method");
+            var hasCard = '{!! $user->is_card_registered ? 1 : 0 !!}';
+            if ($('#is_multi_payment_method').val() != true) {
+                if (!hasCard) {
+                    document.getElementById('popup-require-card').click();
+                    return false;
+                }
+
+                $('#buypoint-popup').click();
+                $('#popup-amount').html(point.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",") + 'P');
+                $('#point-amount').val(point);
+
+            } else {
+                if (localStorage.getItem("payment_method")) {
+                    localStorage.removeItem("payment_method");
+                }
+
+                localStorage.setItem('buy_point', point);
+
+                return window.location.href = '/purchase/select_payment_methods';
             }
-
-            localStorage.setItem('buy_point', point);
-
-            return window.location.href = '/purchase/select_payment_methods';
         }
     </script>
 @endsection
