@@ -51,7 +51,7 @@ final class PointType extends Enum
                 return 'ポイント付与';
                 break;
             case self::DIRECT_TRANSFER:
-                return 'ポイント付与';
+                return 'ポイント購入';
                 break;
 
             default:break;
