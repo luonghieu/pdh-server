@@ -3770,7 +3770,8 @@ div.user-data span.total-point-cast{
 
 #gi-4-4 .wrap-radio-payment-methods ul li {
   border-bottom: 1px solid #e8e8e8;
-  margin: 25px 8px 0 8px;
+  margin: 15px 8px 0 8px;
+  padding-bottom: 15px;
 }
 
 #gi-4-4 .wrap-radio-payment-methods img {
