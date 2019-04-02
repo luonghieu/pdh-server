@@ -7,7 +7,12 @@
 
 @endsection
 @section('web.content')
-<p class="transfer_title">ポイントが不足しております。 <br> 不足分のポイントをご購入ください。</p>
+  @php
+    $backUrl = \URL::previous();
+  @endphp
+  @if(!preg_match('/select_payment_methods/', $backUrl))
+    <p class="transfer_title">ポイントが不足しております。 <br> 不足分のポイントをご購入ください。</p>
+  @endif
 <div id="detail-point-order">
   <section class="show-point">
     <div class="details-list__line"></div>
@@ -107,7 +112,10 @@
     <!-- profile-word -->
   </div>
 @endsection
-@section('web.script')
-<script>
-</script>
-@stop
+@section('web.extra_js')
+  <script>
+      $(document).ready(function () {
+          localStorage.removeItem("buy_point");
+      })
+  </script>
+@endsection
