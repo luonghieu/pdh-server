@@ -45,9 +45,8 @@ $('#request-update-point-btn').on('click', function(e) {
 $('#payment-form').on('submit', function (e) {
    e.preventDefault();
     var orderPaymentMethod = $('#order-payment-method').val();
-
+    const url = $(this).attr('action');
     if (orderPaymentMethod == 1) {
-        const url = $(this).attr('action');
 
         window.axios.post(url).then(response => {
             const message = helper.getResponseMessage(response.data.message);
@@ -66,8 +65,6 @@ $('#payment-form').on('submit', function (e) {
                 if (response.data && (response.data.data > guestTotalPoint)) {
                     window.location.href = '/payment/transfer?point='+response.data.data;
                 } else {
-                    const url = $(this).attr('action');
-
                     window.axios.post(url).then(response => {
                         const message = helper.getResponseMessage(response.data.message);
                         $('#alert-payment-content').html(message);
