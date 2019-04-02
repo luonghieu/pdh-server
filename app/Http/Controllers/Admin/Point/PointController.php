@@ -152,7 +152,7 @@ class PointController extends Controller
                     if ($item->is_adjusted || !$item->payment || $item->is_invite_code) {
                         //
                     } else {
-                        $amount = '¥ ' . number_format($item->payment ? $item->payment->amount : 0)
+                        $amount = '¥ ' . number_format($item->payment ? $item->payment->amount : 0);
                     }
                 }
 
