@@ -338,7 +338,8 @@
           <div class="details-total__content">
             <div class="details-total__text">合計</div>
             <div class="details-total__marks total-amount">{{ number_format($offer->temp_point) }}P</div>
-             <input type="hidden" value="{{ $offer->temp_point }} " id="temp-point-offer">
+            <input type="hidden" value="{{ $offer->temp_point }} " id="temp-point-offer">
+            <input type="hidden" id="point_used_offer" value="">
             <span class="details-list__button"></span>
            </div>
         </section>

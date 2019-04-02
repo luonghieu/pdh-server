@@ -322,14 +322,37 @@ class OrderController extends Controller
     public function createNominate(Request $request)
     {
         $user = Auth::user();
+
+        $accessToken = JWTAuth::fromUser($user);
+
+        $client = new Client([
+            'base_uri' => config('common.api_url'),
+            'headers' => [
+                'Content-Type' => 'application/json',
+                'Authorization' => 'Bearer ' . $accessToken,
+            ],
+        ]);
+
         $tempPoint = $request->current_temp_point;
         $transfer = $request->transfer_order_nominate;
 
         if (isset($transfer)) {
             if (OrderPaymentMethod::CREDIT_CARD == $transfer || OrderPaymentMethod::DIRECT_PAYMENT == $transfer) {
                 if (OrderPaymentMethod::DIRECT_PAYMENT == $transfer) {
-                    if ((float) $tempPoint > (float) $user->point) {
-                        return redirect()->route('guest.transfer');
+                    try {
+                        $pointUsed = $client->request('GET', route('guest.points_used'));
+
+                        $pointUsed = json_decode(($pointUsed->getBody())->getContents(), JSON_NUMERIC_CHECK);
+                        $pointUsed = $pointUsed['data'];
+                    } catch (\Exception $e) {
+                        LogService::writeErrorLog($e);
+                        return redirect()->route('web.login');
+                    }
+
+                    if ((float) ($tempPoint + $pointUsed) > (float) $user->point) {
+                        $point = (float) ($tempPoint + $pointUsed) - (float) $user->point;
+
+                        return redirect()->route('guest.transfer', ['point' => $point]);
                     }
                 }
             } else {
@@ -443,16 +466,6 @@ class OrderController extends Controller
         if (isset($transfer)) {
             $input['payment_method'] = $transfer;
         }
-
-        $accessToken = JWTAuth::fromUser($user);
-
-        $client = new Client([
-            'base_uri' => config('common.api_url'),
-            'headers' => [
-                'Content-Type' => 'application/json',
-                'Authorization' => 'Bearer ' . $accessToken,
-            ],
-        ]);
 
         try {
             $order = $client->request('POST', route('orders.create'), [
