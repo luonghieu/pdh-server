@@ -141,15 +141,16 @@
                 }
             }
 
-            function buyPoint(point) {
-                if (localStorage.getItem("payment_method")) {
-                    localStorage.removeItem("payment_method");
-                }
-
-                localStorage.setItem('buy_point', point);
-
-                return window.location.href = '/purchase/select_payment_methods';
-            }
         });
+
+        function buyPoint(point) {
+            if (localStorage.getItem("payment_method")) {
+                localStorage.removeItem("payment_method");
+            }
+
+            localStorage.setItem('buy_point', point);
+
+            return window.location.href = '/purchase/select_payment_methods';
+        }
     </script>
 @endsection
