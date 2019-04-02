@@ -776,11 +776,17 @@ $(document).ready(function(){
       if(OrderPaymentMethod.Direct_Payment == transfer) {
 
         var tempPoint = $('#current-temp-point').val();
-        var pointUser = $('#current-point').val();
+        var pointUser = $('#point_used_nominate').val();
 
         if (parseInt(tempPoint) > parseInt(pointUser)) {
           $('.checked-order').prop('checked',false);
+          $('#sp-cancel').addClass('sp-disable');
+          $('#confirm-orders-nomination').prop('disabled', true);
+          $('#confirm-orders-nomination').addClass('disable');
+          // $('#orders-nominate').prop('checked',false);
+
           var pointShow = parseInt(tempPoint) - parseInt(pointUser);
+
           window.location.href = '/payment/transfer?point=' + pointShow;
 
           return;
@@ -795,6 +801,18 @@ $(document).ready(function(){
   });
 
   if ($('#create-nomination-form').length) {
+
+    window.axios.get('/api/v1/guest/points_used')
+      .then(function(response) {
+        var pointUsed = response.data['data'];
+        $('#point_used_nominate').val(pointUsed);
+      }).catch(function(error) {
+        console.log(error);
+        if (error.response.status == 401) {
+          window.location = '/login';
+        }
+      });
+
     if(localStorage.getItem("order_params")){
       var orderParams = JSON.parse(localStorage.getItem("order_params"));
 

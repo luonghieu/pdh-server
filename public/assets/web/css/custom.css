@@ -3703,3 +3703,7 @@ div.user-data span.total-point-cast{
 .transfer_amount-order .transfer-right {
   margin-right: 45px;
 }
+
+.top-page a {
+  width: 60%;
+}

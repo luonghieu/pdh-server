@@ -88,6 +88,18 @@ $(document).ready(function(){
   const helper = require('./helper');
   if($('#btn-confirm-orders').length) {
     if(localStorage.getItem("order_call")){
+
+      window.axios.get('/api/v1/guest/points_used')
+      .then(function(response) {
+        var pointUsed = response.data['data'];
+        $('#point_used').val(pointUsed);
+      }).catch(function(error) {
+        console.log(error);
+        if (error.response.status == 401) {
+          window.location = '/login';
+        }
+      });
+
       var orderCall = JSON.parse(localStorage.getItem("order_call"));
 
       if (orderCall.select_area) {
@@ -335,15 +347,18 @@ $(document).ready(function(){
           var transfer = parseInt($("input[name='transfer_order']:checked").val());
         }
 
-        var currentPointUser = $('#current-point').val();
+        var pointUsed = $('#point_used').val();
         var tempPointOrder = $('#temp_point_order_call').val();
 
         if (transfer) {
           if (OrderPaymentMethod.Credit_Card == transfer || OrderPaymentMethod.Direct_Payment == transfer) {
             if (OrderPaymentMethod.Direct_Payment == transfer) {
-              if (parseInt(tempPointOrder) > parseInt(currentPointUser)) {
+              if (parseInt(tempPointOrder) > parseInt(pointUsed)) {
+                $('#sp-cancel').addClass('sp-disable');
                 $('.cb-cancel').prop('checked', false);
-                var point = parseInt(tempPointOrder) - parseInt(currentPointUser);
+                $('#btn-confirm-orders').prop('disabled', true);
+                $('#btn-confirm-orders').addClass('disable');
+                var point = parseInt(tempPointOrder) - parseInt(pointUsed);
                 window.location.href = '/payment/transfer?point=' + point;
 
                 return ;

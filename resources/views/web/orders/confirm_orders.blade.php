@@ -114,6 +114,7 @@
       </div>
 
       <input type="hidden" id="temp_point_order_call" value="">
+      <input type="hidden" id="point_used" value="">
     </section>
   </div>
   <div class="reservation-policy">

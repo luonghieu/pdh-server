@@ -3,9 +3,13 @@
 namespace App\Http\Controllers\Api\Guest;
 
 use App\Cast;
+use App\Enums\CastOrderStatus;
 use App\Enums\CastTransferStatus;
+use App\Enums\OrderPaymentStatus;
 use App\Enums\OrderStatus;
 use App\Enums\UserType;
+use App\Http\Controllers\Api\ApiController;
+use App\Http\Resources\CastResource;
 use App\Jobs\MakeAvatarThumbnail;
 use App\Notifications\MessageRequestTransferLineNotify;
 use App\Notifications\MessageRequestTransferRocketNotify;
@@ -13,12 +17,9 @@ use App\Services\LogService;
 use App\User;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
-use App\Enums\CastOrderStatus;
-use Illuminate\Support\Collection;
-use App\Http\Resources\CastResource;
-use Illuminate\Pagination\Paginator;
-use App\Http\Controllers\Api\ApiController;
 use Illuminate\Pagination\LengthAwarePaginator;
+use Illuminate\Pagination\Paginator;
+use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Storage;
 use Webpatser\Uuid\Uuid;
 
@@ -77,7 +78,7 @@ class GuestController extends ApiController
 
     public function paginate($items, $perPage = 15, $page = null, $options = [])
     {
-        $page = $page ? : (Paginator::resolveCurrentPage() ? : 1);
+        $page = $page ?: (Paginator::resolveCurrentPage() ?: 1);
         $items = $items instanceof Collection ? $items : Collection::make($items);
 
         return new LengthAwarePaginator($items->forPage($page, $perPage), $items->count(), $perPage, $page, $options);
@@ -126,7 +127,7 @@ class GuestController extends ApiController
                 $input = [
                     'is_default' => false,
                     'path' => $imageName,
-                    'thumbnail' => ''
+                    'thumbnail' => '',
                 ];
                 $avatar = $user->avatars()->create($input);
                 MakeAvatarThumbnail::dispatch($avatar->id);
@@ -149,5 +150,47 @@ class GuestController extends ApiController
         }
 
         return $this->respondWithNoData(trans('messages.request_transfer_cast_succeed'));
+    }
+
+    public function getPointUsed()
+    {
+        $user = $this->guard()->user();
+
+        $orders = $user->orders()->whereIn('status', [OrderStatus::OPEN, OrderStatus::ACTIVE, OrderStatus::PROCESSING])
+            ->orWhere(function ($query) {
+                $query->where(function ($q) {
+                    $q->where('status', OrderStatus::DONE)
+                        ->where('payment_status', '<>', OrderPaymentStatus::PAYMENT_FINISHED);
+                })
+                    ->orWhere(function ($q) {
+                        $q->where('status', OrderStatus::CANCELED)
+                            ->where('payment_status', '<>', OrderPaymentStatus::CANCEL_FEE_PAYMENT_FINISHED);
+                    });
+            });
+
+        $pointUsed = 0;
+        if ($user->point) {
+            $pointUsed += $user->point;
+        }
+
+        foreach ($orders->cursor() as $order) {
+            if (in_array($order->status, [OrderStatus::OPEN, OrderStatus::ACTIVE, OrderStatus::PROCESSING])) {
+                $pointUsed += $order->temp_point;
+            }
+
+            if (OrderStatus::CANCELED == $order->status) {
+                if ($order->cancel_fee_percent) {
+                    $pointUsed += ($order->temp_point * $order->cancel_fee_percent) / 100;
+                }
+            }
+
+            if (OrderStatus::DONE == $order->status) {
+                if ($order->total_point) {
+                    $pointUsed += $order->temp_point;
+                }
+            }
+        }
+
+        return $this->respondWithData($pointUsed);
     }
 }
