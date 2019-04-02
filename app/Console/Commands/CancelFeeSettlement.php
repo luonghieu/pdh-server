@@ -2,6 +2,7 @@
 
 namespace App\Console\Commands;
 
+use App\Enums\OrderPaymentMethod;
 use App\Enums\OrderPaymentStatus;
 use App\Enums\OrderStatus;
 use App\Enums\PaymentRequestStatus;
@@ -73,6 +74,12 @@ class CancelFeeSettlement extends Command
 
         foreach ($orders as $order) {
             if (!$order->user->trashed()) {
+                if ($order->payment_method == OrderPaymentMethod::DIRECT_PAYMENT) {
+                    $user = $order->user;
+                    if ($user->point > $order->total_point) {
+
+                    }
+                }
                 $this->processPayment($order, $now);
             }
         }
