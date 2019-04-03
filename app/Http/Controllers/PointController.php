@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Services\LogService;
 use Auth;
 use GuzzleHttp\Client;
+use Illuminate\Http\Request;
 use JWTAuth;
 
 class PointController extends Controller
@@ -83,8 +84,10 @@ class PointController extends Controller
         }
     }
 
-    public function selectPaymentMethods()
+    public function selectPaymentMethods(Request $request)
     {
-        return view('web.payment_methods.index');
+        $point = $request->point;
+
+        return view('web.payment_methods.index', compact('point'));
     }
 }
