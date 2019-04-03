@@ -63,7 +63,7 @@ $('#payment-form').on('submit', function (e) {
         window.axios.get('/api/v1/guest/points_used')
             .then(function(response) {
                 if (response.data && (response.data.data > guestTotalPoint)) {
-                    window.location.href = '/payment/transfer?point='+response.data.data;
+                    window.location.href = '/payment/transfer?point='+ (parseInt(response.data.data) - parseInt(guestTotalPoint));
                 } else {
                     window.axios.post(url).then(response => {
                         const message = helper.getResponseMessage(response.data.message);
