@@ -160,7 +160,7 @@
 
                 localStorage.setItem('buy_point', point);
 
-                return window.location.href = '/purchase/select_payment_methods';
+                return window.location.href = '/purchase/select_payment_methods?point=' + point;
             }
         }
     </script>

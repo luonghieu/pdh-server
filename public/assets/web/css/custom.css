@@ -3742,6 +3742,7 @@ div.user-data span.total-point-cast{
   display: inline-block;
   height: 15px;
   width: 15px;
+  padding-top: 5px;
 }
 
 .gm1-edit #detail-point-order {

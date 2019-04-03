@@ -13,7 +13,8 @@
           <img src="/assets/web/images/common/next.svg" alt="" class="right">
         </li>
         <div class="clear"></div>
-        <li id="transfer-method">
+        <li id="transfer-method" onclick="window.location.href = '{{ route('guest.transfer', ['point'
+         => request()->point])}}'">
           <span>銀行振込</span>
           <img src="/assets/web/images/common/next.svg" alt="" class="right">
         </li>
