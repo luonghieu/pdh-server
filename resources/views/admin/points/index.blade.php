@@ -69,7 +69,7 @@
                     <td>{{ Carbon\Carbon::parse($point->created_at)->format('Y年m月d日') }}</td>
                     <td>{{ $point->user_id }}</td>
                     <td>{{ $point->user ? $point->user->nickname : '' }}</td>
-                    <td>{{ \App\Enums\PointType::getDescription($point->type) }}</td>
+                    <td>{{ $point->is_direct_transfer ? 'ポイント購入' : App\Enums\PointType::getDescription($point->type) }}</td>
                     @php
                       $amount = '-';
                       if ($point->is_direct_transfer) {
