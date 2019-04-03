@@ -8,7 +8,8 @@
     </div>
     <div class="wrap-radio-payment-methods">
       <ul>
-        <li id="credit-method">
+        <li id="credit-method" onclick="window.location.href = '{{ route('purchase.index', ['point'
+         => request()->point])}}'">
           <span>クレジットカード</span>
           <img src="/assets/web/images/common/next.svg" alt="" class="right">
         </li>
