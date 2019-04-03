@@ -125,7 +125,7 @@
             var backUrl = $('#path_select_payment_method').val();
             var checkMultiPaymentMethod = $('#is_multi_payment_method').val();
             if (backUrl.match('/purchase/select_payment_methods')) {
-                var point = localStorage.getItem("buy_point");
+                var point = '<?php echo request()->point ?>';
 
                 if (point && checkMultiPaymentMethod && localStorage.getItem("payment_method")) {
                     if (!hasCard) {
