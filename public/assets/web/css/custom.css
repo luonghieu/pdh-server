@@ -3606,6 +3606,10 @@ div.user-data span.total-point-cast{
   margin-right: 45px;
 }
 
+.transfer-order .transfer-point {
+  margin-right: 10px;
+}
+
 .transfer-order div input[type="radio"]:checked {
   border: 7px #30ccc3 solid;
 }
