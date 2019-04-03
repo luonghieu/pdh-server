@@ -1,4 +1,4 @@
-@section('title', 'プロフィール編集')
+@section('title', '銀行振込によるお払い')
 @section('screen.id', 'gm1')
 @section('screen.class', 'gm1-edit')
 
@@ -22,7 +22,7 @@
       <div class="transfer-left">
         <p>購入ポイント</p>
       </div>
-      <div class="transfer-right">
+      <div class="transfer-right transfer-point">
         <p>{{ number_format(request()->get('point')).' P' }}</p>
       </div>
     </div>
@@ -35,7 +35,7 @@
       <div class="transfer-amount-title">
         <p>振込金額</p>
       </div>
-      <div class="transfer-right transfer-amount-point">
+      <div class="transfer-right transfer-amount-point transfer-point">
         <p>{{ number_format(request()->get('point') * 1.1).' 円' }}</p>
       </div>
     </div>
@@ -52,31 +52,31 @@
           <li class="portlet-content__item">
             <p class="transfer-left">銀行名</p>
             <label class="time-input">
-              <p class="transfer-right">東京三協信用金庫</p>
+              <p class="transfer-right">{{ $paymentInfo['bank_name'] }}</p>
             </label>
           </li>
           <li class="portlet-content__item">
             <p class="transfer-left">支店名</p>
             <label class="time-input">
-              <p class="transfer-right">新宿支店（012)</p>
+              <p class="transfer-right">{{ $paymentInfo['branch_name'] }}</p>
             </label>
           </li>
           <li class="portlet-content__item">
             <p class="transfer-left">預金科目</p>
             <label class="time-input">
-              <p class="transfer-right">普通</p>
+              <p class="transfer-right">{{ $paymentInfo['deposit_subject'] }}</p>
             </label>
           </li>
           <li class="portlet-content__item">
             <p class="transfer-left">口座番号</p>
             <label class="time-input">
-              <p class="transfer-right">1023474</p>
+              <p class="transfer-right">{{ $paymentInfo['account_number'] }}</p>
             </label>
           </li>
           <li class="portlet-content__item">
             <p class="transfer-left">口座名義</p>
             <label class="time-input">
-              <p class="transfer-right">リスティル（カ</p>
+              <p class="transfer-right">{{ $paymentInfo['account_holder'] }}</p>
             </label>
           </li>
         </ul>
