@@ -72,6 +72,28 @@ class PaymentController extends Controller
 
     public function transfer()
     {
-        return view('web.payments.transfer');
+        $client = new Client(['base_uri' => config('common.api_url')]);
+        $user = Auth::user();
+
+        $accessToken = JWTAuth::fromUser($user);
+
+        $option = [
+            'headers' => ['Authorization' => 'Bearer ' . $accessToken],
+            'form_params' => [],
+            'allow_redirects' => false,
+        ];
+
+        try {
+            $paymentInfo = $client->get(route('glossaries'), $option);
+
+        } catch (\Exception $e) {
+            LogService::writeErrorLog($e);
+            abort(500);
+        }
+
+        $paymentInfo = json_decode(($paymentInfo->getBody())->getContents(), JSON_NUMERIC_CHECK);
+        $paymentInfo = $paymentInfo['data']['direct_transfer_bank_info'];
+
+        return view('web.payments.transfer', compact('paymentInfo'));
     }
 }
