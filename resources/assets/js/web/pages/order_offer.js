@@ -441,7 +441,6 @@ $(document).ready(function(){
             $('#confirm-orders-offer').prop('disabled', true);
             $('#sp-cancel').addClass("sp-disable");
           } else {
-            $('#confirm-orders-offer').removeClass('disable');
             $(this).prop('checked', true);
             $('#sp-cancel').removeClass('sp-disable');
             
@@ -455,6 +454,7 @@ $(document).ready(function(){
                   var pointUsed = response.data['data'];
                   $('#point_used_offer').val(pointUsed);
                   
+                  $('#confirm-orders-offer').removeClass('disable');
                   $('#confirm-orders-offer').prop('disabled', false);
                 }).catch(function(error) {
                   console.log(error);

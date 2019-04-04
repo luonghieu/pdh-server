@@ -542,7 +542,6 @@ $(document).ready(function(){
           $('#confirm-orders-nomination').prop('disabled', true);
           $('#sp-cancel').addClass("sp-disable");
         } else {
-          $('#confirm-orders-nomination').removeClass('disable');
           $(this).prop('checked', true);
           $('#sp-cancel').removeClass('sp-disable');
 
@@ -556,6 +555,7 @@ $(document).ready(function(){
                   var pointUsed = response.data['data'];
                   $('#point_used_nominate').val(pointUsed);
                   
+                  $('#confirm-orders-nomination').removeClass('disable');
                   $('#confirm-orders-nomination').prop('disabled', false);
                 }).catch(function(error) {
                   console.log(error);

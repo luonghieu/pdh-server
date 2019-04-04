@@ -314,7 +314,6 @@ $(document).ready(function(){
           if(checkCard) {
             $(this).prop('checked', false);
             $('#sp-cancel').addClass("sp-disable");
-            $('#btn-confirm-orders').addClass("disable");
             $('#btn-confirm-orders').prop('disabled', true);
           } else {
             $(this).prop('checked', true);
@@ -331,6 +330,7 @@ $(document).ready(function(){
                   var pointUsed = response.data['data'];
                   $('#point_used').val(pointUsed);
                   
+                  $('#btn-confirm-orders').addClass("disable");
                   $('#btn-confirm-orders').prop('disabled', false);
                 }).catch(function(error) {
                   console.log(error);
