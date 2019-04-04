@@ -43,42 +43,61 @@ $('#request-update-point-btn').on('click', function(e) {
 });
 
 $('#payment-form').on('submit', function (e) {
-   e.preventDefault();
-    var orderPaymentMethod = $('#order-payment-method').val();
+    e.preventDefault();
     const url = $(this).attr('action');
-    if (orderPaymentMethod == 1) {
-
-        window.axios.post(url).then(response => {
-            const message = helper.getResponseMessage(response.data.message);
-            $('#alert-payment-content').html(message);
-            $('#alert-payment-label').trigger('click');
-            document.getElementById('payment-completed-gtm').click();
-            setTimeout(() => {
-                window.location.href = '/mypage';
-            }, 2000);
-        }).catch(err => {
-            $('#payment-failed').trigger('click');
-        });
-    } else {
-        window.axios.get('/api/v1/guest/points_used')
-            .then(function(response) {
-                if (response.data && (response.data.data > guestTotalPoint)) {
-                    window.location.href = '/payment/transfer?point='+ (parseInt(response.data.data) - parseInt(guestTotalPoint));
-                } else {
-                    window.axios.post(url).then(response => {
-                        const message = helper.getResponseMessage(response.data.message);
-                        $('#alert-payment-content').html(message);
-                        $('#alert-payment-label').trigger('click');
-                        document.getElementById('payment-completed-gtm').click();
-                        setTimeout(() => {
-                            window.location.href = '/mypage';
-                        }, 2000);
-                    }).catch(err => {
-                        $('#payment-failed').trigger('click');
-                    });
-                }
-            }).catch(function(error) {
-            console.log(error);
-        });
-    }
+    window.axios.get('/api/v1/auth/me').then(response => {
+        var orderPaymentMethod = $('#order-payment-method').val();
+        var guestTotalPoint = response.data.data.point;
+        if (orderPaymentMethod == 1) {
+            window.axios.post(url).then(response => {
+                const message = helper.getResponseMessage(response.data.message);
+                $('#alert-payment-content').html(message);
+                $('#alert-payment-label').trigger('click');
+                document.getElementById('payment-completed-gtm').click();
+                setTimeout(() => {
+                    window.location.href = '/mypage';
+                }, 2000);
+            }).catch(err => {
+                $('#payment-failed').trigger('click');
+            });
+        } else {
+            // window.axios.get('/api/v1/guest/points_used')
+            //     .then(function(response) {
+            //         if (response.data && (response.data.data > guestTotalPoint)) {
+            //                 window.location.href = '/payment/transfer?point='+ (parseInt(response.data.data) - parseInt(guestTotalPoint));
+            //            } else {
+            //                 window.axios.post(url).then(response => {
+            //                         const message = helper.getResponseMessage(response.data.message);
+            //                         $('#alert-payment-content').html(message);
+            //                         $('#alert-payment-label').trigger('click');
+            //                         document.getElementById('payment-completed-gtm').click();
+            //                        setTimeout(() => {
+            //                                window.location.href = '/mypage';
+            //                             }, 2000);
+            //                     }).catch(err => {
+            //                         $('#payment-failed').trigger('click');
+            //                     });
+            //             }
+            //         }).catch(function(error) {
+            //         console.log(error);
+            //     });
+            if (orderTotalPoint > guestTotalPoint) {
+                window.location.href = '/payment/transfer?point='+ (parseInt(orderTotalPoint) - parseInt(guestTotalPoint));
+            } else {
+                window.axios.post(url).then(response => {
+                    const message = helper.getResponseMessage(response.data.message);
+                    $('#alert-payment-content').html(message);
+                    $('#alert-payment-label').trigger('click');
+                    document.getElementById('payment-completed-gtm').click();
+                    setTimeout(() => {
+                        window.location.href = '/mypage';
+                    }, 2000);
+                }).catch(err => {
+                    $('#payment-failed').trigger('click');
+                });
+            }
+        }
+    }).catch(err => {
+        console.log(err);
+    });
 });
