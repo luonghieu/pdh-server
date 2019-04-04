@@ -441,22 +441,32 @@ $(document).ready(function(){
             $('#confirm-orders-offer').prop('disabled', true);
             $('#sp-cancel').addClass("sp-disable");
           } else {
+            window.axios.get('/api/v1/auth/me')
+            .then(function(response) {
+              var tempPoint = response.data['data'].point;
 
-            window.axios.get('/api/v1/guest/points_used')
-              .then(function(response) {
-                var pointUsed = response.data['data'];
-                $('#point_used_offer').val(pointUsed);
-              }).catch(function(error) {
-                console.log(error);
-                if (error.response.status == 401) {
-                  window.location = '/login';
-                }
-              });
-      
-            $('#confirm-orders-offer').removeClass('disable');
-            $(this).prop('checked', true);
-            $('#confirm-orders-offer').prop('disabled', false);
-            $('#sp-cancel').removeClass('sp-disable');
+              $('#current-point').val(tempPoint);
+              window.axios.get('/api/v1/guest/points_used')
+                .then(function(response) {
+                  var pointUsed = response.data['data'];
+                  $('#point_used_offer').val(pointUsed);
+                  
+                  $('#confirm-orders-offer').removeClass('disable');
+                  $(this).prop('checked', true);
+                  $('#confirm-orders-offer').prop('disabled', false);
+                  $('#sp-cancel').removeClass('sp-disable');
+                }).catch(function(error) {
+                  console.log(error);
+                  if (error.response.status == 401) {
+                    window.location = '/login';
+                  }
+                });
+            }).catch(function(error) {
+              console.log(error);
+              if (error.response.status == 401) {
+                window.location = '/login';
+              }
+            });
           }
         } else {
           $('#confirm-orders-offer').addClass("disable");
@@ -507,6 +517,7 @@ $(document).ready(function(){
             $('#confirm-orders-offer').addClass('disable');
 
             var pointShow = parseInt(tempPointOrders) - parseInt(currentPointUser);
+            
             window.location.href = '/payment/transfer?point=' + pointShow;
 
             return ;

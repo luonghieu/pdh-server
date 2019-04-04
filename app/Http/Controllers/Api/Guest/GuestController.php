@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api\Guest;
 use App\Cast;
 use App\Enums\CastOrderStatus;
 use App\Enums\CastTransferStatus;
+use App\Enums\OrderPaymentMethod;
 use App\Enums\OrderPaymentStatus;
 use App\Enums\OrderStatus;
 use App\Enums\UserType;
@@ -156,7 +157,7 @@ class GuestController extends ApiController
     {
         $user = $this->guard()->user();
 
-        $orders = $user->orders()->where(function ($query) {
+        $orders = $user->orders()->where('payment_method', OrderPaymentMethod::DIRECT_PAYMENT)->where(function ($query) {
             $query->whereIn('status', [OrderStatus::OPEN, OrderStatus::ACTIVE, OrderStatus::PROCESSING])
                 ->orWhere(function ($q) {
                     $q->where(function ($sq) {
@@ -180,7 +181,9 @@ class GuestController extends ApiController
 
         foreach ($orders->cursor() as $order) {
             if (in_array($order->status, [OrderStatus::OPEN, OrderStatus::ACTIVE, OrderStatus::PROCESSING])) {
-                $pointUsed += $order->temp_point;
+                if ($order->temp_point) {
+                    $pointUsed += $order->temp_point;
+                }
             }
 
             if (OrderStatus::CANCELED == $order->status) {
@@ -190,10 +193,8 @@ class GuestController extends ApiController
             }
 
             if (OrderStatus::DONE == $order->status) {
-                if (!isset($order->total_point)) {
+                if ($order->temp_point) {
                     $pointUsed += $order->temp_point;
-                } else {
-                    $pointUsed += $order->total_point - $order->discount_point;
                 }
             }
         }

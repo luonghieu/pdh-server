@@ -317,21 +317,32 @@ $(document).ready(function(){
             $('#btn-confirm-orders').addClass("disable");
             $('#btn-confirm-orders').prop('disabled', true);
           } else {
-            window.axios.get('/api/v1/guest/points_used')
-              .then(function(response) {
-                var pointUsed = response.data['data'];
-                $('#point_used').val(pointUsed);
-              }).catch(function(error) {
-                console.log(error);
-                if (error.response.status == 401) {
-                  window.location = '/login';
-                }
-              });
-
-            $(this).prop('checked', true);
-            $('#sp-cancel').removeClass('sp-disable');
-            $('#btn-confirm-orders').removeClass('disable');
-            $('#btn-confirm-orders').prop('disabled', false);
+            window.axios.get('/api/v1/auth/me')
+            .then(function(response) {
+              var tempPoint = response.data['data'].point;
+              $('#current-point').val(tempPoint);
+              
+              window.axios.get('/api/v1/guest/points_used')
+                .then(function(response) {
+                  var pointUsed = response.data['data'];
+                  $('#point_used').val(pointUsed);
+                  
+                  $(this).prop('checked', true);
+                  $('#sp-cancel').removeClass('sp-disable');
+                  $('#btn-confirm-orders').removeClass('disable');
+                  $('#btn-confirm-orders').prop('disabled', false);
+                }).catch(function(error) {
+                  console.log(error);
+                  if (error.response.status == 401) {
+                    window.location = '/login';
+                  }
+                });
+            }).catch(function(error) {
+              console.log(error);
+              if (error.response.status == 401) {
+                window.location = '/login';
+              }
+            });
           }
         } else {
           $(this).prop('checked', false);

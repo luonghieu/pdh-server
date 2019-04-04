@@ -137,7 +137,7 @@
             <h2>決済方法選択</h2>
           </div>
           <div class="form-grpup" id="transfer_amount">
-            <input type="hidden" id="current-point" value="{{ Auth::user()->point }}">
+            <input type="hidden" id="current-point" value="">
               <div class="grade-list transfer_amount-order">
                 <div class="transfer-left">
                   <label>
