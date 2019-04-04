@@ -71,8 +71,6 @@ class OrderController extends ApiController
     public function pointSettlement(Request $request, $id)
     {
         $user = $this->guard()->user();
-
-        $now = Carbon::now();
         $order = Order::where(function ($query) {
             $query->where('payment_status', OrderPaymentStatus::REQUESTING)
                 ->orWhere('payment_status', OrderPaymentStatus::PAYMENT_FAILED);
@@ -88,10 +86,7 @@ class OrderController extends ApiController
             }
         }
 
-        if (!$user->is_card_registered) {
-            return $this->respondErrorMessage(trans('messages.card_not_exist'), 404);
-        }
-
+        $now = Carbon::now();
         try {
             DB::beginTransaction();
             $order->settle();
