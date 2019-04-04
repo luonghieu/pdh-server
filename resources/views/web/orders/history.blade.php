@@ -266,7 +266,7 @@
     <script>
         const orderTotalPoint = parseInt('<?php echo ($orderTotalPoint < $order->discount_point) ? 0 : ($orderTotalPoint - $order->discount_point) ?>');
         const guestTotalPoint = parseInt('<?php echo $user->point ?>');
-
+        
         const orderId = '<?php echo $order->id; ?>';
         function expandInfo(selector, ele) {
             $(ele).toggleClass('collapse');
