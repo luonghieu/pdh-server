@@ -12,6 +12,7 @@ use App\Jobs\PointSettlement;
 use App\Notifications\AutoChargeFailed;
 use App\Notifications\AutoChargeFailedLineNotify;
 use App\Notifications\AutoChargeFailedWorkchatNotify;
+use App\Notifications\OrderDirectTransferChargeFailed;
 use App\Order;
 use App\Point;
 use App\Services\LogService;
@@ -126,13 +127,16 @@ class PointSettlementSchedule extends Command
                             $user->notify(new AutoChargeFailedWorkchatNotify($order));
                             $user->notify((new AutoChargeFailedLineNotify($order))->delay($delay));
 
-                            if (ProviderType::LINE == $user->provider) {
-                                $user->notify(new AutoChargeFailed($order));
-                            }
+                            $user->notify(new OrderDirectTransferChargeFailed($order, ($totalPoint - $user->point)));
 
                             $order->send_warning = true;
                             $order->payment_status = OrderPaymentStatus::PAYMENT_FAILED;
                             $order->save();
+                        } else {
+                            if ($order->payment_status != OrderPaymentStatus::PAYMENT_FAILED) {
+                                $order->payment_status = OrderPaymentStatus::PAYMENT_FAILED;
+                                $order->save();
+                            }
                         }
                     }
                 } else {

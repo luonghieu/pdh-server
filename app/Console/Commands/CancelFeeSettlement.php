@@ -12,6 +12,7 @@ use App\Enums\UserType;
 use App\Notifications\AutoChargeFailed;
 use App\Notifications\AutoChargeFailedLineNotify;
 use App\Notifications\AutoChargeFailedWorkchatNotify;
+use App\Notifications\OrderDirectTransferChargeFailed;
 use App\Order;
 use App\PaymentRequest;
 use App\Point;
@@ -89,17 +90,22 @@ class CancelFeeSettlement extends Command
                     if ($user->point > $totalPoint) {
                         $this->processPayment($order, $now);
                     } else {
-                        $delay = Carbon::now()->addSeconds(3);
-                        $user->notify(new AutoChargeFailedWorkchatNotify($order));
-                        $user->notify((new AutoChargeFailedLineNotify($order))->delay($delay));
+                        if (!$order->send_warning) {
+                            $delay = Carbon::now()->addSeconds(3);
+                            $user->notify(new AutoChargeFailedWorkchatNotify($order));
+                            $user->notify((new AutoChargeFailedLineNotify($order))->delay($delay));
 
-                        if (ProviderType::LINE == $user->provider) {
-                            $order->user->notify(new AutoChargeFailed($order));
+                            $user->notify(new OrderDirectTransferChargeFailed($order, ($totalPoint - $user->point)));
+
+                            $order->send_warning = true;
+                            $order->payment_status = OrderPaymentStatus::PAYMENT_FAILED;
+                            $order->save();
+                        } else {
+                            if ($order->payment_status != OrderPaymentStatus::PAYMENT_FAILED) {
+                                $order->payment_status = OrderPaymentStatus::PAYMENT_FAILED;
+                                $order->save();
+                            }
                         }
-
-                        $order->send_warning = true;
-                        $order->payment_status = OrderPaymentStatus::PAYMENT_FAILED;
-                        $order->save();
                     }
                 } else {
                     $this->processPayment($order, $now);
