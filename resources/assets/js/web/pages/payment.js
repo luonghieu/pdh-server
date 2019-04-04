@@ -47,7 +47,6 @@ $('#payment-form').on('submit', function (e) {
     var orderPaymentMethod = $('#order-payment-method').val();
     const url = $(this).attr('action');
     if (orderPaymentMethod == 1) {
-
         window.axios.post(url).then(response => {
             const message = helper.getResponseMessage(response.data.message);
             $('#alert-payment-content').html(message);
@@ -60,25 +59,20 @@ $('#payment-form').on('submit', function (e) {
             $('#payment-failed').trigger('click');
         });
     } else {
-        window.axios.get('/api/v1/guest/points_used')
-            .then(function(response) {
-                if (response.data && (response.data.data > guestTotalPoint)) {
-                    window.location.href = '/payment/transfer?point='+ (parseInt(response.data.data) - parseInt(guestTotalPoint));
-                } else {
-                    window.axios.post(url).then(response => {
-                        const message = helper.getResponseMessage(response.data.message);
-                        $('#alert-payment-content').html(message);
-                        $('#alert-payment-label').trigger('click');
-                        document.getElementById('payment-completed-gtm').click();
-                        setTimeout(() => {
-                            window.location.href = '/mypage';
-                        }, 2000);
-                    }).catch(err => {
-                        $('#payment-failed').trigger('click');
-                    });
-                }
-            }).catch(function(error) {
-            console.log(error);
-        });
+        if (orderTotalPoint > guestTotalPoint) {
+            window.location.href = '/payment/transfer?point='+ (parseInt(orderTotalPoint) - parseInt(guestTotalPoint));
+        } else {
+            window.axios.post(url).then(response => {
+                const message = helper.getResponseMessage(response.data.message);
+                $('#alert-payment-content').html(message);
+                $('#alert-payment-label').trigger('click');
+                document.getElementById('payment-completed-gtm').click();
+                setTimeout(() => {
+                    window.location.href = '/mypage';
+                }, 2000);
+            }).catch(err => {
+                $('#payment-failed').trigger('click');
+            });
+        }
     }
 });
