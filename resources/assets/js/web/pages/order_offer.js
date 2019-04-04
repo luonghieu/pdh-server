@@ -441,10 +441,32 @@ $(document).ready(function(){
             $('#confirm-orders-offer').prop('disabled', true);
             $('#sp-cancel').addClass("sp-disable");
           } else {
-            $('#confirm-orders-offer').removeClass('disable');
-            $(this).prop('checked', true);
-            $('#confirm-orders-offer').prop('disabled', false);
-            $('#sp-cancel').removeClass('sp-disable');
+            window.axios.get('/api/v1/auth/me')
+            .then(function(response) {
+              var tempPoint = response.data['data'].point;
+
+              $('#current-point').val(tempPoint);
+              window.axios.get('/api/v1/guest/points_used')
+                .then(function(response) {
+                  var pointUsed = response.data['data'];
+                  $('#point_used_offer').val(pointUsed);
+                  
+                  $('#confirm-orders-offer').removeClass('disable');
+                  $(this).prop('checked', true);
+                  $('#confirm-orders-offer').prop('disabled', false);
+                  $('#sp-cancel').removeClass('sp-disable');
+                }).catch(function(error) {
+                  console.log(error);
+                  if (error.response.status == 401) {
+                    window.location = '/login';
+                  }
+                });
+            }).catch(function(error) {
+              console.log(error);
+              if (error.response.status == 401) {
+                window.location = '/login';
+              }
+            });
           }
         } else {
           $('#confirm-orders-offer').addClass("disable");
@@ -494,7 +516,12 @@ $(document).ready(function(){
             $('#confirm-orders-offer').prop('disabled', true);
             $('#confirm-orders-offer').addClass('disable');
 
-            var pointShow = parseInt(tempPointOrders) - parseInt(currentPointUser);
+            if (parseInt($('#point_used_offer').val()) > parseInt(currentPointUser)) {
+              var pointShow = parseInt($('#temp-point-offer').val());
+            } else {
+              var pointShow = parseInt(tempPointOrders) - parseInt(currentPointUser);
+            }
+            
             window.location.href = '/payment/transfer?point=' + pointShow;
 
             return ;
@@ -1157,8 +1184,8 @@ $(document).ready(function(){
       var x = setInterval(function() {
         // Get todays date and time
         var now = new Date();
-        utc = now.getTime() + (now.getTimezoneOffset() * 60000);
-        nd = new Date(utc + (3600000*9));
+        var utc = now.getTime() + (now.getTimezoneOffset() * 60000);
+        var nd = new Date(utc + (3600000*9));
         var nowJapan = new Date(nd).getTime();
         // Find the distance between now and the count down date
         var distance = dateFolowDevice - nowJapan;
@@ -1235,17 +1262,6 @@ $(document).ready(function(){
   });
 
   if($('#temp-point-offer').length) {
-    window.axios.get('/api/v1/guest/points_used')
-      .then(function(response) {
-        var pointUsed = response.data['data'];
-        $('#point_used_offer').val(pointUsed);
-      }).catch(function(error) {
-        console.log(error);
-        if (error.response.status == 401) {
-          window.location = '/login';
-        }
-      });
-
     firstLoad();
     selectedCouponsOffer();
     selectedTransfer();

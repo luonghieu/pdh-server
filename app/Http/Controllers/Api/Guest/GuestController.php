@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api\Guest;
 use App\Cast;
 use App\Enums\CastOrderStatus;
 use App\Enums\CastTransferStatus;
+use App\Enums\OrderPaymentMethod;
 use App\Enums\OrderPaymentStatus;
 use App\Enums\OrderStatus;
 use App\Enums\UserType;
@@ -156,7 +157,7 @@ class GuestController extends ApiController
     {
         $user = $this->guard()->user();
 
-        $orders = $user->orders()->where(function ($query) {
+        $orders = $user->orders()->where('payment_method', OrderPaymentMethod::DIRECT_PAYMENT)->where(function ($query) {
             $query->whereIn('status', [OrderStatus::OPEN, OrderStatus::ACTIVE, OrderStatus::PROCESSING])
                 ->orWhere(function ($q) {
                     $q->where(function ($sq) {

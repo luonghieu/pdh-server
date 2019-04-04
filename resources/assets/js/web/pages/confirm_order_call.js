@@ -88,18 +88,6 @@ $(document).ready(function(){
   const helper = require('./helper');
   if($('#btn-confirm-orders').length) {
     if(localStorage.getItem("order_call")){
-
-      window.axios.get('/api/v1/guest/points_used')
-      .then(function(response) {
-        var pointUsed = response.data['data'];
-        $('#point_used').val(pointUsed);
-      }).catch(function(error) {
-        console.log(error);
-        if (error.response.status == 401) {
-          window.location = '/login';
-        }
-      });
-
       var orderCall = JSON.parse(localStorage.getItem("order_call"));
 
       if (orderCall.select_area) {
@@ -145,10 +133,10 @@ $(document).ready(function(){
 
           $('.time-detail-call').text(year +'年' + month + '月' + date + '日' + ' ' + time);
         } else {
-          now = new Date();
+          var now = new Date();
 
-          utc = now.getTime() + (now.getTimezoneOffset() * 60000);
-          nd = new Date(utc + (3600000*9));
+          var utc = now.getTime() + (now.getTimezoneOffset() * 60000);
+          var nd = new Date(utc + (3600000*9));
           var day = helper.add_minutes(nd, currentTime);
 
           var year = day.getFullYear();
@@ -329,10 +317,32 @@ $(document).ready(function(){
             $('#btn-confirm-orders').addClass("disable");
             $('#btn-confirm-orders').prop('disabled', true);
           } else {
-            $(this).prop('checked', true);
-            $('#sp-cancel').removeClass('sp-disable');
-            $('#btn-confirm-orders').removeClass('disable');
-            $('#btn-confirm-orders').prop('disabled', false);
+            window.axios.get('/api/v1/auth/me')
+            .then(function(response) {
+              var tempPoint = response.data['data'].point;
+              $('#current-point').val(tempPoint);
+              
+              window.axios.get('/api/v1/guest/points_used')
+                .then(function(response) {
+                  var pointUsed = response.data['data'];
+                  $('#point_used').val(pointUsed);
+                  
+                  $(this).prop('checked', true);
+                  $('#sp-cancel').removeClass('sp-disable');
+                  $('#btn-confirm-orders').removeClass('disable');
+                  $('#btn-confirm-orders').prop('disabled', false);
+                }).catch(function(error) {
+                  console.log(error);
+                  if (error.response.status == 401) {
+                    window.location = '/login';
+                  }
+                });
+            }).catch(function(error) {
+              console.log(error);
+              if (error.response.status == 401) {
+                window.location = '/login';
+              }
+            });
           }
         } else {
           $(this).prop('checked', false);
@@ -347,18 +357,25 @@ $(document).ready(function(){
           var transfer = parseInt($("input[name='transfer_order']:checked").val());
         }
 
-        var pointUser = $('#current-point').val();
-        var tempPointOrder = parseInt($('#temp_point_order_call').val()) + parseInt($('#point_used').val());
-
         if (transfer) {
           if (OrderPaymentMethod.Credit_Card == transfer || OrderPaymentMethod.Direct_Payment == transfer) {
             if (OrderPaymentMethod.Direct_Payment == transfer) {
+           
+              var pointUser = $('#current-point').val();
+              var tempPointOrder = parseInt($('#temp_point_order_call').val()) + parseInt($('#point_used').val());
+
               if (parseInt(tempPointOrder) > parseInt(pointUser)) {
                 $('#sp-cancel').addClass('sp-disable');
                 $('.cb-cancel').prop('checked', false);
                 $('#btn-confirm-orders').prop('disabled', true);
                 $('#btn-confirm-orders').addClass('disable');
-                var point = parseInt(tempPointOrder) - parseInt(pointUser);
+
+                if (parseInt($('#point_used').val()) > parseInt(pointUser)) {
+                  var point = parseInt($('#temp_point_order_call').val());
+                } else {
+                  var point = parseInt(tempPointOrder) - parseInt(pointUser);
+                }
+            
                 window.location.href = '/payment/transfer?point=' + point;
 
                 return ;
@@ -381,10 +398,10 @@ $(document).ready(function(){
         }
 
         if('other_time' != currentTime) {
-          now = new Date();
+          var now = new Date();
 
-          utc = now.getTime() + (now.getTimezoneOffset() * 60000);
-          nd = new Date(utc + (3600000*9));
+          var utc = now.getTime() + (now.getTimezoneOffset() * 60000);
+          var nd = new Date(utc + (3600000*9));
           var day = helper.add_minutes(nd, currentTime);
 
           var year = day.getFullYear();
