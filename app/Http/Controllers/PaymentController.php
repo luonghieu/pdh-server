@@ -2,9 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Notifications\OrderDirectTransferChargeFailed;
+use App\Order;
 use App\Services\LogService;
 use Auth;
 use GuzzleHttp\Client;
+use Illuminate\Http\Request;
 use JWTAuth;
 
 class PaymentController extends Controller
@@ -70,8 +73,18 @@ class PaymentController extends Controller
         }
     }
 
-    public function transfer()
+    public function transfer(Request $request)
     {
+        $user = Auth::user();
+        if (isset($request->order_id)) {
+            $order = $user->orders()->findOrFail($request->order_id);
+            if (!$order->send_warning) {
+                $user->notify(new OrderDirectTransferChargeFailed($order, $request->point));
+                $order->send_warning = true;
+                $order->save();
+            }
+        }
+
         $client = new Client(['base_uri' => config('common.api_url')]);
         $user = Auth::user();
 
