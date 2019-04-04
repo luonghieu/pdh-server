@@ -370,8 +370,12 @@ $(document).ready(function(){
                 $('#btn-confirm-orders').prop('disabled', true);
                 $('#btn-confirm-orders').addClass('disable');
 
-                var point = parseInt(tempPointOrder) - parseInt(pointUser);
-
+                if (parseInt($('#point_used').val()) > parseInt(pointUser)) {
+                  var point = parseInt($('#temp_point_order_call').val());
+                } else {
+                  var point = parseInt(tempPointOrder) - parseInt(pointUser);
+                }
+            
                 window.location.href = '/payment/transfer?point=' + point;
 
                 return ;

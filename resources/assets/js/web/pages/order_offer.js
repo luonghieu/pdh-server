@@ -516,7 +516,11 @@ $(document).ready(function(){
             $('#confirm-orders-offer').prop('disabled', true);
             $('#confirm-orders-offer').addClass('disable');
 
-            var pointShow = parseInt(tempPointOrders) - parseInt(currentPointUser);
+            if (parseInt($('#point_used_offer').val()) > parseInt(currentPointUser)) {
+              var pointShow = parseInt($('#temp-point-offer').val());
+            } else {
+              var pointShow = parseInt(tempPointOrders) - parseInt(currentPointUser);
+            }
             
             window.location.href = '/payment/transfer?point=' + pointShow;
 

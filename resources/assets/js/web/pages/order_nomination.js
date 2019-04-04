@@ -807,7 +807,12 @@ $(document).ready(function(){
           $('#confirm-orders-nomination').addClass('disable');
           // $('#orders-nominate').prop('checked',false);
 
-          var pointShow = parseInt(tempPointOrders) - parseInt(pointUser);
+          if (parseInt($('#point_used_nominate').val()) > parseInt(pointUser)) {
+            var pointShow = parseInt($('#current-temp-point').val());
+          } else {
+            var pointShow = parseInt(tempPointOrders) - parseInt(pointUser);
+          }
+                
 
           window.location.href = '/payment/transfer?point=' + pointShow;
 

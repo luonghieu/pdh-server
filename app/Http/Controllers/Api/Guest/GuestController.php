@@ -193,8 +193,10 @@ class GuestController extends ApiController
             }
 
             if (OrderStatus::DONE == $order->status) {
-                if ($order->temp_point) {
+                if (!isset($order->total_point)) {
                     $pointUsed += $order->temp_point;
+                } else {
+                    $pointUsed += $order->total_point - $order->discount_point;
                 }
             }
         }
