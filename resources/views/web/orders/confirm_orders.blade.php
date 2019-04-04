@@ -56,7 +56,7 @@
     </section> --}}
 
     @if (Auth::check() && Auth::user()->is_guest && Auth::user()->is_multi_payment_method)
-      <input type="hidden" id="current-point" value="{{ Auth::user()->point }}">
+      <input type="hidden" id="current-point" value="">
       <section class="details-list">
         <div class="details-list__line"><p></p></div>
         <div class="details-list__header">
