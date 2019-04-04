@@ -118,9 +118,9 @@ class OrderDirectTransferChargeFailed extends Notification implements ShouldQueu
         ]);
         $roomMessage->recipients()->attach($notifiable->id, ['room_id' => $room->id]);
 
-        $content = 'お客様の保有ポイントが不足しているため、ポイント決済を行うことができませんでした。'
-            . PHP_EOL . '下記のボタンをタップし、不足ポイントと振込先銀行口座を確認して頂き、ポイントの購入をお願い致します。'
-            . PHP_EOL . '着金確認後は、弊社でポイント付与・決済処理を行います。';
+        $content = 'ポイントが不足しているため、決済できませんでした。'
+            . PHP_EOL . '不足ポイントと振込先をご確認の上、ポイント購入をお願い致します。'
+            . PHP_EOL . '着金後に弊社でポイント付与・決済処理をさせていただきます。';
 
         $page = env('LINE_LIFF_REDIRECT_PAGE') . '?page=require_transfer_point&point=' . $this->point . '&order_id=' . $this->order->id;
 
