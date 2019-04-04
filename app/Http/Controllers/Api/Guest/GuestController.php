@@ -181,9 +181,7 @@ class GuestController extends ApiController
 
         foreach ($orders->cursor() as $order) {
             if (in_array($order->status, [OrderStatus::OPEN, OrderStatus::ACTIVE, OrderStatus::PROCESSING])) {
-                if ($order->temp_point) {
-                    $pointUsed += $order->temp_point;
-                }
+                $pointUsed += $order->temp_point;
             }
 
             if (OrderStatus::CANCELED == $order->status) {

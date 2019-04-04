@@ -353,11 +353,11 @@ class OrderController extends Controller
                         return redirect()->route('web.login');
                     }
 
-                    if ((float) ($tempPoint + $pointUsed) > (float) $user->point) {
-                        if ((float) $pointUsed > (float) $user->point) {
+                    if ((int) ($tempPoint + $pointUsed) > (int) $user->point) {
+                        if ((int) $pointUsed > (int) $user->point) {
                             $point = $tempPoint;
                         } else {
-                            $point = (float) ($tempPoint + $pointUsed) - (float) $user->point;
+                            $point = (int) ($tempPoint + $pointUsed) - (int) $user->point;
                         }
 
                         return redirect()->route('guest.transfer', ['point' => $point]);
