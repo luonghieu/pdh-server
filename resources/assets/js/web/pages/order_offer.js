@@ -441,6 +441,10 @@ $(document).ready(function(){
             $('#confirm-orders-offer').prop('disabled', true);
             $('#sp-cancel').addClass("sp-disable");
           } else {
+            $('#confirm-orders-offer').removeClass('disable');
+            $(this).prop('checked', true);
+            $('#sp-cancel').removeClass('sp-disable');
+            
             window.axios.get('/api/v1/auth/me')
             .then(function(response) {
               var tempPoint = response.data['data'].point;
@@ -451,10 +455,7 @@ $(document).ready(function(){
                   var pointUsed = response.data['data'];
                   $('#point_used_offer').val(pointUsed);
                   
-                  $('#confirm-orders-offer').removeClass('disable');
-                  $(this).prop('checked', true);
                   $('#confirm-orders-offer').prop('disabled', false);
-                  $('#sp-cancel').removeClass('sp-disable');
                 }).catch(function(error) {
                   console.log(error);
                   if (error.response.status == 401) {

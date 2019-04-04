@@ -317,6 +317,10 @@ $(document).ready(function(){
             $('#btn-confirm-orders').addClass("disable");
             $('#btn-confirm-orders').prop('disabled', true);
           } else {
+            $(this).prop('checked', true);
+            $('#sp-cancel').removeClass('sp-disable');
+            $('#btn-confirm-orders').removeClass('disable');
+                  
             window.axios.get('/api/v1/auth/me')
             .then(function(response) {
               var tempPoint = response.data['data'].point;
@@ -327,9 +331,6 @@ $(document).ready(function(){
                   var pointUsed = response.data['data'];
                   $('#point_used').val(pointUsed);
                   
-                  $(this).prop('checked', true);
-                  $('#sp-cancel').removeClass('sp-disable');
-                  $('#btn-confirm-orders').removeClass('disable');
                   $('#btn-confirm-orders').prop('disabled', false);
                 }).catch(function(error) {
                   console.log(error);
