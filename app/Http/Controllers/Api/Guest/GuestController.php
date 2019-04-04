@@ -152,52 +152,52 @@ class GuestController extends ApiController
         return $this->respondWithNoData(trans('messages.request_transfer_cast_succeed'));
     }
 
-//    public function getPointUsed()
-//    {
-//        $user = $this->guard()->user();
-//
-//        $orders = $user->orders()->where(function ($query) {
-//            $query->whereIn('status', [OrderStatus::OPEN, OrderStatus::ACTIVE, OrderStatus::PROCESSING])
-//                ->orWhere(function ($q) {
-//                    $q->where(function ($sq) {
-//                        $sq->where('status', OrderStatus::DONE)
-//                            ->where(function ($sqr) {
-//                                $sqr->whereNull('payment_status')
-//                                    ->orWhere('payment_status', '<>', OrderPaymentStatus::PAYMENT_FINISHED);
-//                            });
-//                    })
-//                        ->orWhere(function ($sq) {
-//                            $sq->where('status', OrderStatus::CANCELED)
-//                                ->where(function ($sqr) {
-//                                    $sqr->whereNull('payment_status')
-//                                        ->orWhere('payment_status', '<>', OrderPaymentStatus::CANCEL_FEE_PAYMENT_FINISHED);
-//                                });
-//                        });
-//                });
-//        });
-//
-//        $pointUsed = 0;
-//
-//        foreach ($orders->cursor() as $order) {
-//            if (in_array($order->status, [OrderStatus::OPEN, OrderStatus::ACTIVE, OrderStatus::PROCESSING])) {
-//                $pointUsed += $order->temp_point;
-//            }
-//
-//            if (OrderStatus::CANCELED == $order->status) {
-//                if ($order->cancel_fee_percent) {
-//                    $pointUsed += ($order->temp_point * $order->cancel_fee_percent) / 100;
-//                }
-//            }
-//
-//            if (OrderStatus::DONE == $order->status) {
-//                if (!isset($order->total_point)) {
-//                    $pointUsed += $order->temp_point;
-//                } else {
-//                    $pointUsed += $order->total_point - $order->discount_point;
-//                }
-//            }
-//        }
-//
-//        return $this->respondWithData($pointUsed);
-//    }
+    public function getPointUsed()
+    {
+        $user = $this->guard()->user();
+
+        $orders = $user->orders()->where(function ($query) {
+            $query->whereIn('status', [OrderStatus::OPEN, OrderStatus::ACTIVE, OrderStatus::PROCESSING])
+                ->orWhere(function ($q) {
+                    $q->where(function ($sq) {
+                        $sq->where('status', OrderStatus::DONE)
+                            ->where(function ($sqr) {
+                                $sqr->whereNull('payment_status')
+                                    ->orWhere('payment_status', '<>', OrderPaymentStatus::PAYMENT_FINISHED);
+                            });
+                    })
+                        ->orWhere(function ($sq) {
+                            $sq->where('status', OrderStatus::CANCELED)
+                                ->where(function ($sqr) {
+                                    $sqr->whereNull('payment_status')
+                                        ->orWhere('payment_status', '<>', OrderPaymentStatus::CANCEL_FEE_PAYMENT_FINISHED);
+                                });
+                        });
+                });
+        });
+
+        $pointUsed = 0;
+
+        foreach ($orders->cursor() as $order) {
+            if (in_array($order->status, [OrderStatus::OPEN, OrderStatus::ACTIVE, OrderStatus::PROCESSING])) {
+                $pointUsed += $order->temp_point;
+            }
+
+            if (OrderStatus::CANCELED == $order->status) {
+                if ($order->cancel_fee_percent) {
+                    $pointUsed += ($order->temp_point * $order->cancel_fee_percent) / 100;
+                }
+            }
+
+            if (OrderStatus::DONE == $order->status) {
+                if (!isset($order->total_point)) {
+                    $pointUsed += $order->temp_point;
+                } else {
+                    $pointUsed += $order->total_point - $order->discount_point;
+                }
+            }
+        }
+
+        return $this->respondWithData($pointUsed);
+    }
 }
