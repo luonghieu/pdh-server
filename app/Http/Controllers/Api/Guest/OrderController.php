@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api\Guest;
 
+use App\Enums\OrderPaymentMethod;
 use App\Enums\OrderPaymentStatus;
 use App\Enums\OrderStatus;
 use App\Enums\PaymentRequestStatus;
@@ -70,20 +71,22 @@ class OrderController extends ApiController
     public function pointSettlement(Request $request, $id)
     {
         $user = $this->guard()->user();
-        if (!$user->is_card_registered) {
-            return $this->respondErrorMessage(trans('messages.card_not_exist'), 404);
-        }
-
-        $now = Carbon::now();
         $order = Order::where(function ($query) {
             $query->where('payment_status', OrderPaymentStatus::REQUESTING)
                 ->orWhere('payment_status', OrderPaymentStatus::PAYMENT_FAILED);
-        })
-            ->find($id);
+        })->find($id);
 
         if (!$order) {
             return $this->respondErrorMessage(trans('messages.order_not_found'), 404);
         }
+
+        if ($order && ($order->payment_method == OrderPaymentMethod::CREDIT_CARD)) {
+            if (!$user->is_card_registered) {
+                return response()->json(['success' => false], 400);
+            }
+        }
+
+        $now = Carbon::now();
         try {
             DB::beginTransaction();
             $order->settle();
