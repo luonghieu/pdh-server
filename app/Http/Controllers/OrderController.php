@@ -169,7 +169,7 @@ class OrderController extends Controller
             return redirect()->back();
         }
 
-        if ($order && ($order->payment_method == OrderPaymentMethod::CREDIT_CARD)) {
+        if ($order && (OrderPaymentMethod::CREDIT_CARD == $order->payment_method)) {
             if (!$user->is_card_registered) {
                 return response()->json(['success' => false], 400);
             }
@@ -353,8 +353,12 @@ class OrderController extends Controller
                         return redirect()->route('web.login');
                     }
 
-                    if ((float) ($tempPoint + $pointUsed) > (float) $user->point) {
-                        $point = (float) ($tempPoint + $pointUsed) - (float) $user->point;
+                    if ((int) ($tempPoint + $pointUsed) > (int) $user->point) {
+                        if ((int) $pointUsed > (int) $user->point) {
+                            $point = $tempPoint;
+                        } else {
+                            $point = (int) ($tempPoint + $pointUsed) - (int) $user->point;
+                        }
 
                         return redirect()->route('guest.transfer', ['point' => $point]);
                     }
