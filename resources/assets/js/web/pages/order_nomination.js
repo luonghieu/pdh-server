@@ -542,6 +542,17 @@ $(document).ready(function(){
           $('#confirm-orders-nomination').prop('disabled', true);
           $('#sp-cancel').addClass("sp-disable");
         } else {
+          window.axios.get('/api/v1/guest/points_used')
+            .then(function(response) {
+              var pointUsed = response.data['data'];
+              $('#point_used_nominate').val(pointUsed);
+            }).catch(function(error) {
+              console.log(error);
+              if (error.response.status == 401) {
+                window.location = '/login';
+              }
+            });
+
           $('#confirm-orders-nomination').removeClass('disable');
           $(this).prop('checked', true);
           $('#confirm-orders-nomination').prop('disabled', false);
@@ -801,17 +812,6 @@ $(document).ready(function(){
   });
 
   if ($('#create-nomination-form').length) {
-
-    window.axios.get('/api/v1/guest/points_used')
-      .then(function(response) {
-        var pointUsed = response.data['data'];
-        $('#point_used_nominate').val(pointUsed);
-      }).catch(function(error) {
-        console.log(error);
-        if (error.response.status == 401) {
-          window.location = '/login';
-        }
-      });
 
     if(localStorage.getItem("order_params")){
       var orderParams = JSON.parse(localStorage.getItem("order_params"));

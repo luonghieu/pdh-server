@@ -441,6 +441,18 @@ $(document).ready(function(){
             $('#confirm-orders-offer').prop('disabled', true);
             $('#sp-cancel').addClass("sp-disable");
           } else {
+
+            window.axios.get('/api/v1/guest/points_used')
+              .then(function(response) {
+                var pointUsed = response.data['data'];
+                $('#point_used_offer').val(pointUsed);
+              }).catch(function(error) {
+                console.log(error);
+                if (error.response.status == 401) {
+                  window.location = '/login';
+                }
+              });
+      
             $('#confirm-orders-offer').removeClass('disable');
             $(this).prop('checked', true);
             $('#confirm-orders-offer').prop('disabled', false);
@@ -1157,8 +1169,8 @@ $(document).ready(function(){
       var x = setInterval(function() {
         // Get todays date and time
         var now = new Date();
-        utc = now.getTime() + (now.getTimezoneOffset() * 60000);
-        nd = new Date(utc + (3600000*9));
+        var utc = now.getTime() + (now.getTimezoneOffset() * 60000);
+        var nd = new Date(utc + (3600000*9));
         var nowJapan = new Date(nd).getTime();
         // Find the distance between now and the count down date
         var distance = dateFolowDevice - nowJapan;
@@ -1235,17 +1247,6 @@ $(document).ready(function(){
   });
 
   if($('#temp-point-offer').length) {
-    window.axios.get('/api/v1/guest/points_used')
-      .then(function(response) {
-        var pointUsed = response.data['data'];
-        $('#point_used_offer').val(pointUsed);
-      }).catch(function(error) {
-        console.log(error);
-        if (error.response.status == 401) {
-          window.location = '/login';
-        }
-      });
-
     firstLoad();
     selectedCouponsOffer();
     selectedTransfer();
