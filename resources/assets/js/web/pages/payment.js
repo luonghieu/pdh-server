@@ -45,23 +45,23 @@ $('#request-update-point-btn').on('click', function(e) {
 $('#payment-form').on('submit', function (e) {
     e.preventDefault();
     const url = $(this).attr('action');
+    var orderPaymentMethod = $('#order-payment-method').val();
 
-    window.axios.get('/api/v1/auth/me').then(response => {
-        var orderPaymentMethod = $('#order-payment-method').val();
-        var guestTotalPoint = response.data.data.point;
-        if (orderPaymentMethod == 1) {
-            window.axios.post(url).then(response => {
-                const message = helper.getResponseMessage(response.data.message);
-                $('#alert-payment-content').html(message);
-                $('#alert-payment-label').trigger('click');
-                document.getElementById('payment-completed-gtm').click();
-                setTimeout(() => {
-                    window.location.href = '/mypage';
-                }, 2000);
-            }).catch(err => {
-                $('#payment-failed').trigger('click');
-            });
-        } else {
+    if (orderPaymentMethod == 1) {
+        window.axios.post(url).then(response => {
+            const message = helper.getResponseMessage(response.data.message);
+            $('#alert-payment-content').html(message);
+            $('#alert-payment-label').trigger('click');
+            document.getElementById('payment-completed-gtm').click();
+            setTimeout(() => {
+                window.location.href = '/mypage';
+            }, 2000);
+        }).catch(err => {
+            $('#payment-failed').trigger('click');
+        });
+    } else {
+        window.axios.get('/api/v1/auth/me').then(response => {
+            var guestTotalPoint = response.data.data.point;
             if (orderTotalPoint > guestTotalPoint) {
                 window.location.href = '/payment/transfer?order_id=' + orderId + '&point='+ (parseInt(orderTotalPoint) - + parseInt(guestTotalPoint));
             } else {
@@ -71,14 +71,16 @@ $('#payment-form').on('submit', function (e) {
                     $('#alert-payment-label').trigger('click');
                     document.getElementById('payment-completed-gtm').click();
                     setTimeout(() => {
-                        window.location.href = '/mypage';
+                      window.location.href = '/mypage';
                     }, 2000);
                 }).catch(err => {
                     $('#payment-failed').trigger('click');
                 });
             }
-        }
-
+        }).catch(err => {
+            console.log(err);
+        });
+    }
       // window.axios.get('/api/v1/guest/points_used')
       //     .then(function(response) {
       //         if (response.data && (response.data.data > guestTotalPoint)) {
@@ -99,7 +101,4 @@ $('#payment-form').on('submit', function (e) {
       //         }).catch(function(error) {
       //         console.log(error);
       //     });
-    }).catch(err => {
-        console.log(err);
-    });
 });
