@@ -60,6 +60,10 @@ class UrbanAirship {
                 ['body' => $body]
             );
         } catch (\Exception $e) {
+            LogService::writeErrorLog('-----------------PUSH URBAN ERROR-----------------');
+            LogService::writeErrorLog($body);
+            LogService::writeErrorLog($e);
+            LogService::writeErrorLog('-----------------PUSH URBAN ERROR-----------------');
             return ['error' => $e->getMessage()];
         }
 
@@ -91,6 +95,10 @@ class UrbanAirship {
                     ['body' => $body]
                 );
             } catch (\Exception $e) {
+                LogService::writeErrorLog('-----------------PUSH URBAN ERROR-----------------');
+                LogService::writeErrorLog($body);
+                LogService::writeErrorLog($e);
+                LogService::writeErrorLog('-----------------PUSH URBAN ERROR-----------------');
                 return ['error' => $e->getMessage()];
             }
 
@@ -131,6 +139,10 @@ class UrbanAirship {
                 ['body' => $body]
             );
         } catch (\Exception $e) {
+            LogService::writeErrorLog('-----------------PUSH URBAN ERROR-----------------');
+            LogService::writeErrorLog($body);
+            LogService::writeErrorLog($e);
+            LogService::writeErrorLog('-----------------PUSH URBAN ERROR-----------------');
             return ['error' => $e->getMessage()];
         }
 
