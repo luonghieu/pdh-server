@@ -52,9 +52,9 @@ class OrderDirectTransferChargeFailed extends Notification implements ShouldQueu
 
     public function pushData($notifiable)
     {
-        $content = 'お客様の保有ポイントが不足しているため、ポイント決済を行うことができませんでした。'
-            . PHP_EOL . 'コチラから、不足ポイントと振込先銀行口座を確認して頂き、ポイントの購入をお願い致します。'
-            . PHP_EOL . '着金確認後は、弊社でポイント付与・決済処理を行います。'
+        $content = 'ポイントが不足しているため、決済できませんでした。'
+            . PHP_EOL . 'コチラから不足ポイントと振込先をご確認の上、ポイント購入をお願い致します。'
+            . PHP_EOL . '着金後に弊社でポイント付与・決済処理をさせていただきます。'
             . PHP_EOL . PHP_EOL . 'ご不明点がございましたら、こちらのチャットにご返信ください。';
 
         $room = $notifiable->rooms()
@@ -105,9 +105,9 @@ class OrderDirectTransferChargeFailed extends Notification implements ShouldQueu
 
     public function lineBotPushData($notifiable)
     {
-        $roomMessage = 'お客様の保有ポイントが不足しているため、ポイント決済を行うことができませんでした。'
-            . PHP_EOL . 'コチラから、不足ポイントと振込先銀行口座を確認して頂き、ポイントの購入をお願い致します。'
-            . PHP_EOL . '着金確認後は、弊社でポイント付与・決済処理を行います。'
+        $roomMessage = 'ポイントが不足しているため、決済できませんでした。'
+            . PHP_EOL . 'コチラから不足ポイントと振込先をご確認の上、ポイント購入をお願い致します。'
+            . PHP_EOL . '着金後に弊社でポイント付与・決済処理をさせていただきます。'
             . PHP_EOL . PHP_EOL . 'ご不明点がございましたら、こちらのチャットにご返信ください。';
 
         $room = $notifiable->rooms()
