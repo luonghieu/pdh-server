@@ -24,7 +24,8 @@ class Message extends Model
         'type',
         'system_type',
         'is_manual',
-        'created_at'
+        'created_at',
+        'missing_point'
     ];
 
     protected $casts = [
