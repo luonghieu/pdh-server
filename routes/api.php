@@ -90,6 +90,7 @@ Route::group(['prefix' => 'v1'], function () {
 
         Route::group(['prefix' => 'point_settement', 'as' => 'point_settement.'], function () {
             Route::post('/{orderId}', ['as' => 'create', 'uses' => 'Guest\OrderController@pointSettlement']);
+            Route::get('/send_alert/{orderId}', ['as' => 'send_alert', 'uses' => 'Guest\OrderController@sendPushAlertMissingPoint']);
         });
 
         Route::get('/points_used', ['as' => 'points_used', 'uses' => 'Guest\GuestController@getPointUsed']);
