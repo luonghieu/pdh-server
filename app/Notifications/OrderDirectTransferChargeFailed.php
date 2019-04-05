@@ -66,6 +66,7 @@ class OrderDirectTransferChargeFailed extends Notification implements ShouldQueu
             'message' => $content,
             'system_type' => SystemMessageType::NORMAL,
             'missing_point' => $this->point,
+            'order_id' => $this->order->id,
         ]);
         $roomMessage->recipients()->attach($notifiable->id, ['room_id' => $room->id]);
 
@@ -119,6 +120,7 @@ class OrderDirectTransferChargeFailed extends Notification implements ShouldQueu
             'message' => $roomMessage,
             'system_type' => SystemMessageType::NORMAL,
             'missing_point' => $this->point,
+            'order_id' => $this->order->id,
         ]);
         $roomMessage->recipients()->attach($notifiable->id, ['room_id' => $room->id]);
 

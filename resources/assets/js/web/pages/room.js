@@ -1,3 +1,4 @@
+let roomLoading = false;
 $(document).ready(function() {
   $("#search-box").val(null);
   var userId = $('#auth').val();
