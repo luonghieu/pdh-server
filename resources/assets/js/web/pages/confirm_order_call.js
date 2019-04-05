@@ -282,6 +282,36 @@ $(document).ready(function(){
 
         if(OrderPaymentMethod.Direct_Payment == transfer) {
           $('#show-registered-card').css('display', 'none');
+
+          if ($(".cb-cancel").is(':checked')) {
+            $('#btn-confirm-orders').addClass("disable");
+            $('#btn-confirm-orders').prop('disabled', true);
+
+            window.axios.get('/api/v1/auth/me')
+              .then(function(response) {
+                var tempPoint = response.data['data'].point;
+
+                $('#current-point').val(tempPoint);
+                window.axios.get('/api/v1/guest/points_used')
+                  .then(function(response) {
+                    var pointUsed = response.data['data'];
+                    $('#point_used').val(pointUsed);
+                    
+                    $('#btn-confirm-orders').removeClass('disable');
+                    $('#btn-confirm-orders').prop('disabled', false);
+                  }).catch(function(error) {
+                    console.log(error);
+                    if (error.response.status == 401) {
+                      window.location = '/login';
+                    }
+                  });
+              }).catch(function(error) {
+                console.log(error);
+                if (error.response.status == 401) {
+                  window.location = '/login';
+                }
+              });
+          }
         } else {
           $('#show-registered-card').css('display', 'block');
 
@@ -303,9 +333,10 @@ $(document).ready(function(){
       })
 
       $(".cb-cancel").on("change",function(event){
+        var transfer = $("input:radio[name='transfer_order']:checked").val();
+
         if ($(this).is(':checked')) {
           var checkCard = $('.inactive-button-order').length;
-          var transfer = $("input:radio[name='transfer_order']:checked").val();
 
           if(OrderPaymentMethod.Direct_Payment == transfer) {
             checkCard = false;
@@ -314,36 +345,40 @@ $(document).ready(function(){
           if(checkCard) {
             $(this).prop('checked', false);
             $('#sp-cancel').addClass("sp-disable");
-            $('#btn-confirm-orders').addClass("disable");
             $('#btn-confirm-orders').prop('disabled', true);
           } else {
             $(this).prop('checked', true);
             $('#sp-cancel').removeClass('sp-disable');
-            $('#btn-confirm-orders').removeClass('disable');
-                  
-            window.axios.get('/api/v1/auth/me')
-            .then(function(response) {
-              var tempPoint = response.data['data'].point;
-              $('#current-point').val(tempPoint);
-              
-              window.axios.get('/api/v1/guest/points_used')
-                .then(function(response) {
-                  var pointUsed = response.data['data'];
-                  $('#point_used').val(pointUsed);
-                  
-                  $('#btn-confirm-orders').prop('disabled', false);
-                }).catch(function(error) {
-                  console.log(error);
-                  if (error.response.status == 401) {
-                    window.location = '/login';
-                  }
-                });
-            }).catch(function(error) {
-              console.log(error);
-              if (error.response.status == 401) {
-                window.location = '/login';
-              }
-            });
+            
+            if(OrderPaymentMethod.Direct_Payment == transfer) {
+              window.axios.get('/api/v1/auth/me')
+              .then(function(response) {
+                var tempPoint = response.data['data'].point;
+                $('#current-point').val(tempPoint);
+                
+                window.axios.get('/api/v1/guest/points_used')
+                  .then(function(response) {
+                    var pointUsed = response.data['data'];
+                    $('#point_used').val(pointUsed);
+                    
+                    $('#btn-confirm-orders').removeClass('disable');
+                    $('#btn-confirm-orders').prop('disabled', false);
+                  }).catch(function(error) {
+                    console.log(error);
+                    if (error.response.status == 401) {
+                      window.location = '/login';
+                    }
+                  });
+              }).catch(function(error) {
+                console.log(error);
+                if (error.response.status == 401) {
+                  window.location = '/login';
+                }
+              });
+            } else {
+              $('#btn-confirm-orders').removeClass('disable');
+              $('#btn-confirm-orders').prop('disabled', false);
+            }
           }
         } else {
           $(this).prop('checked', false);
@@ -354,9 +389,7 @@ $(document).ready(function(){
       });
 
       $('.sb-form-orders').on('click',function(){
-        if($("input[name='transfer_order']").length) {
-          var transfer = parseInt($("input[name='transfer_order']:checked").val());
-        }
+        var transfer = parseInt($("input[name='transfer_order']:checked").val());
 
         if (transfer) {
           if (OrderPaymentMethod.Credit_Card == transfer || OrderPaymentMethod.Direct_Payment == transfer) {
