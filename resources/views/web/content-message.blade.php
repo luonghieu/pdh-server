@@ -1,6 +1,7 @@
 <div class="next-page" data-url="{{ $messages['next_page_url'] }}"></div>
 @php
   Carbon\Carbon::setLocale('ja');
+
 @endphp
 @if($messages == null)
 <p>No Message</p>
@@ -25,11 +26,11 @@
     @endphp
       @foreach ($elements as $element)
         @php
-          if($element['user_id'] == Auth::user()->id) {
-            $className = 'msg-right';
-          } else {
-            $className = 'msg-left';
-          }
+            if($element['user_id'] == Auth::user()->id) {
+              $className = 'msg-right';
+            } else {
+              $className = 'msg-left';
+            }
         @endphp
 
         @if ($element['type'] == App\Enums\MessageType::SYSTEM && $element['system_type'] == App\Enums\SystemMessageType::NOTIFY)
@@ -73,7 +74,7 @@
             <div class="text">
               <div class="text-wrapper">
                 @if ($element['order_id'])
-                <p class="msg-system" data-id='{{ $element['order_id'] }}'>{!! nl2br($element['message']) !!}</p>
+                <p class="msg-system" data-id='{{ $element['order_id'] }}' data-missing-point="{{ $element['missing_point'] }}">{!! nl2br($element['message']) !!}</p>
                 @else
                 <p>
                   {!! nl2br(transferLinkMessage($element['message'])) !!}
