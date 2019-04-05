@@ -364,6 +364,36 @@ function selectedTransfer()
 
     if (OrderPaymentMethod.Direct_Payment == parseInt(transfer)) {
       $('#card-registered').css('display', 'none');
+
+      if ($('.checked-order-offer').is(':checked')) {
+        $('#confirm-orders-offer').addClass("disable");
+        $('#confirm-orders-offer').prop('disabled', true);
+
+        window.axios.get('/api/v1/auth/me')
+          .then(function(response) {
+            var tempPoint = response.data['data'].point;
+
+            $('#current-point').val(tempPoint);
+            window.axios.get('/api/v1/guest/points_used')
+              .then(function(response) {
+                var pointUsed = response.data['data'];
+                $('#point_used_offer').val(pointUsed);
+                
+                $('#confirm-orders-offer').removeClass('disable');
+                $('#confirm-orders-offer').prop('disabled', false);
+              }).catch(function(error) {
+                console.log(error);
+                if (error.response.status == 401) {
+                  window.location = '/login';
+                }
+              });
+          }).catch(function(error) {
+            console.log(error);
+            if (error.response.status == 401) {
+              window.location = '/login';
+            }
+          });
+      }
     }
 
     if (OrderPaymentMethod.Credit_Card == parseInt(transfer)) {
@@ -444,30 +474,38 @@ $(document).ready(function(){
             $(this).prop('checked', true);
             $('#sp-cancel').removeClass('sp-disable');
             
-            window.axios.get('/api/v1/auth/me')
-            .then(function(response) {
-              var tempPoint = response.data['data'].point;
+            var transfer = parseInt($("input[name='transfer_order_offer']:checked").val());
 
-              $('#current-point').val(tempPoint);
-              window.axios.get('/api/v1/guest/points_used')
-                .then(function(response) {
-                  var pointUsed = response.data['data'];
-                  $('#point_used_offer').val(pointUsed);
-                  
-                  $('#confirm-orders-offer').removeClass('disable');
-                  $('#confirm-orders-offer').prop('disabled', false);
-                }).catch(function(error) {
-                  console.log(error);
-                  if (error.response.status == 401) {
-                    window.location = '/login';
-                  }
-                });
-            }).catch(function(error) {
-              console.log(error);
-              if (error.response.status == 401) {
-                window.location = '/login';
-              }
-            });
+            if (OrderPaymentMethod.Direct_Payment == transfer) {
+              window.axios.get('/api/v1/auth/me')
+              .then(function(response) {
+                var tempPoint = response.data['data'].point;
+
+                $('#current-point').val(tempPoint);
+                window.axios.get('/api/v1/guest/points_used')
+                  .then(function(response) {
+                    var pointUsed = response.data['data'];
+                    $('#point_used_offer').val(pointUsed);
+                    
+                    $('#confirm-orders-offer').removeClass('disable');
+                    $('#confirm-orders-offer').prop('disabled', false);
+                  }).catch(function(error) {
+                    console.log(error);
+                    if (error.response.status == 401) {
+                      window.location = '/login';
+                    }
+                  });
+              }).catch(function(error) {
+                console.log(error);
+                if (error.response.status == 401) {
+                  window.location = '/login';
+                }
+              });
+            } else {
+              $('#confirm-orders-offer').removeClass('disable');
+              $('#confirm-orders-offer').prop('disabled', false);
+            }
+
           }
         } else {
           $('#confirm-orders-offer').addClass("disable");
@@ -500,9 +538,7 @@ $(document).ready(function(){
   })
 
   $('body').on('click', "#lb-order-offer", function(event){
-    if($("input[name='transfer_order_offer']").length) {
-      var transfer = parseInt($("input[name='transfer_order_offer']:checked").val());
-    }
+    var transfer = parseInt($("input[name='transfer_order_offer']:checked").val());
 
     var tempPointOrders = parseInt($('#temp-point-offer').val()) + parseInt($('#point_used_offer').val());
     var currentPointUser = $('#current-point').val();
