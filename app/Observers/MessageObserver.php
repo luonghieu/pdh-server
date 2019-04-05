@@ -41,7 +41,11 @@ class MessageObserver
                     }
                 }
             } else {
-                if ($message->user_id != 1) {
+                if (RoomType::SYSTEM != $room->type) {
+                    if ($message->user_id != 1) {
+                        \Notification::send($users, new MessageCreated($message->id));
+                    }
+                } else {
                     \Notification::send($users, new MessageCreated($message->id));
                 }
             }
