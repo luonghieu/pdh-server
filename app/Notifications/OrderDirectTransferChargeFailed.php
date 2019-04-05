@@ -84,7 +84,8 @@ class OrderDirectTransferChargeFailed extends Notification implements ShouldQueu
                         'push_id' => $pushId,
                         'send_from' => $send_from,
                         'room_id' => $room->id,
-                        'order_id' => $this->order->id
+                        'order_id' => $this->order->id,
+                        'missing_point' => $this->point
                     ],
                 ],
                 'android' => [
@@ -93,7 +94,8 @@ class OrderDirectTransferChargeFailed extends Notification implements ShouldQueu
                         'push_id' => $pushId,
                         'send_from' => $send_from,
                         'room_id' => $room->id,
-                        'order_id' => $this->order->id
+                        'order_id' => $this->order->id,
+                        'missing_point' => $this->point
                     ],
                 ]
             ],
