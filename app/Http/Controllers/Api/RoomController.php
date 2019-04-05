@@ -261,6 +261,19 @@ class RoomController extends ApiController
                 })->toArray();
             }
 
+            $dataBlocks = [];
+            $blockedUsers = DB::table('blocks')->where('user_id', $user->id)->orWhere('blocked_id', $user->id)->get();
+
+            foreach ($blockedUsers as $item) {
+                if ($item->user_id != $user->id) {
+                    $dataBlocks[] = $item->user_id;
+                }
+
+                if ($item->blocked_id != $user->id) {
+                    $dataBlocks[] = $item->blocked_id;
+                }
+            }
+
             $rooms = DB::table('room_user')->where('room_user.user_id', $user->id)
                 ->leftJoin('rooms', function ($j) use ($favoritedIds) {
                     if (empty($favoritedIds)) {
@@ -272,13 +285,23 @@ class RoomController extends ApiController
                             ->where('rooms.type', RoomType::DIRECT);
                     }
                 })
-                ->leftJoin('messages', function ($query) use ($favoritedIds) {
+                ->leftJoin('messages', function ($query) use ($favoritedIds, $dataBlocks) {
+                    $sql = 'messages.id IN (select MAX(messages.id) FROM messages JOIN room_user ON room_user.room_id = messages.room_id GROUP BY room_user.id)';
+                    if ($dataBlocks) {
+                        $dataBlocks = implode(',', $dataBlocks);
+                        $sql = "messages.id IN (select MAX(messages.id) "
+                        . "FROM messages "
+                        . "JOIN room_user ON room_user.room_id = messages.room_id "
+                        . "WHERE messages.user_id NOT IN ($dataBlocks) "
+                        . "GROUP BY room_user.id)";
+                    }
+
                     if (empty($favoritedIds)) {
                         $query->on('room_user.room_id', '=', 'messages.room_id')
-                            ->whereRaw('messages.id IN (select MAX(messages.id) from messages join room_user on room_user.room_id = messages.room_id group by room_user.id)');
+                            ->whereRaw($sql);
                     } else {
                         $query->on('room_user.room_id', '=', 'messages.room_id')
-                            ->whereRaw('messages.id IN (select MAX(messages.id) from messages join room_user on room_user.room_id = messages.room_id group by room_user.id)')
+                            ->whereRaw($sql)
                             ->where('rooms.type', RoomType::DIRECT);
                     }
                 });
@@ -296,7 +319,7 @@ class RoomController extends ApiController
                 'messages.type as message_type', 'messages.created_at as message_created_at', 'messages.user_id as message_user_id', 'messages.updated_at as message_updated_at')
                 ->orderBy('messages.created_at', 'desc')
                 ->groupBy('rooms.id')
-                ->paginate(30)->appends($request->query());
+                ->paginate(1000)->appends($request->query());
 
             $collection = $rooms->getCollection();
             $roomArray = $collection->pluck('id');
