@@ -14,7 +14,7 @@ class AlterTableMessageFieldMissingPoint extends Migration
     public function up()
     {
         Schema::table('orders', function (Blueprint $table) {
-            $table->integer('missing_point')->default(null);
+            $table->integer('missing_point')->after('order_id')->default(null);
         });
     }
 
