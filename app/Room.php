@@ -16,7 +16,6 @@ class Room extends Model
         'type',
         'is_active',
         'order_id',
-        'missing_point'
     ];
 
     protected $guarded = [];
