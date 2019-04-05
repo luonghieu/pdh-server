@@ -501,36 +501,6 @@ function handlerSelectedTransfer()
 
     if (OrderPaymentMethod.Direct_Payment == parseInt(transfer)) {
       $('#show-card-registered').css('display', 'none');
-
-      if ($('.checked-order').is(':checked')) {
-        $('#confirm-orders-nomination').addClass("disable");
-        $('#confirm-orders-nomination').prop('disabled', true);
-
-        window.axios.get('/api/v1/auth/me')
-          .then(function(response) {
-            var tempPoint = response.data['data'].point;
-
-            $('#current-point').val(tempPoint);
-            window.axios.get('/api/v1/guest/points_used')
-              .then(function(response) {
-                var pointUsed = response.data['data'];
-                $('#point_used_nominate').val(pointUsed);
-                
-                $('#confirm-orders-nomination').removeClass('disable');
-                $('#confirm-orders-nomination').prop('disabled', false);
-              }).catch(function(error) {
-                console.log(error);
-                if (error.response.status == 401) {
-                  window.location = '/login';
-                }
-              });
-          }).catch(function(error) {
-            console.log(error);
-            if (error.response.status == 401) {
-              window.location = '/login';
-            }
-          });
-      }
     }
 
     if (OrderPaymentMethod.Credit_Card == parseInt(transfer)) {
@@ -544,6 +514,14 @@ function handlerSelectedTransfer()
       }
     }
   })
+}
+
+function createOrderNominate()
+{
+  $('.modal-confirm-nominate').css('display','none');
+  $('#confirm-orders-nomination').prop('disabled','disabled');
+  document.getElementById('confirm-order-nomination-submit').click();
+  $('#create-nomination-form').submit();
 }
 
 $(document).ready(function(){
@@ -574,38 +552,8 @@ $(document).ready(function(){
         } else {
           $(this).prop('checked', true);
           $('#sp-cancel').removeClass('sp-disable');
-
-          var transfer = $("input:radio[name='transfer_order_nominate']:checked").val();
-
-          if(OrderPaymentMethod.Direct_Payment == transfer) {
-            window.axios.get('/api/v1/auth/me')
-              .then(function(response) {
-                var tempPoint = response.data['data'].point;
-
-                $('#current-point').val(tempPoint);
-                window.axios.get('/api/v1/guest/points_used')
-                  .then(function(response) {
-                    var pointUsed = response.data['data'];
-                    $('#point_used_nominate').val(pointUsed);
-                    
-                    $('#confirm-orders-nomination').removeClass('disable');
-                    $('#confirm-orders-nomination').prop('disabled', false);
-                  }).catch(function(error) {
-                    console.log(error);
-                    if (error.response.status == 401) {
-                      window.location = '/login';
-                    }
-                  });
-              }).catch(function(error) {
-                console.log(error);
-                if (error.response.status == 401) {
-                  window.location = '/login';
-                }
-              });
-          } else {
-            $('#confirm-orders-nomination').removeClass('disable');
-            $('#confirm-orders-nomination').prop('disabled', false);
-          }
+          $('#confirm-orders-nomination').removeClass('disable');
+          $('#confirm-orders-nomination').prop('disabled', false);
         }
     } else {
         $(this).prop('checked', false);
@@ -820,10 +768,8 @@ $(document).ready(function(){
   });
 
   $('.cf-orders-nominate').on('click',function(){
-
-    var checkCard = $('.inactive-button-order').length;
     var transfer = $("input:radio[name='transfer_order_nominate']:checked").val();
-
+    var checkCard = true;
     if(OrderPaymentMethod.Direct_Payment == transfer) {
       checkCard = false;
     }
@@ -831,37 +777,50 @@ $(document).ready(function(){
     if(checkCard) {
       if($('#md-require-card').length){
         $('#md-require-card').click();
+      } else {
+        createOrderNominate();
       }
     } else {
-      if(OrderPaymentMethod.Direct_Payment == transfer) {
+        window.axios.get('/api/v1/auth/me')
+          .then(function(response) {
+            var pointUser = response.data['data'].point;
 
-        var tempPointOrders = parseInt($('#current-temp-point').val()) + parseInt($('#point_used_nominate').val());
-        var pointUser = $('#current-point').val();
-        
-        if (parseInt(tempPointOrders) > parseInt(pointUser)) {
-          $('.checked-order').prop('checked',false);
-          $('#sp-cancel').addClass('sp-disable');
-          $('#confirm-orders-nomination').prop('disabled', true);
-          $('#confirm-orders-nomination').addClass('disable');
-          // $('#orders-nominate').prop('checked',false);
+            window.axios.get('/api/v1/guest/points_used')
+              .then(function(response) {
+                var pointUsed = response.data['data'];
+                var tempPointOrder = parseInt($('#current-temp-point').val()) + parseInt(pointUsed);
 
-          if (parseInt($('#point_used_nominate').val()) > parseInt(pointUser)) {
-            var pointShow = parseInt($('#current-temp-point').val());
-          } else {
-            var pointShow = parseInt(tempPointOrders) - parseInt(pointUser);
-          }
-                
+                if (parseInt(tempPointOrder) > parseInt(pointUser)) {
+                  $('.checked-order').prop('checked',false);
+                  $('#sp-cancel').addClass('sp-disable');
+                  $('#confirm-orders-nomination').prop('disabled', true);
+                  $('#confirm-orders-nomination').addClass('disable');
+                  // $('#orders-nominate').prop('checked',false);
 
-          window.location.href = '/payment/transfer?point=' + pointShow;
+                  if (parseInt(pointUsed) > parseInt(pointUser)) {
+                    var point = parseInt($('#current-temp-point').val());
+                  } else {
+                    var point = parseInt(tempPointOrder) - parseInt(pointUser);
+                  }
+              
+                  window.location.href = '/payment/transfer?point=' + point;
 
-          return;
-        }
-      }
-
-      $('.modal-confirm-nominate').css('display','none');
-      $('#confirm-orders-nomination').prop('disabled','disabled');
-      document.getElementById('confirm-order-nomination-submit').click();
-      $('#create-nomination-form').submit();
+                  return ;
+                } else {
+                  createOrderNominate();
+                }
+              }).catch(function(error) {
+                console.log(error);
+                if (error.response.status == 401) {
+                  window.location = '/login';
+                }
+              });
+          }).catch(function(error) {
+            console.log(error);
+            if (error.response.status == 401) {
+              window.location = '/login';
+            }
+          });
     }
   });
 
