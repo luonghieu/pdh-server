@@ -3792,3 +3792,8 @@ div.user-data span.total-point-cast{
 #top .wrap-banner-methods-used {
   margin-top: 15px;
 }
+
+#top footer {
+   margin-top: 0;
+   padding-top: 0;
+}
