@@ -4,6 +4,10 @@
   <div class="row">
     <div class="col-lg-12">
       <div class="panel panel-default">
+        @include('admin.partials.menu-cast-request-transfer')
+        <div class="clearfix"></div>
+        @include('admin.partials.notification')
+        <div class="clearfix"></div>
         <div class="panel-body handling">
           <div class="search">
             <form class="navbar-form navbar-left form-search" action="{{ route('admin.request_transfer.index') }}" method="GET">
@@ -14,7 +18,7 @@
               <input type="text" class="form-control date-picker" name="to_date" id="date01" data-date-format="yyyy/mm/dd" value="{{request()->to_date}}" placeholder="yyyy/mm/dd"/>
               <button type="submit" class="fa fa-search btn-search"></button>
               <input type="hidden" name="limit" value="{{ request()->limit }}" />
-              <input type="hidden" name="transfer_type" value="{{ request()->transfer_type }}" />
+              <input type="hidden" name="cast_transfer_status" value="{{ request()->cast_transfer_status }}" />
               @include('admin.orders.request_sort')
             </form>
           </div>
@@ -33,16 +37,11 @@
                 <input type="hidden" name="from_date" value="{{ request()->from_date }}" />
                 <input type="hidden" name="to_date" value="{{ request()->to_date }}" />
                 <input type="hidden" name="search" value="{{ request()->search }}" />
-                <input type="hidden" name="transfer_type" value="{{ request()->transfer_type }}" />
+                <input type="hidden" name="cast_transfer_status" value="{{ request()->cast_transfer_status }}" />
               </div>
             </div>
           </form>
         </div>
-        @if (!isset(request()->transfer_type))
-        <div class="btn-delete-order">
-          <a href="{{ route('admin.request_transfer.index', ['transfer_type' => App\Enums\CastTransferStatus::DENIED]) }}"><button>見送りユーザーリスト</button></a>
-        </div>
-        @endif
         <div class="panel-body">
           @include('admin.partials.notification')
           @php
@@ -52,7 +51,7 @@
               'search' => request()->search,
               'from_date' => request()->from_date,
               'to_date' => request()->to_date,
-              'transfer_type' => request()->transfer_type,
+              'cast_transfer_status' => request()->cast_transfer_status,
            ];
           @endphp
           <table class="table table-striped table-bordered bootstrap-datatable">
