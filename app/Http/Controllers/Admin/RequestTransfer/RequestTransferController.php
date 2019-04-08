@@ -102,25 +102,11 @@ class RequestTransferController extends Controller
                         $castClass = CastClass::findOrFail(1);
 
                         $cast->cast_transfer_status = CastTransferStatus::VERIFIED_STEP_ONE;
-                        $cast->gender = UserGender::FEMALE;
                         $cast->type = UserType::CAST;
                         $cast->class_id = $castClass->id;
                         $cast->cost = config('common.cost_default');
-                        $cast->accept_request_transfer_date = now();
+                        $cast->accept_verified_step_one_date = now();
                         $cast->save();
-
-                        if (count($cast->shifts)) {
-                            $castLatestShift = $cast->shifts()->orderBy('id', 'desc')->first();
-                            $castShiftDate = Carbon::parse($castLatestShift->date);
-                            $shifts = Shift::whereDate('date', '>', $castShiftDate)->pluck('id');
-                            if (count($shifts)) {
-                                $cast->shifts()->attach($shifts);
-                            }
-                        } else {
-                            $now = now()->startOfDay();
-                            $shifts = Shift::whereDate('date', '>=', $now)->pluck('id');
-                            $cast->shifts()->attach($shifts);
-                        }
                         break;
 
                     case 'denied-female':
@@ -145,7 +131,7 @@ class RequestTransferController extends Controller
 
                 switch ($request->transfer_request_status) {
                     case 'verified-step-one':
-                        return redirect(route('admin.request_transfer.index', ['transfer_type' => CastTransferStatus::VERIFIED_STEP_ONE]));
+                        return redirect(route('admin.request_transfer.index', ['cast_transfer_status' => CastTransferStatus::VERIFIED_STEP_ONE]));
                         break;
                     case 'approved':
                         return redirect(route('admin.casts.index'));
