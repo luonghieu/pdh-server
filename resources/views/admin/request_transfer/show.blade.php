@@ -69,11 +69,19 @@
         </div>
         <div class="panel-body">
           <div class="col-lg-10 change-type-transfer">
+            @if ($cast->cast_transfer_status == App\Enums\CastTransferStatus::VERIFIED_STEP_ONE)
             <label for="approved">
               <input type="radio" name="transfer_request_status" id="approved" value="approved"
                 {{ $cast->cast_transfer_status == App\Enums\CastTransferStatus::APPROVED ? 'checked' : '' }}><br>
               <span>通過</span>
             </label>
+            @else
+            <label for="verified-step-one">
+              <input type="radio" name="transfer_request_status" id="verified-step-one" value="verified-step-one"
+                {{ $cast->cast_transfer_status == App\Enums\CastTransferStatus::VERIFIED_STEP_ONE ? 'checked' : '' }}><br>
+              <span>一次通過</span>
+            </label>
+            @endif
             <label for="denied-female">
               <input type="radio" name="transfer_request_status" id="denied-female" value="denied-female"
                 {{ $cast->cast_transfer_status == App\Enums\CastTransferStatus::DENIED && $cast->gender == App\Enums\UserGender::FEMALE ? 'checked' : '' }}><br>
@@ -98,6 +106,24 @@
                 {{ csrf_field() }}
                 {{ method_field('PUT') }}
                   <input type="hidden" name="transfer_request_status" value="approved">
+                  <button type="button" class="btn btn-canceled" data-dismiss="modal">キャンセル</button>
+                  <button type="submit" class="btn btn-accept">はい</button>
+                </form>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="modal fade" id="verified-step-one-modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+          <div class="modal-dialog" role="document">
+            <div class="modal-content">
+              <div class="modal-body">
+                <p>このユーザーのキャスト申請を「一次通過」で更新しますか？</p>
+              </div>
+              <div class="modal-footer">
+                <form action="{{ route('admin.request_transfer.update', ['cast' => $cast->id]) }}" method="POST">
+                {{ csrf_field() }}
+                {{ method_field('PUT') }}
+                  <input type="hidden" name="transfer_request_status" value="verified-step-one">
                   <button type="button" class="btn btn-canceled" data-dismiss="modal">キャンセル</button>
                   <button type="submit" class="btn btn-accept">はい</button>
                 </form>
@@ -169,6 +195,10 @@
 
         if (valRadioChecked == 'approved') {
           $('#approved-modal').modal();
+        }
+
+        if (valRadioChecked == 'verified-step-one') {
+          $('#verified-step-one-modal').modal();
         }
 
         if (valRadioChecked == 'denied-female') {

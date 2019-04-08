@@ -98,6 +98,17 @@ class RequestTransferController extends Controller
                         }
                         break;
 
+                    case 'verified-step-one':
+                        $castClass = CastClass::findOrFail(1);
+
+                        $cast->cast_transfer_status = CastTransferStatus::VERIFIED_STEP_ONE;
+                        $cast->type = UserType::CAST;
+                        $cast->class_id = $castClass->id;
+                        $cast->cost = config('common.cost_default');
+                        $cast->accept_verified_step_one_date = now();
+                        $cast->save();
+                        break;
+
                     case 'denied-female':
                         $cast->cast_transfer_status = CastTransferStatus::DENIED;
                         $cast->gender = UserGender::FEMALE;
@@ -118,8 +129,15 @@ class RequestTransferController extends Controller
 
                 $cast->notify(new RequestTransferNotify());
 
-                if ($request->transfer_request_status == 'approved') {
-                    return redirect(route('admin.casts.index'));
+                switch ($request->transfer_request_status) {
+                    case 'verified-step-one':
+                        return redirect(route('admin.request_transfer.index', ['cast_transfer_status' => CastTransferStatus::VERIFIED_STEP_ONE]));
+                        break;
+                    case 'approved':
+                        return redirect(route('admin.casts.index'));
+                        break;
+                    
+                    default:break;
                 }
 
                 return redirect(route('admin.request_transfer.index', ['cast_transfer_status' => CastTransferStatus::DENIED]));
