@@ -13,8 +13,8 @@
     <div class="slider cast-photo__show">
       @if($cast['avatars'])
         @foreach ($cast['avatars'] as $avatar)
-          @if (($avatar['thumbnail']))
-          <img data-lazy="{{ $avatar['thumbnail'] }}">
+          @if (($avatar['path']))
+          <img data-lazy="{{ $avatar['path'] }}">
           @else
           <img data-lazy="{{ asset('assets/web/images/gm1/ic_default_avatar@3x.png') }}">
           @endif
