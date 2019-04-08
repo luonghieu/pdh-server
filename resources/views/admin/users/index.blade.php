@@ -91,7 +91,10 @@
                     {{ $user->nickname }}
                   </td>
                   <td>{{ $user->age }}</td>
-                  <td>{{ App\Enums\UserType::getDescription($user->type) }}</td>
+                  <td>
+                    {{ App\Enums\UserType::getDescription($user->type) }}
+                    {{ $user->cast_transfer_status == App\Enums\CastTransferStatus::VERIFIED_STEP_ONE ? '(仮)' : '' }}
+                  </td>
                   <td>{{ App\Enums\Status::getDescription($user->status) }}</td>
                   @if ($user->is_online == true)
                   <td>オンライン中</td>
