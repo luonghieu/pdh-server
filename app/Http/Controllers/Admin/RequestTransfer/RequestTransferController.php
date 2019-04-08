@@ -20,16 +20,14 @@ class RequestTransferController extends Controller
     {
         $keyword = $request->search;
         $orderBy = $request->only('nickname', 'request_transfer_date');
-
-        if ($request->has('transfer_type') && (CastTransferStatus::DENIED == $request->transfer_type)) {
-            $casts = User::where([
-                'cast_transfer_status' => CastTransferStatus::DENIED,
-            ]);
-        } else {
-            $casts = User::where([
-                'cast_transfer_status' => CastTransferStatus::PENDING,
-            ]);
+        $castTransferStatus = $request->cast_transfer_status;
+        if (!$castTransferStatus) {
+            return redirect()->route('admin.request_transfer.index', ['cast_transfer_status' => CastTransferStatus::PENDING]);
         }
+
+        $casts = User::where([
+            'cast_transfer_status' => $castTransferStatus,
+        ]);
 
         if ($request->has('from_date') && !empty($request->from_date)) {
             $fromDate = Carbon::parse($request->from_date)->startOfDay();
@@ -47,7 +45,7 @@ class RequestTransferController extends Controller
 
         if ($request->has('search') && $request->search) {
             $casts->where(function ($query) use ($keyword) {
-                $query->where('nickname', 'like', "%$keyword%")
+                $query->where('fullname', 'like', "%$keyword%")
                     ->orWhere('id', $keyword);
             });
         }
@@ -156,7 +154,7 @@ class RequestTransferController extends Controller
                     default:break;
                 }
 
-                return redirect(route('admin.request_transfer.index', ['transfer_type' => CastTransferStatus::DENIED]));
+                return redirect(route('admin.request_transfer.index', ['cast_transfer_status' => CastTransferStatus::DENIED]));
             }
         } catch (\Exception $e) {
             LogService::writeErrorLog($e);
