@@ -5,6 +5,11 @@ const couponType = {
   'PERCENT': 3
 };
 
+const OrderPaymentMethod = {
+  'Credit_Card': 1,
+  'Direct_Payment': 2
+};
+
 function showCoupons(coupon, params)
 {
   var html = '<section class="details-list">';
@@ -128,10 +133,10 @@ $(document).ready(function(){
 
           $('.time-detail-call').text(year +'年' + month + '月' + date + '日' + ' ' + time);
         } else {
-          now = new Date();
+          var now = new Date();
 
-          utc = now.getTime() + (now.getTimezoneOffset() * 60000);
-          nd = new Date(utc + (3600000*9));
+          var utc = now.getTime() + (now.getTimezoneOffset() * 60000);
+          var nd = new Date(utc + (3600000*9));
           var day = helper.add_minutes(nd, currentTime);
 
           var year = day.getFullYear();
@@ -259,7 +264,162 @@ $(document).ready(function(){
         })
       }
 
+      if (orderCall.payment_method) {
+        const inputPayment = $("input:radio[name='transfer_order']");
+        $.each(inputPayment,function(index,val){
+          if(val.value == orderCall.payment_method) {
+            $(this).prop('checked',true);
+          }
+        })
+
+        if(OrderPaymentMethod.Direct_Payment == orderCall.payment_method) {
+          $('#show-registered-card').css('display', 'none');
+        }
+      }
+
+      $("input:radio[name='transfer_order']").on("change",function(event){
+        var transfer = $("input:radio[name='transfer_order']:checked").val();
+
+        if(OrderPaymentMethod.Direct_Payment == transfer) {
+          $('#show-registered-card').css('display', 'none');
+
+          if ($(".cb-cancel").is(':checked')) {
+            $('#btn-confirm-orders').addClass("disable");
+            $('#btn-confirm-orders').prop('disabled', true);
+
+            window.axios.get('/api/v1/auth/me')
+              .then(function(response) {
+                var tempPoint = response.data['data'].point;
+
+                $('#current-point').val(tempPoint);
+                window.axios.get('/api/v1/guest/points_used')
+                  .then(function(response) {
+                    var pointUsed = response.data['data'];
+                    $('#point_used').val(pointUsed);
+                    
+                    $('#btn-confirm-orders').removeClass('disable');
+                    $('#btn-confirm-orders').prop('disabled', false);
+                  }).catch(function(error) {
+                    console.log(error);
+                    if (error.response.status == 401) {
+                      window.location = '/login';
+                    }
+                  });
+              }).catch(function(error) {
+                console.log(error);
+                if (error.response.status == 401) {
+                  window.location = '/login';
+                }
+              });
+          }
+        } else {
+          $('#show-registered-card').css('display', 'block');
+
+          var checkCard = $('.inactive-button-order').length;
+
+          if(checkCard) {
+            $('.cb-cancel').prop('checked', false);
+            $('#sp-cancel').addClass("sp-disable");
+            $('#btn-confirm-orders').addClass("disable");
+            $('#btn-confirm-orders').prop('disabled', true);
+          }
+        }
+
+        var params = {
+            payment_method : transfer,
+          };
+
+        helper.updateLocalStorageValue('order_call', params);
+      })
+
+      $(".cb-cancel").on("change",function(event){
+        var transfer = $("input:radio[name='transfer_order']:checked").val();
+
+        if ($(this).is(':checked')) {
+          var checkCard = $('.inactive-button-order').length;
+
+          if(OrderPaymentMethod.Direct_Payment == transfer) {
+            checkCard = false;
+          }
+              
+          if(checkCard) {
+            $(this).prop('checked', false);
+            $('#sp-cancel').addClass("sp-disable");
+            $('#btn-confirm-orders').prop('disabled', true);
+          } else {
+            $(this).prop('checked', true);
+            $('#sp-cancel').removeClass('sp-disable');
+            
+            if(OrderPaymentMethod.Direct_Payment == transfer) {
+              window.axios.get('/api/v1/auth/me')
+              .then(function(response) {
+                var tempPoint = response.data['data'].point;
+                $('#current-point').val(tempPoint);
+                
+                window.axios.get('/api/v1/guest/points_used')
+                  .then(function(response) {
+                    var pointUsed = response.data['data'];
+                    $('#point_used').val(pointUsed);
+                    
+                    $('#btn-confirm-orders').removeClass('disable');
+                    $('#btn-confirm-orders').prop('disabled', false);
+                  }).catch(function(error) {
+                    console.log(error);
+                    if (error.response.status == 401) {
+                      window.location = '/login';
+                    }
+                  });
+              }).catch(function(error) {
+                console.log(error);
+                if (error.response.status == 401) {
+                  window.location = '/login';
+                }
+              });
+            } else {
+              $('#btn-confirm-orders').removeClass('disable');
+              $('#btn-confirm-orders').prop('disabled', false);
+            }
+          }
+        } else {
+          $(this).prop('checked', false);
+          $('#sp-cancel').addClass("sp-disable");
+          $('#btn-confirm-orders').addClass("disable");
+          $('#btn-confirm-orders').prop('disabled', true);
+        }
+      });
+
       $('.sb-form-orders').on('click',function(){
+        var transfer = parseInt($("input[name='transfer_order']:checked").val());
+
+        if (transfer) {
+          if (OrderPaymentMethod.Credit_Card == transfer || OrderPaymentMethod.Direct_Payment == transfer) {
+            if (OrderPaymentMethod.Direct_Payment == transfer) {
+           
+              var pointUser = $('#current-point').val();
+              var tempPointOrder = parseInt($('#temp_point_order_call').val()) + parseInt($('#point_used').val());
+
+              if (parseInt(tempPointOrder) > parseInt(pointUser)) {
+                $('#sp-cancel').addClass('sp-disable');
+                $('.cb-cancel').prop('checked', false);
+                $('#btn-confirm-orders').prop('disabled', true);
+                $('#btn-confirm-orders').addClass('disable');
+
+                if (parseInt($('#point_used').val()) > parseInt(pointUser)) {
+                  var point = parseInt($('#temp_point_order_call').val());
+                } else {
+                  var point = parseInt(tempPointOrder) - parseInt(pointUser);
+                }
+            
+                window.location.href = '/payment/transfer?point=' + point;
+
+                return ;
+              }
+            }
+          } else {
+              window.location.href = '/mypage';
+          }
+        }
+
         $('.modal-confirm').css('display', 'none');
         $('#btn-confirm-orders').prop('disabled', true);
 
@@ -272,10 +432,10 @@ $(document).ready(function(){
         }
 
         if('other_time' != currentTime) {
-          now = new Date();
+          var now = new Date();
 
-          utc = now.getTime() + (now.getTimezoneOffset() * 60000);
-          nd = new Date(utc + (3600000*9));
+          var utc = now.getTime() + (now.getTimezoneOffset() * 60000);
+          var nd = new Date(utc + (3600000*9));
           var day = helper.add_minutes(nd, currentTime);
 
           var year = day.getFullYear();
@@ -319,6 +479,10 @@ $(document).ready(function(){
           temp_point : $('#temp_point_order_call').val(),
         };
 
+        if(transfer) {
+          params.payment_method = transfer;
+        }
+
         if(orderCall.coupon) {
           var coupon = orderCall.coupon;            
           params.coupon_id = coupon.id;
@@ -348,7 +512,7 @@ $(document).ready(function(){
               window.location.href = '/mypage';
           }
         }
-        
+
         window.axios.post('/api/v1/orders', params)
         .then(function(response) {
           $('#orders').prop('checked',false);

@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Cast;
 use App\Enums\OfferStatus;
+use App\Enums\OrderPaymentMethod;
 use App\Enums\OrderPaymentStatus;
 use App\Enums\OrderStatus;
 use App\Enums\OrderType;
@@ -158,20 +159,24 @@ class OrderController extends Controller
     public function pointSettlement(Request $request, $id)
     {
         $user = Auth::user();
-        if (!$user->is_card_registered) {
-            return response()->json(['success' => false], 400);
-        }
 
-        $now = Carbon::now();
         $order = Order::where(function ($query) {
             $query->where('payment_status', OrderPaymentStatus::REQUESTING)
                 ->orWhere('payment_status', OrderPaymentStatus::PAYMENT_FAILED);
-        })
-            ->find($id);
+        })->find($id);
 
         if (!$order) {
             return redirect()->back();
         }
+
+        if ($order && (OrderPaymentMethod::CREDIT_CARD == $order->payment_method)) {
+            if (!$user->is_card_registered) {
+                return response()->json(['success' => false], 400);
+            }
+        }
+
+        $now = Carbon::now();
+
         try {
             DB::beginTransaction();
             $order->settle();
@@ -320,6 +325,49 @@ class OrderController extends Controller
 
     public function createNominate(Request $request)
     {
+        $user = Auth::user();
+
+        $accessToken = JWTAuth::fromUser($user);
+
+        $client = new Client([
+            'base_uri' => config('common.api_url'),
+            'headers' => [
+                'Content-Type' => 'application/json',
+                'Authorization' => 'Bearer ' . $accessToken,
+            ],
+        ]);
+
+        $tempPoint = $request->current_temp_point;
+        $transfer = $request->transfer_order_nominate;
+
+        if (isset($transfer)) {
+            if (OrderPaymentMethod::CREDIT_CARD == $transfer || OrderPaymentMethod::DIRECT_PAYMENT == $transfer) {
+                if (OrderPaymentMethod::DIRECT_PAYMENT == $transfer) {
+                    try {
+                        $pointUsed = $client->request('GET', route('guest.points_used'));
+
+                        $pointUsed = json_decode(($pointUsed->getBody())->getContents(), JSON_NUMERIC_CHECK);
+                        $pointUsed = $pointUsed['data'];
+                    } catch (\Exception $e) {
+                        LogService::writeErrorLog($e);
+                        return redirect()->route('web.login');
+                    }
+
+                    if ((int) ($tempPoint + $pointUsed) > (int) $user->point) {
+                        if ((int) $pointUsed > (int) $user->point) {
+                            $point = $tempPoint;
+                        } else {
+                            $point = (int) ($tempPoint + $pointUsed) - (int) $user->point;
+                        }
+
+                        return redirect()->route('guest.transfer', ['point' => $point]);
+                    }
+                }
+            } else {
+                return redirect()->route('web.login');
+            }
+        }
+
         $prefecture = $request->prefecture_nomination;
         $area = $request->nomination_area;
         $otherArea = $request->other_area_nomination;
@@ -398,8 +446,6 @@ class OrderController extends Controller
             $duration = $request->sl_duration_nominition;
         }
 
-        $tempPoint = $request->current_temp_point;
-
         $input = [
             'prefecture_id' => $prefecture,
             'address' => $area,
@@ -425,16 +471,9 @@ class OrderController extends Controller
             }
         }
 
-        $user = Auth::user();
-        $accessToken = JWTAuth::fromUser($user);
-
-        $client = new Client([
-            'base_uri' => config('common.api_url'),
-            'headers' => [
-                'Content-Type' => 'application/json',
-                'Authorization' => 'Bearer ' . $accessToken,
-            ],
-        ]);
+        if (isset($transfer)) {
+            $input['payment_method'] = $transfer;
+        }
 
         try {
             $order = $client->request('POST', route('orders.create'), [

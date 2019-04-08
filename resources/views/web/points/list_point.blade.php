@@ -30,6 +30,9 @@
           case \App\Enums\PointType::INVITE_CODE:
               $type = 'ポイント付与';
               break;
+          case \App\Enums\PointType::DIRECT_TRANSFER:
+              $type = '購入';
+              break;
 
           default:
               $type = '';

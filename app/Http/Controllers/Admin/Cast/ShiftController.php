@@ -4,11 +4,11 @@ namespace App\Http\Controllers\Admin\Cast;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
-use App\User;
+use App\Cast;
 use Carbon\Carbon;
 class ShiftController extends Controller
 {
-    public function index(User $user)
+    public function index(Cast $user)
     {
         $from = now()->copy()->startOfDay();
         $to = now()->copy()->addDays(6)->startOfDay();

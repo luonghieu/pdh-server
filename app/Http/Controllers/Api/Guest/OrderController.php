@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api\Guest;
 
+use App\Enums\OrderPaymentMethod;
 use App\Enums\OrderPaymentStatus;
 use App\Enums\OrderStatus;
 use App\Enums\PaymentRequestStatus;
@@ -11,6 +12,7 @@ use App\Http\Controllers\Api\ApiController;
 use App\Http\Resources\OrderResource;
 use App\Notifications\AutoChargeFailedLineNotify;
 use App\Notifications\AutoChargeFailedWorkchatNotify;
+use App\Notifications\OrderDirectTransferChargeFailed;
 use App\Order;
 use App\Point;
 use App\Services\LogService;
@@ -70,20 +72,22 @@ class OrderController extends ApiController
     public function pointSettlement(Request $request, $id)
     {
         $user = $this->guard()->user();
-        if (!$user->is_card_registered) {
-            return $this->respondErrorMessage(trans('messages.card_not_exist'), 404);
-        }
-
-        $now = Carbon::now();
         $order = Order::where(function ($query) {
             $query->where('payment_status', OrderPaymentStatus::REQUESTING)
                 ->orWhere('payment_status', OrderPaymentStatus::PAYMENT_FAILED);
-        })
-            ->find($id);
+        })->find($id);
 
         if (!$order) {
             return $this->respondErrorMessage(trans('messages.order_not_found'), 404);
         }
+
+        if ($order && ($order->payment_method == OrderPaymentMethod::CREDIT_CARD)) {
+            if (!$user->is_card_registered) {
+                return response()->json(['success' => false], 400);
+            }
+        }
+
+        $now = Carbon::now();
         try {
             DB::beginTransaction();
             $order->settle();
@@ -132,6 +136,21 @@ class OrderController extends ApiController
             LogService::writeErrorLog($e);
             return $this->respondErrorMessage(trans('messages.payment_failed'));
         }
+    }
+
+    public function sendPushAlertMissingPoint(Request $request, $id)
+    {
+        $user = $this->guard()->user();
+        $order = Order::findOrFail($id);
+
+        if (!$order->send_warning) {
+            $orderTotalPoint = $order->total_point - $order->discount_point;
+            $user->notify(new OrderDirectTransferChargeFailed($order, $orderTotalPoint - $user->point));
+            $order->send_warning = true;
+            $order->save();
+        }
+
+        return $this->respondWithNoData('succeed');
     }
 
     private function createTransfer($order, $paymentRequest, $receiveCast)

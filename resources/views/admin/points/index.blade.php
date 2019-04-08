@@ -60,7 +60,7 @@
             <tbody>
               @if (empty($points->count()))
                 <tr>
-                  <td colspan="10">{{ trans('messages.point_buy_not_found') }}</td>
+                  <td colspan="7">{{ trans('messages.point_buy_not_found') }}</td>
                 </tr>
               @else
                 @foreach ($points as $key => $point)
@@ -69,12 +69,20 @@
                     <td>{{ Carbon\Carbon::parse($point->created_at)->format('Y年m月d日') }}</td>
                     <td>{{ $point->user_id }}</td>
                     <td>{{ $point->user ? $point->user->nickname : '' }}</td>
-                    <td>{{ \App\Enums\PointType::getDescription($point->type) }}</td>
-                    @if ($point->is_adjusted || $point->is_invite_code || !$point->payment)
-                      <td>-</td>
-                    @else
-                      <td>¥ {{ number_format($point->payment->amount) }}</td>
-                    @endif
+                    <td>{{ $point->is_direct_transfer ? 'ポイント購入' : App\Enums\PointType::getDescription($point->type) }}</td>
+                    @php
+                      $amount = '-';
+                      if ($point->is_direct_transfer) {
+                          $amount = '¥ ' . number_format($point->point * config('common.point_rate'));
+                      } else {
+                          if ($point->is_adjusted || !$point->payment || $point->is_invite_code) {
+                              //
+                          } else {
+                              $amount = '¥ ' . number_format($point->payment->amount);
+                          }
+                      }
+                    @endphp
+                    <td>{{ $amount }}</td>
                     <td>{{ number_format($point->point) }}</td>
                   </tr>
                 @endforeach
