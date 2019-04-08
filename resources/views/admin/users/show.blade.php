@@ -428,7 +428,10 @@
               </tr>
               <tr>
                 <th>会員区分</th>
-                <td>{{ App\Enums\UserType::getDescription($user->type) }}</td>
+                <td>
+                  {{ App\Enums\UserType::getDescription($user->type) }}
+                  {{ $user->cast_transfer_status == App\Enums\CastTransferStatus::VERIFIED_STEP_ONE ? '(仮)' : '' }}
+                </td>
               </tr>
               <tr>
                 <th>ステータス</th>
