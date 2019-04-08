@@ -20,7 +20,7 @@ $routes = [
         [
             'name' => 'admin.request_transfer.index',
             'value' => 'キャスト新規申請',
-            'url' => route('admin.request_transfer.index'),
+            'url' => route('admin.request_transfer.index', ['cast_transfer_status' => App\Enums\CastTransferStatus::PENDING]),
             'submenu' => [
               'admin.request_transfer.show',
             ],

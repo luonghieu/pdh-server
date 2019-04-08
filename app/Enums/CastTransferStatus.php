@@ -10,4 +10,5 @@ final class CastTransferStatus extends Enum
     const DENIED = 2;
     const APPROVED = 3;
     const OFFICIAL = 4;
+    const VERIFIED_STEP_ONE = 5;
 }
