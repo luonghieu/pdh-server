@@ -10,6 +10,7 @@ use App\Enums\CastOrderType;
 use App\Enums\CouponType;
 use App\Enums\InviteCodeHistoryStatus;
 use App\Enums\OfferStatus;
+use App\Enums\OrderPaymentMethod;
 use App\Enums\OrderStatus;
 use App\Enums\OrderType;
 use App\Enums\RoomType;
@@ -27,7 +28,9 @@ use App\Tag;
 use App\Traits\DirectRoom;
 use Carbon\Carbon;
 use DB;
+use GuzzleHttp\Client;
 use Illuminate\Http\Request;
+use JWTAuth;
 
 class OrderController extends ApiController
 {
@@ -35,7 +38,6 @@ class OrderController extends ApiController
 
     public function create(Request $request)
     {
-
         $user = $this->guard()->user();
         $rules = [
             'prefecture_id' => 'nullable|exists:prefectures,id',
@@ -61,6 +63,39 @@ class OrderController extends ApiController
             return $this->respondErrorMessage(trans('messages.freezing_account'), 403);
         }
 
+        $transfer = $request->payment_method;
+
+        if (isset($transfer)) {
+            if (OrderPaymentMethod::CREDIT_CARD == $transfer || OrderPaymentMethod::DIRECT_PAYMENT == $transfer) {
+                if (OrderPaymentMethod::DIRECT_PAYMENT == $transfer) {
+                    $accessToken = JWTAuth::fromUser($user);
+
+                    $client = new Client([
+                        'base_uri' => config('common.api_url'),
+                        'headers' => [
+                            'Content-Type' => 'application/json',
+                            'Authorization' => 'Bearer ' . $accessToken,
+                        ],
+                    ]);
+
+                    try {
+                        $pointUsed = $client->request('GET', route('guest.points_used'));
+
+                        $pointUsed = json_decode(($pointUsed->getBody())->getContents(), JSON_NUMERIC_CHECK);
+                        $pointUsed = $pointUsed['data'];
+                    } catch (\Exception $e) {
+                        return $this->respondErrorMessage(trans('messages.action_not_performed'), 422);
+                    }
+
+                    if ((float) ($request->temp_point + $pointUsed) > (float) $user->point) {
+                        return $this->respondErrorMessage(trans('messages.action_not_performed'), 422);
+                    }
+                }
+            } else {
+                return $this->respondErrorMessage(trans('messages.action_not_performed'), 422);
+            }
+        }
+
         $input = $request->only([
             'prefecture_id',
             'address',
@@ -80,8 +115,10 @@ class OrderController extends ApiController
             return $this->respondErrorMessage(trans('messages.time_invalid'), 400);
         }
 
-        if (!$user->is_card_registered) {
-            return $this->respondErrorMessage(trans('messages.card_not_exist'), 404);
+        if (!$request->payment_method || OrderPaymentMethod::DIRECT_PAYMENT != $request->payment_method) {
+            if (!$user->is_card_registered) {
+                return $this->respondErrorMessage(trans('messages.card_not_exist'), 404);
+            }
         }
 
         if (!$request->nominee_ids) {
@@ -119,6 +156,10 @@ class OrderController extends ApiController
         }
 
         $input['status'] = OrderStatus::OPEN;
+
+        if ($request->payment_method) {
+            $input['payment_method'] = $request->payment_method;
+        }
 
         try {
             $when = Carbon::now()->addSeconds(3);
@@ -193,7 +234,7 @@ class OrderController extends ApiController
 
             $inviteCodeHistory = $user->inviteCodeHistory;
             if ($inviteCodeHistory) {
-                if ($inviteCodeHistory->status == InviteCodeHistoryStatus::PENDING && $inviteCodeHistory->order_id == null) {
+                if (InviteCodeHistoryStatus::PENDING == $inviteCodeHistory->status && null == $inviteCodeHistory->order_id) {
                     $inviteCodeHistory->order_id = $order->id;
                     $inviteCodeHistory->save();
                 }
@@ -381,8 +422,10 @@ class OrderController extends ApiController
             return $this->respondErrorMessage(trans('messages.order_timeout'), 422);
         }
 
-        if (!$user->is_card_registered) {
-            return $this->respondErrorMessage(trans('messages.card_not_exist'), 404);
+        if (!$request->payment_method || OrderPaymentMethod::DIRECT_PAYMENT != $request->payment_method) {
+            if (!$user->is_card_registered) {
+                return $this->respondErrorMessage(trans('messages.card_not_exist'), 404);
+            }
         }
 
         if ($offer->total_cast != $request->total_cast) {
@@ -446,6 +489,10 @@ class OrderController extends ApiController
 
         $input['end_time'] = $end_time->format('H:i');
         $input['status'] = OrderStatus::ACTIVE;
+
+        if ($request->payment_method) {
+            $input['payment_method'] = $request->payment_method;
+        }
 
         try {
             DB::beginTransaction();
@@ -511,7 +558,7 @@ class OrderController extends ApiController
 
             $inviteCodeHistory = $user->inviteCodeHistory;
             if ($inviteCodeHistory) {
-                if ($inviteCodeHistory->status == InviteCodeHistoryStatus::PENDING && $inviteCodeHistory->order_id == null) {
+                if (InviteCodeHistoryStatus::PENDING == $inviteCodeHistory->status && null == $inviteCodeHistory->order_id) {
                     $inviteCodeHistory->order_id = $order->id;
                     $inviteCodeHistory->save();
                 }

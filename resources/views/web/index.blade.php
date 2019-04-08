@@ -210,6 +210,9 @@
 
     </div>
   </div>
+  <div class="wrap-banner-methods-used">
+    <a href="/service/guest_ht"><img src="/assets/web/images/ge1/banner_methods_used.png" alt=""></a>
+  </div>
 @endsection
 @section('web.script')
   @if (Session::has('no_active'))

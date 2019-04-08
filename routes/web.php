@@ -24,6 +24,7 @@ Route::group(['middleware' => 'auth'], function () {
     Route::group(['middleware' => 'check_info'], function () {
         Route::group(['prefix' => 'purchase', 'as' => 'purchase.'], function () {
             Route::get('/', ['as' => 'index', 'uses' => 'PointController@index']);
+            Route::get('/select_payment_methods', ['as' => 'select_payment_methods', 'uses' => 'PointController@selectPaymentMethods']);
         });
 
         Route::group(['middleware' => 'is_active', 'prefix' => 'message', 'as' => 'message.'], function () {
@@ -85,7 +86,10 @@ Route::group(['middleware' => ['auth', 'guest', 'check_info'], 'as' => 'guest.']
         Route::get('/step3/load_more', ['as' => 'step3_load_more', 'uses' => 'OrderController@loadMoreListCast']);
         Route::get('/cast/{id}/call', ['as' => 'cast_detail', 'uses' => 'OrderController@castDetail'])->where('id', '[0-9]+');
     });
+
+    Route::get('/payment/transfer', ['as' => 'transfer', 'uses' => 'PaymentController@transfer']);
 });
+
 Route::group(['middleware' => ['auth', 'is_active'], 'as' => 'guest.'], function () {
     Route::get('/offers/{id}', ['as' => 'orders.offers', 'uses' => 'OrderController@offer'])->where('id', '[0-9]+');
     Route::get('/offers/attention', ['as' => 'orders.offers_attention', 'uses' => 'OrderController@offerAttention'])->where('id', '[0-9]+');

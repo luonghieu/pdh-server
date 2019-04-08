@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Enums\PointType;
 use App\Http\Resources\ReceiptResource;
 use App\Point;
 use App\Receipt;
@@ -66,11 +67,18 @@ class ReceiptController extends ApiController
                 'content' => $content,
             ]);
 
+            if ($point->type == PointType::DIRECT_TRANSFER) {
+                $pointRate = config('common.point_rate');
+                $amount = $point->point * $pointRate;
+            } else {
+                $amount = $point->payment->amount;
+            }
+
             $data = [
                 'no' => $request->point_id,
                 'name' => $name,
                 'content' => $content,
-                'amount' => $point->payment->amount,
+                'amount' => $amount,
                 'created_at' => $receipt->created_at,
             ];
 

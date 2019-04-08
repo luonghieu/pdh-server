@@ -20,9 +20,9 @@
           <img src="/assets/web/images/common/ic_new_user.png" class="ic-new-user" alt="">
         @endif
         @if ($cast['avatars'] && isset($cast['avatars'][0]) && $cast['avatars'][0]['thumbnail'])
-          <img class="lazy" data-src="{{ $cast['avatars'][0]['thumbnail'] }}" src="{{ $cast['avatars'][0]['thumbnail'] }}">
+          <img src="{{ $cast['avatars'][0]['thumbnail'] }}" onError="this.onerror=null;this.src='/assets/web/images/gm1/ic_default_avatar@3x.png';">
         @else
-          <img class="lazy" data-src="{{ asset('assets/web/images/gm1/ic_default_avatar@3x.png') }}" src="{{ asset('assets/web/images/gm1/ic_default_avatar@3x.png') }}">
+          <img src="{{ asset('assets/web/images/gm1/ic_default_avatar@3x.png') }}">
         @endif
 
         <span class="{{ $class }} text-bold">{{ isset($cast['class']) ? $cast['class'] : $cast['class_name']  }}</span>

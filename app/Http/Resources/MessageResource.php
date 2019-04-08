@@ -29,6 +29,7 @@ class MessageResource extends Resource
             'system_type' => $this->system_type,
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
+            'missing_point' => $this->missing_point,
         ]);
     }
 }

@@ -2,9 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Notifications\OrderDirectTransferChargeFailed;
+use App\Order;
 use App\Services\LogService;
 use Auth;
 use GuzzleHttp\Client;
+use Illuminate\Http\Request;
 use JWTAuth;
 
 class PaymentController extends Controller
@@ -68,5 +71,42 @@ class PaymentController extends Controller
             LogService::writeErrorLog($e);
             abort(500);
         }
+    }
+
+    public function transfer(Request $request)
+    {
+        $user = Auth::user();
+        if (isset($request->order_id)) {
+            $order = $user->orders()->findOrFail($request->order_id);
+            if (!$order->send_warning) {
+                $user->notify(new OrderDirectTransferChargeFailed($order, $request->point));
+                $order->send_warning = true;
+                $order->save();
+            }
+        }
+
+        $client = new Client(['base_uri' => config('common.api_url')]);
+        $user = Auth::user();
+
+        $accessToken = JWTAuth::fromUser($user);
+
+        $option = [
+            'headers' => ['Authorization' => 'Bearer ' . $accessToken],
+            'form_params' => [],
+            'allow_redirects' => false,
+        ];
+
+        try {
+            $paymentInfo = $client->get(route('glossaries'), $option);
+
+        } catch (\Exception $e) {
+            LogService::writeErrorLog($e);
+            abort(500);
+        }
+
+        $paymentInfo = json_decode(($paymentInfo->getBody())->getContents(), JSON_NUMERIC_CHECK);
+        $paymentInfo = $paymentInfo['data']['direct_transfer_bank_info'];
+
+        return view('web.payments.transfer', compact('paymentInfo'));
     }
 }

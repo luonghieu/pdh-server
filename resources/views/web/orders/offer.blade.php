@@ -293,15 +293,40 @@
   </div>
 
   <div class="reservation-item">
+    @if (Auth::check() && Auth::user()->is_guest && Auth::user()->is_multi_payment_method)
     <div class="caption">
-      <h2>クレジットカードの登録</h2>
+      <h2>決済方法選択</h2>
     </div>
-    @if(!Auth::user()->is_card_registered)
-    <a class="link-arrow link-arrow--left tc-verification-link inactive-button-order" href="#" style="color: #222222;">未登録</a>
-    @else
-    <a class="link-arrow link-arrow--left tc-verification-link" href="#" style="color: #222222;">登録済み</a>
+
+    <div class="form-grpup" id="transfer_amount">
+      <input type="hidden" id="current-point" value="">
+        <div class="grade-list transfer_amount-order">
+          <div class="transfer-left">
+            <label>
+              <input type="radio" name="transfer_order_offer" class="grade-radio" value="{{ \App\Enums\OrderPaymentMethod::CREDIT_CARD }}" checked="checked" >
+            </label>
+            <p>クレジットカード</p>
+          </div>
+          <div class="transfer-right">
+            <label>
+              <input type="radio" name="transfer_order_offer" class="grade-radio" value="{{ \App\Enums\OrderPaymentMethod::DIRECT_PAYMENT }}">
+            </label>
+            <p>銀行振込</p>
+          </div>
+        </div>
+    </div>
     @endif
 
+    <div id="card-registered">
+      <div class="caption">
+        <h2>クレジットカードの登録</h2>
+      </div>
+      @if(!Auth::user()->is_card_registered)
+      <a class="link-arrow link-arrow--left tc-verification-link inactive-button-order" href="#" style="color: #222222;">未登録</a>
+      @else
+      <a class="link-arrow link-arrow--left tc-verification-link" href="#" style="color: #222222;">登録済み</a>
+      @endif
+    </div>
     <div id="show-coupon-order-offer">
 
     </div>
@@ -313,7 +338,8 @@
           <div class="details-total__content">
             <div class="details-total__text">合計</div>
             <div class="details-total__marks total-amount">{{ number_format($offer->temp_point) }}P</div>
-             <input type="hidden" value="{{ $offer->temp_point }} " id="temp-point-offer">
+            <input type="hidden" value="{{ $offer->temp_point }} " id="temp-point-offer">
+            <input type="hidden" id="point_used_offer" value="">
             <span class="details-list__button"></span>
            </div>
         </section>

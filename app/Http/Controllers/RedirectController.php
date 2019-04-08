@@ -63,6 +63,8 @@ class RedirectController extends Controller
                 return \Redirect::to(route('guest.orders.offers', ['id' => $request->offer_id]));
             case 'purchase':
                 return \Redirect::to(route('purchase.index'));
+            case 'require_transfer_point':
+                return \Redirect::to(route('guest.transfer', ['point' => $request->point, 'order_id' => $request->order_id]));
             default:
                 return \Redirect::to(route('web.index'));
         }

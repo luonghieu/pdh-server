@@ -8,7 +8,7 @@
           <div class="panel-body">
             @include('admin.partials.notification')
             <div class="info-table">
-              <p>最終更新日：{{\Carbon\Carbon::parse($updateShiftLatest->pivot->updated_at)->format('m月d日')}}</p>
+              <p>最終更新日：{{ $updateShiftLatest ? Carbon\Carbon::parse($updateShiftLatest->pivot->updated_at)->format('m月d日') : '' }}</p>
             </div>
             <div class="info-table col-lg-6">
               <table class="table table-striped table-bordered bootstrap-datatable">

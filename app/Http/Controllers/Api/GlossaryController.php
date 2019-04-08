@@ -71,6 +71,14 @@ class GlossaryController extends ApiController
 
         $data['enable_invite_code_banner'] = true;
 
+        $data['direct_transfer_bank_info'] = [
+            'bank_name' => '東京三協信用金庫',
+            'branch_name' => '新宿支店（012)',
+            'deposit_subject' => '普通',
+            'account_number' => '1023474',
+            'account_holder' => 'リスティル（カ',
+        ];
+
         if ($token = request()->bearerToken()) {
             $user = auth('api')->setToken($token)->user();
 

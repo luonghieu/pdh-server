@@ -132,15 +132,40 @@
               </div>
             </label>
           </div>
+          @if (Auth::check() && Auth::user()->is_guest && Auth::user()->is_multi_payment_method)
           <div class="caption">
-            <h2>クレジットカードの登録</h2>
+            <h2>決済方法選択</h2>
           </div>
-
-          @if(!Auth::user()->is_card_registered)
-          <a class="link-arrow link-arrow--left tc-verification-link inactive-button-order" href="#" style="color: #222222;">未登録</a>
-          @else
-          <a class="link-arrow link-arrow--left tc-verification-link" href="#" style="color: #222222;">登録済み</a>
+          <div class="form-grpup" id="transfer_amount">
+            <input type="hidden" id="current-point" value="">
+              <div class="grade-list transfer_amount-order">
+                <div class="transfer-left">
+                  <label>
+                    <input type="radio" name="transfer_order_nominate" class="grade-radio" value="{{ \App\Enums\OrderPaymentMethod::CREDIT_CARD }}" checked="checked" >
+                  </label>
+                  <p>クレジットカード</p>
+                </div>
+                <div class="transfer-right">
+                  <label>
+                    <input type="radio" name="transfer_order_nominate" class="grade-radio" value="{{ \App\Enums\OrderPaymentMethod::DIRECT_PAYMENT }}">
+                  </label>
+                  <p>銀行振込</p>
+                </div>
+              </div>
+          </div>
           @endif
+          <div id="show-card-registered">
+            <div class="caption">
+              <h2>クレジットカードの登録</h2>
+            </div>
+
+            @if(!Auth::user()->is_card_registered)
+            <a class="link-arrow link-arrow--left tc-verification-link inactive-button-order" href="#" style="color: #222222;">
+            未登録</a>
+            @else
+            <a class="link-arrow link-arrow--left tc-verification-link" href="#" style="color: #222222;">登録済み</a>
+            @endif
+          </div>
         </div>
 
         <!-- coupon -->
@@ -165,6 +190,7 @@
             <div class="reservation-total__sum">合計<span class="total-point">0P~</span></div>
             <p class="reservation-total__text">内訳：{{ number_format($cast['cost']) }}(キャストP/30分)✖0時間</p>
             <input type="hidden" name="current_temp_point" id="current-temp-point">
+            <input type="hidden" id="point_used_nominate" value="">
           </div>
 
         </div>
