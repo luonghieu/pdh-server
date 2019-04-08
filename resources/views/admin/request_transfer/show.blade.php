@@ -87,13 +87,11 @@
                 {{ $cast->cast_transfer_status == App\Enums\CastTransferStatus::DENIED && $cast->gender == App\Enums\UserGender::FEMALE ? 'checked' : '' }}><br>
               <span>見送り(女性)</span>
             </label>
-            @if ($cast->cast_transfer_status != App\Enums\CastTransferStatus::VERIFIED_STEP_ONE)
             <label for="denied-male">
               <input type="radio" name="transfer_request_status" id="denied-male" value="denied-male" 
                 {{ $cast->cast_transfer_status == App\Enums\CastTransferStatus::DENIED && $cast->gender == App\Enums\UserGender::MALE ? 'checked' : '' }} /><br>
               <span>見送り(男性)</span>
             </label>
-            @endif
             <button type="button" id="btn-change-status" class="btn btn-info">更新する</button>
           </div>
         </div>
