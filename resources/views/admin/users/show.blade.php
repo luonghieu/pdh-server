@@ -235,6 +235,10 @@
                 <th>ユーザーID</th>
                 <td>{{ $user->id }}</td>
               </tr>
+              <tr>
+                <th>利用サービス</th>
+                <td>{{ App\Enums\DeviceType::getKey($user->device_type) }}</td>
+              </tr>
               @if ($user->is_cast)
                 <tr>
                   <th>メールアドレス</th>
