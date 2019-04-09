@@ -72,25 +72,29 @@ class OrderController extends Controller
 
         $orders = Order::with('user')->withTrashed();
 
-        if ($request->has('from_date') && !empty($request->from_date)) {
-            $fromDate = Carbon::parse($request->from_date)->startOfDay();
+        $fromDate = $request->from_date ? Carbon::parse($request->from_date)->startOfDay() : null;
+        $toDate = $request->to_date ? Carbon::parse($request->to_date)->endOfDay() : null;
+
+        if ($fromDate) {
             $orders->where(function ($query) use ($fromDate) {
                 $query->whereDate('date', '>=', $fromDate);
             });
         }
 
-        if ($request->has('to_date') && !empty($request->to_date)) {
-            $toDate = Carbon::parse($request->to_date)->endOfDay();
+        if ($toDate) {
             $orders->where(function ($query) use ($toDate) {
                 $query->whereDate('date', '<=', $toDate);
             });
         }
 
-        if ($request->has('search') && $request->search) {
+        if ($keyword) {
             $orders->where('id', $keyword)
                 ->orWhereHas('user', function ($query) use ($keyword) {
                     $query->where('id', "$keyword")
                         ->orWhere('nickname', 'like', "%$keyword%");
+                })
+                ->orWhereHas('casts', function ($query) use ($keyword) {
+                    $query->where('user_id', "$keyword");
                 });
         }
 
@@ -125,7 +129,7 @@ class OrderController extends Controller
             return $this->exportOrders($ordersExport);
         }
 
-        // Export order done
+        // Export order payment finished
         if ('export_real_orders' == $request->submit) {
             $realOrdersExport = $orders->where('payment_status', OrderPaymentStatus::PAYMENT_FINISHED)->get();
 
@@ -141,7 +145,7 @@ class OrderController extends Controller
     {
         $data = collect($ordersExport)->map(function ($item) {
             $status = OrderStatus::getDescription($item->status);
-            
+
             if (OrderStatus::DENIED == $item->status || OrderStatus::CANCELED == $item->status) {
                 if ($item->type == OrderType::NOMINATION && (count($item->nominees) > 0 ? empty
                     ($item->nominees[0]->pivot->accepted_at) : false)) {
@@ -159,7 +163,7 @@ class OrderController extends Controller
             foreach ($item->casts as $cast) {
                 $start = Carbon::parse($cast->pivot->started_at);
                 $stop = Carbon::parse($cast->pivot->stopped_at);
-                
+
                 $totalTime += $stop->diffInMinutes($start);
             }
 
