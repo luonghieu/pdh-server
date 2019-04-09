@@ -64,6 +64,24 @@
                 <th>申請日時</th>
                 <td>{{ Carbon\Carbon::parse($cast->request_transfer_date)->format('Y/m/d H:i') }}</td>
               </tr>
+              <tr>
+                @php 
+                  $gender = '';
+                  if ($cast->cast_transfer_status == App\Enums\CastTransferStatus::DENIED) {
+                      switch ($cast->gender) {
+                          case App\Enums\UserGender::FEMALE:
+                              $gender = '(女性)';
+                              break;
+                          case App\Enums\UserGender::MALE:
+                              $gender = '(男性)';
+                              break;
+                          default:break;
+                      }
+                  }
+                @endphp
+                <th>申請ステータス</th>
+                <td>{{ App\Enums\CastTransferStatus::getDescription($cast->cast_transfer_status) }}{{ $gender }}</td>
+              </tr>
             </table>
           </div>
         </div>
