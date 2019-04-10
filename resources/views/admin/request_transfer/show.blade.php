@@ -66,7 +66,7 @@
                 <td>{{ Carbon\Carbon::parse($cast->request_transfer_date)->format('Y/m/d H:i') }}</td>
               </tr>
               <tr>
-                @php 
+                @php
                   $gender = '';
                   if ($cast->cast_transfer_status == App\Enums\CastTransferStatus::DENIED) {
                       switch ($cast->gender) {
@@ -107,7 +107,7 @@
               <span>見送り(女性)</span>
             </label>
             <label for="denied-male">
-              <input type="radio" name="transfer_request_status" id="denied-male" value="denied-male" 
+              <input type="radio" name="transfer_request_status" id="denied-male" value="denied-male"
                 {{ $cast->cast_transfer_status == App\Enums\CastTransferStatus::DENIED && $cast->gender == App\Enums\UserGender::MALE ? 'checked' : '' }} /><br>
               <span>見送り(男性)</span>
             </label>
@@ -154,7 +154,8 @@
           <div class="modal-dialog" role="document">
             <div class="modal-content">
               <div class="modal-body">
-                <p>このユーザーのキャスト申請を「見送り」で更新しますか？</p>
+                <p>このユーザーのキャスト申請を「見送り(女性)」で更新しますか？</p>
+                <p>"はい"を押すと、ステータスはキャスト(仮)のままになります。</p>
               </div>
               <div class="modal-footer">
                 <form action="{{ route('admin.request_transfer.update', ['cast' => $cast->id]) }}" method="POST">
@@ -172,7 +173,8 @@
           <div class="modal-dialog" role="document">
             <div class="modal-content">
               <div class="modal-body">
-                <p>このユーザーのキャスト申請を「見送り」で更新しますか？</p>
+                <p>このユーザーのキャスト申請を「見送り(男性)」で更新しますか？</p>
+                <p>"はい"を押すと、ステータスはゲストに切り替わります。</p>
               </div>
               <div class="modal-footer">
                 <form action="{{ route('admin.request_transfer.update', ['cast' => $cast->id]) }}" method="POST">
