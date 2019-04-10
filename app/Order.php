@@ -99,6 +99,14 @@ class Order extends Model
             ->withTimestamps();
     }
 
+    public function nomineesWithTrashedRejectCastDenied()
+    {
+        return $this->belongsToMany(Cast::class)
+            ->where('cast_order.type', CastOrderType::NOMINEE)
+            ->where('cast_order.status', '<>', CastOrderStatus::DENIED)
+            ->withTimestamps();
+    }
+
     public function candidates()
     {
         return $this->belongsToMany(Cast::class)
@@ -108,11 +116,26 @@ class Order extends Model
             ->withTimestamps();
     }
 
+    public function candidatesWithTrashedRejectCastDenied()
+    {
+        return $this->belongsToMany(Cast::class)
+            ->where('cast_order.type', CastOrderType::CANDIDATE)
+            ->where('cast_order.status', '<>', CastOrderStatus::DENIED)
+            ->withTimestamps();
+    }
+
     public function castOrder()
     {
         return $this->belongsToMany(Cast::class)
             ->whereNull('cast_order.deleted_at')
             ->withPivot('status', 'type', 'started_at', 'cost', 'temp_point')
+            ->withTimestamps();
+    }
+
+    public function castOrderWithTrashedRejectCastDenied()
+    {
+        return $this->belongsToMany(Cast::class)
+            ->where('cast_order.status', '<>', CastOrderStatus::DENIED)
             ->withTimestamps();
     }
 
