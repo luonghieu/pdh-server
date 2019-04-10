@@ -125,7 +125,6 @@
                     @endphp
                     {{ App\Enums\UserType::getDescription($cast->type) }}{{ $textCastTemp }}
                   </td>
-                  <td>{{ App\Enums\UserType::getDescription($cast->type) }}</td>
                   <td>{{ App\Enums\Status::getDescription($cast->status) }}</td>
                   @if ($cast->is_online == true)
                   <td>オンライン中</td>
