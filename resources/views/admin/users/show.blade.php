@@ -435,7 +435,8 @@
                 <td>
                   {{ App\Enums\UserType::getDescription($user->type) }}
                   {{ $user->cast_transfer_status == App\Enums\CastTransferStatus::VERIFIED_STEP_ONE ||
-                  $user->cast_transfer_status == App\Enums\CastTransferStatus::DENIED ? '(仮)' : '' }}
+                  $user->cast_transfer_status == App\Enums\CastTransferStatus::DENIED ||
+                  $user->cast_transfer_status == App\Enums\CastTransferStatus::PENDING ? '(仮)' : '' }}
                 </td>
               </tr>
               <tr>
