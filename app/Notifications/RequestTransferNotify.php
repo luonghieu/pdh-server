@@ -90,20 +90,20 @@ class RequestTransferNotify extends Notification implements ShouldQueue
 
         $namedUser = 'user_' . $notifiable->id;
         $send_from = UserType::ADMIN;
-
-        if ($notifiable->cast_transfer_status == CastTransferStatus::VERIFIED_STEP_ONE) {
-            if ($notifiable->device_type == DeviceType::ANDROID) {
-                $pushId = 'c_23';
-            } else {
-                $pushId = 'c_24';
-            }
-        } else {
-            if ($notifiable->cast_transfer_status == CastTransferStatus::APPROVED) {
-                $pushId = 'c_17';
-            } else {
-                $pushId = 'c_18';
-            }
-        }
+        $pushId = 'c_24';
+//        if ($notifiable->cast_transfer_status == CastTransferStatus::VERIFIED_STEP_ONE) {
+//            if ($notifiable->device_type == DeviceType::ANDROID) {
+//                $pushId = 'c_23';
+//            } else {
+//                $pushId = 'c_24';
+//            }
+//        } else {
+//            if ($notifiable->cast_transfer_status == CastTransferStatus::APPROVED) {
+//                $pushId = 'c_17';
+//            } else {
+//                $pushId = 'c_18';
+//            }
+//        }
 
         return [
             'audienceOptions' => ['named_user' => $namedUser],
