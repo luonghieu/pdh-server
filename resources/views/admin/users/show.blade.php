@@ -434,7 +434,8 @@
                 <th>会員区分</th>
                 <td>
                   {{ App\Enums\UserType::getDescription($user->type) }}
-                  {{ $user->cast_transfer_status == App\Enums\CastTransferStatus::VERIFIED_STEP_ONE ? '(仮)' : '' }}
+                  {{ $user->cast_transfer_status == App\Enums\CastTransferStatus::VERIFIED_STEP_ONE ||
+                  $user->cast_transfer_status == App\Enums\CastTransferStatus::DENIED ? '(仮)' : '' }}
                 </td>
               </tr>
               <tr>
