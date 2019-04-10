@@ -237,7 +237,7 @@
               </tr>
               <tr>
                 <th>利用サービス</th>
-                <td>{{ App\Enums\DeviceType::getKey($user->device_type) }}</td>
+                <td>{{ App\Enums\DeviceType::getDescription($user->device_type) }}</td>
               </tr>
               @if ($user->is_cast)
                 <tr>
