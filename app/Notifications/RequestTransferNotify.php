@@ -73,7 +73,7 @@ class RequestTransferNotify extends Notification implements ShouldQueue
 
     public function pushData($notifiable)
     {
-        $content = 'キャスト登録の審査の結果がでました。';
+        $content = 'キャスト登録の審査結果がでました。';
 
         $room = $notifiable->rooms()
             ->where('rooms.type', RoomType::SYSTEM)
@@ -132,7 +132,7 @@ class RequestTransferNotify extends Notification implements ShouldQueue
 
     public function lineBotPushData($notifiable)
     {
-        $content = 'キャスト登録の審査の結果がでました。';
+        $content = 'キャスト登録の審査結果がでました。';
 
         $room = $notifiable->rooms()
             ->where('rooms.type', RoomType::SYSTEM)
