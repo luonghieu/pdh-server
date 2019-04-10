@@ -154,12 +154,8 @@
           <div class="modal-dialog" role="document">
             <div class="modal-content">
               <div class="modal-body">
-                @if($cast->cast_transfer_status == App\Enums\CastTransferStatus::VERIFIED_STEP_ONE)
                 <p>このユーザーのキャスト申請を「見送り(女性)」で更新しますか？</p>
                 <p>"はい"を押すと、ステータスはキャスト(仮)のままになります。</p>
-                @else
-                <p>このユーザーのキャスト申請を「見送り」で更新しますか？</p>
-                @endif
               </div>
               <div class="modal-footer">
                 <form action="{{ route('admin.request_transfer.update', ['cast' => $cast->id]) }}" method="POST">
@@ -177,7 +173,8 @@
           <div class="modal-dialog" role="document">
             <div class="modal-content">
               <div class="modal-body">
-                <p>このユーザーのキャスト申請を「見送り」で更新しますか？</p>
+                <p>このユーザーのキャスト申請を「見送り(男性)」で更新しますか？</p>
+                <p>"はい"を押すと、ステータスはゲストに切り替わります。</p>
               </div>
               <div class="modal-footer">
                 <form action="{{ route('admin.request_transfer.update', ['cast' => $cast->id]) }}" method="POST">
