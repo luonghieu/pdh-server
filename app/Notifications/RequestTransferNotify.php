@@ -92,7 +92,11 @@ class RequestTransferNotify extends Notification implements ShouldQueue
         $send_from = UserType::ADMIN;
 
         if ($notifiable->cast_transfer_status == CastTransferStatus::VERIFIED_STEP_ONE) {
-            $pushId = 'c_23';
+            if ($notifiable->device_type == DeviceType::ANDROID) {
+                $pushId = 'c_23';
+            } else {
+                $pushId = 'c_24';
+            }
         } else {
             if ($notifiable->cast_transfer_status == CastTransferStatus::APPROVED) {
                 $pushId = 'c_17';
