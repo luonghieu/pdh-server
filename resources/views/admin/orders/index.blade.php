@@ -148,42 +148,44 @@
                   <td>{{ Carbon\Carbon::parse($order->date)->format('Y/m/d') }} {{ Carbon\Carbon::parse($order->start_time)->format('H:i') }}</td>
                   <td>{{ $order->total_cast }} 名</td>
                   @php
-                      $castIds = $order->casts->pluck('id')->toArray();
+                      $castIds = $order->castOrderWithTrashedRejectCastDenied->pluck('id')->toArray();
                       $countOfCast = count($castIds);
                   @endphp
                   @if (App\Enums\OrderType::CALL == $order->type)
                   <td>-</td>
                   @else
-                    @if ($order->nominees->count() > 1)
+                    @if ($order->nomineesWithTrashedRejectCastDenied->count() > 1)
                       <td>
                       @foreach($castIds as $key => $castId)
                       <a href="{{ route('admin.users.show', $castId) }}">{{ $castId }}</a>{{ $countOfCast == ($key + 1) ? '' : ',' }}
                       @endforeach
                       </td>
                     @else
-                    <td><a href="{{ $order->nominees->first() ? route('admin.users.show', ['user' => $order->nominees->first()->id]) : '#' }}">
-                      @if ($order->nominees->first() && $order->nominees->first()->provider == App\Enums\ProviderType::EMAIL)
+                    <td>
+                      <a href="{{ $order->nomineesWithTrashedRejectCastDenied->first() ? route('admin.users.show', ['user' => $order->nomineesWithTrashedRejectCastDenied->first()->id]) : '#' }}">
+                      @if ($order->nomineesWithTrashedRejectCastDenied->first() && $order->nomineesWithTrashedRejectCastDenied->first()->provider == App\Enums\ProviderType::EMAIL)
                       <span class="color-error">★</span>
                       @endif
-                      {{ $order->nominees->first() ? $order->nominees->first()->id : "" }}
-                    </a></td>
+                      {{ $order->nomineesWithTrashedRejectCastDenied->first() ? $order->nomineesWithTrashedRejectCastDenied->first()->id : "" }}
+                      </a>
+                    </td>
                     @endif
                   @endif
                   @if (App\Enums\OrderType::NOMINATION == $order->type)
                   <td>-</td>
                   @else
-                    @if ($order->candidates->count() > 1)
+                    @if ($order->candidatesWithTrashedRejectCastDenied->count() > 1)
                       <td>
                       @foreach($castIds as $key => $castId)
                       <a href="{{ route('admin.users.show', $castId) }}">{{ $castId }}</a>{{ $countOfCast == ($key + 1) ? '' : ',' }}
                       @endforeach
                       </td>
                     @else
-                    <td><a href="{{ $order->candidates->first() ? route('admin.users.show', ['user' => $order->candidates->first()->id]) : '#' }}">
-                      @if ($order->candidates->first() && $order->candidates->first()->provider == App\Enums\ProviderType::EMAIL)
+                    <td><a href="{{ $order->candidatesWithTrashedRejectCastDenied->first() ? route('admin.users.show', ['user' => $order->candidatesWithTrashedRejectCastDenied->first()->id]) : '#' }}">
+                      @if ($order->candidatesWithTrashedRejectCastDenied->first() && $order->candidatesWithTrashedRejectCastDenied->first()->provider == App\Enums\ProviderType::EMAIL)
                       <span class="color-error">★</span>
                       @endif
-                      {{ $order->candidates->first() ? $order->candidates->first()->id : "" }}</a></td>
+                      {{ $order->candidatesWithTrashedRejectCastDenied->first() ? $order->candidatesWithTrashedRejectCastDenied->first()->id : "" }}</a></td>
                     @endif
                   @endif
                   <td>

@@ -70,7 +70,7 @@ class OrderController extends Controller
         $orderBy = $request->only('user_id', 'id', 'type', 'address',
             'created_at', 'date', 'start_time', 'status');
 
-        $orders = Order::with('user')->withTrashed();
+        $orders = Order::with('user', 'castOrderWithTrashedRejectCastDenied')->withTrashed();
 
         $fromDate = $request->from_date ? Carbon::parse($request->from_date)->startOfDay() : null;
         $toDate = $request->to_date ? Carbon::parse($request->to_date)->endOfDay() : null;
