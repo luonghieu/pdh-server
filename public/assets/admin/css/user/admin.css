@@ -1927,6 +1927,9 @@ select.init-option-search {
   margin-right: 3%;
 }
 
+.btn-qr-code {
+  margin-bottom: 5px;
+}
 @media (max-width: 1280px) {
   select.init-option-search {
     margin-right: 1%;

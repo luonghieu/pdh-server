@@ -18,7 +18,8 @@
                 <img src="{{ @getimagesize($avatar->path) ? $avatar->path :'/assets/web/images/gm1/ic_default_avatar@3x.png' }}" alt="avatar">
               @endforeach
             </div>
-            <button type="button" data-toggle="modal" data-target="#btn-qr-code" class="btn btn-info pull-right">QRコードを表示する</button>
+            <div class="clearfix"></div>
+            <button type="button" data-toggle="modal" data-target="#btn-qr-code" class="btn btn-info pull-right btn-qr-code">QRコードを表示する</button>
           </div>
           <div class="clearfix"></div>
           <div class="info-table col-lg-10">
