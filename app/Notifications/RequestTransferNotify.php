@@ -101,6 +101,21 @@ class RequestTransferNotify extends Notification implements ShouldQueue
             }
         }
 
+        if ($notifiable->gender == null) {
+            $extraData = [
+                'push_id' => $pushId,
+                'send_from' => $send_from,
+                'room_id' => $room->id,
+            ];
+        } else {
+            $extraData = [
+                'push_id' => $pushId,
+                'send_from' => $send_from,
+                'room_id' => $room->id,
+                'gender' => $notifiable->gender,
+            ];
+        }
+
         return [
             'audienceOptions' => ['named_user' => $namedUser],
             'notificationOptions' => [
@@ -110,21 +125,11 @@ class RequestTransferNotify extends Notification implements ShouldQueue
                     'sound' => 'cat.caf',
                     'badge' => '+1',
                     'content-available' => true,
-                    'extra' => [
-                        'push_id' => $pushId,
-                        'send_from' => $send_from,
-                        'room_id' => $room->id,
-                        'gender' => $notifiable->gender,
-                    ],
+                    'extra' => $extraData,
                 ],
                 'android' => [
                     'alert' => $content,
-                    'extra' => [
-                        'push_id' => $pushId,
-                        'send_from' => $send_from,
-                        'room_id' => $room->id,
-                        'gender' => $notifiable->gender,
-                    ],
+                    'extra' => $extraData,
                 ],
             ],
         ];
