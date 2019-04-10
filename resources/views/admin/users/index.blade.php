@@ -96,6 +96,7 @@
                         $textCastTemp = '';
                         if ($user->cast_transfer_status == App\Enums\CastTransferStatus::VERIFIED_STEP_ONE
                             || $user->cast_transfer_status == App\Enums\CastTransferStatus::PENDING
+                            || $user->cast_transfer_status == App\Enums\CastTransferStatus::APPROVED
                             || ($user->cast_transfer_status == App\Enums\CastTransferStatus::DENIED
                                 && $user->gender == App\Enums\UserGender::FEMALE)) {
                             $textCastTemp = '(仮)';
