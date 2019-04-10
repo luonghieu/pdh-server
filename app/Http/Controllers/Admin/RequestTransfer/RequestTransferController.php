@@ -110,9 +110,12 @@ class RequestTransferController extends Controller
                         break;
 
                     case 'denied-female':
+                        $castClass = CastClass::findOrFail(1);
+
                         $cast->cast_transfer_status = CastTransferStatus::DENIED;
                         $cast->gender = UserGender::FEMALE;
                         $cast->type = UserType::CAST;
+                        $cast->class_id = $castClass->id;
                         $cast->save();
                         break;
 
@@ -123,7 +126,7 @@ class RequestTransferController extends Controller
                         $cast->is_guest_active = false;
                         $cast->save();
                         break;
-                    
+
                     default:break;
                 }
 
@@ -136,7 +139,7 @@ class RequestTransferController extends Controller
                     case 'approved':
                         return redirect(route('admin.casts.index'));
                         break;
-                    
+
                     default:break;
                 }
 
