@@ -90,20 +90,31 @@ class RequestTransferNotify extends Notification implements ShouldQueue
 
         $namedUser = 'user_' . $notifiable->id;
         $send_from = UserType::ADMIN;
-        $pushId = 'c_24';
-//        if ($notifiable->cast_transfer_status == CastTransferStatus::VERIFIED_STEP_ONE) {
-//            if ($notifiable->device_type == DeviceType::ANDROID) {
-//                $pushId = 'c_23';
-//            } else {
-//                $pushId = 'c_24';
-//            }
-//        } else {
-//            if ($notifiable->cast_transfer_status == CastTransferStatus::APPROVED) {
-//                $pushId = 'c_17';
-//            } else {
-//                $pushId = 'c_18';
-//            }
-//        }
+
+        if ($notifiable->cast_transfer_status == CastTransferStatus::VERIFIED_STEP_ONE) {
+            $pushId = 'c_23';
+        } else {
+            if ($notifiable->cast_transfer_status == CastTransferStatus::APPROVED) {
+                $pushId = 'c_17';
+            } else {
+                $pushId = 'c_18';
+            }
+        }
+
+        if ($notifiable->gender == null) {
+            $extraData = [
+                'push_id' => $pushId,
+                'send_from' => $send_from,
+                'room_id' => $room->id,
+            ];
+        } else {
+            $extraData = [
+                'push_id' => $pushId,
+                'send_from' => $send_from,
+                'room_id' => $room->id,
+                'gender' => $notifiable->gender,
+            ];
+        }
 
         return [
             'audienceOptions' => ['named_user' => $namedUser],
@@ -114,21 +125,11 @@ class RequestTransferNotify extends Notification implements ShouldQueue
                     'sound' => 'cat.caf',
                     'badge' => '+1',
                     'content-available' => true,
-                    'extra' => [
-                        'push_id' => $pushId,
-                        'send_from' => $send_from,
-                        'room_id' => $room->id,
-                        'gender' => $notifiable->gender,
-                    ],
+                    'extra' => $extraData,
                 ],
                 'android' => [
                     'alert' => $content,
-                    'extra' => [
-                        'push_id' => $pushId,
-                        'send_from' => $send_from,
-                        'room_id' => $room->id,
-                        'gender' => $notifiable->gender,
-                    ],
+                    'extra' => $extraData,
                 ],
             ],
         ];
