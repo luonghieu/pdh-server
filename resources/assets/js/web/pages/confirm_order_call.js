@@ -89,143 +89,146 @@ function showCoupons(coupon, params)
 function createOrderCall(orderCall, data = [], currentTime)
 {
   $('.modal-confirm').css('display', 'none');
-    $('#btn-confirm-orders').prop('disabled', true);
+  $('#btn-confirm-orders').prop('disabled', true);
 
-    document.getElementById('confirm-order-submit').click();
+  document.getElementById('confirm-order-submit').click();
 
-    if(orderCall.tags) {
-      tags = orderCall.tags.toString();
-    } else {
-      tags = '';
+  if(orderCall.tags) {
+    tags = orderCall.tags.toString();
+  } else {
+    tags = '';
+  }
+
+  if('other_time' != currentTime) {
+    var now = new Date();
+
+    var utc = now.getTime() + (now.getTimezoneOffset() * 60000);
+    var nd = new Date(utc + (3600000*9));
+    var day = helper.add_minutes(nd, currentTime);
+
+    var year = day.getFullYear();
+
+    var date = day.getDate();
+    if(date<10) {
+      date = '0'+date;
     }
 
-    if('other_time' != currentTime) {
-      var now = new Date();
-
-      var utc = now.getTime() + (now.getTimezoneOffset() * 60000);
-      var nd = new Date(utc + (3600000*9));
-      var day = helper.add_minutes(nd, currentTime);
-
-      var year = day.getFullYear();
-
-      var date = day.getDate();
-      if(date<10) {
-        date = '0'+date;
-      }
-
-      var month = day.getMonth() +1;
-      if(month<10) {
-        month = '0'+month;
-      }
-
-      var hour = day.getHours();
-        if(hour<10) {
-        hour = '0' +hour;
-      }
-
-      var minute = day.getMinutes();
-      if(minute<10) {
-        minute = '0' +minute;
-      }
-
-      currentDate = year + '-' + month + '-' + date;
-      time = hour + ':' + minute;
+    var month = day.getMonth() +1;
+    if(month<10) {
+      month = '0'+month;
     }
 
-
-    var params = {
-      prefecture_id : orderCall.prefecture_id,
-      address : data['area'],
-      class_id : orderCall.cast_class ,
-      duration : data['duration'],
-      nominee_ids : data['castIds'],
-      date : data['currentDate'],
-      start_time : data['time'],
-      type :data['type'],
-      total_cast :orderCall.countIds,
-      tags : tags,
-      temp_point : $('#temp_point_order_call').val(),
-    };
-
-    if(data['transfer']) {
-      params.payment_method = data['transfer'];
+    var hour = day.getHours();
+      if(hour<10) {
+      hour = '0' +hour;
     }
 
-    if(orderCall.coupon) {
-      var coupon = orderCall.coupon;            
-      params.coupon_id = coupon.id;
-      params.coupon_name = coupon.name;
-      params.coupon_type = coupon.type;
-      
-      if(coupon.max_point) {
-        params.coupon_max_point = coupon.max_point;
-      } else {
-        params.coupon_max_point = null;
-      }
-
-      switch(coupon.type) {
-        case couponType.POINT:
-          params.coupon_value = coupon.point;
-          break;
-
-        case couponType.DURATION:
-          params.coupon_value = coupon.time;
-          break;
-
-        case couponType.PERCENT:
-          params.coupon_value = coupon.percent;
-          break;
-
-        default:
-          window.location.href = '/mypage';
-      }
+    var minute = day.getMinutes();
+    if(minute<10) {
+      minute = '0' +minute;
     }
+
+    currentDate = year + '-' + month + '-' + date;
+    time = hour + ':' + minute;
+
+    data['currentDate'] = currentDate;
+    data['time'] = time;
+  }
+
+
+  var params = {
+    prefecture_id : orderCall.prefecture_id,
+    address : data['area'],
+    class_id : orderCall.cast_class ,
+    duration : data['duration'],
+    nominee_ids : data['castIds'],
+    date : data['currentDate'],
+    start_time : data['time'],
+    type :data['type'],
+    total_cast :orderCall.countIds,
+    tags : tags,
+    temp_point : $('#temp_point_order_call').val(),
+  };
+
+  if(data['transfer']) {
+    params.payment_method = data['transfer'];
+  }
+
+  if(orderCall.coupon) {
+    var coupon = orderCall.coupon;            
+    params.coupon_id = coupon.id;
+    params.coupon_name = coupon.name;
+    params.coupon_type = coupon.type;
     
-    window.axios.post('/api/v1/orders', params)
-    .then(function(response) {
-      $('#orders').prop('checked',false);
-      $('#order-done').prop('checked',true);
-    })
-    .catch(function(error) {
-      $('.modal-confirm').css('display', 'inline-block');
-      $('#btn-confirm-orders').prop('disabled', false);
-      $('#order-call-popup').prop('checked',false);
-        if (error.response.status == 401) {
-          window.location = '/login';
+    if(coupon.max_point) {
+      params.coupon_max_point = coupon.max_point;
+    } else {
+      params.coupon_max_point = null;
+    }
+
+    switch(coupon.type) {
+      case couponType.POINT:
+        params.coupon_value = coupon.point;
+        break;
+
+      case couponType.DURATION:
+        params.coupon_value = coupon.time;
+        break;
+
+      case couponType.PERCENT:
+        params.coupon_value = coupon.percent;
+        break;
+
+      default:
+        window.location.href = '/mypage';
+    }
+  }
+
+  window.axios.post('/api/v1/orders', params)
+  .then(function(response) {
+    $('#orders').prop('checked',false);
+    $('#order-done').prop('checked',true);
+  })
+  .catch(function(error) {
+    $('.modal-confirm').css('display', 'inline-block');
+    $('#btn-confirm-orders').prop('disabled', false);
+    $('#order-call-popup').prop('checked',false);
+      if (error.response.status == 401) {
+        window.location = '/login';
+      } else {
+        if(error.response.status == 404) {
+          $('#md-require-card').prop('checked',true);
         } else {
-          if(error.response.status == 404) {
+          if(error.response.status == 406) {
+            $('.card-expired h2').text('');
+            var content = '予約日までにクレジットカードの <br> 1有効期限が切れます  <br> <br> 予約を完了するには  <br> カード情報を更新してください';
+            $('.card-expired p').html(content);
+            $('.lable-register-card').text('クレジットカード情報を更新する');
             $('#md-require-card').prop('checked',true);
           } else {
-            if(error.response.status == 406) {
-              $('.card-expired h2').text('');
-              var content = '予約日までにクレジットカードの <br> 1有効期限が切れます  <br> <br> 予約を完了するには  <br> カード情報を更新してください';
-              $('.card-expired p').html(content);
-              $('.lable-register-card').text('クレジットカード情報を更新する');
-              $('#md-require-card').prop('checked',true);
-            } else {
-              if (error.response.status == 400) {
-                var title = '開始時間は現在時刻から30分以降の時間を選択してください';
-              }
-
-              if(error.response.status == 422) {
-                var title = 'この操作は実行できません';
-              }
-
-              if(error.response.status == 500) {
-                var title = 'サーバーエラーが発生しました';
-              }
-
-              if(error.response.status == 409) {
-                var title = 'クーポンが無効です';
-              }
-
-              $('.show-message-order-call h2').html(title);
-
-              $('#order-call-popup').prop('checked',true);
+            if (error.response.status == 400) {
+              var title = '開始時間は現在時刻から30分以降の時間を選択してください';
             }
+
+            if(error.response.status == 422) {
+              var title = 'この操作は実行できません';
+            }
+
+            if(error.response.status == 500) {
+              var title = 'サーバーエラーが発生しました';
+            }
+
+            if(error.response.status == 409) {
+              var title = 'クーポンが無効です';
+            }
+
+            $('.show-message-order-call h2').html(title);
+
+            $('#order-call-popup').prop('checked',true);
           }
         }
-    })
+      }
+  })
 }
 
 $(document).ready(function(){
