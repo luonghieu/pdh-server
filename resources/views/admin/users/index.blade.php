@@ -82,7 +82,7 @@
               @else
                 @foreach ($users as $key => $user)
                 <tr>
-                  <td>{{ $users->firstItem() +$key }}</td>
+                  <td>{{ $users->firstItem() + $key }}</td>
                   <td>{{ $user->id }}</td>
                   <td>
                     @if ($user->provider == App\Enums\ProviderType::EMAIL)
@@ -92,8 +92,15 @@
                   </td>
                   <td>{{ $user->age }}</td>
                   <td>
-                    {{ App\Enums\UserType::getDescription($user->type) }}
-                    {{ $user->cast_transfer_status == App\Enums\CastTransferStatus::VERIFIED_STEP_ONE ? '(仮)' : '' }}
+                    @php
+                        $textCastTemp = '';
+                        if ($user->cast_transfer_status == App\Enums\CastTransferStatus::VERIFIED_STEP_ONE
+                          || ($user->cast_transfer_status == App\Enums\CastTransferStatus::DENIED
+                              && $user->gender == App\Enums\UserGender::FEMALE)) {
+                          $textCastTemp = '(仮)';
+                        }
+                    @endphp
+                    {{ App\Enums\UserType::getDescription($user->type) }}{{ $textCastTemp }}
                   </td>
                   <td>{{ App\Enums\Status::getDescription($user->status) }}</td>
                   @if ($user->is_online == true)
