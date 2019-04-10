@@ -237,7 +237,7 @@
               </tr>
               <tr>
                 <th>利用サービス</th>
-                <td>{{ App\Enums\DeviceType::getKey($user->device_type) }}</td>
+                <td>{{ App\Enums\DeviceType::getDescription($user->device_type) }}</td>
               </tr>
               @if ($user->is_cast)
                 <tr>
@@ -433,10 +433,17 @@
               <tr>
                 <th>会員区分</th>
                 <td>
-                  {{ App\Enums\UserType::getDescription($user->type) }}
-                  {{ $user->cast_transfer_status == App\Enums\CastTransferStatus::VERIFIED_STEP_ONE ||
-                  $user->cast_transfer_status == App\Enums\CastTransferStatus::DENIED ||
-                  $user->cast_transfer_status == App\Enums\CastTransferStatus::PENDING ? '(仮)' : '' }}
+                  @php
+                      $textCastTemp = '';
+                      if ($user->cast_transfer_status == App\Enums\CastTransferStatus::VERIFIED_STEP_ONE
+                          || $user->cast_transfer_status == App\Enums\CastTransferStatus::PENDING
+                          || $user->cast_transfer_status == App\Enums\CastTransferStatus::APPROVED
+                          || ($user->cast_transfer_status == App\Enums\CastTransferStatus::DENIED
+                              && $user->gender == App\Enums\UserGender::FEMALE)) {
+                          $textCastTemp = '(仮)';
+                      }
+                  @endphp
+                  {{ App\Enums\UserType::getDescription($user->type) }}{{ $textCastTemp }}
                 </td>
               </tr>
               <tr>

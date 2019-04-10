@@ -111,7 +111,20 @@
                   </td>
                   <td>{{ $cast->age }}</td>
                   <td>{{ App\Enums\UserRank::getKey($cast->rank) }}</td>
-                  <td>{{ $cast->castClass->name }}</td>
+                  <td>{{ $cast->class_name }}</td>
+                  <td>
+                    @php
+                        $textCastTemp = '';
+                        if ($cast->cast_transfer_status == App\Enums\CastTransferStatus::VERIFIED_STEP_ONE
+                            || $cast->cast_transfer_status == App\Enums\CastTransferStatus::PENDING
+                            || $cast->cast_transfer_status == App\Enums\CastTransferStatus::APPROVED
+                            || ($cast->cast_transfer_status == App\Enums\CastTransferStatus::DENIED
+                                && $cast->gender == App\Enums\UserGender::FEMALE)) {
+                            $textCastTemp = '(仮)';
+                        }
+                    @endphp
+                    {{ App\Enums\UserType::getDescription($cast->type) }}{{ $textCastTemp }}
+                  </td>
                   <td>{{ App\Enums\UserType::getDescription($cast->type) }}</td>
                   <td>{{ App\Enums\Status::getDescription($cast->status) }}</td>
                   @if ($cast->is_online == true)
