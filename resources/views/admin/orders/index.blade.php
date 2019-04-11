@@ -88,7 +88,7 @@
                     ) }}">予約区分
                    </a>
                 </th>
-                <th class="sorting{{ (request()->address) ? '_' . request()->address: '' }}">
+                <th class="sorting{{ (request()->address) ? '_' . request()->address: '' }} init-w-12">
                   <a href="{{ route('admin.orders.index',
                     array_merge($request, ['address' => (request()->address == 'asc') ? 'desc' : 'asc',])
                     ) }}">希望エリア
@@ -128,7 +128,7 @@
             <tbody>
               @if (empty($orders->count()))
                 <tr>
-                  <td colspan="14">{{ trans('messages.results_not_found') }}</td>
+                  <td colspan="15">{{ trans('messages.results_not_found') }}</td>
                 </tr>
               @else
                 @foreach ($orders as $key => $order)

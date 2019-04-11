@@ -1826,7 +1826,7 @@ tbody td {
 }
 
 .h-5 {
-  min-height: 5rem; 
+  min-height: 5rem;
 }
 
 .edit-order .panel-body {
@@ -1930,6 +1930,7 @@ select.init-option-search {
 .btn-qr-code {
   margin-bottom: 5px;
 }
+
 @media (max-width: 1280px) {
   select.init-option-search {
     margin-right: 1%;
@@ -1939,4 +1940,8 @@ select.init-option-search {
   .init-input-search {
     margin-right: 1%;
   }
+}
+
+.init-w-12 {
+  width: 12%;
 }
