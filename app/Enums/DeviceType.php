@@ -20,7 +20,7 @@ final class DeviceType extends Enum
     public static function getDescription($value): string
     {
         if (self::IOS === $value) {
-            return 'Ios';
+            return 'iOS';
         } elseif (self::ANDROID === $value) {
             return 'Android';
         } elseif (self::WEB == $value) {
