@@ -72,6 +72,20 @@ class OrderController extends Controller
 
         $orders = Order::with('user', 'castOrderWithTrashedRejectCastDenied')->withTrashed();
 
+        if ($keyword) {
+            $orders->where('id', $keyword)
+                ->orWhere(function($query) use ($keyword) {
+                    $query->whereHas('user', function($subQuery) use ($keyword) {
+                        $subQuery->where('id', "$keyword")
+                            ->orWhere('nickname', 'like', "%$keyword%");
+                    });
+
+                    $query->orWhereHas('castOrderWithTrashedRejectCastDenied', function ($subQuery) use ($keyword) {
+                        $subQuery->where('cast_order.user_id', "$keyword");
+                    });
+                });
+        }
+
         $fromDate = $request->from_date ? Carbon::parse($request->from_date)->startOfDay() : null;
         $toDate = $request->to_date ? Carbon::parse($request->to_date)->endOfDay() : null;
 
@@ -85,17 +99,6 @@ class OrderController extends Controller
             $orders->where(function ($query) use ($toDate) {
                 $query->whereDate('date', '<=', $toDate);
             });
-        }
-
-        if ($keyword) {
-            $orders->where('id', $keyword)
-                ->orWhereHas('user', function ($query) use ($keyword) {
-                    $query->where('id', "$keyword")
-                        ->orWhere('nickname', 'like', "%$keyword%");
-                })
-                ->orWhereHas('casts', function ($query) use ($keyword) {
-                    $query->where('user_id', "$keyword");
-                });
         }
 
         if (!$request->alert && empty($orderBy)) {
