@@ -37,10 +37,14 @@ class OrderController extends ApiController
                 OrderStatus::CANCELED
             ];
         }
-
+        $now = now();
         $user = $this->guard()->user();
         $orders = Order::whereIn('status', $listStatuses)
             ->where('user_id', $user->id)
+            ->where(function($query) use ($now) {
+                $query->whereNull('canceled_at')
+                    ->orWhere('canceled_at', '>', $now->subDays(1));
+            })
             ->with(['user', 'casts', 'nominees', 'tags'])
             ->latest()
             ->paginate($request->per_page);
