@@ -14,6 +14,7 @@ use App\Enums\PaymentRequestStatus;
 use App\Enums\PointType;
 use App\Enums\RoomType;
 use App\Enums\SystemMessageType;
+use App\Guest;
 use App\Http\Controllers\Controller;
 use App\Jobs\PointSettlement;
 use App\Notification;
@@ -73,9 +74,9 @@ class OrderController extends Controller
         $orders = Order::with('user', 'castOrderWithTrashedRejectCastDenied')->withTrashed();
 
         if ($keyword) {
-            $orders->where(function($query) use ($keyword) {
+            $orders->where(function ($query) use ($keyword) {
                 $query->where('id', "$keyword")
-                    ->orWhereHas('user', function($subQuery) use ($keyword) {
+                    ->orWhereHas('user', function ($subQuery) use ($keyword) {
                         $subQuery->where('id', "$keyword")
                             ->orWhere('nickname', 'like', "%$keyword%");
                     })
@@ -149,11 +150,11 @@ class OrderController extends Controller
             $status = OrderStatus::getDescription($item->status);
 
             if (OrderStatus::DENIED == $item->status || OrderStatus::CANCELED == $item->status) {
-                if ($item->type == OrderType::NOMINATION && (count($item->nominees) > 0 ? empty
+                if (OrderType::NOMINATION == $item->type && (count($item->nominees) > 0 ? empty
                     ($item->nominees[0]->pivot->accepted_at) : false)) {
                     $status = '提案キャンセル';
                 } else {
-                    if ($item->cancel_fee_percent == 0) {
+                    if (0 == $item->cancel_fee_percent) {
                         $status = '確定後キャンセル (キャンセル料なし)';
                     } else {
                         $status = '確定後キャンセル (キャンセル料あり)';
@@ -178,8 +179,7 @@ class OrderController extends Controller
                 $item->address,
                 Carbon::parse($item->created_at)->format('Y年m月d日 H:i'),
                 Carbon::parse($item->date)->format('Y年m月d日') . Carbon::parse($item->start_time)->format('H:i'),
-                $item->total_cast . '名',
-                $item->type == OrderType::CALL ? $item->castClass->name : '',
+                $item->total_cast . '名', OrderType::CALL == $item->type ? $item->castClass->name : '',
                 $item->duration,
                 $item->temp_point,
                 ($item->total_cast > 1) ? round(($totalTime / 60) / $item->total_cast, 2) : round($totalTime / 60, 2),
@@ -435,7 +435,7 @@ class OrderController extends Controller
             // Update temp point for previous casts matched
             $matchedCasts = $order->casts()->get();
             foreach ($matchedCasts as $cast) {
-                if ($cast->pivot->type == CastOrderType::NOMINEE) {
+                if (CastOrderType::NOMINEE == $cast->pivot->type) {
                     $orderFee = $order->orderFee($cast, $orderStartTime, $orderEndTime);
                     $orderPoint = $order->orderPoint($cast);
                     $order->castOrder()->updateExistingPivot(
@@ -476,10 +476,10 @@ class OrderController extends Controller
             // Add/Remove casts in room
             $room = $order->room;
             if ($room) {
-                if ($order->total_cast == 1) {
+                if (1 == $order->total_cast) {
                     $cast = $order->casts()->first();
                     if ($cast) {
-                        if ($room->type == RoomType::GROUP) {
+                        if (RoomType::GROUP == $room->type) {
                             $users = $order->casts()->get()->pluck('id')->toArray();
                             $users[] = $order->user_id;
                             $room->users()->sync($users);
@@ -495,7 +495,7 @@ class OrderController extends Controller
                 }
 
                 if ($order->total_cast > 1) {
-                    if ($room->type == RoomType::GROUP) {
+                    if (RoomType::GROUP == $room->type) {
                         $users = $order->casts()->get()->pluck('id')->toArray();
                         $users[] = $order->user_id;
                         $room->users()->sync($users);
@@ -526,7 +526,7 @@ class OrderController extends Controller
                         $room->users()->attach($users);
                     }
 
-                    if ($order->total_cast == 1) {
+                    if (1 == $order->total_cast) {
                         $cast = $order->casts()->first();
                         $ownerId = $order->user_id;
                         $room = $this->createDirectRoom($ownerId, $cast->id);
@@ -541,7 +541,7 @@ class OrderController extends Controller
             $currentCasts = $order->casts()->get();
             $isDone = true;
             $allRequestPayment = true;
-            foreach ($currentCasts as  $cast) {
+            foreach ($currentCasts as $cast) {
                 if (!$cast->pivot->stopped_at) {
                     $isDone = false;
                 }
@@ -586,7 +586,7 @@ class OrderController extends Controller
                 }
             }
 
-            if ($request->old_status != $order->status && $order->status == OrderStatus::ACTIVE ) {
+            if ($request->old_status != $order->status && OrderStatus::ACTIVE == $order->status) {
                 $casts = $order->casts()->get();
                 $involvedUsers = [$order->user];
                 foreach ($casts as $cast) {
@@ -596,8 +596,8 @@ class OrderController extends Controller
 
                 $this->sendMessageToMatchingOrder($order, $involvedUsers);
                 \Notification::send($involvedUsers, new CastAcceptNominationOrders($order));
-            } else if ($request->old_status == $order->status && $order->status == OrderStatus::ACTIVE) {
-                if ($oldTotalCast == $order->total_cast && $order->total_cast == 1) {
+            } else if ($request->old_status == $order->status && OrderStatus::ACTIVE == $order->status) {
+                if ($oldTotalCast == $order->total_cast && 1 == $order->total_cast) {
                     $currentCast = $order->casts()->first();
                     if ($oldCast->id != $currentCast->id) {
                         $involvedUsers = [$order->user];
@@ -968,9 +968,9 @@ class OrderController extends Controller
 
         $startTime = Carbon::parse($order->date . ' ' . $order->start_time);
         $message = '\\\\ マッチングが確定しました♪ //'
-            . PHP_EOL . PHP_EOL . '- ご予約内容 - '
-            . PHP_EOL . '場所：' . $order->address
-            . PHP_EOL . '合流予定時間：' . $startTime->format('H:i') . '～'
+        . PHP_EOL . PHP_EOL . '- ご予約内容 - '
+        . PHP_EOL . '場所：' . $order->address
+        . PHP_EOL . '合流予定時間：' . $startTime->format('H:i') . '～'
             . PHP_EOL . PHP_EOL . 'ゲストの方はキャストに来て欲しい場所の詳細をお伝えください。'
             . PHP_EOL . '尚、ご不明点がある場合は「Cheers運営者」チャットまでお問い合わせください。'
             . PHP_EOL . PHP_EOL . 'それでは素敵な時間をお楽しみください♪';
@@ -988,5 +988,27 @@ class OrderController extends Controller
         }
 
         $roomMessage->recipients()->attach($userIds, ['room_id' => $room->id]);
+    }
+
+    public function getListGuests(Request $request)
+    {
+        $search = $request->search;
+        $deviceType = $request->device_type;
+
+        $guests = Guest::where('device_type', $deviceType);
+
+        if ($search) {
+            $guests->where(function ($query) use ($search) {
+                $query->where('nickname', 'like', "%$search%")
+                    ->orWhere('id', $search);
+            });
+        }
+
+        $guests = $guests->get();
+
+        return response()->json([
+            'view' => view('admin.orders.list_guests_by_device_type', compact('guests'))->render(),
+            'guests' => $guests,
+        ]);
     }
 }

@@ -377,6 +377,10 @@ class OfferController extends Controller
             $offer->status = OfferStatus::ACTIVE;
         }
 
+        if ($request->choose_guest) {
+            $offer->guest_ids = explode(",", trim($request->choose_guest, ","));
+        }
+
         $offer->save();
 
         if (isset($request->line_offer)) {
