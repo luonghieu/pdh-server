@@ -302,7 +302,13 @@ $(document).ready(function() {
         }
       })
       .then(function (response) {
-        $('#message-box').prepend(response.data);
+          const firstElement = $('.messages').eq(0);
+          $('#message-box').prepend(response.data);
+          let prevEle = $('#message-' + firstElement.attr('data-message-id')).prev();
+          while(!prevEle.attr('id')) {
+              prevEle = prevEle.prev();
+          }
+          window.location.hash = '#message-' + prevEle.attr('data-message-id');
       })
       .catch(function (error) {
         console.log(error);

@@ -38,7 +38,7 @@
             <h3><span>{{ Carbon\Carbon::parse($element['created_at'])->format('H:i') }}</span><br>{{ $element['message'] }}</h3>
           </div>
         @else
-        <div class="{{ $className }} msg-wrap" id="msg-left">
+        <div class="messages {{ $className }} msg-wrap" id="message-{{ $element['id'] }}" data-message-id="{{ $element['id'] }}">
           <figure>
             @if ($element['user']['type'] == App\Enums\UserType::CAST)
             <a href="{{ route('cast.show', $element['user_id']) }}"><img src="{{ ($element['user']['avatars'] && isset($element['user']['avatars'][0]) && $element['user']['avatars'][0]['thumbnail']) ? $element['user']['avatars'][0]['thumbnail'] :'/assets/web/images/gm1/ic_default_avatar@3x.png' }}"  alt="" title="" class="alignnone size-full wp-image-515" /></a>
