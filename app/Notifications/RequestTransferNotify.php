@@ -73,7 +73,7 @@ class RequestTransferNotify extends Notification implements ShouldQueue
 
     public function pushData($notifiable)
     {
-        $content = 'キャスト登録の審査の結果がでました。';
+        $content = 'キャスト登録の審査結果がでました。';
 
         $room = $notifiable->rooms()
             ->where('rooms.type', RoomType::SYSTEM)
@@ -90,10 +90,30 @@ class RequestTransferNotify extends Notification implements ShouldQueue
 
         $namedUser = 'user_' . $notifiable->id;
         $send_from = UserType::ADMIN;
-        if ($notifiable->cast_transfer_status == CastTransferStatus::APPROVED) {
-            $pushId = 'c_17';
+
+        if ($notifiable->cast_transfer_status == CastTransferStatus::VERIFIED_STEP_ONE) {
+            $pushId = 'c_23';
         } else {
-            $pushId = 'c_18';
+            if ($notifiable->cast_transfer_status == CastTransferStatus::APPROVED) {
+                $pushId = 'c_17';
+            } else {
+                $pushId = 'c_18';
+            }
+        }
+
+        if ($notifiable->gender == null) {
+            $extraData = [
+                'push_id' => $pushId,
+                'send_from' => $send_from,
+                'room_id' => $room->id,
+            ];
+        } else {
+            $extraData = [
+                'push_id' => $pushId,
+                'send_from' => $send_from,
+                'room_id' => $room->id,
+                'gender' => $notifiable->gender,
+            ];
         }
 
         return [
@@ -105,21 +125,11 @@ class RequestTransferNotify extends Notification implements ShouldQueue
                     'sound' => 'cat.caf',
                     'badge' => '+1',
                     'content-available' => true,
-                    'extra' => [
-                        'push_id' => $pushId,
-                        'send_from' => $send_from,
-                        'room_id' => $room->id,
-                        'gender' => $notifiable->gender,
-                    ],
+                    'extra' => $extraData,
                 ],
                 'android' => [
                     'alert' => $content,
-                    'extra' => [
-                        'push_id' => $pushId,
-                        'send_from' => $send_from,
-                        'room_id' => $room->id,
-                        'gender' => $notifiable->gender,
-                    ],
+                    'extra' => $extraData,
                 ],
             ],
         ];
@@ -127,7 +137,7 @@ class RequestTransferNotify extends Notification implements ShouldQueue
 
     public function lineBotPushData($notifiable)
     {
-        $content = 'キャスト登録の審査の結果がでました。';
+        $content = 'キャスト登録の審査結果がでました。';
 
         $room = $notifiable->rooms()
             ->where('rooms.type', RoomType::SYSTEM)

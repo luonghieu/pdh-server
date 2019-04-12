@@ -90,7 +90,11 @@ class OrderController extends ApiController
                 ->latest();
         }
 
-        $orders = $orders->paginate($request->per_page)->appends($request->query());
+        $now = now();
+        $orders = $orders->where(function($query) use ($now) {
+            $query->whereNull('canceled_at')
+                ->orWhere('canceled_at', '>', $now->subDays(1));
+        })->paginate($request->per_page)->appends($request->query());
 
         return $this->respondWithData(OrderResource::collection($orders));
     }

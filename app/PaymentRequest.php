@@ -8,7 +8,7 @@ class PaymentRequest extends Model
 {
     public function cast()
     {
-        return $this->belongsTo(Cast::class);
+        return $this->belongsTo(Cast::class)->withTrashed();
     }
 
     public function guest()
