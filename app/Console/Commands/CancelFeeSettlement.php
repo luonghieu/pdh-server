@@ -197,7 +197,7 @@ class CancelFeeSettlement extends Command
 
     public function createPoint($receive, $id, $order)
     {
-        $user = User::find($id);
+        $user = User::withTrashed()->find($id);
 
         $point = new Point;
         $point->point = $receive;
