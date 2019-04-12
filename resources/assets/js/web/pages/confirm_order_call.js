@@ -1,4 +1,5 @@
 let coupons = [];
+const helper = require('./helper');
 const couponType = {
   'POINT': 1,
   'DURATION': 2,
@@ -84,8 +85,153 @@ function showCoupons(coupon, params)
     });
 }
 
+
+function createOrderCall(orderCall, data = [], currentTime)
+{
+  $('.modal-confirm').css('display', 'none');
+  $('#btn-confirm-orders').prop('disabled', true);
+
+  document.getElementById('confirm-order-submit').click();
+
+  if(orderCall.tags) {
+    tags = orderCall.tags.toString();
+  } else {
+    tags = '';
+  }
+
+  if('other_time' != currentTime) {
+    var now = new Date();
+
+    var utc = now.getTime() + (now.getTimezoneOffset() * 60000);
+    var nd = new Date(utc + (3600000*9));
+    var day = helper.add_minutes(nd, currentTime);
+
+    var year = day.getFullYear();
+
+    var date = day.getDate();
+    if(date<10) {
+      date = '0'+date;
+    }
+
+    var month = day.getMonth() +1;
+    if(month<10) {
+      month = '0'+month;
+    }
+
+    var hour = day.getHours();
+      if(hour<10) {
+      hour = '0' +hour;
+    }
+
+    var minute = day.getMinutes();
+    if(minute<10) {
+      minute = '0' +minute;
+    }
+
+    currentDate = year + '-' + month + '-' + date;
+    time = hour + ':' + minute;
+
+    data['currentDate'] = currentDate;
+    data['time'] = time;
+  }
+
+
+  var params = {
+    prefecture_id : orderCall.prefecture_id,
+    address : data['area'],
+    class_id : orderCall.cast_class ,
+    duration : data['duration'],
+    nominee_ids : data['castIds'],
+    date : data['currentDate'],
+    start_time : data['time'],
+    type :data['type'],
+    total_cast :orderCall.countIds,
+    tags : tags,
+    temp_point : $('#temp_point_order_call').val(),
+  };
+
+  if(data['transfer']) {
+    params.payment_method = data['transfer'];
+  }
+
+  if(orderCall.coupon) {
+    var coupon = orderCall.coupon;            
+    params.coupon_id = coupon.id;
+    params.coupon_name = coupon.name;
+    params.coupon_type = coupon.type;
+    
+    if(coupon.max_point) {
+      params.coupon_max_point = coupon.max_point;
+    } else {
+      params.coupon_max_point = null;
+    }
+
+    switch(coupon.type) {
+      case couponType.POINT:
+        params.coupon_value = coupon.point;
+        break;
+
+      case couponType.DURATION:
+        params.coupon_value = coupon.time;
+        break;
+
+      case couponType.PERCENT:
+        params.coupon_value = coupon.percent;
+        break;
+
+      default:
+        window.location.href = '/mypage';
+    }
+  }
+
+  window.axios.post('/api/v1/orders', params)
+  .then(function(response) {
+    $('#orders').prop('checked',false);
+    $('#order-done').prop('checked',true);
+  })
+  .catch(function(error) {
+    $('.modal-confirm').css('display', 'inline-block');
+    $('#btn-confirm-orders').prop('disabled', false);
+    $('#order-call-popup').prop('checked',false);
+      if (error.response.status == 401) {
+        window.location = '/login';
+      } else {
+        if(error.response.status == 404) {
+          $('#md-require-card').prop('checked',true);
+        } else {
+          if(error.response.status == 406) {
+            $('.card-expired h2').text('');
+            var content = '予約日までにクレジットカードの <br> 1有効期限が切れます  <br> <br> 予約を完了するには  <br> カード情報を更新してください';
+            $('.card-expired p').html(content);
+            $('.lable-register-card').text('クレジットカード情報を更新する');
+            $('#md-require-card').prop('checked',true);
+          } else {
+            if (error.response.status == 400) {
+              var title = '開始時間は現在時刻から30分以降の時間を選択してください';
+            }
+
+            if(error.response.status == 422) {
+              var title = 'この操作は実行できません';
+            }
+
+            if(error.response.status == 500) {
+              var title = 'サーバーエラーが発生しました';
+            }
+
+            if(error.response.status == 409) {
+              var title = 'クーポンが無効です';
+            }
+
+            $('.show-message-order-call h2').html(title);
+
+            $('#order-call-popup').prop('checked',true);
+          }
+        }
+      }
+  })
+}
+
 $(document).ready(function(){
-  const helper = require('./helper');
   if($('#btn-confirm-orders').length) {
     if(localStorage.getItem("order_call")){
       var orderCall = JSON.parse(localStorage.getItem("order_call"));
@@ -282,36 +428,6 @@ $(document).ready(function(){
 
         if(OrderPaymentMethod.Direct_Payment == transfer) {
           $('#show-registered-card').css('display', 'none');
-
-          if ($(".cb-cancel").is(':checked')) {
-            $('#btn-confirm-orders').addClass("disable");
-            $('#btn-confirm-orders').prop('disabled', true);
-
-            window.axios.get('/api/v1/auth/me')
-              .then(function(response) {
-                var tempPoint = response.data['data'].point;
-
-                $('#current-point').val(tempPoint);
-                window.axios.get('/api/v1/guest/points_used')
-                  .then(function(response) {
-                    var pointUsed = response.data['data'];
-                    $('#point_used').val(pointUsed);
-                    
-                    $('#btn-confirm-orders').removeClass('disable');
-                    $('#btn-confirm-orders').prop('disabled', false);
-                  }).catch(function(error) {
-                    console.log(error);
-                    if (error.response.status == 401) {
-                      window.location = '/login';
-                    }
-                  });
-              }).catch(function(error) {
-                console.log(error);
-                if (error.response.status == 401) {
-                  window.location = '/login';
-                }
-              });
-          }
         } else {
           $('#show-registered-card').css('display', 'block');
 
@@ -349,20 +465,59 @@ $(document).ready(function(){
           } else {
             $(this).prop('checked', true);
             $('#sp-cancel').removeClass('sp-disable');
-            
-            if(OrderPaymentMethod.Direct_Payment == transfer) {
+            $('#btn-confirm-orders').removeClass('disable');
+            $('#btn-confirm-orders').prop('disabled', false);
+          }
+        } else {
+          $(this).prop('checked', false);
+          $('#sp-cancel').addClass("sp-disable");
+          $('#btn-confirm-orders').addClass("disable");
+          $('#btn-confirm-orders').prop('disabled', true);
+        }
+      });
+
+      $('.sb-form-orders').on('click',function(){
+        var transfer = parseInt($("input[name='transfer_order']:checked").val());
+        const data = [];
+
+        data['area'] = area;
+        data['duration'] = duration;
+        data['castIds'] = castIds;
+        data['currentDate'] = currentDate;
+        data['time'] = time;
+        data['type'] = type;
+
+        if (transfer) {
+          if (OrderPaymentMethod.Credit_Card == transfer || OrderPaymentMethod.Direct_Payment == transfer) {
+            data['transfer'] = transfer;
+            if (OrderPaymentMethod.Direct_Payment == transfer) {
               window.axios.get('/api/v1/auth/me')
               .then(function(response) {
-                var tempPoint = response.data['data'].point;
-                $('#current-point').val(tempPoint);
-                
+                var pointUser = response.data['data'].point;
+
                 window.axios.get('/api/v1/guest/points_used')
                   .then(function(response) {
                     var pointUsed = response.data['data'];
-                    $('#point_used').val(pointUsed);
-                    
-                    $('#btn-confirm-orders').removeClass('disable');
-                    $('#btn-confirm-orders').prop('disabled', false);
+                    var tempPointOrder = parseInt($('#temp_point_order_call').val()) + parseInt(pointUsed);
+
+                    if (parseInt(tempPointOrder) > parseInt(pointUser)) {
+                      $('#sp-cancel').addClass('sp-disable');
+                      $('.cb-cancel').prop('checked', false);
+                      $('#btn-confirm-orders').prop('disabled', true);
+                      $('#btn-confirm-orders').addClass('disable');
+
+                      if (parseInt(pointUsed) > parseInt(pointUser)) {
+                        var point = parseInt($('#temp_point_order_call').val());
+                      } else {
+                        var point = parseInt(tempPointOrder) - parseInt(pointUser);
+                      }
+                  
+                      window.location.href = '/payment/transfer?point=' + point;
+
+                      return ;
+                    } else {
+                      createOrderCall(orderCall, data, currentTime);
+                    }
                   }).catch(function(error) {
                     console.log(error);
                     if (error.response.status == 401) {
@@ -376,188 +531,16 @@ $(document).ready(function(){
                 }
               });
             } else {
-              $('#btn-confirm-orders').removeClass('disable');
-              $('#btn-confirm-orders').prop('disabled', false);
-            }
-          }
-        } else {
-          $(this).prop('checked', false);
-          $('#sp-cancel').addClass("sp-disable");
-          $('#btn-confirm-orders').addClass("disable");
-          $('#btn-confirm-orders').prop('disabled', true);
-        }
-      });
-
-      $('.sb-form-orders').on('click',function(){
-        var transfer = parseInt($("input[name='transfer_order']:checked").val());
-
-        if (transfer) {
-          if (OrderPaymentMethod.Credit_Card == transfer || OrderPaymentMethod.Direct_Payment == transfer) {
-            if (OrderPaymentMethod.Direct_Payment == transfer) {
-           
-              var pointUser = $('#current-point').val();
-              var tempPointOrder = parseInt($('#temp_point_order_call').val()) + parseInt($('#point_used').val());
-
-              if (parseInt(tempPointOrder) > parseInt(pointUser)) {
-                $('#sp-cancel').addClass('sp-disable');
-                $('.cb-cancel').prop('checked', false);
-                $('#btn-confirm-orders').prop('disabled', true);
-                $('#btn-confirm-orders').addClass('disable');
-
-                if (parseInt($('#point_used').val()) > parseInt(pointUser)) {
-                  var point = parseInt($('#temp_point_order_call').val());
-                } else {
-                  var point = parseInt(tempPointOrder) - parseInt(pointUser);
-                }
-            
-                window.location.href = '/payment/transfer?point=' + point;
-
-                return ;
-              }
+              createOrderCall(orderCall, data, currentTime);
             }
           } else {
               window.location.href = '/mypage';
           }
-        }
-
-        $('.modal-confirm').css('display', 'none');
-        $('#btn-confirm-orders').prop('disabled', true);
-
-        document.getElementById('confirm-order-submit').click();
-
-        if(orderCall.tags) {
-          tags = orderCall.tags.toString();
         } else {
-          tags = '';
+          createOrderCall(orderCall, data, currentTime);
         }
 
-        if('other_time' != currentTime) {
-          var now = new Date();
-
-          var utc = now.getTime() + (now.getTimezoneOffset() * 60000);
-          var nd = new Date(utc + (3600000*9));
-          var day = helper.add_minutes(nd, currentTime);
-
-          var year = day.getFullYear();
-
-          var date = day.getDate();
-          if(date<10) {
-            date = '0'+date;
-          }
-
-          var month = day.getMonth() +1;
-          if(month<10) {
-            month = '0'+month;
-          }
-
-          var hour = day.getHours();
-            if(hour<10) {
-            hour = '0' +hour;
-          }
-
-          var minute = day.getMinutes();
-          if(minute<10) {
-            minute = '0' +minute;
-          }
-
-          currentDate = year + '-' + month + '-' + date;
-          time = hour + ':' + minute;
-        }
-
-
-        var params = {
-          prefecture_id : orderCall.prefecture_id,
-          address : area,
-          class_id : orderCall.cast_class ,
-          duration : duration,
-          nominee_ids : castIds,
-          date : currentDate,
-          start_time : time,
-          type :type,
-          total_cast :orderCall.countIds,
-          tags : tags,
-          temp_point : $('#temp_point_order_call').val(),
-        };
-
-        if(transfer) {
-          params.payment_method = transfer;
-        }
-
-        if(orderCall.coupon) {
-          var coupon = orderCall.coupon;            
-          params.coupon_id = coupon.id;
-          params.coupon_name = coupon.name;
-          params.coupon_type = coupon.type;
-          
-          if(coupon.max_point) {
-            params.coupon_max_point = coupon.max_point;
-          } else {
-            params.coupon_max_point = null;
-          }
-
-          switch(coupon.type) {
-            case couponType.POINT:
-              params.coupon_value = coupon.point;
-              break;
-
-            case couponType.DURATION:
-              params.coupon_value = coupon.time;
-              break;
-
-            case couponType.PERCENT:
-              params.coupon_value = coupon.percent;
-              break;
-
-            default:
-              window.location.href = '/mypage';
-          }
-        }
-
-        window.axios.post('/api/v1/orders', params)
-        .then(function(response) {
-          $('#orders').prop('checked',false);
-          $('#order-done').prop('checked',true);
-        })
-        .catch(function(error) {
-          $('.modal-confirm').css('display', 'inline-block');
-          $('#btn-confirm-orders').prop('disabled', false);
-          $('#order-call-popup').prop('checked',false);
-            if (error.response.status == 401) {
-              window.location = '/login';
-            } else {
-              if(error.response.status == 404) {
-                $('#md-require-card').prop('checked',true);
-              } else {
-                if(error.response.status == 406) {
-                  $('.card-expired h2').text('');
-                  var content = '予約日までにクレジットカードの <br> 1有効期限が切れます  <br> <br> 予約を完了するには  <br> カード情報を更新してください';
-                  $('.card-expired p').html(content);
-                  $('.lable-register-card').text('クレジットカード情報を更新する');
-                  $('#md-require-card').prop('checked',true);
-                } else {
-                  if (error.response.status == 400) {
-                    var title = '開始時間は現在時刻から30分以降の時間を選択してください';
-                  }
-
-                  if(error.response.status == 422) {
-                    var title = 'この操作は実行できません';
-                  }
-
-                  if(error.response.status == 500) {
-                    var title = 'サーバーエラーが発生しました';
-                  }
-
-                  if(error.response.status == 409) {
-                    var title = 'クーポンが無効です';
-                  }
-
-                  $('.show-message-order-call h2').html(title);
-
-                  $('#order-call-popup').prop('checked',true);
-                }
-              }
-            }
-        })
+        
       });
     } else {
       window.location.href = '/mypage';

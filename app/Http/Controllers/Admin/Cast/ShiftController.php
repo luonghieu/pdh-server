@@ -11,7 +11,7 @@ class ShiftController extends Controller
     public function index(Cast $user)
     {
         $from = now()->copy()->startOfDay();
-        $to = now()->copy()->addDays(6)->startOfDay();
+        $to = now()->copy()->addDays(13)->startOfDay();
         $updateShiftLatest = $user->shifts()->orderBy('shift_user.updated_at', 'DESC')->first();
         $shifts = $user->shifts()->whereBetween('date', [$from, $to])->get();
 
