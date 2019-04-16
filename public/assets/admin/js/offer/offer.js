@@ -24,7 +24,7 @@ function renderListGuests(device_type, search = null, arrGuests = null)
         'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
     },
     type: "GET",
-    url: '/admin/orders/list_guests/',
+    url: '/admin/orders/list_guests',
     data: {
         'device_type': device_type,
         'search': search

@@ -89,7 +89,7 @@
           </div>
           <div class="clear_fix"></div>
           <div class="col-lg-12">
-            <div class="col-sm-4 col-sm-offset-8 button-confirm-offer" style="text-align: center;" >
+            <div class="col-sm-6 col-sm-offset-6 button-confirm-offer" style="text-align: center;" >
                 @if(isset($data['offer_id']))
                 <button class="btn btn-accept"><a href="{{ route('admin.offers.edit', $data['offer_id'] ) }}" style="color: white">戻る</a></button>
                 @else
@@ -162,44 +162,46 @@
     </div>
   </div>
 
+
+
   <div class="modal fade" id="list-guests" tabindex="-1" role="dialog"
      aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog" role="document">
+      <form action="{{ route('admin.offers.store') }}" method="POST" id="form-send-line">
+        {{ csrf_field() }}
+        <input type="hidden" value="" name="choose_guest" class="choose-guests">
+        <input type="hidden" value="{{ App\Enums\DeviceType::ANDROID }}" name="device_type">
+      </form>
       <div class="modal-content">
-        <form action="{{ route('admin.offers.store') }}" method="POST" id="form-send-line">
-          {{ csrf_field() }}
-          <input type="hidden" value="" name="choose_guest" class="choose-guests">
-          <input type="hidden" value="{{ App\Enums\DeviceType::ANDROID }}" name="device_type">
-          <div class="modal-body">
-            <p>キャストを選択してください</p>
-            <div class="panel-body handling">
-              <div class="search">
-                  <input type="text" class="form-control input-search-guest"
-                         placeholder="ユーザーID,名前" value="">
-              </div>
-            </div>
-            <div class="wrapper-table">
-              <table class="table table-striped table-bordered bootstrap-datatable table-sm"
-                   id="candidation-table">
-                <thead>
-                <tr>
-                    <th class="column-checkbox"></th>
-                    <th>ユーザーID</th>
-                    <th>キャスト名</th>
-                </tr>
-                </thead>
-                <tbody></tbody>
-              </table>
+        <div class="modal-body">
+          <p>ゲストを選択して下さい</p>
+          <div class="panel-body handling">
+            <div class="search">
+                <input type="text" class="form-control input-search-guest"
+                       placeholder="ユーザーID,名前" value="">
             </div>
           </div>
-          <div class="modal-footer">
-              <button type="button" class="btn btn-canceled" data-dismiss="modal">キャンセル
-              </button>
-              <button data-toggle="modal" data-target="" class="btn btn-accept btn-choose-guests" id="btn-choose-guests" type="button">
-                このゲストに送信する
-              </button>
+          <div class="wrapper-table">
+            <table class="table table-striped table-bordered bootstrap-datatable table-sm"
+                 id="candidation-table">
+              <thead>
+              <tr>
+                  <th class="column-checkbox"></th>
+                  <th>ユーザーID</th>
+                  <th>ゲスト名</th>
+              </tr>
+              </thead>
+              <tbody></tbody>
+            </table>
           </div>
-        </form>
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-canceled" data-dismiss="modal">キャンセル
+            </button>
+            <button data-toggle="modal" data-target="" class="btn btn-accept btn-choose-guests" id="btn-choose-guests" type="button">
+              このゲストに送信する
+            </button>
+        </div>
       </div>
     </div>
   </div>
