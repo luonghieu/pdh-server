@@ -377,8 +377,15 @@ class OfferController extends Controller
             $offer->status = OfferStatus::ACTIVE;
         }
 
-        if ($request->choose_guest) {
-            $offer->guest_ids = explode(",", trim($request->choose_guest, ","));
+        if ($request->device_type) {
+            if ($request->choose_guest) {
+                $arrIds = explode(",", trim($request->choose_guest, ","));
+                $offer->guest_ids = $arrIds;
+
+                $listGuests = User::whereIn('id', $arrIds)->get();
+            } else {
+                return redirect()->route('admin.offers.index');
+            }
         }
 
         $offer->save();

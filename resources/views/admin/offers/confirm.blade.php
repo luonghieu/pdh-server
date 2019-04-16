@@ -195,7 +195,7 @@
           <div class="modal-footer">
               <button type="button" class="btn btn-canceled" data-dismiss="modal">キャンセル
               </button>
-              <button data-toggle="modal" data-target="#choose-guests" class="btn btn-accept" type="button">
+              <button data-toggle="modal" data-target="" class="btn btn-accept btn-choose-guests" id="btn-choose-guests" type="button">
                 このゲストに送信する
               </button>
           </div>

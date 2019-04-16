@@ -119,6 +119,10 @@ Route::group(['prefix' => 'v1'], function () {
         Route::post('/create_offer', ['as' => 'create_offer', 'uses' => 'OrderController@createOrderOffer']);
     });
 
+    Route::group(['middleware' => ['auth:api'], 'prefix' => 'offers', 'as' => 'offers.'], function () {
+        Route::get('/{id}', ['as' => 'show', 'uses' => 'OfferController@show']);
+    });
+
     Route::group(['middleware' => ['auth:api', 'cast']], function () {
         Route::group(['prefix' => 'orders', 'as' => 'orders.'], function () {
             Route::post('/{id}/deny', ['as' => 'deny', 'uses' => 'Cast\OrderController@deny'])

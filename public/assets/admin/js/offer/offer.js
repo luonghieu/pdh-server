@@ -89,6 +89,12 @@ function chooseGuests()
       arrIds.push(checkedId);
     }
 
+    if (arrIds.length) {
+      $('.btn-choose-guests').attr('data-target', "#choose-guests");
+    } else {
+      $('.btn-choose-guests').attr('data-target', "");
+    }
+    
     arrIds.toString();
 
     $('.choose-guests').val(arrIds);
