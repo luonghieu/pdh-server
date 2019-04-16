@@ -8,6 +8,7 @@ use App\Enums\OfferStatus;
 use App\Enums\OrderType;
 use App\Enums\UserType;
 use App\Http\Controllers\Controller;
+use App\Notifications\OfferMessageNotifyToAndroidGuest;
 use App\Notifications\OfferMessageNotifyToLine;
 use App\Offer;
 use App\Prefecture;
@@ -393,6 +394,10 @@ class OfferController extends Controller
         if (isset($request->line_offer)) {
             $guests = User::where('type', UserType::GUEST)->get();
             \Notification::send($guests, new OfferMessageNotifyToLine($offer->id));
+        }
+
+        if (isset($listGuests)) {
+            \Notification::send($listGuests, new OfferMessageNotifyToAndroidGuest($offer->id));
         }
 
         if ($request->session()->has('offer')) {
