@@ -126,24 +126,19 @@ $(document).ready(function() {
     });
 
   $("#send-message").click(function(event) {
-    var formData = new FormData();
+      $('#content').focus();
+      var content = $("#content").val();
+      if (!$.trim(content)) {
+          return false;
+      }
 
-    $('#content').focus();
-
-    $(this).prop('disabled', true);
-
-    var content = $("#content").val();
-    if($.trim(content)) {
+      var formData = new FormData();
 
       formData.append('message', content);
       formData.append('type', 2);
 
       sendMessage(formData);
-    } else {
-      return false;
-    }
-
-    event.preventDefault();
+      event.preventDefault();
   });
 
   $("#content").click(function(event) {
