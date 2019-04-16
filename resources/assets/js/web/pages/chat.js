@@ -289,6 +289,8 @@ $(document).ready(function() {
   }
 
   $(document).on('scroll', function(e) {
+    var date = $('.msg-date').attr('data-date');
+
     if(!$(".next-page").attr("data-url")) {
       return false;
     }
@@ -309,6 +311,16 @@ $(document).ready(function() {
               prevEle = prevEle.prev();
           }
           window.location.hash = '#message-' + prevEle.attr('data-message-id');
+
+          // Delete the display date with the same
+          numOfDate = $('.' + date + '').length;
+          if (numOfDate > 1) {
+            $('.' + date + '').each(function (index) {
+              if (index > 0) {
+                $(this).remove();
+              }
+            });
+          }
       })
       .catch(function (error) {
         console.log(error);
