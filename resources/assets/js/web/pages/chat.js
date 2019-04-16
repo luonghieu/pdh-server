@@ -1,5 +1,5 @@
 $(document).ready(function() {
-  $('html').on('touchstart', function(e) {
+  $('.msg').on('touchstart', function(e) {
     if ($('.content-message').is(':focus')) {
       $('.content-message').blur();
     }
