@@ -1,7 +1,5 @@
-$(document).click(function() {
-    document.activeElement.blur();
-});
 $(document).ready(function() {
+  $('textarea').on('focus', function() { $(this).blur(); });
   var userAgent = navigator.userAgent || navigator.vendor || window.opera;
 
   // iOS detection
