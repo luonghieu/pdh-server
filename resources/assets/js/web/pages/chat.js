@@ -1,3 +1,4 @@
+let sendingMessage = false;
 $(document).ready(function() {
   $('.msg').on('touchstart', function(e) {
     if ($('.content-message').is(':focus')) {
@@ -137,7 +138,9 @@ $(document).ready(function() {
       formData.append('message', content);
       formData.append('type', 2);
 
-      sendMessage(formData);
+      if (!sendingMessage) {
+        sendMessage(formData);
+      }
       event.preventDefault();
   });
 
@@ -174,6 +177,7 @@ $(document).ready(function() {
   });
 
   function sendMessage(formData) {
+    sendingMessage = true;
     axios.post(`/api/v1/rooms/${roomId}/messages`, formData)
     .then(function (response) {
       var currentDate = new Date();
@@ -271,6 +275,8 @@ $(document).ready(function() {
       $("#content").css('height','30px');
       $("#image-camera").val(null);
       $("#image").val(null);
+
+      sendingMessage = false;
     })
     .catch(function (error) {
       if (error.response.data.message) {
@@ -285,6 +291,8 @@ $(document).ready(function() {
       setTimeout(() => {
         $('.wrap-alert-image-oversize').css('display', 'none');
       }, 2000);
+
+      sendingMessage = false;
     });
   }
 
