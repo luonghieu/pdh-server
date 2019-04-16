@@ -94,6 +94,8 @@ Route::group(['prefix' => 'v1'], function () {
         });
 
         Route::get('/points_used', ['as' => 'points_used', 'uses' => 'Guest\GuestController@getPointUsed']);
+
+        Route::get('/offers/{id}', ['as' => 'offers.show', 'uses' => 'Guest\OfferController@show'])->where('id', '[0-9]+');
     });
 
     Route::group(['middleware' => ['auth:api', 'cast'], 'prefix' => 'cast', 'as' => 'cast.'], function () {
