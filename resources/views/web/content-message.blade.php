@@ -18,7 +18,7 @@
     @if ($key == now()->today()->format('Y-m-d'))
     <div class="msg-date"><h3>今日</h3></div>
     @else
-    <div class="msg-date"><h3>{{ Carbon\Carbon::parse($key)->diffForHumans()}}</h3></div>
+    <div class="msg-date"><h3>{{ Carbon\Carbon::parse($key)->format('m/d') }}({{ dayOfWeek()[Carbon\Carbon::parse($key)->dayOfWeek] }})</h3></div>
     @endif
     @foreach ($message[0] as $elements)
     @php
