@@ -38,7 +38,7 @@ class OfferResource extends Resource
             'status' => $this->status,
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
-            'casts' => CastResource::collection(Cast::whereIn('id', $this->cast_ids)->get()),
+            'casts' => $this->cast_ids ? CastResource::collection(Cast::whereIn('id', $this->cast_ids)->get()) : '',
             'deleted_at' => $this->deleted_at,
         ]);
     }
