@@ -1,5 +1,9 @@
 $(document).ready(function() {
-  $('textarea').on('focus', function() { $(this).blur(); });
+  $('html').on('touchstart', function(e) {
+    if ($('.content-message').is(':focus')) {
+      $('.content-message').blur();
+    }
+  });
   var userAgent = navigator.userAgent || navigator.vendor || window.opera;
 
   // iOS detection
