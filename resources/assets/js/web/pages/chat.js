@@ -1,3 +1,6 @@
+$(document).click(function() {
+    document.activeElement.blur();
+});
 $(document).ready(function() {
   var userAgent = navigator.userAgent || navigator.vendor || window.opera;
 
