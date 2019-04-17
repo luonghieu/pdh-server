@@ -1,4 +1,10 @@
+let sendingMessage = false;
 $(document).ready(function() {
+  $('.msg').on('touchstart', function(e) {
+    if ($('.content-message').is(':focus')) {
+      $('.content-message').blur();
+    }
+  });
   var userAgent = navigator.userAgent || navigator.vendor || window.opera;
 
   // iOS detection
@@ -121,24 +127,21 @@ $(document).ready(function() {
     });
 
   $("#send-message").click(function(event) {
-    var formData = new FormData();
+      $('#content').focus();
+      var content = $("#content").val();
+      if (!$.trim(content)) {
+          return false;
+      }
 
-    $('#content').focus();
-
-    $(this).prop('disabled', true);
-
-    var content = $("#content").val();
-    if($.trim(content)) {
+      var formData = new FormData();
 
       formData.append('message', content);
       formData.append('type', 2);
 
-      sendMessage(formData);
-    } else {
-      return false;
-    }
-
-    event.preventDefault();
+      if (!sendingMessage) {
+        sendMessage(formData);
+      }
+      event.preventDefault();
   });
 
   $("#content").click(function(event) {
@@ -149,31 +152,67 @@ $(document).ready(function() {
     $("#send-message").prop('disabled', false);
   });
 
-  $("#image-camera").change(function(event) {
-    var formData = new FormData();
-    var filesCamera = $('#image-camera').prop('files');
+  var resize = null;
 
-    if(filesCamera.length > 0){
-      formData.append('image', filesCamera[0]);
-      formData.append('type', 3);
+  function readURL(input) {
+    if (input.files && input.files[0]) {
+      $('#croppie-image-modal').trigger('click');
+
+      const reader = new FileReader();
+      reader.onload = async function(e) {
+        $('#my-image').attr('src', e.target.result);
+        const oj = {
+          enableExif: true,
+          viewport: {
+            width: $('.wrap-croppie-image').width() - 10,
+            height: $('.wrap-croppie-image').width()
+          },
+          enableOrientation: true,
+        };
+        if (resize) {
+          resize.bind({ url : e.target.result });
+        } else {
+          resize = new Croppie($('#my-image')[0], oj);
+        }
+
+        $('#crop-image-btn-accept').fadeIn();
+      };
+
+      reader.readAsDataURL(input.files[0]);
+      $(input.files[0]).val(null);
+
+      if (resize) {
+        resize.bind({ url : '' });
+      }
     }
+  }
 
-    sendMessage(formData);
+  $('#crop-image-btn-accept').on('click', function() {
+      var formData = new FormData();
+      resize.result('canvas').then(function(dataImg) {
+          fetch(dataImg)
+              .then(res => res.blob())
+              .then(blob => {
+                  formData.append('image', blob);
+                  formData.append('type', 3);
+              });
+      });
+
+      setTimeout(() => {
+          sendMessage(formData);
+      }, 200);
   });
 
-  $("#image").change(function(event) {
-    var formData = new FormData();
-    var files = $('#image').prop('files');
+  $("#image-camera").change(function(event) {
+    readURL(this);
+  });
 
-    if (files.length > 0) {
-      formData.append('image', files[0]);
-      formData.append('type', 3);
-    }
-
-    sendMessage(formData);
+  $("#image").change(function() {
+    readURL(this);
   });
 
   function sendMessage(formData) {
+    sendingMessage = true;
     axios.post(`/api/v1/rooms/${roomId}/messages`, formData)
     .then(function (response) {
       var currentDate = new Date();
@@ -271,6 +310,8 @@ $(document).ready(function() {
       $("#content").css('height','30px');
       $("#image-camera").val(null);
       $("#image").val(null);
+
+      sendingMessage = false;
     })
     .catch(function (error) {
       if (error.response.data.message) {
@@ -285,10 +326,14 @@ $(document).ready(function() {
       setTimeout(() => {
         $('.wrap-alert-image-oversize').css('display', 'none');
       }, 2000);
+
+      sendingMessage = false;
     });
   }
 
   $(document).on('scroll', function(e) {
+    var date = $('.msg-date').attr('data-date');
+
     if(!$(".next-page").attr("data-url")) {
       return false;
     }
@@ -309,6 +354,16 @@ $(document).ready(function() {
               prevEle = prevEle.prev();
           }
           window.location.hash = '#message-' + prevEle.attr('data-message-id');
+
+          // Delete the display date with the same
+          numOfDate = $('.' + date + '').length;
+          if (numOfDate > 1) {
+            $('.' + date + '').each(function (index) {
+              if (index > 0) {
+                $(this).remove();
+              }
+            });
+          }
       })
       .catch(function (error) {
         console.log(error);

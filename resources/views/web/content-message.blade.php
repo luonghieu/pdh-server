@@ -15,10 +15,15 @@
     $messagesData = $messagesData->sortKeys();
   @endphp
   @foreach ($messagesData as $key => $message)
+    @php
+    $date = Carbon\Carbon::parse($key);
+    @endphp
     @if ($key == now()->today()->format('Y-m-d'))
-    <div class="msg-date"><h3>今日</h3></div>
+    <div class="msg-date {{ $key }}" data-date="{{ $key }}"><h3>今日</h3></div>
     @else
-    <div class="msg-date"><h3>{{ Carbon\Carbon::parse($key)->diffForHumans()}}</h3></div>
+    <div class="msg-date {{ $date->format('Y-m-d') }}" data-date="{{ $date->format('Y-m-d') }}">
+      <h3>{{ $date->format('m/d') }}({{ dayOfWeek()[$date->dayOfWeek] }})</h3>
+    </div>
     @endif
     @foreach ($message[0] as $elements)
     @php

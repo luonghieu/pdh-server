@@ -3798,6 +3798,7 @@ div.user-data span.total-point-cast{
    padding-top: 0;
 }
 
+
 #ge2-1-x .note {
   margin: -14px 0px 10px 20px;
 }
@@ -3806,4 +3807,24 @@ div.user-data span.total-point-cast{
   display: inline-block;
   text-decoration: underline;
   color: #00c3c3;
+}
+
+.wrap-croppie-image {
+  background-color: black;
+  color: #fff;
+  font-size: 18px;
+}
+
+.wrap-button-croppie #crop-image-btn-cancel {
+  position: absolute;
+  bottom: 5%;
+  left: 60px;
+  z-index: 2;
+}
+
+.wrap-button-croppie #crop-image-btn-accept {
+  position: absolute;
+  bottom: 5%;
+  right: 60px;
+  z-index: 2;
 }

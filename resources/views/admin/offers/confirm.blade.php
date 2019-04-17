@@ -89,12 +89,15 @@
           </div>
           <div class="clear_fix"></div>
           <div class="col-lg-12">
-            <div class="col-sm-4 col-sm-offset-8 button-confirm-offer" style="text-align: center;" >
+            <div class="button-confirm-offer" style="text-align: right;" >
                 @if(isset($data['offer_id']))
                 <button class="btn btn-accept"><a href="{{ route('admin.offers.edit', $data['offer_id'] ) }}" style="color: white">戻る</a></button>
                 @else
                 <button class="btn btn-accept"><a href="{{ route('admin.offers.create' ) }}" style="color: white">戻る</a></button>
                 @endif
+                <button data-toggle="modal" data-target="#list-guests" class="btn btn-accept show-list-guests" style="color: white" >
+                  Androidユーザーへ送信する
+                </button>
                 <button data-toggle="modal" data-target="#line_url" class="btn btn-accept" style="color: white">LINEへ送信する</button>
                 <button data-toggle="modal" data-target="#save_url" class="btn btn-accept" style="color: white">URL発行する</button>
                 <button data-toggle="modal" data-target="#save_temporarily" class="btn btn-accept" style="color: white">仮保存する</button>
@@ -155,6 +158,75 @@
             <button type="submit" class="btn btn-accept del-order">はい</button>
           </div>
         </form>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal fade" id="list-guests" tabindex="-1" role="dialog"
+     aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <form action="{{ route('admin.offers.store') }}" method="POST" id="form-send-line">
+        {{ csrf_field() }}
+        <input type="hidden" value="" name="choose_guest" class="choose-guests">
+        <input type="hidden" value="{{ App\Enums\DeviceType::ANDROID }}" name="device_type">
+      </form>
+      <div class="modal-content">
+        <div class="modal-body">
+          <p>ゲストを選択して下さい</p>
+          <div class="panel-body handling">
+            <div class="search">
+                <input type="text" class="form-control input-search-guest"
+                       placeholder="ユーザーID,名前" value="">
+            </div>
+          </div>
+          <div class="wrapper-table">
+            <table class="table table-striped table-bordered bootstrap-datatable table-sm"
+                 id="candidation-table">
+              <thead>
+              <tr>
+                  <th class="column-checkbox"></th>
+                  <th>ユーザーID</th>
+                  <th>ゲスト名</th>
+              </tr>
+              </thead>
+              <tbody></tbody>
+            </table>
+          </div>
+        </div>
+        <div class="modal-footer">
+            <button type="button" class="btn btn-canceled" data-dismiss="modal">キャンセル
+            </button>
+            <button data-toggle="modal" data-target="#err-choose-guests" class="btn btn-accept btn-choose-guests" id="btn-choose-guests" type="button">
+              このゲストに送信する
+            </button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal fade" id="choose-guests" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-body">
+          <p>このゲストに送信しますか？</p>
+        </div>
+        <div class="modal-footer" style="text-align: center;">
+          <button type="button" class="btn btn-canceled" data-dismiss="modal">いいえ</button>
+          <button type="button" class="btn btn-accept " id="send-line-to-guest">はい</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal fade" id="err-choose-guests" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-body">
+          <p>ゲストが選択されていません。</p>
+        </div>
+        <div class="modal-footer" style="text-align: center;">
+          <button type="button" class="btn btn-canceled" data-dismiss="modal" style="background-color: #00B0E7;">はい</button>
+        </div>
       </div>
     </div>
   </div>
