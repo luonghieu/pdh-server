@@ -29,6 +29,7 @@
           'payment_service' => config('common.payment_service')
       ]) !!};
   </script>
+  <script src="/assets/admin/js/exif.js" type="text/javascript"></script>
 </head>
 
 <body id="@yield('controller.id')" class="@yield('controller.class')">
