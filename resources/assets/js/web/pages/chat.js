@@ -290,9 +290,9 @@ $(document).ready(function() {
 
         if ($("#messages-today").length == 0) {
           const today = moment().format('YYYY-MM-DD');
-          $lastMessage = $('.messages').last();
+          const lastMessage = $('.messages').last();
           const todayElement = "<div class='msg-date " + today + "'  data-date='" + today + "' id='messages-today'><h3>今日</h3></div>"
-          $lastMessage.before(todayElement);
+          lastMessage.before(todayElement);
         }
 
       });
