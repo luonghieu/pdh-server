@@ -2,6 +2,21 @@
 @section('screen.id', 'gg2')
 @section('controller.id', 'chat')
 @extends('layouts.web')
+@section('web.extra_css')
+  <link rel="stylesheet" href="/assets/web/css/croppie.css" />
+@endsection
+@section('web.extra')
+  <div class="modal_wrap">
+    <input id="croppie-image-modal" type="checkbox">
+    <div class="modal_overlay wrap-croppie-image">
+      <img id="my-image" src="#" />
+      <div class="wrap-button-croppie">
+        <label for="croppie-image-modal" id="crop-image-btn-cancel">Cancel</label>
+        <label for="croppie-image-modal" id="crop-image-btn-accept">Choose</label>
+      </div>
+    </div>
+  </div>
+@endsection
 @section('web.content')
   @if (isset(request()->matching_completed) && request()->matching_completed)
     <a href="javascript:void(0)" id="matching-completed" class="gtm-hidden-btn" onclick="dataLayer.push({
@@ -176,6 +191,7 @@
         <input type="button" style="display: none" >
       </button>
     </form>
+    {{--<button class="btn-reset" id="btn-reset">Reset</button>--}}
   </div>
 @endsection
 @section('web.extra')
@@ -253,6 +269,7 @@
 </script>
 @endsection
 @section('web.script')
+  <script src="/assets/web/js/croppie.js"></script>
 <script>
   if(localStorage.getItem("order_params")){
     localStorage.removeItem("order_params");
