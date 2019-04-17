@@ -342,17 +342,22 @@ $(document).ready(function() {
 $('.msg-system').each(function(index, val) {
   var content = $(this).text();
   var missingPoint = $(this).data('missing-point');
+  var offerId = $(this).data('offer');
   var text2 = 'コチラ';
   var n = content.search(text2);
+
   if(n >= 0) {
     var text1 = content.substring(0, n);
     var text3 = content.substring(n+text2.length, content.length);
     var orderId = $(this).data('id');
     if (missingPoint) {
       var result = text2.link('/payment/transfer?point='+ parseInt(missingPoint));
+    } else if (offerId) {
+      var result = text2.link('/offers/'+ parseInt(offerId));
     } else {
       var result = text2.link('/history/'+ orderId);
     }
+
     var newText = text1 + result + text3;
     $(this).html(newText.replace(/\n/g, "<br />"));
   } else {
