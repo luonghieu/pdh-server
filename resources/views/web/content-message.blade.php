@@ -79,9 +79,10 @@
             <div class="text">
               <div class="text-wrapper">
                 @if ($element['order_id'])
-                <p class="msg-system" data-id='{{ $element['order_id'] }}' data-missing-point="{{ $element['missing_point'] }}">{!! nl2br($element['message']) !!}</p>
+                <p class="msg-system" data-id='{{ $element['order_id'] }}' data-missing-point="{{ $element['missing_point'] }}"
+                 data-offer="{{ $element['offer_id'] }}" >{!! nl2br($element['message']) !!}</p>
                 @else
-                <p>
+                <p class="msg-system"  data-offer="{{ $element['offer_id'] }}">
                   {!! nl2br(transferLinkMessage($element['message'])) !!}
                 </p>
                 @endif
