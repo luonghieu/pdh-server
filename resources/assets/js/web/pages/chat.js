@@ -331,7 +331,7 @@ $(document).ready(function() {
     });
   }
 
-  $(document).on('scroll', function(e) {
+  $('#message-box').on('scroll', function(e) {
     var date = $('.msg-date').attr('data-date');
 
     if(!$(".next-page").attr("data-url")) {
@@ -356,7 +356,7 @@ $(document).ready(function() {
           window.location.hash = '#message-' + prevEle.attr('data-message-id');
 
           // Delete the display date with the same
-          numOfDate = $('.' + date + '').length;
+          var numOfDate = $('.' + date + '').length;
           if (numOfDate > 1) {
             $('.' + date + '').each(function (index) {
               if (index > 0) {
