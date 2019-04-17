@@ -153,10 +153,8 @@ $(document).ready(function() {
 
   function readURL(input) {
     if (input.files && input.files[0]) {
-      $('#croppie-image-modal').trigger('click');
-
       const reader = new FileReader();
-      reader.onload = async function(e) {
+      reader.onload =  function(e) {
         $('#my-image').attr('src', e.target.result);
         const oj = {
           enableExif: true,
@@ -166,38 +164,39 @@ $(document).ready(function() {
           },
           enableOrientation: true,
         };
+
         if (resize) {
           resize.bind({ url : e.target.result });
+          $('#croppie-image-modal').trigger('click')
+
         } else {
           resize = new Croppie($('#my-image')[0], oj);
+          $('#croppie-image-modal').trigger('click')
         }
 
         $('#crop-image-btn-accept').fadeIn();
+
       };
 
       reader.readAsDataURL(input.files[0]);
       $(input.files[0]).val(null);
-
-      if (resize) {
-        resize.bind({ url : '' });
-      }
     }
   }
 
   $('#crop-image-btn-accept').on('click', function() {
-      var formData = new FormData();
-      resize.result('canvas').then(function(dataImg) {
-          fetch(dataImg)
-              .then(res => res.blob())
-              .then(blob => {
-                  formData.append('image', blob);
-                  formData.append('type', 3);
-              });
-      });
+    var formData = new FormData();
+    resize.result('canvas').then(function(dataImg) {
+      fetch(dataImg)
+        .then(res => res.blob())
+        .then(blob => {
+            formData.append('image', blob);
+            formData.append('type', 3);
+        });
+    });
 
-      setTimeout(() => {
-          sendMessage(formData);
-      }, 200);
+    setTimeout(() => {
+      sendMessage(formData);
+    }, 200);
   });
 
   $("#image-camera").change(function(event) {
