@@ -296,7 +296,7 @@ $(document).ready(function() {
     });
   }
 
-  $(document).on('scroll', function(e) {
+  $('#message-box').on('scroll', function(e) {
     if(!$(".next-page").attr("data-url")) {
       return false;
     }
