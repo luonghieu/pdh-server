@@ -34,7 +34,11 @@ class CastController extends Controller
         $keyword = $request->search;
         $isSchedule = $request->is_schedule;
         $orderBy = $request->only('last_active_at', 'rank', 'class_id');
-        $casts = User::where('type', UserType::CAST);
+        $casts = User::where('type', UserType::CAST)->where(function($query) {
+            $query->whereNull('cast_transfer_status')
+                ->orWhere('cast_transfer_status', CastTransferStatus::APPROVED)
+                ->orWhere('cast_transfer_status', CastTransferStatus::OFFICIAL);
+        });
 
         $fromDate = $request->from_date ? Carbon::parse($request->from_date)->startOfDay() : null;
         $toDate = $request->to_date ? Carbon::parse($request->to_date)->endOfDay() : null;
