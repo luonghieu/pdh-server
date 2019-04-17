@@ -92,7 +92,7 @@ function chooseGuests()
     if (arrIds.length) {
       $('.btn-choose-guests').attr('data-target', "#choose-guests");
     } else {
-      $('.btn-choose-guests').attr('data-target', "");
+      $('.btn-choose-guests').attr('data-target', "#err-choose-guests");
     }
     
     arrIds.toString();
