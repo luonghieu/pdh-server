@@ -19,7 +19,7 @@
     $date = Carbon\Carbon::parse($key);
     @endphp
     @if ($key == now()->today()->format('Y-m-d'))
-    <div class="msg-date {{ $key }}" data-date="{{ $key }}"><h3>今日</h3></div>
+    <div class="msg-date {{ $key }}" data-date="{{ $key }}" id="messages-today"><h3>今日</h3></div>
     @else
     <div class="msg-date {{ $date->format('Y-m-d') }}" data-date="{{ $date->format('Y-m-d') }}">
       <h3>{{ $date->format('m/d') }}({{ dayOfWeek()[$date->dayOfWeek] }})</h3>
