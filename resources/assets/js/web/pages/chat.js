@@ -290,7 +290,6 @@ $(document).ready(function() {
 
   $('#message-box').on('scroll', function(e) {
     var date = $('.msg-date').attr('data-date');
-    var numOfDate = 0;
 
     if(!$(".next-page").attr("data-url")) {
       return false;
