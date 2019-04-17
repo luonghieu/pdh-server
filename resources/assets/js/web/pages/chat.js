@@ -198,7 +198,7 @@ $(document).ready(function() {
           message = message.replace(reg_exUrl, '<a href="$1" target="_blank">$1</a>')
 
           $("#message-box").append(`
-            <div class="msg-right msg-wrap">
+            <div class="messages msg-right msg-wrap">
             <figure>
               <a href=""><img src="`+avatar+`"  alt="" title="" class="alignnone size-full wp-image-515" /></a>
             </figure>
@@ -248,6 +248,14 @@ $(document).ready(function() {
             });
           });
         }
+
+        if ($("#messages-today").length == 0) {
+          const today = moment().format('YYYY-MM-DD');
+          $lastMessage = $('.messages').last();
+          const todayElement = "<div class='msg-date " + today + "'  data-date='" + today + "' id='messages-today'><h3>今日</h3></div>"
+          $lastMessage.before(todayElement);
+        }
+
       });
 
       $('body').on('load', '.pic p img', function(){
@@ -290,7 +298,6 @@ $(document).ready(function() {
 
   $('#message-box').on('scroll', function(e) {
     var date = $('.msg-date').attr('data-date');
-    var numOfDate = 0;
 
     if(!$(".next-page").attr("data-url")) {
       return false;
