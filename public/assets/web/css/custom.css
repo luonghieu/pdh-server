@@ -3797,3 +3797,13 @@ div.user-data span.total-point-cast{
    margin-top: 0;
    padding-top: 0;
 }
+
+#ge2-1-x .note {
+  margin: -14px 0px 10px 20px;
+}
+
+#ge2-1-x .note a{
+  display: inline-block;
+  text-decoration: underline;
+  color: #00c3c3;
+}
