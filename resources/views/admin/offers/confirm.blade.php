@@ -89,7 +89,7 @@
           </div>
           <div class="clear_fix"></div>
           <div class="col-lg-12">
-            <div class="col-sm-6 col-sm-offset-6 button-confirm-offer" style="text-align: center;" >
+            <div class="button-confirm-offer" style="text-align: right;" >
                 @if(isset($data['offer_id']))
                 <button class="btn btn-accept"><a href="{{ route('admin.offers.edit', $data['offer_id'] ) }}" style="color: white">戻る</a></button>
                 @else
@@ -162,8 +162,6 @@
     </div>
   </div>
 
-
-
   <div class="modal fade" id="list-guests" tabindex="-1" role="dialog"
      aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog" role="document">
@@ -198,7 +196,7 @@
         <div class="modal-footer">
             <button type="button" class="btn btn-canceled" data-dismiss="modal">キャンセル
             </button>
-            <button data-toggle="modal" data-target="" class="btn btn-accept btn-choose-guests" id="btn-choose-guests" type="button">
+            <button data-toggle="modal" data-target="#err-choose-guests" class="btn btn-accept btn-choose-guests" id="btn-choose-guests" type="button">
               このゲストに送信する
             </button>
         </div>
@@ -215,6 +213,19 @@
         <div class="modal-footer" style="text-align: center;">
           <button type="button" class="btn btn-canceled" data-dismiss="modal">いいえ</button>
           <button type="button" class="btn btn-accept " id="send-line-to-guest">はい</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal fade" id="err-choose-guests" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-body">
+          <p>ゲストが選択されていません。</p>
+        </div>
+        <div class="modal-footer" style="text-align: center;">
+          <button type="button" class="btn btn-canceled" data-dismiss="modal" style="background-color: #00B0E7;">はい</button>
         </div>
       </div>
     </div>
