@@ -1,5 +1,7 @@
 let sendingMessage = false;
+let loadingMore = false;
 $(document).ready(function() {
+  let device = 'web';
   $('.msg').on('touchstart', function(e) {
     if ($('.content-message').is(':focus')) {
       $('.content-message').blur();
@@ -9,6 +11,7 @@ $(document).ready(function() {
 
   // iOS detection
   if (/iPad|iPhone|iPod/.test(userAgent) && !window.MSStream) {
+    device = 'ios';
     $('#chat .msg').css('height','65%');
     $('#chat #message-box').css('height','100%');
     $('#chat .msg-input').css({
@@ -339,45 +342,96 @@ $(document).ready(function() {
     });
   }
 
-  $('#message-box').on('scroll', function(e) {
-    var date = $('.msg-date').attr('data-date');
-
-    if(!$(".next-page").attr("data-url")) {
-      return false;
-    }
-
-    if($(this).scrollTop() == 0) {
-      var nextpage = $(".next-page").attr("data-url");
-
-      axios.get(nextpage,{
-        'params': {
-          response_type: 'html'
+  if (device == 'ios') {
+    $('#message-box').on('scroll', function(e) {
+        var date = $('.msg-date').attr('data-date');
+        if (loadingMore) {
+            return false;
         }
-      })
-      .then(function (response) {
-          const firstElement = $('.messages').eq(0);
-          $('#message-box').prepend(response.data);
-          let prevEle = $('#message-' + firstElement.attr('data-message-id')).prev();
-          while(!prevEle.attr('id')) {
-              prevEle = prevEle.prev();
-          }
-          window.location.hash = '#message-' + prevEle.attr('data-message-id');
+        if(!$(".next-page").attr("data-url")) {
+          return false;
+        }
 
-          // Delete the display date with the same
-          var numOfDate = $('.' + date + '').length;
-          if (numOfDate > 1) {
-            $('.' + date + '').each(function (index) {
-              if (index > 0) {
-                $(this).remove();
-              }
+        if($(this).scrollTop() == 0) {
+            var nextpage = $(".next-page").attr("data-url");
+              axios.get(nextpage,{
+                  'params': {
+                      response_type: 'html'
+                  }
+              })
+                  .then(function (response) {
+                      const firstElement = $('.messages').eq(0);
+                      $('#message-box').prepend(response.data);
+                      let prevEle = $('#message-' + firstElement.attr('data-message-id')).prev();
+                      while(!prevEle.attr('id') || prevEle.attr('id') == 'messages-today') {
+                          prevEle = prevEle.prev();
+                      }
+                      window.location.hash = '#message-' + prevEle.attr('data-message-id');
+
+                      // Delete the display date with the same
+                      var numOfDate = $('.' + date + '').length;
+                      if (numOfDate > 1) {
+                          $('.' + date + '').each(function (index) {
+                              if (index > 0) {
+                                  $(this).remove();
+                              }
+                          });
+                      }
+                      loadingMore = false;
+                  })
+                  .catch(function (error) {
+                      loadingMore = false;
+                      console.log(error);
+                  });
+        }
+    });
+  } else {
+      console.log('123');
+    $(document).on('scroll', function(e) {
+      var date = $('.msg-date').attr('data-date');
+      if (loadingMore) {
+          return false;
+      }
+      if(!$(".next-page").attr("data-url")) {
+          return false;
+      }
+
+      if($(this).scrollTop() == 0) {
+        var nextpage = $(".next-page").attr("data-url");
+
+        axios.get(nextpage,{
+            'params': {
+                response_type: 'html'
+            }
+        })
+            .then(function (response) {
+                const firstElement = $('.messages').eq(0);
+                $('#message-box').prepend(response.data);
+                let prevEle = $('#message-' + firstElement.attr('data-message-id')).prev();
+                while(!prevEle.attr('id') || prevEle.attr('id') == 'messages-today') {
+                    prevEle = prevEle.prev();
+                }
+                window.location.hash = '#message-' + prevEle.attr('data-message-id');
+
+                // Delete the display date with the same
+                var numOfDate = $('.' + date + '').length;
+                if (numOfDate > 1) {
+                    $('.' + date + '').each(function (index) {
+                        if (index > 0) {
+                            $(this).remove();
+                        }
+                    });
+                }
+                loadingMore = false;
+            })
+            .catch(function (error) {
+                loadingMore = false;
+                console.log(error);
             });
-          }
-      })
-      .catch(function (error) {
-        console.log(error);
-      });
-    }
-  });
+      }
+    });
+  }
+
 
   $('.cancel-order').click(function(event) {
     var currentDate = new Date();
