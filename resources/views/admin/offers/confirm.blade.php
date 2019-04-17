@@ -167,7 +167,7 @@
     <div class="modal-dialog" role="document">
       <form action="{{ route('admin.offers.store') }}" method="POST" id="form-send-line">
         {{ csrf_field() }}
-        <input type="hidden" value="" name="choose_guest" class="choose-guests">
+        <input type="hidden" value="{{ isset($data['guest_ids']) ? $data['guest_ids'] : '' }}" name="choose_guest" class="choose-guests">
         <input type="hidden" value="{{ App\Enums\DeviceType::ANDROID }}" name="device_type">
       </form>
       <div class="modal-content">
@@ -196,7 +196,8 @@
         <div class="modal-footer">
             <button type="button" class="btn btn-canceled" data-dismiss="modal">キャンセル
             </button>
-            <button data-toggle="modal" data-target="#err-choose-guests" class="btn btn-accept btn-choose-guests" id="btn-choose-guests" type="button">
+
+            <button data-toggle="modal" data-target="{{ isset($data['guest_ids']) ? '#choose-guests' : '#err-choose-guests' }}" class="btn btn-accept btn-choose-guests" id="btn-choose-guests" type="button">
               このゲストに送信する
             </button>
         </div>

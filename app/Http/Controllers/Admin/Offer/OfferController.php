@@ -226,6 +226,10 @@ class OfferController extends Controller
 
         if (isset($request->offer_id)) {
             $data['offer_id'] = $request->offer_id;
+
+            $offer = Offer::findOrFail($request->offer_id);
+
+            $data['guest_ids'] = implode(",", $offer->guest_ids);
         }
 
         Session::put('offer', $data);
