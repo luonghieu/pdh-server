@@ -191,7 +191,6 @@
         <input type="button" style="display: none" >
       </button>
     </form>
-    {{--<button class="btn-reset" id="btn-reset">Reset</button>--}}
   </div>
 @endsection
 @section('web.extra')
