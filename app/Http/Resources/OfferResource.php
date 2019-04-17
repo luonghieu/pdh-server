@@ -34,7 +34,7 @@ class OfferResource extends Resource
             'start_time_to' => $this->start_time_to,
             'expired_date' => $this->expired_date,
             'duration' => $this->duration,
-            'cast_ids' => CastResource::collection($casts),
+            'casts' => CastResource::collection($casts),
             'total_cast' => $this->total_cast,
             'temp_point' => $this->temp_point,
             'class_id' => $this->class_id,
