@@ -47,12 +47,16 @@ function handleOpenPopupSelectGuest() {
   $('body').on('click', '.show-list-guests', function (event) {
 
       $('.input-search-guest').val('');
-      
-      $('.choose-guests').val('');
     
       let deviceType = DEVICETYPE.ANDROID;
 
-      renderListGuests(deviceType);
+      let arrGuests = null;
+
+      if($('.choose-guests').val()) {
+        arrGuests = $('.choose-guests').val().split(',');
+      }
+
+      renderListGuests(deviceType, null, arrGuests);
   })
 }
 
@@ -65,7 +69,7 @@ function handleSearchGuest() {
     let arrGuests = null;
 
     if($('.choose-guests').val()) {
-      arrGuests = $('.choose-guests').val().toString();
+      arrGuests = $('.choose-guests').val().split(',');
     }
     renderListGuests(deviceType, search, arrGuests);
   })
