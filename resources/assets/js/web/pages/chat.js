@@ -56,7 +56,7 @@ $(document).ready(function() {
 
         if(e.message.type == 2 || (e.message.type == 1 && e.message.system_type == 1) || e.message.type == 4 || e.message.type == 6) {
           $("#message-box").append(`
-            <div class="msg-left msg-wrap">
+            <div class="messages msg-left msg-wrap">
             <figure>
               <a href=""><img src="`+avatar+`"  alt="" title="" class="alignnone size-full wp-image-515" /></a>
             </figure>
@@ -74,7 +74,7 @@ $(document).ready(function() {
 
         if(e.message.type == 3) {
           $("#message-box").append(`
-            <div class="msg-left msg-wrap">
+            <div class="messages msg-left msg-wrap">
             <figure>
              <a href=""><img src="`+avatar+`"  alt="" title="" class="alignnone size-full wp-image-515" /></a>
             </figure>
@@ -223,7 +223,7 @@ $(document).ready(function() {
 
         if(response.data.data.type == 3) {
           $("#message-box").append(`
-            <div class="msg-right msg-wrap">
+            <div class="messages msg-right msg-wrap">
             <figure>
               <a href=""><img src="`+avatar+`"  alt="" title="" class="alignnone size-full wp-image-515" /></a>
             </figure>
