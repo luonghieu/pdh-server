@@ -35,6 +35,7 @@ $(document).ready(function() {
 
   var roomId = $("#room-id").val();
   var orderId = $("#order-id").val();
+  var userAuthId = $("#user-id").val();
   window.Echo.private('room.'+roomId)
     .listen('MessageCreated', (e) => {
       var message = e.message.message;
@@ -46,6 +47,13 @@ $(document).ready(function() {
       var result = pattern.exec(createdAt);
       var time = result[1]+':'+result[2];
       var avatar = e.message.user.avatars[0]['path'];
+      var userId = e.message.user.id;
+      var classMsg = '';
+      if (userAuthId == userId) {
+        classMsg = 'msg-right';
+      } else {
+        classMsg = 'msg-left';
+      }
 
       isValidImage(avatar, function (isValid) {
         if (isValid) {
@@ -56,11 +64,11 @@ $(document).ready(function() {
 
         if(e.message.type == 2 || (e.message.type == 1 && e.message.system_type == 1) || e.message.type == 4 || e.message.type == 6) {
           $("#message-box").append(`
-            <div class="messages msg-left msg-wrap">
+            <div class="messages `+classMsg+` msg-wrap">
             <figure>
               <a href=""><img src="`+avatar+`"  alt="" title="" class="alignnone size-full wp-image-515" /></a>
             </figure>
-            <div class="msg-left-text">
+            <div class="`+classMsg+`-text">
               <div class="text">
                 <div class="text-wrapper">
                   <p>`+message.replace(/\n/g, "<br />")+`</p>
@@ -74,11 +82,11 @@ $(document).ready(function() {
 
         if(e.message.type == 3) {
           $("#message-box").append(`
-            <div class="messages msg-left msg-wrap">
+            <div class="messages `+classMsg+` msg-wrap">
             <figure>
              <a href=""><img src="`+avatar+`"  alt="" title="" class="alignnone size-full wp-image-515" /></a>
             </figure>
-            <div class="msg-left-text">
+            <div class="`+classMsg+`-text">
               <div class="pic">
                 <p>
                   <img src="`+e.message.image+`"  alt="" title="" class="">
@@ -160,49 +168,52 @@ $(document).ready(function() {
   function readURL(input) {
     if (input.files && input.files[0]) {
       const reader = new FileReader();
-      reader.onload =  function(e) {
-        $('#my-image').attr('src', e.target.result);
-        const oj = {
-          enableExif: true,
-          viewport: {
-            width: $('.wrap-croppie-image').width() - 10,
-            height: $('.wrap-croppie-image').width()
-          },
-          enableOrientation: true,
-        };
+      reader.onload = function (e) {
+          $('#my-image').attr('src', e.target.result);
+          const oj = {
+            enableExif: true,
+            viewport: {
+              width: $('.wrap-croppie-image').width() - 10,
+              height: $('.wrap-croppie-image').width()
+            },
+            enableOrientation: true,
+          };
 
-        if (resize) {
-          resize.bind({ url : e.target.result });
-          $('#croppie-image-modal').trigger('click')
+          if (resize) {
+            resize.bind({url: e.target.result});
+            $('#croppie-image-modal').trigger('click')
+          } else {
+            resize = new Croppie($('#my-image')[0], oj);
+            $('#croppie-image-modal').trigger('click')
+          }
 
-        } else {
-          resize = new Croppie($('#my-image')[0], oj);
-          $('#croppie-image-modal').trigger('click')
-        }
+          $('#crop-image-btn-accept').fadeIn();
+    }
 
-        $('#crop-image-btn-accept').fadeIn();
-
-      };
-
-      reader.readAsDataURL(input.files[0]);
-      $(input.files[0]).val(null);
+    reader.readAsDataURL(input.files[0]);
+    $(input.files[0]).val(null);
     }
   }
 
   $('#crop-image-btn-accept').on('click', function() {
     var formData = new FormData();
-    resize.result('canvas').then(function(dataImg) {
+    resize.result({
+        type: 'canvas',
+        size: 'original',
+        format: 'jpeg',
+        quality: 1,
+        circle: false,
+    }).then(function(dataImg) {
       fetch(dataImg)
         .then(res => res.blob())
         .then(blob => {
-            formData.append('image', blob);
-            formData.append('type', 3);
+          formData.append('image', blob);
+          formData.append('type', 3);
+          setTimeout(() => {
+            sendMessage(formData);
+          }, 200);
         });
     });
-
-    setTimeout(() => {
-      sendMessage(formData);
-    }, 200);
   });
 
   $("#image-camera").change(function(event) {
