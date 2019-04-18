@@ -13,6 +13,7 @@ class Offer extends Model
 
     protected $casts = [
         'cast_ids' => 'array',
+        'guest_ids' => 'array',
     ];
 
     protected $appends = [
@@ -27,6 +28,7 @@ class Offer extends Model
         'start_time_to',
         'duration',
         'cast_ids',
+        'guest_ids',
         'total_cast',
         'temp_point',
         'class_id',
