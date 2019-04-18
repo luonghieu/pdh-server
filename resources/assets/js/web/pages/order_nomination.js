@@ -1077,6 +1077,11 @@ $(document).ready(function(){
     selectedCouponsNominate(helper);
     helper.loadShift();
     handlerSelectedTransfer();
+
+    $('body').on('click', "#popup-note", function(){
+      $('#md-note').trigger('click');
+    })
+
   } else {
     if(localStorage.getItem("shifts")){
       localStorage.removeItem("shifts");

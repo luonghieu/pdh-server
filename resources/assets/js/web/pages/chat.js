@@ -1,8 +1,17 @@
+let sendingMessage = false;
+let loadingMore = false;
 $(document).ready(function() {
+  let device = 'web';
+  $('.msg').on('touchstart', function(e) {
+    if ($('.content-message').is(':focus')) {
+      $('.content-message').blur();
+    }
+  });
   var userAgent = navigator.userAgent || navigator.vendor || window.opera;
 
   // iOS detection
   if (/iPad|iPhone|iPod/.test(userAgent) && !window.MSStream) {
+    device = 'ios';
     $('#chat .msg').css('height','65%');
     $('#chat #message-box').css('height','100%');
     $('#chat .msg-input').css({
@@ -55,7 +64,7 @@ $(document).ready(function() {
 
         if(e.message.type == 2 || (e.message.type == 1 && e.message.system_type == 1) || e.message.type == 4 || e.message.type == 6) {
           $("#message-box").append(`
-            <div class="`+classMsg+` msg-wrap">
+            <div class="messages `+classMsg+` msg-wrap">
             <figure>
               <a href=""><img src="`+avatar+`"  alt="" title="" class="alignnone size-full wp-image-515" /></a>
             </figure>
@@ -73,7 +82,7 @@ $(document).ready(function() {
 
         if(e.message.type == 3) {
           $("#message-box").append(`
-            <div class="`+classMsg+` msg-wrap">
+            <div class="messages `+classMsg+` msg-wrap">
             <figure>
              <a href=""><img src="`+avatar+`"  alt="" title="" class="alignnone size-full wp-image-515" /></a>
             </figure>
@@ -129,24 +138,21 @@ $(document).ready(function() {
     });
 
   $("#send-message").click(function(event) {
-    var formData = new FormData();
+      $('#content').focus();
+      var content = $("#content").val();
+      if (!$.trim(content)) {
+          return false;
+      }
 
-    $('#content').focus();
-
-    $(this).prop('disabled', true);
-
-    var content = $("#content").val();
-    if($.trim(content)) {
+      var formData = new FormData();
 
       formData.append('message', content);
       formData.append('type', 2);
 
-      sendMessage(formData);
-    } else {
-      return false;
-    }
-
-    event.preventDefault();
+      if (!sendingMessage) {
+        sendMessage(formData);
+      }
+      event.preventDefault();
   });
 
   $("#content").click(function(event) {
@@ -216,6 +222,7 @@ $(document).ready(function() {
   });
 
   function sendMessage(formData) {
+    sendingMessage = true;
     axios.post(`/api/v1/rooms/${roomId}/messages`, formData)
     .then(function (response) {
       var currentDate = new Date();
@@ -240,7 +247,7 @@ $(document).ready(function() {
           message = message.replace(reg_exUrl, '<a href="$1" target="_blank">$1</a>')
 
           $("#message-box").append(`
-            <div class="msg-right msg-wrap">
+            <div class="messages msg-right msg-wrap">
             <figure>
               <a href=""><img src="`+avatar+`"  alt="" title="" class="alignnone size-full wp-image-515" /></a>
             </figure>
@@ -258,7 +265,7 @@ $(document).ready(function() {
 
         if(response.data.data.type == 3) {
           $("#message-box").append(`
-            <div class="msg-right msg-wrap">
+            <div class="messages msg-right msg-wrap">
             <figure>
               <a href=""><img src="`+avatar+`"  alt="" title="" class="alignnone size-full wp-image-515" /></a>
             </figure>
@@ -290,6 +297,14 @@ $(document).ready(function() {
             });
           });
         }
+
+        if ($("#messages-today").length == 0) {
+          const today = moment().format('YYYY-MM-DD');
+          const lastMessage = $('.messages').last();
+          const todayElement = "<div class='msg-date " + today + "'  data-date='" + today + "' id='messages-today'><h3>今日</h3></div>"
+          lastMessage.before(todayElement);
+        }
+
       });
 
       $('body').on('load', '.pic p img', function(){
@@ -313,6 +328,8 @@ $(document).ready(function() {
       $("#content").css('height','30px');
       $("#image-camera").val(null);
       $("#image").val(null);
+
+      sendingMessage = false;
     })
     .catch(function (error) {
       if (error.response.data.message) {
@@ -327,36 +344,103 @@ $(document).ready(function() {
       setTimeout(() => {
         $('.wrap-alert-image-oversize').css('display', 'none');
       }, 2000);
+
+      sendingMessage = false;
     });
   }
 
-  $(document).on('scroll', function(e) {
-    if(!$(".next-page").attr("data-url")) {
-      return false;
-    }
 
-    if($(this).scrollTop() == 0) {
-      var nextpage = $(".next-page").attr("data-url");
+  if (device == 'ios') {
+    $('#message-box').on('scroll', function(e) {
+      var date = $('.msg-date').attr('data-date');
+      if (loadingMore) {
+        return false;
+      }
+      if(!$(".next-page").attr("data-url")) {
+          return false;
+      }
 
-      axios.get(nextpage,{
-        'params': {
-          response_type: 'html'
-        }
-      })
-      .then(function (response) {
-          const firstElement = $('.messages').eq(0);
-          $('#message-box').prepend(response.data);
-          let prevEle = $('#message-' + firstElement.attr('data-message-id')).prev();
-          while(!prevEle.attr('id')) {
-              prevEle = prevEle.prev();
-          }
-          window.location.hash = '#message-' + prevEle.attr('data-message-id');
-      })
-      .catch(function (error) {
-        console.log(error);
-      });
-    }
-  });
+      if ($(this).scrollTop() == 0) {
+          var nextpage = $(".next-page").attr("data-url");
+
+          axios.get(nextpage,{
+              'params': {
+                  response_type: 'html'
+              }
+          })
+              .then(function (response) {
+                  const firstElement = $('.messages').eq(0);
+                  $('#message-box').prepend(response.data);
+                  let prevEle = $('#message-' + firstElement.attr('data-message-id')).prev();
+                  while (!prevEle.attr('id') || prevEle.attr('id') == 'messages-today') {
+                      prevEle = prevEle.prev();
+                  }
+                  window.location.hash = '#message-' + prevEle.attr('data-message-id');
+
+                  // Delete the display date with the same
+                  var numOfDate = $('.' + date + '').length;
+                  if (numOfDate > 1) {
+                    $('.' + date + '').each(function (index) {
+                      if (index > 0) {
+                        $(this).remove();
+                      }
+                    });
+                  }
+
+                  loadingMore = false;
+              })
+              .catch(function (error) {
+                  loadingMore = false;
+                  console.log(error);
+              });
+      }
+    });
+  } else {
+    $(document).on('scroll', function(e) {
+      var date = $('.msg-date').attr('data-date');
+      if (loadingMore) {
+          return false;
+      }
+      if(!$(".next-page").attr("data-url")) {
+          return false;
+      }
+
+      if($(this).scrollTop() == 0) {
+        var nextpage = $(".next-page").attr("data-url");
+
+        axios.get(nextpage,{
+            'params': {
+                response_type: 'html'
+            }
+        })
+            .then(function (response) {
+                const firstElement = $('.messages').eq(0);
+                $('#message-box').prepend(response.data);
+                let prevEle = $('#message-' + firstElement.attr('data-message-id')).prev();
+                while (!prevEle.attr('id') || prevEle.attr('id') == 'messages-today') {
+                    prevEle = prevEle.prev();
+                }
+                window.location.hash = '#message-' + prevEle.attr('data-message-id');
+
+                // Delete the display date with the same
+                var numOfDate = $('.' + date + '').length;
+                if (numOfDate > 1) {
+                    $('.' + date + '').each(function (index) {
+                        if (index > 0) {
+                            $(this).remove();
+                        }
+                    });
+                }
+
+                loadingMore = false;
+            })
+            .catch(function (error) {
+                loadingMore = false;
+                console.log(error);
+            });
+      }
+    });
+  }
 
   $('.cancel-order').click(function(event) {
     var currentDate = new Date();
@@ -390,17 +474,22 @@ $(document).ready(function() {
 $('.msg-system').each(function(index, val) {
   var content = $(this).text();
   var missingPoint = $(this).data('missing-point');
+  var offerId = $(this).data('offer');
   var text2 = 'コチラ';
   var n = content.search(text2);
+
   if(n >= 0) {
     var text1 = content.substring(0, n);
     var text3 = content.substring(n+text2.length, content.length);
     var orderId = $(this).data('id');
     if (missingPoint) {
       var result = text2.link('/payment/transfer?point='+ parseInt(missingPoint));
+    } else if (offerId) {
+      var result = text2.link('/offers/'+ parseInt(offerId));
     } else {
       var result = text2.link('/history/'+ orderId);
     }
+
     var newText = text1 + result + text3;
     $(this).html(newText.replace(/\n/g, "<br />"));
   } else {

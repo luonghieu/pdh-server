@@ -88,6 +88,7 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.'], function () {
         Route::put('change_stop_time_order_nominee', ['as' => 'change_stop_time_order_nominee', 'uses' => 'OrderController@changeStopTimeOrderNominee']);
         Route::get('/casts/{classId}', ['as' => 'get_cast_by_classid', 'uses' => 'OrderController@getCasts']);
         Route::put('/{id}', ['as' => 'get_cast_by_classid', 'uses' => 'OrderController@updateOrderCall']);
+        Route::get('/list_guests', ['as' => 'get_guest_by_device_type', 'uses' => 'OrderController@getListGuests']);
     });
 
     Route::group(['middleware' => 'is_admin'], function () {

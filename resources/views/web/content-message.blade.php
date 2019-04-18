@@ -15,10 +15,15 @@
     $messagesData = $messagesData->sortKeys();
   @endphp
   @foreach ($messagesData as $key => $message)
+    @php
+    $date = Carbon\Carbon::parse($key);
+    @endphp
     @if ($key == now()->today()->format('Y-m-d'))
-    <div class="msg-date"><h3>今日</h3></div>
+    <div class="msg-date {{ $key }}" data-date="{{ $key }}" id="messages-today"><h3>今日</h3></div>
     @else
-    <div class="msg-date"><h3>{{ Carbon\Carbon::parse($key)->diffForHumans()}}</h3></div>
+    <div class="msg-date {{ $date->format('Y-m-d') }}" data-date="{{ $date->format('Y-m-d') }}">
+      <h3>{{ $date->format('m/d') }}({{ dayOfWeek()[$date->dayOfWeek] }})</h3>
+    </div>
     @endif
     @foreach ($message[0] as $elements)
     @php
@@ -74,9 +79,10 @@
             <div class="text">
               <div class="text-wrapper">
                 @if ($element['order_id'])
-                <p class="msg-system" data-id='{{ $element['order_id'] }}' data-missing-point="{{ $element['missing_point'] }}">{!! nl2br($element['message']) !!}</p>
+                <p class="msg-system" data-id='{{ $element['order_id'] }}' data-missing-point="{{ $element['missing_point'] }}"
+                 data-offer="{{ $element['offer_id'] }}" >{!! nl2br($element['message']) !!}</p>
                 @else
-                <p>
+                <p class="msg-system"  data-offer="{{ $element['offer_id'] }}">
                   {!! nl2br(transferLinkMessage($element['message'])) !!}
                 </p>
                 @endif

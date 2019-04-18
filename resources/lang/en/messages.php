@@ -78,4 +78,5 @@ return [
     'coupon_invalid' => 'Coupon invalid',
     'invite_code_history_not_found' => 'Invite code history not found',
     'update_shifts_success' => 'Update shifts successfully',
+    'offer_not_found' => 'Offer is not found',
 ];
