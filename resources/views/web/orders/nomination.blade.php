@@ -270,7 +270,7 @@
       <label for="md-note" class="modal_trigger"></label>
       <div class="modal_content modal_content-btn1">
         <div class="text-box">
-          <h2 style="font-size: 1em;">複数のキャストを指名したい場合は、<br>予約完了後、再度他のキャストを選択し、<br> 指名予約を行って下さい。</h2>
+          <h2 style="font-size: 1em; padding-bottom: 1.8em;">複数のキャストを指名したい場合は、<br>予約完了後、再度他のキャストを選択し、<br> 指名予約を行って下さい。</h2>
         </div>
         <label for="md-note" class="close_button ">OK</label>
       </div>
