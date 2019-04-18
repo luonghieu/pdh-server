@@ -155,28 +155,62 @@ $(document).ready(function() {
     $("#send-message").prop('disabled', false);
   });
 
-  $("#image-camera").change(function(event) {
-    var formData = new FormData();
-    var filesCamera = $('#image-camera').prop('files');
+  var resize = null;
 
-    if(filesCamera.length > 0){
-      formData.append('image', filesCamera[0]);
-      formData.append('type', 3);
+  function readURL(input) {
+    if (input.files && input.files[0]) {
+      const reader = new FileReader();
+      reader.onload =  function(e) {
+        $('#my-image').attr('src', e.target.result);
+        const oj = {
+          enableExif: true,
+          viewport: {
+            width: $('.wrap-croppie-image').width() - 10,
+            height: $('.wrap-croppie-image').width()
+          },
+          enableOrientation: true,
+        };
+
+        if (resize) {
+          resize.bind({ url : e.target.result });
+          $('#croppie-image-modal').trigger('click')
+
+        } else {
+          resize = new Croppie($('#my-image')[0], oj);
+          $('#croppie-image-modal').trigger('click')
+        }
+
+        $('#crop-image-btn-accept').fadeIn();
+
+      };
+
+      reader.readAsDataURL(input.files[0]);
+      $(input.files[0]).val(null);
     }
+  }
 
-    sendMessage(formData);
+  $('#crop-image-btn-accept').on('click', function() {
+    var formData = new FormData();
+    resize.result('canvas').then(function(dataImg) {
+      fetch(dataImg)
+        .then(res => res.blob())
+        .then(blob => {
+            formData.append('image', blob);
+            formData.append('type', 3);
+        });
+    });
+
+    setTimeout(() => {
+      sendMessage(formData);
+    }, 200);
   });
 
-  $("#image").change(function(event) {
-    var formData = new FormData();
-    var files = $('#image').prop('files');
+  $("#image-camera").change(function(event) {
+    readURL(this);
+  });
 
-    if (files.length > 0) {
-      formData.append('image', files[0]);
-      formData.append('type', 3);
-    }
-
-    sendMessage(formData);
+  $("#image").change(function() {
+    readURL(this);
   });
 
   function sendMessage(formData) {
