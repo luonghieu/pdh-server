@@ -56,7 +56,7 @@ $(document).ready(function() {
 
         if(e.message.type == 2 || (e.message.type == 1 && e.message.system_type == 1) || e.message.type == 4 || e.message.type == 6) {
           $("#message-box").append(`
-            <div class="msg-left msg-wrap">
+            <div class="messages msg-left msg-wrap">
             <figure>
               <a href=""><img src="`+avatar+`"  alt="" title="" class="alignnone size-full wp-image-515" /></a>
             </figure>
@@ -74,7 +74,7 @@ $(document).ready(function() {
 
         if(e.message.type == 3) {
           $("#message-box").append(`
-            <div class="msg-left msg-wrap">
+            <div class="messages msg-left msg-wrap">
             <figure>
              <a href=""><img src="`+avatar+`"  alt="" title="" class="alignnone size-full wp-image-515" /></a>
             </figure>
@@ -239,7 +239,7 @@ $(document).ready(function() {
           message = message.replace(reg_exUrl, '<a href="$1" target="_blank">$1</a>')
 
           $("#message-box").append(`
-            <div class="msg-right msg-wrap">
+            <div class="messages msg-right msg-wrap">
             <figure>
               <a href=""><img src="`+avatar+`"  alt="" title="" class="alignnone size-full wp-image-515" /></a>
             </figure>
@@ -257,7 +257,7 @@ $(document).ready(function() {
 
         if(response.data.data.type == 3) {
           $("#message-box").append(`
-            <div class="msg-right msg-wrap">
+            <div class="messages msg-right msg-wrap">
             <figure>
               <a href=""><img src="`+avatar+`"  alt="" title="" class="alignnone size-full wp-image-515" /></a>
             </figure>
@@ -289,6 +289,14 @@ $(document).ready(function() {
             });
           });
         }
+
+        if ($("#messages-today").length == 0) {
+          const today = moment().format('YYYY-MM-DD');
+          const lastMessage = $('.messages').last();
+          const todayElement = "<div class='msg-date " + today + "'  data-date='" + today + "' id='messages-today'><h3>今日</h3></div>"
+          lastMessage.before(todayElement);
+        }
+
       });
 
       $('body').on('load', '.pic p img', function(){
@@ -333,8 +341,10 @@ $(document).ready(function() {
     });
   }
 
+
   if (device == 'ios') {
     $('#message-box').on('scroll', function(e) {
+      var date = $('.msg-date').attr('data-date');
       if (loadingMore) {
         return false;
       }
@@ -342,7 +352,7 @@ $(document).ready(function() {
           return false;
       }
 
-      if($(this).scrollTop() == 0) {
+      if ($(this).scrollTop() == 0) {
           var nextpage = $(".next-page").attr("data-url");
 
           axios.get(nextpage,{
@@ -354,10 +364,20 @@ $(document).ready(function() {
                   const firstElement = $('.messages').eq(0);
                   $('#message-box').prepend(response.data);
                   let prevEle = $('#message-' + firstElement.attr('data-message-id')).prev();
-                  while(!prevEle.attr('id')) {
+                  while (!prevEle.attr('id') || prevEle.attr('id') == 'messages-today') {
                       prevEle = prevEle.prev();
                   }
                   window.location.hash = '#message-' + prevEle.attr('data-message-id');
+
+                  // Delete the display date with the same
+                  var numOfDate = $('.' + date + '').length;
+                  if (numOfDate > 1) {
+                    $('.' + date + '').each(function (index) {
+                      if (index > 0) {
+                        $(this).remove();
+                      }
+                    });
+                  }
 
                   loadingMore = false;
               })
@@ -366,7 +386,7 @@ $(document).ready(function() {
                   console.log(error);
               });
       }
-      });
+    });
   } else {
     $(document).on('scroll', function(e) {
       if (loadingMore) {
@@ -388,7 +408,7 @@ $(document).ready(function() {
                 const firstElement = $('.messages').eq(0);
                 $('#message-box').prepend(response.data);
                 let prevEle = $('#message-' + firstElement.attr('data-message-id')).prev();
-                while(!prevEle.attr('id')) {
+                while (!prevEle.attr('id') || prevEle.attr('id') == 'messages-today') {
                     prevEle = prevEle.prev();
                 }
                 window.location.hash = '#message-' + prevEle.attr('data-message-id');
@@ -402,7 +422,6 @@ $(document).ready(function() {
       }
     });
   }
-
 
   $('.cancel-order').click(function(event) {
     var currentDate = new Date();
