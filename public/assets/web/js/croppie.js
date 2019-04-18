@@ -1281,6 +1281,8 @@
     }
 
     function _bind(options, cb) {
+        $('.cr-image').css({'opacity': 0});
+
         var self = this,
             url,
             points = [],
@@ -1351,6 +1353,7 @@
             _updatePropertiesFromImage.call(self);
             _triggerUpdate.call(self);
             cb && cb();
+            $('.cr-image').css({'opacity': 1});
         });
     }
 
