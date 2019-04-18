@@ -96,7 +96,7 @@
             <tbody>
               @if (empty($casts->count()))
                 <tr>
-                  <td colspan="13">{{ trans('messages.cast_not_found') }}</td>
+                  <td colspan="12">{{ trans('messages.cast_not_found') }}</td>
                 </tr>
               @else
                 @foreach ($casts as $key => $cast)
@@ -115,11 +115,7 @@
                   <td>
                     @php
                         $textCastTemp = '';
-                        if ($cast->cast_transfer_status == App\Enums\CastTransferStatus::VERIFIED_STEP_ONE
-                            || $cast->cast_transfer_status == App\Enums\CastTransferStatus::PENDING
-                            || $cast->cast_transfer_status == App\Enums\CastTransferStatus::APPROVED
-                            || ($cast->cast_transfer_status == App\Enums\CastTransferStatus::DENIED
-                                && $cast->gender == App\Enums\UserGender::FEMALE)) {
+                        if ($cast->cast_transfer_status == App\Enums\CastTransferStatus::APPROVED) {
                             $textCastTemp = '(仮)';
                         }
                     @endphp
