@@ -175,6 +175,7 @@
     <form action="" enctype="multipart/form-data" method="POST" class="msg-input-box">
       <input type="hidden" name="room_id" value="{{ $room->id }}" id="room-id">
       <input type="hidden" name="order_id" value="{{ $messages['order']['id'] }}" id="order-id">
+      <input type="hidden" name="user_id" value="{{ Auth::user()->id }}" id="user-id">
       <label class="msg-input-pic">
         <img src="/assets/web/images/gg2/picture.svg">
         <input type="file" style="display: none" name="image" accept="image/*" id="image">

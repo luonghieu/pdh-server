@@ -26,6 +26,7 @@ $(document).ready(function() {
 
   var roomId = $("#room-id").val();
   var orderId = $("#order-id").val();
+  var userAuthId = $("#user-id").val();
   window.Echo.private('room.'+roomId)
     .listen('MessageCreated', (e) => {
       var message = e.message.message;
@@ -37,6 +38,13 @@ $(document).ready(function() {
       var result = pattern.exec(createdAt);
       var time = result[1]+':'+result[2];
       var avatar = e.message.user.avatars[0]['path'];
+      var userId = e.message.user.id;
+      var classMsg = '';
+      if (userAuthId == userId) {
+        classMsg = 'msg-right';
+      } else {
+        classMsg = 'msg-left';
+      }
 
       isValidImage(avatar, function (isValid) {
         if (isValid) {
@@ -47,11 +55,11 @@ $(document).ready(function() {
 
         if(e.message.type == 2 || (e.message.type == 1 && e.message.system_type == 1) || e.message.type == 4 || e.message.type == 6) {
           $("#message-box").append(`
-            <div class="msg-left msg-wrap">
+            <div class="`+classMsg+` msg-wrap">
             <figure>
               <a href=""><img src="`+avatar+`"  alt="" title="" class="alignnone size-full wp-image-515" /></a>
             </figure>
-            <div class="msg-left-text">
+            <div class="`+classMsg+`-text">
               <div class="text">
                 <div class="text-wrapper">
                   <p>`+message.replace(/\n/g, "<br />")+`</p>
@@ -65,11 +73,11 @@ $(document).ready(function() {
 
         if(e.message.type == 3) {
           $("#message-box").append(`
-            <div class="msg-left msg-wrap">
+            <div class="`+classMsg+` msg-wrap">
             <figure>
              <a href=""><img src="`+avatar+`"  alt="" title="" class="alignnone size-full wp-image-515" /></a>
             </figure>
-            <div class="msg-left-text">
+            <div class="`+classMsg+`-text">
               <div class="pic">
                 <p>
                   <img src="`+e.message.image+`"  alt="" title="" class="">
