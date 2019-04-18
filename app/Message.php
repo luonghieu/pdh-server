@@ -18,6 +18,7 @@ class Message extends Model
         'room_id',
         'user_id',
         'order_id',
+        'offer_id',
         'thumbnail',
         'message',
         'image',
@@ -25,7 +26,7 @@ class Message extends Model
         'system_type',
         'is_manual',
         'created_at',
-        'missing_point'
+        'missing_point',
     ];
 
     protected $casts = [
