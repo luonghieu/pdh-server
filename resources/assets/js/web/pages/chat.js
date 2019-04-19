@@ -1,3 +1,4 @@
+import Compressor from 'compressorjs';
 let sendingMessage = false;
 let loadingMore = false;
 $(document).ready(function() {
@@ -207,32 +208,38 @@ $(document).ready(function() {
   function readURL(input) {
     if (input.files && input.files[0]) {
       const reader = new FileReader();
-      reader.onload =  function(e) {
-        $('#my-image').attr('src', e.target.result);
-        const oj = {
-          enableExif: true,
-          viewport: {
-            width: $('.wrap-croppie-image').width() - 10,
-            height: $('.wrap-croppie-image').width()
-          },
-          enableOrientation: true,
-        };
+      reader.onload = function (e) {
+        new Compressor(input.files[0], {
+          quality: 0.6,
+          success(result) {
+          $('#my-image').attr('src', e.target.result);
+          const oj = {
+            enableExif: true,
+            viewport: {
+              width: $('.wrap-croppie-image').width() - 10,
+              height: $('.wrap-croppie-image').width()
+            },
+            enableOrientation: true,
+          };
 
-        if (resize) {
-          resize.bind({ url : e.target.result });
-          $('#croppie-image-modal').trigger('click')
+          if (resize) {
+            resize.bind({url: e.target.result});
+            $('#croppie-image-modal').trigger('click')
+          } else {
+            resize = new Croppie($('#my-image')[0], oj);
+            $('#croppie-image-modal').trigger('click')
+          }
 
-        } else {
-          resize = new Croppie($('#my-image')[0], oj);
-          $('#croppie-image-modal').trigger('click')
-        }
+          $('#crop-image-btn-accept').fadeIn();
+        },
+        error(err) {
+          console.log(err.message);
+        },
+      });
+    }
 
-        $('#crop-image-btn-accept').fadeIn();
-
-      };
-
-      reader.readAsDataURL(input.files[0]);
-      $(input.files[0]).val(null);
+    reader.readAsDataURL(input.files[0]);
+    $(input.files[0]).val(null);
     }
   }
 
@@ -408,7 +415,10 @@ $(document).ready(function() {
           })
               .then(function (response) {
                   const firstElement = $('.messages').eq(0);
-                  $('#message-box').prepend(response.data);
+                  const messageBox = $('#message-box');
+                  messageBox.prepend(response.data);
+                  messageBox.css({'transform' : 'translate3d(0,0,0);'});
+                  messageBox.css({'-webkit-transform' : 'translate3d(0,0,0);'});
                   let prevEle = $('#message-' + firstElement.attr('data-message-id')).prev();
                   while (!prevEle.attr('id') || prevEle.attr('id') == 'messages-today') {
                       prevEle = prevEle.prev();
@@ -454,7 +464,10 @@ $(document).ready(function() {
         })
             .then(function (response) {
                 const firstElement = $('.messages').eq(0);
-                $('#message-box').prepend(response.data);
+                const messageBox = $('#message-box');
+                messageBox.prepend(response.data);
+                messageBox.css({'transform' : 'translate3d(0,0,0);'});
+                messageBox.css({'-webkit-transform' : 'translate3d(0,0,0);'});
                 let prevEle = $('#message-' + firstElement.attr('data-message-id')).prev();
 
                 while (!prevEle.attr('id') || prevEle.attr('id') == 'messages-today') {
