@@ -210,7 +210,8 @@ $(document).ready(function() {
       const reader = new FileReader();
       reader.onload = function (e) {
         new Compressor(input.files[0], {
-          quality: 0.6,
+          quality: 0.8,
+          convertSize: 1000000,
           success(result) {
           $('#my-image').attr('src', e.target.result);
           const oj = {
