@@ -370,7 +370,10 @@ $(document).ready(function() {
           })
               .then(function (response) {
                   const firstElement = $('.messages').eq(0);
-                  $('#message-box').prepend(response.data);
+                  const messageBox = $('#message-box');
+                  messageBox.prepend(response.data);
+                  messageBox.css({'transform' : 'translate3d(0,0,0);'});
+                  messageBox.css({'-webkit-transform' : 'translate3d(0,0,0);'});
                   let prevEle = $('#message-' + firstElement.attr('data-message-id')).prev();
                   while (!prevEle.attr('id') || prevEle.attr('id') == 'messages-today') {
                       prevEle = prevEle.prev();
@@ -415,7 +418,10 @@ $(document).ready(function() {
         })
             .then(function (response) {
                 const firstElement = $('.messages').eq(0);
-                $('#message-box').prepend(response.data);
+                const messageBox = $('#message-box');
+                messageBox.prepend(response.data);
+                messageBox.css({'transform' : 'translate3d(0,0,0);'});
+                messageBox.css({'-webkit-transform' : 'translate3d(0,0,0);'});
                 let prevEle = $('#message-' + firstElement.attr('data-message-id')).prev();
                 while (!prevEle.attr('id') || prevEle.attr('id') == 'messages-today') {
                     prevEle = prevEle.prev();
