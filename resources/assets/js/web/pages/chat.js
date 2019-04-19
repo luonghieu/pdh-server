@@ -22,6 +22,7 @@ $(document).ready(function() {
 
       if ($(this).val()) {
         if('-30px' == margin) {
+          console.log(1)
           $('#chat .msg-input').css({
             'margin-bottom' : '0px'
           })
@@ -33,6 +34,7 @@ $(document).ready(function() {
       let margin = $('#chat .msg-input').css("margin-bottom");
 
       if('-30px' == margin) {
+          console.log(2)
           $('#chat .msg-input').css({
             'margin-bottom' : '0px'
           })
@@ -42,7 +44,7 @@ $(document).ready(function() {
     $('#content').on("keyup", function(e){
       // enter key code is 13
       if(e.which == 13){
-        console.log(1)
+        console.log(3)
         $('#chat .msg-input').css({
           'margin-bottom' : '-30px'
         });
@@ -55,9 +57,10 @@ $(document).ready(function() {
 
       $('#content').on('blur', function(e) {
         if ('ios' == device) {
-          $('#chat .msg-input').css({
+          setTimeout(function(){ $('#chat .msg-input').css({
             'margin-bottom' : '-30px'
-          });
+          }); }, 100);
+          
         }
       })
 
