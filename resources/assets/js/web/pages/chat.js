@@ -41,30 +41,24 @@ $(document).ready(function() {
         }
     });
 
-    $('#content').on("keyup", function(e){
-      // enter key code is 13
-      if(e.which == 13){
-        console.log(3)
-        $('#chat .msg-input').css({
-          'margin-bottom' : '-30px'
-        });
-      } 
-    })
+    // $('#content').on("keyup", function(e){
+    //   // enter key code is 13
+    //   if(e.which == 13){
+    //     console.log(3)
+    //     $('#chat .msg-input').css({
+    //       'margin-bottom' : '-30px'
+    //     });
+    //   } 
+    // })
   }
 
   $('#message-box').on('touchstart', function(e) {
     if ($('#content').is(':focus')) {
-
-      $('#content').on('blur', function(e) {
-        if ('ios' == device) {
+          $('#content').blur();
+          console.log(3)
           setTimeout(function(){ $('#chat .msg-input').css({
-            'margin-bottom' : '-30px'
-          }); }, 100);
-          
-        }
-      })
-
-      $('#content').blur();
+        'margin-bottom' : '-30px'
+      }); }, 100);
     }
   });
 
@@ -186,6 +180,7 @@ $(document).ready(function() {
 
   $("#send-message").click(function(event) {
       $('#content').focus();
+
       var content = $("#content").val();
       if (!$.trim(content)) {
           return false;
