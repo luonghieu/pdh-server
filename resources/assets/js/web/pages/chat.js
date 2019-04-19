@@ -42,6 +42,7 @@ $(document).ready(function() {
     $('#content').on("keyup", function(e){
       // enter key code is 13
       if(e.which == 13){
+        console.log(1)
         $('#chat .msg-input').css({
           'margin-bottom' : '-30px'
         });
@@ -49,15 +50,18 @@ $(document).ready(function() {
     })
   }
 
-  $('.msg').on('touchstart', function(e) {
+  $('#message-box').on('touchstart', function(e) {
     if ($('#content').is(':focus')) {
-      $('#content').blur();
 
-      if ('ios' == device) {
-        $('#chat .msg-input').css({
-          'margin-bottom' : '-30px'
-        });
-      }
+      $('#content').on('blur', function(e) {
+        if ('ios' == device) {
+          $('#chat .msg-input').css({
+            'margin-bottom' : '-30px'
+          });
+        }
+      })
+
+      $('#content').blur();
     }
   });
 
