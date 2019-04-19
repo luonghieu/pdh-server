@@ -2,11 +2,7 @@ let sendingMessage = false;
 let loadingMore = false;
 $(document).ready(function() {
   let device = 'web';
-  $('.msg').on('touchstart', function(e) {
-    if ($('#content').is(':focus')) {
-      $('#content').blur();
-    }
-  });
+
   var userAgent = navigator.userAgent || navigator.vendor || window.opera;
 
   // iOS detection
@@ -42,22 +38,27 @@ $(document).ready(function() {
         }
     });
 
-    $('#message-box').on('click',function() {
-      $('#chat .msg-input').css({
-        'margin-bottom' : '-30px'
-      });
-    });
-
-    $('#content').bind("keypress", function(e){
-       // enter key code is 13
-      if(e.which === 13){
+    $('#content').on("keyup", function(e){
+      // enter key code is 13
+      if(e.which == 13){
         $('#chat .msg-input').css({
           'margin-bottom' : '-30px'
         });
       } 
     })
-
   }
+
+  $('.msg').on('touchstart', function(e) {
+    if ($('#content').is(':focus')) {
+      $('#content').blur();
+
+      if ('ios' == device) {
+        $('#chat .msg-input').css({
+          'margin-bottom' : '-30px'
+        });
+      }
+    }
+  });
 
   function isValidImage(url, callback) {
     var image = new Image();
