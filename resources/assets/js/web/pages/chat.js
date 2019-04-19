@@ -3,8 +3,8 @@ let loadingMore = false;
 $(document).ready(function() {
   let device = 'web';
   $('.msg').on('touchstart', function(e) {
-    if ($('.content-message').is(':focus')) {
-      $('.content-message').blur();
+    if ($('#content').is(':focus')) {
+      $('#content').blur();
     }
   });
   var userAgent = navigator.userAgent || navigator.vendor || window.opera;
@@ -19,8 +19,8 @@ $(document).ready(function() {
       'bottom':'0',
       'margin-bottom' : '-30px'
     });
-
-    $('.content-message').on('focus',function() {
+    
+    $('#content').on('focus',function() {
       let margin = $('#chat .msg-input').css("margin-bottom");
 
       if ($(this).val()) {
@@ -32,53 +32,31 @@ $(document).ready(function() {
       }
     });
 
-    $('.content-message').on('keyup',function() {
+    $('#content').on('keyup',function() {
       let margin = $('#chat .msg-input').css("margin-bottom");
 
       if('-30px' == margin) {
-        $('#chat .msg-input').css({
-          'margin-bottom' : '0px'
-        })
-      }
-    });
-
-    // $('.content-message').on('focusout',function() {
-    //   $('#chat .msg-input').css({
-    //     'margin-bottom' : '-30px'
-    //   });
-    // });
-
-    // $('body').on('click',function(e) {
-    //   if (!$('#send-message').is(e.target)) {
-    //      console.log(1)
-    //      // if(eventFocus) {
-    //      //  $('#chat .msg-input').css({
-    //      //    'margin-bottom' : '-30px'
-    //      //  })
-    //      // }
-    //   }
-    // });
-
-    var _originalSize = $(window).width() + $(window).height()
-    $(window).resize(function(){
-      let margin = $('#chat .msg-input').css("margin-bottom");
-      if($(window).width() + $(window).height() != _originalSize){
-
-        if ($(this).val()) {
-          if('-30px' == margin) {
-            $('#chat .msg-input').css({
-              'margin-bottom' : '0px'
-            })
-          }
-        } 
-      }else{
-        if('0px' == margin) {
           $('#chat .msg-input').css({
-            'margin-bottom' : '-30px'
+            'margin-bottom' : '0px'
           })
         }
-      }
     });
+
+    $('#message-box').on('click',function() {
+      $('#chat .msg-input').css({
+        'margin-bottom' : '-30px'
+      });
+    });
+
+    $('#content').bind("keypress", function(e){
+       // enter key code is 13
+      if(e.which === 13){
+        $('#chat .msg-input').css({
+          'margin-bottom' : '-30px'
+        });
+      } 
+    })
+
   }
 
   function isValidImage(url, callback) {
