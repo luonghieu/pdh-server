@@ -3,11 +3,7 @@ let sendingMessage = false;
 let loadingMore = false;
 $(document).ready(function() {
   let device = 'web';
-  $('.msg').on('touchstart', function(e) {
-    if ($('.content-message').is(':focus')) {
-      $('.content-message').blur();
-    }
-  });
+
   var userAgent = navigator.userAgent || navigator.vendor || window.opera;
 
   // iOS detection
@@ -20,7 +16,50 @@ $(document).ready(function() {
       'bottom':'0',
       'margin-bottom' : '-30px'
     });
+    
+    $('#content').on('focus',function() {
+      let margin = $('#chat .msg-input').css("margin-bottom");
+
+      if ($(this).val()) {
+        if('-30px' == margin) {
+          $('#chat .msg-input').css({
+            'margin-bottom' : '0px'
+          })
+        }
+      }
+    });
+
+    $('#content').on('keyup',function() {
+      let margin = $('#chat .msg-input').css("margin-bottom");
+
+      if('-30px' == margin) {
+          $('#chat .msg-input').css({
+            'margin-bottom' : '0px'
+          })
+        }
+    });
+
+    $('#content').on("keyup", function(e){
+      // enter key code is 13
+      if(e.which == 13){
+        $('#chat .msg-input').css({
+          'margin-bottom' : '-30px'
+        });
+      } 
+    })
   }
+
+  $('.msg').on('touchstart', function(e) {
+    if ($('#content').is(':focus')) {
+      $('#content').blur();
+
+      if ('ios' == device) {
+        $('#chat .msg-input').css({
+          'margin-bottom' : '-30px'
+        });
+      }
+    }
+  });
 
   function isValidImage(url, callback) {
     var image = new Image();
