@@ -19,7 +19,27 @@ $(document).ready(function() {
       'bottom':'0',
       'margin-bottom' : '-30px'
     });
+
+    $('#content').on('focus',function() {
+      let margin = $('#chat .msg-input').css("margin-bottom");
+      if('-30px' == margin) {
+        $('#chat .msg-input').css({
+          'margin-bottom' : '0px'
+        })
+      }
+    });
   }
+
+  $('#message-box').on('touchend', function(e) {
+    if ($('#content').is(':focus')) {
+      $('#content').blur();
+      if ('ios' == device) {
+        setTimeout(function(){ $('#chat .msg-input').css({
+          'margin-bottom' : '-30px'
+        }); }, 150);
+      }
+    }
+  });
 
   function isValidImage(url, callback) {
     var image = new Image();
