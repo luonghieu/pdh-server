@@ -153,7 +153,7 @@ class MessageController extends ApiController
             $image = request()->file('image');
             $imageName = Uuid::generate()->string . '.' . strtolower($image->getClientOriginalExtension());
             $image = \Image::make($image)->encode('jpg', 75);
-            $fileUploaded = Storage::put($imageName, $image, 'public');
+            $fileUploaded = Storage::put($imageName, $image->__toString(), 'public');
 
             if ($fileUploaded) {
                 $message->image = $imageName;
