@@ -113,7 +113,7 @@ class MessageController extends ApiController
     {
         $rules = [
             'message' => 'required_if:type,2',
-            'image' => 'required_if:type,3|file|image|mimes:jpeg,png,jpg,gif,svg|max:5120',
+            'image' => 'required_if:type,3|file|image|mimes:jpeg,png,jpg,gif,svg',
             'type' => 'required',
             'is_manual' => '',
         ];
