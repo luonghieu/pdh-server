@@ -439,6 +439,8 @@ $(document).ready(function() {
                   loadingMore = false;
                   console.log(error);
               });
+
+          loadingMore = true;
       }
     });
   } else {
@@ -489,6 +491,8 @@ $(document).ready(function() {
                 loadingMore = false;
                 console.log(error);
             });
+
+        loadingMore = true;
       }
     });
   }
