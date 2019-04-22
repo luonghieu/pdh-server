@@ -2,11 +2,7 @@ let sendingMessage = false;
 let loadingMore = false;
 $(document).ready(function() {
   let device = 'web';
-  $('.msg').on('touchstart', function(e) {
-    if ($('.content-message').is(':focus')) {
-      $('.content-message').blur();
-    }
-  });
+
   var userAgent = navigator.userAgent || navigator.vendor || window.opera;
 
   // iOS detection
@@ -19,7 +15,51 @@ $(document).ready(function() {
       'bottom':'0',
       'margin-bottom' : '-30px'
     });
+    
+    $('#content').on('focus',function() {
+      let margin = $('#chat .msg-input').css("margin-bottom");
+
+      if ($(this).val()) {
+        if('-30px' == margin) {
+          console.log(1)
+          $('#chat .msg-input').css({
+            'margin-bottom' : '0px'
+          })
+        }
+      }
+    });
+
+    $('#content').on('keyup',function() {
+      let margin = $('#chat .msg-input').css("margin-bottom");
+
+      if('-30px' == margin) {
+          console.log(2)
+          $('#chat .msg-input').css({
+            'margin-bottom' : '0px'
+          })
+        }
+    });
+
+    // $('#content').on("keyup", function(e){
+    //   // enter key code is 13
+    //   if(e.which == 13){
+    //     console.log(3)
+    //     $('#chat .msg-input').css({
+    //       'margin-bottom' : '-30px'
+    //     });
+    //   } 
+    // })
   }
+
+  $('#message-box').on('touchstart', function(e) {
+    if ($('#content').is(':focus')) {
+          $('#content').blur();
+          console.log(3)
+          setTimeout(function(){ $('#chat .msg-input').css({
+        'margin-bottom' : '-30px'
+      }); }, 100);
+    }
+  });
 
   function isValidImage(url, callback) {
     var image = new Image();
@@ -139,6 +179,7 @@ $(document).ready(function() {
 
   $("#send-message").click(function(event) {
       $('#content').focus();
+
       var content = $("#content").val();
       if (!$.trim(content)) {
           return false;
@@ -169,29 +210,29 @@ $(document).ready(function() {
     if (input.files && input.files[0]) {
       const reader = new FileReader();
       reader.onload = function (e) {
-          $('#my-image').attr('src', e.target.result);
-          const oj = {
-            enableExif: true,
-            viewport: {
-              width: $('.wrap-croppie-image').width() - 10,
-              height: $('.wrap-croppie-image').width()
-            },
-            enableOrientation: true,
-          };
+        $('#my-image').attr('src', e.target.result);
+        const oj = {
+          enableExif: true,
+          viewport: {
+            width: $('.wrap-croppie-image').width() - 10,
+            height: $('.wrap-croppie-image').width()
+          },
+          enableOrientation: true,
+        };
 
-          if (resize) {
-            resize.bind({url: e.target.result});
-            $('#croppie-image-modal').trigger('click')
-          } else {
-            resize = new Croppie($('#my-image')[0], oj);
-            $('#croppie-image-modal').trigger('click')
-          }
+        if (resize) {
+          resize.bind({url: e.target.result});
+          $('#croppie-image-modal').trigger('click')
+        } else {
+          resize = new Croppie($('#my-image')[0], oj);
+          $('#croppie-image-modal').trigger('click')
+        }
 
-          $('#crop-image-btn-accept').fadeIn();
-    }
+       $('#crop-image-btn-accept').fadeIn();
+      }
 
-    reader.readAsDataURL(input.files[0]);
-    $(input.files[0]).val(null);
+      reader.readAsDataURL(input.files[0]);
+      $(input.files[0]).val(null);
     }
   }
 
@@ -352,7 +393,6 @@ $(document).ready(function() {
     });
   }
 
-
   if (device == 'ios') {
     $('#message-box').on('scroll', function(e) {
       var date = $('.msg-date').attr('data-date');
@@ -373,7 +413,10 @@ $(document).ready(function() {
           })
               .then(function (response) {
                   const firstElement = $('.messages').eq(0);
-                  $('#message-box').prepend(response.data);
+                  const messageBox = $('#message-box');
+                  messageBox.prepend(response.data);
+                  messageBox.css({'transform' : 'translate3d(0,0,0);'});
+                  messageBox.css({'-webkit-transform' : 'translate3d(0,0,0);'});
                   let prevEle = $('#message-' + firstElement.attr('data-message-id')).prev();
                   while (!prevEle.attr('id') || prevEle.attr('id') == 'messages-today') {
                       prevEle = prevEle.prev();
@@ -399,6 +442,7 @@ $(document).ready(function() {
       }
     });
   } else {
+      console.log('123');
     $(document).on('scroll', function(e) {
       var date = $('.msg-date').attr('data-date');
       if (loadingMore) {
@@ -418,8 +462,12 @@ $(document).ready(function() {
         })
             .then(function (response) {
                 const firstElement = $('.messages').eq(0);
-                $('#message-box').prepend(response.data);
+                const messageBox = $('#message-box');
+                messageBox.prepend(response.data);
+                messageBox.css({'transform' : 'translate3d(0,0,0);'});
+                messageBox.css({'-webkit-transform' : 'translate3d(0,0,0);'});
                 let prevEle = $('#message-' + firstElement.attr('data-message-id')).prev();
+
                 while (!prevEle.attr('id') || prevEle.attr('id') == 'messages-today') {
                     prevEle = prevEle.prev();
                 }
