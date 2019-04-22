@@ -3831,3 +3831,7 @@ div.user-data span.total-point-cast{
   right: 60px;
   z-index: 2;
 }
+
+#message-box .msg-date {
+  margin-top: 10px;
+}
