@@ -1,4 +1,3 @@
-import Compressor from 'compressorjs';
 let sendingMessage = false;
 let loadingMore = false;
 $(document).ready(function() {
@@ -211,55 +210,51 @@ $(document).ready(function() {
     if (input.files && input.files[0]) {
       const reader = new FileReader();
       reader.onload = function (e) {
-        new Compressor(input.files[0], {
-          quality: 0.8,
-          convertSize: 1000000,
-          success(result) {
-          $('#my-image').attr('src', e.target.result);
-          const oj = {
-            enableExif: true,
-            viewport: {
-              width: $('.wrap-croppie-image').width() - 10,
-              height: $('.wrap-croppie-image').width()
-            },
-            enableOrientation: true,
-          };
+        $('#my-image').attr('src', e.target.result);
+        const oj = {
+          enableExif: true,
+          viewport: {
+            width: $('.wrap-croppie-image').width() - 10,
+            height: $('.wrap-croppie-image').width()
+          },
+          enableOrientation: true,
+        };
 
-          if (resize) {
-            resize.bind({url: e.target.result});
-            $('#croppie-image-modal').trigger('click')
-          } else {
-            resize = new Croppie($('#my-image')[0], oj);
-            $('#croppie-image-modal').trigger('click')
-          }
+        if (resize) {
+          resize.bind({url: e.target.result});
+          $('#croppie-image-modal').trigger('click')
+        } else {
+          resize = new Croppie($('#my-image')[0], oj);
+          $('#croppie-image-modal').trigger('click')
+        }
 
-          $('#crop-image-btn-accept').fadeIn();
-        },
-        error(err) {
-          console.log(err.message);
-        },
-      });
-    }
+       $('#crop-image-btn-accept').fadeIn();
+      }
 
-    reader.readAsDataURL(input.files[0]);
-    $(input.files[0]).val(null);
+      reader.readAsDataURL(input.files[0]);
+      $(input.files[0]).val(null);
     }
   }
 
   $('#crop-image-btn-accept').on('click', function() {
     var formData = new FormData();
-    resize.result('canvas').then(function(dataImg) {
+    resize.result({
+        type: 'canvas',
+        size: 'original',
+        format: 'jpeg',
+        quality: 1,
+        circle: false,
+    }).then(function(dataImg) {
       fetch(dataImg)
         .then(res => res.blob())
         .then(blob => {
-            formData.append('image', blob);
-            formData.append('type', 3);
+          formData.append('image', blob);
+          formData.append('type', 3);
+          setTimeout(() => {
+            sendMessage(formData);
+          }, 200);
         });
     });
-
-    setTimeout(() => {
-      sendMessage(formData);
-    }, 200);
   });
 
   $("#image-camera").change(function(event) {
