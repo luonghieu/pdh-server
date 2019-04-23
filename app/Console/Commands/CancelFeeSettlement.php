@@ -166,20 +166,22 @@ class CancelFeeSettlement extends Command
         } catch (\Exception $e) {
             \DB::rollBack();
             if ($e->getMessage() == 'Auto charge failed') {
-                $user = $order->user;
-                $user->suspendPayment();
-                if (!$order->send_warning) {
-                    $delay = Carbon::now()->addSeconds(3);
-                    $user->notify(new AutoChargeFailedWorkchatNotify($order));
-                    $user->notify((new AutoChargeFailedLineNotify($order))->delay($delay));
+                if (!in_array($order->payment_status, [OrderPaymentStatus::PAYMENT_FINISHED, OrderPaymentStatus::CANCEL_FEE_PAYMENT_FINISHED])) {
+                    $user = $order->user;
+                    $user->suspendPayment();
+                    if (!$order->send_warning) {
+                        $delay = Carbon::now()->addSeconds(3);
+                        $user->notify(new AutoChargeFailedWorkchatNotify($order));
+                        $user->notify((new AutoChargeFailedLineNotify($order))->delay($delay));
 
-                    if (ProviderType::LINE == $user->provider) {
-                        $order->user->notify(new AutoChargeFailed($order));
+                        if (ProviderType::LINE == $user->provider) {
+                            $order->user->notify(new AutoChargeFailed($order));
+                        }
+
+                        $order->send_warning = true;
+                        $order->payment_status = OrderPaymentStatus::PAYMENT_FAILED;
+                        $order->save();
                     }
-
-                    $order->send_warning = true;
-                    $order->payment_status = OrderPaymentStatus::PAYMENT_FAILED;
-                    $order->save();
                 }
             }
             LogService::writeErrorLog($e);

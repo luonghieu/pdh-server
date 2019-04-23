@@ -18,10 +18,19 @@ $(document).ready(function() {
 
     $('body').on('click','#content', function() {
       let margin = $('#chat .msg-input').css("margin-bottom");
+      let iHeight = window.screen.height;
+      let iWidth = window.screen.width;
+  
       if('-30px' == margin) {
-        $('#chat .msg-input').css({
-          'margin-bottom' : '0px'
-        })
+        if (iWidth === 375 && iHeight === 667) {
+          $('#chat .msg-input').css({
+            'margin-bottom' : '8px'
+          })
+        } else {
+          $('#chat .msg-input').css({
+            'margin-bottom' : '0px'
+          })
+        }
       }
     });
   }
