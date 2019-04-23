@@ -1035,6 +1035,7 @@ class OrderController extends Controller
         $order->save();
 
         $cast->pivot->canceled_at = null;
+        $cast->pivot->deleted_at = null;
         $cast->pivot->status = CastOrderStatus::ACCEPTED;
         $cast->pivot->save();
 
