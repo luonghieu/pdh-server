@@ -92,7 +92,7 @@ class RatingController extends ApiController
             }
 
             $ratedUser = User::find($request->rated_id);
-            $avgScore = $ratedUser->ratings()->avg('score');
+            $avgScore = $ratedUser->ratings()->where('is_valid', true)->avg('score');
 
             $ratedUser->rating_score = round($avgScore, 1);
             $ratedUser->save();
