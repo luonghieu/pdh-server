@@ -57,7 +57,7 @@
         </div>
     </div>
 
-    <div class="modal_wrap">
+    <div class="modal_wrap wrap-modal-confirm-payment">
         <input id="payment-confirm" type="checkbox">
         <div class="modal_overlay">
             <label for="payment-confirm" class="modal_trigger"></label>
