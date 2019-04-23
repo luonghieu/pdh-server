@@ -12,9 +12,9 @@
             <p><b>予約ID:</b> {{ $order->id }}</p>
           </div>
           <div class="col-lg-10">
-{{--            @if(in_array($order->status, [App\Enums\OrderStatus::OPEN, App\Enums\OrderStatus::ACTIVE, App\Enums\OrderStatus::PROCESSING]))--}}
+            @if(in_array($order->status, [App\Enums\OrderStatus::OPEN, App\Enums\OrderStatus::ACTIVE, App\Enums\OrderStatus::PROCESSING]))
             <button type="button" data-toggle="modal" data-target="#btn-edit-order-nominee" class="btn btn-info pull-right">予約内容を変更する</button>
-            {{--@endif--}}
+            @endif
             <form action="" method="post">
               <div class="modal fade" id="btn-edit-order-nominee" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
               <div class="modal-dialog" role="document">
