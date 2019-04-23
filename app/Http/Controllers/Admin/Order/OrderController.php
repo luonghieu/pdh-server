@@ -1011,4 +1011,33 @@ class OrderController extends Controller
             'guests' => $guests,
         ]);
     }
+
+    public function updateOrderStatusToActive(Request $request)
+    {
+        $order = Order::where('status', OrderStatus::CANCELED)
+            ->where(function($q) {
+                $q->whereNull('payment_status')
+                    ->orWhere('payment_status', '<>', OrderPaymentStatus::CANCEL_FEE_PAYMENT_FINISHED);
+            })->find($request->id);
+
+        if (!$order) {
+            return redirect()->back();
+        }
+
+        $cast = $order->nomineesWithTrashed()->first();
+        if (!$cast) {
+            return redirect()->back();
+        }
+
+        $order->status = OrderStatus::ACTIVE;
+        $order->canceled_at = null;
+        $order->cancel_fee_percent = null;
+        $order->save();
+
+        $cast->pivot->canceled_at = null;
+        $cast->pivot->status = CastOrderStatus::ACCEPTED;
+        $cast->pivot->save();
+
+        return redirect()->back();
+    }
 }
