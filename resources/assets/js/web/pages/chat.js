@@ -2,11 +2,7 @@ let sendingMessage = false;
 let loadingMore = false;
 $(document).ready(function() {
   let device = 'web';
-  $('.msg').on('touchstart', function(e) {
-    if ($('.content-message').is(':focus')) {
-      $('.content-message').blur();
-    }
-  });
+
   var userAgent = navigator.userAgent || navigator.vendor || window.opera;
 
   // iOS detection
@@ -20,7 +16,7 @@ $(document).ready(function() {
       'margin-bottom' : '-30px'
     });
 
-    $('#content').on('focus',function() {
+    $('body').on('click','#content', function() {
       let margin = $('#chat .msg-input').css("margin-bottom");
       if('-30px' == margin) {
         $('#chat .msg-input').css({
