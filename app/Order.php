@@ -7,6 +7,7 @@ use App\Enums\CastOrderType;
 use App\Enums\CouponType;
 use App\Enums\InviteCodeHistoryStatus;
 use App\Enums\OrderStatus;
+use App\Enums\OrderPaymentStatus;
 use App\Enums\OrderType;
 use App\Enums\PointType;
 use App\Enums\RoomType;
@@ -630,8 +631,28 @@ class Order extends Model
         return $this->hasOne(Point::class);
     }
 
+    protected function isValidForSettlement()
+    {
+        if ($this->status == OrderStatus::DONE && $this->payment_status != OrderPaymentStatus::PAYMENT_FINISHED) {
+            return true;
+        }
+
+        if ($this->status == OrderStatus::CANCELED
+            && $this->cancel_fee_percent > 0
+            && $this->payment_status != OrderPaymentStatus::CANCEL_FEE_PAYMENT_FINISHED
+        ) {
+            return true;
+        }
+
+        return false;
+    }
+
     public function settle()
     {
+        if (!$this->isValidForSettlement()) {
+            return;
+        }
+
         $user = $this->user;
         $totalPoint = $this->total_point;
 
