@@ -126,11 +126,13 @@ class OrderController extends ApiController
         } catch (\Exception $e) {
             DB::rollBack();
             if ($e->getMessage() == 'Auto charge failed') {
-                $order->payment_status = OrderPaymentStatus::PAYMENT_FAILED;
-                $order->save();
-                $delay = Carbon::now()->addSeconds(3);
-                $user->notify(new AutoChargeFailedWorkchatNotify($order));
-                $user->notify((new AutoChargeFailedLineNotify($order))->delay($delay));
+                if (!in_array($order->payment_status, [OrderPaymentStatus::PAYMENT_FINISHED, OrderPaymentStatus::CANCEL_FEE_PAYMENT_FINISHED])) {
+                    $order->payment_status = OrderPaymentStatus::PAYMENT_FAILED;
+                    $order->save();
+                    $delay = Carbon::now()->addSeconds(3);
+                    $user->notify(new AutoChargeFailedWorkchatNotify($order));
+                    $user->notify((new AutoChargeFailedLineNotify($order))->delay($delay));
+                }
             }
 
             LogService::writeErrorLog($e);
