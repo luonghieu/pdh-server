@@ -44,7 +44,13 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.'], function () {
         Route::post('{user}/confirm', ['as' => 'confirm', 'uses' => 'CastController@confirmRegister']);
         Route::post('{user}/save', ['as' => 'save', 'uses' => 'CastController@saveCast']);
         Route::post('{user}/change_status_work', ['as' => 'change_status_work', 'uses' => 'CastController@changeStatusWork'])->where('user', '[0-9]+');
+
         Route::get('{user}/guest_ratings', ['as' => 'guest_ratings', 'uses' => 'RatingController@ratings'])->where('user', '[0-9]+');
+        Route::get('{user}/guest_ratings/{rating}', ['as' => 'guest_rating_detail', 'uses' => 'RatingController@detail'])
+            ->where('user', '[0-9]+')->where('rating', '[0-9]+');
+        Route::post('{user}/guest_ratings/{rating}', ['as' => 'guest_rating_update', 'uses' => 'RatingController@update'])
+            ->where('user', '[0-9]+')->where('rating', '[0-9]+');
+
         Route::get('{user}/operation_history', ['as' => 'operation_history', 'uses' => 'CastController@getOperationHistory'])->where('user', '[0-9]+');
         Route::put('{user}/operation_history', ['as' => 'change_point', 'uses' => 'CastController@changePoint'])->where('user', '[0-9]+');
         Route::get('/export_bank_accounts', ['as' => 'export_bank_accounts', 'uses' => 'CastController@exportBankAccounts']);
