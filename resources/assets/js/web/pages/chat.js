@@ -329,7 +329,7 @@ $(document).ready(function() {
                     if ($("#messages-today").length == 0) {
                         const today = moment().format('YYYY-MM-DD');
                         const lastMessage = $('.messages').last();
-                        const todayElement = "<div class='msg-date " + today + "'  data-date='" + today + "' id='messages-today'><h3>ä»Šæ—¥</h3></div>"
+                        const todayElement = "<div class='msg-date " + today + "'  data-date='" + today + "' id='messages-today'><h3>今日</h3></div>"
                         lastMessage.before(todayElement);
                     }
 
@@ -494,7 +494,7 @@ $(document).ready(function() {
       `);
 
                 $(".msg-head").html(`
-        <h2><span class="mitei msg-head-ttl">æ—¥ç¨‹æœªå®š</span>ã‚­ãƒ£ã‚¹ãƒˆã«äºˆç´„ãƒªã‚¯ã‚¨ã‚¹ãƒˆã—ã‚ˆã†ï¼</h2>
+        <h2><span class="mitei msg-head-ttl">日程未定</span>キャストに予約リクエストしよう！</h2>
       `);
             })
             .catch(function (error) {
@@ -507,7 +507,7 @@ $('.msg-system').each(function(index, val) {
     var content = $(this).text();
     var missingPoint = $(this).data('missing-point');
     var offerId = $(this).data('offer');
-    var text2 = 'ã‚³ãƒãƒ©';
+    var text2 = 'コチラ';
     var n = content.search(text2);
 
     if(n >= 0) {
