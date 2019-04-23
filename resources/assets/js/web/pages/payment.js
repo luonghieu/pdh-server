@@ -1,4 +1,5 @@
 const helper = require('./helper');
+
 $('#gl3 #payment-failed-popup').on('click', function(event) {
   $('#payment-failed').trigger('click');
 });
@@ -9,7 +10,10 @@ $('#request-buy-point-btn').on('click', function(e) {
 });
 
 $('#payment-confirm-btn').on('click', function(e) {
-  $('#payment-form').submit();
+    $('.wrap-modal-confirm-payment').css('display', 'none');
+    setTimeout(function () {
+        $('#payment-form').submit();
+    },200);
 });
 
 $('#payment-submit').on('click', function(e) {
