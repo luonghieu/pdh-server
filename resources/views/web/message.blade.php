@@ -16,6 +16,42 @@
       </div>
     </div>
   </div>
+
+  <div class="modal_wrap">
+    <input id="modal-confirm-cancel-order" type="checkbox">
+    <div class="modal_overlay">
+      <label for="modal-confirm-cancel-order" class="modal_trigger"></label>
+      <div class="modal_content modal_content-btn2">
+        <div class="text-box">
+          <h2>確定予約をキャンセルしますか？</h2>
+          <p>
+            <p>※この操作は取り消しできません</p>
+            <p>※キャンセル料が発生する場合があります</p>
+          </p>
+        </div>
+        <div class="close_button-box">
+          <div class="close_button-block">
+            <label for="modal-confirm-cancel-order" class="close_button  left">いいえ</label>
+          </div>
+          <div class="close_button-block">
+            <label for="modal-confirm-cancel-order" class="close_button cancel-order right">キャンセルする</label>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal_wrap wrap-alert-image-oversize">
+    <input id="alert-image-oversize" type="checkbox">
+    <div class="modal_overlay">
+      <label for="alert-image-oversize" class="modal_trigger"></label>
+      <div class="modal_content modal_content-btn3 alert-image-oversize">
+        <div class="content-in">
+          <h2></h2>
+        </div>
+      </div>
+    </div>
+  </div>
 @endsection
 @section('web.content')
   @if (isset(request()->matching_completed) && request()->matching_completed)
@@ -148,7 +184,7 @@
                 @if ($messages['order']['status'] == App\Enums\OrderStatus::ACTIVE)
                 <li class="d-btm-cancel">
                   <section class="button-box">
-                    <label for="trigger2" class="open_button button-settlement"><span class="btn-cancel">キャンセル</span></label>
+                    <label for="modal-confirm-cancel-order" class="open_button button-settlement"><span class="btn-cancel">キャンセル</span></label>
                   </section>
                 </li>
                 @endif
@@ -193,30 +229,6 @@
       </button>
     </form>
   </div>
-@endsection
-@section('web.extra')
-  <div class="modal_wrap wrap-alert-image-oversize">
-    <input id="alert-image-oversize" type="checkbox">
-    <div class="modal_overlay">
-      <label for="alert-image-oversize" class="modal_trigger"></label>
-      <div class="modal_content modal_content-btn3 alert-image-oversize">
-        <div class="content-in">
-          <h2></h2>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  @confirm(['triggerId' => 'trigger2', 'triggerClass' =>'cancel-order right', 'buttonLeft' => 'いいえ', 'buttonRight' => 'キャンセルする'])
-  @slot('title')
-    確定予約をキャンセルしますか？
-  @endslot
-
-  @slot('content')
-  <p>※この操作は取り消しできません</p>
-  <p>※キャンセル料が発生する場合があります</p>
-  @endslot
-  @endconfirm
 @endsection
 @section('web.extra_js')
 <script>
