@@ -58,7 +58,14 @@
                 </tr>
                 <tr>
                   <th>運営者メモ</th>
-                  <td><textarea id="js-memo">{!! $rating->memo !!}</textarea></td>
+                  <td>
+                    <textarea name="memo" id="js-memo">{!! $rating->memo !!}</textarea>
+                    @if ($errors->has('memo'))
+                      <div class="error pull-left">
+                        <span>{{ $errors->first('memo') }}</span>
+                      </div>
+                    @endif
+                  </td>
                 </tr>
               </table>
               @php
