@@ -15,32 +15,45 @@
             @if(in_array($order->status, [App\Enums\OrderStatus::OPEN, App\Enums\OrderStatus::ACTIVE, App\Enums\OrderStatus::PROCESSING]))
             <button type="button" data-toggle="modal" data-target="#btn-edit-order-nominee" class="btn btn-info pull-right">予約内容を変更する</button>
             @endif
-            <form action="" method="post">
+            <form action="{{ route('admin.orders.order_nominee_edit', ['order' => $order->id]) }}" method="POST">
+              {{ method_field('PUT') }}
+              {{ csrf_field() }}
               <div class="modal fade" id="btn-edit-order-nominee" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
               <div class="modal-dialog" role="document">
                 <div class="modal-content">
                   <div class="modal-body">
                     <div class="title-modal"><h2>予約を編集する</h2></div>
                     <div class="content-modal">
-                      <p>① 予約者ID: 000000</p>
-                      <p>② 予約者名: Akihiro</p>
-                      <p>③ 指名キャスト名: Suzuka</p>
+                      <p>① 予約者ID: {{ $order->id }}</p>
+                      <p>② 予約者名: {{ $order->user->nickname }}</p>
+                      <p>③ 指名キャスト名: {{ $order->nomineesWithTrashed->first()->nickname }}</p>
                       <div class="wrap-edit-start-time">
                         <p>④ キャストとの合流時間</p>
+                        @php
+                          $orderStartDate = \Carbon\Carbon::parse($order->date . ' ' . $order->start_time);
+                          $dateInMonth = $orderStartDate->daysInMonth;
+                        @endphp
                         <div class="start-date-time">
-                          @php
-                            $currentYear = \Carbon\Carbon::now();
-                          @endphp
                           <select name="year" id="edit-year">
-                            <option value="{{$currentYear->year}}" selected="selected">{{$currentYear->year}}年</option>
-                            <option value="{{$currentYear->year+1}}">{{$currentYear->year+1}}年</option>
+                            <option value="{{$orderStartDate->year}}"
+                                    selected="selected">{{$orderStartDate->year}}年</option>
+                            <option value="{{$orderStartDate->year+1}}">{{$orderStartDate->year+1}}年</option>
                           </select>
                           <select name="month" id="edit-month">
                             @for($i = 1; $i <= 12; $i++)
-                              <option value="{{$i}}">{{$i}}月</option>
+                              <option value="{{$i}}" <?=($orderStartDate->month == $i) ? 'selected' : ''
+                                  ?>>{{$i}}月</option>
                             @endfor
                           </select>
-                          <select name="date" id="edit-date">
+                          <select name="day" id="edit-day">
+                            @for($i = 1; $i <= $dateInMonth; $i++)
+                              @php
+                                if($i < 10) {
+                                  $i = '0'.$i;
+                                }
+                              @endphp
+                              <option value="{{$i}}" <?=($orderStartDate->day == $i) ? 'selected' : '' ?> >{{$i}}</option>
+                            @endfor
                           </select>
                           <select name="hour" id="edit-hour">
                             @for($i = 0; $i < 24; $i++)
@@ -49,7 +62,8 @@
                                   $i = '0'.$i;
                                 }
                               @endphp
-                            <option value="{{$i}}">{{$i}}</option>
+                              <option value="{{$i}}" <?=($orderStartDate->hour == $i) ? 'selected' : ''
+                                  ?>>{{$i}}</option>
                             @endfor
                           </select>
                           <select name="minute" id="edit-minute">
@@ -59,7 +73,8 @@
                                   $i = '0'.$i;
                                 }
                               @endphp
-                              <option value="{{$i}}">{{$i}}</option>
+                              <option value="{{$i}}" <?=($orderStartDate->minute == $i) ? 'selected' : ''
+                                  ?>>{{$i}}</option>
                             @endfor
                           </select>
                         </div>
@@ -69,15 +84,19 @@
                         <div class="duration-nominee">
                           <select name="duration" id="edit-duration-nominee">
                             @for ($i = 1; $i < 11; $i++)
-                              <option value="{{ $i }}">{{ $i.'時間' }}</option>
+                              <option value="{{ $i }}" <?= ($order->duration == $i) ? 'selected' : '' ?> >{{ $i.'時間'
+                              }}</option>
                             @endfor
                           </select>
                         </div>
                       </div>
-                      <p>⑥ 予定合計ポイント: 7000P</p>
+                      <p>⑥ 予定合計ポイント: <span id="temp-point">7000P</span></p>
                     </div>
                   </div>
                   <div class="modal-footer">
+                      <input type="hidden" id="order-start-date" name="order_start_date" value="{{
+                      $orderStartDate->format('Y/m/d H:i')
+                      }}">
                       <button type="submit" class="btn btn-accept">更新する</button>
                   </div>
                 </div>
@@ -392,58 +411,10 @@
 @endsection
 @section('admin.js')
   <script type="text/javascript">
-    $(document).ready(function() {
-      var editMonth = $('#edit-month').val();
-      var editYear = $('#edit-year').val();
-
-      $('#edit-month').on('change', function () {
-        document.getElementById('edit-date').disabled=false;
-        document.getElementById("edit-date").innerHTML="";
-        editMonth = $(this).val();
-        var numDate = 0;
-        if (editMonth == 2) {
-          if (((editYear % 4 == 0) && (editYear % 100!= 0)) || (editYear%400 == 0)) {
-            numDate = 29;
-          } else {
-            numDate = 28;
-          }
-        } else {
-          if ((editMonth == 1) || (editMonth == 3) || (editMonth == 5) || (editMonth == 7) || (editMonth == 8) || (editMonth == 10) || (editMonth == 12)) {
-            numDate = 31;
-          } else {
-            numDate = 30;
-          }
-        }
-
-        for (var i = 1; i <= numDate; i++) {
-          $('#edit-date').append('<option value="'+i+'">'+i+'日</option>');
-        }
-      });
-
-      if (editMonth && editYear) {
-        var numDate = 0;
-
-        if (editMonth == 2) {
-          if (((editYear % 4 == 0) && (editYear % 100!= 0)) || (editYear%400 == 0)) {
-            numDate = 29;
-          } else {
-            numDate = 28;
-          }
-        } else {
-          if ((editMonth == 1) || (editMonth == 3) || (editMonth == 5) || (editMonth == 7) || (editMonth == 8) || (editMonth == 10) || (editMonth == 12)) {
-            numDate = 31;
-          } else {
-            numDate = 30;
-          }
-        }
-
-        for (var i = 1; i <= numDate; i++) {
-          $('#edit-date').append('<option value="">'+i+'日</option>');
-        }
-      } else {
-        document.getElementById('edit-date').disabled=true;
-      }
-    });
+    let currentOrderStartDate = '<?= \Carbon\Carbon::parse($order->date . ' ' . $order->start_time)?>';
+    let nominee = JSON.parse('<?php echo json_encode($order->casts[0]) ?>');
+    let orderDuration = '<?= $order->duration ?>';
   </script>
+  <script src="/assets/admin/js/pages/edit_order_nominee.js"></script>
 @stop
 

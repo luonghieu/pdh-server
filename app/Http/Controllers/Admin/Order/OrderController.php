@@ -1011,4 +1011,9 @@ class OrderController extends Controller
             'guests' => $guests,
         ]);
     }
+
+    public function updateNomineeOrder(Request $request)
+    {
+        dd($request->all());
+    }
 }
