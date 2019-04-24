@@ -8,6 +8,7 @@ use App\Enums\OfferStatus;
 use App\Enums\OrderType;
 use App\Enums\UserType;
 use App\Http\Controllers\Controller;
+use App\Notifications\OfferMessageNotifyToAndroidGuest;
 use App\Notifications\OfferMessageNotifyToLine;
 use App\Offer;
 use App\Prefecture;
@@ -225,6 +226,12 @@ class OfferController extends Controller
 
         if (isset($request->offer_id)) {
             $data['offer_id'] = $request->offer_id;
+
+            $offer = Offer::findOrFail($request->offer_id);
+
+            if ($offer->guest_ids) {
+                $data['guest_ids'] = implode(",", $offer->guest_ids);
+            }
         }
 
         Session::put('offer', $data);
@@ -377,11 +384,26 @@ class OfferController extends Controller
             $offer->status = OfferStatus::ACTIVE;
         }
 
+        if ($request->device_type) {
+            if ($request->choose_guest) {
+                $arrIds = explode(",", trim($request->choose_guest, ","));
+                $offer->guest_ids = $arrIds;
+
+                $listGuests = User::whereIn('id', $arrIds)->get();
+            } else {
+                return redirect()->route('admin.offers.index');
+            }
+        }
+
         $offer->save();
 
         if (isset($request->line_offer)) {
             $guests = User::where('type', UserType::GUEST)->get();
             \Notification::send($guests, new OfferMessageNotifyToLine($offer->id));
+        }
+
+        if (isset($listGuests)) {
+            \Notification::send($listGuests, new OfferMessageNotifyToAndroidGuest($offer->id));
         }
 
         if ($request->session()->has('offer')) {

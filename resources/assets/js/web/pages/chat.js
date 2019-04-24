@@ -1,8 +1,13 @@
+let sendingMessage = false;
+let loadingMore = false;
 $(document).ready(function() {
+  let device = 'web';
+
   var userAgent = navigator.userAgent || navigator.vendor || window.opera;
 
   // iOS detection
   if (/iPad|iPhone|iPod/.test(userAgent) && !window.MSStream) {
+    device = 'ios';
     $('#chat .msg').css('height','65%');
     $('#chat #message-box').css('height','100%');
     $('#chat .msg-input').css({
@@ -10,7 +15,36 @@ $(document).ready(function() {
       'bottom':'0',
       'margin-bottom' : '-30px'
     });
+
+    $('body').on('click','#content', function() {
+      let margin = $('#chat .msg-input').css("margin-bottom");
+      let iHeight = window.screen.height;
+      let iWidth = window.screen.width;
+  
+      if('-30px' == margin) {
+        if (iWidth === 375 && iHeight === 667) {
+          $('#chat .msg-input').css({
+            'margin-bottom' : '8px'
+          })
+        } else {
+          $('#chat .msg-input').css({
+            'margin-bottom' : '0px'
+          })
+        }
+      }
+    });
   }
+
+  $('#message-box').on('touchend', function(e) {
+    if ($('#content').is(':focus')) {
+      $('#content').blur();
+      if ('ios' == device) {
+        setTimeout(function(){ $('#chat .msg-input').css({
+          'margin-bottom' : '-30px'
+        }); }, 150);
+      }
+    }
+  });
 
   function isValidImage(url, callback) {
     var image = new Image();
@@ -26,6 +60,7 @@ $(document).ready(function() {
 
   var roomId = $("#room-id").val();
   var orderId = $("#order-id").val();
+  var userAuthId = $("#user-id").val();
   window.Echo.private('room.'+roomId)
     .listen('MessageCreated', (e) => {
       var message = e.message.message;
@@ -37,6 +72,13 @@ $(document).ready(function() {
       var result = pattern.exec(createdAt);
       var time = result[1]+':'+result[2];
       var avatar = e.message.user.avatars[0]['path'];
+      var userId = e.message.user.id;
+      var classMsg = '';
+      if (userAuthId == userId) {
+        classMsg = 'msg-right';
+      } else {
+        classMsg = 'msg-left';
+      }
 
       isValidImage(avatar, function (isValid) {
         if (isValid) {
@@ -47,11 +89,11 @@ $(document).ready(function() {
 
         if(e.message.type == 2 || (e.message.type == 1 && e.message.system_type == 1) || e.message.type == 4 || e.message.type == 6) {
           $("#message-box").append(`
-            <div class="msg-left msg-wrap">
+            <div class="messages `+classMsg+` msg-wrap">
             <figure>
               <a href=""><img src="`+avatar+`"  alt="" title="" class="alignnone size-full wp-image-515" /></a>
             </figure>
-            <div class="msg-left-text">
+            <div class="`+classMsg+`-text">
               <div class="text">
                 <div class="text-wrapper">
                   <p>`+message.replace(/\n/g, "<br />")+`</p>
@@ -65,11 +107,11 @@ $(document).ready(function() {
 
         if(e.message.type == 3) {
           $("#message-box").append(`
-            <div class="msg-left msg-wrap">
+            <div class="messages `+classMsg+` msg-wrap">
             <figure>
              <a href=""><img src="`+avatar+`"  alt="" title="" class="alignnone size-full wp-image-515" /></a>
             </figure>
-            <div class="msg-left-text">
+            <div class="`+classMsg+`-text">
               <div class="pic">
                 <p>
                   <img src="`+e.message.image+`"  alt="" title="" class="">
@@ -121,24 +163,21 @@ $(document).ready(function() {
     });
 
   $("#send-message").click(function(event) {
-    var formData = new FormData();
+      $('#content').focus();
+      var content = $("#content").val();
+      if (!$.trim(content)) {
+          return false;
+      }
 
-    $('#content').focus();
-
-    $(this).prop('disabled', true);
-
-    var content = $("#content").val();
-    if($.trim(content)) {
+      var formData = new FormData();
 
       formData.append('message', content);
       formData.append('type', 2);
 
-      sendMessage(formData);
-    } else {
-      return false;
-    }
-
-    event.preventDefault();
+      if (!sendingMessage) {
+        sendMessage(formData);
+      }
+      event.preventDefault();
   });
 
   $("#content").click(function(event) {
@@ -149,31 +188,69 @@ $(document).ready(function() {
     $("#send-message").prop('disabled', false);
   });
 
-  $("#image-camera").change(function(event) {
-    var formData = new FormData();
-    var filesCamera = $('#image-camera').prop('files');
+  var resize = null;
 
-    if(filesCamera.length > 0){
-      formData.append('image', filesCamera[0]);
-      formData.append('type', 3);
+  function readURL(input) {
+    if (input.files && input.files[0]) {
+      const reader = new FileReader();
+      reader.onload = function (e) {
+          $('#my-image').attr('src', e.target.result);
+          const oj = {
+            enableExif: true,
+            viewport: {
+              width: $('.wrap-croppie-image').width() - 10,
+              height: $('.wrap-croppie-image').width()
+            },
+            enableOrientation: true,
+          };
+
+          if (resize) {
+            resize.bind({url: e.target.result});
+            $('#croppie-image-modal').trigger('click')
+          } else {
+            resize = new Croppie($('#my-image')[0], oj);
+            $('#croppie-image-modal').trigger('click')
+          }
+
+          $('#crop-image-btn-accept').fadeIn();
     }
 
-    sendMessage(formData);
+    reader.readAsDataURL(input.files[0]);
+    $(input.files[0]).val(null);
+    }
+  }
+
+  $('#crop-image-btn-accept').on('click', function() {
+    var formData = new FormData();
+    resize.result({
+        type: 'canvas',
+        size: 'original',
+        format: 'jpeg',
+        quality: 1,
+        circle: false,
+    }).then(function(dataImg) {
+      fetch(dataImg)
+        .then(res => res.blob())
+        .then(blob => {
+          formData.append('image', blob);
+          formData.append('type', 3);
+          setTimeout(() => {
+            sendMessage(formData);
+          }, 200);
+        });
+    });
   });
 
-  $("#image").change(function(event) {
-    var formData = new FormData();
-    var files = $('#image').prop('files');
+  $("#image-camera").change(function(event) {
+    readURL(this);
+  });
 
-    if (files.length > 0) {
-      formData.append('image', files[0]);
-      formData.append('type', 3);
-    }
-
-    sendMessage(formData);
+  $("#image").change(function() {
+    readURL(this);
   });
 
   function sendMessage(formData) {
+    sendingMessage = true;
     axios.post(`/api/v1/rooms/${roomId}/messages`, formData)
     .then(function (response) {
       var currentDate = new Date();
@@ -198,7 +275,7 @@ $(document).ready(function() {
           message = message.replace(reg_exUrl, '<a href="$1" target="_blank">$1</a>')
 
           $("#message-box").append(`
-            <div class="msg-right msg-wrap">
+            <div class="messages msg-right msg-wrap">
             <figure>
               <a href=""><img src="`+avatar+`"  alt="" title="" class="alignnone size-full wp-image-515" /></a>
             </figure>
@@ -216,7 +293,7 @@ $(document).ready(function() {
 
         if(response.data.data.type == 3) {
           $("#message-box").append(`
-            <div class="msg-right msg-wrap">
+            <div class="messages msg-right msg-wrap">
             <figure>
               <a href=""><img src="`+avatar+`"  alt="" title="" class="alignnone size-full wp-image-515" /></a>
             </figure>
@@ -248,6 +325,14 @@ $(document).ready(function() {
             });
           });
         }
+
+        if ($("#messages-today").length == 0) {
+          const today = moment().format('YYYY-MM-DD');
+          const lastMessage = $('.messages').last();
+          const todayElement = "<div class='msg-date " + today + "'  data-date='" + today + "' id='messages-today'><h3>今日</h3></div>"
+          lastMessage.before(todayElement);
+        }
+
       });
 
       $('body').on('load', '.pic p img', function(){
@@ -271,6 +356,8 @@ $(document).ready(function() {
       $("#content").css('height','30px');
       $("#image-camera").val(null);
       $("#image").val(null);
+
+      sendingMessage = false;
     })
     .catch(function (error) {
       if (error.response.data.message) {
@@ -285,30 +372,107 @@ $(document).ready(function() {
       setTimeout(() => {
         $('.wrap-alert-image-oversize').css('display', 'none');
       }, 2000);
+
+      sendingMessage = false;
     });
   }
 
-  $(document).on('scroll', function(e) {
-    if(!$(".next-page").attr("data-url")) {
-      return false;
-    }
 
-    if($(this).scrollTop() == 0) {
-      var nextpage = $(".next-page").attr("data-url");
+  if (device == 'ios') {
+    $('#message-box').on('scroll', function(e) {
+      var date = $('.msg-date').attr('data-date');
+      if (loadingMore) {
+        return false;
+      }
+      if(!$(".next-page").attr("data-url")) {
+          return false;
+      }
 
-      axios.get(nextpage,{
-        'params': {
-          response_type: 'html'
-        }
-      })
-      .then(function (response) {
-        $('#message-box').prepend(response.data);
-      })
-      .catch(function (error) {
-        console.log(error);
-      });
-    }
-  });
+      if ($(this).scrollTop() == 0) {
+          var nextpage = $(".next-page").attr("data-url");
+
+          axios.get(nextpage,{
+              'params': {
+                  response_type: 'html'
+              }
+          })
+              .then(function (response) {
+                  const firstElement = $('.messages').eq(0);
+                  $('#message-box').prepend(response.data);
+                  let prevEle = $('#message-' + firstElement.attr('data-message-id')).prev();
+                  while (!prevEle.attr('id') || prevEle.attr('id') == 'messages-today') {
+                      prevEle = prevEle.prev();
+                  }
+                  window.location.hash = '#message-' + prevEle.attr('data-message-id');
+
+                  // Delete the display date with the same
+                  var numOfDate = $('.' + date + '').length;
+                  if (numOfDate > 1) {
+                    $('.' + date + '').each(function (index) {
+                      if (index > 0) {
+                        $(this).remove();
+                      }
+                    });
+                  }
+
+                  loadingMore = false;
+              })
+              .catch(function (error) {
+                  loadingMore = false;
+                  console.log(error);
+              });
+
+          loadingMore = true;
+      }
+    });
+  } else {
+    $(document).on('scroll', function(e) {
+      var date = $('.msg-date').attr('data-date');
+      if (loadingMore) {
+          return false;
+      }
+      if(!$(".next-page").attr("data-url")) {
+          return false;
+      }
+
+      if($(this).scrollTop() == 0) {
+        var nextpage = $(".next-page").attr("data-url");
+
+        axios.get(nextpage,{
+            'params': {
+                response_type: 'html'
+            }
+        })
+            .then(function (response) {
+                const firstElement = $('.messages').eq(0);
+                $('#message-box').prepend(response.data);
+                let prevEle = $('#message-' + firstElement.attr('data-message-id')).prev();
+                while (!prevEle.attr('id') || prevEle.attr('id') == 'messages-today') {
+                    prevEle = prevEle.prev();
+                }
+                window.location.hash = '#message-' + prevEle.attr('data-message-id');
+
+                // Delete the display date with the same
+                var numOfDate = $('.' + date + '').length;
+                if (numOfDate > 1) {
+                    $('.' + date + '').each(function (index) {
+                        if (index > 0) {
+                            $(this).remove();
+                        }
+                    });
+                }
+
+                loadingMore = false;
+            })
+            .catch(function (error) {
+                loadingMore = false;
+                console.log(error);
+            });
+
+        loadingMore = true;
+      }
+    });
+  }
 
   $('.cancel-order').click(function(event) {
     var currentDate = new Date();
@@ -342,17 +506,22 @@ $(document).ready(function() {
 $('.msg-system').each(function(index, val) {
   var content = $(this).text();
   var missingPoint = $(this).data('missing-point');
+  var offerId = $(this).data('offer');
   var text2 = 'コチラ';
   var n = content.search(text2);
+
   if(n >= 0) {
     var text1 = content.substring(0, n);
     var text3 = content.substring(n+text2.length, content.length);
     var orderId = $(this).data('id');
     if (missingPoint) {
       var result = text2.link('/payment/transfer?point='+ parseInt(missingPoint));
+    } else if (offerId) {
+      var result = text2.link('/offers/'+ parseInt(offerId));
     } else {
       var result = text2.link('/history/'+ orderId);
     }
+
     var newText = text1 + result + text3;
     $(this).html(newText.replace(/\n/g, "<br />"));
   } else {

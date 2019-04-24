@@ -113,7 +113,7 @@ class MessageController extends ApiController
     {
         $rules = [
             'message' => 'required_if:type,2',
-            'image' => 'required_if:type,3|image|mimes:jpeg,png,jpg,gif,svg|max:5120',
+            'image' => 'required_if:type,3|file|image|mimes:jpeg,png,jpg,gif,svg',
             'type' => 'required',
             'is_manual' => '',
         ];
@@ -152,7 +152,8 @@ class MessageController extends ApiController
         if (request()->has('image')) {
             $image = request()->file('image');
             $imageName = Uuid::generate()->string . '.' . strtolower($image->getClientOriginalExtension());
-            $fileUploaded = Storage::put($imageName, file_get_contents($image), 'public');
+            $image = \Image::make($image)->encode('jpg', 75);
+            $fileUploaded = Storage::put($imageName, $image->__toString(), 'public');
 
             if ($fileUploaded) {
                 $message->image = $imageName;
