@@ -82,6 +82,11 @@ return [
             'path' => storage_path('logs/jobs.log'),
             'level' => 'debug',
         ],
+
+        'custom' => [
+            'driver' => 'single',
+            'path' => storage_path('logs/custom.log'),
+        ]
     ],
 
 ];
