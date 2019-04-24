@@ -1931,7 +1931,6 @@ select.init-option-search {
   margin-bottom: 5px;
 }
 
-<<<<<<< HEAD
 #set-status-to-active {
   bottom: 6px;
   width: 112px;
@@ -1942,7 +1941,7 @@ select.init-option-search {
 .wrap-status.text-left span {
   padding-right: 0;
 }
-=======
+
 #btn-edit-order-nominee .content-modal p {
   text-align: start;
   flex-grow: 1;
@@ -1987,7 +1986,6 @@ select.init-option-search {
   width: 80px !important;
 }
 
->>>>>>> feature/MIK-1811
 @media (max-width: 1280px) {
   select.init-option-search {
     margin-right: 1%;
