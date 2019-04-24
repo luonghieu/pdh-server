@@ -1018,6 +1018,9 @@ class OrderController extends Controller
         try {
             \DB::beginTransaction();
             $order = Order::whereIn('status', [OrderStatus::OPEN, OrderStatus::ACTIVE])->find($id);
+            if (!$order) {
+                return redirect()->back();
+            }
 
             $orderStartTime = Carbon::parse($request->order_start_date);
             $duration = $request->duration;
