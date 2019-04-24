@@ -94,20 +94,22 @@ class PointSettlement implements ShouldQueue
             \DB::rollBack();
 
             if ($e->getMessage() == 'Auto charge failed') {
-                $user = $this->order->user;
-                $user->suspendPayment();
-                if (!$this->order->send_warning) {
-                    $delay = Carbon::now()->addSeconds(3);
-                    $user->notify(new AutoChargeFailedWorkchatNotify($this->order));
-                    $user->notify((new AutoChargeFailedLineNotify($this->order))->delay($delay));
+                if (!in_array($this->order->payment_status, [OrderPaymentStatus::PAYMENT_FINISHED, OrderPaymentStatus::CANCEL_FEE_PAYMENT_FINISHED])) {
+                    $user = $this->order->user;
+                    $user->suspendPayment();
+                    if (!$this->order->send_warning) {
+                        $delay = Carbon::now()->addSeconds(3);
+                        $user->notify(new AutoChargeFailedWorkchatNotify($this->order));
+                        $user->notify((new AutoChargeFailedLineNotify($this->order))->delay($delay));
 
-                    if (ProviderType::LINE == $user->provider) {
-                        $this->order->user->notify(new AutoChargeFailed($this->order));
+                        if (ProviderType::LINE == $user->provider) {
+                            $this->order->user->notify(new AutoChargeFailed($this->order));
+                        }
+
+                        $this->order->send_warning = true;
+                        $this->order->payment_status = OrderPaymentStatus::PAYMENT_FAILED;
+                        $this->order->save();
                     }
-
-                    $this->order->send_warning = true;
-                    $this->order->payment_status = OrderPaymentStatus::PAYMENT_FAILED;
-                    $this->order->save();
                 }
             }
 

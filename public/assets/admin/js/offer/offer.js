@@ -1,17 +1,118 @@
-$(document).ready(function(){
-  function updateLocalStorageValue(key, data) {
-    var oldData = JSON.parse(localStorage.getItem(key));
-    var newData;
+const DEVICETYPE = {
+  'IOS': 1,
+  'ANDROID': 2,
+  'WEB': 3
+};
 
-    if (oldData) {
-      newData = Object.assign({}, oldData, data);
-    } else {
-      newData = data;
-    }
+function updateLocalStorageValue(key, data) {
+  var oldData = JSON.parse(localStorage.getItem(key));
+  var newData;
 
-    localStorage.setItem(key, JSON.stringify(newData));
+  if (oldData) {
+    newData = Object.assign({}, oldData, data);
+  } else {
+    newData = data;
   }
 
+  localStorage.setItem(key, JSON.stringify(newData));
+}
+
+function renderListGuests(device_type, search = null, arrGuests = null)
+{
+  $.ajax({
+    headers: {
+        'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+    },
+    type: "GET",
+    url: '/admin/orders/list_guests',
+    data: {
+        'device_type': device_type,
+        'search': search
+    },
+    success: function (response) {
+      $('#list-guests tbody').html(response.view);
+
+      if (arrGuests) {
+          $.each($('.checked-guest'),function(index,val){
+            if (arrGuests.indexOf(val.value) >-1) {
+              $(this).prop('checked', true);
+            }
+          })
+      }
+    },
+  });
+}
+
+function handleOpenPopupSelectGuest() {
+  $('body').on('click', '.show-list-guests', function (event) {
+
+      $('.input-search-guest').val('');
+    
+      let deviceType = DEVICETYPE.ANDROID;
+
+      let arrGuests = null;
+
+      if($('.choose-guests').val()) {
+        arrGuests = $('.choose-guests').val().split(',');
+      }
+
+      renderListGuests(deviceType, null, arrGuests);
+  })
+}
+
+
+function handleSearchGuest() {
+  $('body').on('keyup', '.input-search-guest', function (event) {
+    const search = $(this).val();
+    let deviceType = DEVICETYPE.ANDROID;
+
+    let arrGuests = null;
+
+    if($('.choose-guests').val()) {
+      arrGuests = $('.choose-guests').val().split(',');
+    }
+    renderListGuests(deviceType, search, arrGuests);
+  })
+}
+
+function chooseGuests()
+{
+  $('body').on('change', '.checked-guest', function (event) {
+    let checkedId = $(this).val();
+    let arrIds = $('.choose-guests').val();
+
+    if(arrIds) {
+      arrIds = arrIds.split(',');
+    } else {
+      arrIds = [];    
+    }
+   
+    if(arrIds.indexOf(checkedId) > -1) {
+      arrIds.splice(arrIds.indexOf(checkedId), 1);
+    } else {
+      arrIds.push(checkedId);
+    }
+
+    if (arrIds.length) {
+      $('.btn-choose-guests').attr('data-target', "#choose-guests");
+    } else {
+      $('.btn-choose-guests').attr('data-target', "#err-choose-guests");
+    }
+    
+    arrIds.toString();
+
+    $('.choose-guests').val(arrIds);
+  })
+}
+
+function sendLineToGuest()
+{
+  $('body').on('click', '#send-line-to-guest', function (event) {
+    $('#form-send-line').submit();
+  })
+}
+
+$(document).ready(function(){
   $('#sbm-offer').on("click", function(event){
     var classId = $('#class-id-offer').val();
 
@@ -590,4 +691,14 @@ $(document).ready(function(){
     }
   }
 
+  if ($('.show-list-guests').length) {
+    if (!localStorage.getItem('offer')){
+      window.location = '/admin/offers';
+    }
+  }
+
+  handleOpenPopupSelectGuest();
+  handleSearchGuest();
+  chooseGuests();
+  sendLineToGuest();
 });

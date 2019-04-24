@@ -603,6 +603,11 @@ class User extends Authenticatable implements JWTSubject
             ->withPivot('day_shift', 'night_shift', 'off_shift')->withTimestamps();
     }
 
+    public function castClass()
+    {
+        return $this->belongsTo(CastClass::class, 'class_id', 'id');
+    }
+
     public function getClassNameAttribute()
     {
         return  $this->class_id ? app(CastClassRepository::class)->find($this->class_id)->name : '';
