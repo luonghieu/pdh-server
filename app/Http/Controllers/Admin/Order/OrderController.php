@@ -19,6 +19,7 @@ use App\Http\Controllers\Controller;
 use App\Jobs\PointSettlement;
 use App\Notification;
 use App\Notifications\AdminEditOrder;
+use App\Notifications\AdminEditOrderNominee;
 use App\Notifications\AdminRemoveCastInOrder;
 use App\Notifications\CallOrdersCreated;
 use App\Notifications\CastAcceptNominationOrders;
@@ -1012,8 +1013,60 @@ class OrderController extends Controller
         ]);
     }
 
-    public function updateNomineeOrder(Request $request)
+    public function updateNomineeOrder(Request $request, $id)
     {
-        dd($request->all());
+        try {
+            \DB::beginTransaction();
+            $order = Order::find($id);
+
+            $orderStartTime = Carbon::parse($request->order_start_date);
+            $duration = $request->duration;
+
+            $order->date = $orderStartTime->format('Y-m-d');
+            $order->start_time = $orderStartTime->format('H:i');
+            $order->duration = $duration;
+            $order->end_time = $orderStartTime->copy()->addMinutes($order->duration * 60)->format('H:i');
+
+            $cast = $order->nominees()->first();
+            $orderEndTime = $orderStartTime->copy()->addMinutes($order->duration * 60);
+            $nightTime = $order->nightTime($orderEndTime);
+            $allowance = $order->allowance($nightTime);
+            $orderPoint = $order->orderPoint($cast);
+            $orderFee = $order->orderFee($cast, $orderStartTime, $orderEndTime);
+
+            $order->nominees()->updateExistingPivot(
+                $cast->id,
+                [
+                    'temp_point' => $orderPoint + $allowance + $orderFee,
+                ],
+                false
+            );
+
+            $order->temp_point = $orderPoint + $allowance + $orderFee;
+            $order->save();
+
+            $room = Room::find($order->room_id);
+            $roomMesage = '提案がキャンセルされました。';
+            $roomMessage = $room->messages()->create([
+                'user_id' => 1,
+                'type' => MessageType::SYSTEM,
+                'message' => $roomMesage,
+                'system_type' => SystemMessageType::NOTIFY
+            ]);
+            $roomMessage->recipients()->attach($cast->id, ['room_id' => $room->id]);
+            $users = [
+                $order->user,
+                $cast
+            ];
+
+            \DB::commit();
+        } catch (\Exception $e) {
+            \DB::rollBack();
+            LogService::writeErrorLog($e);
+            return redirect()->back();
+        }
+
+        \Notification::send($users, new AdminEditOrderNominee($order->id));
+        return redirect()->back();
     }
 }

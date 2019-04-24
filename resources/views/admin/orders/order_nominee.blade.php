@@ -12,7 +12,7 @@
             <p><b>予約ID:</b> {{ $order->id }}</p>
           </div>
           <div class="col-lg-10">
-            @if(in_array($order->status, [App\Enums\OrderStatus::OPEN, App\Enums\OrderStatus::ACTIVE, App\Enums\OrderStatus::PROCESSING]))
+            @if(in_array($order->status, [App\Enums\OrderStatus::OPEN, App\Enums\OrderStatus::ACTIVE]))
             <button type="button" data-toggle="modal" data-target="#btn-edit-order-nominee" class="btn btn-info pull-right">予約内容を変更する</button>
             @endif
             <form action="{{ route('admin.orders.order_nominee_edit', ['order' => $order->id]) }}" method="POST">
@@ -90,7 +90,7 @@
                           </select>
                         </div>
                       </div>
-                      <p>⑥ 予定合計ポイント: <span id="temp-point">7000P</span></p>
+                      <p>⑥ 予定合計ポイント: <span id="temp-point">{{ number_format($order->temp_point) . 'P' }}</span></p>
                     </div>
                   </div>
                   <div class="modal-footer">

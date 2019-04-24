@@ -1,6 +1,6 @@
 function orderPoint() {
     const cost = nominee.pivot.cost;
-
+    const orderDuration = $('#edit-duration-nominee').val();
     return (cost / 2) * Math.floor(orderDuration * 60 / 15);
 }
 
@@ -31,7 +31,10 @@ function allowance() {
 }
 
 function updateTempPoint() {
+    console.log(orderPoint());
+    console.log(allowance());
     const tempPoint = orderPoint() + allowance();
+    console.log(tempPoint);
     $('#temp-point').text((tempPoint + '').replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1,") + 'P');
 }
 
@@ -71,6 +74,10 @@ $('#edit-year').on('change', function(){
     renderDay();
 });
 
+$('#edit-day').on('change', function(){
+    renderDay();
+});
+
 $('#edit-hour').on('change', function(){
     renderDay();
 });
@@ -79,6 +86,6 @@ $('#edit-minute').on('change', function(){
     renderDay();
 });
 
-$('#edit-duration-nominee').on('change', function(){
+$('#edit-duration-nominee').on('change', function() {
     updateTempPoint();
 });
