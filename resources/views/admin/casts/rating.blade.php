@@ -33,8 +33,8 @@
             <thead>
               <tr>
                 <th>No.</th>
-                <th>ユーザーID</th>
-                <th>ニックネーム</th>
+                <th>キャストID</th>
+                <th>キャスト名</th>
                 <th>予約ID</th>
                 <th>ゲスト名</th>
                 <th>日時</th>
@@ -74,8 +74,8 @@
                   @else
                     <td>{{ trans('messages.order_not_found') }}</td>
                   @endif
-                  <td><a href="{{ route('admin.users.show', ['user' => $rating->rated_id]) }}">{{ $rating->rated_id }}</a></td>
-                  <td>{{ Carbon\Carbon::parse($rating->created_at)->format('Y/m/d H:i') }}</td>
+                  <td><a href="{{ route('admin.users.show', ['user' => $rating->rated_id]) }}">{{ $rating->rated->nickname }}</a></td>
+                  <td>{{ Carbon\Carbon::parse($rating->created_at)->format('Y/m/d') }}</td>
                   <td>
                     {{ str_repeat('★', $rating->satisfaction) }}
                   </td>

@@ -59,7 +59,7 @@
                 <tr>
                   <th>運営者メモ</th>
                   <td>
-                    <textarea name="memo" id="js-memo">{!! $rating->memo !!}</textarea>
+                    <textarea name="memo" id="js-memo" placeholder="運営者メモ">{!! $rating->memo !!}</textarea>
                     @if ($errors->has('memo'))
                       <div class="error pull-left">
                         <span>{{ $errors->first('memo') }}</span>
