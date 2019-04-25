@@ -63,7 +63,7 @@
                 <td>
                   <b class="pull-left">参加回数</b>
                   <select class="w-option num-of-attend-up-platium" name="num_of_attend_up_platium">
-                    @for ($i=0; $i <= 10; $i++)
+                    @for ($i=0; $i <= 50; $i++)
                     <option value="{{ $i }}" {{ $rankSchedule && $rankSchedule->num_of_attend_up_platium == $i ? 'selected' : '' }}>{{ $i }}</option>
                     @endfor
                   </select>
