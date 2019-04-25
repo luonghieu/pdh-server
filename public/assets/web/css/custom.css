@@ -1343,7 +1343,6 @@ div.user-data span.total-point-cast{
 }
 
 #custom-point div.expiration-date {
-  margin: 30px 0px;
   height: 50px;
 
 }
@@ -1365,17 +1364,16 @@ div.user-data span.total-point-cast{
 
 #change-point {
   width: 21%;
-  height: 30px;
   border-radius: 19px;
   background-image: linear-gradient(-162deg, #42E4B2 0%, #00C3C3 100%);
   display: block;
   text-align: center;
-  margin: 20px auto;
+  margin: 0 auto 0 auto;
   padding: 4px;
   line-height: 30px;
   position: relative;
   left: 35%;
-  bottom: 35px;
+  bottom: 25px;
   color: white;
 }
 
@@ -3039,7 +3037,6 @@ div.user-data span.total-point-cast{
 }
 
 .times-ordered .title-times-ordered {
-  flex: 1;
   color: #30ccc3;
 
 }
@@ -3053,7 +3050,7 @@ div.user-data span.total-point-cast{
   display: flex;
   padding: 0 10px;
   margin: 0;
-  justify-content: space-between;
+  justify-content: start;
 }
 
 .progress-wrapper {
@@ -3144,8 +3141,6 @@ div.user-data span.total-point-cast{
 
 .ml-2 {
   margin-left: 2%;
-  position: relative;
-  top: 10px;
 }
 
 #gg2 .msg-wrap .pic-like {
@@ -3883,6 +3878,7 @@ div.user-data span.total-point-cast{
   color: #999999 !important;
   padding-right: 15px;
   margin-bottom: 8px;
+  margin-top: -40px;
 }
 
 .rank-schedule-cast-class {
@@ -3964,6 +3960,7 @@ div.user-data span.total-point-cast{
   position: relative;
   width: 100px;
 }
+
 .star-rating:before {
   background-image: url("../images/common/ic_star_gray.svg");
   background-repeat: repeat-x;
@@ -4003,4 +4000,10 @@ div.user-data span.total-point-cast{
 
 body .star-rating {
   margin-left: 10px;
+}
+
+#custom-point.cast-call{
+  margin-top: 0;
+  margin-bottom: 0;
+  padding-top: 0;
 }
