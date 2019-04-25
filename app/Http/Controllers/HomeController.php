@@ -111,6 +111,10 @@ class HomeController extends Controller
                         ['created_at', '>=', $rankSchedule->from_date],
                         ['created_at', '<=', $rankSchedule->to_date],
                     ])->avg('score');
+
+                    if (!$ratingScore) {
+                        $ratingScore = 0;
+                    }
                 }
 
                 return view('web.cast.index', compact('token', 'user', 'castClass', 'rankSchedule', 'sumOrders', 'ratingScore'));
