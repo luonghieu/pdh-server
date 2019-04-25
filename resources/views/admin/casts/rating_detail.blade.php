@@ -84,7 +84,7 @@
                 }
               @endphp
               <a href="javascript:void(0)" class="btn btn-info pull-right" id="js-submit" data-toggle="modal" data-target="{{ $dataTarget }}">{{ App\Enums\Status::getDescription((int) !$rating->is_valid) }}にする</a>
-              <input type="hidden" id="is-valid" value="{{ (int) $rating->is_valid }}">
+              <input type="hidden" id="is-valid" value="{{ (boolean) $rating->is_valid }}">
             </form>
           </div>
           <div class="modal fade" id="memo_null" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
