@@ -34,9 +34,6 @@
       <span class="total-point-title">あなたの売上合計</span>
       <span class="total-point-cast">{{ number_format($user->total_point + $user->point) }}P</span>
     </div>
-    @if ($user->nickname)
-    <span class="user-name">{{ $user->nickname }}</span>
-    @endif
   </div>
   <div class="cast-call point-transfer">
     <div class="point-title">

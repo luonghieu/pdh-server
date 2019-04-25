@@ -66,12 +66,8 @@ class CancelFeeSettlement extends Command
             ->where('canceled_at', '<=', $now->copy()->subHours(3))
             ->where('cancel_fee_percent', '>', 0)
             ->where(function($query) {
-                $query->whereHas('user', function ($q) {
-                    $q->where(function ($sQ) {
-                        $sQ->where('payment_suspended', false)
-                            ->orWhere('payment_suspended', null);
-                    });
-                })->orWhere('payment_method', OrderPaymentMethod::DIRECT_PAYMENT);
+                $query->whereNull('send_warning')
+                    ->orWhere('payment_method', OrderPaymentMethod::DIRECT_PAYMENT);
             })
             ->get();
 
