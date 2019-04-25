@@ -110,6 +110,7 @@ class HomeController extends Controller
                         ['rated_id', '=', $user->id],
                         ['created_at', '>=', $rankSchedule->from_date],
                         ['created_at', '<=', $rankSchedule->to_date],
+                        ['is_valid', '=', true],
                     ])->avg('score');
 
                     if (!$ratingScore) {

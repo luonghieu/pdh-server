@@ -1384,6 +1384,7 @@ div.user-data span.total-point-cast{
 #top-header-cast {
   height: 124px;
   background-image: linear-gradient(327deg, #42e4b2, #00c3c3);
+  margin-bottom: 0;
 }
 
 #cast-icon img{
@@ -3932,13 +3933,13 @@ div.user-data span.total-point-cast{
 }
 
 .notify-rank-schedule {
-  background-color: #DDDDDD;
+  background-color: #F5F5F5;
   padding: 12px 0;
   text-align: center;
 }
 
 .green-text {
-  color: #42e4b2;
+  color: #30CCC3;
   font-size: 16px;
   font-weight: bold;
 }
