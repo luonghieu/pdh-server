@@ -177,7 +177,7 @@
       <div class="title-times-ordered avg-title">平均評価</div>
       <div class="chart-times-ordered">
         <div class="wrapper-rank-schedule">
-          <div class="star-rating">
+          <div class="star-rating-schedule">
             <span style="width: {{$percentagePointAverage.'%'}}"></span>
           </div>
         </div>
