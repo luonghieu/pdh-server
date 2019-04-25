@@ -31,10 +31,7 @@ function allowance() {
 }
 
 function updateTempPoint() {
-    console.log(orderPoint());
-    console.log(allowance());
     const tempPoint = orderPoint() + allowance();
-    console.log(tempPoint);
     $('#temp-point').text((tempPoint + '').replace(/(\d)(?=(\d{3})+(?!\d))/g, "$1,") + 'P');
 }
 
@@ -61,6 +58,63 @@ function renderDay() {
     }
 
     currentOrderStartDate = currentYear + '/' + currentMonth + '/' + currentDay + ' ' + currentHour + ':' + currentMinute;
+
+
+    const currentDate = moment();
+    let currentSelectedDate = moment(currentOrderStartDate);
+    if (currentSelectedDate.diff(currentDate, 'days') < 0) {
+        let orderStartDate = moment(baseOrderStartDate);
+        currentOrderStartDate = orderStartDate.format('YYYY/MM/DD HH:mm');
+        $('#edit-year').val(orderStartDate.format('YYYY'));
+        $('#edit-month').val(orderStartDate.format('M'));
+        $('#edit-day').val(orderStartDate.format('DD'));
+        $('#edit-hour').val(orderStartDate.format('HH'));
+        $('#edit-minute').val(orderStartDate.format('mm'));
+
+        currentSelectedDate = orderStartDate;
+
+        $("#edit-month > option").each(function() {
+            if (this.value < currentSelectedDate.format('M')) {
+                $(this).attr('disabled','disabled')
+            } else {
+                $(this).removeAttr('disabled')
+            }
+        });
+    }
+
+    if (currentSelectedDate.diff(currentDate, 'days') == 0) {
+        $("#edit-month > option").each(function() {
+            if (this.value < currentDate.format('M')) {
+                $(this).attr('disabled','disabled')
+            } else {
+                $(this).removeAttr('disabled')
+            }
+        });
+    }
+
+    if (currentSelectedDate.diff(currentDate, 'days') > 0) {
+        $("#edit-hour > option").each(function() {
+            $(this).removeAttr('disabled')
+        });
+
+        $("#edit-minute > option").each(function() {
+            $(this).removeAttr('disabled')
+        });
+    }
+
+    if (currentSelectedDate.diff(currentDate, 'year') != 0) {
+        $("#edit-month > option").each(function() {
+            $(this).removeAttr('disabled')
+        });
+
+        $("#edit-hour > option").each(function() {
+            $(this).removeAttr('disabled')
+        });
+
+        $("#edit-minute > option").each(function() {
+            $(this).removeAttr('disabled')
+        });
+    }
 
     $('#order-start-date').val(currentOrderStartDate);
     updateTempPoint();
