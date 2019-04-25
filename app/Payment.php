@@ -2,6 +2,8 @@
 
 namespace App;
 
+use App\Enums\OrderPaymentStatus;
+use App\Enums\OrderStatus;
 use App\Enums\PaymentStatus;
 use App\Services\LogService;
 use App\Traits\FailedPaymentHandle;
@@ -61,6 +63,18 @@ class Payment extends Model
                 // $this->charge_id = $charge->id;
                 $this->status = PaymentStatus::DONE;
                 $this->save();
+
+                $user->orders()->where(function($query) {
+                    $query->where(function($q) {
+                        $q->where('status', OrderStatus::CANCELED)
+                            ->where(function ($sq) {
+                                $sq->where('payment_status', null)
+                                    ->orWhere('payment_status', OrderPaymentStatus::PAYMENT_FAILED);
+                            });
+                    })->orWhereIn('payment_status', [OrderPaymentStatus::PAYMENT_FAILED, OrderPaymentStatus::REQUESTING]);
+                })->where('send_warning', 1)->update(['send_warning' => null]);
+                $user->payment_suspended = false;
+                $user->save();
 
                 return true;
             } catch (\Exception $e) {
