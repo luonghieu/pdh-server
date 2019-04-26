@@ -44,7 +44,7 @@
                             @for($i = 1; $i <= 12; $i++)
                               <option value="{{$i}}"
                                 <?=($orderStartDate->month == $i) ? 'selected' : '' ?>
-                                <?=($now->month > $i) ? 'disabled' : '' ?>
+                                <?=($now->month > $i) ? ' disabled' : '' ?>
                               >{{$i}}月</option>
                             @endfor
                           </select>
@@ -57,7 +57,7 @@
                               @endphp
                               <option value="{{$i}}"
                               <?=($orderStartDate->day == $i) ? 'selected' : '' ?>
-                              <?=($now->day > $i) ? 'disabled' : '' ?>
+                              <?=($orderStartDate->diffInMonths($now) == 0 && $now->day > $i) ? ' disabled' : '' ?>
                               >{{$i}}</option>
                             @endfor
                           </select>
@@ -70,9 +70,11 @@
                               @endphp
                               <option value="{{$i}}"
                                 <?=($orderStartDate->hour == $i) ? 'selected' : '' ?>
+                                <?=($orderStartDate->diffInDays($now) == 0 && $now->hour > $i) ? ' disabled' : '' ?>
                               >{{$i}}</option>
                             @endfor
                           </select>
+                          :
                           <select name="minute" id="edit-minute">
                             @for($i = 0; $i < 60; $i++)
                               @php
@@ -82,6 +84,7 @@
                               @endphp
                               <option value="{{$i}}"
                                 <?=($orderStartDate->minute == $i) ? 'selected' : '' ?>
+                                <?=($orderStartDate->diffInHours($now) == 0 && $now->minute > $i) ? ' disabled' : '' ?>
                               >{{$i}}</option>
                             @endfor
                           </select>

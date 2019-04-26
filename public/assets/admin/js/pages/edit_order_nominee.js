@@ -36,6 +36,12 @@ function updateTempPoint() {
 }
 
 function renderDay() {
+    $('#edit-year option').attr("disabled", false);
+    $('#edit-month option').attr("disabled", false);
+    $('#edit-day option').attr("disabled", false);
+    $('#edit-hour option').attr("disabled", false);
+    $('#edit-minute option').attr("disabled", false);
+
     const currentYear = $('#edit-year').val();
     const currentMonth = $('#edit-month').val();
     let currentDay = $('#edit-day').val();
@@ -62,76 +68,113 @@ function renderDay() {
 
     const currentDate = moment();
     let currentSelectedDate = moment(currentOrderStartDate);
-    console.log(currentSelectedDate.format('YYYY-MM-DD HH:mm'));
-    console.log(currentDate.format('YYYY-MM-DD HH:mm'));
-    if (currentSelectedDate < currentDate) {
+
+    if (currentSelectedDate.clone().startOf('day').diff(currentDate.clone().startOf('day'), 'days') < 0) {
         let orderStartDate = moment(baseOrderStartDate);
-        currentOrderStartDate = orderStartDate.format('YYYY/MM/DD HH:mm');
         $('#edit-year').val(orderStartDate.format('YYYY'));
         $('#edit-month').val(orderStartDate.format('M'));
         $('#edit-day').val(orderStartDate.format('DD'));
         $('#edit-hour').val(orderStartDate.format('HH'));
         $('#edit-minute').val(orderStartDate.format('mm'));
 
-        $("#edit-month > option").each(function() {
-            if (parseInt(this.value) < parseInt(currentDate.format('M'))) {
-                $(this).attr('disabled','disabled');
-            } else {
-                $(this).removeAttr('disabled');
-            }
-        });
+        if (orderStartDate.clone().startOf('year').diff(currentDate.clone().startOf('year'), 'years') == 0) {
+            if (orderStartDate.clone().startOf('month').diff(currentDate.clone().startOf('month'), 'months') == 0) {
+                $("#edit-month > option").each(function() {
+                    if (parseInt(this.value) < parseInt(currentDate.format('M'))) {
+                        $(this).attr('disabled','disabled');
+                    } else {
+                        $(this).removeAttr('disabled');
+                    }
+                });
 
-        $("#edit-day > option").each(function() {
-            if (parseInt(this.value) < parseInt(currentDate.format('DD'))) {
-                $(this).attr('disabled','disabled');
-            } else {
-                $(this).removeAttr('disabled');
-            }
-        });
+                $("#edit-day > option").each(function() {
+                    if (parseInt(this.value) < parseInt(currentDate.format('DD'))) {
+                        $(this).attr('disabled','disabled');
+                    } else {
+                        $(this).removeAttr('disabled');
+                    }
+                });
 
-        $("#edit-hour > option").each(function() {
-            if (parseInt(this.value) < parseInt(currentDate.format('HH'))) {
-                $(this).attr('disabled','disabled');
-            } else {
-                $(this).removeAttr('disabled');
+                $("#edit-hour > option").each(function() {
+                    if (parseInt(this.value) < parseInt(currentDate.format('HH'))) {
+                        $(this).attr('disabled','disabled');
+                    } else {
+                        $(this).removeAttr('disabled');
+                    }
+                });
+
+                if (orderStartDate.clone().startOf('hour').diff(currentDate.clone().startOf('hour'), 'hours') == 0) {
+                    $("#edit-minute > option").each(function() {
+                        if (parseInt(this.value) < parseInt(currentDate.format('mm'))) {
+                            $(this).attr('disabled','disabled');
+                        } else {
+                            $(this).removeAttr('disabled');
+                        }
+                    });
+                }
             }
-        });
+
+            // if (orderStartDate.clone().startOf('month').diff(currentDate.clone().startOf('month'), 'months') > 0) {
+            //     console.log(console.log('1'));
+            //     $("#edit-month > option").each(function() {
+            //         if (parseInt(this.value) < parseInt(currentDate.format('M'))) {
+            //             $(this).attr('disabled','disabled');
+            //         } else {
+            //             $(this).removeAttr('disabled');
+            //         }
+            //     });
+            // }
+        }
+
+
+
     }
 
-    if (currentSelectedDate.diff(currentDate, 'days') == 0) {
-        $("#edit-day > option").each(function() {
-            if (parseInt(this.value) < parseInt(currentDate.format('DD'))) {
-                $(this).attr('disabled','disabled');
-            } else {
-                $(this).removeAttr('disabled');
-            }
-        });
-
-        $("#edit-hour > option").each(function() {
-            if (parseInt(this.value) < parseInt(currentDate.format('HH'))) {
-                $(this).attr('disabled','disabled');
-            } else {
-                $(this).removeAttr('disabled');
-            }
-        });
-
-        if (currentDate.hours() == currentSelectedDate.hours()) {
-            $("#edit-minute > option").each(function() {
-                if (parseInt(this.value) < parseInt(currentDate.format('mm'))) {
+    if (currentSelectedDate.clone().startOf('day').diff(currentDate.clone().startOf('day'), 'days') >= 0) {
+        if (currentSelectedDate.clone().startOf('year').diff(currentDate.clone().startOf('year'), 'years') == 0) {
+            $("#edit-month > option").each(function() {
+                if (parseInt(this.value) < parseInt(currentDate.format('M'))) {
                     $(this).attr('disabled','disabled');
                 } else {
                     $(this).removeAttr('disabled');
                 }
             });
         }
-    } else {
-        $("#edit-hour > option").each(function() {
-            $(this).removeAttr('disabled');
-        });
 
-        $("#edit-minute > option").each(function() {
-            $(this).removeAttr('disabled');
-        });
+        if (currentSelectedDate.clone().startOf('month').diff(currentDate.clone().startOf('month'), 'months') == 0) {
+            $("#edit-month > option").each(function() {
+                if (parseInt(this.value) < parseInt(currentDate.format('M'))) {
+                    $(this).attr('disabled','disabled');
+                } else {
+                    $(this).removeAttr('disabled');
+                }
+            });
+            if (currentSelectedDate.clone().startOf('day').diff(currentDate.clone().startOf('day'), 'days') == 0) {
+                $("#edit-day > option").each(function() {
+                    if (parseInt(this.value) < parseInt(currentDate.format('DD'))) {
+                        $(this).attr('disabled','disabled');
+                    } else {
+                        $(this).removeAttr('disabled');
+                    }
+                });
+
+                $("#edit-hour > option").each(function() {
+                    if (parseInt(this.value) < parseInt(currentDate.format('HH'))) {
+                        $(this).attr('disabled','disabled');
+                    } else {
+                        $(this).removeAttr('disabled');
+                    }
+                });
+
+                $("#edit-minute > option").each(function() {
+                    if (parseInt(this.value) < parseInt(currentDate.format('mm'))) {
+                        $(this).attr('disabled','disabled');
+                    } else {
+                        $(this).removeAttr('disabled');
+                    }
+                });
+            }
+        }
     }
 
     $('#order-start-date').val(currentOrderStartDate);
@@ -161,3 +204,5 @@ $('#edit-minute').on('change', function(){
 $('#edit-duration-nominee').on('change', function() {
     updateTempPoint();
 });
+
+// renderDay();
