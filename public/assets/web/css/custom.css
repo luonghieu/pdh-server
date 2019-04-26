@@ -3955,13 +3955,13 @@ div.user-data span.total-point-cast{
 
 /*rating*/
 
-.star-rating-schedule {
+#star-rating-schedule {
   height: 20px;
   position: relative;
   width: 100px;
 }
 
-.star-rating-schedule:before {
+#star-rating-schedule:before {
   background-image: url("../images/common/ic_star_gray.svg");
   background-repeat: repeat-x;
   background-size: 20px;
@@ -3975,7 +3975,8 @@ div.user-data span.total-point-cast{
   top: 0;
   width: 100px;
 }
-.star-rating-schedule > span {
+
+#star-rating-schedule > span {
   display: block;
   text-indent: -10000px;
   width: 100px;
@@ -3983,7 +3984,8 @@ div.user-data span.total-point-cast{
   position: absolute;
   overflow: hidden;
 }
-.star-rating-schedule > span:before {
+
+#star-rating-schedule > span:before {
   background-image: url("../images/common/ic_star_blue.svg");
   background-repeat: repeat-x;
   background-size: 20px;
@@ -3998,7 +4000,7 @@ div.user-data span.total-point-cast{
   top: 0;
 }
 
-body .star-rating-schedule {
+body #star-rating-schedule {
   margin-left: 10px;
 }
 
