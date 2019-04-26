@@ -1043,7 +1043,7 @@ class OrderController extends Controller
         $cast->pivot->save();
 
         if ($order->type == OrderType::NOMINATION) {
-            return redirect()->route('admin.orders.nominees', ['order' => $order->id]);
+            return redirect()->route('admin.orders.order_nominee', ['order' => $order->id]);
         }
 
         return redirect()->route('admin.orders.call', ['order' => $order->id]);
