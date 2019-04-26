@@ -34,7 +34,7 @@
                 </tr>
                 <tr>
                   <th>日時</th>
-                  <td>{{ Carbon\Carbon::parse($rating->created_at)->format('Y/m/d H:i') }}</td>
+                  <td>{{ Carbon\Carbon::parse($rating->created_at)->format('Y年m月d日') }}</td>
                 </tr>
                 <tr>
                   <th>満足度</th>

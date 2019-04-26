@@ -74,7 +74,7 @@
                   @else
                     <td>{{ trans('messages.order_not_found') }}</td>
                   @endif
-                  <td><a href="{{ route('admin.users.show', ['user' => $rating->rated_id]) }}">{{ $rating->rated->nickname }}</a></td>
+                  <td>{{ $rating->rated->nickname }}</td>
                   <td>{{ Carbon\Carbon::parse($rating->created_at)->format('Y/m/d') }}</td>
                   <td>
                     {{ str_repeat('★', $rating->satisfaction) }}
