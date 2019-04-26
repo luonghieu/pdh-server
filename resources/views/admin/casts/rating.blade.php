@@ -33,45 +33,49 @@
             <thead>
               <tr>
                 <th>No.</th>
-                <th>ユーザーID</th>
-                <th>ニックネーム</th>
+                <th>キャストID</th>
+                <th>キャスト名</th>
                 <th>予約ID</th>
+                <th>ゲスト名</th>
                 <th>日時</th>
                 <th>満足度</th>
                 <th>ルックス・身だしなみ</th>
                 <th>愛想・気遣い</th>
                 <th>コメント</th>
+                <th>調整</th>
+                <th></th>
               </tr>
             </thead>
             <tbody>
               @if (empty($ratings->count()))
                 <tr>
-                  <td colspan="9">評価はありません</td>
+                  <td colspan="12">評価はありません</td>
                 </tr>
               @else
                 @foreach ($ratings as $key => $rating)
                 <tr>
-                  <td>{{ $ratings->firstItem() +$key }}</td>
-                  <td><a href="{{ route('admin.users.show', ['user' => $rating->user->id]) }}">{{ $rating->user->id }}</a></td>
-                  <td>{{ $rating->user->nickname }}</td>
+                  <td>{{ $ratings->firstItem() + $key }}</td>
+                  <td><a href="{{ route('admin.users.show', ['user' => $rating->rated_id]) }}">{{ $rating->rated_id }}</a></td>
+                  <td>{{ $rating->rated->nickname }}</td>
                   @if($rating->order)
                     @if ($rating->order->type == App\Enums\OrderType::NOMINATION)
                       <td>
-                        <a href="{{ route('admin.orders.order_nominee', ['order' => $rating->order->id]) }}">
-                          {{ $rating->order->id }}
+                        <a href="{{ route('admin.orders.order_nominee', ['order' => $rating->order->order_id]) }}">
+                          {{ $rating->order_id }}
                         </a>
                       </td>
                     @else
                       <td>
-                        <a href="{{ route('admin.orders.call', ['order' => $rating->order->id]) }}" >
-                        {{ $rating->order->id }}
+                        <a href="{{ route('admin.orders.call', ['order' => $rating->order_id]) }}" >
+                        {{ $rating->order_id }}
                         </a>
                       </td>
                     @endif
                   @else
                     <td>{{ trans('messages.order_not_found') }}</td>
                   @endif
-                  <td>{{ Carbon\Carbon::parse($rating->created_at)->format('Y/m/d H:i') }}</td>
+                  <td>{{ $rating->user->nickname }}</td>
+                  <td>{{ Carbon\Carbon::parse($rating->created_at)->format('Y/m/d') }}</td>
                   <td>
                     {{ str_repeat('★', $rating->satisfaction) }}
                   </td>
@@ -82,6 +86,8 @@
                     {{ str_repeat('★', $rating->friendliness) }}
                   </td>
                   <td>{{ $rating->comment }}</td>
+                  <td>{{ App\Enums\Status::getDescription($rating->is_valid) }}</td>
+                  <td><a href="{{ route('admin.casts.guest_rating_detail', ['user' => $rating->rated_id, 'rating' => $rating->id]) }}" class="btn btn-detail">詳細</a></td>
                 </tr>
                 @endforeach
               @endif

@@ -2,11 +2,7 @@ let sendingMessage = false;
 let loadingMore = false;
 $(document).ready(function() {
   let device = 'web';
-  $('.msg').on('touchstart', function(e) {
-    if ($('.content-message').is(':focus')) {
-      $('.content-message').blur();
-    }
-  });
+
   var userAgent = navigator.userAgent || navigator.vendor || window.opera;
 
   // iOS detection
@@ -20,12 +16,21 @@ $(document).ready(function() {
       'margin-bottom' : '-30px'
     });
 
-    $('#content').on('focus',function() {
+    $('body').on('click','#content', function() {
       let margin = $('#chat .msg-input').css("margin-bottom");
+      let iHeight = window.screen.height;
+      let iWidth = window.screen.width;
+  
       if('-30px' == margin) {
-        $('#chat .msg-input').css({
-          'margin-bottom' : '0px'
-        })
+        if (iWidth === 375 && iHeight === 667) {
+          $('#chat .msg-input').css({
+            'margin-bottom' : '8px'
+          })
+        } else {
+          $('#chat .msg-input').css({
+            'margin-bottom' : '0px'
+          })
+        }
       }
     });
   }

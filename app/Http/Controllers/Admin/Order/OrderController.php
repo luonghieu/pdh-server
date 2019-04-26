@@ -1079,4 +1079,44 @@ class OrderController extends Controller
         \Notification::send($users, new AdminEditOrderNominee($order->id));
         return redirect()->route('admin.orders.order_nominee', ['order' => $order->id]);
     }
+
+    public function updateOrderStatusToActive(Request $request)
+    {
+        $order = Order::where(function($q) {
+            $q->where('status', OrderStatus::CANCELED)
+                ->orWhere('status', OrderStatus::DENIED);
+        })->where(function($q) {
+            $q->whereNull('payment_status')
+                ->orWhere('payment_status', '<>', OrderPaymentStatus::CANCEL_FEE_PAYMENT_FINISHED);
+        })->find($request->id);
+
+        if (!$order) {
+            return redirect()->route('admin.orders.call', ['order' => $order->id]);
+        }
+
+        $cast = $order->castOrder()->first();
+        if (!$cast) {
+            return redirect()->route('admin.orders.call', ['order' => $order->id]);
+        }
+
+        $order->status = OrderStatus::ACTIVE;
+        $order->canceled_at = null;
+        $order->cancel_fee_percent = null;
+        $order->save();
+
+        $casts = $order->castOrder()->get();
+        foreach ($casts as $cast) {
+            $cast->pivot->canceled_at = null;
+            $cast->pivot->deleted_at = null;
+            $cast->pivot->status = CastOrderStatus::ACCEPTED;
+            $cast->pivot->save();
+        }
+
+
+        if ($order->type == OrderType::NOMINATION) {
+            return redirect()->route('admin.orders.order_nominee', ['order' => $order->id]);
+        }
+
+        return redirect()->route('admin.orders.call', ['order' => $order->id]);
+    }
 }

@@ -1931,6 +1931,7 @@ select.init-option-search {
   margin-bottom: 5px;
 }
 
+<<<<<<< HEAD
 #btn-edit-order-nominee .content-modal p {
   text-align: start;
   flex-grow: 1;
@@ -1975,6 +1976,18 @@ select.init-option-search {
   width: 80px !important;
 }
 
+=======
+#set-status-to-active {
+  bottom: 6px;
+  width: 112px;
+}
+.wrap-status.text-left {
+  text-indent: 70px;
+}
+.wrap-status.text-left span {
+  padding-right: 0;
+}
+>>>>>>> sprint-39
 @media (max-width: 1280px) {
   select.init-option-search {
     margin-right: 1%;

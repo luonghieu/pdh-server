@@ -41,6 +41,7 @@ $routes = [
               'admin.casts.create',
               'admin.casts.bank_account',
               'admin.casts.schedule',
+              'admin.casts.guest_rating_detail',
             ],
         ],
     ],
@@ -187,7 +188,7 @@ $routes = [
             'value' => 'キャストランク管理',
             'url' => route('admin.rank_schedules.index'),
             'submenu' => [
-              'admin.rank_schedules.casts'  
+              'admin.rank_schedules.casts'
             ],
         ],
     ],

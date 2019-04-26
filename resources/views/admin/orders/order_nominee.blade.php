@@ -210,7 +210,9 @@
               </tr>
               <tr>
                 <th>ステータス</th>
-                <td class="wrap-status">
+                <td class="wrap-status {{ (App\Enums\OrderStatus::CANCELED == $order->status &&
+                ($order->payment_status == null || $order->payment_status !=
+                App\Enums\OrderPaymentStatus::CANCEL_FEE_PAYMENT_FINISHED)) ? 'text-left' : '' }}">
                   @if ($order->payment_status != null)
                   <span>{{ App\Enums\OrderPaymentStatus::getDescription($order->payment_status) }}</span>
                   @else
@@ -220,8 +222,22 @@
                       @else
                         @if ($order->cancel_fee_percent == 0)
                         <span>確定後キャンセル (キャンセル料なし)</span>
+                          @if ($order->payment_status != App\Enums\OrderPaymentStatus::CANCEL_FEE_PAYMENT_FINISHED)
+                            <button id="set-status-to-active" class="change-time" data-toggle="modal"
+                                    data-target="#order-nominee-update-status-to-active">
+                              ステータスを
+                              予約確定に切り替える
+                            </button>
+                          @endif
                         @else
                         <span>確定後キャンセル (キャンセル料あり)</span>
+                          @if ($order->payment_status != App\Enums\OrderPaymentStatus::CANCEL_FEE_PAYMENT_FINISHED)
+                            <button id="set-status-to-active" class="change-time" data-toggle="modal"
+                                    data-target="#order-nominee-update-status-to-active">
+                              ステータスを
+                              予約確定に切り替える
+                            </button>
+                          @endif
                         @endif
                       @endif
                     @else
@@ -407,6 +423,24 @@
                       <button type="button" class="btn btn-canceled" data-dismiss="modal">キャンセル</button>
                       <button type="submit" class="btn btn-accept">解散時刻を修正する</button>
                     </form>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="modal fade" id="order-nominee-update-status-to-active" tabindex="-1" role="dialog"
+                 aria-labelledby="exampleModalLabel"
+                 aria-hidden="true">
+              <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                  <div class="modal-body">
+                    <p>ステータスを予約確定に切り替えますか？</p>
+                    <div>
+                      <form action="{{ route('admin.orders.update_status_to_active') }}" method="POST">
+                        {{ csrf_field() }}
+                        <input type="hidden" name="id" value="{{ $order->id }}">
+                        <button type="button" class="btn btn-canceled" data-dismiss="modal">キャンセル</button>
+                        <button type="submit" class="btn btn-accept">はい</button>
+                      </form>
                   </div>
                 </div>
               </div>

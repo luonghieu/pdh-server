@@ -102,7 +102,8 @@ class RankScheduleController extends Controller
             ])
             ->with([
                 'ratings' => function($q) use ($fromDate, $toDate) {
-                    $q->whereBetween('ratings.created_at', [$fromDate, $toDate]);
+                    $q->whereBetween('ratings.created_at', [$fromDate, $toDate])
+                        ->where('ratings.is_valid', true);
                 }
             ]);
 
@@ -170,7 +171,7 @@ class RankScheduleController extends Controller
         } else {
             $casts = $casts->paginate($request->limit ?: 10);
         }
-        
+
         // Export rank schedules of casts
         if ('export' == $request->submit) {
             if (!$casts->count()) {
@@ -183,7 +184,7 @@ class RankScheduleController extends Controller
                     $item->nickname,
                     $item->castClass->name,
                     $item->orders->count(),
-                    $item->ratings->avg('score') ? round($item->ratings->avg('score'), 1) : 0,
+                    $item->ratings->avg('score') ? round($item->ratings->avg('score'), 2) : 0,
                 ];
             })->toArray();
 
