@@ -1019,14 +1019,14 @@ class OrderController extends Controller
             \DB::beginTransaction();
             $order = Order::whereIn('status', [OrderStatus::OPEN, OrderStatus::ACTIVE])->find($id);
             if (!$order) {
-                return redirect()->back();
+                return redirect()->route('admin.orders.order_nominee', ['order' => $order->id]);
             }
 
             $oldDate = Carbon::parse($order->date . ' ' . $order->start_time);
             $newDate = Carbon::parse($request->order_start_date);
 
             if ($oldDate->equalTo($newDate)) {
-                return redirect()->back();
+                return redirect()->route('admin.orders.order_nominee', ['order' => $order->id]);
             }
 
             $orderStartTime = Carbon::parse($request->order_start_date);
