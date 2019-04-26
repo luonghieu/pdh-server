@@ -154,14 +154,14 @@
           <ul class="indicators">
             @if($sumOrders > $numOfAttendPlatium)
               @for($i = 0; $i < $numOfAttendPlatium; $i++)
-                <li><img src="/assets/web/images/common/ic_glass_on@2x.png" alt=""></li>
+                <li><img src="/assets/web/images/common/ic_glass_blue.svg" alt=""></li>
               @endfor
             @else
               @for($i = 0; $i < $sumOrders; $i++)
-                <li><img src="/assets/web/images/common/ic_glass_on@2x.png" alt=""></li>
+                <li><img src="/assets/web/images/common/ic_glass_blue.svg" alt=""></li>
               @endfor
               @for($i = 0; $i < $orderNotJoined; $i++)
-                <li class="ic-glass-off"><img src="/assets/web/images/common/ic_glass_off@2x.png" alt=""></li>
+                <li class="ic-glass-off"><img src="/assets/web/images/common/ic_glass_gray.svg" alt=""></li>
               @endfor
             @endif
           </ul>
