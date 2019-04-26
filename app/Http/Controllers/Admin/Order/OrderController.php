@@ -1024,8 +1024,7 @@ class OrderController extends Controller
 
             $oldDate = Carbon::parse($order->date . ' ' . $order->start_time);
             $newDate = Carbon::parse($request->order_start_date);
-
-            if ($oldDate->equalTo($newDate)) {
+            if ($oldDate->equalTo($newDate) && $order->duration == $request->duration) {
                 return redirect()->route('admin.orders.order_nominee', ['order' => $order->id]);
             }
 
