@@ -130,8 +130,51 @@ function renderDay() {
 
     }
 
-    if (currentSelectedDate.clone().startOf('day').diff(currentDate.clone().startOf('day'), 'days') > 0) {
-        console.log('123123');
+    if (currentSelectedDate.clone().startOf('day').diff(currentDate.clone().startOf('day'), 'days') >= 0) {
+        if (currentSelectedDate.clone().startOf('year').diff(currentDate.clone().startOf('year'), 'years') == 0) {
+            $("#edit-month > option").each(function() {
+                if (parseInt(this.value) < parseInt(currentDate.format('M'))) {
+                    $(this).attr('disabled','disabled');
+                } else {
+                    $(this).removeAttr('disabled');
+                }
+            });
+        }
+
+        if (currentSelectedDate.clone().startOf('month').diff(currentDate.clone().startOf('month'), 'months') == 0) {
+            $("#edit-month > option").each(function() {
+                if (parseInt(this.value) < parseInt(currentDate.format('M'))) {
+                    $(this).attr('disabled','disabled');
+                } else {
+                    $(this).removeAttr('disabled');
+                }
+            });
+            if (currentSelectedDate.clone().startOf('day').diff(currentDate.clone().startOf('day'), 'days') == 0) {
+                $("#edit-day > option").each(function() {
+                    if (parseInt(this.value) < parseInt(currentDate.format('DD'))) {
+                        $(this).attr('disabled','disabled');
+                    } else {
+                        $(this).removeAttr('disabled');
+                    }
+                });
+
+                $("#edit-hour > option").each(function() {
+                    if (parseInt(this.value) < parseInt(currentDate.format('HH'))) {
+                        $(this).attr('disabled','disabled');
+                    } else {
+                        $(this).removeAttr('disabled');
+                    }
+                });
+
+                $("#edit-minute > option").each(function() {
+                    if (parseInt(this.value) < parseInt(currentDate.format('mm'))) {
+                        $(this).attr('disabled','disabled');
+                    } else {
+                        $(this).removeAttr('disabled');
+                    }
+                });
+            }
+        }
     }
 
     $('#order-start-date').val(currentOrderStartDate);

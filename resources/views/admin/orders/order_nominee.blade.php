@@ -74,6 +74,7 @@
                               >{{$i}}</option>
                             @endfor
                           </select>
+                          :
                           <select name="minute" id="edit-minute">
                             @for($i = 0; $i < 60; $i++)
                               @php
@@ -81,7 +82,6 @@
                                   $i = '0'.$i;
                                 }
                               @endphp
-
                               <option value="{{$i}}"
                                 <?=($orderStartDate->minute == $i) ? 'selected' : '' ?>
                                 <?=($orderStartDate->diffInHours($now) == 0 && $now->minute > $i) ? ' disabled' : '' ?>
