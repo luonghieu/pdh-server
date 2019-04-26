@@ -70,7 +70,6 @@
                               @endphp
                               <option value="{{$i}}"
                                 <?=($orderStartDate->hour == $i) ? 'selected' : '' ?>
-                                <?=($now->hour > $i) ? 'disabled' : '' ?>
                               >{{$i}}</option>
                             @endfor
                           </select>
@@ -83,7 +82,6 @@
                               @endphp
                               <option value="{{$i}}"
                                 <?=($orderStartDate->minute == $i) ? 'selected' : '' ?>
-                                <?=($now->minute > $i && $orderStartDate->minute != $i) ? 'disabled' : '' ?>
                               >{{$i}}</option>
                             @endfor
                           </select>
@@ -423,7 +421,7 @@
   <script type="text/javascript">
     let currentOrderStartDate = '<?= \Carbon\Carbon::parse($order->date . ' ' . $order->start_time)?>';
     let baseOrderStartDate = '<?= \Carbon\Carbon::parse($order->date . ' ' . $order->start_time)?>';
-    let nominee = JSON.parse('<?php echo json_encode($order->casts[0]) ?>');
+    let nominee = JSON.parse('<?php echo json_encode($order->castOrder()->first()) ?>');
     let orderDuration = '<?= $order->duration ?>';
   </script>
   <script src="/assets/admin/js/pages/edit_order_nominee.js"></script>
