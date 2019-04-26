@@ -1036,10 +1036,14 @@ class OrderController extends Controller
         $order->cancel_fee_percent = null;
         $order->save();
 
-        $cast->pivot->canceled_at = null;
-        $cast->pivot->deleted_at = null;
-        $cast->pivot->status = CastOrderStatus::ACCEPTED;
-        $cast->pivot->save();
+        $casts = $order->castOrder()->get();
+        foreach ($casts as $cast) {
+            $cast->pivot->canceled_at = null;
+            $cast->pivot->deleted_at = null;
+            $cast->pivot->status = CastOrderStatus::ACCEPTED;
+            $cast->pivot->save();
+        }
+
 
         if ($order->type == OrderType::NOMINATION) {
             return redirect()->route('admin.orders.order_nominee', ['order' => $order->id]);
