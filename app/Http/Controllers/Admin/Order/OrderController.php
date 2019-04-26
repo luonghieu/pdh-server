@@ -1022,6 +1022,13 @@ class OrderController extends Controller
                 return redirect()->back();
             }
 
+            $oldDate = Carbon::parse($order->date . ' ' . $order->start_time);
+            $newDate = Carbon::parse($request->order_start_date);
+
+            if ($oldDate->equalTo($newDate)) {
+                return redirect()->back();
+            }
+
             $orderStartTime = Carbon::parse($request->order_start_date);
             $duration = $request->duration;
 
