@@ -69,69 +69,69 @@ function renderDay() {
     const currentDate = moment();
     let currentSelectedDate = moment(currentOrderStartDate);
 
-    if (currentSelectedDate.clone().startOf('month').diff(currentDate.clone().startOf('month'), 'months') == 0) {
-        $("#edit-month > option").each(function() {
-            if (parseInt(this.value) < parseInt(currentDate.format('M'))) {
-                $(this).attr('disabled','disabled');
-            } else {
-                $(this).removeAttr('disabled');
-            }
-        });
-
-        $("#edit-day > option").each(function() {
-            if (parseInt(this.value) < parseInt(currentDate.format('DD'))) {
-                $(this).attr('disabled','disabled');
-            } else {
-                $(this).removeAttr('disabled');
-            }
-        });
-
-        $("#edit-hour > option").each(function() {
-            if (parseInt(this.value) < parseInt(currentDate.format('HH'))) {
-                $(this).attr('disabled','disabled');
-            } else {
-                $(this).removeAttr('disabled');
-            }
-        });
-    }
-
-
-    if (currentSelectedDate.clone().startOf('day').diff(currentDate.clone().startOf('day'), 'days') == 0) {
-        console.log('123');
-        $("#edit-month > option").each(function() {
-            if (parseInt(this.value) < parseInt(currentDate.format('M'))) {
-                $(this).attr('disabled','disabled');
-            } else {
-                $(this).removeAttr('disabled');
-            }
-        });
-
-        $("#edit-day > option").each(function() {
-            if (parseInt(this.value) < parseInt(currentDate.format('DD'))) {
-                $(this).attr('disabled','disabled');
-            } else {
-                $(this).removeAttr('disabled');
-            }
-        });
-
-        $("#edit-hour > option").each(function() {
-            if (parseInt(this.value) < parseInt(currentDate.format('HH'))) {
-                $(this).attr('disabled','disabled');
-            } else {
-                $(this).removeAttr('disabled');
-            }
-        });
-    }
-
     if (currentSelectedDate.clone().startOf('day').diff(currentDate.clone().startOf('day'), 'days') < 0) {
-        console.log('123');
         let orderStartDate = moment(baseOrderStartDate);
-        currentOrderStartDate = orderStartDate.format('YYYY/MM/DD HH:mm');
         $('#edit-year').val(orderStartDate.format('YYYY'));
         $('#edit-month').val(orderStartDate.format('M'));
         $('#edit-day').val(orderStartDate.format('DD'));
         $('#edit-hour').val(orderStartDate.format('HH'));
         $('#edit-minute').val(orderStartDate.format('mm'));
+
+        if (orderStartDate.clone().startOf('year').diff(currentDate.clone().startOf('year'), 'years') == 0) {
+            if (orderStartDate.clone().startOf('month').diff(currentDate.clone().startOf('month'), 'months') == 0) {
+                $("#edit-month > option").each(function() {
+                    if (parseInt(this.value) < parseInt(currentDate.format('M'))) {
+                        $(this).attr('disabled','disabled');
+                    } else {
+                        $(this).removeAttr('disabled');
+                    }
+                });
+
+                $("#edit-day > option").each(function() {
+                    if (parseInt(this.value) < parseInt(currentDate.format('DD'))) {
+                        $(this).attr('disabled','disabled');
+                    } else {
+                        $(this).removeAttr('disabled');
+                    }
+                });
+
+                $("#edit-hour > option").each(function() {
+                    if (parseInt(this.value) < parseInt(currentDate.format('HH'))) {
+                        $(this).attr('disabled','disabled');
+                    } else {
+                        $(this).removeAttr('disabled');
+                    }
+                });
+
+                if (orderStartDate.clone().startOf('hour').diff(currentDate.clone().startOf('hour'), 'hours') == 0) {
+                    $("#edit-minute > option").each(function() {
+                        if (parseInt(this.value) < parseInt(currentDate.format('mm'))) {
+                            $(this).attr('disabled','disabled');
+                        } else {
+                            $(this).removeAttr('disabled');
+                        }
+                    });
+                }
+            }
+
+            // if (orderStartDate.clone().startOf('month').diff(currentDate.clone().startOf('month'), 'months') > 0) {
+            //     console.log(console.log('1'));
+            //     $("#edit-month > option").each(function() {
+            //         if (parseInt(this.value) < parseInt(currentDate.format('M'))) {
+            //             $(this).attr('disabled','disabled');
+            //         } else {
+            //             $(this).removeAttr('disabled');
+            //         }
+            //     });
+            // }
+        }
+
+
+
+    }
+
+    if (currentSelectedDate.clone().startOf('day').diff(currentDate.clone().startOf('day'), 'days') > 0) {
+        console.log('123123');
     }
 
     $('#order-start-date').val(currentOrderStartDate);
@@ -162,4 +162,4 @@ $('#edit-duration-nominee').on('change', function() {
     updateTempPoint();
 });
 
-renderDay();
+// renderDay();
