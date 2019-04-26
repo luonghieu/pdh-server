@@ -44,7 +44,6 @@
                             @for($i = 1; $i <= 12; $i++)
                               <option value="{{$i}}"
                                 <?=($orderStartDate->month == $i) ? 'selected' : '' ?>
-                                <?=($now->month > $i) ? 'disabled' : '' ?>
                               >{{$i}}月</option>
                             @endfor
                           </select>
@@ -57,7 +56,6 @@
                               @endphp
                               <option value="{{$i}}"
                               <?=($orderStartDate->day == $i) ? 'selected' : '' ?>
-                              <?=($now->day > $i) ? 'disabled' : '' ?>
                               >{{$i}}</option>
                             @endfor
                           </select>

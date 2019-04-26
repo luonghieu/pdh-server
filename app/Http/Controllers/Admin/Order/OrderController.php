@@ -1070,6 +1070,6 @@ class OrderController extends Controller
         }
 
         \Notification::send($users, new AdminEditOrderNominee($order->id));
-        return redirect()->back();
+        return redirect()->route('admin.orders.order_nominee', ['order' => $order->id]);
     }
 }
