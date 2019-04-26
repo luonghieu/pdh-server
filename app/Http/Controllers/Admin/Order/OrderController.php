@@ -1042,6 +1042,11 @@ class OrderController extends Controller
         $cast->pivot->status = CastOrderStatus::ACCEPTED;
         $cast->pivot->save();
 
+        if ($order->type == OrderType::NOMINATION) {
+            return redirect()->route('admin.orders.nominees', ['order' => $order->id]);
+        }
+
+        return redirect()->route('admin.orders.call', ['order' => $order->id]);
     }
 
     public function updateNomineeOrder(Request $request, $id)
