@@ -134,7 +134,11 @@
 
       $orderNotJoined = $numOfAttendPlatium - $sumOrders;
 
-      $percentagePointAverage = ($ratingScore*100)/$numOfAvgRatePlatium;
+      if ($ratingScore > $numOfAvgRatePlatium) {
+        $percentagePointAverage = ($numOfAvgRatePlatium*100)/5;
+      } else {
+        $percentagePointAverage = ($ratingScore*100)/$numOfAvgRatePlatium;
+      }
     @endphp
     <p class="rank-schedule-cast-class">あなたのキャストクラス　<span class="{{$class}} cast-class-tag">{{$castClass ? $castClass->name : ''}}</span></p>
 
@@ -174,7 +178,8 @@
       <div class="title-times-ordered avg-title">平均評価</div>
       <div class="chart-times-ordered">
         <div class="wrapper-rank-schedule">
-          <div class="star-rating-schedule">
+          <div id="star-rating-schedule">
+            <input type="hidden" id="num-of-avg-rate-platium" value="{{$numOfAvgRatePlatium}}">
             <span style="width: {{$percentagePointAverage.'%'}}"></span>
           </div>
         </div>
