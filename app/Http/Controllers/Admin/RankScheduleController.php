@@ -184,7 +184,7 @@ class RankScheduleController extends Controller
                     $item->nickname,
                     $item->castClass->name,
                     $item->orders->count(),
-                    $item->ratings->avg('score') ? round($item->ratings->avg('score'), 1) : 0,
+                    $item->ratings->avg('score') ? round($item->ratings->avg('score'), 2) : 0,
                 ];
             })->toArray();
 
