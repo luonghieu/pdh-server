@@ -30,6 +30,7 @@
                       <div class="wrap-edit-start-time">
                         <p>④ キャストとの合流時間</p>
                         @php
+                          $now = now();
                           $orderStartDate = \Carbon\Carbon::parse($order->date . ' ' . $order->start_time);
                           $dateInMonth = $orderStartDate->daysInMonth;
                         @endphp
@@ -41,8 +42,10 @@
                           </select>
                           <select name="month" id="edit-month">
                             @for($i = 1; $i <= 12; $i++)
-                              <option value="{{$i}}" <?=($orderStartDate->month == $i) ? 'selected' : ''
-                                  ?>>{{$i}}月</option>
+                              <option value="{{$i}}"
+                                <?=($orderStartDate->month == $i) ? 'selected' : '' ?>
+                                <?=($now->month > $i) ? 'disabled' : '' ?>
+                              >{{$i}}月</option>
                             @endfor
                           </select>
                           <select name="day" id="edit-day">
@@ -52,7 +55,10 @@
                                   $i = '0'.$i;
                                 }
                               @endphp
-                              <option value="{{$i}}" <?=($orderStartDate->day == $i) ? 'selected' : '' ?> >{{$i}}</option>
+                              <option value="{{$i}}"
+                              <?=($orderStartDate->day == $i) ? 'selected' : '' ?>
+                              <?=($now->day > $i) ? 'disabled' : '' ?>
+                              >{{$i}}</option>
                             @endfor
                           </select>
                           <select name="hour" id="edit-hour">
@@ -62,8 +68,9 @@
                                   $i = '0'.$i;
                                 }
                               @endphp
-                              <option value="{{$i}}" <?=($orderStartDate->hour == $i) ? 'selected' : ''
-                                  ?>>{{$i}}</option>
+                              <option value="{{$i}}"
+                                <?=($orderStartDate->hour == $i) ? 'selected' : '' ?>
+                              >{{$i}}</option>
                             @endfor
                           </select>
                           <select name="minute" id="edit-minute">
@@ -73,8 +80,9 @@
                                   $i = '0'.$i;
                                 }
                               @endphp
-                              <option value="{{$i}}" <?=($orderStartDate->minute == $i) ? 'selected' : ''
-                                  ?>>{{$i}}</option>
+                              <option value="{{$i}}"
+                                <?=($orderStartDate->minute == $i) ? 'selected' : '' ?>
+                              >{{$i}}</option>
                             @endfor
                           </select>
                         </div>
@@ -446,7 +454,8 @@
 @section('admin.js')
   <script type="text/javascript">
     let currentOrderStartDate = '<?= \Carbon\Carbon::parse($order->date . ' ' . $order->start_time)?>';
-    let nominee = JSON.parse('<?php echo json_encode($order->casts[0]) ?>');
+    let baseOrderStartDate = '<?= \Carbon\Carbon::parse($order->date . ' ' . $order->start_time)?>';
+    let nominee = JSON.parse('<?php echo json_encode($order->castOrder()->first()) ?>');
     let orderDuration = '<?= $order->duration ?>';
   </script>
   <script src="/assets/admin/js/pages/edit_order_nominee.js"></script>
