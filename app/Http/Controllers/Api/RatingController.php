@@ -83,7 +83,7 @@ class RatingController extends ApiController
                 $rating->appearance = $request->appearance;
                 $rating->friendliness = $request->friendliness;
                 $rating->comment = $request->comment;
-                $rating->score = round(($request->friendliness + $rating->appearance + $rating->satisfaction) / 3, 1);
+                $rating->score = ($request->friendliness + $rating->appearance + $rating->satisfaction) / 3;
                 $rating->save();
 
                 $order->casts()->updateExistingPivot(
