@@ -1015,17 +1015,19 @@ class OrderController extends Controller
 
     public function updateOrderStatusToActive(Request $request)
     {
-        $order = Order::where('status', OrderStatus::CANCELED)
-            ->where(function ($q) {
-                $q->whereNull('payment_status')
-                    ->orWhere('payment_status', '<>', OrderPaymentStatus::CANCEL_FEE_PAYMENT_FINISHED);
-            })->find($request->id);
+        $order = Order::where(function($q) {
+            $q->where('status', OrderStatus::CANCELED)
+                ->orWhere('status', OrderStatus::DENIED);
+        })->where(function($q) {
+            $q->whereNull('payment_status')
+                ->orWhere('payment_status', '<>', OrderPaymentStatus::CANCEL_FEE_PAYMENT_FINISHED);
+        })->find($request->id);
 
         if (!$order) {
             return redirect()->back();
         }
 
-        $cast = $order->nomineesWithTrashed()->first();
+        $cast = $order->castOrder()->first();
         if (!$cast) {
             return redirect()->back();
         }
