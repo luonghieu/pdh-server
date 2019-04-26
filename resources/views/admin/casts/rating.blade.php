@@ -54,27 +54,27 @@
               @else
                 @foreach ($ratings as $key => $rating)
                 <tr>
-                  <td>{{ $ratings->firstItem() +$key }}</td>
-                  <td><a href="{{ route('admin.users.show', ['user' => $rating->user_id]) }}">{{ $rating->user_id }}</a></td>
-                  <td>{{ $rating->user->nickname }}</td>
+                  <td>{{ $ratings->firstItem() + $key }}</td>
+                  <td><a href="{{ route('admin.users.show', ['user' => $rating->rated_id]) }}">{{ $rating->rated_id }}</a></td>
+                  <td>{{ $rating->rated->nickname }}</td>
                   @if($rating->order)
                     @if ($rating->order->type == App\Enums\OrderType::NOMINATION)
                       <td>
-                        <a href="{{ route('admin.orders.order_nominee', ['order' => $rating->order->id]) }}">
-                          {{ $rating->order->id }}
+                        <a href="{{ route('admin.orders.order_nominee', ['order' => $rating->order->order_id]) }}">
+                          {{ $rating->order_id }}
                         </a>
                       </td>
                     @else
                       <td>
-                        <a href="{{ route('admin.orders.call', ['order' => $rating->order->id]) }}" >
-                        {{ $rating->order->id }}
+                        <a href="{{ route('admin.orders.call', ['order' => $rating->order_id]) }}" >
+                        {{ $rating->order_id }}
                         </a>
                       </td>
                     @endif
                   @else
                     <td>{{ trans('messages.order_not_found') }}</td>
                   @endif
-                  <td>{{ $rating->rated->nickname }}</td>
+                  <td>{{ $rating->user->nickname }}</td>
                   <td>{{ Carbon\Carbon::parse($rating->created_at)->format('Y/m/d') }}</td>
                   <td>
                     {{ str_repeat('★', $rating->satisfaction) }}
