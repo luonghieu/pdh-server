@@ -95,6 +95,7 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.'], function () {
         Route::get('/casts/{classId}', ['as' => 'get_cast_by_classid', 'uses' => 'OrderController@getCasts']);
         Route::put('/{id}', ['as' => 'get_cast_by_classid', 'uses' => 'OrderController@updateOrderCall']);
         Route::get('/list_guests', ['as' => 'get_guest_by_device_type', 'uses' => 'OrderController@getListGuests']);
+        Route::post('/update_status_to_active', ['as' => 'update_status_to_active', 'uses' => 'OrderController@updateOrderStatusToActive']);
     });
 
     Route::group(['middleware' => 'is_admin'], function () {

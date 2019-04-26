@@ -1931,6 +1931,16 @@ select.init-option-search {
   margin-bottom: 5px;
 }
 
+#set-status-to-active {
+  bottom: 6px;
+  width: 112px;
+}
+.wrap-status.text-left {
+  text-indent: 70px;
+}
+.wrap-status.text-left span {
+  padding-right: 0;
+}
 @media (max-width: 1280px) {
   select.init-option-search {
     margin-right: 1%;
