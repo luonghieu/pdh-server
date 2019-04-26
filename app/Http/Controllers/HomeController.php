@@ -115,6 +115,8 @@ class HomeController extends Controller
 
                     if (!$ratingScore) {
                         $ratingScore = 0;
+                    } else {
+                        $ratingScore = round($ratingScore, 2);
                     }
                 }
 
