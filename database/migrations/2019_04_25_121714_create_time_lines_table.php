@@ -16,9 +16,9 @@ class CreateTimeLinesTable extends Migration
         Schema::create('time_lines', function (Blueprint $table) {
             $table->increments('id');
             $table->integer('user_id')->unsigned();
-            $table->string('title');
+            $table->string('title')->nullable();
             $table->text('content');
-            $table->string('image');
+            $table->string('image')->nullable();
             $table->string('location');
             $table->boolean('hidden')->default(false);
             $table->timestamps();
