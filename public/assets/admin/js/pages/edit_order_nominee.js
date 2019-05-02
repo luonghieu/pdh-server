@@ -49,7 +49,7 @@ function renderDay() {
     let currentMinute = $('#edit-minute').val();
     const selectedMonth = moment(currentYear + '/' + currentMonth);
     const selectedMonthTotalDay = selectedMonth.daysInMonth();
-
+    // console.log(selectedMonth.format('YYYY-MM-DD'));
     $('#edit-day').empty();
     if (currentDay > selectedMonthTotalDay) {
         currentDay = '01';
@@ -58,7 +58,7 @@ function renderDay() {
     for (let i= 1; i <= selectedMonthTotalDay; i++) {
         $('#edit-day').append($('<option>', {
             value: (i < 10) ? '0' + i : i,
-            text: (i < 10) ? '0' + i : i,
+            text: ((i < 10) ? '0' + i : i) + dayOfWeek[selectedMonth.clone().add('days', i - 1).weekday()] ,
             selected: (i == currentDay) ? true : false
         }));
     }
