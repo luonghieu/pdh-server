@@ -201,14 +201,20 @@ $('#edit-duration-nominee').on('change', function() {
 });
 
 $('#btn-edit-order-nominee').on('hidden.bs.modal', function () {
-    const baseDate = moment(baseOrderStartDate);
-    $('#edit-year').val(baseDate.format('YYYY'));
-    $('#edit-month').val(baseDate.format('M'));
-    $('#edit-day').val(baseDate.format('DD'));
-    $('#edit-hour').val(baseDate.format('HH'));
-    $('#edit-minute').val(baseDate.format('mm'));
-    $('#temp-point').text(baseTempPoint + 'P');
-    $('#edit-duration-nominee').val(baseDuration);
+    if (clickComfirm == 0) {
+        const baseDate = moment(baseOrderStartDate);
+        $('#edit-year').val(baseDate.format('YYYY'));
+        $('#edit-month').val(baseDate.format('M'));
+        $('#edit-day').val(baseDate.format('DD'));
+        $('#edit-hour').val(baseDate.format('HH'));
+        $('#edit-minute').val(baseDate.format('mm'));
+        $('#temp-point').text(baseTempPoint + 'P');
+        $('#edit-duration-nominee').val(baseDuration);
 
-    renderDay();
+        renderDay();
+    }
+});
+
+$('#btn-submit-edit-order-nominee').on('hidden.bs.modal', function () {
+   window.location.reload();
 });
