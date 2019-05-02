@@ -175,4 +175,8 @@ Route::group(['prefix' => 'v1'], function () {
     Route::group(['middleware' => ['auth:api'], 'prefix' => 'shifts', 'as' => 'shifts.'], function () {
         Route::get('/', ['as' => 'index', 'uses' => 'ShiftController@index']);
     });
+
+    Route::group(['middleware' => ['auth:api'], 'prefix' => 'time_line', 'as' => 'time_line.'], function () {
+        Route::post('/create', ['as' => 'create', 'uses' => 'TimeLineController@create']);
+    });
 });
