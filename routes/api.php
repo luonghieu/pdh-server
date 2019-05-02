@@ -53,6 +53,7 @@ Route::group(['prefix' => 'v1'], function () {
         Route::post('/ratings', ['as' => 'create_rating', 'uses' => 'RatingController@create']);
         Route::get('/notifications/{id}', ['as' => 'show_notifications', 'uses' => 'NotificationController@show']);
         Route::get('/notifications', ['as' => 'notifications', 'uses' => 'NotificationController@index']);
+        Route::get('/time_lines', ['as' => 'time_lines', 'uses' => 'TimeLineController@index']);
     });
 
     Route::group(['middleware' => ['auth:api'], 'prefix' => 'users', 'as' => 'users.'], function () {
