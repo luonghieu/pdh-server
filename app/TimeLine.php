@@ -37,4 +37,9 @@ class TimeLine extends Model
 
         return Storage::url($value);
     }
+
+    public function getCountFavoritesAttribute()
+    {
+        return $this->favorites()->count();
+    }
 }

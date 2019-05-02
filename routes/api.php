@@ -176,7 +176,8 @@ Route::group(['prefix' => 'v1'], function () {
         Route::get('/', ['as' => 'index', 'uses' => 'ShiftController@index']);
     });
 
-    Route::group(['middleware' => ['auth:api'], 'prefix' => 'time_line', 'as' => 'time_line.'], function () {
+    Route::group(['middleware' => ['auth:api'], 'prefix' => 'time_lines', 'as' => 'time_lines.'], function () {
+        Route::get('/', ['as' => 'index', 'uses' => 'TimeLineController@index']);
         Route::post('/create', ['as' => 'create', 'uses' => 'TimeLineController@create']);
     });
 });

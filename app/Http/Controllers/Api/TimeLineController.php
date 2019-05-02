@@ -56,4 +56,18 @@ class TimeLineController extends ApiController
 
         return $this->respondWithData(TimeLineResource::make($timeLine));
     }
+
+    public function index(Request $request)
+    {
+        $user = $this->guard()->user();
+
+        $id = $user->id;
+        if ($request->user_id) {
+            $id = $request->user_id;
+        }
+
+        $timeLine = TimeLine::where('user_id', $id)->where('hidden', false)->paginate(10);
+
+        return $this->respondWithData(TimeLineResource::collection($timeLine));
+    }
 }
