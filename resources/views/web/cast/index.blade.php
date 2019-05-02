@@ -63,7 +63,7 @@
         @endphp
         <select name="point_cast" id="point-cast" disabled>
           @foreach($arrCost as $cost)
-            <option value="{{ $cost }}" {{ $user->cost == $cost ? 'selected' : ''}}>{{number_format($cost) }}</option>
+            <option value="{{ $cost }}" {{ $user->cost == $cost ? 'selected' : ''}}>{{number_format($cost) }}P</option>
           @endforeach
         </select>
       </div>
