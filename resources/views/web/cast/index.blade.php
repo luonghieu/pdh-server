@@ -162,7 +162,7 @@
               @endfor
             @else
               @for($i = 0; $i < $sumOrders; $i++)
-                <li><img src="/assets/web/images/common/ic_glass_blue.svg" alt=""></li>
+                <li class="ic-glass-on"><img src="/assets/web/images/common/ic_glass_blue.svg" alt=""></li>
               @endfor
               @for($i = 0; $i < $orderNotJoined; $i++)
                 <li class="ic-glass-off"><img src="/assets/web/images/common/ic_glass_gray.svg" alt=""></li>

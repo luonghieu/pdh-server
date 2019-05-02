@@ -3048,10 +3048,8 @@ div.user-data span.total-point-cast{
 
 .indicators {
   list-style: none;
-  display: flex;
   padding: 0 10px;
   margin: 0;
-  justify-content: start;
 }
 
 .progress-wrapper {
@@ -3951,6 +3949,12 @@ div.user-data span.total-point-cast{
 
 .ic-glass-off {
   width: 17px;
+  display: inline-block;
+}
+
+.ic-glass-on {
+  width: 17px;
+  display: inline-block;
 }
 
 /*rating*/
