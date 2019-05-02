@@ -158,7 +158,7 @@
           <ul class="indicators">
             @if($sumOrders > $numOfAttendPlatium)
               @for($i = 0; $i < $numOfAttendPlatium; $i++)
-                <li><img src="/assets/web/images/common/ic_glass_blue.svg" alt=""></li>
+                <li class="ic-glass-on"><img src="/assets/web/images/common/ic_glass_blue.svg" alt=""></li>
               @endfor
             @else
               @for($i = 0; $i < $sumOrders; $i++)
