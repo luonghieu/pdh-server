@@ -102,7 +102,7 @@
                               @endphp
                               <option value="{{$i}}"
                                 <?=($orderStartDate->minute == $i) ? 'selected' : '' ?>
-                                <?=($orderStartDate->diffInHours($now) == 0 && $now->minute > $i) ? ' disabled' : '' ?>
+                                <?=($orderStartDate->copy()->startOfHour()->diffInHours($now->copy()->startOfHour()) == 0 && $now->minute > $i) ? ' disabled' : '' ?>
                               >{{$i}}</option>
                             @endfor
                           </select>
