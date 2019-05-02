@@ -72,7 +72,7 @@
                   @if($rating->order)
                     @if ($rating->order->type == App\Enums\OrderType::NOMINATION)
                       <td>
-                        <a href="{{ route('admin.orders.order_nominee', ['order' => $rating->order->order_id]) }}">
+                        <a href="{{ route('admin.orders.order_nominee', ['order' => $rating->order_id]) }}">
                           {{ $rating->order_id }}
                         </a>
                       </td>
