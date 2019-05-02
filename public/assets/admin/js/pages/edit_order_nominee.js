@@ -1,5 +1,5 @@
 function orderPoint() {
-    const cost = nominee.pivot.cost;
+    const cost = nomineeCost;
     const orderDuration = $('#edit-duration-nominee').val();
     return (cost / 2) * Math.floor(orderDuration * 60 / 15);
 }

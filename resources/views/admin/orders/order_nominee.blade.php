@@ -458,7 +458,7 @@
   <script type="text/javascript">
     let currentOrderStartDate = '<?= \Carbon\Carbon::parse($order->date . ' ' . $order->start_time)?>';
     let baseOrderStartDate = '<?= \Carbon\Carbon::parse($order->date . ' ' . $order->start_time)?>';
-    let nominee = JSON.parse('<?php echo json_encode($order->castOrder()->first()) ?>');
+    let nomineeCost ='<?php echo $order->castOrder()->first()->pivot->cost ?>';
     let orderDuration = '<?= $order->duration ?>';
   </script>
   <script src="/assets/admin/js/pages/edit_order_nominee.js"></script>
