@@ -34,6 +34,9 @@ class CreateTimeLinesTable extends Migration
      */
     public function down()
     {
+        Schema::table('time_lines', function (Blueprint $table) {
+            $table->dropForeign(['user_id']);
+        });
         Schema::dropIfExists('time_lines');
     }
 }
