@@ -180,6 +180,7 @@ Route::group(['prefix' => 'v1'], function () {
         Route::get('/', ['as' => 'index', 'uses' => 'TimeLineController@index']);
         Route::get('/{id}', ['as' => 'show', 'uses' => 'TimeLineController@show'])->where('id', '[0-9]+');
         Route::post('/create', ['as' => 'create', 'uses' => 'TimeLineController@create']);
-        Route::get('/favorites/{id}', ['as' => 'favorites', 'uses' => 'TimeLineController@favorites'])->where('id', '[0-9]+');
+        Route::get('/{id}/favorites', ['as' => 'favorites', 'uses' => 'TimeLineController@favorites'])->where('id', '[0-9]+');
+        Route::post('/{id}/favorites', ['as' => 'favorite_update', 'uses' => 'TimeLineController@updateFavorite'])->where('id', '[0-9]+');
     });
 });

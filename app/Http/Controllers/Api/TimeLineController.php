@@ -8,6 +8,7 @@ use App\Http\Resources\TimelineFavoritesResource;
 use App\Http\Resources\TimeLineResource;
 use App\Services\LogService;
 use App\TimeLine;
+use App\TimeLineFavorite;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Webpatser\Uuid\Uuid;
@@ -46,7 +47,7 @@ class TimeLineController extends ApiController
     public function create(Request $request)
     {
         $rules = [
-            'content' => 'required|string|max:240',
+            'content' => 'required|string|max:6',
             'image' => 'image|mimes:jpeg,png,jpg,gif,svg|max:5120',
             'location' => 'required|string|max:20',
         ];
@@ -85,5 +86,37 @@ class TimeLineController extends ApiController
         }
 
         return $this->respondWithData(TimeLineResource::make($timeLine));
+    }
+
+    public function updateFavorite($id)
+    {
+        $timeline = TimeLine::findOrFail($id);
+
+        if (!$timeline) {
+            return $this->respondErrorMessage(trans('messages.timeline_not_found'), 404);
+        }
+
+        $user = $this->guard()->user();
+
+        try {
+            $favorite = $timeline->favorites()->where('user_id', $user->id);
+
+            if ($favorite->exists()) {
+                $favorite->delete();
+
+                return $this->respondWithNoData(trans('messages.unfavorite_success'));
+            }
+
+            $favorite = new TimeLineFavorite();
+            $favorite->time_line_id = $timeline->id;
+            $favorite->user_id = $user->id;
+            $favorite->save();
+        } catch (\Exception $e) {
+            LogService::writeErrorLog($e);
+
+            return $this->respondServerError();
+        }
+
+        return $this->respondWithNoData(trans('messages.favorite_success'));
     }
 }
