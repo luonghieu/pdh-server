@@ -127,7 +127,7 @@
                       $orderStartDate->format('Y/m/d H:i')
                       }}">
                       <button type="button" data-toggle="modal" data-target="#btn-submit-edit-order-nominee"
-                              class="btn btn-accept" data-dismiss="modal">更新する
+                              class="btn btn-accept" data-dismiss="modal" onclick="onClickComfirm()">更新する
                       </button>
                   </div>
                 </div>
@@ -483,6 +483,10 @@
     let nomineeCost ='<?php echo $order->castOrder()->first()->pivot->cost ?>';
     let orderDuration = '<?= $order->duration ?>';
     let dayOfWeek = JSON.parse('<?= json_encode(dayOfWeek()) ?>');
+    let clickComfirm = 0;
+    function onClickComfirm() {
+        clickComfirm = 1;
+    }
   </script>
   <script src="/assets/admin/js/pages/edit_order_nominee.js"></script>
 @stop
