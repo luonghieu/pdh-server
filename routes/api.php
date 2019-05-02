@@ -176,8 +176,10 @@ Route::group(['prefix' => 'v1'], function () {
         Route::get('/', ['as' => 'index', 'uses' => 'ShiftController@index']);
     });
 
-    Route::group(['middleware' => ['auth:api'], 'prefix' => 'time_lines', 'as' => 'time_lines.'], function () {
+    Route::group(['middleware' => ['auth:api'], 'prefix' => 'timelines', 'as' => 'timelines.'], function () {
         Route::get('/', ['as' => 'index', 'uses' => 'TimeLineController@index']);
+        Route::get('/{id}', ['as' => 'show', 'uses' => 'TimeLineController@show'])->where('id', '[0-9]+');
         Route::post('/create', ['as' => 'create', 'uses' => 'TimeLineController@create']);
+        Route::get('/favorites/{id}', ['as' => 'favorites', 'uses' => 'TimeLineController@favorites'])->where('id', '[0-9]+');
     });
 });
