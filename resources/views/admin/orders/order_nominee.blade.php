@@ -76,9 +76,7 @@
                               <option value="{{$i}}"
                               <?=($orderStartDate->day == $i) ? 'selected' : '' ?>
                               <?=($orderStartDate->diffInMonths($now) == 0 && $now->day > $i) ? ' disabled' : '' ?>
-                              <?php $dayOfWeek = \Carbon\Carbon::parse($orderStartDate->format('Y/m/d'))->startOfMonth()
-                                      ->addDay($i - 1)->dayOfWeek ?>
-                              >{{$i}}{{ dayOfWeek()[$dayOfWeek] }}</option>
+                              >{{$i . '日'}}</option>
                             @endfor
                           </select>
                           <select name="hour" id="edit-hour">
@@ -479,7 +477,9 @@
 @section('admin.js')
   <script type="text/javascript">
     let currentOrderStartDate = '<?= \Carbon\Carbon::parse($order->date . ' ' . $order->start_time)?>';
-    let baseOrderStartDate = '<?= \Carbon\Carbon::parse($order->date . ' ' . $order->start_time)?>';
+    const baseOrderStartDate = '<?= \Carbon\Carbon::parse($order->date . ' ' . $order->start_time)?>';
+    const baseTempPoint = '<?= number_format($order->temp_point) ?>';
+    const baseDuration = '<?= $order->duration ?>';
     let nomineeCost ='<?php echo $order->castOrder()->first()->pivot->cost ?>';
     let orderDuration = '<?= $order->duration ?>';
     let dayOfWeek = JSON.parse('<?= json_encode(dayOfWeek()) ?>');

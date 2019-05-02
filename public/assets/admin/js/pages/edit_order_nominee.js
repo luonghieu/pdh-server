@@ -49,7 +49,7 @@ function renderDay() {
     let currentMinute = $('#edit-minute').val();
     const selectedMonth = moment(currentYear + '/' + currentMonth);
     const selectedMonthTotalDay = selectedMonth.daysInMonth();
-    // console.log(selectedMonth.format('YYYY-MM-DD'));
+
     $('#edit-day').empty();
     if (currentDay > selectedMonthTotalDay) {
         currentDay = '01';
@@ -58,7 +58,7 @@ function renderDay() {
     for (let i= 1; i <= selectedMonthTotalDay; i++) {
         $('#edit-day').append($('<option>', {
             value: (i < 10) ? '0' + i : i,
-            text: ((i < 10) ? '0' + i : i) + dayOfWeek[selectedMonth.clone().add('days', i - 1).weekday()] ,
+            text: ((i < 10) ? '0' + i : i) + '日' ,
             selected: (i == currentDay) ? true : false
         }));
     }
@@ -78,6 +78,13 @@ function renderDay() {
         $('#edit-minute').val(orderStartDate.format('mm'));
 
         if (orderStartDate.clone().startOf('year').diff(currentDate.clone().startOf('year'), 'years') == 0) {
+            $("#edit-month > option").each(function() {
+                if (parseInt(this.value) < parseInt(currentDate.format('M'))) {
+                    $(this).attr('disabled','disabled');
+                } else {
+                    $(this).removeAttr('disabled');
+                }
+            });
             if (orderStartDate.clone().startOf('month').diff(currentDate.clone().startOf('month'), 'months') == 0) {
                 $("#edit-month > option").each(function() {
                     if (parseInt(this.value) < parseInt(currentDate.format('M'))) {
@@ -113,21 +120,7 @@ function renderDay() {
                     });
                 }
             }
-
-            // if (orderStartDate.clone().startOf('month').diff(currentDate.clone().startOf('month'), 'months') > 0) {
-            //     console.log(console.log('1'));
-            //     $("#edit-month > option").each(function() {
-            //         if (parseInt(this.value) < parseInt(currentDate.format('M'))) {
-            //             $(this).attr('disabled','disabled');
-            //         } else {
-            //             $(this).removeAttr('disabled');
-            //         }
-            //     });
-            // }
         }
-
-
-
     }
 
     if (currentSelectedDate.clone().startOf('day').diff(currentDate.clone().startOf('day'), 'days') >= 0) {
@@ -140,7 +133,6 @@ function renderDay() {
                 }
             });
         }
-
         if (currentSelectedDate.clone().startOf('month').diff(currentDate.clone().startOf('month'), 'months') == 0) {
             $("#edit-month > option").each(function() {
                 if (parseInt(this.value) < parseInt(currentDate.format('M'))) {
@@ -149,7 +141,8 @@ function renderDay() {
                     $(this).removeAttr('disabled');
                 }
             });
-            if (currentSelectedDate.clone().startOf('day').diff(currentDate.clone().startOf('day'), 'days') == 0) {
+            if (currentSelectedDate.clone().startOf('day').diff(currentDate.clone().startOf('day'), 'days') >= 0) {
+
                 $("#edit-day > option").each(function() {
                     if (parseInt(this.value) < parseInt(currentDate.format('DD'))) {
                         $(this).attr('disabled','disabled');
@@ -166,13 +159,15 @@ function renderDay() {
                     }
                 });
 
-                $("#edit-minute > option").each(function() {
-                    if (parseInt(this.value) < parseInt(currentDate.format('mm'))) {
-                        $(this).attr('disabled','disabled');
-                    } else {
-                        $(this).removeAttr('disabled');
-                    }
-                });
+                if (currentSelectedDate.clone().startOf('hour').diff(currentDate.clone().startOf('hour'), 'hours') == 0) {
+                    $("#edit-minute > option").each(function() {
+                        if (parseInt(this.value) < parseInt(currentDate.format('mm'))) {
+                            $(this).attr('disabled','disabled');
+                        } else {
+                            $(this).removeAttr('disabled');
+                        }
+                    });
+                }
             }
         }
     }
@@ -205,4 +200,15 @@ $('#edit-duration-nominee').on('change', function() {
     updateTempPoint();
 });
 
-// renderDay();
+$('#btn-edit-order-nominee').on('hidden.bs.modal', function () {
+    const baseDate = moment(baseOrderStartDate);
+    $('#edit-year').val(baseDate.format('YYYY'));
+    $('#edit-month').val(baseDate.format('M'));
+    $('#edit-day').val(baseDate.format('DD'));
+    $('#edit-hour').val(baseDate.format('HH'));
+    $('#edit-minute').val(baseDate.format('mm'));
+    $('#temp-point').text(baseTempPoint + 'P');
+    $('#edit-duration-nominee').val(baseDuration);
+
+    renderDay();
+});
