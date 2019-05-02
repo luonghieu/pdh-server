@@ -24,7 +24,7 @@ class TimeLineResource extends JsonResource
             'content' => $this->content,
             'image' => $this->image,
             'location' => $this->location,
-            'total_favorites' => count($this->whenLoaded('favorites')),
+            'total_favorites' => $this->favorites_count,
             'hidden' => $this->hidden,
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
