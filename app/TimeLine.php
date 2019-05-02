@@ -16,4 +16,9 @@ class TimeLine extends Model
     {
         return $this->hasMany(TimeLineFavorite::class);
     }
+
+    public function getCountFavoritesAttribute()
+    {
+        return $this->favorites()->count();
+    }
 }
