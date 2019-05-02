@@ -16,10 +16,28 @@
             <button type="button" data-toggle="modal" data-target="#btn-edit-order-nominee" class="btn btn-info pull-right">予約内容を変更する</button>
             @endif
             <form action="{{ route('admin.orders.order_nominee_edit', ['order' => $order->id]) }}" method="POST">
+              <div class="modal fade" id="btn-submit-edit-order-nominee" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                <div class="modal-dialog" role="document">
+                  <div class="modal-content">
+                    <div class="modal-body">
+                      <div class="title-modal">
+                        <h2>本当に更新しますか？</h2>
+                        <h2>「はい」を選択すると、ゲスト/キャストチャット</h2>
+                        <h2>へ通知が送信されます</h2>
+                      </div>
+                    </div>
+                    <div class="modal-footer">
+                      <button type="button" class="btn btn-canceled" data-dismiss="modal">いいえ</button>
+                      <button type="submit" class="btn btn-accept">はい</button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
               {{ method_field('PUT') }}
               {{ csrf_field() }}
               <div class="modal fade" id="btn-edit-order-nominee" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-              <div class="modal-dialog" role="document">
+                <div class="modal-dialog" role="document">
                 <div class="modal-content">
                   <div class="modal-body">
                     <div class="title-modal"><h2>予約を編集する</h2></div>
@@ -58,7 +76,9 @@
                               <option value="{{$i}}"
                               <?=($orderStartDate->day == $i) ? 'selected' : '' ?>
                               <?=($orderStartDate->diffInMonths($now) == 0 && $now->day > $i) ? ' disabled' : '' ?>
-                              >{{$i}}</option>
+                              <?php $dayOfWeek = \Carbon\Carbon::parse($orderStartDate->format('Y/m/d'))->startOfMonth()
+                                      ->addDay($i - 1)->dayOfWeek ?>
+                              >{{$i}}{{ dayOfWeek()[$dayOfWeek] }}</option>
                             @endfor
                           </select>
                           <select name="hour" id="edit-hour">
@@ -71,7 +91,7 @@
                               <option value="{{$i}}"
                                 <?=($orderStartDate->hour == $i) ? 'selected' : '' ?>
                                 <?=($orderStartDate->diffInDays($now) == 0 && $now->hour > $i) ? ' disabled' : '' ?>
-                              >{{$i}}</option>
+                              >{{ $i }}</option>
                             @endfor
                           </select>
                           :
@@ -108,11 +128,13 @@
                       <input type="hidden" id="order-start-date" name="order_start_date" value="{{
                       $orderStartDate->format('Y/m/d H:i')
                       }}">
-                      <button type="submit" class="btn btn-accept">更新する</button>
+                      <button type="button" data-toggle="modal" data-target="#btn-submit-edit-order-nominee"
+                              class="btn btn-accept" data-dismiss="modal">更新する
+                      </button>
                   </div>
                 </div>
               </div>
-            </div>
+              </div>
             </form>
           </div>
         </div>
@@ -460,6 +482,7 @@
     let baseOrderStartDate = '<?= \Carbon\Carbon::parse($order->date . ' ' . $order->start_time)?>';
     let nomineeCost ='<?php echo $order->castOrder()->first()->pivot->cost ?>';
     let orderDuration = '<?= $order->duration ?>';
+    let dayOfWeek = JSON.parse('<?= json_encode(dayOfWeek()) ?>');
   </script>
   <script src="/assets/admin/js/pages/edit_order_nominee.js"></script>
 @stop
