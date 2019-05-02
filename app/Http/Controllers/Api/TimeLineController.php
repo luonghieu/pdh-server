@@ -17,7 +17,7 @@ class TimeLineController extends ApiController
             $id = $request->user_id;
         }
 
-        $timeLine = TimeLine::where('user_id', $id)->where('hidden', false)->withCount('favorites')->paginate(10);
+        $timeLine = TimeLine::where('user_id', $id)->where('hidden', false)->paginate(10);
 
         return $this->respondWithData(TimeLineResource::collection($timeLine));
     }
