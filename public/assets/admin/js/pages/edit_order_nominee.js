@@ -69,8 +69,10 @@ function renderDay() {
     const currentDate = moment();
     let currentSelectedDate = moment(currentOrderStartDate);
 
-    if (currentSelectedDate.clone().startOf('day').diff(currentDate.clone().startOf('day'), 'days') < 0) {
+    if (currentSelectedDate.clone().startOf('day').diff(currentDate.clone().startOf('day'), 'days') < 0
+        || currentSelectedDate.clone().startOf('minute').diff(currentDate.clone().startOf('minute'), 'minutes') < 0) {
         let orderStartDate = moment(baseOrderStartDate);
+        currentSelectedDate = orderStartDate;
         $('#edit-year').val(orderStartDate.format('YYYY'));
         $('#edit-month').val(orderStartDate.format('M'));
         $('#edit-day').val(orderStartDate.format('DD'));
@@ -142,7 +144,6 @@ function renderDay() {
                 }
             });
             if (currentSelectedDate.clone().startOf('day').diff(currentDate.clone().startOf('day'), 'days') >= 0) {
-
                 $("#edit-day > option").each(function() {
                     if (parseInt(this.value) < parseInt(currentDate.format('DD'))) {
                         $(this).attr('disabled','disabled');
