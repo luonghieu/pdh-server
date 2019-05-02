@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\User;
 use App\Rating;
 use App\Services\LogService;
+use Carbon\Carbon;
 use DB;
 use Illuminate\Http\Request;
 
@@ -13,7 +14,35 @@ class RatingController extends Controller
 {
     public function ratings(Request $request, User $user)
     {
-        $ratings = $user->ratings()->with('order', 'user')->orderBy('created_at', 'DESC')->paginate($request->limit ?: 10);
+        $ratings = $user->ratings()->with('order', 'user');
+
+        $keyword = $request->search;
+        $fromDate = $request->from_date ? Carbon::parse($request->from_date)->startOfDay() : null;
+        $toDate = $request->to_date ? Carbon::parse($request->to_date)->endOfDay() : null;
+
+        if ($keyword) {
+            $ratings->where(function($query) use ($keyword) {
+                $query->where('user_id', 'like', $keyword)
+                    ->orWhere('order_id', 'like', $keyword)
+                    ->orWhereHas('user', function($subQuery) use ($keyword) {
+                        $subQuery->where('nickname', 'like', "%$keyword%");
+                    });
+            });
+        }
+
+        if ($fromDate) {
+            $ratings->where(function($query) use ($fromDate) {
+                $query->where('created_at', '>=', $fromDate);
+            });
+        }
+
+        if ($toDate) {
+            $ratings->where(function($query) use ($toDate) {
+                $query->where('created_at', '<=', $toDate);
+            });
+        }
+
+        $ratings = $ratings->orderBy('created_at', 'DESC')->paginate($request->limit ?: 10);
 
         return view('admin.casts.rating', compact('ratings', 'user'));
     }

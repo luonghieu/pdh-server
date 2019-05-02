@@ -9,6 +9,18 @@
         @else
           @include('admin.partials.menu-tab',compact('user'))
         @endif
+        <div class="panel-body handling">
+          <div class="search">
+            <form class="navbar-form navbar-left form-search" action="{{ route('admin.casts.guest_ratings', ['user' => $user->id]) }}" method="GET">
+              <label for="">From date: </label>
+              <input type="text" class="form-control date-picker init-input-search" name="from_date" id="date01" data-date-format="yyyy/mm/dd" value="{{ request()->from_date }}" placeholder="yyyy/mm/dd" />
+              <label for="">To date: </label>
+              <input type="text" class="form-control date-picker init-input-search" name="to_date" id="date01" data-date-format="yyyy/mm/dd" value="{{ request()->to_date }}" placeholder="yyyy/mm/dd"/>
+              <input type="text" class="form-control" placeholder="ユーザーID,予約ID,名前" name="search" value="{{ request()->search }}">
+              <button type="submit" class="fa fa-search btn btn-search"></button>
+            </form>
+          </div>
+        </div>
         <div class="clearfix"></div>
         <div class="panel-body">
           <form class="navbar-form navbar-left form-search" action="" id="limit-page" method="GET">
