@@ -1055,7 +1055,8 @@ class OrderController extends Controller
             $order->save();
 
             $room = Room::find($order->room_id);
-            $roomMesage = '提案がキャンセルされました。';
+
+            $roomMesage = '予約内容が変更されました。';
             $roomMessage = $room->messages()->create([
                 'user_id' => 1,
                 'type' => MessageType::SYSTEM,
