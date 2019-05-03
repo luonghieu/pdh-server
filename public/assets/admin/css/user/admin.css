@@ -1988,6 +1988,9 @@ select.init-option-search {
   padding-right: 0;
 }
 
+#btn-submit-edit-order-nominee h2 {
+  font-weight: bold;
+}
 @media (max-width: 1280px) {
   select.init-option-search {
     margin-right: 1%;
