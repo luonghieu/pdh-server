@@ -71,7 +71,7 @@ function renderDay() {
 
     if (currentSelectedDate.clone().startOf('day').diff(currentDate.clone().startOf('day'), 'days') < 0
         || currentSelectedDate.clone().startOf('minute').diff(currentDate.clone().startOf('minute'), 'minutes') < 0) {
-        let orderStartDate = moment(baseOrderStartDate);
+        let orderStartDate = moment();
         currentSelectedDate = orderStartDate;
         $('#edit-year').val(orderStartDate.format('YYYY'));
         $('#edit-month').val(orderStartDate.format('M'));
