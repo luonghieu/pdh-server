@@ -51,12 +51,15 @@
                           $now = now();
                           $orderStartDate = \Carbon\Carbon::parse($order->date . ' ' . $order->start_time);
                           $dateInMonth = $orderStartDate->daysInMonth;
+                          $nextYear = ($orderStartDate->copy()->startOfYear()->diffInYears(now()->startOfYear()) ==
+                          0) ? $orderStartDate->year + 1 :  $orderStartDate->year - 1;
                         @endphp
                         <div class="start-date-time">
                           <select name="year" id="edit-year">
                             <option value="{{$orderStartDate->year}}"
                                     selected="selected">{{$orderStartDate->year}}年</option>
-                            <option value="{{$orderStartDate->year+1}}">{{$orderStartDate->year+1}}年</option>
+
+                            <option value="{{$nextYear}}">{{$nextYear}}年</option>
                           </select>
                           <select name="month" id="edit-month">
                             @for($i = 1; $i <= 12; $i++)
