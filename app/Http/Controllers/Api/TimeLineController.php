@@ -47,8 +47,8 @@ class TimeLineController extends ApiController
     public function create(Request $request)
     {
         $rules = [
-            'content' => 'required|string|max:6',
-            'image' => 'image|mimes:jpeg,png,jpg,gif,svg|max:5120',
+            'content' => 'required|string|max:240',
+            'image' => 'image|mimes:jpeg,png,jpg,gif,svg',
             'location' => 'required|string|max:20',
         ];
 
@@ -90,7 +90,7 @@ class TimeLineController extends ApiController
 
     public function updateFavorite($id)
     {
-        $timeline = TimeLine::findOrFail($id);
+        $timeline = TimeLine::find($id);
 
         if (!$timeline) {
             return $this->respondErrorMessage(trans('messages.timeline_not_found'), 404);
