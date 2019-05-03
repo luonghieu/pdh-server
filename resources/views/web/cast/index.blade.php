@@ -137,7 +137,7 @@
       if ($ratingScore > $numOfAvgRatePlatium) {
         $percentagePointAverage = ($numOfAvgRatePlatium*100)/5;
       } else {
-        $percentagePointAverage = ($ratingScore*100)/$numOfAvgRatePlatium;
+        $percentagePointAverage = ($ratingScore*100)/5;
       }
     @endphp
     <p class="rank-schedule-cast-class">あなたのキャストクラス　<span class="{{$class}} cast-class-tag">{{$castClass ? $castClass->name : ''}}</span></p>
