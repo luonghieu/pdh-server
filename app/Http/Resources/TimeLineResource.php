@@ -3,9 +3,10 @@
 namespace App\Http\Resources;
 
 use App\Traits\ResourceResponse;
-use Illuminate\Http\Resources\Json\JsonResource;
+use Carbon\Carbon;
+use Illuminate\Http\Resources\Json\Resource;
 
-class TimeLineResource extends JsonResource
+class TimeLineResource extends Resource
 {
     use ResourceResponse;
 
@@ -19,15 +20,16 @@ class TimeLineResource extends JsonResource
     {
         return $this->filterNull([
             'id' => $this->id,
-            'user' => new UserResource($this->user),
+            'user_id' => $this->user_id,
             'title' => $this->title,
             'content' => $this->content,
             'image' => $this->image,
             'location' => $this->location,
+            'hidden' => (int)$this->hidden,
             'total_favorites' => $this->count_favorites,
-            'hidden' => $this->hidden,
-            'created_at' => $this->created_at,
-            'updated_at' => $this->updated_at,
+            'user' => new UserResource($this->user),
+            'created_at' => Carbon::parse($this->created_at)->format('Y-m-d H:i'),
+            'updated_at' => Carbon::parse($this->updated_at)->format('Y-m-d H:i'),
         ]);
     }
 }
