@@ -143,15 +143,16 @@ function renderDay() {
                     $(this).removeAttr('disabled');
                 }
             });
-            if (currentSelectedDate.clone().startOf('day').diff(currentDate.clone().startOf('day'), 'days') >= 0) {
-                $("#edit-day > option").each(function() {
-                    if (parseInt(this.value) < parseInt(currentDate.format('DD'))) {
-                        $(this).attr('disabled','disabled');
-                    } else {
-                        $(this).removeAttr('disabled');
-                    }
-                });
 
+            $("#edit-day > option").each(function() {
+                if (parseInt(this.value) < parseInt(currentDate.format('DD'))) {
+                    $(this).attr('disabled','disabled');
+                } else {
+                    $(this).removeAttr('disabled');
+                }
+            });
+
+            if (currentSelectedDate.clone().startOf('day').diff(currentDate.clone().startOf('day'), 'days') == 0) {
                 $("#edit-hour > option").each(function() {
                     if (parseInt(this.value) < parseInt(currentDate.format('HH'))) {
                         $(this).attr('disabled','disabled');
@@ -173,7 +174,7 @@ function renderDay() {
         }
     }
 
-    $('#order-start-date').val(currentOrderStartDate);
+    $('#order-start-date').val(currentSelectedDate.format('YYYY-MM-DD HH:mm'));
     updateTempPoint();
 }
 
