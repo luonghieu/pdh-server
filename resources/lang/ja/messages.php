@@ -82,4 +82,5 @@ return [
     'date_of_birth_error' => '20歳未満の方は、ご利用いただけません',
     'update_shifts_success' => 'スケジュールの登録が完了しました',
     'offer_not_found' => 'オファーが見つかれません',
+    'timeline_not_found' => 'タイムラインません',
 ];
