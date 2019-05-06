@@ -20,11 +20,18 @@ class TimeLineController extends ApiController
         $user = $this->guard()->user();
 
         $id = $user->id;
+        $timeLine = TimeLine::query();
         if ($request->user_id) {
             $id = $request->user_id;
         }
 
-        $timeLine = TimeLine::where('user_id', $id)->where('hidden', false)->paginate(10);
+        $timeLine = $timeLine->where('user_id', $id);
+
+        if ($id != $user->id) {
+            $timeLine = $timeLine->where('hidden', false);
+        }
+
+        $timeLine = $timeLine->latest()->paginate(10);
 
         return $this->respondWithData(TimeLineResource::collection($timeLine));
     }
@@ -49,7 +56,7 @@ class TimeLineController extends ApiController
         $rules = [
             'content' => 'required|string|max:240',
             'image' => 'image|mimes:jpeg,png,jpg,gif,svg',
-            'location' => 'required|string|max:20',
+            'location' => 'string|max:20',
         ];
 
         $validator = validator($request->all(), $rules);
@@ -118,5 +125,19 @@ class TimeLineController extends ApiController
         }
 
         return $this->respondWithNoData(trans('messages.favorite_success'));
+    }
+
+    public function delete($id)
+    {
+        $user = $this->guard()->user();
+        $timeline = $user->timelines()->find($id);
+
+        if (!$timeline) {
+            return $this->respondErrorMessage(trans('messages.timeline_not_found'));
+        }
+
+        $timeline->delete();
+
+        return $this->respondWithNoData(trans('messages.timeline_deleted'));
     }
 }

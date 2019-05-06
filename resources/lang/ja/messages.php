@@ -83,4 +83,5 @@ return [
     'update_shifts_success' => 'スケジュールの登録が完了しました',
     'offer_not_found' => 'オファーが見つかれません',
     'timeline_not_found' => 'タイムラインません',
+    'timeline_deleted' => '削除しました',
 ];

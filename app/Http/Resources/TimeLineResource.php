@@ -27,6 +27,7 @@ class TimeLineResource extends Resource
             'location' => $this->location,
             'hidden' => (int)$this->hidden,
             'total_favorites' => $this->count_favorites,
+            'is_favourited' => $this->is_favourited,
             'user' => new UserResource($this->user),
             'created_at' => Carbon::parse($this->created_at)->format('Y-m-d H:i'),
             'updated_at' => Carbon::parse($this->updated_at)->format('Y-m-d H:i'),

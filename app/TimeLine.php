@@ -43,4 +43,11 @@ class TimeLine extends Model
     {
         return $this->favorites()->count();
     }
+
+    public function getIsFavouritedAttribute()
+    {
+        $user = \Auth::user();
+
+        return (int)$this->favorites()->where('user_id', $user->id)->exists();
+    }
 }
