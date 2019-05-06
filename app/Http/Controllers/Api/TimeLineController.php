@@ -111,7 +111,7 @@ class TimeLineController extends ApiController
             if ($favorite->exists()) {
                 $favorite->delete();
 
-                return $this->respondWithNoData(TimeLineResource::make($timeline));
+                return $this->respondWithData(TimeLineResource::make($timeline));
             }
 
             $favorite = new TimeLineFavorite();
