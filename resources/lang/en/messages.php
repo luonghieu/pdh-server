@@ -80,4 +80,5 @@ return [
     'update_shifts_success' => 'Update shifts successfully',
     'offer_not_found' => 'Offer is not found',
     'timeline_not_found' => 'Timeline is not found',
+    'timeline_deleted' => 'Timeline has been deleted',
 ];
