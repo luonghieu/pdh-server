@@ -13,7 +13,7 @@ class CreateTimeLinesTable extends Migration
      */
     public function up()
     {
-        Schema::table('time_lines', function (\Illuminate\Database\Schema\Blueprint $table) {
+        Schema::create('time_lines', function (\Illuminate\Database\Schema\Blueprint $table) {
             $table->increments('id');
             $table->integer('user_id')->unsigned();
             $table->string('title')->nullable();
