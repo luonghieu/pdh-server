@@ -124,7 +124,7 @@ class TimeLineController extends ApiController
             return $this->respondServerError();
         }
 
-        return $this->respondWithNoData(trans('messages.favorite_success'));
+        return $this->respondWithData(TimeLineResource::make($timeline));
     }
 
     public function delete($id)
