@@ -46,6 +46,10 @@ class TimeLineController extends ApiController
     public function favorites($id)
     {
         $timeLine = TimeLine::find($id);
+        if (!$timeLine) {
+            return $this->respondErrorMessage(trans('messages.timeline_not_found'));
+        }
+
         $timelineFavorites = $timeLine->favorites;
 
         return $this->respondWithData(TimelineFavoritesResource::collection($timelineFavorites));
@@ -54,7 +58,7 @@ class TimeLineController extends ApiController
     public function create(Request $request)
     {
         $rules = [
-            'content' => 'required|string|max:240',
+            'content' => 'string|max:240',
             'image' => 'image|mimes:jpeg,png,jpg,gif,svg',
             'location' => 'string|max:20',
         ];
