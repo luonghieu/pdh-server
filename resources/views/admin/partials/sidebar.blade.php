@@ -187,7 +187,7 @@ $routes = [
             'value' => 'キャストランク管理',
             'url' => route('admin.rank_schedules.index'),
             'submenu' => [
-              'admin.rank_schedules.casts'  
+              'admin.rank_schedules.casts'
             ],
         ],
     ],
@@ -219,6 +219,14 @@ $routes = [
             'name' => 'admin.cost_enterprises.index',
             'value' => '販管費管理',
             'url' => route('admin.cost_enterprises.index'),
+            'submenu' => [],
+        ],
+    ],
+    'timeline' => [
+        [
+            'name' => 'admin.timelines.index',
+            'value' => 'タイムライン管理',
+            'url' => route('admin.timelines.index', ['hidden' => \App\Enums\TimelineStatus::PRIVATE]),
             'submenu' => [],
         ],
     ],
