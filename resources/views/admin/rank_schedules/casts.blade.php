@@ -102,7 +102,7 @@
                   <td>{{ $cast->nickname }}</td>
                   <td>{{ $cast->castClass->name }}</td>
                   <td>{{ $cast->orders->count() }}</td>
-                  <td>{{ $cast->ratings->avg('score') ? round($cast->ratings->avg('score'), 1) : 0 }}</td>
+                  <td>{{ $cast->ratings->count() ? round($cast->ratings->avg('score'), 2) : '' }}</td>
                   <td><a href="{{ route('admin.users.show', ['user' => $cast->id]) }}" class="btn btn-info">詳細</a></td>
                 </tr>
                 @endforeach
@@ -124,7 +124,7 @@
           </ul>
         </div>
         @endif
-        
+
       </div>
     </div>
     <!--/col-->

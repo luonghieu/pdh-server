@@ -12,21 +12,28 @@
   <section class="button-box" style="display: none;">
     <label for="trigger" class="open_button button-settlement"></label>
   </section>
+  <div class="top-header-cast">
+    <div class="wrap-cast">
+      <div class="wrap-cast-left">
+        @if (Auth::user()->avatars && !empty(Auth::user()->avatars->first()))
+          <img src="{{ Auth::user()->avatars->first()->thumbnail }}" alt="">
+        @else
+          <img src="{{ asset('assets/web/images/ge1/user_icon.svg') }}" alt="">
+        @endif
+        @if (Auth::user()->nickname)
+          <span class="user-name user-name-nickname">{{ Auth::user()->nickname }}</span>
+        @endif
+      </div>
+      <a href="{{ route('profile.edit') }}" class="btn-edit-cast">
+        <img src="{{ asset('assets/web/images/ge1/pencil.svg') }}" alt="">
+      </a>
+    </div>
+  </div>
   <div class="top-header" id="top-header-cast">
     <div class="user-data">
       <span class="total-point-title">あなたの売上合計</span>
       <span class="total-point-cast">{{ number_format($user->total_point + $user->point) }}P</span>
-      <div class="user-icon init-image-radius" id="cast-icon">
-        @if ($user->avatars && !empty($user->avatars->first()->thumbnail))
-          <img src="{{ $user->avatars->first()->thumbnail }}" alt="">
-        @else
-          <img src="{{ asset('assets/web/images/ge1/user_icon.svg') }}" alt="">
-        @endif
-      </div>
     </div>
-    @if ($user->nickname)
-    <span class="user-name">{{ $user->nickname }}</span>
-    @endif
   </div>
   <div class="cast-call point-transfer">
     <div class="point-title">
@@ -38,54 +45,25 @@
       <span class="point-show" style="opacity: 0">{{number_format($user->point) }}P</span>
   </div>
   <div class="clear"></div>
-  <div class="cast-call btn-circle" id="btn-circle">
-    <div class="display-flex">
-      <div class="m-circle ">
-        <a href="{{ route('cast_mypage.bank_account.index') }}">
-          <div class="rounded-circle m-rounded-circle">
-            <img src="{{ asset('assets/web/images/cast/ic_pig_blue.svg') }}">
-            <div class="text-center m-auto">振込口座</div>
-          </div>
-        </a>
-      </div>
-      <div class="m-circle ">
-        <a href="{{ route('cast.transfer_history') }}">
-          <div class="rounded-circle m-rounded-circle">
-            <img src="{{ asset('assets/web/images/cast/ic_point_white.svg') }}">
-            <div class="text-center m-auto">振込履歴</div>
-          </div>
-        </a>
-      </div>
-      <div class="m-circle ">
-        <a href="<?php echo env('APP_URL') . '/service/cast_qa' ?>">
-          <div class="rounded-circle m-rounded-circle">
-            <img src="{{ asset('assets/web/images/cast/ic_question_white.png') }}">
-            <div class="text-center m-auto ct-circle">よくある質問</div>
-          </div>
-        </a>
-      </div>
-    </div>
-  </div>
-  <div class="clear"></div>
   <div class="cast-call" id="custom-point">
     <div class="expiration-date border-bottom">
       <span class="left" id="sp-text-point">30分あたりのポイント</span>
       <div class="date-select select-point">
-      @php
-        $arrCost = [];
-        for($i =500; $i<=15000; $i+=100) {
-          array_push($arrCost, $i);
-        }
+        @php
+          $arrCost = [];
+          for($i =500; $i<=15000; $i+=100) {
+            array_push($arrCost, $i);
+          }
 
-        if(!in_array($user->cost,$arrCost)) {
-          array_push($arrCost, $user->cost);
-        }
+          if(!in_array($user->cost,$arrCost)) {
+            array_push($arrCost, $user->cost);
+          }
 
-        sort($arrCost);
-      @endphp
+          sort($arrCost);
+        @endphp
         <select name="point_cast" id="point-cast" disabled>
           @foreach($arrCost as $cost)
-          <option value="{{ $cost }}" {{ $user->cost == $cost ? 'selected' : ''}}>{{number_format($cost) }}</option>
+            <option value="{{ $cost }}" {{ $user->cost == $cost ? 'selected' : ''}}>{{number_format($cost) }}P</option>
           @endforeach
         </select>
       </div>
@@ -94,79 +72,121 @@
   <section class="button-box">
     <label for="lb-update-cost" class="update-cost"></label>
   </section>
-  <span class="ml-2">※実際に振り込まれる売上は入力した金額の{{ $user->cost_rate * 100 }}%になります。</span>
+  <span class="ml-2">※入力した金額の{{ $user->cost_rate * 100 }}割が振り込まれます。</span>
   <a href="javascript:void(0)" id="change-point">変更する</a>
+  <div class="cast-call btn-circle wrap-btn-circle" id="btn-circle">
+      <div class="display-flex">
+        <div class="m-circle ">
+          <a href="{{ route('cast_mypage.bank_account.index') }}">
+            <div class="rounded-circle m-rounded-circle">
+              <img src="{{ asset('assets/web/images/cast/ic_pig_blue.svg') }}">
+              <div class="text-center m-auto">振込口座</div>
+            </div>
+          </a>
+        </div>
+        <div class="m-circle ">
+          <a href="{{ route('cast.transfer_history') }}">
+            <div class="rounded-circle m-rounded-circle">
+              <img src="{{ asset('assets/web/images/cast/ic_point_white.svg') }}">
+              <div class="text-center m-auto">振込履歴</div>
+            </div>
+          </a>
+        </div>
+        <div class="m-circle ">
+          <a href="<?php echo env('APP_URL') . '/service/cast_qa' ?>">
+            <div class="rounded-circle m-rounded-circle">
+              <img src="{{ asset('assets/web/images/cast/ic_question_white.png') }}">
+              <div class="text-center m-auto ct-circle">よくある質問</div>
+            </div>
+          </a>
+        </div>
+      </div>
+    </div>
+  <div class="clear"></div>
   @php
   $now = now()->format('Y-m-d');
   @endphp
   @if($user->class_id != 3 && $rankSchedule && $rankSchedule->from_date <= $now && $rankSchedule->to_date >= $now)
+  <div class="time-rank-schedule">
+    <span>対象期間：{{Carbon\Carbon::parse($rankSchedule->from_date)->format('Y/m/d')}}〜{{Carbon\Carbon::parse($rankSchedule->to_date)->format('Y/m/d')}}</span>
+  </div>
   <div class="rank-schedule">
-    <input type="hidden" id="sum_orders" value="{{$sumOrders}}">
-    <input type="hidden" id="rating_score" value="{{$ratingScore}}">
-    @if($user->class_id == 1)
-      <input type="hidden" id="num_of_attend_up_platium" value="{{$rankSchedule->num_of_attend_up_platium}}">
-      <input type="hidden" id="num_of_avg_rate_up_platium" value="{{$rankSchedule->num_of_avg_rate_up_platium}}">
-    @elseif($user->class_id == 2)
-      <input type="hidden" id="num_of_attend_platium" value="{{$rankSchedule->num_of_attend_platium}}">
-      <input type="hidden" id="num_of_avg_rate_platium" value="{{$rankSchedule->num_of_avg_rate_platium}}">
-    @endif
-    <p>現在のキャストクラス　{{$castClass->name}}</p>
-    @if($user->class_id == 1)
-      <p>プラチナクラスまで‥</p>
-    @elseif($user->class_id == 2)
-      <p>プラチナクラスキープまで‥</p>
+    @php
+      if ($castClass->id == 1) {
+        $class = 'class_b';
+      }
+
+      if ($castClass->id == 2) {
+        $class = 'class_p';
+      }
+
+      if ($castClass->id == 3) {
+        $class = 'class_d';
+      }
+
+      if ($user->class_id == 1) {
+        $numOfAttendPlatium = $rankSchedule->num_of_attend_up_platium;
+        $numOfAvgRatePlatium = $rankSchedule->num_of_avg_rate_up_platium;
+      } else {
+        $numOfAttendPlatium = $rankSchedule->num_of_attend_platium;
+        $numOfAvgRatePlatium = $rankSchedule->num_of_avg_rate_platium;
+      }
+
+      $orderNotJoined = $numOfAttendPlatium - $sumOrders;
+
+      if ($ratingScore > $numOfAvgRatePlatium) {
+        $percentagePointAverage = ($numOfAvgRatePlatium*100)/5;
+      } else {
+        $percentagePointAverage = ($ratingScore*100)/5;
+      }
+    @endphp
+    <p class="rank-schedule-cast-class">あなたのキャストクラス　<span class="{{$class}} cast-class-tag">{{$castClass ? $castClass->name : ''}}</span></p>
+
+    @if (($sumOrders >= $numOfAttendPlatium) && ($ratingScore >= $numOfAvgRatePlatium) && $user->class_id == 1)
+    <p class="notify-rank-schedule"><span class="green-text">プラチナクラス</span><span class="gray-text">へ</span><span class="green-text">クラスアップ！</span></p>
+    @else
+      @if($user->class_id == 1)
+        <p class="notify-rank-schedule"><span class="green-text">プラチナクラス</span><span class="gray-text">へ</span><span class="green-text">アップ</span><span class="gray-text">まで</span></p>
+      @elseif($user->class_id == 2)
+        <p class="notify-rank-schedule"><span class="green-text">プラチナクラス</span><span class="gray-text">の</span><span class="green-text">キープ</span><span class="gray-text">まで</span></p>
+      @endif
     @endif
     <div class="times-ordered">
       <div class="title-times-ordered">参加回数</div>
       <div class="chart-times-ordered">
         <div class="wrapper-rank-schedule">
           <ul class="indicators">
-            @php
-              if ($user->class_id == 1) {
-                $maxNumOfAttend = $rankSchedule->num_of_attend_up_platium;
-              }
-              if ($user->class_id == 2) {
-                $maxNumOfAttend = $rankSchedule->num_of_attend_platium;
-              }
-            @endphp
-            @for($i = 0; $i <= $maxNumOfAttend; $i++)
-            <li>{{$i}}</li>
-            @endfor
+            @if($sumOrders > $numOfAttendPlatium)
+              @for($i = 0; $i < $numOfAttendPlatium; $i++)
+                <li class="ic-glass-on"><img src="/assets/web/images/common/ic_glass_blue.svg" alt=""></li>
+              @endfor
+            @else
+              @for($i = 0; $i < $sumOrders; $i++)
+                <li class="ic-glass-on"><img src="/assets/web/images/common/ic_glass_blue.svg" alt=""></li>
+              @endfor
+              @for($i = 0; $i < $orderNotJoined; $i++)
+                <li class="ic-glass-off"><img src="/assets/web/images/common/ic_glass_gray.svg" alt=""></li>
+              @endfor
+            @endif
           </ul>
-          <div class="progress-wrapper">
-            <div class="progress-bar"></div>
-            <span class="class-up">Class UP !</span>
-          </div>
         </div>
       </div>
+      <div class="detail-num-order"><span class="green-text">{{$sumOrders}}</span><span class="gray-text">/{{$numOfAttendPlatium}}</span></div>
     </div>
     <div class="clear"></div>
     <div class="times-ordered">
-      <div class="title-times-ordered">平均評価</div>
+      <div class="title-times-ordered avg-title">平均評価</div>
       <div class="chart-times-ordered">
         <div class="wrapper-rank-schedule">
-          <ul class="indicators">
-            @php
-              if ($user->class_id == 1) {
-                $maxNumOfAvgRate = $rankSchedule->num_of_avg_rate_up_platium;
-              }
-              if ($user->class_id == 2) {
-                $maxNumOfAvgRate = $rankSchedule->num_of_avg_rate_platium;
-              }
-            @endphp
-            @for($i = 0; $i <= $maxNumOfAvgRate; $i++)
-              <li>{{$i}}</li>
-            @endfor
-          </ul>
-          <div class="progress-wrapper">
-            <div class="progress-bar-avg"></div>
-            <span class="class-up">Class UP !</span>
+          <div id="star-rating-schedule">
+            <input type="hidden" id="num-of-avg-rate-platium" value="{{$numOfAvgRatePlatium}}">
+            <span style="width: {{$percentagePointAverage.'%'}}"></span>
           </div>
         </div>
       </div>
+      <div class="detail-num-order"><span class="green-text">{{$ratingScore}}</span><span class="gray-text">/{{$numOfAvgRatePlatium}}</span></div>
     </div>
     <div class="clear"></div>
-    <p>※次回クラス変更日‥{{Carbon\Carbon::parse($rankSchedule->to_date)->format('m月d日')}}</p>
   </div>
   @endif
   @if($token)
@@ -214,54 +234,3 @@
   }
   window.onload = responsivePoint;
 </script>
-@section('web.script')
-  <script>
-      $(document).ready(function() {
-          var sumOrders = $('#sum_orders').val();
-          var ratingScore = $('#rating_score').val();
-          var numOfAttendUpPlatium = $('#num_of_attend_up_platium').val();
-          var numOfAvgRateUpPlatium = $('#num_of_avg_rate_up_platium').val();
-          var numOfAttendPlatium = $('#num_of_attend_platium').val();
-          var numOfAvgRatePlatium = $('#num_of_avg_rate_platium').val();
-
-          if (((sumOrders >= numOfAttendUpPlatium) && (ratingScore >= numOfAvgRateUpPlatium)) || ((sumOrders >= numOfAttendPlatium) && (ratingScore >= numOfAvgRatePlatium))){
-            $('.class-up').css('display','block');
-          }
-
-          if (numOfAttendUpPlatium && numOfAvgRateUpPlatium) {
-              var percentNumOfAttendUpPlatium = sumOrders * 100 / numOfAttendUpPlatium;
-
-              if (percentNumOfAttendUpPlatium > 100) {
-                  percentNumOfAttendUpPlatium = 100;
-              }
-
-              $('.progress-bar').css('width', percentNumOfAttendUpPlatium + '%');
-
-              var percentNumOfAvgRateUpPlatium = ratingScore * 100 / numOfAvgRateUpPlatium;
-
-              if (percentNumOfAvgRateUpPlatium > 100) {
-                  percentNumOfAvgRateUpPlatium = 100;
-              }
-
-              $('.progress-bar-avg').css('width',percentNumOfAvgRateUpPlatium+'%');
-          }
-
-          if (numOfAttendPlatium && numOfAvgRatePlatium) {
-              var percentNumOfAttendPlatium = sumOrders * 100 / numOfAttendPlatium;
-
-              if (percentNumOfAttendPlatium > 100) {
-                  percentNumOfAttendPlatium = 100;
-              }
-              $('.progress-bar').css('width',percentNumOfAttendPlatium + '%');
-
-              var percentNumOfAvgRatePlatium = ratingScore * 100 / numOfAvgRatePlatium;
-
-              if (percentNumOfAvgRatePlatium > 100) {
-                  percentNumOfAvgRatePlatium = 100;
-              }
-
-              $('.progress-bar-avg').css('width',percentNumOfAvgRatePlatium + '%');
-          }
-      });
-  </script>
-@endsection
