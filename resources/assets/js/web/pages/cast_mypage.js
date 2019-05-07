@@ -31,4 +31,13 @@ $(document).ready(function() {
         }
       });
   })
+
+  var numOfAvgRatePlatium = $('#num-of-avg-rate-platium').val();
+  var wid = 0;
+
+  if (numOfAvgRatePlatium) {
+    wid = (numOfAvgRatePlatium * 100)/ 5;
+  }
+
+  $('body').append('<style>#star-rating-schedule:before{width: ' + wid +'px;}</style>');
 });
