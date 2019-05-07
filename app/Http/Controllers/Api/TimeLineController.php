@@ -3,7 +3,6 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Api\ApiController;
-use App\Http\Controllers\Controller;
 use App\Http\Resources\TimelineFavoritesResource;
 use App\Http\Resources\TimeLineResource;
 use App\Services\LogService;
@@ -20,15 +19,16 @@ class TimeLineController extends ApiController
         $user = $this->guard()->user();
 
         $id = $user->id;
+
         $timeLine = TimeLine::query();
         if ($request->user_id) {
-            $id = $request->user_id;
-        }
-
-        $timeLine = $timeLine->where('user_id', $id);
-
-        if ($id != $user->id) {
-            $timeLine = $timeLine->where('hidden', false);
+            if ($id == $request->user_id) {
+                $timeLine = $timeLine->where('user_id', $id);
+            } else {
+                $timeLine = $timeLine->where('user_id', $request->user_id)->where('hidden', false);
+            }
+        } else {
+            $timeLine = $timeLine->where('user_id', '<>', $id)->where('hidden', false);
         }
 
         $timeLine = $timeLine->latest()->paginate(10);
