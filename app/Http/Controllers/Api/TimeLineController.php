@@ -113,7 +113,6 @@ class TimeLineController extends ApiController
     public function updateFavorite($id)
     {
         $timeline = TimeLine::find($id);
-
         if (!$timeline) {
             return $this->respondErrorMessage(trans('messages.timeline_not_found'), 404);
         }
@@ -127,14 +126,14 @@ class TimeLineController extends ApiController
                 $favorite->delete();
 
                 return $this->respondWithData(TimeLineResource::make($timeline));
-            }
-
-            $favorite = new TimeLineFavorite();
-            $favorite->time_line_id = $timeline->id;
-            $favorite->user_id = $user->id;
-            $favorite->save();
-            if ($timeline->user_id != $user->id) {
-                \Notification::send($user, new NotifyFavouriteTimeline($timeline->user_id));
+            } else {
+                $favorite = new TimeLineFavorite();
+                $favorite->time_line_id = $timeline->id;
+                $favorite->user_id = $user->id;
+                $favorite->save();
+                if ($timeline->user_id != $user->id) {
+                    $timeline->user->notify(new NotifyFavouriteTimeline($user));
+                }
             }
         } catch (\Exception $e) {
             LogService::writeErrorLog($e);

@@ -13,17 +13,14 @@ use App\User;
 class NotifyFavouriteTimeline extends Notification implements ShouldQueue
 {
     use Queueable;
-
     public $user;
-
     /**
      * Create a new notification instance.
      *
      * @param $orderId
      */
-    public function __construct($userId)
-    {
-        $this->user = User::onWriteConnection()->findOrFail($userId);
+    public function __construct($user) {
+        $this->user = $user;
     }
 
     /**
@@ -55,7 +52,7 @@ class NotifyFavouriteTimeline extends Notification implements ShouldQueue
 
     public function lineBotPushData($notifiable)
     {
-        $content = $notifiable->nickname.'さんがあなたの投稿にいいねしました';
+        $content = $this->user->nickname.'さんがあなたの投稿にいいねしました';
 
         return [
             [
@@ -74,8 +71,8 @@ class NotifyFavouriteTimeline extends Notification implements ShouldQueue
             $pushId = 'c_24';
             $send_from = UserType::CAST;
         }
-        $content = $notifiable->nickname.'さんがあなたの投稿にいいねしました';
-        $namedUser = 'user_' . $this->user->id;
+        $content = $this->user->nickname.'さんがあなたの投稿にいいねしました';
+        $namedUser = 'user_' . $notifiable->id;
 
         return [
             'audienceOptions' => ['named_user' => $namedUser],
