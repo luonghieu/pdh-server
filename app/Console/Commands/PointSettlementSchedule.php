@@ -63,7 +63,10 @@ class PointSettlementSchedule extends Command
             ->where('payment_requested_at', '<=', $now->copy()->subHours(3))
             ->where(function($query) {
                 $query->whereNull('send_warning')
-                    ->orWhere('payment_method', OrderPaymentMethod::DIRECT_PAYMENT);
+                    ->orWhere(function($subQuery) {
+                        $subQuery->whereNull('send_warning')
+                            ->where('payment_method', OrderPaymentMethod::DIRECT_PAYMENT);
+                    });
             })
             ->get();
 
