@@ -67,7 +67,10 @@ class CancelFeeSettlement extends Command
             ->where('cancel_fee_percent', '>', 0)
             ->where(function($query) {
                 $query->whereNull('send_warning')
-                    ->orWhere('payment_method', OrderPaymentMethod::DIRECT_PAYMENT);
+                    ->orWhere(function($subQuery) {
+                        $subQuery->whereNull('send_warning')
+                            ->where('payment_method', OrderPaymentMethod::DIRECT_PAYMENT);
+                    });
             })
             ->get();
 
