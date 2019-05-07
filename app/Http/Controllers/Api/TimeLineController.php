@@ -11,6 +11,7 @@ use App\TimeLineFavorite;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Webpatser\Uuid\Uuid;
+use App\Notifications\NotifyFavouriteTimeline;
 
 class TimeLineController extends ApiController
 {
@@ -112,7 +113,6 @@ class TimeLineController extends ApiController
     public function updateFavorite($id)
     {
         $timeline = TimeLine::find($id);
-
         if (!$timeline) {
             return $this->respondErrorMessage(trans('messages.timeline_not_found'), 404);
         }
@@ -126,12 +126,15 @@ class TimeLineController extends ApiController
                 $favorite->delete();
 
                 return $this->respondWithData(TimeLineResource::make($timeline));
+            } else {
+                $favorite = new TimeLineFavorite();
+                $favorite->time_line_id = $timeline->id;
+                $favorite->user_id = $user->id;
+                $favorite->save();
+                if ($timeline->user_id != $user->id) {
+                    $timeline->user->notify(new NotifyFavouriteTimeline($user));
+                }
             }
-
-            $favorite = new TimeLineFavorite();
-            $favorite->time_line_id = $timeline->id;
-            $favorite->user_id = $user->id;
-            $favorite->save();
         } catch (\Exception $e) {
             LogService::writeErrorLog($e);
 
