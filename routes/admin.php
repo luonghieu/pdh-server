@@ -183,4 +183,9 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.'], function () {
         Route::get('/', ['as' => 'index', 'uses' => 'InviteCodeHistoryController@index']);
         Route::get('/{invite_code_history}', ['as' => 'show', 'uses' => 'InviteCodeHistoryController@show'])->where('invite_code_history', '[0-9]+');
     });
+
+    Route::group(['namespace' => 'Timeline', 'prefix' => 'timelines', 'as' => 'timelines.', 'middleware' => 'is_admin'], function () {
+        Route::get('/', ['as' => 'index', 'uses' => 'TimelineController@index']);
+        Route::post('/{timeline}/change_status_hidden', ['as' => 'change_status_hidden', 'uses' => 'TimelineController@changeStatusHidden'])->where('timeline', '[0-9]+');
+    });
 });
