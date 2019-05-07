@@ -103,7 +103,10 @@ class RankScheduleController extends Controller
             ->with([
                 'ratings' => function($q) use ($fromDate, $toDate) {
                     $q->whereBetween('ratings.created_at', [$fromDate, $toDate])
-                        ->where('ratings.is_valid', true);
+                        ->where('ratings.is_valid', true)
+                        ->whereNotNull('ratings.satisfaction')
+                        ->whereNotNull('ratings.appearance')
+                        ->whereNotNull('ratings.friendliness');
                 }
             ]);
 
