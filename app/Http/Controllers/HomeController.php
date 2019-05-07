@@ -110,7 +110,14 @@ class HomeController extends Controller
                         ['rated_id', '=', $user->id],
                         ['created_at', '>=', $rankSchedule->from_date],
                         ['created_at', '<=', $rankSchedule->to_date],
+                        ['is_valid', '=', true],
                     ])->avg('score');
+
+                    if (!$ratingScore) {
+                        $ratingScore = 0;
+                    } else {
+                        $ratingScore = round($ratingScore, 2);
+                    }
                 }
 
                 return view('web.cast.index', compact('token', 'user', 'castClass', 'rankSchedule', 'sumOrders', 'ratingScore'));

@@ -131,11 +131,9 @@
     $campaignFrom = Carbon\Carbon::parse(env('CAMPAIGN_FROM'));
     $campaignTo = Carbon\Carbon::parse(env('CAMPAIGN_TO'));
   @endphp
-  @if (now()->between($campaignFrom, $campaignTo))
   <div class="img-campaign">
     <img src="/ld/images/guest/dec_campaign.png">
   </div>
-  @endif
   <main id="cheers_guest">
     <section class="guest01">
       <div class="g-inner guest01-main">

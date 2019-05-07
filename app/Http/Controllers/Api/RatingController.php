@@ -83,7 +83,7 @@ class RatingController extends ApiController
                 $rating->appearance = $request->appearance;
                 $rating->friendliness = $request->friendliness;
                 $rating->comment = $request->comment;
-                $rating->score = round(($request->friendliness + $rating->appearance + $rating->satisfaction) / 3, 1);
+                $rating->score = ($request->friendliness + $rating->appearance + $rating->satisfaction) / 3;
                 $rating->save();
 
                 $order->casts()->updateExistingPivot(
@@ -92,7 +92,7 @@ class RatingController extends ApiController
             }
 
             $ratedUser = User::find($request->rated_id);
-            $avgScore = $ratedUser->ratings()->avg('score');
+            $avgScore = $ratedUser->ratings()->where('is_valid', true)->avg('score');
 
             $ratedUser->rating_score = round($avgScore, 1);
             $ratedUser->save();
