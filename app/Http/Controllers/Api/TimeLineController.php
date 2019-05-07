@@ -28,10 +28,15 @@ class TimeLineController extends ApiController
                 $timeLine = $timeLine->where('user_id', $request->user_id)->where('hidden', false);
             }
         } else {
-            $timeLine = $timeLine->where('user_id', '<>', $id)->where('hidden', false);
+            $timeLine = $timeLine->where('hidden', false);
         }
 
-        $timeLine = $timeLine->latest()->paginate(10);
+        $perPage = 10;
+        if ($request->per_page) {
+            $perPage = $request->per_page;
+        }
+
+        $timeLine = $timeLine->latest()->paginate($perPage);
 
         return $this->respondWithData(TimeLineResource::collection($timeLine));
     }
@@ -43,14 +48,19 @@ class TimeLineController extends ApiController
         return $this->respondWithData(TimeLineResource::make($timeLine));
     }
 
-    public function favorites($id)
+    public function favorites(Request $request, $id)
     {
         $timeLine = TimeLine::find($id);
         if (!$timeLine) {
             return $this->respondErrorMessage(trans('messages.timeline_not_found'));
         }
 
-        $timelineFavorites = $timeLine->favorites;
+        $perPage = 10;
+        if ($request->per_page) {
+            $perPage = $request->per_page;
+        }
+
+        $timelineFavorites = $timeLine->favorites()->paginate($perPage);
 
         return $this->respondWithData(TimelineFavoritesResource::collection($timelineFavorites));
     }
