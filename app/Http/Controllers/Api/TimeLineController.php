@@ -29,7 +29,10 @@ class TimeLineController extends ApiController
                 $timeLine = $timeLine->where('user_id', $request->user_id)->where('hidden', false);
             }
         } else {
-            $timeLine = $timeLine->where('hidden', false);
+            $timeLine = $timeLine->where('hidden', false)
+                ->orWhere(function($query) use ($user) {
+                    $query->where('user_id', $user->id);
+                });
         }
 
         $perPage = 10;
