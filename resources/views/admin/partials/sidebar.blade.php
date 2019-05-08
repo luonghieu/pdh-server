@@ -227,7 +227,7 @@ $routes = [
         [
             'name' => 'admin.timelines.index',
             'value' => 'タイムライン管理',
-            'url' => route('admin.timelines.index', ['hidden' => \App\Enums\TimelineStatus::PRIVATE]),
+            'url' => route('admin.timelines.index'),
             'submenu' => [],
         ],
     ],
