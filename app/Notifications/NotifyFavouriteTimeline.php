@@ -14,13 +14,15 @@ class NotifyFavouriteTimeline extends Notification implements ShouldQueue
 {
     use Queueable;
     public $user;
+    public $timeline;
     /**
      * Create a new notification instance.
      *
      * @param $orderId
      */
-    public function __construct($user) {
+    public function __construct($user, $timeline) {
         $this->user = $user;
+        $this->timeline = $timeline;
     }
 
     /**
@@ -85,6 +87,7 @@ class NotifyFavouriteTimeline extends Notification implements ShouldQueue
                     'content-available' => true,
                     'extra' => [
                         'push_id' => $pushId,
+                        'timeline_id' => $this->timeline->id,
                         'send_from' => $send_from,
                     ],
                 ],
@@ -92,6 +95,7 @@ class NotifyFavouriteTimeline extends Notification implements ShouldQueue
                     'alert' => $content,
                     'extra' => [
                         'push_id' => $pushId,
+                        'timeline_id' => $this->timeline->id,
                         'send_from' => $send_from,
                     ],
                 ]

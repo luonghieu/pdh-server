@@ -132,7 +132,7 @@ class TimeLineController extends ApiController
                 $favorite->user_id = $user->id;
                 $favorite->save();
                 if ($timeline->user_id != $user->id) {
-                    $timeline->user->notify(new NotifyFavouriteTimeline($user));
+                    $timeline->user->notify(new NotifyFavouriteTimeline($user, $timeline));
                 }
             }
         } catch (\Exception $e) {
