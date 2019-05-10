@@ -12,6 +12,7 @@
   <!-- link to the custom styles for SqPaymentForm -->
   <link rel="stylesheet" type="text/css" href="{{ mix('assets/web/css/card_square.min.css') }}">
   <link href="{{ mix('assets/web/css/web.css') }}" rel="stylesheet">
+  <link rel="stylesheet" href="{{ asset('assets/web/css/timeline.css')}}">
 
   <link rel="shortcut icon" href="{{ asset('/ld/images/cast/favicon/favicon.png') }}">
 

@@ -3835,3 +3835,80 @@ div.user-data span.total-point-cast{
 #message-box .msg-date {
   margin-top: 10px;
 }
+
+.timeline-item .user-info .user-info__profile img{
+  height: 100% !important;
+  border-radius: 50px;
+}
+.timeline-like-item img {
+  height: 100% !important;
+  border-radius: 10px;
+}
+
+#time-line-create-controller .mm-page{
+  width:100%;
+  display: -webkit-flex;
+  display: -ms-flex;
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+}
+
+#time-line-create-controller main {
+  width:100%;
+  display: -webkit-flex;
+  display: -ms-flex;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+#time-line-create-controller .timeline-message{
+  flex: inherit;
+  height: 100%;
+}
+
+#time-line-create-controller  #page {
+  display: -webkit-flex;
+  display: -ms-flex;
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+#time-line-create-controller .timeline {
+  height: 100%;
+}
+#positionInput {
+  display: block;
+}
+
+#time-line-create-controller .modal_wrap input:checked ~ .modal_overlay .modal_content {
+  transform: scale(1.2);
+  padding-top: 0;
+}
+
+#time-line-create-controller .position-box__head {
+  text-align: left;
+}
+
+#gm1 .timeline-item .user-info__profile img{
+    width: 100% !important;
+    border-radius: 50px;
+}
+
+#gm1 .timeline-images__list .timeline-images__item  img {
+  width: 100% !important;
+  border-radius: 10px;
+  height: auto;
+}
+
+#gm1 .timeline-like__icon img {
+  width: 100%;
+  height: 100%;
+  border-radius: 0;
+}
+
+.btn-l.edit-user-profile {
+  padding-top: 15px;
+}
