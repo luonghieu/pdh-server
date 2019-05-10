@@ -43,7 +43,8 @@
                                 <button class="timeline-like__icon">
                                     <img src="./assets/web/images/common/like-icon.svg" alt="">
                                 </button>
-                                <p class="timeline-like__sum"><a href="cast_like_list.html">113</a>
+                                <p class="timeline-like__sum"><a href="{{ route('web.timelines.show', ['id' => 1])
+                                }}">113</a>
                                 </p>
                             </div>
                         </div>
@@ -72,7 +73,8 @@
                                 <button class="timeline-like__icon active">
                                     <img src="./assets/web/images/common/like-icon_on.svg" alt="">
                                 </button>
-                                <p class="timeline-like__sum"><a href="cast_like_list.html">54</a>
+                                <p class="timeline-like__sum"><a href="{{ route('web.timelines.show', ['id' => 1])
+                                }}">54</a>
                                 </p>
                             </div>
                         </div>
@@ -110,7 +112,8 @@
                                 <button class="timeline-like__icon">
                                     <img src="./assets/web/images/common/like-icon.svg" alt="">
                                 </button>
-                                <p class="timeline-like__sum"><a href="cast_like_list.html">407</a>
+                                <p class="timeline-like__sum"><a href="{{ route('web.timelines.show', ['id' => 1])
+                                }}">407</a>
                                 </p>
                             </div>
                         </div>
@@ -121,7 +124,9 @@
         <section class="timeline-button">
             <a href="">
                 <button class="timeline-button__edit">
-                    <img src="{{ asset('assets/web/images/common/timeline-button_edit.svg') }}">
+                    <a href="{{ route('web.timelines.create') }}">
+                        <img src="{{ asset('assets/web/images/common/timeline-button_edit.svg') }}">
+                    </a>
                 </button>
             </a>
         </section>
