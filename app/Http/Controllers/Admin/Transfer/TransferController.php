@@ -6,6 +6,7 @@ use App\Enums\BankAccountType;
 use App\Enums\PointType;
 use App\Enums\UserType;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\CheckDateRequest;
 use App\Point;
 use App\Services\CSVExport;
 use App\Services\LogService;
@@ -19,7 +20,7 @@ use Validator;
 
 class TransferController extends Controller
 {
-    public function getTransferedList(Request $request)
+    public function getTransferedList(CheckDateRequest $request)
     {
         if ($request->from_date && $request->to_date) {
             if ($request->from_date > $request->to_date) {
@@ -132,7 +133,7 @@ class TransferController extends Controller
         return view('admin.transfers.transfered', compact('transfers'));
     }
 
-    public function getNotTransferedList(Request $request)
+    public function getNotTransferedList(CheckDateRequest $request)
     {
         if ($request->from_date && $request->to_date) {
             if ($request->from_date > $request->to_date) {

@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin\NotificationSchedule;
 use App\Enums\NotificationScheduleSendTo;
 use App\Enums\NotificationScheduleStatus;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\CheckDateRequest;
 use App\NotificationSchedule;
 use App\Services\LogService;
 use Carbon\Carbon;
@@ -123,16 +124,13 @@ class NotificationScheduleController extends Controller
         return redirect('admin/notification_schedules?type=' . request()->type);
     }
 
-    public function getNotificationScheduleList(Request $request)
+    public function getNotificationScheduleList(CheckDateRequest $request)
     {
         $type = $request->type;
-
         $notificationSchedules = NotificationSchedule::where('type', $type);
 
         $keyword = $request->search;
-
         $fromDate = $request->from_date ? Carbon::parse($request->from_date)->startOfDay() : null;
-
         $toDate = $request->to_date ? Carbon::parse($request->to_date)->endOfDay() : null;
 
         if ($fromDate) {

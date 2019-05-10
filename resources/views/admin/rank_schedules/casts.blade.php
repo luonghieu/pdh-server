@@ -1,6 +1,7 @@
 @extends('layouts.admin')
 @section('admin.content')
-<div class="col-md-10 col-sm-11 main ">
+<div class="col-md-10 col-sm-11 main">
+  @include('admin.partials.alert-error', compact('errors'))
   <div class="row">
     <div class="col-lg-12">
       <div class="panel panel-default">
@@ -11,12 +12,16 @@
         <div class="panel-body handling">
           <div class="search">
             <form class="navbar-form navbar-left form-search" action="{{ route('admin.rank_schedules.casts') }}" method="GET">
+              @php
+                $fromDate = request()->from_date ?? ($rankSchedule->from_date ? Carbon\Carbon::parse($rankSchedule->from_date)->format('Y/m/d') : '');
+                $toDate = request()->to_date ?? ($rankSchedule->to_date ? Carbon\Carbon::parse($rankSchedule->to_date)->format('Y/m/d') : '');
+              @endphp
               <input type="text" class="form-control input-search" placeholder="ユーザーID,名前" name="search" value="{{ request()->search }}">
               <label for="">From date: </label>
-              <input type="text" class="form-control date-picker input-search from-date" name="from_date" id="date01" data-date-format="yyyy/mm/dd" value="{{ request()->from_date ?? ($rankSchedule->from_date ?? '') }}" placeholder="yyyy/mm/dd" />
+              <input type="text" class="form-control date-picker input-search from-date" name="from_date" id="date01" data-date-format="yyyy/mm/dd" value="{{ $fromDate }}" placeholder="yyyy/mm/dd" />
               <label for="">To date: </label>
-              <input type="text" class="form-control date-picker to-date" name="to_date" id="date01" data-date-format="yyyy/mm/dd" value="{{ request()->to_date ?? ($rankSchedule->to_date ?? '') }}" placeholder="yyyy/mm/dd"/>
-              <button type="" class="fa fa-search btn-search"></button>
+              <input type="text" class="form-control date-picker to-date" name="to_date" id="date01" data-date-format="yyyy/mm/dd" value="{{ $toDate }}" placeholder="yyyy/mm/dd" />
+              <button type="" class="fa fa-search btn btn-search"></button>
 
               <input type="hidden" name="limit" value="{{ request()->limit }}" />
               <input type="hidden" name="class_id" value="{{ request()->class_id }}" />
@@ -124,7 +129,7 @@
           </ul>
         </div>
         @endif
-        
+
       </div>
     </div>
     <!--/col-->

@@ -3,16 +3,16 @@
 namespace App\Http\Controllers\Admin\Timeline;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\CheckDateRequest;
 use App\Enums\TimelineStatus;
 use App\Services\LogService;
 use App\TimeLine;
 use Carbon\Carbon;
-use Illuminate\Http\Request;
 use Illuminate\Pagination\LengthAwarePaginator;
 
 class TimelineController extends Controller
 {
-    public function index(Request $request)
+    public function index(CheckDateRequest $request)
     {
         $hidden = isset($request->hidden) ? $request->hidden : TimelineStatus::PUBLIC;
         $timelines = TimeLine::with('user')->where('hidden', $hidden);

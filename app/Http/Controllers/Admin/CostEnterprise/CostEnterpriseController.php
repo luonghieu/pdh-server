@@ -4,16 +4,16 @@ namespace App\Http\Controllers\Admin\CostEnterprise;
 
 use App\Enums\PointType;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\CheckDateRequest;
 use App\Point;
 use App\Services\CSVExport;
 use App\Services\LogService;
 use Carbon\Carbon;
-use Illuminate\Http\Request;
 use Illuminate\Pagination\LengthAwarePaginator;
 
 class CostEnterpriseController extends Controller
 {
-    public function index(Request $request)
+    public function index(CheckDateRequest $request)
     {
         $pointDescription = [
             'grant' => 'ポイント付与',
@@ -92,7 +92,7 @@ class CostEnterpriseController extends Controller
                     case 'type':
                         $collection = $collection->sortBy($key, SORT_REGULAR, $isDesc);
                         break;
-                    
+
                     default:break;
                 }
 
@@ -132,7 +132,7 @@ class CostEnterpriseController extends Controller
                             $pointIncrease = '-';
                             $pointDecrease = -$item->point;
                             break;
-                        
+
                         default:break;
                     }
 
