@@ -3912,3 +3912,9 @@ div.user-data span.total-point-cast{
 .btn-l.edit-user-profile {
   padding-top: 15px;
 }
+
+#gf2 .timeline-list .timeline-images__item img, .timeline-list .timeline-images__item img {
+  height: 170px;
+  object-fit: cover;
+  border-radius: 15px;
+}
