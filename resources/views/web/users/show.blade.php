@@ -233,7 +233,9 @@
               <div class="timeline-images">
                 <div class="timeline-images__list">
                   <div class="timeline-images__item">
+                    @if ($timeline['image'])
                     <img src="{{ $timeline['image'] }}">
+                    @endif
                   </div>
                 </div>
               </div>
