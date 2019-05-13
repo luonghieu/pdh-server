@@ -130,11 +130,12 @@ Route::group(['middleware' => ['auth', 'cast'], 'prefix' => 'cast_mypage'], func
     });
 });
 
-Route::group(['middleware' => ['auth'], 'prefix' => 'timelines', 'as' => 'web.'], function () {
+Route::group(['middleware' => ['auth', 'guest', 'check_info'], 'prefix' => 'timelines', 'as' => 'web.'], function () {
     Route::group(['as' => 'timelines.'], function() {
         Route::get('/', ['as' => 'index', 'uses' => 'TimeLineController@index']);
         Route::get('/create', ['as' => 'create', 'uses' => 'TimeLineController@create']);
         Route::get('/{id}', ['as' => 'show', 'uses' => 'TimeLineController@show']);
+        Route::get('/favorites/load_more', ['as' => 'favorites.load_more', 'uses' => 'TimeLineController@loadMoreFavorites']);
     });
 });
 

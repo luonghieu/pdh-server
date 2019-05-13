@@ -64,7 +64,7 @@ class TimeLineController extends ApiController
             $perPage = $request->per_page;
         }
 
-        $timelineFavorites = $timeLine->favorites()->paginate($perPage);
+        $timelineFavorites = $timeLine->favorites()->latest()->paginate($perPage);
 
         return $this->respondWithData(TimelineFavoritesResource::collection($timelineFavorites));
     }

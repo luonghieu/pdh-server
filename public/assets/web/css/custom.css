@@ -3922,3 +3922,7 @@ a.init-text-color {
   object-fit: cover;
   border-radius: 15px;
 }
+
+.init-cursor {
+  cursor: pointer;
+}
