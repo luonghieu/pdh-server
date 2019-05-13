@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin\Report;
 
 use App\Enums\ReportStatus;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\CheckDateRequest;
 use App\Notification;
 use App\Report;
 use App\Services\LogService;
@@ -12,7 +13,7 @@ use Illuminate\Http\Request;
 
 class ReportController extends Controller
 {
-    public function index(Request $request)
+    public function index(CheckDateRequest $request)
     {
         $keyword = $request->search;
         if ($request->has('notification_id')) {
@@ -34,12 +35,10 @@ class ReportController extends Controller
 
         if ($request->has('from_date') && !empty($request->from_date)) {
             $fromDate = Carbon::parse($request->from_date)->startOfDay();
-            $toDate = Carbon::parse($request->to_date)->endOfDay();
             $reports->where('created_at', '>=', $fromDate);
         }
 
         if ($request->has('to_date') && !empty($request->to_date)) {
-            $fromDate = Carbon::parse($request->from_date)->startOfDay();
             $toDate = Carbon::parse($request->to_date)->endOfDay();
             $reports->where('created_at', '<=', $toDate);
         }

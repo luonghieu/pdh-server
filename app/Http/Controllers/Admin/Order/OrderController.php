@@ -16,6 +16,7 @@ use App\Enums\RoomType;
 use App\Enums\SystemMessageType;
 use App\Guest;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\CheckDateRequest;
 use App\Jobs\PointSettlement;
 use App\Notification;
 use App\Notifications\AdminEditOrder;
@@ -41,7 +42,7 @@ class OrderController extends Controller
 {
     use DirectRoom, InviteCode;
 
-    public function index(Request $request)
+    public function index(CheckDateRequest $request)
     {
         $pointStatus = [
             OrderStatus::PROCESSING,

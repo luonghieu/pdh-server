@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin\Coupon;
 
 use App\Services\LogService;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\CheckDateRequest;
 use App\Coupon;
 use Carbon\Carbon;
 use DB;
@@ -11,7 +12,7 @@ use Illuminate\Http\Request;
 
 class CouponController extends Controller
 {
-    public function index(Request $request) {
+    public function index(CheckDateRequest $request) {
         $keyword = $request->search;
         $coupons = Coupon::with('users');
 
@@ -97,14 +98,14 @@ class CouponController extends Controller
             'is_filter_order_duration',
             'filter_order_duration',
         ]);
-       
+
         if (isset($input['time'])) {
             $input['time'] = $input['time'] / 60;
         }
 
         $couponLast = Coupon::orderByDesc('sort_index')->first();
         $input['sort_index'] = $couponLast ? ($couponLast->sort_index + 1) : 1;
-        
+
         $coupon = new Coupon;
         $coupon = $coupon->create($input);
 
@@ -241,7 +242,7 @@ class CouponController extends Controller
             LogService::writeErrorLog($e);
             $request->session()->flash('msg', trans('messages.server_error'));
         }
-        
+
     }
 
     public function updateIsActive(Request $request)

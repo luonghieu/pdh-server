@@ -14,6 +14,7 @@ use App\Enums\Status;
 use App\Enums\UserType;
 use App\Room;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\CheckDateRequest;
 use App\Notifications\CreateCast;
 use App\Prefecture;
 use App\Services\CSVExport;
@@ -29,7 +30,7 @@ use Webpatser\Uuid\Uuid;
 
 class CastController extends Controller
 {
-    public function index(Request $request)
+    public function index(CheckDateRequest $request)
     {
         $keyword = $request->search;
         $isSchedule = $request->is_schedule;
@@ -290,7 +291,7 @@ class CastController extends Controller
         return $sumConsumedPoint;
     }
 
-    public function getOperationHistory(Cast $user, Request $request)
+    public function getOperationHistory(Cast $user, CheckDateRequest $request)
     {
         $keyword = $request->search_point_type;
         $pointTypes = [

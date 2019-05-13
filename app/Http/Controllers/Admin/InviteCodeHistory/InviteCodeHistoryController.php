@@ -4,13 +4,13 @@ namespace App\Http\Controllers\Admin\InviteCodeHistory;
 
 use App\InviteCodeHistory;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\CheckDateRequest;
 use Carbon\Carbon;
-use Illuminate\Http\Request;
 use Illuminate\Pagination\LengthAwarePaginator;
 
 class InviteCodeHistoryController extends Controller
 {
-    public function index(Request $request)
+    public function index(CheckDateRequest $request)
     {
         $orderBy = $request->only('user_id', 'receive_user_id', 'created_at', 'order_id', 'status');
 
@@ -69,7 +69,7 @@ class InviteCodeHistoryController extends Controller
                     case 'status':
                         $inviteCodeHistories = $inviteCodeHistories->sortBy($key, SORT_REGULAR, $isDesc);
                         break;
-                    
+
                     default:break;
                 }
 

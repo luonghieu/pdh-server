@@ -5,13 +5,13 @@ namespace App\Http\Controllers\Admin\Point;
 use App\Enums\PointType;
 use App\Enums\UserType;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\CheckDateRequest;
 use App\Payment;
 use App\Point;
 use App\Services\CSVExport;
 use App\Services\LogService;
 use App\User;
 use Carbon\Carbon;
-use Illuminate\Http\Request;
 
 class PointController extends Controller
 {
@@ -91,7 +91,7 @@ class PointController extends Controller
         return $sumPointReduction;
     }
 
-    public function index(Request $request)
+    public function index(CheckDateRequest $request)
     {
         $keyword = $request->search_point_type;
         $pointTypes = [
@@ -106,9 +106,9 @@ class PointController extends Controller
         };
 
         $points = Point::with($with)->whereIn('type', [
-            PointType::BUY, 
-            PointType::AUTO_CHARGE, 
-            PointType::ADJUSTED, 
+            PointType::BUY,
+            PointType::AUTO_CHARGE,
+            PointType::ADJUSTED,
             PointType::INVITE_CODE,
             PointType::DIRECT_TRANSFER,
         ]);
@@ -206,7 +206,7 @@ class PointController extends Controller
         return view('admin.points.index', compact('points', 'pointTypes', 'sumAmount', 'sumPointBuy'));
     }
 
-    public function getTransactionHistory(Request $request)
+    public function getTransactionHistory(CheckDateRequest $request)
     {
         $keywordPoint = $request->search_point_type;
         $keywordUser = $request->search_user_type;
@@ -327,7 +327,7 @@ class PointController extends Controller
         return view('admin.points.transaction_history', compact('points', 'pointTypes', 'userTypes', 'sumPointIncrease', 'sumPointReduction'));
     }
 
-    public function getPointUser(Request $request)
+    public function getPointUser(CheckDateRequest $request)
     {
         $userType = $request->user_type;
         $userTypes = [
