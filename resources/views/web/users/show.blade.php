@@ -210,7 +210,7 @@
         <div class="timeline-item">
           <div class="user-info">
             <div class="user-info__profile">
-              <img src="{{ $timeline['user']['avatars'][0]['path'] }}" alt="">
+              <img src="{{ $timeline['user']['avatars'] ? $timeline['user']['avatars'][0]['path'] : '/assets/web/images/gm1/ic_default_avatar@3x.png' }}" alt="">
             </div>
             <div class="user-info__text">
               <div class="user-info__top">
