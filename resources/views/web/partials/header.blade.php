@@ -78,6 +78,13 @@
         @endif
       </li>
       <li>
+          @if (Auth::user()->status)
+              <a href="{{ route('web.timelines.index') }}"><i><img src="{{ asset('assets/web/images/common/ic_timeline.svg')}}"></i>timeline</a>
+          @else
+              <a href="javascript:void(0)" id="menu-freezed-account"><i><img src="{{ asset('assets/web/images/common/ic_timeline.svg') }}"></i>timeline</a>
+          @endif
+      </li>
+      <li>
         @if (Auth::user()->status)
         <a href="{{ route('guest.orders.reserve') }}"><i><img src="{{ asset('assets/web/images/common/glass.svg') }}"></i>予約一覧</a>
         @else

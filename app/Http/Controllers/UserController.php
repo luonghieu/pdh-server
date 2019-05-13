@@ -191,7 +191,13 @@ class UserController extends Controller
             $contentShifts = $this->getApi('/api/v1/shifts', $paramsShift);
             $shifts = array_slice($contentShifts['data'], 0, 7);
 
-            return view('web.users.show', compact('cast', 'shifts'));
+            $paramsTimeline = [
+                'user_id' => $id,
+            ];
+            $contentTimelines = $this->getApi('/api/v1/timelines', $paramsTimeline);
+            $timelines = array_slice($contentTimelines['data']['data'], 0, 5);
+
+            return view('web.users.show', compact('cast', 'shifts', 'timelines'));
         } catch (\Exception $e) {
             LogService::writeErrorLog($e);
             abort(500);
