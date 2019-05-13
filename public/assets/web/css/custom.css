@@ -3483,7 +3483,7 @@ div.user-data span.total-point-cast{
   margin-right: 5px;
   min-width: 3.5rem;
 }
-    
+
 #gf1 label.button input {
   display: none;
 }
@@ -3501,7 +3501,7 @@ div.user-data span.total-point-cast{
   background: -ms-linear-gradient(20deg, #42E4B2 0%, #30CCC3 100%);
   background: -webkit-linear-gradient(70deg, #42E4B2 0%, #30CCC3 100%);
   background: -o-linear-gradient(70deg, #42E4B2 0%, #30CCC3 100%);
-  background: linear-gradient(20deg, #42E4B2 0%, #30CCC3 100%); 
+  background: linear-gradient(20deg, #42E4B2 0%, #30CCC3 100%);
 }
 
 #gf1 .cast-list.init-scroll-x {
@@ -3911,6 +3911,10 @@ div.user-data span.total-point-cast{
 
 .btn-l.edit-user-profile {
   padding-top: 15px;
+}
+
+a.init-text-color {
+  color: #505050;
 }
 
 #gf2 .timeline-list .timeline-images__item img, .timeline-list .timeline-images__item img {
