@@ -62,7 +62,37 @@ $(document).ready(function() {
       helper.updateLocalStorageKey('shifts', paramShift, castId);
 
       window.location = '/nominate?id='+castId;
-  })
+  });
+
+  // Like/unlike timeline
+  $('.heart-timeline').on('click', function(e) {
+    var id = $(this).attr('data-timeline-id');
+    var _this = $('#heart-timeline-' + id);
+    total_favorites = _this.attr('data-total-favorites-timeline');
+    is_favorited_timeline = _this.attr('data-is-favorited-timeline');
+
+    window.axios.post('/api/v1/timelines/' + id + '/favorites')
+      .then(function(response) {
+        var total = parseInt(total_favorites);
+        if (is_favorited_timeline == 0) {
+          var total = total + 1;
+          _this.html(`<img src="/assets/web/images/common/like.svg">`);
+          _this.attr('data-total-favorites-timeline', total);
+        } else {
+          var total = total - 1;
+          _this.html(`<img src="/assets/web/images/common/unlike.svg">`)
+          _this.attr('data-total-favorites-timeline', total);
+        }
+
+        $('#total-favorites-' + id).text(total);
+        _this.attr('data-is-favorited-timeline', is_favorited_timeline == 1 ? 0 : 1);
+      })
+      .catch(function(error) {
+        if (error.response.status == 401) {
+          window.location = '/login/line';
+        }
+      });
+  });
 });
 
 

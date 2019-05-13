@@ -173,8 +173,7 @@
     </div>
   </section>
   <!-- profile-word -->
-
-  <div class="btn-l"><a href="{{ route('profile.edit') }}">修正</a></div>
+  <div class="btn-l edit-user-profile"><a href="{{ route('profile.edit') }}">修正</a></div>
 </div>
 @endsection
 

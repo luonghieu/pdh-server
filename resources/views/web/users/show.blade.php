@@ -199,6 +199,69 @@
     <!-- profile-word -->
   </div>
 </div>
+<div class="timeline">
+  <section class="portlet">
+    <div class="portlet-header">
+      <h2 class="portlet-header__title title-shifts">タイムライン</h2>
+    </div>
+    <div class="portlet-content--timeline">
+      @foreach($timelines as $timeline)
+      <div class="timeline-list">
+        <div class="timeline-item">
+          <div class="user-info">
+            <div class="user-info__profile">
+              <img src="{{ $timeline['user']['avatars'][0]['path'] }}" alt="">
+            </div>
+            <div class="user-info__text">
+              <div class="user-info__top">
+                <p>{{ $timeline['user']['nickname'] }}</p>
+                <p>{{ $timeline['user']['age'] }}</p>
+              </div>
+              <div class="user-info__bottom">
+                <p>{{ $timeline['location'] ?? '' }}</p>
+                <p>{{ latestOnlineStatus($timeline['created_at']) }}</p>
+              </div>
+            </div>
+          </div>
+          <div class="timeline-content">
+            <a href="{{ route('web.timelines.show', ['timeline' => $timeline['id']]) }}" class="init-text-color">
+              <div class="timeline-article">
+                <div class="timeline-article__text">
+                  {!! $timeline['content'] !!}
+                </div>
+              </div>
+              <div class="timeline-images">
+                <div class="timeline-images__list">
+                  <div class="timeline-images__item">
+                    @if ($timeline['image'])
+                    <img src="{{ $timeline['image'] }}">
+                    @endif
+                  </div>
+                </div>
+              </div>
+            </a>
+            <div class="timeline-like heart-timeline" data-timeline-id="{{ $timeline['id'] }}">
+              <button class="timeline-like__icon">
+                <div id="heart-timeline-{{ $timeline['id'] }}" data-is-favorited-timeline="{{ $timeline['is_favourited'] }}" data-total-favorites-timeline="{{ $timeline['total_favorites'] }}">
+                  @if($timeline['is_favourited'])
+                  <img src="{{ asset('assets/web/images/common/like.svg ') }}" alt="">
+                  @else
+                  <img src="{{ asset('assets/web/images/common/unlike.svg ') }}" alt="">
+                  @endif
+                </div>
+              </button>
+              <p class="timeline-like__sum" id="total-favorites-{{ $timeline['id'] }}">{{ $timeline['total_favorites'] }}</p>
+            </div>
+          </div>
+        </div>
+      </div>
+      @endforeach
+      <div class="timeline-more">
+        <a href="{{ route('web.timelines.index') }}"><p>さらに見る</p></a>
+      </div>
+    </div>
+  </section>
+</div>
 <div class="cast-call-btn">
   <a class="heart" id="favorite-cast-detail" data-user-id="{{ $cast['id'] }}" data-is-favorited="{{ $cast['is_favorited'] }}">
     @if ($cast['is_favorited'])
