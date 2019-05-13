@@ -3916,3 +3916,9 @@ div.user-data span.total-point-cast{
 a.init-text-color {
   color: #505050;
 }
+
+#gf2 .timeline-list .timeline-images__item img, .timeline-list .timeline-images__item img {
+  height: 170px;
+  object-fit: cover;
+  border-radius: 15px;
+}
