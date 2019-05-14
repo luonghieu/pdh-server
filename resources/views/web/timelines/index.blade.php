@@ -3,122 +3,50 @@
 
 @extends('layouts.web')
 @section('web.extra')
+    <div class="modal_wrap modal-confirm">
+        <input id="timeline-del" type="checkbox">
+        <div class="modal_overlay">
+            <label for="timeline-del" class="modal_trigger"></label>
+            <div class="modal_content modal_content-btn2">
+                <div class="text-box">
+                    <h2>投稿を削除しますか？</h2>
+                </div>
+                <div class="close_button-box">
+                    <div class="close_button-block">
+                        <label for="timeline-del" class="close_button  left ">キャンセル</label>
+                    </div>
+                    <div class="close_button-block">
+                        <label for="timeline-del" data-id='' class="close_button right" id="btn-del-timeline">削除</label>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal_wrap">
+        <input id="timeline-not-found" type="checkbox">
+        <div class="modal_overlay">
+          <label for="timeline-not-found" class="modal_trigger"></label>
+          <div class="modal_content modal_content-btn1">
+            <div class="text-box show-message-order-call">
+              <p>タイムラインません</p>
+            </div>
+            <label for="timeline-not-found" class="close_button">OK</label>
+          </div>
+        </div>
+    </div>
 
 @endsection
+
 @section('web.content')
     <div class="timeline">
         <section class="portlet">
             <div class="portlet-content--timeline">
-                <div class="timeline-list">
-                    <div class="timeline-item">
-                        <div class="user-info">
-                            <div class="user-info__profile">
-                                <img src="/assets/web/images/timeline/timeline-profile-img_001.jpg" alt="">
-                            </div>
-                            <div class="user-info__text">
-                                <div class="user-info__top">
-                                    <p>Ayaka</p>
-                                    <p>22</p>
-                                </div>
-                                <div class="user-info__bottom">
-                                    <p>新宿</p>
-                                    <p>16時間前</p>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="timeline-content">
-                            <div class="timeline-article">
-                                <div class="timeline-article__text">今日今から一緒に飲めるかた！
-                                    <br>可愛いまどかちゃんと一緒にいます❤︎
-                                    <br>親譲りの無鉄砲で小供の時から損ばかりしている。小学校に居る時分学校の二階から飛び降りて一週間ほど腰を抜かした 事がある。</div>
-                            </div>
-                            <div class="timeline-images">
-                                <div class="timeline-images__list">
-                                    <div class="timeline-images__item">
-                                        <img src="/assets/web/images/timeline/article-img_001.jpg" width="100%">
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="timeline-like">
-                                <button class="timeline-like__icon">
-                                    <img src="./assets/web/images/common/like-icon.svg" alt="">
-                                </button>
-                                <p class="timeline-like__sum"><a href="{{ route('web.timelines.show', ['id' => 1])
-                                }}">113</a>
-                                </p>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="timeline-item">
-                        <div class="user-info">
-                            <div class="user-info__profile">
-                                <img src="/assets/web/images/timeline/timeline-profile-img_003.jpg" alt="">
-                            </div>
-                            <div class="user-info__text">
-                                <div class="user-info__top">
-                                    <p>Ayaka</p>
-                                    <p>22</p>
-                                </div>
-                                <div class="user-info__bottom">
-                                    <p>新宿</p>
-                                    <p>昨日</p>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="timeline-content">
-                            <div class="timeline-article">
-                                <div class="timeline-article__text">一緒に楽しく飲みましょう！と思える人がいいな-</div>
-                            </div>
-                            <div class="timeline-like">
-                                <button class="timeline-like__icon active">
-                                    <img src="./assets/web/images/common/like-icon_on.svg" alt="">
-                                </button>
-                                <p class="timeline-like__sum"><a href="{{ route('web.timelines.show', ['id' => 1])
-                                }}">54</a>
-                                </p>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="timeline-item">
-                        <div class="user-info">
-                            <div class="user-info__profile">
-                                <img src="assets/web/images/timeline/timeline-profile-img_002.jpg" alt="">
-                            </div>
-                            <div class="user-info__text">
-                                <div class="user-info__top">
-                                    <p>タケシ</p>
-                                    <p>32歳</p>
-                                </div>
-                                <div class="user-info__bottom">
-                                    <p>新宿</p>
-                                    <p>3月5日</p>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="timeline-content">
-                            <div class="timeline-article">
-                                <div class="timeline-article__text">今日今から一緒に飲めるかた！
-                                    <br>可愛いまどかちゃんと一緒にいます❤︎
-                                    <br>親譲りの無鉄砲で小供の時から損ばかりしている。小学校に居る時分学校の二階から飛び降りて一週間ほど腰を抜かした 事がある。</div>
-                            </div>
-                            <div class="timeline-images">
-                                <div class="timeline-images__list">
-                                    <div class="timeline-images__item">
-                                        <img src="assets/web/images/timeline/article-img_002.jpg">
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="timeline-like">
-                                <button class="timeline-like__icon">
-                                    <img src="./assets/web/images/common/like-icon.svg" alt="">
-                                </button>
-                                <p class="timeline-like__sum"><a href="{{ route('web.timelines.show', ['id' => 1])
-                                }}">407</a>
-                                </p>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+                <input type="hidden" value="{{ Auth::user()->id }}" id="user_id_login">
+                @if(isset($userId))
+                <input type="hidden" name="user_id" value="{{ $userId }}" id="user_id_timelines">
+                @endif
+                <div class="timeline-list" id="timeline-index"></div>
             </div>
         </section>
         <section class="timeline-button">
@@ -131,4 +59,18 @@
             </a>
         </section>
     </div>
+@endsection
+
+@section('web.script')
+    <script>
+        var avatarsDefault = "<?php echo asset('assets/web/images/gm1/ic_default_avatar@3x.png'); ?>";
+        var btnNotLike = "<?php echo asset('assets/web/images/common/like-icon.svg'); ?>";
+        var btnLike = "<?php echo asset('assets/web/images/common/like-icon_on.svg'); ?>";
+        var loadMoreTimelines = "<?php echo env('APP_URL') . '/timelines/load_more' ?>";
+        var showDetail = "<?php echo env('APP_URL') . '/timelines' ?>";
+        var castDetail = "<?php echo env('APP_URL') . '/cast' ?>";
+        var guestDetail = "<?php echo env('APP_URL') . '/guest' ?>";
+        var btnTimelineDel = "<?php echo asset('assets/web/images/common/timeline-like-button_del.svg'); ?>";
+
+    </script>
 @endsection

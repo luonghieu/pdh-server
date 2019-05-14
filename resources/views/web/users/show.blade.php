@@ -205,7 +205,8 @@
       <h2 class="portlet-header__title title-shifts">タイムライン</h2>
     </div>
     <div class="portlet-content--timeline">
-      @foreach($timelines as $timeline)
+      @foreach($timelines as $key => $timeline)
+      @if ($key < 5)
       <div class="timeline-list">
         <div class="timeline-item">
           <div class="user-info">
@@ -215,7 +216,7 @@
             <div class="user-info__text">
               <div class="user-info__top">
                 <p>{{ $timeline['user']['nickname'] }}</p>
-                <p>{{ $timeline['user']['age'] }}</p>
+                <p>{{ $timeline['user']['age'] }}歳</p>
               </div>
               <div class="user-info__bottom">
                 <p>{{ $timeline['location'] ?? '' }}</p>
@@ -255,10 +256,13 @@
           </div>
         </div>
       </div>
+      @endif
       @endforeach
+      @if (count($timelines) > 5)
       <div class="timeline-more">
         <a href="{{ route('web.timelines.index') }}"><p>さらに見る</p></a>
       </div>
+      @endif
     </div>
   </section>
 </div>

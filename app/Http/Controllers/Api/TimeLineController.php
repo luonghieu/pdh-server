@@ -5,13 +5,13 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Api\ApiController;
 use App\Http\Resources\TimelineFavoritesResource;
 use App\Http\Resources\TimeLineResource;
+use App\Notifications\NotifyFavouriteTimeline;
 use App\Services\LogService;
 use App\TimeLine;
 use App\TimeLineFavorite;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Webpatser\Uuid\Uuid;
-use App\Notifications\NotifyFavouriteTimeline;
 
 class TimeLineController extends ApiController
 {
@@ -22,6 +22,7 @@ class TimeLineController extends ApiController
         $id = $user->id;
 
         $timeLine = TimeLine::query();
+
         if ($request->user_id) {
             if ($id == $request->user_id) {
                 $timeLine = $timeLine->where('user_id', $id);
@@ -30,7 +31,7 @@ class TimeLineController extends ApiController
             }
         } else {
             $timeLine = $timeLine->where('hidden', false)
-                ->orWhere(function($query) use ($user) {
+                ->orWhere(function ($query) use ($user) {
                     $query->where('user_id', $user->id);
                 });
         }
@@ -40,16 +41,19 @@ class TimeLineController extends ApiController
             $perPage = $request->per_page;
         }
 
-        $timeLine = $timeLine->latest()->paginate($perPage);
+        $timeLine = $timeLine->latest()->paginate($perPage)->appends($request->query());
 
         return $this->respondWithData(TimeLineResource::collection($timeLine));
     }
 
     public function show($id)
     {
-        $timeLine = TimeLine::find($id);
+        $timeline = TimeLine::find($id);
+        if (!$timeline) {
+            return $this->respondErrorMessage(trans('messages.timeline_not_found'), 404);
+        }
 
-        return $this->respondWithData(TimeLineResource::make($timeLine));
+        return $this->respondWithData(TimeLineResource::make($timeline));
     }
 
     public function favorites(Request $request, $id)
@@ -153,7 +157,7 @@ class TimeLineController extends ApiController
         $timeline = $user->timelines()->find($id);
 
         if (!$timeline) {
-            return $this->respondErrorMessage(trans('messages.timeline_not_found'));
+            return $this->respondErrorMessage(trans('messages.timeline_not_found'), 404);
         }
 
         $timeline->delete();
