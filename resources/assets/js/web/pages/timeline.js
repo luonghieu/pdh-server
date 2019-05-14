@@ -172,8 +172,9 @@ $(document).ready(function () {
   var userId = $('#create-timeline-user-id').val();
 
   $('#timeline-btn-submit').on('click', function () {
-    let content = $('.timeline-edit__text').text().trim();
+    let content = $('.timeline-edit__text').html().replace(/<br>/gi,`\n`);
     let location = $('.user-info__bottom p').text().trim();
+
     if (content !== null) {
       formDataTimeline.append('content', content);
     }
