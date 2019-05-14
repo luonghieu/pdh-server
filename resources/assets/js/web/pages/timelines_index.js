@@ -17,7 +17,7 @@ function handleFavouritedTimelines(link)
                     $(selected).html('<img src="'+ btnNotLike +'">');
                 }
 
-                $(selected).next().html('<a href="'+ link +'/'+ response.data.data.user.id +'">'+ response.data.data.total_favorites +'</a>');
+                $(selected).next().html('<a href="'+ link +'/'+ response.data.data.id +'">'+ response.data.data.total_favorites +'</a>');
             })
             .catch(function (error) {
                 console.log(error);
@@ -74,6 +74,7 @@ $(document).ready(function(){
 
         var params = {
             user_id: userId,
+            per_page:2
         };
 
         window.axios.get('/api/v1/timelines', {params})
@@ -94,7 +95,7 @@ $(document).ready(function(){
                     var show ='<img src= "' + avatarsDefault + '"  >';
                 }
 
-                var link = showDetail +'/' + val.user.id;
+                var link = showDetail +'/' + val.id;
 
                 html +='<div class="timeline-item" id="timeline-'+ val.id +'"> <div class="user-info"> <div class="user-info__profile"> ';
                 if(userType.GUEST == val.user.type) {
