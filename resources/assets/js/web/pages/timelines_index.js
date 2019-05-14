@@ -74,7 +74,6 @@ $(document).ready(function(){
 
         var params = {
             user_id: userId,
-            per_page:2
         };
 
         window.axios.get('/api/v1/timelines', {params})
