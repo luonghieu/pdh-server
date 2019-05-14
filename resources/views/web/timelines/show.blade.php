@@ -34,7 +34,12 @@
           <div class="timeline-item">
             <div class="user-info">
               <div class="user-info__profile">
-                <img src="{{ $timeline['user']['avatars'] ? $timeline['user']['avatars'][0]['path'] : '/assets/web/images/gm1/ic_default_avatar@3x.png' }}" alt="">
+                @php $profileLink = ($timeline['user']['type'] == \App\Enums\UserType::GUEST) ? route('guest.show',
+                ['id' => $timeline['user']['id']]) : route('cast.show', ['id' => $timeline['user']['id']])
+                @endphp
+                <a href="{{ $profileLink }}">
+                  <img src="{{ $timeline['user']['avatars'] ? $timeline['user']['avatars'][0]['path'] : '/assets/web/images/gm1/ic_default_avatar@3x.png' }}" alt="">
+                </a>
               </div>
               <div class="user-info__text">
                 <div class="user-info__top">
