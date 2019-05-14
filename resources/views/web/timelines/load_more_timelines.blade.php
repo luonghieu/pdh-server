@@ -15,7 +15,7 @@
               @endif
             </a>
           </div>
-          <a href="{{ route('web.timelines.show', ['id' => $timeline['user']['id']]) }}">
+          <a href="{{ route('web.timelines.show', ['id' => $timeline['id']]) }}">
             <div class="user-info__text">
                 <div class="user-info__top">
                     <p>{{ $timeline['user']['nickname'] }}</p>
@@ -34,7 +34,7 @@
           @endif
       </div>
       <div class="timeline-content">
-          <a href="{{ route('web.timelines.show', ['id' => $timeline['user']['id']]) }}">
+          <a href="{{ route('web.timelines.show', ['id' => $timeline['id']]) }}">
             <div class="timeline-article">
                 <div class="timeline-article__text">{!! nl2br($timeline['content']) !!}</div>
             </div>
@@ -56,7 +56,7 @@
                   <img src="{{ asset('assets/web/images/common/like-icon.svg') }}" alt="">
                 @endif
               </button>
-              <p class="timeline-like__sum"><a href="{{ route('web.timelines.show', ['id' => $timeline['user']['id']])
+              <p class="timeline-like__sum"><a href="{{ route('web.timelines.show', ['id' => $timeline['id']])
               }}">{{ $timeline['total_favorites'] }}</a>
               </p>
           </div>
