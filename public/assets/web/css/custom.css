@@ -3913,6 +3913,51 @@ div.user-data span.total-point-cast{
   padding-top: 15px;
 }
 
+.timeline-edit-image img {
+  border-radius: 15px;
+}
+
+.timeline-edit__text {
+  outline: none !important;
+  font-size: 20px;
+}
+
+.timeline-edit__text[placeholder]:empty:before {
+  content: attr(placeholder);
+  color: #9D9D9D;
+}
+
+.timeline-edit__text[placeholder]:empty:focus:before {
+  content: attr(placeholder);
+}
+
+#timeline-btn-submit {
+  background-color: #d3d3d3;
+  font-weight: bold;
+  width: 72px;
+}
+
+.btn-submit-timeline-blue {
+  background-color: #31ACB0 !important;
+}
+
+.modal_content-btn2 h2 {
+  padding-top: 1em;
+}
+
+.modal_content-btn2 .close_button {
+  padding: 1.2em 0em !important;
+  color: #FF66BB !important;
+}
+
+#time-line-create-controller footer {
+  display: none;
+}
+
+#time-line-create-controller .timeline .user-info__profile img {
+  border-radius: 50%;
+}
+
 a.init-text-color {
   color: #505050;
 }
