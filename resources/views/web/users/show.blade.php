@@ -220,7 +220,7 @@
               </div>
               <div class="user-info__bottom">
                 <p>{{ $timeline['location'] ?? '' }}</p>
-                <p>{{ latestOnlineStatus($timeline['created_at']) }}</p>
+                <p>{{ Carbon\Carbon::parse($timeline['created_at'])->format('m/d H:i') }}</p>
               </div>
             </div>
           </div>
