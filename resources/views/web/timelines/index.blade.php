@@ -39,6 +39,9 @@
 @endsection
 
 @section('web.content')
+    <div class="page-header-timeline">
+        <h1 class="text-bold">タイムライン</h1>
+    </div>
     <div class="timeline">
         <section class="portlet">
             <div class="portlet-content--timeline">
@@ -71,7 +74,7 @@
                                             <p>{{ $timeline['user']['age'] }}歳</p>
                                         </div>
                                         <div class="user-info__bottom">
-                                            <p>{{ $timeline['location'] }}</p><p>{{ $timeline['location'] ? '・' : '' }}</p>
+                                            <p>{{ $timeline['location'] }}</p>
                                             <p>{{ Carbon\Carbon::parse($timeline['created_at'])->format('m/d H:i') }}</p>
                                         </div>
                                     </div>
