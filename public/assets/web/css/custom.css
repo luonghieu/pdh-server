@@ -3954,7 +3954,8 @@ div.user-data span.total-point-cast{
 #timeline-btn-submit {
   background-color: #d3d3d3;
   font-weight: bold;
-  width: 72px;
+  width: auto;
+  padding: 0 7px;
 }
 
 .btn-submit-timeline-blue {
@@ -3976,6 +3977,9 @@ div.user-data span.total-point-cast{
 
 #time-line-create-controller .timeline .user-info__profile img {
   border-radius: 50%;
+  width: 36px;
+  height: 36px;
+  object-fit: cover;
 }
 
 a.init-text-color {
