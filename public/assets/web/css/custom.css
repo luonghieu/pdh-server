@@ -3988,6 +3988,10 @@ a.init-text-color {
   border-radius: 15px;
 }
 
+.init-cursor {
+  cursor: pointer;
+}
+
 .guest-star-rating {
   height: 22px;
   position: relative;
