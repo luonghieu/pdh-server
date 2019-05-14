@@ -3483,7 +3483,7 @@ div.user-data span.total-point-cast{
   margin-right: 5px;
   min-width: 3.5rem;
 }
-    
+
 #gf1 label.button input {
   display: none;
 }
@@ -3501,7 +3501,7 @@ div.user-data span.total-point-cast{
   background: -ms-linear-gradient(20deg, #42E4B2 0%, #30CCC3 100%);
   background: -webkit-linear-gradient(70deg, #42E4B2 0%, #30CCC3 100%);
   background: -o-linear-gradient(70deg, #42E4B2 0%, #30CCC3 100%);
-  background: linear-gradient(20deg, #42E4B2 0%, #30CCC3 100%); 
+  background: linear-gradient(20deg, #42E4B2 0%, #30CCC3 100%);
 }
 
 #gf1 .cast-list.init-scroll-x {
@@ -3911,4 +3911,33 @@ div.user-data span.total-point-cast{
 
 .btn-l.edit-user-profile {
   padding-top: 15px;
+}
+
+.timeline-edit-image img {
+  border-radius: 15px;
+}
+
+.timeline-edit__text {
+  outline: none !important;
+}
+
+#timeline-btn-submit {
+  background-color: #d3d3d3;
+}
+
+.btn-submit-timeline-blue {
+  background-color: #31ACB0 !important;
+}
+
+.modal_content-btn2 h2 {
+  padding-top: 1em;
+}
+
+.modal_content-btn2 .close_button {
+  padding: 1.2em 0em !important;
+  color: #FF66BB !important;
+}
+
+#time-line-create-controller footer {
+  display: none;
 }

@@ -72,9 +72,9 @@ class TimeLineController extends ApiController
     public function create(Request $request)
     {
         $rules = [
-            'content' => 'string|max:240',
+            'content' => 'max:240',
             'image' => 'image|mimes:jpeg,png,jpg,gif,svg',
-            'location' => 'string|max:20',
+            'location' => 'max:20',
         ];
 
         $validator = validator($request->all(), $rules);
