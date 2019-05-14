@@ -3919,10 +3919,22 @@ div.user-data span.total-point-cast{
 
 .timeline-edit__text {
   outline: none !important;
+  font-size: 20px;
+}
+
+.timeline-edit__text[placeholder]:empty:before {
+  content: attr(placeholder);
+  color: #9D9D9D;
+}
+
+.timeline-edit__text[placeholder]:empty:focus:before {
+  content: attr(placeholder);
 }
 
 #timeline-btn-submit {
   background-color: #d3d3d3;
+  font-weight: bold;
+  width: 72px;
 }
 
 .btn-submit-timeline-blue {
@@ -3940,4 +3952,18 @@ div.user-data span.total-point-cast{
 
 #time-line-create-controller footer {
   display: none;
+}
+
+#time-line-create-controller .timeline .user-info__profile img {
+  border-radius: 50%;
+}
+
+a.init-text-color {
+  color: #505050;
+}
+
+#gf2 .timeline-list .timeline-images__item img, .timeline-list .timeline-images__item img {
+  height: 170px;
+  object-fit: cover;
+  border-radius: 15px;
 }

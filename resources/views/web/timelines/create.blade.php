@@ -56,7 +56,7 @@
                     <div class="user-info__text">
                         <div class="user-info__top">
                             <p>{{ Auth::user()->nickname }}</p>
-                            <p>{{ Auth::user()->age }}</p>
+                            <p>{{ Auth::user()->age }}歳</p>
                         </div>
                         <div class="user-info__bottom">
                             <p></p>
@@ -67,7 +67,7 @@
             <div class="timeline-message__content">
                 <div class="timeline-edit" >
                     <div class="timeline-edit__area" contenteditable="false">
-                        <div class="timeline-edit__text" contenteditable="true"></div>
+                        <div class="timeline-edit__text" placeholder="いま何してる？" contenteditable="true"></div>
                     </div>
                 </div>
             </div>
