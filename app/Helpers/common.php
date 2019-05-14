@@ -199,3 +199,10 @@ if (!function_exists('generateInviteCode')) {
         return substr($code, 0, 6);;
     }
 }
+
+if (!function_exists('addHtmlTags')) {
+    function addHtmlTags($content)
+    {
+        return str_replace("\n", "<br>", $result = str_replace(' ', '&nbsp;', $content));
+    }
+}
