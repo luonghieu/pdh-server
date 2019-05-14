@@ -260,7 +260,7 @@
       @endforeach
       @if (count($timelines) > 5)
       <div class="timeline-more">
-        <a href="{{ route('web.timelines.index') }}"><p>さらに見る</p></a>
+        <a href="{{ route('web.timelines.index', ['user_id' => $cast['id']]) }}"><p>さらに見る</p></a>
       </div>
       @endif
     </div>
