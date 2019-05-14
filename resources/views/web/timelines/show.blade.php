@@ -151,7 +151,7 @@
       $('#url-del-timeline').on('click', function() {
         window.axios.delete('api/v1/timelines/' + id)
           .then(function(response) {
-            window.location = '/timelines';
+            window.history.back();
           })
           .catch(function(error) {
             if (error.response.status == 401) {
