@@ -45,7 +45,7 @@
     <div class="timeline">
         <div class="page-title">
             <div><button type="reset" class="btn_cancel">キャンセル</button></div>
-            <div><button type="submit" class="btn_submit" id="timeline-btn-submit">つぶやく</button></div>
+            <div><button type="submit" class="btn_submit" id="timeline-btn-submit" disabled>つぶやく</button></div>
         </div>
         <section class="timeline-message">
             <div class="timeline-message__header">
@@ -87,7 +87,7 @@
                 <input type="button" style="display: none">
             </label>
             <label class="timeline-edit-sum">
-                <p class="timeline-edit-sum__text">1</p>
+                <p class="timeline-edit-sum__text">0</p>
             </label>
         </div>
     </div>
