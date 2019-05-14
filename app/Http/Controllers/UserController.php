@@ -200,7 +200,7 @@ class UserController extends Controller
                     'user_id' => $id,
                 ];
                 $contentTimelines = $this->getApi('/api/v1/timelines', $paramsTimeline);
-                $timelines = array_slice($contentTimelines['data']['data'], 0, 5);
+                $timelines = array_slice($contentTimelines['data']['data'], 0, 6);
 
                 return view('web.users.show', compact('cast', 'shifts', 'timelines'));
             } else {
@@ -210,7 +210,7 @@ class UserController extends Controller
                     'user_id' => $id,
                 ];
                 $contentTimelines = $this->getApi('/api/v1/timelines', $paramsTimeline);
-                $timelines = array_slice($contentTimelines['data']['data'], 0, 5);
+                $timelines = array_slice($contentTimelines['data']['data'], 0, 6);
 
                 return view('web.users.guest_profile', compact('guest', 'timelines'));
             }
