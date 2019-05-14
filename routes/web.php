@@ -138,4 +138,8 @@ Route::group(['middleware' => ['auth'], 'prefix' => 'timelines', 'as' => 'web.']
     });
 });
 
+Route::group(['middleware' => ['auth'], 'prefix' => 'guest', 'as' => 'guest.'], function () {
+    Route::get('/{id}', ['as' => 'show', 'uses' => 'UserController@show'])->where('id', '[0-9]+');
+});
+
 Route::view('tc_register_card', 'web.cards.telecom_credit');
