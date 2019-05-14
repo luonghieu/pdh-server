@@ -97,7 +97,7 @@
                   <td>{{ $timeline->user->nickname }}</td>
                   <td>{{ App\Enums\UserType::getDescription($timeline->user->type) }}</td>
                   <td>{{ Carbon\Carbon::parse($timeline->created_at)->format('Y/m/d H:i') }}</td>
-                  <td>{!! $timeline->content !!}</td>
+                  <td>{!! addHtmlTags($timeline->content) !!}</td>
                   <td>
                     @if ($timeline->image)
                     <a href="javascript::void(0)" class="js-pop-img">
