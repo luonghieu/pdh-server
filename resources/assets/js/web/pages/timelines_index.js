@@ -37,7 +37,7 @@ function handleDelTimeline()
         $('#btn-del-timeline').data('id', id);
 
         $('#timeline-del').prop('checked', true);
-        
+
     })
 
     $('body').on('click', "#btn-del-timeline", function(){
@@ -73,7 +73,7 @@ $(document).ready(function(){
         var windowHeight = $(window).height();
 
         function needToLoadmore() {
-            return requesting == false && $(window).scrollTop() >= $(document).height() - windowHeight - 500;
+            return requesting == false && $(window).scrollTop() >= $(document).height() - windowHeight - 1000;
         }
 
         function handleOnLoadMore() {
@@ -103,8 +103,6 @@ $(document).ready(function(){
             $(document).on('scroll', handleOnLoadMore);
             $(document).ready(handleOnLoadMore);
         }, 500);
-
-        
 
         handleFavouritedTimelines(showDetail);
         handleDelTimeline();

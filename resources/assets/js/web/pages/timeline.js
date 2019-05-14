@@ -54,7 +54,9 @@ $(document).ready(function () {
   var flagImage = false;
 
   $(document).on("keyup", ".timeline-edit__area", function(){
-    let sum = $(".timeline-edit__text").text().length ;
+    const str = $(".timeline-edit__text").text();
+
+    let sum = Array.from(str.split(/[\ufe00-\ufe0f]/).join("")).length;
 
     if (sum >= 1) {
       flagContent = true;
@@ -172,7 +174,7 @@ $(document).ready(function () {
   var userId = $('#create-timeline-user-id').val();
 
   $('#timeline-btn-submit').on('click', function () {
-    let content = $('.timeline-edit__text').text().trim();
+    let content = $('.timeline-edit__text').html().replace(/<br>/gi,`\n`);
     let location = $('.user-info__bottom p').text().trim();
     if (content !== null) {
       formDataTimeline.append('content', content);

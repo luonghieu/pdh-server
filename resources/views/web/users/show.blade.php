@@ -228,7 +228,7 @@
             <a href="{{ route('web.timelines.show', ['timeline' => $timeline['id']]) }}" class="init-text-color">
               <div class="timeline-article">
                 <div class="timeline-article__text">
-                  {!! $timeline['content'] !!}
+                  {!! addHtmlTags($timeline['content']) !!}
                 </div>
               </div>
               <div class="timeline-images">
@@ -260,7 +260,7 @@
       @endforeach
       @if (count($timelines) > 5)
       <div class="timeline-more">
-        <a href="{{ route('web.timelines.index') }}"><p>さらに見る</p></a>
+        <a href="{{ route('web.timelines.index', ['user_id' => $cast['id']]) }}"><p>さらに見る</p></a>
       </div>
       @endif
     </div>

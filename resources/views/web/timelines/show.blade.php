@@ -50,13 +50,15 @@
             <div class="timeline-content">
               <div class="timeline-article">
                 <div class="timeline-article__text">
-                  {!! $timeline['content'] !!}
+                  {!! addHtmlTags($timeline['content']) !!}
                 </div>
               </div>
               <div class="timeline-images">
                 <div class="timeline-images__list">
                   <div class="timeline-images__item">
-                    <img src="{{ asset('assets/web/images/timeline/article-img_002.jpg') }}">
+                    @if ($timeline['image'])
+                    <img src="{{ $timeline['image'] }}">
+                    @endif
                   </div>
                 </div>
               </div>
