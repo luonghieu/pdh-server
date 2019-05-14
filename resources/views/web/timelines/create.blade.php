@@ -51,7 +51,7 @@
             <div class="timeline-message__header">
                 <div class="user-info">
                     <div class="user-info__profile">
-                        <img src="{{ (Auth::user()->avatars[0]) ? Auth::user()->avatars[0]->path : '/assets/web/images/gm1/ic_default_avatar@3x.png' }}" alt="">
+                        <img src="{{ (Auth::user()->avatars()->first()) ? Auth::user()->avatars()->first()->path : '/assets/web/images/gm1/ic_default_avatar@3x.png' }}" alt="">
                     </div>
                     <div class="user-info__text">
                         <div class="user-info__top">
