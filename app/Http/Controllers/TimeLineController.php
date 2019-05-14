@@ -59,6 +59,10 @@ class TimeLineController extends Controller
             $user = Auth::user();
 
             $contentTimeline = $this->getApi('/api/v1/timelines/' . $id);
+            if ($contentTimeline['status'] == false) {
+                return redirect()->back();
+            }
+
             $timeline = $contentTimeline['data'];
 
             $contentFavorites = $this->getApi('/api/v1/timelines/' . $id . '/favorites');
