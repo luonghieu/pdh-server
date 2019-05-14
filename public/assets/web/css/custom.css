@@ -3947,10 +3947,6 @@ div.user-data span.total-point-cast{
   color: #9D9D9D;
 }
 
-.timeline-edit__text[placeholder]:empty:focus:before {
-  content: attr(placeholder);
-}
-
 #timeline-btn-submit {
   background-color: #CCCCCC;
   font-weight: bold;
