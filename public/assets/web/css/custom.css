@@ -3912,3 +3912,23 @@ div.user-data span.total-point-cast{
 .btn-l.edit-user-profile {
   padding-top: 15px;
 }
+
+.timeline-like__sum a{
+  color: #6f7579;
+}
+
+#timeline-index .user-info {
+  position: relative;
+}
+
+#timeline-index .timeline-delete {
+  position: absolute;
+  right: 25px;
+}
+#timeline-index .user-info__top {
+  color: #222222;
+}
+
+#timeline-index .timeline-article__text {
+  color: #222222;
+}

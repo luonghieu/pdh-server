@@ -70,3 +70,4 @@ require('./web/pages/order_step_two');
 require('./web/pages/order_step_three');
 require('./web/pages/cancel_time_order');
 require('./web/pages/payment_method');
+require('./web/pages/timelines_index');
