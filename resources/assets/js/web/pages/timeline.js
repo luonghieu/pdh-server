@@ -19,7 +19,7 @@ $(document).ready(function () {
           _this.html(`<img class="init-cursor" src="/assets/web/images/common/like.svg">`);
           _this.attr('data-total-favorites-timeline', total);
 
-          var html = `<div class="timeline-like-item" id="user-` + userId + `">
+          var html = `<div class="timeline-like-item user-` + userId + `">
               <div class="timeline-like-item__profile">
                 <img src="` + avatar + `" alt="">
               </div>
@@ -35,7 +35,7 @@ $(document).ready(function () {
           _this.html(`<img class="init-cursor" src="/assets/web/images/common/unlike.svg">`)
           _this.attr('data-total-favorites-timeline', total);
 
-          $('#user-' + userId).remove();
+          $('.user-' + userId).remove();
         }
 
         $('#total-favorites').text(total);

@@ -1,5 +1,5 @@
 @foreach ($favorites['data'] as $favorite)
-  <div class="timeline-like-item" id="user-{{ $favorite['id'] }}">
+  <div class="timeline-like-item user-{{ $favorite['user']['id'] }}">
     <div class="timeline-like-item__profile">
       <img src="{{ $favorite['user']['avatars'] ? $favorite['user']['avatars'][0]['path'] : '/assets/web/images/gm1/ic_default_avatar@3x.png' }}" alt="">
     </div>
