@@ -4034,3 +4034,7 @@ a.init-text-color {
   margin-top: 8px;
   margin-left: 15px;
 }
+
+.timeline-item, .timeline-content {
+ box-shadow: none !important;
+}
