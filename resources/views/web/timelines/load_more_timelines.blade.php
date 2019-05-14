@@ -19,7 +19,7 @@
             <div class="user-info__text">
                 <div class="user-info__top">
                     <p>{{ $timeline['user']['nickname'] }}</p>
-                    <p>{{ $timeline['user']['age'] }}</p>
+                    <p>{{ $timeline['user']['age'] }}歳</p>
                 </div>
                 <div class="user-info__bottom">
                     <p>{{ $timeline['location'] }}</p>

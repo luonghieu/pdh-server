@@ -105,7 +105,7 @@ $(document).ready(function(){
                 html += show + '</a></div>';
                 html += '<a href="'+ link +'">';
                 html += '<div class="user-info__text"> <div class="user-info__top">';
-                html += '<p>' + val.user.nickname + '</p>' + '<p>' + val.user.age + '</p> </div> ';
+                html += '<p>' + val.user.nickname + '</p>' + '<p>' + val.user.age + '歳</p> </div> ';
                 html += '<div class="user-info__bottom">';
                 html += '<p>'+ val.location +'</p> <p>'+ moment(val.created_at).format('MM/DD HH:mm') +'</p> </div></div> </a>';
 
