@@ -3988,6 +3988,35 @@ a.init-text-color {
   border-radius: 15px;
 }
 
+.init-cursor {
+  cursor: pointer;
+}
+
+/*#gf2 .star-rating {*/
+  /*font-size: 0;*/
+  /*white-space: nowrap;*/
+  /*display: inline-block;*/
+  /*width: 110px;*/
+  /*height: 15px;*/
+  /*overflow: hidden;*/
+  /*position: relative;*/
+  /*background: url(../images/go1/star-grey.svg);*/
+  /*background-size: contain;*/
+/*}*/
+
+/*#gf2 .star-rating i {*/
+  /*opacity: 0;*/
+  /*position: absolute;*/
+  /*left: 0;*/
+  /*top: 0;*/
+  /*height: 100%;*/
+  /*width: 20%;*/
+  /*z-index: 1;*/
+  /*background: url(../images/go1/star-pink.svg);*/
+  /*background-size: contain;*/
+/*}*/
+
+
 .guest-star-rating {
   height: 22px;
   position: relative;

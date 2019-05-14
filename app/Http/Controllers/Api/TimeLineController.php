@@ -48,12 +48,12 @@ class TimeLineController extends ApiController
 
     public function show($id)
     {
-        $timeLine = TimeLine::find($id);
+        $timeline = TimeLine::find($id);
         if (!$timeline) {
             return $this->respondErrorMessage(trans('messages.timeline_not_found'), 404);
         }
 
-        return $this->respondWithData(TimeLineResource::make($timeLine));
+        return $this->respondWithData(TimeLineResource::make($timeline));
     }
 
     public function favorites(Request $request, $id)
@@ -68,7 +68,7 @@ class TimeLineController extends ApiController
             $perPage = $request->per_page;
         }
 
-        $timelineFavorites = $timeLine->favorites()->paginate($perPage);
+        $timelineFavorites = $timeLine->favorites()->latest()->paginate($perPage);
 
         return $this->respondWithData(TimelineFavoritesResource::collection($timelineFavorites));
     }
