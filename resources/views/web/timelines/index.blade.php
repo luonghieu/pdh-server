@@ -131,14 +131,9 @@
 
 @section('web.script')
     <script>
-        var avatarsDefault = "<?php echo asset('assets/web/images/gm1/ic_default_avatar@3x.png'); ?>";
         var btnNotLike = "<?php echo asset('assets/web/images/common/like-icon.svg'); ?>";
         var btnLike = "<?php echo asset('assets/web/images/common/like-icon_on.svg'); ?>";
         var loadMoreTimelines = "<?php echo env('APP_URL') . '/timelines/load_more' ?>";
         var showDetail = "<?php echo env('APP_URL') . '/timelines' ?>";
-        var castDetail = "<?php echo env('APP_URL') . '/cast' ?>";
-        var guestDetail = "<?php echo env('APP_URL') . '/guest' ?>";
-        var btnTimelineDel = "<?php echo asset('assets/web/images/common/timeline-like-button_del.svg'); ?>";
-
     </script>
 @endsection
