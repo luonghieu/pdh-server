@@ -39,6 +39,9 @@
 @endsection
 
 @section('web.content')
+    <div class="page-header-timeline">
+        <h1 class="text-bold">タイムライン</h1>
+    </div>
     <div class="timeline">
         <section class="portlet">
             <div class="portlet-content--timeline">
