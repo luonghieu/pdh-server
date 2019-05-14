@@ -1,4 +1,4 @@
-@section('title', 'Timeline details')
+@section('title', 'タイムライン')
 @section('controller.id', 'time-line-index-controller')
 
 @extends('layouts.web')

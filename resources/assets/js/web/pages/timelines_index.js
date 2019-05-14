@@ -152,7 +152,7 @@ $(document).ready(function(){
         var windowHeight = $(window).height();
 
         function needToLoadmore() {
-            return requesting == false && $(window).scrollTop() >= $(document).height() - windowHeight - 500;
+            return requesting == false && $(window).scrollTop() >= $(document).height() - windowHeight - 1000;
         }
 
         function handleOnLoadMore() {
