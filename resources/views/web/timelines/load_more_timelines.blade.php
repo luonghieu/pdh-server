@@ -6,7 +6,7 @@
             @if(App\Enums\UserType::CAST == $timeline['user']['type'])
             <a href="{{ route('cast.show', ['id' => $timeline['user']['id']]) }}">
             @else
-            <a href="{{ route('web.timelines.show', ['id' => $timeline['user']['id']]) }}">
+            <a href="{{ route('guest.show', ['id' => $timeline['user']['id']]) }}">
             @endif
               @if (@getimagesize($timeline['user']['avatars'][0]['thumbnail']))
                 <img class="lazy" data-src="{{ $timeline['user']['avatars'][0]['thumbnail'] }}" alt="">
