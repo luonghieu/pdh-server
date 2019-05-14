@@ -2,10 +2,9 @@
 
 namespace App\Http\Controllers;
 
-use Auth;
 use App\Services\LogService;
-use App\TimeLine;
 use App\User;
+use Auth;
 use GuzzleHttp\Client;
 use Illuminate\Http\Request;
 use JWTAuth;
@@ -50,7 +49,16 @@ class TimeLineController extends Controller
             }
         }
 
-        return view('web.timelines.index', compact('userId'));
+        $params = [
+            'user_id' => $userId,
+        ];
+
+        $user = Auth::user();
+
+        $timelines = $this->getApi('/api/v1/timelines', $params);
+        $timelines = $timelines['data'];
+
+        return view('web.timelines.index', compact('userId', 'timelines'));
     }
 
     public function show($id)
@@ -73,7 +81,6 @@ class TimeLineController extends Controller
             LogService::writeErrorLog($e);
             abort(500);
         }
-
     }
 
     public function create(Request $request)
@@ -141,7 +148,7 @@ class TimeLineController extends Controller
 
             return [
                 'next_page' => (array_key_exists('next_page_url', $contents)) ? $contents['next_page_url'] :
-                    $contents['data']['next_page_url'],
+                $contents['data']['next_page_url'],
                 'view' => view('web.timelines.load_more_favorites', compact('favorites', 'user'))->render(),
             ];
         } catch (\Exception $e) {
