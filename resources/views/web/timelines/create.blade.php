@@ -87,7 +87,7 @@
                 <input type="button" style="display: none">
             </label>
             <label class="timeline-edit-sum">
-                <p class="timeline-edit-sum__text">1</p>
+                <p class="timeline-edit-sum__text">0</p>
             </label>
         </div>
     </div>
