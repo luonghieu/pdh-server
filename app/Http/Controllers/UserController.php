@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Enums\UserType;
 use App\Services\LogService;
 use App\User;
 use Auth;
@@ -184,20 +185,35 @@ class UserController extends Controller
     {
         try {
             $contents = $this->getApi('/api/v1/users/' . $id);
-            $cast = $contents['data'];
-            $paramsShift = [
-                'cast_id' => $id,
-            ];
-            $contentShifts = $this->getApi('/api/v1/shifts', $paramsShift);
-            $shifts = array_slice($contentShifts['data'], 0, 7);
+            $user = $contents['data'];
 
-            $paramsTimeline = [
-                'user_id' => $id,
-            ];
-            $contentTimelines = $this->getApi('/api/v1/timelines', $paramsTimeline);
-            $timelines = array_slice($contentTimelines['data']['data'], 0, 6);
+            if ($user['type'] == UserType::CAST)
+            {
+                $cast = $user;
+                $paramsShift = [
+                    'cast_id' => $id,
+                ];
+                $contentShifts = $this->getApi('/api/v1/shifts', $paramsShift);
+                $shifts = array_slice($contentShifts['data'], 0, 7);
 
-            return view('web.users.show', compact('cast', 'shifts', 'timelines'));
+                $paramsTimeline = [
+                    'user_id' => $id,
+                ];
+                $contentTimelines = $this->getApi('/api/v1/timelines', $paramsTimeline);
+                $timelines = array_slice($contentTimelines['data']['data'], 0, 6);
+
+                return view('web.users.show', compact('cast', 'shifts', 'timelines'));
+            } else {
+                $guest = $user;
+
+                $paramsTimeline = [
+                    'user_id' => $id,
+                ];
+                $contentTimelines = $this->getApi('/api/v1/timelines', $paramsTimeline);
+                $timelines = array_slice($contentTimelines['data']['data'], 0, 6);
+
+                return view('web.users.guest_profile', compact('guest', 'timelines'));
+            }
         } catch (\Exception $e) {
             LogService::writeErrorLog($e);
             abort(500);

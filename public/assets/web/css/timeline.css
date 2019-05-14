@@ -511,3 +511,40 @@
       outline: none; }
 
 /*# sourceMappingURL=../../sass */
+.page-title{
+  position: relative;
+  padding: 10px 10px 0 10px;
+  height: 35px;
+  border-bottom: 1px solid #CCCCCC;
+  display: flex;
+}
+.page-title div{
+  width:50%;
+}
+.page-title div button{
+  font-size: 14px;
+}
+.btn_cancel{
+  position: relative;
+  color: #31ACB0;
+  background: none;
+  text-align: left;
+}
+.btn_submit{
+  float: right;
+  position: relative;
+  border-radius: 20px;
+  background: #31ACB0;
+  color: #FFF;
+  height: 26px;
+  text-align: right;
+}
+.btn_dis_submit{
+  float: right;
+  position: relative;
+  border-radius: 20px;
+  background: #CCCCCC;
+  color: #FFF;
+  height: 26px;
+  text-align: right;
+}
