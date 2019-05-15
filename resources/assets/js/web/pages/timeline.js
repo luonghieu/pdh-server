@@ -102,10 +102,8 @@ $(document).ready(function () {
     $('#timeline-btn-submit').removeAttr('disabled');
   });
 
-
   $(document).on("keydown", "#positionInput", function(e){
-    let sum = $("#positionInput").val().length ;
-
+    let sum = $("#positionInput").val().length;
     let keyCode = e.keyCode;
 
     if(keyCode == 8 || keyCode == 46 || keyCode == 37 || keyCode == 39) {
