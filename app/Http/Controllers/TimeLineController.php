@@ -49,16 +49,7 @@ class TimeLineController extends Controller
             }
         }
 
-        $params = [
-            'user_id' => $userId,
-        ];
-
-        $user = Auth::user();
-
-        $timelines = $this->getApi('/api/v1/timelines', $params);
-        $timelines = $timelines['data'];
-
-        return view('web.timelines.index', compact('userId', 'timelines'));
+        return view('web.timelines.index', compact('userId'));
     }
 
     public function show($id)
@@ -67,7 +58,7 @@ class TimeLineController extends Controller
             $user = Auth::user();
 
             $contentTimeline = $this->getApi('/api/v1/timelines/' . $id);
-            if ($contentTimeline['status'] == false) {
+            if (false == $contentTimeline['status']) {
                 return redirect()->back();
             }
 
