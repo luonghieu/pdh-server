@@ -1,7 +1,22 @@
 @foreach ($favorites['data'] as $favorite)
   <div class="timeline-like-item user-{{ $favorite['user']['id'] }}">
     <div class="timeline-like-item__profile">
-      <img src="{{ $favorite['user']['avatars'] ? $favorite['user']['avatars'][0]['path'] : '/assets/web/images/gm1/ic_default_avatar@3x.png' }}" alt="">
+      @php
+        $route = '#';
+        switch ($favorite['user']['type']) {
+          case App\Enums\UserType::CAST:
+            $route = route('cast.show', ['user' => $favorite['user']['id']]);
+            break;
+          case App\Enums\UserType::GUEST:
+            $route = route('guest.show', ['user' => $favorite['user']['id']]);
+            break;
+
+          default:break;
+        }
+      @endphp
+      <a href="{{ $route }}">
+        <img src="{{ $favorite['user']['avatars'] ? $favorite['user']['avatars'][0]['path'] : '/assets/web/images/gm1/ic_default_avatar@3x.png' }}" alt="">
+      </a>
     </div>
     <div class="timeline-like-item__info">
       <p>{{ $favorite['user']['nickname'] }}</p>

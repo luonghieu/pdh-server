@@ -27,6 +27,7 @@
   <input type="hidden" id="age" value="{{ $user->age }}" />
   <input type="hidden" id="avatar" value="{{ $user->avatars->first() ? $user->avatars[0]['path'] : '/assets/web/images/gm1/ic_default_avatar@3x.png' }}" />
   <input type="hidden" id="timeline-user-id" value="{{ $user->id }}" />
+  <input type="hidden" id="route-user" value="{{ $user->type == App\Enums\UserType::CAST ? route('cast.show', ['user' => $user->id]) : route('guest.show', ['user' => $user->id]) }}" />
   <div class="page-header-timeline">
     <h1 class="text-bold">タイムライン</h1>
   </div>
