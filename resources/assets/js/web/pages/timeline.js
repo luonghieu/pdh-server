@@ -221,12 +221,15 @@ $(document).ready(function () {
 
   $('.timeline-edit__text').focus();
 
+
+
   $('.timeline-edit__text').bind("DOMSubtreeModified",function(){
     const str = $(".timeline-edit__text").text();
     let sum = Array.from(str.split(/[\ufe00-\ufe0f]/).join("")).length;
 
     if (sum > 240) {
       $(this).html(Array.from(str.split(/[\ufe00-\ufe0f]/).join("")).slice(0,240));
+      setCaretPosition('timeline-edit-content', str)
     }
 
     $('#timeline-btn-submit').addClass('btn-submit-timeline-blue');
@@ -255,9 +258,16 @@ $(document).ready(function () {
           const str = $("#positionInput").val();
           if (str.length > 20) {
             $("#positionInput").val(str.slice(0,20));
+            $('#positionInput').focus();
           }
         }, 100);
       },
   });
   /* End Post timeline */
 });
+
+function setCaretPosition(elementId, str){
+  const editableDiv = document.getElementById(elementId);
+  const selection = window.getSelection();
+  selection.collapse(editableDiv.childNodes[editableDiv.childNodes.length - 1], str.length);
+}
