@@ -22,8 +22,14 @@
                     <p>{{ $timeline['user']['age'] }}歳</p>
                 </div>
                 <div class="user-info__bottom">
-                    <p>{{ $timeline['location'] }}</p><p>{{ $timeline['location'] ? '・' : '' }}</p>
-                    <p>{{ Carbon\Carbon::parse($timeline['created_at'])->format('m/d H:i') }}</p>
+                  @if( mb_strlen($timeline['location']) >= 18)
+                  <p style="font-size: 10px">
+                  @else
+                  <p>
+                  @endif
+                    {{ $timeline['location'] }} {{ $timeline['location'] ? '・' : '' }}
+                    {{ Carbon\Carbon::parse($timeline['created_at'])->format('m/d H:i') }}
+                  </p>
                 </div>
             </div>
           </a>
