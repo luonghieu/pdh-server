@@ -48,7 +48,7 @@ $(document).ready(function () {
       });
   });   /* End like/unlike timeline in timeline detail */
 
-
+  /* Post timeline */
   var formDataTimeline = new FormData();
   var flagContent = false;
   var flagImage = false;
@@ -61,6 +61,7 @@ $(document).ready(function () {
     if (sum >= 1) {
       flagContent = true;
       $('#timeline-btn-submit').addClass('btn-submit-timeline-blue');
+
       $('#timeline-btn-submit').removeAttr('disabled');
     } else {
       flagContent = false;
@@ -80,7 +81,9 @@ $(document).ready(function () {
   });
 
   $(document).on("keydown", ".timeline-edit__area", function(e){
-    let sum = $(".timeline-edit__text").text().length ;
+    const str = $(".timeline-edit__text").text();
+    let sum = Array.from(str.split(/[\ufe00-\ufe0f]/).join("")).length;
+
     var keyCode = e.keyCode;
 
     if(keyCode == 8 || keyCode == 46 || keyCode == 37 || keyCode == 39) {
@@ -97,6 +100,22 @@ $(document).ready(function () {
     $('#timeline-btn-submit').removeAttr('disabled');
   });
 
+
+  $(document).on("keydown", "#positionInput", function(e){
+    let sum = $("#positionInput").val().length ;
+
+    let keyCode = e.keyCode;
+
+    if(keyCode == 8 || keyCode == 46 || keyCode == 37 || keyCode == 39) {
+      return true;
+    }
+
+    if (sum >= 20) {
+
+      return false;
+    }
+  });
+
   /////////////////////////////////
   //   timeline image
   ////////////////////////////////
@@ -110,12 +129,15 @@ $(document).ready(function () {
 
     postImage(_insertPicture);
     $(".timeline-edit-pic input").remove();
+    $(".timeline-edit-camera input").remove();
+
   });
 
   timelineEditCamera.on("change",function(e){
     var _insertPicture = e.target.files[0];
 
     postImage(_insertPicture);
+    $(".timeline-edit-pic input").remove();
     $(".timeline-edit-camera input").remove();
   });
 
@@ -166,16 +188,15 @@ $(document).ready(function () {
       $(".user-info__bottom p").text(positionText);
       document.getElementById('add-location').click()
     }
-
-    $('.timeline-edit__text').focus();
   });
 
 
   var userId = $('#create-timeline-user-id').val();
 
   $('#timeline-btn-submit').on('click', function () {
-    let content = $('.timeline-edit__text').html().replace(/<br>/gi,`\n`);
     let location = $('.user-info__bottom p').text().trim();
+    let content = $('.timeline-edit__text').html().replace(/<div>/gi,`\n`).replace(/<\/div>/gi,``);
+
     if (content !== null) {
       formDataTimeline.append('content', content);
     }
@@ -204,4 +225,15 @@ $(document).ready(function () {
   })
 
   $('.timeline-edit__text').focus();
+
+  $('.timeline-edit__text').bind("DOMSubtreeModified",function(){
+    const str = $(".timeline-edit__text").text();
+        let sum = Array.from(str.split(/[\ufe00-\ufe0f]/).join("")).length;
+        if (sum > 240) {
+          $(this).html(str.slice(0,240));
+        }
+    $('#timeline-btn-submit').addClass('btn-submit-timeline-blue');
+    $('#timeline-btn-submit').removeAttr('disabled');
+  });
+  /* End Post timeline */
 });
