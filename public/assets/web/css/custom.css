@@ -4231,6 +4231,10 @@ a.init-text-color {
   color: #30CCC3;
 }
 
+.timeline-article__text {
+  word-wrap: break-word;
+}
+
 .init-text-justify {
   text-align: justify;
 }
