@@ -447,6 +447,10 @@ class OrderController extends ApiController
             return $this->respondErrorMessage(trans('messages.admin_edited_order'), 406);
         }
 
+        if ($offer->prefecture_id != $request->prefecture_id) {
+            return $this->respondErrorMessage(trans('messages.admin_edited_order'), 406);
+        }
+
         $now = Carbon::now()->second(0);
 
         $start_time = Carbon::parse($request->date . ' ' . $request->start_time);

@@ -1,6 +1,7 @@
 @extends('layouts.admin')
 @section('admin.content')
-<div class="col-md-10 col-sm-11 main ">
+<div class="col-md-10 col-sm-11 main">
+  @include('admin.partials.alert-error', compact('errors'))
   <div class="row">
     <div class="col-lg-12">
       <div class="panel panel-default">
@@ -45,14 +46,14 @@
           @include('admin.partials.notification')
           <table class="table table-striped table-bordered bootstrap-datatable">
             <thead>
-              @php 
+              @php
                 $request = [
                   'page' => request()->page,
                   'limit' => request()->limit,
                   'search' => request()->search,
                   'from_date' => request()->from_date,
                   'to_date' => request()->to_date,
-                ]; 
+                ];
               @endphp
               <tr>
                 <th>No.</th>
@@ -108,7 +109,7 @@
                     <td>{{ Carbon\Carbon::parse($costEnterprise['created_at'])->format('Y/m/d H:i') }}</td>
                     <td>{{ $pointDescription['consumption'] }}</td>
                     <td>-</td>
-                    <td>{{ $costEnterprise['point'] }}</td> 
+                    <td>{{ $costEnterprise['point'] }}</td>
                   @else
                     <td>{{ $costEnterprise->id }}</td>
                     <td><a href="{{ route('admin.users.show', ['user' => $costEnterprise->user_id]) }}">{{ $costEnterprise->user_id }}</a></td>
@@ -135,7 +136,7 @@
                             $pointIncrease = '-';
                             $pointDecrease = -$costEnterprise->point;
                             break;
-                        
+
                         default:break;
                     }
                     @endphp

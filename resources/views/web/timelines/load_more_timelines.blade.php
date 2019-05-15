@@ -6,7 +6,7 @@
             @if(App\Enums\UserType::CAST == $timeline['user']['type'])
             <a href="{{ route('cast.show', ['id' => $timeline['user']['id']]) }}">
             @else
-            <a href="{{ route('web.timelines.show', ['id' => $timeline['user']['id']]) }}">
+            <a href="{{ route('guest.show', ['id' => $timeline['user']['id']]) }}">
             @endif
               @if (@getimagesize($timeline['user']['avatars'][0]['thumbnail']))
                 <img class="lazy" data-src="{{ $timeline['user']['avatars'][0]['thumbnail'] }}" alt="">
@@ -22,7 +22,7 @@
                     <p>{{ $timeline['user']['age'] }}歳</p>
                 </div>
                 <div class="user-info__bottom">
-                    <p>{{ $timeline['location'] }}</p>
+                    <p>{{ $timeline['location'] }}</p><p>{{ $timeline['location'] ? '・' : '' }}</p>
                     <p>{{ Carbon\Carbon::parse($timeline['created_at'])->format('m/d H:i') }}</p>
                 </div>
             </div>

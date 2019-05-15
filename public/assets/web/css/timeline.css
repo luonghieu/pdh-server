@@ -133,8 +133,8 @@
         color: #9d9d9d;
         min-height: 10px; }
         /* line 137, source/_sass/timeline.scss */
-        .timeline .user-info__bottom p:nth-child(2):before {
-          content: "・"; }
+        /*.timeline .user-info__bottom p:nth-child(2):before {
+          content: "・"; }*/
   /* line 148, source/_sass/timeline.scss */
   .timeline-content {
     width: 100%;

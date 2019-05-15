@@ -1931,6 +1931,66 @@ select.init-option-search {
   margin-bottom: 5px;
 }
 
+#btn-edit-order-nominee .content-modal p {
+  text-align: start;
+  flex-grow: 1;
+}
+
+#btn-edit-order-nominee .modal-dialog {
+  width: 700px;
+}
+
+#btn-edit-order-nominee .title-modal h2 {
+  font-size: 20px;
+  font-weight: bold;
+}
+
+#btn-edit-order-nominee .wrap-edit-start-time {
+  display: flex;
+  position: relative;
+}
+
+#btn-edit-order-nominee .wrap-edit-start-time p{
+  /*position: absolute;*/
+  /*top: 5px;*/
+}
+
+#btn-edit-order-nominee .wrap-edit-duration-nominee {
+  display: flex;
+  margin-top: 10px;
+}
+
+#btn-edit-order-nominee .wrap-edit-duration-nominee select{
+  position: absolute;
+  left: 43%;
+}
+
+#btn-edit-order-nominee .wrap-edit-start-time .start-date-time{
+  flex-grow: 1;
+  position: absolute;
+  right: 0;
+}
+
+#btn-edit-order-nominee .wrap-edit-start-time .start-date-time #edit-year{
+  width: 80px !important;
+}
+
+#set-status-to-active {
+  bottom: 6px;
+  width: 112px;
+}
+
+.wrap-status.text-left {
+  text-indent: 70px;
+}
+
+.wrap-status.text-left span {
+  padding-right: 0;
+}
+
+#btn-submit-edit-order-nominee h2 {
+  font-weight: bold;
+}
 @media (max-width: 1280px) {
   select.init-option-search {
     margin-right: 1%;

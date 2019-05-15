@@ -237,5 +237,6 @@ return [
         'lastname_kana' => 'せい',
         'firstname_kana' => 'めい',
         'account_number' => '口座番号',
+        'memo' => '運営者メモ',
     ],
 ];

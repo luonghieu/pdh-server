@@ -16,9 +16,11 @@ use App\Enums\RoomType;
 use App\Enums\SystemMessageType;
 use App\Guest;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\CheckDateRequest;
 use App\Jobs\PointSettlement;
 use App\Notification;
 use App\Notifications\AdminEditOrder;
+use App\Notifications\AdminEditOrderNominee;
 use App\Notifications\AdminRemoveCastInOrder;
 use App\Notifications\CallOrdersCreated;
 use App\Notifications\CastAcceptNominationOrders;
@@ -40,7 +42,7 @@ class OrderController extends Controller
 {
     use DirectRoom, InviteCode;
 
-    public function index(Request $request)
+    public function index(CheckDateRequest $request)
     {
         $pointStatus = [
             OrderStatus::PROCESSING,
@@ -1010,5 +1012,111 @@ class OrderController extends Controller
             'view' => view('admin.orders.list_guests_by_device_type', compact('guests'))->render(),
             'guests' => $guests,
         ]);
+    }
+
+    public function updateOrderStatusToActive(Request $request)
+    {
+        $order = Order::where(function($q) {
+            $q->where('status', OrderStatus::CANCELED)
+                ->orWhere('status', OrderStatus::DENIED);
+        })->where(function($q) {
+            $q->whereNull('payment_status')
+                ->orWhere('payment_status', '<>', OrderPaymentStatus::CANCEL_FEE_PAYMENT_FINISHED);
+        })->find($request->id);
+
+        if (!$order) {
+            return redirect()->back();
+        }
+
+        $cast = $order->castOrder()->first();
+        if (!$cast) {
+            return redirect()->back();
+        }
+
+        $order->status = OrderStatus::ACTIVE;
+        $order->canceled_at = null;
+        $order->cancel_fee_percent = null;
+        $order->save();
+
+        $casts = $order->castOrder()->get();
+        foreach ($casts as $cast) {
+            $cast->pivot->canceled_at = null;
+            $cast->pivot->deleted_at = null;
+            $cast->pivot->status = CastOrderStatus::ACCEPTED;
+            $cast->pivot->save();
+        }
+
+        if ($order->type == OrderType::NOMINATION) {
+            return redirect()->route('admin.orders.order_nominee', ['order' => $order->id]);
+        }
+
+        return redirect()->route('admin.orders.call', ['order' => $order->id]);
+    }
+
+    public function updateNomineeOrder(Request $request, $id)
+    {
+        try {
+            \DB::beginTransaction();
+            $order = Order::whereIn('status', [OrderStatus::OPEN, OrderStatus::ACTIVE])->find($id);
+            if (!$order) {
+                return redirect()->route('admin.orders.order_nominee', ['order' => $order->id]);
+            }
+
+            $oldDate = Carbon::parse($order->date . ' ' . $order->start_time);
+            $newDate = Carbon::parse($request->order_start_date);
+            if ($oldDate->equalTo($newDate) && $order->duration == $request->duration) {
+                return redirect()->route('admin.orders.order_nominee', ['order' => $order->id]);
+            }
+
+            $orderStartTime = Carbon::parse($request->order_start_date);
+            $duration = $request->duration;
+
+            $order->date = $orderStartTime->format('Y-m-d');
+            $order->start_time = $orderStartTime->format('H:i');
+            $order->duration = $duration;
+            $order->end_time = $orderStartTime->copy()->addMinutes($order->duration * 60)->format('H:i');
+
+            $cast = $order->nominees()->first();
+            $orderEndTime = $orderStartTime->copy()->addMinutes($order->duration * 60);
+            $nightTime = $order->nightTime($orderEndTime);
+            $allowance = $order->allowance($nightTime);
+            $orderPoint = $order->orderPoint($cast);
+            $orderFee = $order->orderFee($cast, $orderStartTime, $orderEndTime);
+
+            $order->nominees()->updateExistingPivot(
+                $cast->id,
+                [
+                    'temp_point' => $orderPoint + $allowance + $orderFee,
+                ],
+                false
+            );
+
+            $order->temp_point = $orderPoint + $allowance + $orderFee;
+            $order->save();
+
+            $room = Room::find($order->room_id);
+
+            $roomMesage = '予約内容が変更されました。';
+            $roomMessage = $room->messages()->create([
+                'user_id' => 1,
+                'type' => MessageType::SYSTEM,
+                'message' => $roomMesage,
+                'system_type' => SystemMessageType::NOTIFY
+            ]);
+            $roomMessage->recipients()->attach($cast->id, ['room_id' => $room->id]);
+            $users = [
+                $order->user,
+                $cast
+            ];
+
+            \DB::commit();
+        } catch (\Exception $e) {
+            \DB::rollBack();
+            LogService::writeErrorLog($e);
+            return redirect()->back();
+        }
+
+        \Notification::send($users, new AdminEditOrderNominee($order->id));
+        return redirect()->route('admin.orders.order_nominee', ['order' => $order->id]);
     }
 }

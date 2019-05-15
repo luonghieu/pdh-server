@@ -1,4 +1,4 @@
-@section('title', '投稿_いいね一覧')
+@section('title', 'タイムライン')
 @section('controller.id', 'time-line-show-controller')
 @extends('layouts.web')
 @section('web.extra')
@@ -27,6 +27,9 @@
   <input type="hidden" id="age" value="{{ $user->age }}" />
   <input type="hidden" id="avatar" value="{{ $user->avatars ? $user->avatars[0]['path'] : '/assets/web/images/gm1/ic_default_avatar@3x.png' }}" />
   <input type="hidden" id="timeline-user-id" value="{{ $user->id }}" />
+  <div class="page-header-timeline">
+    <h1 class="text-bold">タイムライン</h1>
+  </div>
   <div class="timeline">
     <section class="portlet">
       <div class="portlet-content--timeline">
@@ -34,7 +37,12 @@
           <div class="timeline-item">
             <div class="user-info">
               <div class="user-info__profile">
-                <img src="{{ $timeline['user']['avatars'] ? $timeline['user']['avatars'][0]['path'] : '/assets/web/images/gm1/ic_default_avatar@3x.png' }}" alt="">
+                @php $profileLink = ($timeline['user']['type'] == \App\Enums\UserType::GUEST) ? route('guest.show',
+                ['id' => $timeline['user']['id']]) : route('cast.show', ['id' => $timeline['user']['id']])
+                @endphp
+                <a href="{{ $profileLink }}">
+                  <img src="{{ $timeline['user']['avatars'] ? $timeline['user']['avatars'][0]['path'] : '/assets/web/images/gm1/ic_default_avatar@3x.png' }}" alt="">
+                </a>
               </div>
               <div class="user-info__text">
                 <div class="user-info__top">
@@ -42,8 +50,8 @@
                   <p>{{ $timeline['user']['age'] }}歳</p>
                 </div>
                 <div class="user-info__bottom">
-                  <p>{{ $timeline['location'] ?? '' }}</p>
-                  <p>{{ latestOnlineStatus($timeline['created_at']) }}</p>
+                  <p>{{ $timeline['location'] }}</p><p>{{ $timeline['location'] ? '・' : '' }}</p>
+                  <p>{{ Carbon\Carbon::parse($timeline['created_at'])->format('m/d H:i') }}</p>
                 </div>
               </div>
             </div>
@@ -151,7 +159,7 @@
       $('#url-del-timeline').on('click', function() {
         window.axios.delete('api/v1/timelines/' + id)
           .then(function(response) {
-            window.location = '/timelines';
+            window.history.back();
           })
           .catch(function(error) {
             if (error.response.status == 401) {

@@ -67,92 +67,13 @@ function handleDelTimeline()
 $(document).ready(function(){
   const helper = require('./helper');
     if($('#timeline-index').length) {
-        var userId = null;
-        if($('#user_id_timelines').length) {
-            userId = $('#user_id_timelines').val();
-        }
-
-        var params = {
-            user_id: userId,
-        };
-
-        window.axios.get('/api/v1/timelines', {params})
-          .then(function(response) {
-            var data = response.data;
-            var timelines = (data.data.data);
-            var html = '';
-            var isGuest = true;
-
-            timelines.forEach(function (val) {
-                if(val.user.avatars.length) {
-                    if (val.user.avatars[0].path) {
-                      var show ='<img src= "' + val.user.avatars[0].thumbnail + '"  >';
-                    } else {
-                      var show ='<img src= "' + avatarsDefault + '"  >';
-                    }
-                } else {
-                    var show ='<img src= "' + avatarsDefault + '"  >';
-                }
-
-                var link = showDetail +'/' + val.id;
-
-                html +='<div class="timeline-item" id="timeline-'+ val.id +'"> <div class="user-info"> <div class="user-info__profile"> ';
-                if(userType.GUEST == val.user.type) {
-                    html += '<a href="'+ guestDetail +'/' + val.user.id + '">';
-                } else {
-                    html += '<a href="'+ castDetail +'/' + val.user.id + '">';
-                }
-                html += show + '</a></div>';
-                html += '<a href="'+ link +'">';
-                html += '<div class="user-info__text"> <div class="user-info__top">';
-                html += '<p>' + val.user.nickname + '</p>' + '<p>' + val.user.age + '歳</p> </div> ';
-                html += '<div class="user-info__bottom">';
-                html += '<p>'+ val.location +'</p> <p>'+ moment(val.created_at).format('MM/DD HH:mm') +'</p> </div></div> </a>';
-
-                if ($('#user_id_login').val() == val.user.id) {
-                    html += '<div class="timeline-delete" data-id="'+ val.id +'"> <img src="'+ btnTimelineDel +'" alt=""> </div>';
-                }
-
-                html += '</div>';
-                html += '<div class="timeline-content"> <a href="'+ link +'"> <div class="timeline-article"> <div class="timeline-article__text">';
-                html += val.content.replace(/\n/g, "<br />") + '</div></div>';
-
-                if(val.image) {
-                    html += '<div class="timeline-images"> <div class="timeline-images__list"> <div class="timeline-images__item">';
-                    html += '<img src="'+ val.image +'" width="100%"></div></div></div>';
-                }
-
-                html += '</a><div class="timeline-like"> <button class="timeline-like__icon" data-id="'+ val.id +'">';
-                if(val.is_favourited) {
-                    html += '<img src="'+ btnLike +'"> </button>';
-                } else {
-                    html += '<img src="'+ btnNotLike +'"> </button>';
-                }
-
-                html += '<p class="timeline-like__sum"><a href="'+ link +'">'+ val.total_favorites +'</a> </p> </div></div></div>';
-            })
-
-            var nextPage = '';
-            if (data.data.next_page_url) {
-              var nextPage = data.data.next_page_url;
-            }
-
-            html += '<input type="hidden" id="next_page" value="' + nextPage + '" />';
-            $('.timeline-list').html(html);
-        })
-        .catch(function (error) {
-            console.log(error);
-            if (error.response.status == 401) {
-              window.location = '/login';
-            }
-        });
-
+ 
           /*Load more list cast order*/
         var requesting = false;
         var windowHeight = $(window).height();
 
         function needToLoadmore() {
-            return requesting == false && $(window).scrollTop() >= $(document).height() - windowHeight - 500;
+            return requesting == false && $(window).scrollTop() >= $(document).height() - windowHeight - 1000;
         }
 
         function handleOnLoadMore() {

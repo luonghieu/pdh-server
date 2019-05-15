@@ -62,6 +62,18 @@ class Handler extends ExceptionHandler
             }
         }
 
+        if ($exception instanceof \Illuminate\Foundation\Http\Exceptions\MaintenanceModeException) {
+            if($request->is('api*')) {
+                return response()->json(['message' => '現在システムメンテナンス中です。しばらく経ってから再度アクセスしてください。'], 503);
+            } else {
+                return response()
+                    ->view('errors.maintenance', [
+                        'message' => '現在システムメンテナンス中です。しばらく経ってから再度アクセスしてください。'
+                    ], 200)
+                    ->header('Content-Type', 'text/html; charset=utf-8');
+            }
+        }
+
         return parent::render($request, $exception);
     }
 

@@ -76,7 +76,6 @@ class TimeLineController extends ApiController
     public function create(Request $request)
     {
         $rules = [
-            'content' => 'max:240',
             'image' => 'image|mimes:jpeg,png,jpg,gif,svg',
             'location' => 'max:20',
         ];

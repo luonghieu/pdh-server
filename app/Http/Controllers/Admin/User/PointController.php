@@ -6,6 +6,7 @@ use App\Enums\PointCorrectionType;
 use App\Enums\PointType;
 use App\Enums\Status;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\CheckDateRequest;
 use App\Payment;
 use App\Point;
 use App\Services\CSVExport;
@@ -79,7 +80,7 @@ class PointController extends Controller
         return $sumPointBuy;
     }
 
-    public function getPointHistory(User $user, Request $request)
+    public function getPointHistory(User $user, CheckDateRequest $request)
     {
         $keyword = $request->search_point_type;
         $pointTypes = [

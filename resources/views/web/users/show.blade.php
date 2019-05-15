@@ -219,8 +219,8 @@
                 <p>{{ $timeline['user']['age'] }}歳</p>
               </div>
               <div class="user-info__bottom">
-                <p>{{ $timeline['location'] ?? '' }}</p>
-                <p>{{ latestOnlineStatus($timeline['created_at']) }}</p>
+                <p>{{ $timeline['location'] }}</p><p>{{ $timeline['location'] ? '・' : '' }}</p>
+                <p>{{ Carbon\Carbon::parse($timeline['created_at'])->format('m/d H:i') }}</p>
               </div>
             </div>
           </div>
@@ -260,7 +260,7 @@
       @endforeach
       @if (count($timelines) > 5)
       <div class="timeline-more">
-        <a href="{{ route('web.timelines.index') }}"><p>さらに見る</p></a>
+        <a href="{{ route('web.timelines.index', ['user_id' => $cast['id']]) }}"><p>さらに見る</p></a>
       </div>
       @endif
     </div>

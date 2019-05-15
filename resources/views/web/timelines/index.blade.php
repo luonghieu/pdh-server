@@ -1,4 +1,4 @@
-@section('title', 'Timeline details')
+@section('title', 'タイムライン')
 @section('controller.id', 'time-line-index-controller')
 
 @extends('layouts.web')
@@ -39,6 +39,9 @@
 @endsection
 
 @section('web.content')
+    <div class="page-header-timeline">
+        <h1 class="text-bold">タイムライン</h1>
+    </div>
     <div class="timeline">
         <section class="portlet">
             <div class="portlet-content--timeline">
@@ -46,7 +49,75 @@
                 @if(isset($userId))
                 <input type="hidden" name="user_id" value="{{ $userId }}" id="user_id_timelines">
                 @endif
-                <div class="timeline-list" id="timeline-index"></div>
+                <div class="timeline-list" id="timeline-index">
+                    @if(isset($timelines['data']))
+                        @foreach($timelines['data'] as $timeline)
+                        <div class="timeline-item" id="timeline-{{ $timeline['id'] }}">
+                            <div class="user-info">
+                                <div class="user-info__profile">
+                                    @if(App\Enums\UserType::CAST == $timeline['user']['type'])
+                                    <a href="{{ route('cast.show', ['id' => $timeline['user']['id']]) }}">
+                                    @else
+                                    <a href="{{ route('guest.show', ['id' => $timeline['user']['id']]) }}">
+                                    @endif
+                                    @if (@getimagesize($timeline['user']['avatars'][0]['thumbnail']))
+                                        <img class="lazy" data-src="{{ $timeline['user']['avatars'][0]['thumbnail'] }}" alt="">
+                                        @else
+                                        <img class="lazy" data-src="{{ asset('assets/web/images/gm1/ic_default_avatar@3x.png') }}" alt="">
+                                    @endif
+                                    </a>
+                                </div>
+                                <a href="{{ route('web.timelines.show', ['id' => $timeline['id']]) }}">
+                                    <div class="user-info__text">
+                                        <div class="user-info__top">
+                                            <p>{{ $timeline['user']['nickname'] }}</p>
+                                            <p>{{ $timeline['user']['age'] }}歳</p>
+                                        </div>
+                                        <div class="user-info__bottom">
+                                            <p>{{ $timeline['location'] }}</p><p>{{ $timeline['location'] ? '・' : '' }}</p>
+                                            <p>{{ Carbon\Carbon::parse($timeline['created_at'])->format('m/d H:i') }}</p>
+                                        </div>
+                                    </div>
+                                </a>
+                              @if(Auth::user()->id == $timeline['user']['id'])
+                              <div class="timeline-delete" data-id="{{ $timeline['id'] }}">
+                                 <img src="{{ asset('assets/web/images/common/timeline-like-button_del.svg') }}" alt="">
+                              </div>
+                              @endif
+                            </div>
+                            <div class="timeline-content">
+                                <a href="{{ route('web.timelines.show', ['id' => $timeline['id']]) }}">
+                                    <div class="timeline-article">
+                                        <div class="timeline-article__text">{!! nl2br($timeline['content']) !!}</div>
+                                    </div>
+                                    @if($timeline['image'])
+                                    <div class="timeline-images">
+                                        <div class="timeline-images__list">
+                                            <div class="timeline-images__item">
+                                                <img class="lazy" data-src="{{ $timeline['image'] }}" width="100%">
+                                            </div>
+                                        </div>
+                                    </div>
+                                    @endif
+                                </a>
+                                <div class="timeline-like">
+                                    <button class="timeline-like__icon" data-id="{{ $timeline['id'] }}">
+                                    @if($timeline['is_favourited'])
+                                      <img src="{{ asset('assets/web/images/common/like-icon_on.svg') }}" alt="">
+                                    @else
+                                      <img src="{{ asset('assets/web/images/common/like-icon.svg') }}" alt="">
+                                    @endif
+                                    </button>
+                                    <p class="timeline-like__sum"><a href="{{ route('web.timelines.show', ['id' => $timeline['id']])
+                                      }}">{{ $timeline['total_favorites'] }}</a>
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                        @endforeach
+                        <input type="hidden" id="next_page" value="{{ $timelines['next_page_url'] }}" />
+                    @endif
+                </div>
             </div>
         </section>
         <section class="timeline-button">
@@ -63,14 +134,9 @@
 
 @section('web.script')
     <script>
-        var avatarsDefault = "<?php echo asset('assets/web/images/gm1/ic_default_avatar@3x.png'); ?>";
         var btnNotLike = "<?php echo asset('assets/web/images/common/like-icon.svg'); ?>";
         var btnLike = "<?php echo asset('assets/web/images/common/like-icon_on.svg'); ?>";
         var loadMoreTimelines = "<?php echo env('APP_URL') . '/timelines/load_more' ?>";
         var showDetail = "<?php echo env('APP_URL') . '/timelines' ?>";
-        var castDetail = "<?php echo env('APP_URL') . '/cast' ?>";
-        var guestDetail = "<?php echo env('APP_URL') . '/guest' ?>";
-        var btnTimelineDel = "<?php echo asset('assets/web/images/common/timeline-like-button_del.svg'); ?>";
-
     </script>
 @endsection

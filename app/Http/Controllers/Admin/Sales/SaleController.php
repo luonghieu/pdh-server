@@ -4,15 +4,15 @@ namespace App\Http\Controllers\Admin\Sales;
 
 use App\Enums\PointType;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\CheckDateRequest;
 use App\Point;
 use App\Services\CSVExport;
 use App\Services\LogService;
 use Carbon\Carbon;
-use Illuminate\Http\Request;
 
 class SaleController extends Controller
 {
-    public function index(Request $request)
+    public function index(CheckDateRequest $request)
     {
         $pointType = $request->search_point_type;
 

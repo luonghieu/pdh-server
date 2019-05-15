@@ -41,6 +41,7 @@ $routes = [
               'admin.casts.create',
               'admin.casts.bank_account',
               'admin.casts.schedule',
+              'admin.casts.guest_rating_detail',
             ],
         ],
     ],
