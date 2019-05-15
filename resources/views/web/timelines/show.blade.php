@@ -25,7 +25,7 @@
 @section('web.content')
   <input type="hidden" id="nickname" value="{{ $user->nickname }}" />
   <input type="hidden" id="age" value="{{ $user->age }}" />
-  <input type="hidden" id="avatar" value="{{ $user->avatars ? $user->avatars[0]['path'] : '/assets/web/images/gm1/ic_default_avatar@3x.png' }}" />
+  <input type="hidden" id="avatar" value="{{ $user->avatars->first() ? $user->avatars[0]['path'] : '/assets/web/images/gm1/ic_default_avatar@3x.png' }}" />
   <input type="hidden" id="timeline-user-id" value="{{ $user->id }}" />
   <div class="page-header-timeline">
     <h1 class="text-bold">タイムライン</h1>
@@ -57,8 +57,8 @@
             </div>
             <div class="timeline-content">
               <div class="timeline-article">
-                <div class="timeline-article__text">
-                  {!! addHtmlTags($timeline['content']) !!}
+                <div class="timeline-article__text init-text-justify">
+                  {!! nl2br($timeline['content']) !!}
                 </div>
               </div>
               <div class="timeline-images">
@@ -136,7 +136,6 @@
             // Add page loading icon
             $('.js-loading').addClass('css-loading-none');
           }).catch(function () {
-            console.log(1);
             requesting = false;
             // Add page loading icon
             $('.js-loading').addClass('css-loading-none');
@@ -155,11 +154,12 @@
   $(function () {
     $('.del-timeline').on('click', function() {
       var id = $(this).attr('data-timeline-id');
+      var oldURL = document.referrer;
 
       $('#url-del-timeline').on('click', function() {
         window.axios.delete('api/v1/timelines/' + id)
           .then(function(response) {
-            window.history.back();
+            window.location = oldURL;
           })
           .catch(function(error) {
             if (error.response.status == 401) {

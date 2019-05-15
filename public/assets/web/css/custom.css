@@ -4119,7 +4119,7 @@ body #star-rating-schedule {
   font-size: 20px;
 }
 
-.timeline-edit__text[placeholder]:empty:before {
+.timeline-edit__text.pl:before {
   content: attr(placeholder);
   color: #9D9D9D;
 }
@@ -4234,3 +4234,8 @@ a.init-text-color {
 .timeline-article__text {
   word-wrap: break-word;
 }
+
+.init-text-justify {
+  text-align: justify;
+}
+

@@ -134,8 +134,8 @@
                         <div class="timeline-content">
                             <a href="{{ route('web.timelines.show', ['timeline' => $timeline['id']]) }}" class="init-text-color">
                                 <div class="timeline-article">
-                                    <div class="timeline-article__text">
-                                        {!! addHtmlTags($timeline['content']) !!}
+                                    <div class="timeline-article__text init-text-justify">
+                                        {!! nl2br($timeline['content']) !!}
                                     </div>
                                 </div>
                                 <div class="timeline-images">
