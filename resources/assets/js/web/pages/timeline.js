@@ -10,6 +10,7 @@ $(document).ready(function () {
     var age = $('#age').val();
     var avatar = $('#avatar').val();
     var userId = $('#timeline-user-id').val();
+    var routeUser = $('#route-user').val();
 
     window.axios.post('/api/v1/timelines/' + id + '/favorites')
       .then(function(response) {
@@ -21,7 +22,9 @@ $(document).ready(function () {
 
           var html = `<div class="timeline-like-item user-` + userId + `">
               <div class="timeline-like-item__profile">
-                <img src="` + avatar + `" alt="">
+                <a href="` + routeUser + `">
+                  <img src="` + avatar + `" alt="">
+                </a>
               </div>
               <div class="timeline-like-item__info">
                 <p>` + nickname + `</p>
