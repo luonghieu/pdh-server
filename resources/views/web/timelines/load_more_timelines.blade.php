@@ -8,10 +8,14 @@
             @else
             <a href="{{ route('guest.show', ['id' => $timeline['user']['id']]) }}">
             @endif
-              @if (@getimagesize($timeline['user']['avatars'][0]['thumbnail']))
-                <img class="lazy" data-src="{{ $timeline['user']['avatars'][0]['thumbnail'] }}" alt="">
-                @else
-                <img class="lazy" data-src="{{ asset('assets/web/images/gm1/ic_default_avatar@3x.png') }}" alt="">
+              @if($timeline['user']['avatars'])
+                @if (@getimagesize($timeline['user']['avatars'][0]['thumbnail']))
+                  <img class="lazy" data-src="{{ $timeline['user']['avatars'][0]['thumbnail'] }}" alt="">
+                  @else
+                  <img class="lazy" data-src="{{ asset('assets/web/images/gm1/ic_default_avatar@3x.png') }}" alt="">
+                @endif
+              @else
+              <img class="lazy" data-src="{{ asset('assets/web/images/gm1/ic_default_avatar@3x.png') }}" alt="">
               @endif
             </a>
           </div>
