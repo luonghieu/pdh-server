@@ -94,7 +94,7 @@
                             <div class="timeline-content">
                                 <a href="{{ route('web.timelines.show', ['id' => $timeline['id']]) }}">
                                     <div class="timeline-article">
-                                        <div class="timeline-article__text">{!! nl2br($timeline['content']) !!}</div>
+                                        <div class="timeline-article__text init-text-justify">{!! nl2br($timeline['content']) !!}</div>
                                     </div>
                                     @if($timeline['image'])
                                     <div class="timeline-images">
