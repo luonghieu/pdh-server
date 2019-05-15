@@ -3949,7 +3949,6 @@ div.user-data span.total-point-cast{
 
 #timeline-btn-submit {
   background-color: #CCCCCC;
-  font-weight: bold;
   width: auto;
   padding: 0 7px;
 }
@@ -4041,4 +4040,8 @@ a.init-text-color {
 
 .timeline-item, .timeline-content {
  box-shadow: none !important;
+}
+
+.aaa {
+  display: none;
 }
