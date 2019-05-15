@@ -234,6 +234,12 @@ $(document).ready(function () {
         }
     $('#timeline-btn-submit').addClass('btn-submit-timeline-blue');
     $('#timeline-btn-submit').removeAttr('disabled');
+
+    if (sum > 0) {
+      $('.timeline-edit__text').removeClass('pl');
+    } else {
+      $('.timeline-edit__text').addClass('pl');
+    }
   });
   /* End Post timeline */
 });

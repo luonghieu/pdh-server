@@ -67,7 +67,7 @@
             <div class="timeline-message__content">
                 <div class="timeline-edit" >
                     <div class="timeline-edit__area" contenteditable="false">
-                        <div class="timeline-edit__text" placeholder="いま何してる？" contenteditable="true"></div>
+                        <div class="timeline-edit__text pl" placeholder="いま何してる？" contenteditable="true"></div>
                     </div>
                 </div>
             </div>
