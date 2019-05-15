@@ -123,20 +123,17 @@ $(document).ready(function () {
   let timelineEditCamera = $(".timeline-edit-camera");
 
   timelineEditPic.on("change",function(e){
+    formDataTimeline.delete('image');
     var _insertPicture = e.target.files[0];
 
     postImage(_insertPicture);
-    $(".timeline-edit-pic input").remove();
-    $(".timeline-edit-camera input").remove();
-
   });
 
   timelineEditCamera.on("change",function(e){
+    formDataTimeline.delete('image');
     var _insertPicture = e.target.files[0];
 
     postImage(_insertPicture);
-    $(".timeline-edit-pic input").remove();
-    $(".timeline-edit-camera input").remove();
   });
 
   function postImage(img) {
@@ -144,6 +141,8 @@ $(document).ready(function () {
     var reader = new FileReader();
 
     reader.onload = function(e){
+      $('.timeline-edit-image').empty();
+
       $('.timeline-edit__area').append(`<div><br></div><div class='timeline-edit-image' contenteditable='false'><img src=` + e.target.result +`><div class='timeline-edit-image__del'><img src='/assets/web/images/timeline/timeline-create-img_del.svg'></div></div><div><br></div>`);
     };
     reader.readAsDataURL(img);
@@ -182,10 +181,8 @@ $(document).ready(function () {
 
   $(document).on("click", "#positionOk", function(){
     let positionText = $("#positionInput").val();
-    if( positionText != "" ){
-      $(".user-info__bottom p").text(positionText);
-      document.getElementById('add-location').click()
-    }
+    $(".user-info__bottom p").text(positionText);
+    document.getElementById('add-location').click()
   });
 
 
@@ -220,7 +217,7 @@ $(document).ready(function () {
 
   $('.timeline .btn_cancel').on('click', function () {
     $('#del-post-timeline').trigger('click');
-  })
+  });
 
   $('.timeline-edit__text').focus();
 
@@ -240,6 +237,27 @@ $(document).ready(function () {
     } else {
       $('.timeline-edit__text').addClass('pl');
     }
+  });
+
+  $(".timeline-edit__text").bind({
+      paste : function(){
+        setTimeout(function () {
+          const str = $(".timeline-edit__text").text();
+          let sum = Array.from(str.split(/[\ufe00-\ufe0f]/).join("")).length;
+          $(".timeline-edit-sum__text").text(sum.toFixed() );
+        }, 100);
+      },
+  });
+
+  $("#positionInput").bind({
+      paste : function(){
+        setTimeout(function () {
+          const str = $("#positionInput").val();
+          if (str.length > 20) {
+            $("#positionInput").val(str.slice(0,20));
+          }
+        }, 100);
+      },
   });
   /* End Post timeline */
 });
