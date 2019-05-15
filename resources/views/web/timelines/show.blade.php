@@ -57,8 +57,8 @@
             </div>
             <div class="timeline-content">
               <div class="timeline-article">
-                <div class="timeline-article__text">
-                  {!! addHtmlTags($timeline['content']) !!}
+                <div class="timeline-article__text init-text-justify">
+                  {!! nl2br($timeline['content']) !!}
                 </div>
               </div>
               <div class="timeline-images">
@@ -136,7 +136,6 @@
             // Add page loading icon
             $('.js-loading').addClass('css-loading-none');
           }).catch(function () {
-            console.log(1);
             requesting = false;
             // Add page loading icon
             $('.js-loading').addClass('css-loading-none');
@@ -155,11 +154,12 @@
   $(function () {
     $('.del-timeline').on('click', function() {
       var id = $(this).attr('data-timeline-id');
+      var oldURL = document.referrer;
 
       $('#url-del-timeline').on('click', function() {
         window.axios.delete('api/v1/timelines/' + id)
           .then(function(response) {
-            window.history.back();
+            window.location = oldURL;
           })
           .catch(function(error) {
             if (error.response.status == 401) {
