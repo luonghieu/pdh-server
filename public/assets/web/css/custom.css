@@ -4234,3 +4234,7 @@ a.init-text-color {
 .init-text-justify {
   text-align: justify;
 }
+
+.timeline-content {
+  -webkit-tap-highlight-color: rgba(0,0,0,0);
+}
