@@ -91,7 +91,6 @@ $(document).ready(function () {
     }
 
     if (sum >= 240) {
-
       return false;
     }
 
@@ -111,7 +110,6 @@ $(document).ready(function () {
     }
 
     if (sum >= 20) {
-
       return false;
     }
   });
@@ -228,10 +226,12 @@ $(document).ready(function () {
 
   $('.timeline-edit__text').bind("DOMSubtreeModified",function(){
     const str = $(".timeline-edit__text").text();
-        let sum = Array.from(str.split(/[\ufe00-\ufe0f]/).join("")).length;
-        if (sum > 240) {
-          $(this).html(str.slice(0,240));
-        }
+    let sum = Array.from(str.split(/[\ufe00-\ufe0f]/).join("")).length;
+
+    if (sum > 240) {
+      $(this).html(Array.from(str.split(/[\ufe00-\ufe0f]/).join("")).slice(0,240));
+    }
+
     $('#timeline-btn-submit').addClass('btn-submit-timeline-blue');
     $('#timeline-btn-submit').removeAttr('disabled');
 
