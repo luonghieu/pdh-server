@@ -12,7 +12,7 @@
                     <div class='position-box__close' onclick="document.getElementById('add-location').click()"></div>
                     <div class='position-box__head'>チェックイン</div>
                     <div class='position-box__body'>
-                        <input id='positionInput' type='text' placeholder='どこにいますか?'>
+                        <input id='positionInput' type='text' maxlength="20" placeholder='どこにいますか?'>
                     </div>
                     <div class='position-box__foot'>
                         <button id='positionOk'>確認</button>
