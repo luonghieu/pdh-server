@@ -119,7 +119,7 @@ $(document).ready(function(){
                 }
 
                 html += '</div>';
-                html += '<div class="timeline-content"> <a href="'+ link +'"> <div class="timeline-article"> <div class="timeline-article__text">';
+                html += '<div class="timeline-content"> <a href="'+ link +'"> <div class="timeline-article"> <div class="timeline-article__text init-text-justify">';
                 html += val.content.replace(/\n/g, "<br />") + '</div></div>';
 
                 if(val.image) {
