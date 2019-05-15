@@ -194,8 +194,8 @@ $(document).ready(function () {
   $('#timeline-btn-submit').on('click', function () {
     let location = $('.user-info__bottom p').text().trim();
     let content = $('.timeline-edit__text').html().replace(/<div>/gi,`\n`).replace(/<\/div>/gi,``);
-
-    if (content !== null) {
+    let text = $('.timeline-edit__text').text().trim();
+    if (formDataTimeline != '') {
       formDataTimeline.append('content', content);
     }
 
@@ -205,13 +205,15 @@ $(document).ready(function () {
 
     formDataTimeline.append('user_id', userId);
 
-    window.axios.post('/api/v1/timelines/create', formDataTimeline)
-      .then(function(response) {
-       window.location.href = '/timelines';
-      })
-      .catch(function(error) {
-        console.log(error);
-      });
+    if (flagImage || (text != '')) {
+      window.axios.post('/api/v1/timelines/create', formDataTimeline)
+        .then(function(response) {
+         window.location.href = '/timelines';
+        })
+        .catch(function(error) {
+          console.log(error);
+        });
+    }
   })
 
   //////////////////////////////////////
