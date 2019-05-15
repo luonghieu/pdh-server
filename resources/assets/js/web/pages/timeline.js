@@ -143,7 +143,7 @@ $(document).ready(function () {
     reader.onload = function(e){
       $('.timeline-edit-image').empty();
 
-      $('.timeline-edit__area').append(`<div><br></div><div class='timeline-edit-image' contenteditable='false'><img src=` + e.target.result +`><div class='timeline-edit-image__del'><img src='/assets/web/images/timeline/timeline-create-img_del.svg'></div></div><div><br></div>`);
+      $('.timeline-edit__area').append(`<div class='timeline-edit-image' contenteditable='false'><img src=` + e.target.result +`><div class='timeline-edit-image__del'><img src='/assets/web/images/timeline/timeline-create-img_del.svg'></div></div>`);
     };
     reader.readAsDataURL(img);
     formDataTimeline.append('image', img);
@@ -263,6 +263,14 @@ $(document).ready(function () {
         }, 100);
       },
   });
+
+  $("#positionInput").on('change', function () {
+    const str = $("#positionInput").val();
+    if (str.length > 20) {
+      $("#positionInput").val(str.slice(0,20));
+      $('#positionInput').focus();
+    }
+  })
   /* End Post timeline */
 });
 
