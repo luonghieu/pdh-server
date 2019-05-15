@@ -4230,3 +4230,7 @@ a.init-text-color {
   font-size: 15px;
   color: #30CCC3;
 }
+
+.timeline-article__text {
+  word-wrap: break-word;
+}
