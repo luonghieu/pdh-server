@@ -190,8 +190,10 @@ $(document).ready(function () {
   var userId = $('#create-timeline-user-id').val();
 
   $('#timeline-btn-submit').on('click', function () {
+    $('#timeline-btn-submit').attr('disabled','disabled');
     let location = $('.user-info__bottom p').text().trim();
-    let content = $('.timeline-edit__text').html().replace(/<div>/gi,`\n`).replace(/<\/div>/gi,``);
+    let content = $('.timeline-edit__text').html().replace(/<div>/gi,`\n`).replace(/<\/div>/gi,``).replace('<br>','\n');
+
     let text = $('.timeline-edit__text').text().trim();
     if (formDataTimeline != '') {
       formDataTimeline.append('content', content);
@@ -206,7 +208,7 @@ $(document).ready(function () {
     if (flagImage || (text != '')) {
       window.axios.post('/api/v1/timelines/create', formDataTimeline)
         .then(function(response) {
-         window.location.href = '/timelines';
+          window.location.href = '/timelines';
         })
         .catch(function(error) {
           console.log(error);
