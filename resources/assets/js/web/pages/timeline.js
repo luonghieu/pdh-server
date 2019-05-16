@@ -214,7 +214,7 @@ $(document).ready(function () {
           console.log(error);
         });
     }
-  })
+  });
 
   //////////////////////////////////////
   //          timeline-delete-post
@@ -249,18 +249,18 @@ $(document).ready(function () {
 
   $(".timeline-edit__text").bind({
       paste : function(e){
-          e.preventDefault();
-          var text = '';
-          if (e.clipboardData || e.originalEvent.clipboardData) {
-              text = (e.originalEvent || e).clipboardData.getData('text/plain');
-          } else if (window.clipboardData) {
-              text = window.clipboardData.getData('Text');
-          }
-          if (document.queryCommandSupported('insertText')) {
-              document.execCommand('insertText', false, text);
-          } else {
-              document.execCommand('paste', false, text);
-          }
+        e.preventDefault();
+        let text = '';
+        if (e.clipboardData || e.originalEvent.clipboardData) {
+          text = (e.originalEvent || e).clipboardData.getData('text/plain');
+        } else if (window.clipboardData) {
+          text = window.clipboardData.getData('Text');
+        }
+        if (document.queryCommandSupported('insertText')) {
+          document.execCommand('insertText', false, text);
+        } else {
+          document.execCommand('paste', false, text);
+        }
 
         setTimeout(function () {
           const str = $(".timeline-edit__text").text();
