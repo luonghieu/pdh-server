@@ -52,6 +52,7 @@
                 <div class="timeline-list" id="timeline-index"></div>
             </div>
         </section>
+        @if(!isset($userId))
         <section class="timeline-button">
             <a href="">
                 <button class="timeline-button__edit">
@@ -61,6 +62,7 @@
                 </button>
             </a>
         </section>
+        @endif
     </div>
 @endsection
 
