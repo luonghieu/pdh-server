@@ -4239,7 +4239,7 @@ a.init-text-color {
   text-align: justify;
 }
 
-.timeline-content {
+.timeline-content, .timeline-more a {
   -webkit-tap-highlight-color: rgba(0,0,0,0);
 }
 
