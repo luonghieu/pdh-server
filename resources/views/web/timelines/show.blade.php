@@ -87,19 +87,21 @@
                   <p class="timeline-like__sum" id="total-favorites">{{ $timeline['total_favorites'] }}</p>
                 </div>
                 <div class="user-info__del">
-                  @if ($timeline['user']['id'] == Auth::user()->id)
+                  @if ($timeline['user']['id'] == $user->id)
                   <button onclick="document.getElementById('delete-timeline').click()" class="del-timeline" data-timeline-id="{{ $timeline['id'] }}">
                     <img  class="init-cursor" src="{{ asset('assets/web/images/common/timeline-like-button_del.svg') }}">
                   </button>
                   @endif
                 </div>
               </div>
+              @if ($user->id == $timeline['user']['id'])
               <div class="timeline-like-list__content js-add-favorite">
                 @include('web.timelines.load_more_favorites', compact('favorites', 'user'))
                 <input type="hidden" id="next_page" value="{{ ($favorites['next_page_url']) ?  $favorites['next_page_url'] . '&is_ajax=1' : null  }}">
                 <!-- loading_page -->
                 @include('web.partials.loading_icon')
               </div>
+              @endif
             </div>
           </div>
         </div>
