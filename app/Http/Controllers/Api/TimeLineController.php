@@ -98,7 +98,7 @@ class TimeLineController extends ApiController
             if ($request->has('image')) {
                 $image = $request->file('image');
                 $imageName = Uuid::generate()->string . '.jpg';
-                $image = \Image::make($image)->encode('jpg', 75);
+                $image = \Image::make($image)->orientate()->encode('jpg', 75);
                 $fileUploaded = Storage::put($imageName, $image->__toString(), 'public');
 
                 if ($fileUploaded) {
