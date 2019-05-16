@@ -192,7 +192,7 @@ $(document).ready(function () {
   $('#timeline-btn-submit').on('click', function () {
     $('#timeline-btn-submit').attr('disabled','disabled');
     let location = $('.user-info__bottom p').text().trim();
-    let content = $('.timeline-edit__text').html().replace(/<div>/gi,`\n`).replace(/<\/div>/gi,``).replace('<br>','\n');
+    let content = $('.timeline-edit__text').html().replace(/<div>/gi,`\n`).replace(/<\/div>/gi,``).replace(/<br>/gi,'\n');
 
     let text = $('.timeline-edit__text').text().trim();
     if (formDataTimeline != '') {
