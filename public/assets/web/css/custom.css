@@ -4250,3 +4250,8 @@ a.init-text-color {
 .position-box__body input {
   border-bottom: none !important;
 }
+
+.timeline-edit__input {
+  z-index: 99999;
+  background-color: #ffffff;
+}
