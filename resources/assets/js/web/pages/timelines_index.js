@@ -125,7 +125,7 @@ $(document).ready(function(){
 
                 if(val.image) {
                     html += '<div class="timeline-images"> <div class="timeline-images__list"> <div class="timeline-images__item">';
-                    html += '<img src="'+ val.image +'" width="100%"></div></div></div>';
+                    html += '<img class="rotate" src="'+ val.image +'" width="100%"></div></div></div>';
                 }
 
                 html += '</a><div class="timeline-like"> <button class="timeline-like__icon" data-id="'+ val.id +'">';
@@ -145,6 +145,19 @@ $(document).ready(function(){
 
             html += '<input type="hidden" id="next_page" value="' + nextPage + '" />';
             $('.timeline-list').html(html);
+              setTimeout(() => {
+                  const imgs = document.getElementsByClassName('rotate');
+                  if(imgs.length > 0) {
+                      for (let img of imgs) {
+                          EXIF.getData(img, function() {
+                              const orientation = EXIF.getTag(this, "Orientation");
+                              if (orientation === 6) {
+                                  img.setAttribute('style', 'transform: rotate(90deg)');
+                              }
+                          });
+                      }
+                  }
+              }, 1000);
         })
         .catch(function (error) {
             console.log(error);
@@ -192,7 +205,7 @@ $(document).ready(function(){
         handleDelTimeline();
     }
 
-    const loadingIcon = `<svg xmlns="http://www.w3.org/2000/svg" width="51px" height="51px" viewBox="0 0 100 100" preserveAspectRatio="xMidYMid" class="lds-eclipse" style="background: none;"><path ng-attr-d="{{config.pathCmd}}" ng-attr-fill="{{config.color}}" stroke="none" d="M10 50A40 40 0 0 0 90 50A40 42 0 0 1 10 50" fill="#30CCC3" transform="rotate(139.161 50 51)"><animateTransform attributeName="transform" type="rotate" calcMode="linear" values="0 50 51;360 50 51" keyTimes="0;1" dur="1s" begin="0s" repeatCount="indefinite"/></path></svg>`;
+    const loadingIcon = `<svg xmlns="http://www.w3.org/2000/svg" width="20px" height="20px" viewBox="0 0 100 100" preserveAspectRatio="xMidYMid" class="lds-eclipse" style="background: none;"><path ng-attr-d="{{config.pathCmd}}" ng-attr-fill="{{config.color}}" stroke="none" d="M10 50A40 40 0 0 0 90 50A40 55 0 0 1 10 50" fill="#30ccc3" transform="rotate(255.455 50 57.5)"><animateTransform attributeName="transform" type="rotate" calcMode="linear" values="0 50 57.5;360 50 57.5" keyTimes="0;1" dur="1s" begin="0s" repeatCount="indefinite"/></path></svg>`;
     const ptr = PullToRefresh.init({
         mainElement: '#timeline-index',
         instructionsPullToRefresh: ' ',
@@ -200,6 +213,14 @@ $(document).ready(function(){
         iconArrow: loadingIcon,
         iconRefreshing: loadingIcon,
         instructionsRefreshing: ` `,
+        shouldPullToRefresh() {
+            const divTop = $('#timeline-index').offset().top;
+            if ($(window).scrollTop() > divTop - 110) {
+                return false;
+            } else {
+                return true;
+            }
+        },
         onRefresh() {
             window.location.reload();
         },

@@ -52,7 +52,7 @@
             <div class="timeline-images">
                 <div class="timeline-images__list">
                     <div class="timeline-images__item">
-                        <img class="lazy" data-src="{{ $timeline['image'] }}" width="100%">
+                        <img class="lazy rotate" data-src="{{ $timeline['image'] }}" width="100%">
                     </div>
                 </div>
             </div>
