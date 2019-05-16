@@ -214,7 +214,7 @@ $(document).ready(function () {
           console.log(error);
         });
     }
-  })
+  });
 
   //////////////////////////////////////
   //          timeline-delete-post
@@ -248,7 +248,20 @@ $(document).ready(function () {
   });
 
   $(".timeline-edit__text").bind({
-      paste : function(){
+      paste : function(e){
+        e.preventDefault();
+        let text = '';
+        if (e.clipboardData || e.originalEvent.clipboardData) {
+          text = (e.originalEvent || e).clipboardData.getData('text/plain');
+        } else if (window.clipboardData) {
+          text = window.clipboardData.getData('Text');
+        }
+        if (document.queryCommandSupported('insertText')) {
+          document.execCommand('insertText', false, text);
+        } else {
+          document.execCommand('paste', false, text);
+        }
+
         setTimeout(function () {
           const str = $(".timeline-edit__text").text();
           let sum = Array.from(str.split(/[\ufe00-\ufe0f]/).join("")).length;
