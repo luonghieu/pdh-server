@@ -233,7 +233,6 @@ $(document).ready(function () {
     let sum = Array.from(str.split(/[\ufe00-\ufe0f]/).join("")).length;
 
     if (sum > 240) {
-      $(this).html(Array.from(str.split(/[\ufe00-\ufe0f]/).join("")).slice(0,240));
       setCaretPosition('timeline-edit-content', str)
     }
 
@@ -251,13 +250,17 @@ $(document).ready(function () {
       paste : function(e){
         e.preventDefault();
         let text = '';
+        let sumCurrent = Array.from($(".timeline-edit__text").text().split(/[\ufe00-\ufe0f]/).join("")).length;
         if (e.clipboardData || e.originalEvent.clipboardData) {
           text = (e.originalEvent || e).clipboardData.getData('text/plain');
         } else if (window.clipboardData) {
           text = window.clipboardData.getData('Text');
         }
         if (document.queryCommandSupported('insertText')) {
-          document.execCommand('insertText', false, text);
+          let numAccept = 240 - sumCurrent;
+          if (text.length <= numAccept) {
+            document.execCommand('insertText', false, text);
+          }
         } else {
           document.execCommand('paste', false, text);
         }
