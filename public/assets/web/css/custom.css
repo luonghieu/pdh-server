@@ -4117,6 +4117,9 @@ body #star-rating-schedule {
 .timeline-edit__text {
   outline: none !important;
   font-size: 20px;
+  max-height: 145px;
+  overflow: auto;
+  margin-bottom: 15px;
 }
 
 .timeline-edit__text.pl:before {

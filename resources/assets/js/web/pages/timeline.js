@@ -1,26 +1,25 @@
 $(document).ready(function () {
-  let device = 'web';
 
+  var isFocused = false;
   var userAgent = navigator.userAgent || navigator.vendor || window.opera;
 
-  // iOS detection
-  if (/iPad|iPhone|iPod/.test(userAgent) && !window.MSStream) {
-    let winH = $(window).height();
-    let areaH = winH - 150;
-    //$(".timeline-edit__area").css("height",areaH);
+  $('body').on('click', function (e) {
+    if ( $(e.target).is('#timeline-edit-content') ) {
+      isFocused = true;
+    } else {
+      isFocused = false;
+    }
 
-    $(".timeline-edit__area").focusin(function(){
-      var inputTop = "45%";
-      $(".timeline-edit__input").css("position",'absolute');
-      $(".timeline-edit__input").css("bottom",inputTop);
-      //$(".timeline-edit__area").css("height",280);
-    });
-
-    $(".timeline-edit__area").focusout(function(){
-      $(".timeline-edit__input").css("bottom",0);
-      //$(".timeline-edit__area").css("height",areaH);
-    });
-  }
+    if (/iPad|iPhone|iPod/.test(userAgent) && !window.MSStream) {
+      if (isFocused) {
+        const inputTop = "45%";
+        $(".timeline-edit__input").css("position",'absolute');
+        $(".timeline-edit__input").css("bottom", inputTop);
+      } else {
+        $(".timeline-edit__input").css("bottom", 0);
+      }
+    }
+  });
 
   // Like/unlike timeline in timeline detail
   $('body').on('click', '#heart-timeline', function(e) {
@@ -174,7 +173,6 @@ $(document).ready(function () {
     flagImage = true;
     $('#timeline-btn-submit').addClass('btn-submit-timeline-blue');
     $('#timeline-btn-submit').removeAttr('disabled');
-    $('.timeline-edit__text').focus();
   }
 
   $(document).on("click", ".timeline-edit-image__del", function(){
