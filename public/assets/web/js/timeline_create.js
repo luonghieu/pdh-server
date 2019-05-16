@@ -1,10 +1,19 @@
-
-
-
 $(function(){
+  let winH = $(window).height();
+  let areaH = winH - 150;
+//$(".timeline-edit__area").css("height",areaH);
 
+  $(".timeline-edit__area").focusin(function(){
+    var inputTop = "45%";
+    $(".timeline-edit__input").css("bottom",inputTop);
+    //$(".timeline-edit__area").css("height",280);
+  })
 
+  $(".timeline-edit__area").focusout(function(){
 
+    $(".timeline-edit__input").css("bottom",0);
+    //$(".timeline-edit__area").css("height",areaH);
+  });
 
   /////////////////////////////
   // text sum
