@@ -206,23 +206,26 @@ $(document).ready(function(){
     }
 
     const loadingIcon = `<svg xmlns="http://www.w3.org/2000/svg" width="20px" height="20px" viewBox="0 0 100 100" preserveAspectRatio="xMidYMid" class="lds-eclipse" style="background: none;"><path ng-attr-d="{{config.pathCmd}}" ng-attr-fill="{{config.color}}" stroke="none" d="M10 50A40 40 0 0 0 90 50A40 55 0 0 1 10 50" fill="#30ccc3" transform="rotate(255.455 50 57.5)"><animateTransform attributeName="transform" type="rotate" calcMode="linear" values="0 50 57.5;360 50 57.5" keyTimes="0;1" dur="1s" begin="0s" repeatCount="indefinite"/></path></svg>`;
-    const ptr = PullToRefresh.init({
-        mainElement: '#timeline-index',
-        instructionsPullToRefresh: ' ',
-        instructionsReleaseToRefresh: ' ',
-        iconArrow: loadingIcon,
-        iconRefreshing: loadingIcon,
-        instructionsRefreshing: ` `,
-        shouldPullToRefresh() {
-            const divTop = $('#timeline-index').offset().top;
-            if ($(window).scrollTop() > divTop - 110) {
-                return false;
-            } else {
-                return true;
-            }
-        },
-        onRefresh() {
-            window.location.reload();
-        },
-    });
+    if ($('#timeline-index').length) {
+        const ptr = PullToRefresh.init({
+            mainElement: '#timeline-index',
+            instructionsPullToRefresh: ' ',
+            instructionsReleaseToRefresh: ' ',
+            iconArrow: loadingIcon,
+            iconRefreshing: loadingIcon,
+            instructionsRefreshing: ` `,
+            shouldPullToRefresh() {
+                const divTop = $('#timeline-index').offset().top;
+                if ($(window).scrollTop() > divTop - 110) {
+                    return false;
+                } else {
+                    return true;
+                }
+            },
+            onRefresh() {
+                window.location.reload();
+            },
+        });
+    }
+
 });
