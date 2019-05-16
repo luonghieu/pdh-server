@@ -1,20 +1,27 @@
 $(document).ready(function () {
+  let device = 'web';
+
+  var userAgent = navigator.userAgent || navigator.vendor || window.opera;
+
+  // iOS detection
+  if (/iPad|iPhone|iPod/.test(userAgent) && !window.MSStream) {
     let winH = $(window).height();
     let areaH = winH - 150;
-//$(".timeline-edit__area").css("height",areaH);
+    //$(".timeline-edit__area").css("height",areaH);
 
     $(".timeline-edit__area").focusin(function(){
-        var inputTop = "45%";
-        $(".timeline-edit__input").css("position",'absolute');
-        $(".timeline-edit__input").css("bottom",inputTop);
-        //$(".timeline-edit__area").css("height",280);
+      var inputTop = "45%";
+      $(".timeline-edit__input").css("position",'absolute');
+      $(".timeline-edit__input").css("bottom",inputTop);
+      //$(".timeline-edit__area").css("height",280);
     });
 
     $(".timeline-edit__area").focusout(function(){
-
-        $(".timeline-edit__input").css("bottom",0);
-        //$(".timeline-edit__area").css("height",areaH);
+      $(".timeline-edit__input").css("bottom",0);
+      //$(".timeline-edit__area").css("height",areaH);
     });
+  }
+
   // Like/unlike timeline in timeline detail
   $('body').on('click', '#heart-timeline', function(e) {
     var _this = $(this);
@@ -240,15 +247,12 @@ $(document).ready(function () {
     $('#del-post-timeline').trigger('click');
   });
 
-  $('.timeline-edit__text').focus();
-
-
-
   $('.timeline-edit__text').bind("DOMSubtreeModified",function(){
     const str = $(".timeline-edit__text").text();
     let sum = Array.from(str.split(/[\ufe00-\ufe0f]/).join("")).length;
 
     if (sum > 240) {
+      $(this).html(Array.from(str.split(/[\ufe00-\ufe0f]/).join("")).slice(0,240));
       setCaretPosition('timeline-edit-content', str)
     }
 
@@ -266,17 +270,13 @@ $(document).ready(function () {
       paste : function(e){
         e.preventDefault();
         let text = '';
-        let sumCurrent = Array.from($(".timeline-edit__text").text().split(/[\ufe00-\ufe0f]/).join("")).length;
         if (e.clipboardData || e.originalEvent.clipboardData) {
           text = (e.originalEvent || e).clipboardData.getData('text/plain');
         } else if (window.clipboardData) {
           text = window.clipboardData.getData('Text');
         }
         if (document.queryCommandSupported('insertText')) {
-          let numAccept = 240 - sumCurrent;
-          if (text.length <= numAccept) {
-            document.execCommand('insertText', false, text);
-          }
+          document.execCommand('insertText', false, text);
         } else {
           document.execCommand('paste', false, text);
         }
