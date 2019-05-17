@@ -4255,6 +4255,7 @@ a.init-text-color {
 .timeline-edit__input {
   z-index: 99999;
   background-color: #ffffff;
+  padding-bottom: 35px !important;
 }
 
 /*.remove-height {*/
@@ -4262,7 +4263,7 @@ a.init-text-color {
 /*}*/
 
 .set-height-mmpage {
-  height: 370px;
+  height: 370px !important;
   overflow: auto;
   position: relative;
 }

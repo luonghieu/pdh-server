@@ -37,6 +37,7 @@ $(document).ready(function () {
         $(".timeline-edit__input").css("bottom",0);
         $(".timeline-edit__text").addClass('remove-height');
         $(".timeline-edit__input").css("position",'initial');
+        $(".mm-page").removeClass('set-height-mmpage');
       }, 100);
     });
   };
@@ -100,7 +101,6 @@ $(document).ready(function () {
 
   $(document).on("keyup", ".timeline-edit__area", function(){
     const str = $(".timeline-edit__text").text();
-    console.log(str.length);
     let sum = Array.from(str.split(/[\ufe00-\ufe0f]/).join("")).length;
 
     if (sum >= 1) {
@@ -121,7 +121,7 @@ $(document).ready(function () {
     if (sum > 240) {
       return false;
     }
-    console.log(sum);
+
     $(".timeline-edit-sum__text").text(sum.toFixed() );
   });
 
