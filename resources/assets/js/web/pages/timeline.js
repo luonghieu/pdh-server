@@ -21,6 +21,10 @@ $(document).ready(function () {
     }
   });
 
+  $('body').on('touchstart', function () {
+    $(".timeline-edit__input").css("bottom", 0);
+  });
+
   // Like/unlike timeline in timeline detail
   $('body').on('click', '#heart-timeline', function(e) {
     var _this = $(this);
