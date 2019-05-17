@@ -1,5 +1,4 @@
 $(document).ready(function () {
-
   var isFocused = false;
   var userAgent = navigator.userAgent || navigator.vendor || window.opera;
 
@@ -15,11 +14,21 @@ $(document).ready(function () {
         const inputTop = "45%";
         $(".timeline-edit__input").css("position",'absolute');
         $(".timeline-edit__input").css("bottom", inputTop);
+        $(".timeline-edit__text").removeClass('remove-height');
       } else {
         $(".timeline-edit__input").css("bottom", 0);
+        $(".timeline-edit__text").addClass('remove-height');
       }
     }
   });
+
+  if (/iPad|iPhone|iPod/.test(userAgent) && !window.MSStream) {
+    $(".timeline-edit__area").focusout(function(){
+      setTimeout(() => {
+        $(".timeline-edit__input").css("bottom",0);
+      }, 100);
+    });
+  };
 
   // Like/unlike timeline in timeline detail
   $('body').on('click', '#heart-timeline', function(e) {
@@ -107,7 +116,7 @@ $(document).ready(function () {
 
   $(document).on("keydown", ".timeline-edit__area", function(e){
     const str = $(".timeline-edit__text").text();
-    let sum = Array.from(str.split(/[\ufe00-\ufe0f]/).join("")).length;
+    let sum = Array.from(str.split(/['\ud83c[\udf00-\udfff]','\ud83d[\udc00-\ude4f]','\ud83d[\ude80-\udeff]', ' ']/).join("|")).length;
 
     var keyCode = e.keyCode;
 
@@ -247,10 +256,10 @@ $(document).ready(function () {
 
   $('.timeline-edit__text').bind("DOMSubtreeModified",function(){
     const str = $(".timeline-edit__text").text();
-    let sum = Array.from(str.split(/[\ufe00-\ufe0f]/).join("")).length;
+    let sum = Array.from(str.split(/['\ud83c[\udf00-\udfff]','\ud83d[\udc00-\ude4f]','\ud83d[\ude80-\udeff]', ' ']/).join("|")).length;
 
     if (sum > 240) {
-      $(this).html(Array.from(str.split(/[\ufe00-\ufe0f]/).join("")).slice(0,240));
+      $(this).html(Array.from(str.split(/['\ud83c[\udf00-\udfff]','\ud83d[\udc00-\ude4f]','\ud83d[\ude80-\udeff]', ' ']/).join("|")).slice(0,240));
       setCaretPosition('timeline-edit-content', str)
     }
 
@@ -281,7 +290,7 @@ $(document).ready(function () {
 
         setTimeout(function () {
           const str = $(".timeline-edit__text").text();
-          let sum = Array.from(str.split(/[\ufe00-\ufe0f]/).join("")).length;
+          let sum = Array.from(str.split(/['\ud83c[\udf00-\udfff]','\ud83d[\udc00-\ude4f]','\ud83d[\ude80-\udeff]', ' ']/).join("|")).length;
           $(".timeline-edit-sum__text").text(sum.toFixed() );
         }, 100);
       },
