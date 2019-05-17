@@ -144,6 +144,8 @@ $(document).ready(function(){
             }
 
             html += '<input type="hidden" id="next_page" value="' + nextPage + '" />';
+            html += loadingIconButtom;
+
             $('.timeline-list').html(html);
               setTimeout(() => {
                   const imgs = document.getElementsByClassName('rotate');
@@ -182,16 +184,23 @@ $(document).ready(function(){
               var url = $('#next_page').val();
 
               if (url) {
+                $('.js-loading').removeClass('css-loading-none');
                 requesting = true;
+
                 window.axios.get(loadMoreTimelines, {
                   params: { next_page: url },
                 }).then(function (res) {
                   res = res.data;
                   $('#next_page').val(res.next_page || '');
                   $('#next_page').before(res.view);
+
                   requesting = false;
+                  // Add page loading icon
+                  $('.js-loading').addClass('css-loading-none');
                 }).catch(function () {
                   requesting = false;
+                  // Add page loading icon
+                  $('.js-loading').addClass('css-loading-none');
                 });
               }
             }
@@ -227,5 +236,21 @@ $(document).ready(function(){
             },
         });
     }
+
+    const loadingIconButtom = `<div class="sk-circle js-loading css-loading-none">
+            <div class="sk-circle1 sk-child"></div>
+            <div class="sk-circle2 sk-child"></div>
+            <div class="sk-circle3 sk-child"></div>
+            <div class="sk-circle4 sk-child"></div>
+            <div class="sk-circle5 sk-child"></div>
+            <div class="sk-circle6 sk-child"></div>
+            <div class="sk-circle7 sk-child"></div>
+            <div class="sk-circle8 sk-child"></div>
+            <div class="sk-circle9 sk-child"></div>
+            <div class="sk-circle10 sk-child"></div>
+            <div class="sk-circle11 sk-child"></div>
+            <div class="sk-circle12 sk-child"></div>
+          </div>
+        </div>`;
 
 });
