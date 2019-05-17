@@ -11,13 +11,18 @@ $(document).ready(function () {
 
     if (/iPad|iPhone|iPod/.test(userAgent) && !window.MSStream) {
       if (isFocused) {
-        const inputTop = "45%";
+        let inputTop = "45%";
+        if (window.screen.height == 812 && window.screen.width == 375) {
+          inputTop = "51%";
+        }
+
         $(".timeline-edit__input").css("position",'absolute');
         $(".timeline-edit__input").css("bottom", inputTop);
         $(".timeline-edit__text").removeClass('remove-height');
       } else {
         $(".timeline-edit__input").css("bottom", 0);
         $(".timeline-edit__text").addClass('remove-height');
+        $(".timeline-edit__input").css("position",'initial');
       }
     }
   });
@@ -26,6 +31,8 @@ $(document).ready(function () {
     $(".timeline-edit__area").focusout(function(){
       setTimeout(() => {
         $(".timeline-edit__input").css("bottom",0);
+        $(".timeline-edit__text").addClass('remove-height');
+        $(".timeline-edit__input").css("position",'initial');
       }, 100);
     });
   };
