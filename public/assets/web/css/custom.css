@@ -4117,7 +4117,7 @@ body #star-rating-schedule {
 .timeline-edit__text {
   outline: none !important;
   font-size: 20px;
-  max-height: 145px;
+  height: 145px;
   overflow: auto;
   margin-bottom: 15px;
 }
@@ -4257,4 +4257,8 @@ a.init-text-color {
 .timeline-edit__input {
   z-index: 99999;
   background-color: #ffffff;
+}
+
+.remove-height {
+  height: inherit !important;
 }
