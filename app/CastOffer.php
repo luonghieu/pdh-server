@@ -13,6 +13,8 @@ class CastOffer extends Model
         'duration',
         'address',
         'cast_class_id',
+        'cost',
+        'temp_point',
     ];
 
     public function cast()

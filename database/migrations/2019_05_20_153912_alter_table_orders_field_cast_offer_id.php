@@ -14,7 +14,8 @@ class AlterTableOrdersFieldCastOfferId extends Migration
     public function up()
     {
         Schema::table('orders', function (\Illuminate\Database\Schema\Blueprint $table) {
-            $table->integer('cast_offer_id')->unsigned()->nullable();
+            $table->integer('cast_offer_id')->after('class_id')->unsigned()->nullable();
+            $table->foreign('cast_offer_id')->references('id')->on('cast_offers');
         });
     }
 
@@ -26,7 +27,8 @@ class AlterTableOrdersFieldCastOfferId extends Migration
     public function down()
     {
         Schema::table('orders', function (\Illuminate\Database\Schema\Blueprint $table) {
-            $table->dropColumn('cast_offer_id');
+            $table->dropForeign(['cast_offer_id']);
+            $table->dropColumn(['cast_offer_id']);
         });
     }
 }
