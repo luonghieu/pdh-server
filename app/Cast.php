@@ -59,4 +59,9 @@ class Cast extends User
     {
         return $this->hasOne(CastRanking::class);
     }
+
+    public function offers()
+    {
+        return $this->hasMany(CastOffer::class);
+    }
 }
