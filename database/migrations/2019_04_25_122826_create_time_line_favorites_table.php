@@ -32,7 +32,8 @@ class CreateTimeLineFavoritesTable extends Migration
     public function down()
     {
         Schema::table('time_line_favorites', function (Blueprint $table) {
-            $table->dropForeign(['time_line_id', 'user_id']);
+            $table->dropForeign(['time_line_id']);
+            $table->dropForeign(['user_id']);
         });
         Schema::dropIfExists('time_line_favorites');
     }

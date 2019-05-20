@@ -23,6 +23,8 @@ class CreateCastOffersTable extends Migration
             $table->date('date');
             $table->time('start_time');
             $table->float('duration');
+            $table->integer('cost');
+            $table->integer('temp_point');
             $table->tinyInteger('status')->default(1);
             $table->timestamps();
 
@@ -41,7 +43,10 @@ class CreateCastOffersTable extends Migration
     public function down()
     {
         Schema::table('cast_offers', function (Blueprint $table) {
-            $table->dropForeign(['order_id', 'cast_class_id', 'guest_id', 'user_id']);
+            $table->dropForeign(['order_id']);
+            $table->dropForeign(['cast_class_id']);
+            $table->dropForeign(['guest_id']);
+            $table->dropForeign(['user_id']);
         });
 
         Schema::dropIfExists('cast_offers');

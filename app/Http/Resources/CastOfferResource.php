@@ -21,12 +21,14 @@ class CastOfferResource extends Resource
         return $this->filterNull([
             'id' => $this->id,
             'class_id' => $this->cast_class_id,
+            'cast' => $this->cast,
             'guest' => $this->guest,
             'address' => $this->address,
             'date' => $this->date,
             'start_time' => $this->start_time,
             'duration' => $this->duration,
             'created_at' => $this->created_at,
+            'temp_point' => $this->temp_point,
         ]);
     }
 }

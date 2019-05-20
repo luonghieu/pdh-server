@@ -3,12 +3,15 @@
 namespace App\Http\Controllers\Api\Cast;
 
 use App\Cast;
+use App\Enums\CastOrderType;
+use App\Enums\OrderType;
 use App\Enums\UserType;
 use App\Http\Controllers\Api\ApiController;
 use App\Http\Resources\CastOfferResource;
 use App\Notifications\CastCreateOffer;
 use App\Services\LogService;
 use App\User;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 
 class CastOfferController extends ApiController
@@ -38,6 +41,13 @@ class CastOfferController extends ApiController
         $cast = Cast::find($user->id);
 
         try {
+
+            $orderStartTime = Carbon::parse($request->date . ' ' . $request->start_time);
+            $orderEndTime = $orderStartTime->copy()->addMinutes($request->duration * 60);
+            $nightTime = $this->nightTime($orderStartTime, $orderEndTime);
+            $allowance = $this->allowance($nightTime);
+            $orderPoint = $this->orderPoint($cast, $request->duration);
+
             $offer = $cast->offers()->create([
                 'date' => $request->date,
                 'start_time' => $request->start_time,
@@ -45,6 +55,8 @@ class CastOfferController extends ApiController
                 'cast_class_id' => $cast->class_id,
                 'address' => $request->address,
                 'guest_id' => $request->user_id,
+                'temp_point' => $orderPoint + $allowance,
+                'cost' => $cast->cost,
             ]);
 
             $guest->notify(new CastCreateOffer($offer->id));
@@ -54,5 +66,58 @@ class CastOfferController extends ApiController
 
             return $this->respondServerError();
         }
+    }
+
+    private function nightTime($startedAt, $stoppedAt)
+    {
+        $nightTime = 0;
+        $startDate = Carbon::parse($startedAt);
+        $endDate = Carbon::parse($stoppedAt);
+
+        $allowanceStartTime = Carbon::parse('00:01:00');
+        $allowanceEndTime = Carbon::parse('04:00:00');
+
+        $startDay = Carbon::parse($startDate)->startOfDay();
+        $endDay = Carbon::parse($endDate)->startOfDay();
+
+        $timeStart = Carbon::parse(Carbon::parse($startDate->format('H:i:s')));
+        $timeEnd = Carbon::parse(Carbon::parse($endDate->format('H:i:s')));
+
+        $allowance = false;
+
+        if ($startDay->diffInDays($endDay) != 0 && $endDate->diffInMinutes($endDay) != 0) {
+            $allowance = true;
+        }
+
+        if ($timeStart->between($allowanceStartTime, $allowanceEndTime) || $timeEnd->between($allowanceStartTime, $allowanceEndTime)) {
+            $allowance = true;
+        }
+
+        if ($timeStart < $allowanceStartTime && $timeEnd > $allowanceEndTime) {
+            $allowance = true;
+        }
+
+        if ($allowance) {
+            $nightTime = $endDate->diffInMinutes($endDay);
+        }
+
+        return $nightTime;
+    }
+
+    private function allowance($nightTime)
+    {
+        if ($nightTime) {
+            return 4000;
+        }
+
+        return 0;
+    }
+
+    private function orderPoint($cast, $orderDuration)
+    {
+        $cost = $cast->cost;
+        $orderDuration = $orderDuration * 60;
+
+        return ($cost / 2) * floor($orderDuration / 15);
     }
 }
