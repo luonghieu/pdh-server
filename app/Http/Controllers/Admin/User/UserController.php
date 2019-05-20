@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin\User;
 use App\Enums\Status;
 use App\Enums\UserType;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\CheckDateRequest;
 use App\Prefecture;
 use App\Repositories\CastClassRepository;
 use App\Repositories\PrefectureRepository;
@@ -21,7 +22,7 @@ class UserController extends Controller
         $this->castClass = app(CastClassRepository::class);
     }
 
-    public function index(Request $request)
+    public function index(CheckDateRequest $request)
     {
         $orderBy = $request->only('id', 'status', 'last_active_at');
         $keyword = $request->search;
@@ -30,16 +31,14 @@ class UserController extends Controller
 
         if ($request->has('from_date') && !empty($request->from_date)) {
             $fromDate = Carbon::parse($request->from_date)->startOfDay();
-            $toDate = Carbon::parse($request->to_date)->endOfDay();
-            $users->where(function ($query) use ($fromDate, $toDate) {
+            $users->where(function ($query) use ($fromDate) {
                 $query->where('created_at', '>=', $fromDate);
             });
         }
 
         if ($request->has('to_date') && !empty($request->to_date)) {
-            $fromDate = Carbon::parse($request->from_date)->startOfDay();
             $toDate = Carbon::parse($request->to_date)->endOfDay();
-            $users->where(function ($query) use ($fromDate, $toDate) {
+            $users->where(function ($query) use ($toDate) {
                 $query->where('created_at', '<=', $toDate);
             });
         }

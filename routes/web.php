@@ -130,4 +130,18 @@ Route::group(['middleware' => ['auth', 'cast'], 'prefix' => 'cast_mypage'], func
     });
 });
 
+Route::group(['middleware' => ['auth', 'guest', 'check_info'], 'prefix' => 'timelines', 'as' => 'web.'], function () {
+    Route::group(['as' => 'timelines.'], function() {
+        Route::get('/', ['as' => 'index', 'uses' => 'TimeLineController@index']);
+        Route::get('/create', ['as' => 'create', 'uses' => 'TimeLineController@create']);
+        Route::get('/load_more', ['as' => 'load_more', 'uses' => 'TimeLineController@loadMoreListTimelines']);
+        Route::get('/{id}', ['as' => 'show', 'uses' => 'TimeLineController@show']);
+        Route::get('/favorites/load_more', ['as' => 'favorites.load_more', 'uses' => 'TimeLineController@loadMoreFavorites']);
+    });
+});
+
+Route::group(['middleware' => ['auth'], 'prefix' => 'guest', 'as' => 'guest.'], function () {
+    Route::get('/{id}', ['as' => 'show', 'uses' => 'UserController@show'])->where('id', '[0-9]+');
+});
+
 Route::view('tc_register_card', 'web.cards.telecom_credit');

@@ -617,4 +617,9 @@ class User extends Authenticatable implements JWTSubject
     {
         return  $this->job_id ? app(JobRepository::class)->find($this->job_id)->name : '';
     }
+
+    public function timelines()
+    {
+        return $this->hasMany(TimeLine::class);
+    }
 }

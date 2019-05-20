@@ -223,6 +223,14 @@ $routes = [
             'submenu' => [],
         ],
     ],
+    'timeline' => [
+        [
+            'name' => 'admin.timelines.index',
+            'value' => 'タイムライン管理',
+            'url' => route('admin.timelines.index'),
+            'submenu' => [],
+        ],
+    ],
 
     'app_version' => [
         [

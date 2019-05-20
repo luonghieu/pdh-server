@@ -8,6 +8,7 @@ use App\Enums\OfferStatus;
 use App\Enums\OrderType;
 use App\Enums\UserType;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\CheckDateRequest;
 use App\Notifications\OfferMessageNotifyToAndroidGuest;
 use App\Notifications\OfferMessageNotifyToLine;
 use App\Offer;
@@ -24,7 +25,7 @@ use Session;
 
 class OfferController extends Controller
 {
-    public function index(Request $request)
+    public function index(CheckDateRequest $request)
     {
         $offers = Offer::with('order');
 

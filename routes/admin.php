@@ -95,8 +95,8 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.'], function () {
         Route::get('/casts/{classId}', ['as' => 'get_cast_by_classid', 'uses' => 'OrderController@getCasts']);
         Route::put('/{id}', ['as' => 'get_cast_by_classid', 'uses' => 'OrderController@updateOrderCall']);
         Route::get('/list_guests', ['as' => 'get_guest_by_device_type', 'uses' => 'OrderController@getListGuests']);
-        Route::put('{order}/order_nominee', ['as' => 'order_nominee_edit', 'uses' => 'OrderController@updateNomineeOrder'])->where('order', '[0-9]+');
         Route::post('/update_status_to_active', ['as' => 'update_status_to_active', 'uses' => 'OrderController@updateOrderStatusToActive']);
+        Route::put('{order}/order_nominee', ['as' => 'order_nominee_edit', 'uses' => 'OrderController@updateNomineeOrder'])->where('order', '[0-9]+');
     });
 
     Route::group(['middleware' => 'is_admin'], function () {
@@ -182,5 +182,10 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.'], function () {
     Route::group(['namespace' => 'InviteCodeHistory', 'prefix' => 'invite_code_histories', 'as' => 'invite_code_histories.', 'middleware' => 'is_admin'], function () {
         Route::get('/', ['as' => 'index', 'uses' => 'InviteCodeHistoryController@index']);
         Route::get('/{invite_code_history}', ['as' => 'show', 'uses' => 'InviteCodeHistoryController@show'])->where('invite_code_history', '[0-9]+');
+    });
+
+    Route::group(['namespace' => 'Timeline', 'prefix' => 'timelines', 'as' => 'timelines.', 'middleware' => 'is_admin'], function () {
+        Route::get('/', ['as' => 'index', 'uses' => 'TimelineController@index']);
+        Route::post('/{timeline}/change_status_hidden', ['as' => 'change_status_hidden', 'uses' => 'TimelineController@changeStatusHidden'])->where('timeline', '[0-9]+');
     });
 });

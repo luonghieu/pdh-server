@@ -40,11 +40,11 @@
 
     @if (Auth::check() && Auth::user()->is_cast)
 
-      @if (Auth::user()->cast_transfer_status == \App\Enums\CastTransferStatus::PENDING 
-        || (Auth::user()->cast_transfer_status == \App\Enums\CastTransferStatus::DENIED 
+      @if (Auth::user()->cast_transfer_status == \App\Enums\CastTransferStatus::PENDING
+        || (Auth::user()->cast_transfer_status == \App\Enums\CastTransferStatus::DENIED
             && Auth::user()->gender == \App\Enums\UserGender::FEMALE))
 
-      @else 
+      @else
       <a href="#menu" class="hamburger"><span></span></a>
       @endif
     @endif
@@ -76,6 +76,13 @@
         @else
         <a href="javascript:void(0)" id="menu-freezed-account"><i><img src="{{ asset('assets/web/images/common/msg.svg') }}"></i>メッセージ</a>
         @endif
+      </li>
+      <li>
+          @if (Auth::user()->status)
+              <a href="{{ route('web.timelines.index') }}"><i><img src="{{ asset('assets/web/images/common/ic_timeline.svg')}}"></i>タイムライン</a>
+          @else
+              <a href="javascript:void(0)" id="menu-freezed-account"><i><img src="{{ asset('assets/web/images/common/ic_timeline.svg') }}"></i>タイムライン</a>
+          @endif
       </li>
       <li>
         @if (Auth::user()->status)
