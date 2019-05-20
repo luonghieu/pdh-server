@@ -15,6 +15,7 @@ class CastOffer extends Model
         'cast_class_id',
         'cost',
         'temp_point',
+        'prefecture_id',
     ];
 
     public function cast()

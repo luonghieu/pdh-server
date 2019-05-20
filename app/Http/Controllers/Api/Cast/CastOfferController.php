@@ -57,6 +57,7 @@ class CastOfferController extends ApiController
                 'guest_id' => $request->user_id,
                 'temp_point' => $orderPoint + $allowance,
                 'cost' => $cast->cost,
+                'prefecture_id' => $cast->prefecture_id,
             ]);
 
             $guest->notify(new CastCreateOffer($offer->id));

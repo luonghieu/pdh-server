@@ -19,6 +19,7 @@ class CreateCastOffersTable extends Migration
             $table->integer('guest_id')->unsigned()->nullable();
             $table->integer('order_id')->unsigned()->nullable();
             $table->integer('cast_class_id')->unsigned()->nullable();
+            $table->integer('prefecture_id')->unsigned()->nullable();
             $table->string('address');
             $table->date('date');
             $table->time('start_time');
@@ -32,6 +33,7 @@ class CreateCastOffersTable extends Migration
             $table->foreign('user_id')->references('id')->on('users');
             $table->foreign('cast_class_id')->references('id')->on('cast_classes');
             $table->foreign('guest_id')->references('id')->on('users');
+            $table->foreign('prefecture_id')->references('id')->on('prefectures');
         });
     }
 
@@ -47,6 +49,7 @@ class CreateCastOffersTable extends Migration
             $table->dropForeign(['cast_class_id']);
             $table->dropForeign(['guest_id']);
             $table->dropForeign(['user_id']);
+            $table->dropForeign(['prefecture_id']);
         });
 
         Schema::dropIfExists('cast_offers');
