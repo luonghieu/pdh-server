@@ -639,4 +639,6 @@ class OrderController extends Controller
     {
         return view('web.orders.nominate_attention');
     }
+
+    public function castOffer() {}
 }
