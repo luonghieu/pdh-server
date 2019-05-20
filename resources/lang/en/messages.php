@@ -81,4 +81,5 @@ return [
     'offer_not_found' => 'Offer is not found',
     'timeline_not_found' => 'Timeline is not found',
     'timeline_deleted' => 'Timeline has been deleted',
+    'delete_order_failed' => 'Delete order failed, unpaid orders',
 ];
