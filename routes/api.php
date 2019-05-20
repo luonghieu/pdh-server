@@ -112,6 +112,10 @@ Route::group(['prefix' => 'v1'], function () {
             Route::post('/{id}', ['as' => 'update', 'uses' => 'Cast\BankAccountController@update']);
             Route::post('/', ['as' => 'bank_accounts', 'uses' => 'Cast\BankAccountController@create']);
         });
+
+        Route::group(['prefix' => 'offers', 'as' => 'offers.'], function () {
+            Route::post('/', ['as' => 'create', 'uses' => 'Cast\CastOfferController@create']);
+        });
     });
 
     Route::group(['middleware' => ['auth:api'], 'prefix' => 'orders', 'as' => 'orders.'], function () {
