@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers\Admin\User;
 
+use App\Enums\OrderPaymentStatus;
+use App\Enums\OrderStatus;
 use App\Enums\Status;
 use App\Enums\UserType;
 use App\Http\Controllers\Controller;
@@ -139,9 +141,40 @@ class UserController extends Controller
     public function delete($id)
     {
         $user = User::findOrFail($id);
+
+        $isUnpaidOrder = $user->orders()->whereIn('status', [
+            OrderStatus::OPEN,
+            OrderStatus::ACTIVE,
+            OrderStatus::PROCESSING,
+        ])
+        ->orWhere(function ($query) {
+            $query->where('status', OrderStatus::DONE)
+                ->where(function ($subQuery) {
+                    $subQuery->where('payment_status', '!=', OrderPaymentStatus::PAYMENT_FINISHED)
+                        ->orWhere('payment_status', OrderPaymentStatus::PAYMENT_FAILED);
+                });
+        })
+        ->orWhere(function ($query) {
+            $query->where('status', OrderStatus::CANCELED)
+                ->where(function ($subQuery) {
+                    $subQuery->where('payment_status', '!=', OrderPaymentStatus::CANCEL_FEE_PAYMENT_FINISHED)
+                        ->whereNotNull('cancel_fee_percent');
+                });
+        })
+        ->exists();
+
+        if ($isUnpaidOrder) {
+            return redirect()->route('admin.users.show', compact('id'))->with('error', trans('messages.delete_order_faild'));
+        }
+
         $user->facebook_id = null;
         $user->line_user_id = null;
         $user->email = null;
+
+        if ($user->type == UserType::CAST) {
+            $user->resign_status = ResignStatus::APPROVED;
+        }
+
         $user->save();
 
         $user->delete();

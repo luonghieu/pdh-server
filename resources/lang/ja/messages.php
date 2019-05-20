@@ -84,4 +84,5 @@ return [
     'offer_not_found' => 'オファーが見つかれません',
     'timeline_not_found' => 'タイムラインません',
     'timeline_deleted' => '削除しました',
+    'delete_order_faild' => '',
 ];
