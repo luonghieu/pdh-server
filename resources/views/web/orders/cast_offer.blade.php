@@ -176,6 +176,20 @@
         </div>
       </div>
       <div class="portlet">
+        <div id="show-card-cast-offer">
+          <div class="caption">
+            <h2>クレジットカードの登録</h2>
+          </div>
+
+          @if(!Auth::user()->is_card_registered)
+          <a class="link-arrow link-arrow--left tc-verification-link inactive-button-order" href="#" style="color: #222222;">
+          未登録</a>
+          @else
+          <a class="link-arrow link-arrow--left tc-verification-link" href="#" style="color: #222222;">登録済み</a>
+          @endif
+        </div>
+      </div>
+      <div class="portlet">
         <div class="portlet-content">
           <div class="reservation-attention"><a href="">予約前の注意事項</a>
           </div>
@@ -192,14 +206,14 @@
 
           <div class="reservation-policy">
             <label class="checkbox">
-              <input type="checkbox" class="checked-order" name="confrim_order_offer">
+              <input type="checkbox" class="checked-cast-offer" name="confrim_order_offer">
               <span class="sp-disable" id="sp-cancel"></span>
               <p><a href="{{ route('guest.orders.cancel') }}">キャンセルポリシー</a> に同意する</p>
             </label>
           </div>
           <div class="reservation-button">
             <button class="button button--green">キャンセル</button>
-            <button class="button button--green disabled">予約リクエストを確定する</button>
+            <button class="button button--green disabled" id="confirm-cast-order" disabled="disabled">予約リクエストを確定する</button>
           </div>
         </div>
       </div>
