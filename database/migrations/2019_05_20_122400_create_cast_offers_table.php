@@ -22,7 +22,7 @@ class CreateCastOffersTable extends Migration
             $table->string('address');
             $table->date('date');
             $table->time('start_time');
-            $table->float('duration');
+            $table->integer('duration');
             $table->integer('cost');
             $table->integer('temp_point');
             $table->tinyInteger('status')->default(1);
