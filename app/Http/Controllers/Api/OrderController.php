@@ -13,6 +13,7 @@ use App\Enums\OfferStatus;
 use App\Enums\OrderPaymentMethod;
 use App\Enums\OrderStatus;
 use App\Enums\OrderType;
+use App\Enums\ResignStatus;
 use App\Enums\RoomType;
 use App\Enums\TagType;
 use App\Http\Resources\OrderResource;
@@ -39,6 +40,11 @@ class OrderController extends ApiController
     public function create(Request $request)
     {
         $user = $this->guard()->user();
+
+        if ($user->resign_status == ResignStatus::PENDING) {
+            return $this->respondErrorMessage(trans('messages.resign_status_pending'), 403);
+        }
+
         $rules = [
             'prefecture_id' => 'nullable|exists:prefectures,id',
             'address' => 'required',
@@ -403,6 +409,11 @@ class OrderController extends ApiController
     public function createOrderOffer(Request $request)
     {
         $user = $this->guard()->user();
+
+        if ($user->resign_status == ResignStatus::PENDING) {
+            return $this->respondErrorMessage(trans('messages.resign_status_pending'), 403);
+        }
+
         $input = $request->only([
             'prefecture_id',
             'address',
