@@ -33,7 +33,7 @@ function handleDelTimeline()
 {
     $('body').on('click', ".timeline-delete", function(){
         var id = $(this).data("id");
-
+        console.log('123123123');
         $('#btn-del-timeline').data('id', '');
         $('#btn-del-timeline').data('id', id);
 
