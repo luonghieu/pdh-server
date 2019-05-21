@@ -4279,7 +4279,7 @@ a.init-text-color {
   border-bottom: 1px #e9e5e7 solid;
 }
 
-#guest_profile_controller .timeline-delete, #cast_profile_controller .timeline-delete{
+#guest_profile_controller .timeline-delete, #cast_profile_controller .timeline-delete, #time-line-show-controller .timeline-delete {
   position: absolute;
   right: 25px;
 }

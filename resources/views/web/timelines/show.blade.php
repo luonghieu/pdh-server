@@ -55,6 +55,13 @@
                   <p>{{ Carbon\Carbon::parse($timeline['created_at'])->format('m/d H:i') }}</p>
                 </div>
               </div>
+
+              @if ($timeline['user']['id'] == Auth::user()->id)
+                <div class="timeline-delete" data-timeline-id="{{ $timeline['id'] }}"
+                     onclick="document.getElementById('delete-timeline').click()">
+                  <img src="http://localhost/assets/web/images/common/timeline-like-button_del.svg" alt="">
+                </div>
+              @endif
             </div>
             <div class="timeline-content">
               <div class="timeline-article">
@@ -85,13 +92,6 @@
                     </div>
                   </button>
                   <p class="timeline-like__sum" id="total-favorites">{{ $timeline['total_favorites'] }}</p>
-                </div>
-                <div class="user-info__del">
-                  @if ($timeline['user']['id'] == $user->id)
-                  <button onclick="document.getElementById('delete-timeline').click()" class="del-timeline" data-timeline-id="{{ $timeline['id'] }}">
-                    <img  class="init-cursor" src="{{ asset('assets/web/images/common/timeline-like-button_del.svg') }}">
-                  </button>
-                  @endif
                 </div>
               </div>
               @if ($user->id == $timeline['user']['id'])
@@ -155,10 +155,9 @@
 <!-- Delete timeline -->
 <script>
   $(function () {
-    $('.del-timeline').on('click', function() {
+    $('.timeline-delete').on('click', function() {
       var id = $(this).attr('data-timeline-id');
       var oldURL = document.referrer;
-
       $('#url-del-timeline').on('click', function() {
         window.axios.delete('api/v1/timelines/' + id)
           .then(function(response) {
