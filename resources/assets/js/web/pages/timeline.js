@@ -14,12 +14,25 @@ $(document).ready(function () {
         $(".timeline-edit__input").css("position",'absolute');
 
         $(".timeline-edit__input").css("bottom", 0);
-        $(".mm-page").addClass('set-height-mmpage');
+        if (window.screen.height == 812 && window.screen.width == 375) {
+          $(".mm-page").addClass('set-height-mmpage-ipx');
+        }
+
+        if (window.screen.height == 667 && window.screen.width == 375) {
+          $(".mm-page").addClass('set-height-mmpage');
+        }
         $('body').css('height', 'intrinsic')
       } else {
         $(".timeline-edit__input").css("bottom", 0);
         $(".timeline-edit__input").css("position",'initial');
-        $(".mm-page").removeClass('set-height-mmpage');
+        if (window.screen.height == 812 && window.screen.width == 375) {
+          $(".mm-page").removeClass('set-height-mmpage-ipx');
+        }
+
+        if (window.screen.height == 667 && window.screen.width == 375) {
+          $(".mm-page").removeClass('set-height-mmpage');
+        }
+
         $('body').css('height', '100%');
       }
     }
