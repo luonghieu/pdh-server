@@ -11,18 +11,29 @@ $(document).ready(function () {
 
     if (/iPad|iPhone|iPod/.test(userAgent) && !window.MSStream) {
       if (isFocused) {
-        let inputTop = "45%";
+        $(".timeline-edit__input").css("position",'absolute');
+
+        $(".timeline-edit__input").css("bottom", 0);
         if (window.screen.height == 812 && window.screen.width == 375) {
-          inputTop = "51%";
+          $(".mm-page").addClass('set-height-mmpage-ipx');
         }
 
-        $(".timeline-edit__input").css("position",'absolute');
-        $(".timeline-edit__input").css("bottom", inputTop);
-        $(".timeline-edit__text").removeClass('remove-height');
+        if (window.screen.height == 667 && window.screen.width == 375) {
+          $(".mm-page").addClass('set-height-mmpage');
+        }
+        $('body').css('height', 'intrinsic')
       } else {
         $(".timeline-edit__input").css("bottom", 0);
-        $(".timeline-edit__text").addClass('remove-height');
         $(".timeline-edit__input").css("position",'initial');
+        if (window.screen.height == 812 && window.screen.width == 375) {
+          $(".mm-page").removeClass('set-height-mmpage-ipx');
+        }
+
+        if (window.screen.height == 667 && window.screen.width == 375) {
+          $(".mm-page").removeClass('set-height-mmpage');
+        }
+
+        $('body').css('height', '100%');
       }
     }
   });
@@ -31,8 +42,8 @@ $(document).ready(function () {
     $(".timeline-edit__area").focusout(function(){
       setTimeout(() => {
         $(".timeline-edit__input").css("bottom",0);
-        $(".timeline-edit__text").addClass('remove-height');
         $(".timeline-edit__input").css("position",'initial');
+        $(".mm-page").removeClass('set-height-mmpage');
       }, 100);
     });
   };
@@ -96,7 +107,6 @@ $(document).ready(function () {
 
   $(document).on("keyup", ".timeline-edit__area", function(){
     const str = $(".timeline-edit__text").text();
-
     let sum = Array.from(str.split(/[\ufe00-\ufe0f]/).join("")).length;
 
     if (sum >= 1) {
