@@ -59,7 +59,7 @@
               @if ($timeline['user']['id'] == Auth::user()->id)
                 <div class="timeline-delete" data-timeline-id="{{ $timeline['id'] }}"
                      onclick="document.getElementById('delete-timeline').click()">
-                  <img src="http://localhost/assets/web/images/common/timeline-like-button_del.svg" alt="">
+                  <img src="{{ asset('assets/web/images/common/timeline-like-button_del.svg') }}" alt="">
                 </div>
               @endif
             </div>
