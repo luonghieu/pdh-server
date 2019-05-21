@@ -18,10 +18,15 @@ class Frozened
     {
         $user = \Auth::user();
 
-        if ($user->is_verified == 1 && $user->status == 0 && !$request->is('admin/*'))
-        {
-            dd(123);
+        if ($user) {
+            if ($user->is_verified == 1 && $user->status == 0 && !$request->is('admin/*'))
+            {
+                if (!$request->is('history*') && !$request->is('logout')) {
+                    return response()->view('web.frozend');
+                }
+            }
         }
+
 
         return $next($request);
     }

@@ -29,10 +29,10 @@
     $('body').on('click', '#menu-freezed-account', function () {
       MenuAPI.close();
 
-      setTimeout(function () {
-        $('#trigger-freezed-account').trigger('click');
-      }, 500)
-    })
+      // setTimeout(function () {
+      //   $('#trigger-freezed-account').trigger('click');
+      // }, 500)
+    });
 
     $('body').on('click', '.redirect-top', function () {
       window.location = '/mypage';

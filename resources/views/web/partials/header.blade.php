@@ -99,7 +99,9 @@
         <a href="javascript:void(0)" id="menu-freezed-account"><i><img src="{{ asset('assets/web/images/common/date.svg') }}"></i>予約履歴</a>
         @endif
       </li>
-      <li><a href="#" class="tc-verification-link"><i><img src="{{ asset('assets/web/images/common/card.svg') }}"></i>クレジットカード情報</a></li>
+      <li><a href="#" class="tc-verification-link" data-user-status="{{ Auth::user()->status }}"><i><img src="{{ asset
+      ('assets/web/images/common/card.svg')
+      }}"></i>クレジットカード情報</a></li>
       <li><span><i><img src="{{ asset('assets/web/images/common/help.svg') }}"></i>ヘルプ</span>
         <ul>
           <li><a href="{{ url('/service/guest_qa') }}">よくある質問</a></li>

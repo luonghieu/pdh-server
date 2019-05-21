@@ -4262,3 +4262,76 @@ a.init-text-color {
 .remove-height {
   height: inherit !important;
 }
+
+/* line 2, source/_sass/frozen.scss */
+.frozen {
+  width: 100%;
+  height: auto;
+  position: relative; }
+/* line 6, source/_sass/frozen.scss */
+.frozen-content {
+  display: -webkit-flex;
+  display: -ms-flex;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  width: 100%;
+  height: auto;
+  padding: 0 20px;
+  box-sizing: border-box; }
+/* line 17, source/_sass/frozen.scss */
+.frozen-content__logo {
+  width: auto;
+  height: auto;
+  margin-top: 45px;
+  margin-bottom: 30px; }
+/* line 23, source/_sass/frozen.scss */
+.frozen-content__title {
+  width: 100%;
+  height: auto;
+  font-size: 24px;
+  color: #222222;
+  font-family: 'Noto Sans Japanese';
+  text-align: center;
+  line-height: 1.6;
+  letter-spacing: -1px;
+  font-weight: 500;
+  margin-bottom: 55px; }
+/* line 35, source/_sass/frozen.scss */
+.frozen-content__text {
+  width: 100%;
+  height: auto;
+  margin-bottom: 70px; }
+/* line 39, source/_sass/frozen.scss */
+.frozen-content__text p {
+  font-size: 15px;
+  color: #dd0707;
+  font-family: 'Noto Sans Japanese';
+  line-height: 1.6; }
+/* line 44, source/_sass/frozen.scss */
+.frozen-content__text p:last-child {
+  margin-top: 15px; }
+/* line 49, source/_sass/frozen.scss */
+.frozen-content__link {
+  width: 100%;
+  height: auto; }
+/* line 52, source/_sass/frozen.scss */
+.frozen-content__link a {
+  width: 100%;
+  height: 50px;
+  display: -webkit-flex;
+  display: -ms-flex;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 16px;
+  line-height: 1;
+  color: #222222;
+  font-family: 'Noto Sans Japanese';
+  background: #f2f2f2; }
+/* line 65, source/_sass/frozen.scss */
+.frozen-content__link a:last-child {
+  margin-top: 18px; }
+
+/*# sourceMappingURL=../../sass */
