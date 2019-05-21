@@ -8,6 +8,7 @@ use App\Enums\Status;
 use App\Enums\UserType;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\CheckDateRequest;
+use App\Notifications\FrozenUser;
 use App\Prefecture;
 use App\Repositories\CastClassRepository;
 use App\Repositories\PrefectureRepository;
@@ -83,6 +84,10 @@ class UserController extends Controller
         $user->status = !$user->status;
 
         $user->save();
+
+        if ($user->status == 0) {
+            $user->notify(new FrozenUser());
+        }
 
         return redirect()->route('admin.users.show', ['user' => $user->id]);
     }
