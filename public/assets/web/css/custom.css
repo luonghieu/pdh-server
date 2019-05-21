@@ -4262,3 +4262,7 @@ a.init-text-color {
 .remove-height {
   height: inherit !important;
 }
+
+.leave-done__title {
+  font-weight: bold;
+}

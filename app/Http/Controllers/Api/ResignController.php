@@ -42,7 +42,7 @@ class ResignController extends ApiController
         ->exists();
 
         if ($isUnpaidOrder) {
-            return $this->respondErrorMessage(trans('messages.can_not_be_resign'), 403);
+            return $this->respondErrorMessage(trans('messages.can_not_be_resign'), 422);
         }
 
         $input = $request->only('reason1', 'reason2', 'reason3');
