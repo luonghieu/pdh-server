@@ -164,7 +164,7 @@ class UserController extends Controller
         ->exists();
 
         if ($isUnpaidOrder) {
-            return redirect()->route('admin.users.show', compact('id'))->with('error', trans('messages.delete_order_faild'));
+            return redirect()->route('admin.users.show', compact('id'))->with('error', trans('messages.can_not_be_resign'));
         }
 
         $user->facebook_id = null;

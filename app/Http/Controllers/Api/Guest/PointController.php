@@ -5,7 +5,9 @@ namespace App\Http\Controllers\Api\Guest;
 use App\Point;
 use App\Payment;
 use App\Enums\PaymentStatus;
+use App\Enums\ResignStatus;
 use App\Services\LogService;
+use Auth;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Api\ApiController;
@@ -14,6 +16,11 @@ class PointController extends ApiController
 {
     public function buy(Request $request)
     {
+        $resignStatus = Auth::user()->resign_status;
+        if ($resignStatus == ResignStatus::PENDING) {
+            return $this->respondErrorMessage(trans('messages.resign_status_pending'), 403);
+        }
+
         $rules = [
             'amount' => 'required|numeric',
         ];
