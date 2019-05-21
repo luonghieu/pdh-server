@@ -4273,3 +4273,13 @@ a.init-text-color {
 #time-line-show-controller .timeline-list .timeline-images__item img{
   height: auto;
 }
+
+#guest_profile_controller .timeline-item, #cast_profile_controller .timeline-item{
+  margin-bottom: 15px;
+  border-bottom: 1px #e9e5e7 solid;
+}
+
+#guest_profile_controller .timeline-delete, #cast_profile_controller .timeline-delete{
+  position: absolute;
+  right: 25px;
+}
