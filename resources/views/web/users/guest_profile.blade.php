@@ -1,4 +1,4 @@
-@section('title', 'キャスト詳細')
+@section('title', 'ゲスト詳細')
 @section('screen.id', 'gf2')
 @section('controller.id', 'guest_profile_controller')
 @extends('layouts.web')
