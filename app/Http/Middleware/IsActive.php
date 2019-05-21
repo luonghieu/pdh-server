@@ -21,7 +21,9 @@ class IsActive
         }
 
         if (!Auth::user()->status) {
-            return redirect()->route('web.index')->with('no_active', true);
+            if (!$request->is('history*')) {
+                return redirect()->route('web.index')->with('no_active', true);
+            }
         }
 
         return $next($request);
