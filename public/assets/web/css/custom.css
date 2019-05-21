@@ -4270,6 +4270,16 @@ a.init-text-color {
   position: relative;
 }
 
+.timeline-edit__text_overflow__ipx {
+  height: 140px;
+  overflow: auto;
+}
+
+.timeline-edit__text_overflow {
+  height: 120px;
+  overflow: auto;
+}
+
 #time-line-show-controller .timeline-list .timeline-images__item img{
   height: auto;
 }

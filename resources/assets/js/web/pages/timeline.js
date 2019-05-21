@@ -11,29 +11,34 @@ $(document).ready(function () {
 
     if (/iPad|iPhone|iPod/.test(userAgent) && !window.MSStream) {
       if (isFocused) {
-        $(".timeline-edit__input").css("position",'absolute');
-
-        $(".timeline-edit__input").css("bottom", 0);
         if (window.screen.height == 812 && window.screen.width == 375) {
           $(".mm-page").addClass('set-height-mmpage-ipx');
+          $(".timeline-edit__text").addClass("timeline-edit__text_overflow__ipx");
         }
 
         if (window.screen.height == 667 && window.screen.width == 375) {
           $(".mm-page").addClass('set-height-mmpage');
+
+          $(".timeline-edit__text").addClass("timeline-edit__text_overflow");
         }
         $('body').css('height', 'intrinsic')
+        $("html, body").animate({ scrollTop: 0 }, "fast");
       } else {
-        $(".timeline-edit__input").css("bottom", 0);
-        $(".timeline-edit__input").css("position",'initial');
-        if (window.screen.height == 812 && window.screen.width == 375) {
-          $(".mm-page").removeClass('set-height-mmpage-ipx');
-        }
+        setTimeout(() => {
+          if (window.screen.height == 812 && window.screen.width == 375) {
+            $(".mm-page").removeClass('set-height-mmpage-ipx');
 
-        if (window.screen.height == 667 && window.screen.width == 375) {
-          $(".mm-page").removeClass('set-height-mmpage');
-        }
+            $(".timeline-edit__text").removeClass("timeline-edit__text_overflow__ipx");
+          }
 
-        $('body').css('height', '100%');
+          if (window.screen.height == 667 && window.screen.width == 375) {
+            $(".mm-page").removeClass('set-height-mmpage');
+
+            $(".timeline-edit__text").removeClass("timeline-edit__text_overflow");
+          }
+
+          $('body').css('height', '100%');
+        }, 100);
       }
     }
   });
@@ -41,9 +46,19 @@ $(document).ready(function () {
   if (/iPad|iPhone|iPod/.test(userAgent) && !window.MSStream) {
     $(".timeline-edit__area").focusout(function(){
       setTimeout(() => {
-        $(".timeline-edit__input").css("bottom",0);
-        $(".timeline-edit__input").css("position",'initial');
-        $(".mm-page").removeClass('set-height-mmpage');
+        if (window.screen.height == 812 && window.screen.width == 375) {
+          $(".mm-page").removeClass('set-height-mmpage-ipx');
+
+          $(".timeline-edit__text").removeClass("timeline-edit__text_overflow__ipx");
+        }
+
+        if (window.screen.height == 667 && window.screen.width == 375) {
+          $(".mm-page").removeClass('set-height-mmpage');
+
+          $(".timeline-edit__text").removeClass("timeline-edit__text_overflow");
+        }
+
+        $('body').css('height', '100%');
       }, 100);
     });
   };
