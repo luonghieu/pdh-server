@@ -84,4 +84,8 @@ return [
     'offer_not_found' => 'オファーが見つかれません',
     'timeline_not_found' => 'タイムラインません',
     'timeline_deleted' => '削除しました',
+    'can_not_be_resign' => '完了していない予約があるため、退会ができません。',
+    'created_request_resign' => '',
+    'resign_status_pending' => '',
+    'resign_success' => 'Account request resign pending successfully',
 ];
