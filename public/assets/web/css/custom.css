@@ -4270,3 +4270,6 @@ a.init-text-color {
   position: relative;
 }
 
+#time-line-show-controller .timeline-list .timeline-images__item img{
+  height: auto;
+}
