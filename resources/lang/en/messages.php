@@ -85,4 +85,5 @@ return [
     'created_request_resign' => 'You created request resign',
     'resign_status_pending' => 'You account resign status is pending',
     'resign_success' => 'Account request resign pending successfully',
+    'skip_order_noninee' => 'Your proposal has been cancelled.',
 ];

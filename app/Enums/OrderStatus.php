@@ -13,6 +13,7 @@ final class OrderStatus extends Enum
     const CANCELED = 5;
     const DENIED = 6;
     const TIMEOUT = 7;
+    const SKIP_NOMINATION = 8;
 
     /**
      * Get the description for an enum value
@@ -32,6 +33,8 @@ final class OrderStatus extends Enum
             return '解散中';
         } elseif (self::TIMEOUT === $value || self::CANCELED === $value || self::DENIED === $value) {
             return 'マッチング不成立';
+        } elseif (self::SKIP_NOMINATION === $value) {
+            return '提案取り下げ';
         }
 
         return parent::getDescription($value);
