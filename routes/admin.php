@@ -188,4 +188,9 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.'], function () {
         Route::get('/', ['as' => 'index', 'uses' => 'TimelineController@index']);
         Route::post('/{timeline}/change_status_hidden', ['as' => 'change_status_hidden', 'uses' => 'TimelineController@changeStatusHidden'])->where('timeline', '[0-9]+');
     });
+
+    Route::group(['namespace' => 'Resigns', 'prefix' => 'resigns', 'as' => 'resigns.', 'middleware' => 'is_admin'], function () {
+        Route::get('/', ['as' => 'index', 'uses' => 'ResignController@index']);
+        Route::get('/{id}', ['as' => 'show', 'uses' => 'ResignController@show']);
+    });
 });

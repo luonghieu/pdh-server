@@ -7,21 +7,11 @@ $(function() {
       $(".leave-comment__input textarea").prop("disabled", true);
     }
   });
-
   // textarea 文字数　コントロール
-  $(".leave-comment__input textarea").on("keydown keyup keypress change", function() {
+  $(".leave-comment__input textarea").on("keydown keyup keypress change", function(e) {
     let sum = $(this).val().length;
-    let key = event.which || event.keyCode || event.charCode;
-    if (sum >= 181) {
-      if (key != 8 ) {
-        alert("180文字以内で入力してください");
-
-        return false;
-      }
-    }
-
     $(".leave-comment__sum p").text(sum.toFixed());
-  })
+  });
 
   //checkbox 判定
   $(".leave-reason-list .checkbox").on("click", function() {
