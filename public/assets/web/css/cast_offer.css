@@ -1,18 +1,18 @@
 /* line 2, source/_sass/offer.scss */
-.offer-wrap {
+#offer .offer-wrap {
   width: 100%;
   height: auto; }
 
 /* line 7, source/_sass/offer.scss */
-.reservation-cast {
+#offer .reservation-cast {
   width: 100%;
   height: auto; }
   /* line 10, source/_sass/offer.scss */
-  .reservation-cast__header {
+#offer .reservation-cast__header {
     width: 100%;
     height: auto; }
   /* line 14, source/_sass/offer.scss */
-  .reservation-cast__title {
+#offer .reservation-cast__title {
     display: -webkit-flex;
     display: -ms-flex;
     display: flex;
@@ -37,22 +37,22 @@
     background: -o-linear-gradient(70deg, #00c3c3 0, #42e4b2 100%);
     background: linear-gradient(20deg, #00c3c3 0, #42e4b2 100%); }
   /* line 42, source/_sass/offer.scss */
-  .reservation-cast__content {
+#offer .reservation-cast__content {
     width: 100%;
     height: auto;
     padding: 0 15px;
     box-sizing: border-box; }
   /* line 49, source/_sass/offer.scss */
-  .reservation-cast__info {
+#offer .reservation-cast__info {
     width: 74%;
     min-width: 280px;
     margin: 15px auto; }
   /* line 55, source/_sass/offer.scss */
-  .reservation-cast__photo {
+#offer .reservation-cast__photo {
     width: 100%;
     height: auto; }
   /* line 59, source/_sass/offer.scss */
-  .reservation-cast__name {
+#offer .reservation-cast__name {
     display: -webkit-flex;
     display: -ms-flex;
     display: flex;
@@ -62,7 +62,7 @@
     margin-top: 15px;
     font-family: 'Noto Sans Japanese'; }
     /* line 68, source/_sass/offer.scss */
-    .reservation-cast__name p {
+#offer .reservation-cast__name p {
       width: auto;
       height: auto;
       font-size: 18px;
@@ -70,10 +70,10 @@
       line-height: 1;
       font-weight: bold; }
       /* line 75, source/_sass/offer.scss */
-      .reservation-cast__name p:first-child {
+#offer .reservation-cast__name p:first-child {
         margin-right: 5px; }
   /* line 81, source/_sass/offer.scss */
-  .reservation-cast__level {
+#offer  .reservation-cast__level {
     width: 100%;
     height: auto;
     display: -webkit-flex;
@@ -83,7 +83,7 @@
     justify-content: space-between;
     margin-top: 5px; }
   /* line 91, source/_sass/offer.scss */
-  .reservation-cast__daiamond {
+#offer  .reservation-cast__daiamond {
     width: auto;
     height: auto;
     width: 80px;
@@ -98,7 +98,7 @@
     border-radius: 30px;
     font-family: 'Noto Sans Japanese'; }
   /* line 107, source/_sass/offer.scss */
-  .reservation-cast__pric {
+#offer  .reservation-cast__pric {
     width: auto;
     height: auto;
     font-size: 11px;
@@ -110,12 +110,12 @@
     box-sizing: border-box;
     font-family: 'Noto Sans Japanese'; }
     /* line 118, source/_sass/offer.scss */
-    .reservation-cast__pric span {
+#offer  .reservation-cast__pric span {
       font-size: 19px;
       margin-left: 10px; }
 
 /* line 126, source/_sass/offer.scss */
-.reservation-info {
+#offer  .reservation-info {
   width: 100%;
   height: auto;
   padding: 15px 20px;
@@ -128,11 +128,11 @@
   align-items: center;
   justify-content: space-between; }
   /* line 138, source/_sass/offer.scss */
-  .reservation-info__date {
+#offer  .reservation-info__date {
     width: auto;
     height: auto; }
   /* line 142, source/_sass/offer.scss */
-  .reservation-info__day {
+#offer  .reservation-info__day {
     width: auto;
     height: auto;
     margin-bottom: 10px;
@@ -141,7 +141,7 @@
     line-height: 1;
     color: #222; }
   /* line 151, source/_sass/offer.scss */
-  .reservation-info__time {
+#offer  .reservation-info__time {
     width: auto;
     height: auto;
     font-family: 'Noto Sans Japanese';
@@ -150,12 +150,12 @@
     color: #222;
     font-weight: bold; }
     /* line 159, source/_sass/offer.scss */
-    .reservation-info__time span {
+#offer  .reservation-info__time span {
       margin-left: 10px;
       font-size: 14px;
       font-weight: normal; }
   /* line 166, source/_sass/offer.scss */
-  .reservation-info__place {
+#offer  .reservation-info__place {
     width: auto;
     height: auto;
     font-family: 'Noto Sans Japanese';
@@ -163,7 +163,7 @@
     font-weight: bold; }
 
 /* line 175, source/_sass/offer.scss */
-.reservation-settlement {
+#offer  .reservation-settlement {
   width: 100%;
   height: auto;
   padding: 0 10px;
@@ -171,17 +171,17 @@
   margin-top: 30px; }
 
 /* line 183, source/_sass/offer.scss */
-.portlet {
+#offer  .portlet {
   width: 100%;
   height: auto;
   margin-bottom: 20px; }
   /* line 187, source/_sass/offer.scss */
-  .portlet-header {
+#offer  .portlet-header {
     width: 100%;
     height: auto;
     margin-bottom: 5px; }
     /* line 191, source/_sass/offer.scss */
-    .portlet-header__title {
+#offer  .portlet-header__title {
       width: 100%;
       height: 30px;
       background-color: #f3f2f2;
@@ -195,17 +195,17 @@
       padding: 0 12px;
       box-sizing: border-box; }
   /* line 207, source/_sass/offer.scss */
-  .portlet-content {
+#offer  .portlet-content {
     width: 100%;
     height: auto; }
 
 /* line 214, source/_sass/offer.scss */
-.offer-coupon {
+#offer  .offer-coupon {
   width: 100%;
   height: auto;
   margin-top: 20px; }
   /* line 218, source/_sass/offer.scss */
-  .offer-coupon__header {
+#offer  .offer-coupon__header {
     width: 100%;
     height: auto;
     margin-bottom: 5px;
@@ -214,21 +214,19 @@
     padding-bottom: 5px;
     border-bottom: 1px #d8d8d8 solid; }
   /* line 227, source/_sass/offer.scss */
-  .offer-coupon__content {
+#offer  .offer-coupon__content {
     width: 100%;
     height: auto; }
   /* line 231, source/_sass/offer.scss */
-  .offer-coupon__text {
-    display: none;
+#offer  .offer-coupon__text {
     width: 100%;
     height: auto;
     font-family: 'Noto Sans Japanese';
     font-size: 11px;
     color: #505050;
-    padding: 10px;
     box-sizing: border-box; }
   /* line 242, source/_sass/offer.scss */
-  .offer-coupon .selectbox select {
+#offer  .offer-coupon .selectbox select {
     width: 100%;
     display: inline-block;
     border: none;
@@ -252,10 +250,10 @@
     box-sizing: border-box;
     position: relative; }
   /* line 266, source/_sass/offer.scss */
-  .offer-coupon .selectbox i {
+#offer  .offer-coupon .selectbox i {
     position: relative; }
     /* line 268, source/_sass/offer.scss */
-    .offer-coupon .selectbox i:after {
+ #offer  .offer-coupon .selectbox i:after {
       pointer-events: none;
       position: absolute;
       content: "";
@@ -275,7 +273,7 @@
       transform: translateY(-50%) translateX(0) rotate(135deg); }
 
 /* line 291, source/_sass/offer.scss */
-.grade-list {
+#offer  .grade-list {
   width: 100%;
   height: auto;
   padding: 10px 15px;
@@ -285,7 +283,7 @@
   justify-content: flex-start;
   border-bottom: 1px #d8d8d8 solid; }
   /* line 300, source/_sass/offer.scss */
-  .grade-list label {
+#offer  .grade-list label {
     width: auto;
     height: auto;
     display: -webkit-flex;
@@ -294,10 +292,10 @@
     justify-content: flex-start;
     align-items: center; }
     /* line 308, source/_sass/offer.scss */
-    .grade-list label:last-child {
+#offer  .grade-list label:last-child {
       margin-left: 50px; }
   /* line 312, source/_sass/offer.scss */
-  .grade-list .grade-radio {
+#offer  .grade-list .grade-radio {
     -moz-appearance: none;
     appearance: none;
     -webkit-appearance: none;
@@ -318,10 +316,10 @@
     background-color: inherit;
     overflow: hidden; }
     /* line 332, source/_sass/offer.scss */
-    .grade-list .grade-radio:checked {
+#offer .grade-list .grade-radio:checked {
       border: 7px #30ccc3 solid; }
   /* line 336, source/_sass/offer.scss */
-  .grade-list span {
+#offer  .grade-list span {
     font-family: 'Noto Sans Japanese';
     font-size: 15px;
     margin-left: 5px; }

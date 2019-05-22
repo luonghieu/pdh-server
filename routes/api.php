@@ -100,6 +100,7 @@ Route::group(['prefix' => 'v1'], function () {
         Route::group(['prefix' => 'cast_offers', 'as' => 'cast_offers'], function () {
             Route::get('/{id}', ['as' => 'show', 'uses' => 'Guest\CastOfferController@show'])->where('id', '[0-9]+');
             Route::post('/{id}/cancel', ['as' => 'cancel', 'uses' => 'Guest\CastOfferController@cancel'])->where('id', '[0-9]+');
+            Route::post('/create', ['as' => 'create', 'uses' => 'Guest\CastOfferController@create']);
         });
     });
 

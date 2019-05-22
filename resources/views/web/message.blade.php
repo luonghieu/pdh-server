@@ -290,5 +290,9 @@
   if(localStorage.getItem("order_offer")){
     localStorage.removeItem("order_offer");
   }
+
+  if (localStorage.getItem("cast_offer")) {
+    localStorage.removeItem("cast_offer");
+  }
 </script>
 @stop

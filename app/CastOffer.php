@@ -26,4 +26,9 @@ class CastOffer extends Model
     {
         return $this->hasOne(User::class, 'id', 'guest_id');
     }
+
+    public function castClass()
+    {
+        return $this->hasOne(CastClass::class, 'id', 'cast_class_id');
+    }
 }

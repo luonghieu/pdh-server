@@ -3,7 +3,6 @@
 namespace App\Http\Resources;
 
 use App\Traits\ResourceResponse;
-use Illuminate\Http\Resources\Json\JsonResource;
 use Illuminate\Http\Resources\Json\Resource;
 
 class CastOfferResource extends Resource
@@ -27,6 +26,7 @@ class CastOfferResource extends Resource
             'date' => $this->date,
             'start_time' => $this->start_time,
             'duration' => $this->duration,
+            'status' => $this->status,
             'created_at' => $this->created_at,
             'temp_point' => $this->temp_point,
         ]);

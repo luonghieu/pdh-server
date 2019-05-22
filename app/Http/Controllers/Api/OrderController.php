@@ -491,7 +491,6 @@ class OrderController extends ApiController
 
         $input['end_time'] = $end_time->format('H:i');
 
-        $input['end_time'] = $end_time->format('H:i');
         $input['status'] = OrderStatus::ACTIVE;
 
         if ($request->payment_method) {
