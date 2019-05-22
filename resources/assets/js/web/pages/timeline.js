@@ -3,7 +3,7 @@ $(document).ready(function () {
   var userAgent = navigator.userAgent || navigator.vendor || window.opera;
 
   $('body').on('click', function (e) {
-    if ( $(e.target).is('#timeline-edit-content') ) {
+    if ( $(e.target).is('#timeline-edit-content') || $(e.target).is('#timeline-edit-content div')) {
       isFocused = true;
     } else {
       isFocused = false;
