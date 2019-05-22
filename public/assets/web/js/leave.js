@@ -2,10 +2,8 @@ $(function() {
   //
   $("#textareaCheck").on("click", function(){
     if ($("#textareaCheck").prop("checked") == true ) {
-      console.log("yes")
       $(".leave-comment__input textarea").prop("disabled", false).focus();
     } else {
-      console.log("no");
       $(".leave-comment__input textarea").prop("disabled", true);
     }
   });
@@ -34,30 +32,61 @@ $(function() {
     }
   })
 
+  // check textarea
+  $('textarea#description').focusout(function() {
+    $('.js-resign-message').text('');
+
+    if ($(this).val().length < 1) {
+      $('.js-resign-message').text("その他の理由が入力されていません");
+    }
+  })
+
   $("#leaveSubmit").on("click", function() {
     if ($("#textareaCheck").prop("checked") == true && $(".leave-comment__input textarea").val().length < 1 ){
       $('.js-resign-message').text("その他の理由が入力されていません");
 
       return false;
     }
+
+    var reason1 = '';
+    var reason2 = '';
+    var reason3 = '';
+    var other_reason = '';
+    if (document.getElementById("reason1").checked) {
+      var reason1 = 'サービスの使い方が分からない';
+    }
+
+    if (document.getElementById("reason2").checked) {
+      var reason2 = '金額が高すぎる';
+    }
+
+    if (document.getElementById("reason3").checked) {
+      var reason3 = '一緒に飲みたいキャストがいない';
+    }
+
+    if (document.getElementById("textareaCheck").checked) {
+      var other_reason = $('textarea#description').val();
+    }
+
+    localStorage.setItem('reason1', reason1);
+    localStorage.setItem('reason2', reason2);
+    localStorage.setItem('reason3', reason3);
+    localStorage.setItem('other_reason', other_reason);
+
+    window.location.href = '/resigns/confirm';
   })
 
-  // leave_confim page
-  $(".leave-footer__check .checkbox").on("click", function(e) {
-    if ($("input[type='checkbox']").prop("checked")) {
-      $(".leave-submit").prop("disabled", false);
+  // leave_confirm page
+  $(".leave-footer__check .checkbox").on("change", function(e) {
+    if (document.getElementById("check-agree").checked) {
+      $("#withdraw").prop("disabled", false);
     } else {
-      $(".leave-submit").prop("disabled", true);
+      $("#withdraw").prop("disabled", true);
     }
   })
 
-  $("#withdraw").on("click", function(e) {
-    e.preventDefault();
-
-    if (!$(".modal_overlay").hasClass("active")) {
-      $(".modal_overlay").addClass("active");
-    } else {
-      $(".modal_overlay").removeClass("active");
-    }
-  })
+  // check data when back
+  if (localStorage.getItem('reason1') || localStorage.getItem('reason2') || localStorage.getItem('reason3') || localStorage.getItem('other_reason')) {
+    $("#leaveSubmit").prop("disabled", false);
+  }
 })

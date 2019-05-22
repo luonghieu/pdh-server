@@ -19,4 +19,9 @@ class ResignController extends Controller
     {
         return view('web.resigns.confirm');
     }
+
+    public function complete()
+    {
+        return view('web.resigns.complete');
+    }
 }
