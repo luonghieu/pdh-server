@@ -50,7 +50,7 @@ class RedirectController extends Controller
                         'usrtel' => auth()->user()->phone,
                         'usrmail' => 'question.cheers@gmail.com',
                         'user_id' => auth()->user()->id,
-                        'redirect_url' => route('history.show', ['orderId' => $request->order_id])
+                        'redirect_url' => route('history.show', ['orderId' => $request->order_id]),
                     ];
 
                     $queryString = http_build_query($paramsArray);
@@ -65,6 +65,8 @@ class RedirectController extends Controller
                 return \Redirect::to(route('purchase.index'));
             case 'require_transfer_point':
                 return \Redirect::to(route('guest.transfer', ['point' => $request->point, 'order_id' => $request->order_id]));
+            case 'cast_offer':
+                return \Redirect::to(route('guest.cast_offers.index', ['id' => $request->cast_offer_id]));
             default:
                 return \Redirect::to(route('web.index'));
         }

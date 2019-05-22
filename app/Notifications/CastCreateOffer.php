@@ -10,8 +10,8 @@ use App\Enums\SystemMessageType;
 use App\Enums\UserType;
 use App\Traits\DirectRoom;
 use Illuminate\Bus\Queueable;
-use Illuminate\Notifications\Notification;
 use Illuminate\Contracts\Queue\ShouldQueue;
+use Illuminate\Notifications\Notification;
 
 class CastCreateOffer extends Notification implements ShouldQueue
 {
@@ -37,16 +37,16 @@ class CastCreateOffer extends Notification implements ShouldQueue
      */
     public function via($notifiable)
     {
-        if ($notifiable->provider == ProviderType::LINE) {
-            if ($notifiable->type == UserType::GUEST && $notifiable->device_type == null) {
+        if (ProviderType::LINE == $notifiable->provider) {
+            if (UserType::GUEST == $notifiable->type && null == $notifiable->device_type) {
                 return [LineBotNotificationChannel::class];
             }
 
-            if ($notifiable->type == UserType::CAST && $notifiable->device_type == null) {
+            if (UserType::CAST == $notifiable->type && null == $notifiable->device_type) {
                 return [PushNotificationChannel::class];
             }
 
-            if ($notifiable->device_type == DeviceType::WEB) {
+            if (DeviceType::WEB == $notifiable->device_type) {
                 return [LineBotNotificationChannel::class];
             } else {
                 return [PushNotificationChannel::class];
@@ -68,7 +68,7 @@ class CastCreateOffer extends Notification implements ShouldQueue
             'user_id' => 1,
             'type' => MessageType::SYSTEM,
             'message' => $roomMesage,
-            'system_type' => SystemMessageType::NORMAL
+            'system_type' => SystemMessageType::NORMAL,
         ]);
         $roomMessage->recipients()->attach($notifiable->id, ['room_id' => $room->id]);
 
@@ -89,7 +89,7 @@ class CastCreateOffer extends Notification implements ShouldQueue
                         'push_id' => $pushId,
                         'send_from' => $send_from,
                         'cast_offer_id' => $this->offer->id,
-                        'room_id' => $room->id
+                        'room_id' => $room->id,
                     ],
                 ],
                 'android' => [
@@ -98,9 +98,9 @@ class CastCreateOffer extends Notification implements ShouldQueue
                         'push_id' => $pushId,
                         'send_from' => $send_from,
                         'cast_offer_id' => $this->offer->id,
-                        'room_id' => $room->id
+                        'room_id' => $room->id,
                     ],
-                ]
+                ],
             ],
         ];
     }
@@ -117,14 +117,14 @@ class CastCreateOffer extends Notification implements ShouldQueue
             'user_id' => 1,
             'type' => MessageType::SYSTEM,
             'message' => $roomMesage,
-            'system_type' => SystemMessageType::NORMAL
+            'system_type' => SystemMessageType::NORMAL,
         ]);
         $roomMessage->recipients()->attach($notifiable->id, ['room_id' => $room->id]);
 
         $content = $this->offer->cast->nickname . 'さんから予約リクエストがありました'
             . PHP_EOL . '下記のボタンをタップして、予約リクエストを確認してください。';
 
-        $page = env('LINE_LIFF_REDIRECT_PAGE') . '?page=call';
+        $page = env('LINE_LIFF_REDIRECT_PAGE') . '?page=cast_offer&cast_offer_id=' . $this->offer->id;
 
         return [
             [
@@ -138,11 +138,11 @@ class CastCreateOffer extends Notification implements ShouldQueue
                         [
                             'type' => 'uri',
                             'label' => '予約リクエストを確認する',
-                            'uri' => "line://app/$page"
-                        ]
-                    ]
-                ]
-            ]
+                            'uri' => "line://app/$page",
+                        ],
+                    ],
+                ],
+            ],
         ];
     }
 }

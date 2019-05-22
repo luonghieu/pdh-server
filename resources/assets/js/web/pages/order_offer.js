@@ -641,9 +641,6 @@ $(document).ready(function(){
   $('body').on('click', "#lb-order-offer", function(event){
     var transfer = parseInt($("input[name='transfer_order_offer']:checked").val());
 
-    var tempPointOrders = parseInt($('#temp-point-offer').val()) + parseInt($('#point_used_offer').val());
-    var currentPointUser = $('#current-point').val();
-
     if (transfer) {
       if (OrderPaymentMethod.Credit_Card == transfer || OrderPaymentMethod.Direct_Payment == transfer) {
         if (OrderPaymentMethod.Direct_Payment == transfer) {
@@ -696,10 +693,6 @@ $(document).ready(function(){
     } else {
       createOrderOffer();
     }
-        
-    
-
-
   })
 
   //textArea
@@ -1175,54 +1168,55 @@ $(document).ready(function(){
     $('.details-list').css({
       display: 'none',
     });
+    if($('#temp-point-offer').length) {
+      // Set the date we're counting down to
+      var date = $('#expired-date').val();
+      var month = $('#expired-month').val();
+      var year = $('#expired-year').val();
+      var hour = $('#expired-hour').val();
+      var minute = $('#expired-minute').val();
 
-    // Set the date we're counting down to
-    var date = $('#expired-date').val();
-    var month = $('#expired-month').val();
-    var year = $('#expired-year').val();
-    var hour = $('#expired-hour').val();
-    var minute = $('#expired-minute').val();
+      if (date && month && year && hour && minute) {
+        if (checkApp.isAppleDevice()) {
+          var dateFolowDevice = new Date(month +'/' + date +'/'+ year +' ' + hour +':' + minute).getTime();
+        } else {
+          var dateFolowDevice = new Date(year +'-' + month +'-'+ date +' ' + hour +':' + minute).getTime();
+        }
 
-    if (date && month && year && hour && minute) {
-      if (checkApp.isAppleDevice()) {
-        var dateFolowDevice = new Date(month +'/' + date +'/'+ year +' ' + hour +':' + minute).getTime();
+        // Update the count down every 1 second
+        var x = setInterval(function() {
+          // Get todays date and time
+          var now = new Date();
+          var utc = now.getTime() + (now.getTimezoneOffset() * 60000);
+          var nd = new Date(utc + (3600000*9));
+          var nowJapan = new Date(nd).getTime();
+          // Find the distance between now and the count down date
+          var distance = dateFolowDevice - nowJapan;
+
+          // Time calculations for days, hours, minutes and seconds
+          var days = Math.floor(distance / (1000 * 60 * 60 * 24));
+          var hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+          var minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
+          if (minutes < 10) {
+            minutes = '0' + minutes;
+          }
+          var seconds = Math.floor((distance % (1000 * 60)) / 1000);
+          if (seconds < 10) {
+            seconds = '0' + seconds;
+          }
+          // Output the result in an element with id="demo"
+          document.getElementById("time-countdown").innerHTML = hours+(days*24) + "時間"
+          + minutes + "分" + seconds + "秒";
+          // If the count down is over, write some text
+          if (distance < 0) {
+            clearInterval(x);
+            document.getElementById("time-countdown").innerHTML = "0時間00分00秒";
+            $("#check-expired").val(1);
+          }
+        }, 1000);
       } else {
-        var dateFolowDevice = new Date(year +'-' + month +'-'+ date +' ' + hour +':' + minute).getTime();
+        document.getElementById("time-countdown").innerHTML = "00時間00分00秒";
       }
-
-      // Update the count down every 1 second
-      var x = setInterval(function() {
-        // Get todays date and time
-        var now = new Date();
-        var utc = now.getTime() + (now.getTimezoneOffset() * 60000);
-        var nd = new Date(utc + (3600000*9));
-        var nowJapan = new Date(nd).getTime();
-        // Find the distance between now and the count down date
-        var distance = dateFolowDevice - nowJapan;
-
-        // Time calculations for days, hours, minutes and seconds
-        var days = Math.floor(distance / (1000 * 60 * 60 * 24));
-        var hours = Math.floor((distance % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
-        var minutes = Math.floor((distance % (1000 * 60 * 60)) / (1000 * 60));
-        if (minutes < 10) {
-          minutes = '0' + minutes;
-        }
-        var seconds = Math.floor((distance % (1000 * 60)) / 1000);
-        if (seconds < 10) {
-          seconds = '0' + seconds;
-        }
-        // Output the result in an element with id="demo"
-        document.getElementById("time-countdown").innerHTML = hours+(days*24) + "時間"
-        + minutes + "分" + seconds + "秒";
-        // If the count down is over, write some text
-        if (distance < 0) {
-          clearInterval(x);
-          document.getElementById("time-countdown").innerHTML = "0時間00分00秒";
-          $("#check-expired").val(1);
-        }
-      }, 1000);
-    } else {
-      document.getElementById("time-countdown").innerHTML = "00時間00分00秒";
     }
   }
 

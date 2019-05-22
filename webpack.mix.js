@@ -21,6 +21,7 @@ mix.styles([
 'public/assets/web/css/style.css',
 'public/assets/web/css/custom.css',
 'public/assets/web/css/timeline.css',
+'public/assets/web/css/cast_offer.css',
 ], 'public/assets/web/css/web.css').version();
 
 mix.styles('public/assets/webview/css/style.css', 'public/assets/webview/css/style.min.css').version();

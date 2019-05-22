@@ -6,8 +6,8 @@ use App\Enums\CastOrderStatus;
 use App\Enums\CastOrderType;
 use App\Enums\CouponType;
 use App\Enums\InviteCodeHistoryStatus;
-use App\Enums\OrderStatus;
 use App\Enums\OrderPaymentStatus;
+use App\Enums\OrderStatus;
 use App\Enums\OrderType;
 use App\Enums\PointType;
 use App\Enums\RoomType;
@@ -53,6 +53,7 @@ class Order extends Model
         'coupon_name',
         'coupon_type',
         'coupon_value',
+        'cast_offer_id',
     ];
 
     public function user()
@@ -633,14 +634,12 @@ class Order extends Model
 
     protected function isValidForSettlement()
     {
-        if ($this->status == OrderStatus::DONE && $this->payment_status != OrderPaymentStatus::PAYMENT_FINISHED) {
+        if (OrderStatus::DONE == $this->status && OrderPaymentStatus::PAYMENT_FINISHED != $this->payment_status) {
             return true;
         }
 
-        if ($this->status == OrderStatus::CANCELED
-            && $this->cancel_fee_percent > 0
-            && $this->payment_status != OrderPaymentStatus::CANCEL_FEE_PAYMENT_FINISHED
-        ) {
+        if (OrderStatus::CANCELED == $this->status && $this->cancel_fee_percent > 0
+            && OrderPaymentStatus::CANCEL_FEE_PAYMENT_FINISHED != $this->payment_status) {
             return true;
         }
 
