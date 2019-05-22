@@ -38,12 +38,14 @@
                 <li class="cast-info__item"><b class="text-bold">{{ (!$guest['age']) ? '' : ($guest['age'] . "歳")
                 }}</b>
                 </li>
+                @if(!Auth::user()->is_guest)
                 <li>
                     <div class="guest-star-rating">
-                        <?php $ratingScore = ($guest['rating_score']) ? $guest['rating_score'] * 100 / 5 : 0 ?>
+                        <?php $ratingScore = ($guest['rating_score']) ? $guest['rating_score'] * 100 / 5 : 0?>
                         <span style="width: {{ $ratingScore }}"></span>
                     </div>
                 </li>
+                @endif
                 <li><span class="text-bold">{{ $guest['rating_score'] }}</span></li>
             </ul>
             <p class="cast-info__signature">{{ $guest['job'] }} &nbsp;&nbsp; {{ $guest['salary'] }}</p>
