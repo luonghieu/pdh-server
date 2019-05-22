@@ -8,6 +8,7 @@ use App\Enums\MessageType;
 use App\Enums\ProviderType;
 use App\Enums\SystemMessageType;
 use App\Enums\UserType;
+use App\Order;
 use App\Traits\DirectRoom;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -17,7 +18,7 @@ class CastCreateOffer extends Notification implements ShouldQueue
 {
     use Queueable, DirectRoom;
 
-    public $offer;
+    public $order;
 
     /**
      * Create a new notification instance.
@@ -26,7 +27,7 @@ class CastCreateOffer extends Notification implements ShouldQueue
      */
     public function __construct($offerId)
     {
-        $this->offer = CastOffer::onWriteConnection()->find($offerId);
+        $this->order = Order::onWriteConnection()->find($offerId);
     }
 
     /**
@@ -58,7 +59,8 @@ class CastCreateOffer extends Notification implements ShouldQueue
 
     public function pushData($notifiable)
     {
-        $room = $this->createDirectRoom($this->offer->guest_id, $this->offer->user_id);
+        $cast = $this->order->nominees()->first();
+        $room = $this->createDirectRoom($this->order->user_id, $cast->id);
         $roomMesage = 'マッチング確定おめでとうございます♪'
             . PHP_EOL . '合流後はタイマーで時間計測を行い、解散予定の10分前には通知が届きます。'
             . PHP_EOL . '※解散予定時刻後は自動で延長されます。'
@@ -88,7 +90,7 @@ class CastCreateOffer extends Notification implements ShouldQueue
                     'extra' => [
                         'push_id' => $pushId,
                         'send_from' => $send_from,
-                        'cast_offer_id' => $this->offer->id,
+                        'order_id' => $this->offer->id,
                         'room_id' => $room->id,
                     ],
                 ],
@@ -107,7 +109,8 @@ class CastCreateOffer extends Notification implements ShouldQueue
 
     public function lineBotPushData($notifiable)
     {
-        $room = $this->createDirectRoom($this->offer->guest_id, $this->offer->user_id);
+        $cast = $this->order->nominees()->first();
+        $room = $this->createDirectRoom($this->order->user_id, $cast->id);
         $roomMesage = 'マッチング確定おめでとうございます♪'
             . PHP_EOL . '合流後はタイマーで時間計測を行い、解散予定の10分前には通知が届きます。'
             . PHP_EOL . '※解散予定時刻後は自動で延長されます。'
@@ -121,10 +124,10 @@ class CastCreateOffer extends Notification implements ShouldQueue
         ]);
         $roomMessage->recipients()->attach($notifiable->id, ['room_id' => $room->id]);
 
-        $content = $this->offer->cast->nickname . 'さんから予約リクエストがありました'
+        $content = $cast->nickname . 'さんから予約リクエストがありました'
             . PHP_EOL . '下記のボタンをタップして、予約リクエストを確認してください。';
 
-        $page = env('LINE_LIFF_REDIRECT_PAGE') . '?page=cast_offer&cast_offer_id=' . $this->offer->id;
+        $page = env('LINE_LIFF_REDIRECT_PAGE') . '?page=cast_offer&cast_offer_id=' . $this->order->id;
 
         return [
             [
