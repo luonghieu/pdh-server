@@ -15,19 +15,6 @@ final class TimelineStatus extends Enum
      * @param $value
      * @return string
      */
-    public static function getDescription($value): string
-    {
-        switch ($value) {
-            case self::PRIVATE:
-                return '非公開';
-                break;
-            case self::PUBLIC:
-                return '公開';
-                break;
 
-            default:break;
-        }
 
-        return parent::getDescription($value);
-    }
 }

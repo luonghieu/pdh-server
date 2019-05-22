@@ -16,7 +16,7 @@ class ResignController extends ApiController
     {
         $user = Auth::user();
 
-        if ($user->resign_status != null) {
+        if ($user->resign_status) {
            return $this->respondErrorMessage(trans('messages.created_request_resign'), 409);
         }
 
@@ -25,15 +25,15 @@ class ResignController extends ApiController
             OrderStatus::ACTIVE,
             OrderStatus::PROCESSING,
         ])
-        ->orWhere(function ($query) {
-            $query->where('status', OrderStatus::DONE)
+        ->orWhere(function ($query) use ($user) {
+            $query->where('user_id', $user->id)->where('status', OrderStatus::DONE)
                 ->where(function ($subQuery) {
                     $subQuery->where('payment_status', '!=', OrderPaymentStatus::PAYMENT_FINISHED)
                         ->orWhere('payment_status', OrderPaymentStatus::PAYMENT_FAILED);
                 });
         })
-        ->orWhere(function ($query) {
-            $query->where('status', OrderStatus::CANCELED)
+        ->orWhere(function ($query) use ($user) {
+            $query->where('user_id', $user->id)->where('status', OrderStatus::CANCELED)
                 ->where(function ($subQuery) {
                     $subQuery->where('payment_status', '!=', OrderPaymentStatus::CANCEL_FEE_PAYMENT_FINISHED)
                         ->whereNotNull('cancel_fee_percent');
@@ -62,6 +62,7 @@ class ResignController extends ApiController
             $user->resign_status = ResignStatus::PENDING;
             $user->first_resign_description = $firstResignDescription;
             $user->second_resign_description = $request->other_reason;
+            $user->resign_date = now();
 
             $user->save();
         } catch (\Exception $e) {
