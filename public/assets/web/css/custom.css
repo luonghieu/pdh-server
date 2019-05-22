@@ -4365,3 +4365,7 @@ a.init-text-color {
   position: absolute;
   right: 25px;
 }
+
+.leave-done__title {
+  font-weight: bold;
+}
