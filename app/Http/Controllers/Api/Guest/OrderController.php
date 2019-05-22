@@ -185,7 +185,6 @@ class OrderController extends ApiController
     public function skipOrderNominee($id)
     {
         $user = $this->guard()->user();
-
         $order = $user->orders()->find($id);
         $nominee = $order->nominees()->first();
 
