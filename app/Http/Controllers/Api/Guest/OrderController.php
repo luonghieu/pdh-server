@@ -180,4 +180,30 @@ class OrderController extends ApiController
         $user->point += $receive;
         $user->update();
     }
+
+    public function skipOrderNominee($id)
+    {
+        $user = $this->guard()->user();
+
+        $order = $user->orders()->find($id);
+
+        if (!$order) {
+            return $this->respondErrorMessage(trans('messages.order_not_found'), 404);
+        }
+
+        if ($order->status != OrderStatus::OPEN) {
+            return $this->respondErrorMessage(trans('messages.action_not_performed'), 422);
+        }
+
+        try {
+            $order->status = OrderStatus::SKIP_NOMINATION;
+            $order->save();
+
+            return $this->respondWithNoData(trans('messages.skip_order_noninee'));
+        } catch (\Exception $e) {
+            LogService::writeErrorLog($e);
+
+            return $this->respondServerError();
+        }
+    }
 }

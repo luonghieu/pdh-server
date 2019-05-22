@@ -150,6 +150,8 @@ Route::group(['prefix' => 'v1'], function () {
         Route::group(['prefix' => 'orders', 'as' => 'orders.'], function () {
             Route::post('/{id}/cancel', ['as' => 'cancel', 'uses' => 'Guest\OrderController@cancel'])
                 ->where('id', '[0-9]+');
+            Route::post('/{id}/skip', ['as' => 'skip', 'uses' => 'Guest\OrderController@skipOrderNominee'])
+                ->where('id', '[0-9]+');
         });
 
         Route::group(['prefix' => 'cards', 'as' => 'cards.'], function () {

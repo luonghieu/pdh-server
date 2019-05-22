@@ -81,4 +81,5 @@ return [
     'offer_not_found' => 'Offer is not found',
     'timeline_not_found' => 'Timeline is not found',
     'timeline_deleted' => 'Timeline has been deleted',
+    'skip_order_noninee' => 'Your proposal has been cancelled.',
 ];
