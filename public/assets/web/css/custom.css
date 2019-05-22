@@ -4369,3 +4369,7 @@ a.init-text-color {
 .leave-done__title {
   font-weight: bold;
 }
+
+.time-order-nonimee {
+  display: none;
+}

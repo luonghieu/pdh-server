@@ -88,4 +88,5 @@ return [
     'created_request_resign' => '',
     'resign_status_pending' => '',
     'resign_success' => 'Account request resign pending successfully',
+    'skip_order_noninee' => '指名予約の提案が取り下げられました',
 ];
