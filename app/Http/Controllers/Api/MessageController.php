@@ -2,9 +2,12 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\CastOffer;
+use App\Enums\CastOfferStatus;
 use App\Enums\RoomType;
 use App\Enums\SystemMessageType;
 use App\Events\MessageCreated;
+use App\Http\Resources\CastOfferResource;
 use App\Http\Resources\MessageResource;
 use App\Http\Resources\OrderResource;
 use App\Http\Resources\RoomResource;
@@ -54,6 +57,15 @@ class MessageController extends ApiController
             });
         }
 
+        $castOffer = CastOffer::where('status', CastOfferStatus::PENDING)
+            ->where([
+                'user_id' => $ownerId,
+                'guest_id' => $partner,
+            ])->orWhere([
+            'user_id' => $partner,
+            'guest_id' => $ownerId,
+        ])->first();
+
         if ($request->action) {
             $action = $request->action;
             $currentId = $request->current_id;
@@ -86,6 +98,7 @@ class MessageController extends ApiController
         $messages = $messages->toArray();
         $messages['order'] = $room->room_order ? OrderResource::make($room->room_order->load(['casts', 'user'])) : null;
         $messages['room'] = RoomResource::make($room->load('users'));
+        $messages['cast_offer'] = $castOffer ? CastOfferResource::make($castOffer) : null;
 
         if ('html' == $request->response_type) {
             return view('web.content-message', compact('messages'));
@@ -137,7 +150,7 @@ class MessageController extends ApiController
         $message->user_id = $this->guard()->id();
         $message->type = $request->type;
 
-        if ($this->guard()->user()->id == 1) {
+        if (1 == $this->guard()->user()->id) {
             $message->system_type = SystemMessageType::NORMAL;
         }
 

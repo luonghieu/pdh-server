@@ -120,6 +120,7 @@ Route::group(['prefix' => 'v1'], function () {
         });
 
         Route::group(['prefix' => 'offers', 'as' => 'offers.'], function () {
+            Route::post('/{id}/cancel', ['as' => 'cancel', 'uses' => 'Cast\CastOfferController@cancel']);
             Route::post('/', ['as' => 'create', 'uses' => 'Cast\CastOfferController@create']);
         });
     });

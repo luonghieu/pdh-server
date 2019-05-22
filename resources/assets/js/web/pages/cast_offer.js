@@ -47,7 +47,7 @@ function showPriceCoupon(duration = null, coupon = null)
 {
   if(coupon) {
     var params = {
-      type :1,
+      type :3,
       duration :duration,
       total_cast :1,
       nominee_ids : $('#cast-id').val(),
@@ -55,7 +55,6 @@ function showPriceCoupon(duration = null, coupon = null)
       start_time : $('#time-cast-offer').val(),
       class_id : $('#class_cast-id').val(),
     };
-
     if(!couponCastOffer) {
       window.location = '/mypage';
     }
@@ -278,7 +277,7 @@ function createCastOffer(transfer = null)
     date : $('#date-cast-offer').val(),
     start_time : $('#time-cast-offer').val(),
     total_cast :1,
-    type: 1,
+    type: 3,
     nominee_ids : $('#cast-id').val(),
     temp_point: $('#temp-point-offer').val(),
     cast_offer_id: castOfferId,

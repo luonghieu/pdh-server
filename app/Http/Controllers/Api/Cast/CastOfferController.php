@@ -3,8 +3,8 @@
 namespace App\Http\Controllers\Api\Cast;
 
 use App\Cast;
-use App\Enums\CastOrderType;
-use App\Enums\OrderType;
+use App\CastOffer;
+use App\Enums\CastOfferStatus;
 use App\Enums\UserType;
 use App\Http\Controllers\Api\ApiController;
 use App\Http\Resources\CastOfferResource;
@@ -119,5 +119,26 @@ class CastOfferController extends ApiController
         $orderDuration = $orderDuration * 60;
 
         return ($cost / 2) * floor($orderDuration / 15);
+    }
+
+    public function cancel($id)
+    {
+        $user = $this->guard()->user();
+        $offer = CastOffer::where('status', CastOfferStatus::PENDING)->where('user_id', $user->id)->find($id);
+
+        if (!$offer) {
+            return $this->respondErrorMessage(trans('messages.offer_not_found'), 404);
+        }
+
+        try {
+            $offer->status = CastOfferStatus::CANCELED;
+            $offer->save();
+
+            return $this->respondWithData(CastOfferResource::make($offer));
+        } catch (\Exception $e) {
+            LogService::writeErrorLog($e);
+
+            return $this->respondServerError();
+        }
     }
 }
