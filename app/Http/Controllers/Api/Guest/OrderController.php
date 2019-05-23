@@ -200,7 +200,7 @@ class OrderController extends ApiController
             $order->status = OrderStatus::SKIP_NOMINATION;
             $order->save();
 
-            $nominee->notify(new SkipOrderNomination());
+            $nominee->notify(new SkipOrderNomination($user));
 
             return $this->respondWithNoData(trans('messages.skip_order_noninee'));
         } catch (\Exception $e) {
