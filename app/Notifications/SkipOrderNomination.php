@@ -3,8 +3,8 @@
 namespace App\Notifications;
 
 use App\Enums\MessageType;
-use App\Enums\RoomType;
 use App\Enums\UserType;
+use App\Traits\DirectRoom;
 use Illuminate\Bus\Queueable;
 use Illuminate\Notifications\Notification;
 use Illuminate\Contracts\Queue\ShouldQueue;
@@ -14,13 +14,16 @@ use App\Enums\SystemMessageType;
 
 class SkipOrderNomination extends Notification implements ShouldQueue
 {
-    use Queueable;
+    use Queueable, DirectRoom;
+    public $user;
     /**
      * Create a new notification instance.
      *
      * @param $orderId
      */
-    public function __construct(){}
+    public function __construct($user){
+        $this->user = $user;
+    }
 
     /**
      * Get the notification's delivery channels.
@@ -53,9 +56,7 @@ class SkipOrderNomination extends Notification implements ShouldQueue
     {
         $content = '指名予約の提案が取り下げられました';
 
-        $room = $notifiable->rooms()
-            ->where('rooms.type', RoomType::DIRECT)
-            ->where('rooms.is_active', true)->first();
+        $room = $this->createDirectRoom($this->user->id, $notifiable->id);
 
         $roomMessage = $room->messages()->create([
             'user_id' => 1,
@@ -101,9 +102,7 @@ class SkipOrderNomination extends Notification implements ShouldQueue
     {
         $content = '指名予約の提案が取り下げられました';
 
-        $room = $notifiable->rooms()
-            ->where('rooms.type', RoomType::DIRECT)
-            ->where('rooms.is_active', true)->first();
+        $room = $this->createDirectRoom($this->user->id, $notifiable->id);
 
         $roomMessage = $room->messages()->create([
             'user_id' => 1,
