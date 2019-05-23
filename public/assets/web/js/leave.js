@@ -1,5 +1,10 @@
 $(function() {
   //
+  var reason1 = '';
+  var reason2 = '';
+  var reason3 = '';
+  var other_reason = '';
+
   $("#textareaCheck").on("click", function(){
     if ($("#textareaCheck").prop("checked") == true ) {
       $(".leave-comment__input textarea").prop("disabled", false).focus();
@@ -15,6 +20,10 @@ $(function() {
 
   //checkbox 判定
   $(".leave-reason-list .checkbox").on("click", function() {
+    if(reason1 || reason2 || reason3 || other_reason) {
+      $('.js-resign-message').text('');
+    }
+
     if ($(".cb-cancel:checked").length > 0 ) {
       $(".leave-submit").prop("disabled", false);
     } else {
@@ -37,11 +46,6 @@ $(function() {
 
       return false;
     }
-
-    var reason1 = '';
-    var reason2 = '';
-    var reason3 = '';
-    var other_reason = '';
 
     if (document.getElementById("reason1").checked) {
       reason1 = 'サービスの使い方が分からない';
