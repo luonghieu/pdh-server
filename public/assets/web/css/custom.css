@@ -4373,3 +4373,7 @@ a.init-text-color {
 .time-order-nonimee {
   display: none;
 }
+
+#offer .disabled {
+background: #c4c4c4;
+}

@@ -14,6 +14,9 @@ final class OrderStatus extends Enum
     const DENIED = 6;
     const TIMEOUT = 7;
     const SKIP_NOMINATION = 8;
+    const OPEN_FOR_GUEST = 9;
+    const GUEST_DENIED = 10;
+    const CAST_CANCELED = 11;
 
     /**
      * Get the description for an enum value

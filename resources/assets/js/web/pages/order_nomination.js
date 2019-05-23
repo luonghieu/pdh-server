@@ -147,13 +147,13 @@ function priceCoupon(duration, time = null, helper, couponId)
     
     var couponId = parseInt(couponId);
 
-    $castId = $('.cast-id').val();
+    var castId = $('.cast-id').val();
     
     var params = {
       type :3,
       duration :duration,
       total_cast :1,
-      nominee_ids : $castId
+      nominee_ids : castId
     };
 
     if(time){
