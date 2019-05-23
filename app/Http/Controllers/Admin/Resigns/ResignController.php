@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin\Resigns;
 
 use App\Enums\ResignStatus;
+use App\Enums\Status;
 use App\User;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
@@ -79,6 +80,7 @@ class ResignController extends Controller
                         $user->line_qr = null;
                         $user->email = null;
                         $user->password = null;
+                        $user->status = Status::INACTIVE;
                         $user->resign_status = ResignStatus::APPROVED;
                         $user->save();
                         $user->delete();
