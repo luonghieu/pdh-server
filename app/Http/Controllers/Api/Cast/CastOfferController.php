@@ -88,6 +88,7 @@ class CastOfferController extends ApiController
                 'temp_point' => $orderPoint + $allowance,
                 'prefecture_id' => $request->prefecture_id,
                 'total_cast' => 1,
+                'cast_offer_id' => $cast->id,
                 'status' => OrderStatus::OPEN_FOR_GUEST,
                 'type' => OrderType::NOMINATION,
             ]);
