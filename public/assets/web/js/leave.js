@@ -42,26 +42,31 @@ $(function() {
     var reason2 = '';
     var reason3 = '';
     var other_reason = '';
+
     if (document.getElementById("reason1").checked) {
-      var reason1 = 'サービスの使い方が分からない';
+      reason1 = 'サービスの使い方が分からない';
+
+      localStorage.setItem('reason1', reason1);
     }
 
     if (document.getElementById("reason2").checked) {
-      var reason2 = '金額が高すぎる';
+      reason2 = '金額が高すぎる';
+
+      localStorage.setItem('reason2', reason2);
     }
 
     if (document.getElementById("reason3").checked) {
-      var reason3 = '一緒に飲みたいキャストがいない';
+      reason3 = '一緒に飲みたいキャストがいない';
+
+      localStorage.setItem('reason3', reason3);
     }
 
     if (document.getElementById("textareaCheck").checked) {
-      var other_reason = $('textarea#description').val();
+      other_reason = $('textarea#description').val();
+
+      localStorage.setItem('other_reason', other_reason);
     }
 
-    localStorage.setItem('reason1', reason1);
-    localStorage.setItem('reason2', reason2);
-    localStorage.setItem('reason3', reason3);
-    localStorage.setItem('other_reason', other_reason);
 
     window.location.href = '/resigns/confirm';
   })
@@ -75,8 +80,46 @@ $(function() {
     }
   })
 
+  $("#resign-status").on("click", function(e) {
+    if(localStorage.getItem("reason1")){
+      localStorage.removeItem("reason1");
+    }
+
+    if(localStorage.getItem("reason2")){
+      localStorage.removeItem("reason2");
+    }
+
+    if(localStorage.getItem("reason3")){
+      localStorage.removeItem("reason3");
+    }
+
+    if(localStorage.getItem("other_reason")){
+      localStorage.removeItem("other_reason");
+    }
+  })
+  
   // check data when back
   if (localStorage.getItem('reason1') || localStorage.getItem('reason2') || localStorage.getItem('reason3') || localStorage.getItem('other_reason')) {
     $("#leaveSubmit").prop("disabled", false);
+  }
+
+  if($("#leaveSubmit").length) {
+    $(window).on('load', function(){
+      if(localStorage.getItem("reason1")){
+        localStorage.removeItem("reason1");
+      }
+
+      if(localStorage.getItem("reason2")){
+        localStorage.removeItem("reason2");
+      }
+
+      if(localStorage.getItem("reason3")){
+        localStorage.removeItem("reason3");
+      }
+
+      if(localStorage.getItem("other_reason")){
+        localStorage.removeItem("other_reason");
+      }
+    });
   }
 })

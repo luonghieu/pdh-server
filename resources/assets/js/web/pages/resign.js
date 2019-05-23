@@ -1,13 +1,13 @@
 $(document).ready(function() {
   $("#withdraw").on("click", function(e) {
-    var param = {
+    var params = {
       reason1: localStorage.getItem('reason1'),
       reason2: localStorage.getItem('reason2'),
       reason3: localStorage.getItem('reason3'),
       other_reason: localStorage.getItem('other_reason'),
     }
 
-    window.axios.post('/api/v1/resigns/create', param)
+    window.axios.post('/api/v1/resigns/create', params)
       .then(function(response) {
         window.location = '/resigns/complete';
       })
