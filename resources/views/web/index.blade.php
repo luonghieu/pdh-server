@@ -215,20 +215,20 @@
   </div>
 @endsection
 @section('web.script')
-  @if (Session::has('no_active'))
-    <script>
-      jQuery(document).ready(function($) {
-        $('#trigger-freezed-account').trigger('click');
-      })
-    </script>
-  @endif
-  <script>
-    jQuery(document).ready(function($) {
-      $('body').on('click', '#popup-freezed-account', function () {
-        $('#trigger-freezed-account').trigger('click');
-      })
-    })
-  </script>
+  {{--@if (Session::has('no_active'))--}}
+    {{--<script>--}}
+      {{--jQuery(document).ready(function($) {--}}
+        {{--$('#trigger-freezed-account').trigger('click');--}}
+      {{--})--}}
+    {{--</script>--}}
+  {{--@endif--}}
+  {{--<script>--}}
+    {{--jQuery(document).ready(function($) {--}}
+      {{--$('body').on('click', '#popup-freezed-account', function () {--}}
+        {{--$('#trigger-freezed-account').trigger('click');--}}
+      {{--})--}}
+    {{--})--}}
+  {{--</script>--}}
   <script>
     $(function () {
       var popup_mypage = window.sessionStorage.getItem('popup_mypage');
