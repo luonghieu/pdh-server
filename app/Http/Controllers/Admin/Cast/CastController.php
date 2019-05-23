@@ -6,6 +6,7 @@ use App\BankAccount;
 use App\Cast;
 use App\CastClass;
 use App\Enums\BankAccountType;
+use App\Enums\ResignStatus;
 use App\Enums\CastTransferStatus;
 use App\Enums\PointCorrectionType;
 use App\Enums\PointType;
@@ -41,17 +42,10 @@ class CastController extends Controller
                 ->orWhere('cast_transfer_status', CastTransferStatus::OFFICIAL);
         });
 
-        $casts = $casts->where(function ($query) {
-            $query->whereNull('users.deleted_at')->orWhere([
-                ['users.deleted_at', '<>', null],
-                ['users.resign_status', '=', 2],
-            ]);
-        });
-
         $casts = $casts->where(function($query) {
             $query->where('resign_status', ResignStatus::APPROVED)
                 ->orWhere(function($sq) {
-                    $sq->where('type', '<>', UserType::ADMIN)->where('deleted_at', null);
+                    $sq->where('deleted_at', null);
                 });
         });
 
