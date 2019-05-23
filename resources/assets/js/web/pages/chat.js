@@ -529,12 +529,6 @@ $(document).ready(function() {
           .then(function (response) {
               var message = response.data.message;
 
-              $("#message-box").append(`
-                <div class="msg-alert">
-                  <h3><span>`+time+`</span><br>`+message+`</h3>
-                </div>
-              `);
-
               $(".msg-head").html(`
                 <h2><span class="mitei msg-head-ttl">日程未定</span>キャストに予約リクエストしよう！</h2>
               `);
