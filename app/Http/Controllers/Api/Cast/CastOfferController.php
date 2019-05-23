@@ -13,118 +13,131 @@ use App\Http\Resources\OrderResource;
 use App\Notifications\CastCreateOffer;
 use App\Order;
 use App\Services\LogService;
+use App\Traits\DirectRoom;
 use App\User;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 
 class CastOfferController extends ApiController
 {
-    public function create( Request $request )
+    use DirectRoom;
+
+    public function create(Request $request)
     {
         $rules = [
-            'date'       => 'required|date|date_format:Y-m-d|after_or_equal:today',
+            'date' => 'required|date|date_format:Y-m-d|after_or_equal:today',
             'start_time' => 'required|date_format:H:i',
-            'duration'   => 'required|numeric|min:1|max:10',
-            'address'    => 'required',
-            'user_id'    => 'required',
+            'duration' => 'required|numeric|min:1|max:10',
+            'address' => 'required',
+            'user_id' => 'required',
+            'prefecture_id' => 'required',
         ];
 
-        $validator = validator( $request->all(), $rules );
+        $validator = validator($request->all(), $rules);
 
         if ($validator->fails()) {
-            return $this->respondWithValidationError( $validator->errors()->messages() );
+            return $this->respondWithValidationError($validator->errors()->messages());
         }
 
-        $orderStartTime = Carbon::parse( $request->date . ' ' . $request->start_time );
-        $orderEndTime   = $orderStartTime->copy()->addMinutes( $request->duration * 60 );
+        $orderStartTime = Carbon::parse($request->date . ' ' . $request->start_time);
+        $orderEndTime = $orderStartTime->copy()->addMinutes($request->duration * 60);
 
         $user = $this->guard()->user();
-        $prevOrders = Order::whereIn('status', [
-            OrderStatus::OPEN,
-            OrderStatus::ACTIVE,
-            OrderStatus::PROCESSING,
-            OrderStatus::OPEN_FOR_GUEST
-        ])->whereHas('nominees', function ( $query ) use ( $user ) {
-            $query->where( 'user_id', $user->id );
-        } )->get();
+        // $prevOrders = Order::whereIn('status', [
+        //     OrderStatus::OPEN,
+        //     OrderStatus::ACTIVE,
+        //     OrderStatus::PROCESSING,
+        //     OrderStatus::OPEN_FOR_GUEST,
+        // ])->whereHas('nominees', function ($query) use ($user) {
+        //     $query->where('user_id', $user->id);
+        // })->get();
 
-        foreach ($prevOrders as  $order) {
-            $startTime = Carbon::parse( $order->date . ' ' . $order->start_time );
-            $endTime   = $startTime->copy()->addMinutes( $order->duration * 60 );
+        // foreach ($prevOrders as $order) {
+        //     $startTime = Carbon::parse($order->date . ' ' . $order->start_time);
+        //     $endTime = $startTime->copy()->addMinutes($order->duration * 60);
+        //     dump($endTime);
+        //     dump($orderStartTime);
+        //     if ($endTime->gte($orderStartTime)) {
+        //         return $this->respondErrorMessage(trans('messages.time_invalid'), 400);
+        //     }
+        // }
 
-            if ($endTime->gte($orderStartTime)) {
-                return $this->respondErrorMessage( trans( 'messages.time_invalid' ), 400 );
-            }
+        if (now()->second(0)->diffInMinutes($orderStartTime, false) < 29) {
+            return $this->respondErrorMessage(trans('messages.time_invalid'), 400);
         }
 
-        $guest = User::where( 'id', $request->user_id )->where( 'type', UserType::GUEST )->first();
-        if ( ! $guest) {
-            return $this->respondErrorMessage( trans( 'messages.user_not_found' ), 404 );
+        $guest = User::where('id', $request->user_id)->where('type', UserType::GUEST)->first();
+        if (!$guest) {
+            return $this->respondErrorMessage(trans('messages.user_not_found'), 404);
         }
 
-
-        $cast = Cast::find( $user->id );
+        $cast = Cast::find($user->id);
 
         try {
-            $nightTime  = $this->nightTime( $orderStartTime, $orderEndTime );
-            $allowance  = $this->allowance( $nightTime );
-            $orderPoint = $this->orderPoint( $cast, $request->duration );
+            $nightTime = $this->nightTime($orderStartTime, $orderEndTime);
+            $allowance = $this->allowance($nightTime);
+            $orderPoint = $this->orderPoint($cast, $request->duration);
 
-            $order = $guest->orders()->create( [
-                'date'          => $request->date,
-                'start_time'    => $request->start_time,
-                'end_time'      => $orderEndTime,
-                'duration'      => $request->duration,
-                'class_id'      => $cast->class_id,
-                'address'       => $request->address,
-                'temp_point'    => $orderPoint + $allowance,
-                'prefecture_id' => $cast->prefecture_id,
-                'total_cast'    => 1,
-                'status'        => OrderStatus::OPEN_FOR_GUEST,
-                'type'          => OrderType::NOMINATION,
-            ] );
+            $order = $guest->orders()->create([
+                'date' => $request->date,
+                'start_time' => $request->start_time,
+                'end_time' => $orderEndTime,
+                'duration' => $request->duration,
+                'class_id' => $cast->class_id,
+                'address' => $request->address,
+                'temp_point' => $orderPoint + $allowance,
+                'prefecture_id' => $request->prefecture_id,
+                'total_cast' => 1,
+                'status' => OrderStatus::OPEN_FOR_GUEST,
+                'type' => OrderType::NOMINATION,
+            ]);
 
-            $order->nominees()->attach( $cast->id, [
-                'type'        => CastOrderType::NOMINEE,
-                'status'      => CastOrderStatus::ACCEPTED,
-                'cost'        => $cast->cost,
-                'temp_point'  => $orderPoint + $allowance,
-                'accepted_at' => now()
-            ] );
+            $order->nominees()->attach($cast->id, [
+                'type' => CastOrderType::NOMINEE,
+                'status' => CastOrderStatus::ACCEPTED,
+                'cost' => $cast->cost,
+                'temp_point' => $orderPoint + $allowance,
+                'accepted_at' => now(),
+            ]);
 
-            $guest->notify( new CastCreateOffer( $order->id ) );
+            $room = $this->createDirectRoom($guest->id, $cast->id);
 
-            return $this->respondWithData( OrderResource::make( $order ) );
-        } catch ( \Exception $e ) {
-            LogService::writeErrorLog( $e );
+            $order->room_id = $room->id;
+            $order->save();
+
+            $guest->notify(new CastCreateOffer($order->id));
+
+            return $this->respondWithData(OrderResource::make($order));
+        } catch (\Exception $e) {
+            LogService::writeErrorLog($e);
 
             return $this->respondServerError();
         }
     }
 
-    private function nightTime( $startedAt, $stoppedAt )
+    private function nightTime($startedAt, $stoppedAt)
     {
         $nightTime = 0;
-        $startDate = Carbon::parse( $startedAt );
-        $endDate   = Carbon::parse( $stoppedAt );
+        $startDate = Carbon::parse($startedAt);
+        $endDate = Carbon::parse($stoppedAt);
 
-        $allowanceStartTime = Carbon::parse( '00:01:00' );
-        $allowanceEndTime   = Carbon::parse( '04:00:00' );
+        $allowanceStartTime = Carbon::parse('00:01:00');
+        $allowanceEndTime = Carbon::parse('04:00:00');
 
-        $startDay = Carbon::parse( $startDate )->startOfDay();
-        $endDay   = Carbon::parse( $endDate )->startOfDay();
+        $startDay = Carbon::parse($startDate)->startOfDay();
+        $endDay = Carbon::parse($endDate)->startOfDay();
 
-        $timeStart = Carbon::parse( Carbon::parse( $startDate->format( 'H:i:s' ) ) );
-        $timeEnd   = Carbon::parse( Carbon::parse( $endDate->format( 'H:i:s' ) ) );
+        $timeStart = Carbon::parse(Carbon::parse($startDate->format('H:i:s')));
+        $timeEnd = Carbon::parse(Carbon::parse($endDate->format('H:i:s')));
 
         $allowance = false;
 
-        if ($startDay->diffInDays( $endDay ) != 0 && $endDate->diffInMinutes( $endDay ) != 0) {
+        if ($startDay->diffInDays($endDay) != 0 && $endDate->diffInMinutes($endDay) != 0) {
             $allowance = true;
         }
 
-        if ($timeStart->between( $allowanceStartTime, $allowanceEndTime ) || $timeEnd->between( $allowanceStartTime,
-                $allowanceEndTime )) {
+        if ($timeStart->between($allowanceStartTime, $allowanceEndTime) || $timeEnd->between($allowanceStartTime,
+            $allowanceEndTime)) {
             $allowance = true;
         }
 
@@ -133,13 +146,13 @@ class CastOfferController extends ApiController
         }
 
         if ($allowance) {
-            $nightTime = $endDate->diffInMinutes( $endDay );
+            $nightTime = $endDate->diffInMinutes($endDay);
         }
 
         return $nightTime;
     }
 
-    private function allowance( $nightTime )
+    private function allowance($nightTime)
     {
         if ($nightTime) {
             return 4000;
@@ -148,11 +161,45 @@ class CastOfferController extends ApiController
         return 0;
     }
 
-    private function orderPoint( $cast, $orderDuration )
+    private function orderPoint($cast, $orderDuration)
     {
-        $cost          = $cast->cost;
+        $cost = $cast->cost;
         $orderDuration = $orderDuration * 60;
 
-        return ( $cost / 2 ) * floor( $orderDuration / 15 );
+        return ($cost / 2) * floor($orderDuration / 15);
+    }
+
+    public function cancel($id)
+    {
+        $user = $this->guard()->user();
+        $order = Order::where('status', OrderStatus::OPEN_FOR_GUEST)->whereNull('canceled_at')->find($id);
+
+        if (!$order) {
+            return $this->respondErrorMessage(trans('messages.order_not_found'), 404);
+        }
+
+        try {
+            $nominee = $order->nominees()->first();
+
+            $order->nominees()->updateExistingPivot(
+                $nominee->id,
+                [
+                    'status' => CastOrderStatus::TIMEOUT,
+                    'canceled_at' => now(),
+                ],
+                false
+            );
+
+            $order->status = OrderStatus::CAST_CANCELED;
+            $order->canceled_at = now();
+
+            $order->save();
+
+            return $this->respondWithData(OrderResource::make($order));
+        } catch (\Exception $e) {
+            LogService::writeErrorLog($e);
+
+            return $this->respondServerError();
+        }
     }
 }

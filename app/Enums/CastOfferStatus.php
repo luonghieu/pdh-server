@@ -9,4 +9,5 @@ final class CastOfferStatus extends Enum
     const PENDING = 1;
     const DENIED = 2;
     const APPROVED = 3;
+    const CANCELED = 4;
 }

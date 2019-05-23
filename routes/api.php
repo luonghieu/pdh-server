@@ -119,8 +119,9 @@ Route::group(['prefix' => 'v1'], function () {
             Route::post('/', ['as' => 'bank_accounts', 'uses' => 'Cast\BankAccountController@create']);
         });
 
-        Route::group(['prefix' => 'offers', 'as' => 'offers.'], function () {
-            Route::post('/', ['as' => 'create', 'uses' => 'Cast\CastOfferController@create']);
+        Route::group(['as' => 'offers.'], function () {
+            Route::post('/orders/{id}/cancel', ['as' => 'cancel', 'uses' => 'Cast\CastOfferController@cancel']);
+            Route::post('/order_create', ['as' => 'create', 'uses' => 'Cast\CastOfferController@create']);
         });
     });
 

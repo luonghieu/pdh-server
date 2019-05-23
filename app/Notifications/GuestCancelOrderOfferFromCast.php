@@ -66,7 +66,7 @@ class GuestCancelOrderOfferFromCast extends Notification implements ShouldQueue
             'user_id' => 1,
             'type' => MessageType::SYSTEM,
             'message' => $message,
-            'system_type' => SystemMessageType::NORMAL,
+            'system_type' => SystemMessageType::NOTIFY,
         ]);
 
         $castPrivateRoomMessage->recipients()->attach($notifiable->id, ['room_id' => $castPrivateRoom->id]);
@@ -116,7 +116,7 @@ class GuestCancelOrderOfferFromCast extends Notification implements ShouldQueue
             'user_id' => 1,
             'type' => MessageType::SYSTEM,
             'message' => $message,
-            'system_type' => SystemMessageType::NORMAL,
+            'system_type' => SystemMessageType::NOTIFY,
         ]);
 
         $castPrivateRoomMessage->recipients()->attach($notifiable->id, ['room_id' => $castPrivateRoom->id]);

@@ -47,7 +47,7 @@ function showPriceCoupon(duration = null, coupon = null)
 {
   if(coupon) {
     var params = {
-      type :1,
+      type :3,
       duration :duration,
       total_cast :1,
       nominee_ids : $('#cast-id').val(),
@@ -55,7 +55,6 @@ function showPriceCoupon(duration = null, coupon = null)
       start_time : $('#time-cast-offer').val(),
       class_id : $('#class_cast-id').val(),
     };
-
     if(!couponCastOffer) {
       window.location = '/mypage';
     }
@@ -173,6 +172,8 @@ function showPriceCoupon(duration = null, coupon = null)
       });
   } else {
     var pointShow = $('#current-point-cast-offer').val();
+    pointShow = parseInt(pointShow).toLocaleString(undefined,{ minimumFractionDigits: 0 });
+    
     $('#point-sale-coupon').html('');
     $('#current-point').html(`合計<span >${pointShow} P</span>`);
   }
@@ -268,20 +269,11 @@ function createCastOffer(transfer = null)
 {
   $('.modal-confirm-cast-offer').css('display','none');
   $('#confirm-cast-order').prop('disabled', true);
-  var castOfferId = $('#cast_offer-id').val();
+  var castOrderId = $('#cast_offer-id').val();
 
   var params = {
-    prefecture_id: $('#prefecture-cast-offer').val(),
-    address: $('#address-cast-offer').val(),
-    class_id : $('#class_cast-id').val(),
-    duration: $('#duration-cast-offer').val(),
-    date : $('#date-cast-offer').val(),
-    start_time : $('#time-cast-offer').val(),
-    total_cast :1,
-    type: 1,
-    nominee_ids : $('#cast-id').val(),
     temp_point: $('#temp-point-offer').val(),
-    cast_offer_id: castOfferId,
+    order_id: castOrderId,
   }
 
   if ($('#total-point-cast-offer').val()) {
@@ -296,8 +288,8 @@ function createCastOffer(transfer = null)
 
   if(localStorage.getItem("cast_offer")){
     var castOffer = JSON.parse(localStorage.getItem("cast_offer"));
-    if(castOffer[castOfferId]) {
-      castOffer = castOffer[castOfferId];
+    if(castOffer[castOrderId]) {
+      castOffer = castOffer[castOrderId];
       if(castOffer.coupon) {
 
         var couponIds = couponCastOffer.map(function (e) {
@@ -434,9 +426,9 @@ function cancelCastOffer()
 {
   
   $('body').on('click', "#canceled-cast-offer", function(){
-    var castOfferId = $('#cast_offer-id').val();
+    var castOrderId = $('#cast_offer-id').val();
 
-    window.axios.post('/api/v1/guest/cast_offers/' + parseInt(castOfferId) +'/cancel')
+    window.axios.post('/api/v1/guest/cast_offers/' + parseInt(castOrderId) +'/cancel')
       .then(function(response) {
         window.location.href = '/mypage';
       })
@@ -484,12 +476,12 @@ $(document).ready(function(){
     handlerPaymentMethod();
     selectedCouponsCastOffer();
     cancelCastOffer();
-    var castOfferId = $('#cast_offer-id').val();
+    var castOrderId = $('#cast_offer-id').val();
 
     if(localStorage.getItem("cast_offer")){
       let castOffer = JSON.parse(localStorage.getItem("cast_offer"));
-      if(castOffer[castOfferId]) {
-        castOffer = castOffer[castOfferId];
+      if(castOffer[castOrderId]) {
+        castOffer = castOffer[castOrderId];
 
         //payment
         if(castOffer.payment_method) {

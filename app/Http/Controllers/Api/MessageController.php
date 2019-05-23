@@ -137,7 +137,7 @@ class MessageController extends ApiController
         $message->user_id = $this->guard()->id();
         $message->type = $request->type;
 
-        if ($this->guard()->user()->id == 1) {
+        if (1 == $this->guard()->user()->id) {
             $message->system_type = SystemMessageType::NORMAL;
         }
 

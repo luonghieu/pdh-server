@@ -2,23 +2,19 @@
 
 namespace App\Http\Controllers\Api\Guest;
 
-use App\Cast;
-use App\CastOffer;
 use App\Coupon;
-use App\Enums\CastOfferStatus;
 use App\Enums\CastOrderStatus;
-use App\Enums\CastOrderType;
 use App\Enums\CouponType;
 use App\Enums\InviteCodeHistoryStatus;
 use App\Enums\OrderPaymentMethod;
+use App\Enums\OrderStatus;
 use App\Http\Controllers\Api\ApiController;
-use App\Http\Resources\CastOfferResource;
 use App\Http\Resources\OrderResource;
 use App\Notifications\CreateNominationOrdersForCast;
 use App\Notifications\GuestCancelOrderOfferFromCast;
+use App\Order;
 use App\Point;
 use App\Services\LogService;
-use App\Traits\DirectRoom;
 use App\User;
 use Carbon\Carbon;
 use DB;
@@ -28,49 +24,38 @@ use JWTAuth;
 
 class CastOfferController extends ApiController
 {
-    use DirectRoom;
-
-    public function show($id)
-    {
-        $user = $this->guard()->user();
-        $offer = CastOffer::where('status', CastOfferStatus::PENDING)->where('guest_id', $user->id)->find($id);
-
-        if (!$offer) {
-            return $this->respondErrorMessage(trans('messages.offer_not_found'), 404);
-        }
-
-        $start_time = Carbon::parse($offer->date . ' ' . $offer->start_time);
-        if (now()->second(0)->diffInMinutes($start_time, false) < 29) {
-            return $this->respondErrorMessage(trans('messages.order_timeout'), 400);
-        }
-
-        return $this->respondWithData(new CastOfferResource($offer));
-    }
-
     public function cancel($id)
     {
         $user = $this->guard()->user();
-        $offer = CastOffer::where('status', CastOfferStatus::PENDING)->where('guest_id', $user->id)->find($id);
+        $order = Order::where('status', OrderStatus::OPEN_FOR_GUEST)->find($id);
 
-        if (!$offer) {
-            return $this->respondErrorMessage(trans('messages.offer_not_found'), 404);
-        }
-
-        $start_time = Carbon::parse($offer->date . ' ' . $offer->start_time);
-        if (now()->second(0)->diffInMinutes($start_time, false) < 29) {
-            return $this->respondErrorMessage(trans('messages.order_timeout'), 400);
+        if (!$order) {
+            return $this->respondErrorMessage(trans('messages.order_not_found'), 404);
         }
 
         try {
-            $offer->status = CastOfferStatus::DENIED;
-            $offer->save();
+            $nominee = $order->nominees()->first();
 
-            \Notification::send($offer->cast, new GuestCancelOrderOfferFromCast($offer));
+            $order->nominees()->updateExistingPivot(
+                $nominee->id,
+                [
+                    'status' => CastOrderStatus::TIMEOUT,
+                    'canceled_at' => now(),
+                ],
+                false
+            );
+
+            $order->status = OrderStatus::GUEST_DENIED;
+            $order->canceled_at = Carbon::now();
+
+            $order->save();
+
+            \Notification::send($nominee, new GuestCancelOrderOfferFromCast($order));
+
+            return $this->respondWithData(new OrderResource($order));
         } catch (\Exception $e) {
             LogService::writeErrorLog($e);
         }
-
-        return $this->respondWithData(new CastOfferResource($offer));
     }
 
     public function create(Request $request)
@@ -78,17 +63,8 @@ class CastOfferController extends ApiController
         $user = $this->guard()->user();
 
         $rules = [
-            'prefecture_id' => 'nullable|exists:prefectures,id',
-            'address' => 'required',
-            'date' => 'required|date|date_format:Y-m-d|after_or_equal:today',
-            'start_time' => 'required|date_format:H:i',
-            'duration' => 'required|numeric|min:1|max:10',
-            'total_cast' => 'required|numeric|min:1',
             'temp_point' => 'required',
-            'class_id' => 'required|exists:cast_classes,id',
-            'type' => 'required|in:1,2,3,4',
-            'tags' => '',
-            'nominee_ids' => '',
+            'order_id' => 'required',
         ];
 
         $validator = validator($request->all(), $rules);
@@ -97,13 +73,13 @@ class CastOfferController extends ApiController
             return $this->respondWithValidationError($validator->errors()->messages());
         }
 
-        $offer = CastOffer::where('status', CastOfferStatus::PENDING)->where('guest_id', $user->id)->find($request->cast_offer_id);
-
         if (!$user->status) {
             return $this->respondErrorMessage(trans('messages.freezing_account'), 403);
         }
 
-        if (!$offer) {
+        $order = Order::where('status', OrderStatus::OPEN_FOR_GUEST)->find($request->order_id);
+
+        if (!$order) {
             return $this->respondErrorMessage(trans('messages.action_not_performed'), 422);
         }
 
@@ -140,21 +116,8 @@ class CastOfferController extends ApiController
             }
         }
 
-        $input = $request->only([
-            'prefecture_id',
-            'address',
-            'date',
-            'start_time',
-            'duration',
-            'total_cast',
-            'temp_point',
-            'class_id',
-            'type',
-            'cast_offer_id',
-        ]);
-
-        $start_time = Carbon::parse($offer->date . ' ' . $offer->start_time);
-        $end_time = $start_time->copy()->addHours((int) $offer->duration);
+        $start_time = Carbon::parse($order->date . ' ' . $order->start_time);
+        $end_time = $start_time->copy()->addHours((int) $order->duration);
 
         if (now()->second(0)->diffInMinutes($start_time, false) < 29) {
             return $this->respondErrorMessage(trans('messages.time_invalid'), 400);
@@ -169,8 +132,6 @@ class CastOfferController extends ApiController
         if ($request->payment_method) {
             $input['payment_method'] = $request->payment_method;
         }
-
-        $input['end_time'] = $end_time->format('H:i');
 
         $coupon = null;
         if ($request->coupon_id) {
@@ -188,7 +149,11 @@ class CastOfferController extends ApiController
 
         try {
             DB::beginTransaction();
-            $order = $user->orders()->create($input);
+
+            $nominee = $order->nominees()->first();
+
+            $order->temp_point = $request->temp_point;
+            $order->status = OrderStatus::ACTIVE;
 
             if ($coupon) {
                 $order->coupon_id = $request->coupon_id;
@@ -200,31 +165,6 @@ class CastOfferController extends ApiController
 
                 $user->coupons()->attach($request->coupon_id, ['order_id' => $order->id]);
             }
-
-            $listNomineeIds = explode(",", trim($request->nominee_ids, ","));
-
-            $order->nominees()->attach($listNomineeIds, [
-                'type' => CastOrderType::NOMINEE,
-                'status' => CastOrderStatus::OPEN,
-            ]);
-
-            $ownerId = $order->user_id;
-            $nominee = $order->nominees()->first();
-            $room = $this->createDirectRoom($ownerId, $nominee->id);
-
-            $order->room_id = $room->id;
-            $order->save();
-
-            $order->nominees()->updateExistingPivot(
-                $nominee->id,
-                [
-                    'cost' => $nominee->cost,
-                ],
-                false
-            );
-
-            $offer->status = CastOfferStatus::APPROVED;
-            $offer->save();
 
             $nominee->notify(
                 (new CreateNominationOrdersForCast($order->id))->delay(now()->addSeconds(3))
