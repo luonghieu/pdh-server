@@ -109,6 +109,7 @@
                    </a>
                 </th>
                 <th>希望人数</th>
+                <th>提案したキャスト</th>
                 <th>指名キャスト</th>
                 <th>応募キャスト</th>
                 <th class="sorting{{ (request()->status) ? '_' . request()->status : '' }}">
@@ -172,6 +173,8 @@
                     </td>
                     @endif
                   @endif
+                  <td>
+                    <a href="{{ route('admin.users.show', ['user' => $order->cast_offer_id]) }}">{{ $order->cast_offer_id }}</a></td>
                   @if (App\Enums\OrderType::NOMINATION == $order->type)
                   <td>-</td>
                   @else
