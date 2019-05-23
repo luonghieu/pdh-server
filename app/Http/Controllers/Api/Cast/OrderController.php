@@ -3,11 +3,14 @@
 namespace App\Http\Controllers\Api\Cast;
 
 use App\Cast;
+use App\CastClass;
+use App\Enums\CastClassType;
 use App\Enums\CastOrderStatus;
 use App\Enums\MessageType;
 use App\Enums\OrderScope;
 use App\Enums\OrderStatus;
 use App\Enums\OrderType;
+use App\Enums\UserType;
 use App\Events\MessageCreated;
 use App\Http\Controllers\Api\ApiController;
 use App\Http\Resources\MessageResource;
@@ -51,6 +54,8 @@ class OrderController extends ApiController
                 $orders->whereDate('date', '>=', $tomorow);
             }
 
+
+
             $orders->where(function ($query) use ($user) {
                 $query->whereDoesntHave('nominees', function ($query) use ($user) {
                     $query->where('user_id', $user->id);
@@ -66,9 +71,15 @@ class OrderController extends ApiController
                         });
                 })
                 ->where('status', OrderStatus::OPEN)
-                ->where('class_id', $user->class_id)
+
                 ->orderBy('date')
                 ->orderBy('start_time');
+
+            if ($user->class_id == CastClassType::PLANTIUM) {
+                $orders->whereIn('class_id', [CastClassType::BRONZE, CastClassType::PLANTIUM]);
+            } else {
+                $orders->where('class_id', $user->class_id);
+            }
         } elseif (isset($request->status)) {
             $orders->where(function ($query) use ($user) {
                 $query->whereHas('nominees', function ($query) use ($user) {
