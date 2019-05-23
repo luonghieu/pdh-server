@@ -114,6 +114,7 @@ class Room extends Model
                     OrderStatus::PROCESSING,
                     OrderStatus::ACTIVE,
                     OrderStatus::OPEN,
+                    OrderStatus::OPEN_FOR_GUEST,
                 ];
 
                 $order = Order::where('room_id', $this->id)
