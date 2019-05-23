@@ -15,6 +15,10 @@ $(function() {
   // textarea 文字数　コントロール
   $(".leave-comment__input textarea").on("keydown keyup keypress change", function(e) {
     let sum = $(this).val().length;
+    if(sum > 180) {
+      sum = 180;
+    }
+    
     $(".leave-comment__sum p").text(sum.toFixed());
   });
 
