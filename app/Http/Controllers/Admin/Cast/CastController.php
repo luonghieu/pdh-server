@@ -35,10 +35,24 @@ class CastController extends Controller
         $keyword = $request->search;
         $isSchedule = $request->is_schedule;
         $orderBy = $request->only('last_active_at', 'rank', 'class_id');
-        $casts = User::where('type', UserType::CAST)->where(function($query) {
+        $casts = User::withTrashed()->where('type', UserType::CAST)->where(function($query) {
             $query->whereNull('cast_transfer_status')
                 ->orWhere('cast_transfer_status', CastTransferStatus::APPROVED)
                 ->orWhere('cast_transfer_status', CastTransferStatus::OFFICIAL);
+        });
+
+        $casts = $casts->where(function ($query) {
+            $query->whereNull('users.deleted_at')->orWhere([
+                ['users.deleted_at', '<>', null],
+                ['users.resign_status', '=', 2],
+            ]);
+        });
+
+        $casts = $casts->where(function($query) {
+            $query->where('resign_status', ResignStatus::APPROVED)
+                ->orWhere(function($sq) {
+                    $sq->where('type', '<>', UserType::ADMIN)->where('deleted_at', null);
+                });
         });
 
         $fromDate = $request->from_date ? Carbon::parse($request->from_date)->startOfDay() : null;

@@ -28,7 +28,12 @@ class UserController extends Controller
         $orderBy = $request->only('id', 'status', 'last_active_at');
         $keyword = $request->search;
 
-        $users = User::where('type', '<>', UserType::ADMIN);
+        $users = User::withTrashed()->where(function($query) {
+            $query->where('resign_status', ResignStatus::APPROVED)
+                ->orWhere(function($sq) {
+                    $sq->where('type', '<>', UserType::ADMIN)->where('deleted_at', null);
+                });
+        });
 
         if ($request->has('from_date') && !empty($request->from_date)) {
             $fromDate = Carbon::parse($request->from_date)->startOfDay();
