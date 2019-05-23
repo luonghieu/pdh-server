@@ -88,9 +88,9 @@
       <div class="reservation-cast__content">
         <div class="reservation-cast__info">
           <div class="reservation-cast__photo">
-            @if($order->cast_offer->avatars)
-              @if (@getimagesize($order->cast_offer->avatars['thumbnail']))
-                <img style="border-radius: 15px;" src="{{ $order->cast_offer->avatars['thumbnail'] }}" alt="">
+            @if($order->nominees[0]->avatars)
+              @if (@getimagesize($order->nominees[0]->avatars['thumbnail']))
+                <img style="border-radius: 15px;" src="{{ $order->nominees[0]->avatars['thumbnail'] }}" alt="">
                 @else
                 <img src="{{ asset('assets/web/images/gm1/ic_default_avatar@3x.png') }}" alt="">
               @endif
@@ -99,12 +99,12 @@
             @endif
           </div>
           <div class="reservation-cast__name">
-            <p>{{ $order->cast_offer->nickname }}</p>
-            <p>{{ $order->cast_offer->age }}歳</p>
+            <p>{{ $order->nominees[0]->nickname }}</p>
+            <p>{{ $order->nominees[0]->age }}歳</p>
           </div>
           <div class="reservation-cast__level">
             <p class="reservation-cast__daiamond">{{ $order->castClass->name }}</p>
-            <p class="reservation-cast__pric">30分あたりの料金<span style="font-weight: bold;">{{ number_format($order->cast_offer->cost ) }} P</span>
+            <p class="reservation-cast__pric">30分あたりの料金<span style="font-weight: bold;">{{ number_format($order->nominees[0]->cost ) }} P</span>
             </p>
           </div>
         </div>
@@ -123,7 +123,7 @@
           <input type="hidden" id="prefecture-cast-offer" value="{{ $order->prefecture_id }}">
           <input type="hidden" id="address-cast-offer" value="{{ $order->address }}">
           <input type="hidden" id="cast_offer-id" value="{{ $order->id }}">
-          <input type="hidden" id="cast-id" value="{{ $order->cast_offer->id }}">
+          <input type="hidden" id="cast-id" value="{{ $order->nominees[0]->id }}">
           <input type="hidden" id="class_cast-id" value="{{ $order->castClass->id }}">
           <input type="hidden" id="date-cast-offer" value="{{ Carbon\Carbon::parse($order->date)->format('Y-m-d') }}">
           <input type="hidden" id="time-cast-offer" value="{{ Carbon\Carbon::parse($order->start_time)->format('H:i') }}">

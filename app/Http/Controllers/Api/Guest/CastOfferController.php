@@ -4,7 +4,6 @@ namespace App\Http\Controllers\Api\Guest;
 
 use App\Coupon;
 use App\Enums\CastOrderStatus;
-use App\Enums\CastOrderType;
 use App\Enums\CouponType;
 use App\Enums\InviteCodeHistoryStatus;
 use App\Enums\OrderPaymentMethod;
@@ -35,11 +34,21 @@ class CastOfferController extends ApiController
         }
 
         try {
+            $nominee = $order->nominees()->first();
+
+            $order->nominees()->updateExistingPivot(
+                $nominee->id,
+                [
+                    'status' => CastOrderStatus::TIMEOUT,
+                    'canceled_at' => now(),
+                ],
+                false
+            );
+
             $order->status = OrderStatus::GUEST_DENIED;
             $order->canceled_at = Carbon::now();
 
             $order->save();
-            $nominee = $order->nominees()->first();
 
             \Notification::send($nominee, new GuestCancelOrderOfferFromCast($order));
 
@@ -64,11 +73,11 @@ class CastOfferController extends ApiController
             return $this->respondWithValidationError($validator->errors()->messages());
         }
 
-        $order = Order::where('status', OrderStatus::OPEN)->whereNotNull('cast_offer_id')->find($request->order_id);
-
         if (!$user->status) {
             return $this->respondErrorMessage(trans('messages.freezing_account'), 403);
         }
+
+        $order = Order::where('status', OrderStatus::OPEN_FOR_GUEST)->find($request->order_id);
 
         if (!$order) {
             return $this->respondErrorMessage(trans('messages.action_not_performed'), 422);
@@ -141,18 +150,9 @@ class CastOfferController extends ApiController
         try {
             DB::beginTransaction();
 
-            $listNomineeIds = [$order->cast_offer_id];
-
-            $nominee = $order->cast_offer;
-
-            $order->nominees()->attach($listNomineeIds, [
-                'type' => CastOrderType::NOMINEE,
-                'status' => CastOrderStatus::OPEN,
-                'cost' => $order->cast_offer->cost,
-            ]);
+            $nominee = $order->nominees()->first();
 
             $order->temp_point = $request->temp_point;
-            $order->cast_offer_id = null;
 
             if ($coupon) {
                 $order->coupon_id = $request->coupon_id;
@@ -181,7 +181,6 @@ class CastOfferController extends ApiController
 
             return $this->respondWithData(new OrderResource($order));
         } catch (\Exception $e) {
-            dd($e);
             DB::rollBack();
             LogService::writeErrorLog($e);
 

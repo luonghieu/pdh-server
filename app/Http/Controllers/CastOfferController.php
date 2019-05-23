@@ -15,7 +15,7 @@ class CastOfferController extends Controller
     public function index(Request $request)
     {
         if ($request->id) {
-            $order = Order::where('status', OrderStatus::OPEN)->whereNotNull('cast_offer_id')
+            $order = Order::where('status', OrderStatus::OPEN_FOR_GUEST)->whereNull('canceled_at')
                 ->find($request->id);
 
             if (!isset($order)) {

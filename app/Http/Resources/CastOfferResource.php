@@ -2,6 +2,7 @@
 
 namespace App\Http\Resources;
 
+use App\Repositories\PrefectureRepository;
 use App\Traits\ResourceResponse;
 use Illuminate\Http\Resources\Json\Resource;
 
@@ -23,6 +24,8 @@ class CastOfferResource extends Resource
             'cast' => $this->cast,
             'guest' => $this->guest,
             'address' => $this->address,
+            'prefecture_id' => $this->prefecture_id,
+            'prefecture' => $this->prefecture_id ? app(PrefectureRepository::class)->find($this->prefecture_id)->name : '',
             'date' => $this->date,
             'start_time' => $this->start_time,
             'duration' => $this->duration,
