@@ -181,6 +181,7 @@ class UserController extends Controller
         $user->line_qr = null;
         $user->email = null;
         $user->password = null;
+        $user->status = Status::INACTIVE;
         $user->resign_status = ResignStatus::APPROVED;
 
         $user->save();
