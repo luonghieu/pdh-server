@@ -70,6 +70,7 @@ class CastCreateOffer extends Notification implements ShouldQueue
             'type' => MessageType::SYSTEM,
             'message' => $roomMesage,
             'system_type' => SystemMessageType::NORMAL,
+            'cast_order_id' => $this->order->id,
         ]);
         $roomMessage->recipients()->attach($notifiable->id, ['room_id' => $room->id]);
 
@@ -89,7 +90,7 @@ class CastCreateOffer extends Notification implements ShouldQueue
                     'extra' => [
                         'push_id' => $pushId,
                         'send_from' => $send_from,
-                        'order_id' => $this->offer->id,
+                        'order_id' => $this->order->id,
                         'room_id' => $room->id,
                     ],
                 ],
@@ -98,7 +99,7 @@ class CastCreateOffer extends Notification implements ShouldQueue
                     'extra' => [
                         'push_id' => $pushId,
                         'send_from' => $send_from,
-                        'cast_offer_id' => $this->offer->id,
+                        'order_id' => $this->order->id,
                         'room_id' => $room->id,
                     ],
                 ],
@@ -120,6 +121,7 @@ class CastCreateOffer extends Notification implements ShouldQueue
             'type' => MessageType::SYSTEM,
             'message' => $roomMesage,
             'system_type' => SystemMessageType::NORMAL,
+            'cast_order_id' => $this->order->id,
         ]);
         $roomMessage->recipients()->attach($notifiable->id, ['room_id' => $room->id]);
 
