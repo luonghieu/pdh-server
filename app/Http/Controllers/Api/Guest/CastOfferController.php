@@ -166,6 +166,14 @@ class CastOfferController extends ApiController
                 $user->coupons()->attach($request->coupon_id, ['order_id' => $order->id]);
             }
 
+            $order->nominees()->updateExistingPivot(
+                $nominee->id,
+                [
+                    'temp_point' => $request->temp_point,
+                ],
+                false
+            );
+
             $nominee->notify(
                 (new CreateNominationOrdersForCast($order->id))->delay(now()->addSeconds(3))
             );

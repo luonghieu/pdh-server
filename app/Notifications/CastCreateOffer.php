@@ -2,7 +2,6 @@
 
 namespace App\Notifications;
 
-use App\CastOffer;
 use App\Enums\DeviceType;
 use App\Enums\MessageType;
 use App\Enums\ProviderType;
