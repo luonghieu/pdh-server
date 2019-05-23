@@ -108,7 +108,7 @@ class CastCreateOffer extends Notification implements ShouldQueue
     {
         $cast = $this->order->nominees()->first();
         $room = $this->createDirectRoom($this->order->user_id, $cast->id);
-        $roomMesage = '●●さんから予約リクエストがありました。'
+        $roomMesage = $cast->nickname . 'さんから予約リクエストがありました。'
             . PHP_EOL . 'コチラから予約リクエストを確認してください。';
         $roomMessage = $room->messages()->create([
             'user_id' => 1,
