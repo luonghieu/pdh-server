@@ -172,6 +172,8 @@ function showPriceCoupon(duration = null, coupon = null)
       });
   } else {
     var pointShow = $('#current-point-cast-offer').val();
+    pointShow = parseInt(pointShow).toLocaleString(undefined,{ minimumFractionDigits: 0 });
+    
     $('#point-sale-coupon').html('');
     $('#current-point').html(`合計<span >${pointShow} P</span>`);
   }

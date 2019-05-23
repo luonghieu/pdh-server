@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use App\CastOffer;
-use App\Enums\CastOfferStatus;
+use App\Enums\OrderStatus;
+use App\Order;
 use App\Services\LogService;
 use Auth;
 use GuzzleHttp\Client;
@@ -15,9 +15,10 @@ class CastOfferController extends Controller
     public function index(Request $request)
     {
         if ($request->id) {
-            $castOffer = CastOffer::where('status', CastOfferStatus::PENDING)->find($request->id);
+            $order = Order::where('status', OrderStatus::OPEN)->whereNotNull('cast_offer_id')
+                ->find($request->id);
 
-            if (!isset($castOffer)) {
+            if (!isset($order)) {
                 return redirect()->route('web.index');
             }
         } else {
@@ -44,6 +45,6 @@ class CastOfferController extends Controller
             abort(500);
         }
 
-        return view('web.orders.cast_offer', compact('castOffer', 'coupons'));
+        return view('web.orders.cast_offer', compact('order', 'coupons'));
     }
 }

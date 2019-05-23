@@ -76,7 +76,7 @@
 
 @endsection
 @section('web.content')
-  @if(isset($castOffer))
+  @if(isset($order))
   <div class="page-header-timeline">
         <h1 class="text-bold">タイムライン</h1>
     </div>
@@ -88,9 +88,9 @@
       <div class="reservation-cast__content">
         <div class="reservation-cast__info">
           <div class="reservation-cast__photo">
-            @if($castOffer->cast->avatars)
-              @if (@getimagesize($castOffer->cast->avatars[0]['thumbnail']))
-                <img style="border-radius: 15px;" src="{{ $castOffer->cast->avatars[0]['thumbnail'] }}" alt="">
+            @if($order->cast_offer->avatars)
+              @if (@getimagesize($order->cast_offer->avatars['thumbnail']))
+                <img style="border-radius: 15px;" src="{{ $order->cast_offer->avatars['thumbnail'] }}" alt="">
                 @else
                 <img src="{{ asset('assets/web/images/gm1/ic_default_avatar@3x.png') }}" alt="">
               @endif
@@ -99,34 +99,34 @@
             @endif
           </div>
           <div class="reservation-cast__name">
-            <p>{{ $castOffer->cast->nickname }}</p>
-            <p>{{ $castOffer->cast->age }}歳</p>
+            <p>{{ $order->cast_offer->nickname }}</p>
+            <p>{{ $order->cast_offer->age }}歳</p>
           </div>
           <div class="reservation-cast__level">
-            <p class="reservation-cast__daiamond">{{ $castOffer->castClass->name }}</p>
-            <p class="reservation-cast__pric">30分あたりの料金<span style="font-weight: bold;">{{ number_format($castOffer->cast->cost ) }} P</span>
+            <p class="reservation-cast__daiamond">{{ $order->castClass->name }}</p>
+            <p class="reservation-cast__pric">30分あたりの料金<span style="font-weight: bold;">{{ number_format($order->cast_offer->cost ) }} P</span>
             </p>
           </div>
         </div>
         <div class="reservation-info">
           <div class="reservation-info__date">
             <div class="reservation-info__day">
-              {{ Carbon\Carbon::parse($castOffer->date)->format('m月d日') }}
-              ({{ dayOfWeek()[Carbon\Carbon::parse($castOffer->date)->dayOfWeek] }})
+              {{ Carbon\Carbon::parse($order->date)->format('m月d日') }}
+              ({{ dayOfWeek()[Carbon\Carbon::parse($order->date)->dayOfWeek] }})
             </div>
             <div class="reservation-info__time">
-              {{ Carbon\Carbon::parse($castOffer->start_time)->format('H:i') }}~<span>({{ $castOffer->duration }}時間) </span>
-              <input type="hidden" id="duration-cast-offer" value="{{ $castOffer->duration }}">
+              {{ Carbon\Carbon::parse($order->start_time)->format('H:i') }}~<span>({{ $order->duration }}時間) </span>
+              <input type="hidden" id="duration-cast-offer" value="{{ $order->duration }}">
             </div>
           </div>
-          <div class="reservation-info__place">{{ $castOffer->address }}</div>
-          <input type="hidden" id="prefecture-cast-offer" value="{{ $castOffer->prefecture_id }}">
-          <input type="hidden" id="address-cast-offer" value="{{ $castOffer->address }}">
-          <input type="hidden" id="cast_offer-id" value="{{ $castOffer->id }}">
-          <input type="hidden" id="cast-id" value="{{ $castOffer->user_id }}">
-          <input type="hidden" id="class_cast-id" value="{{ $castOffer->castClass->id }}">
-          <input type="hidden" id="date-cast-offer" value="{{ Carbon\Carbon::parse($castOffer->date)->format('Y-m-d') }}">
-          <input type="hidden" id="time-cast-offer" value="{{ Carbon\Carbon::parse($castOffer->start_time)->format('H:i') }}">
+          <div class="reservation-info__place">{{ $order->address }}</div>
+          <input type="hidden" id="prefecture-cast-offer" value="{{ $order->prefecture_id }}">
+          <input type="hidden" id="address-cast-offer" value="{{ $order->address }}">
+          <input type="hidden" id="cast_offer-id" value="{{ $order->id }}">
+          <input type="hidden" id="cast-id" value="{{ $order->cast_offer->id }}">
+          <input type="hidden" id="class_cast-id" value="{{ $order->castClass->id }}">
+          <input type="hidden" id="date-cast-offer" value="{{ Carbon\Carbon::parse($order->date)->format('Y-m-d') }}">
+          <input type="hidden" id="time-cast-offer" value="{{ Carbon\Carbon::parse($order->start_time)->format('H:i') }}">
         </div>
       </div>
     </section>
@@ -191,15 +191,15 @@
           </div>
           <div class="reservation-total">
             <div class="reservation-total__content">
-              <div class="reservation-total__item">通常料金<span>{{ number_format($castOffer->temp_point ) }} P</span>
+              <div class="reservation-total__item">通常料金<span>{{ number_format($order->temp_point ) }} P</span>
               </div>
               <div class="reservation-total__item" id="point-sale-coupon"></div>
               <div class="reservation-total__sum" id="current-point">
-                合計<span>{{ number_format($castOffer->temp_point ) }} P</span>
+                合計<span>{{ number_format($order->temp_point ) }} P</span>
               </div>
             </div>
             <input type="hidden" name="total_point" id="total-point-cast-offer">
-            <input type="hidden" name="current_point" id="current-point-cast-offer" value="{{ $castOffer->temp_point }}">
+            <input type="hidden" name="current_point" id="current-point-cast-offer" value="{{ $order->temp_point }}">
           </div>
 
           <div class="reservation-policy">
