@@ -153,6 +153,7 @@ class CastOfferController extends ApiController
             $nominee = $order->nominees()->first();
 
             $order->temp_point = $request->temp_point;
+            $order->status = OrderStatus::ACTIVE;
 
             if ($coupon) {
                 $order->coupon_id = $request->coupon_id;
