@@ -60,11 +60,8 @@ class CastCreateOffer extends Notification implements ShouldQueue
     {
         $cast = $this->order->nominees()->first();
         $room = $this->createDirectRoom($this->order->user_id, $cast->id);
-        $roomMesage = 'マッチング確定おめでとうございます♪'
-            . PHP_EOL . '合流後はタイマーで時間計測を行い、解散予定の10分前には通知が届きます。'
-            . PHP_EOL . '※解散予定時刻後は自動で延長されます。'
-            . PHP_EOL . PHP_EOL . 'その他ご不明点がある場合は運営までお問い合わせください。'
-            . PHP_EOL . PHP_EOL . 'それでは素敵な時間をお楽しみください♪';
+        $roomMesage = $cast->nickname . 'さんから予約リクエストがありました。'
+            . PHP_EOL . 'コチラから予約リクエストを確認してください。';
         $roomMessage = $room->messages()->create([
             'user_id' => 1,
             'type' => MessageType::SYSTEM,
@@ -111,11 +108,8 @@ class CastCreateOffer extends Notification implements ShouldQueue
     {
         $cast = $this->order->nominees()->first();
         $room = $this->createDirectRoom($this->order->user_id, $cast->id);
-        $roomMesage = 'マッチング確定おめでとうございます♪'
-            . PHP_EOL . '合流後はタイマーで時間計測を行い、解散予定の10分前には通知が届きます。'
-            . PHP_EOL . '※解散予定時刻後は自動で延長されます。'
-            . PHP_EOL . PHP_EOL . 'その他ご不明点がある場合は運営までお問い合わせください。'
-            . PHP_EOL . PHP_EOL . 'それでは素敵な時間をお楽しみください♪';
+        $roomMesage = '●●さんから予約リクエストがありました。'
+            . PHP_EOL . 'コチラから予約リクエストを確認してください。';
         $roomMessage = $room->messages()->create([
             'user_id' => 1,
             'type' => MessageType::SYSTEM,
