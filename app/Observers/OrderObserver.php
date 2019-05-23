@@ -2,6 +2,7 @@
 
 namespace App\Observers;
 
+use App\Enums\OrderStatus;
 use App\User;
 use App\Order;
 use App\Enums\OrderType;
@@ -18,30 +19,32 @@ class OrderObserver
 {
     public function created(Order $order)
     {
-        if (OrderType::NOMINATED_CALL == $order->type || OrderType::CALL == $order->type) {
-            if (ProviderType::LINE != $order->user->provider) {
-                $order->user->notify(
-                    (new CreateNominatedOrdersForGuest($order->id))->delay(now()->addSeconds(3))
-                );
+        if ($order->status != OrderStatus::OPEN_FOR_GUEST) {
+            if (OrderType::NOMINATED_CALL == $order->type || OrderType::CALL == $order->type) {
+                if (ProviderType::LINE != $order->user->provider) {
+                    $order->user->notify(
+                        (new CreateNominatedOrdersForGuest($order->id))->delay(now()->addSeconds(3))
+                    );
+                }
             }
-        }
 
-        if (ProviderType::LINE == $order->user->provider) {
-            if (!$order->offer_id) {
-                $order->user->notify(
-                    (new CreateOrdersForLineGuest($order->id))->delay(now()->addSeconds(3))
-                );
+            if (ProviderType::LINE == $order->user->provider) {
+                if (!$order->offer_id) {
+                    $order->user->notify(
+                        (new CreateOrdersForLineGuest($order->id))->delay(now()->addSeconds(3))
+                    );
+                }
             }
-        }
 
-        $admin = User::find(1);
-        $delay = now()->addSeconds(3);
-        $admin->notify(
-            (new OrderCreatedNotifyToAdmin($order->id))->delay($delay)
-        );
-        $admin->notify(
-            (new OrderCreatedLineNotify($order->id))->delay($delay)
-        );
+            $admin = User::find(1);
+            $delay = now()->addSeconds(3);
+            $admin->notify(
+                (new OrderCreatedNotifyToAdmin($order->id))->delay($delay)
+            );
+            $admin->notify(
+                (new OrderCreatedLineNotify($order->id))->delay($delay)
+            );
+        }
     }
 
     public function updated(Order $order)

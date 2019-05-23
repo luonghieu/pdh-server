@@ -73,3 +73,4 @@ require('./web/pages/payment_method');
 require('./web/pages/timelines_index');
 require('./web/pages/timeline');
 require('./web/pages/resign');
+require('./web/pages/cast_offer');

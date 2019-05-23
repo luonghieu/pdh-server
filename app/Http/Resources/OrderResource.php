@@ -3,7 +3,6 @@
 namespace App\Http\Resources;
 
 use App\Http\Resources\CastClassResource;
-use App\Http\Resources\CouponResource;
 use App\Repositories\CastClassRepository;
 use App\Repositories\PrefectureRepository;
 use App\Traits\ResourceResponse;
@@ -71,7 +70,8 @@ class OrderResource extends Resource
             'coupon_value' => $this->coupon_value,
             'coupon_max_point' => $this->coupon_max_point,
             'discount_point' => $this->discount_point,
-            'payment_method' => $this->payment_method
+            'payment_method' => $this->payment_method,
+            'cast_offer_id' => $this->cast_offer_id,
         ]);
     }
 }
