@@ -15,7 +15,7 @@ class AlterTableOrdersFieldCastOfferId extends Migration
     {
         Schema::table('orders', function (\Illuminate\Database\Schema\Blueprint $table) {
             $table->integer('cast_offer_id')->after('class_id')->unsigned()->nullable();
-            $table->foreign('cast_offer_id')->references('id')->on('cast_offers');
+            $table->foreign('cast_offer_id')->references('id')->on('users');
         });
     }
 

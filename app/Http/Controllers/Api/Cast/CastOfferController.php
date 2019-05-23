@@ -110,6 +110,7 @@ class CastOfferController extends ApiController
 
             return $this->respondWithData(OrderResource::make($order));
         } catch (\Exception $e) {
+            dd($e->getMessage());
             LogService::writeErrorLog($e);
 
             return $this->respondServerError();
