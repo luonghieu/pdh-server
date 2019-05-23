@@ -26,7 +26,7 @@ final class OrderStatus extends Enum
      */
     public static function getDescription($value): string
     {
-        if (self::OPEN === $value) {
+        if (self::OPEN === $value || self::OPEN_FOR_GUEST === $value) {
             return '提案中';
         } elseif (self::ACTIVE === $value) {
             return '予約確定';
@@ -34,7 +34,7 @@ final class OrderStatus extends Enum
             return '合流中';
         } elseif (self::DONE === $value) {
             return '解散中';
-        } elseif (self::TIMEOUT === $value || self::CANCELED === $value || self::DENIED === $value) {
+        } elseif (self::TIMEOUT === $value || self::CANCELED === $value || self::DENIED === $value || self::GUEST_DENIED === $value || self::CAST_CANCELED === $value) {
             return 'マッチング不成立';
         } elseif (self::SKIP_NOMINATION === $value) {
             return '提案取り下げ';
