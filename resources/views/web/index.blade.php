@@ -242,18 +242,33 @@
           $('#input_birthday_modal').css('display', 'none');
         }, 3000);
       }
-    })
+    });
 
     if(localStorage.getItem("order_call")){
       localStorage.removeItem("order_call");
     }
-
     if (localStorage.getItem("order_offer")) {
       localStorage.removeItem("order_offer");
     }
 
     if (localStorage.getItem("cast_offer")) {
-      localStorage.removeItem("cast_offer");
+        localStorage.removeItem("cast_offer");
+    }
+
+    if(localStorage.getItem("reason1")){
+      localStorage.removeItem("reason1");
+    }
+
+    if(localStorage.getItem("reason2")){
+      localStorage.removeItem("reason2");
+    }
+
+    if(localStorage.getItem("reason3")){
+      localStorage.removeItem("reason3");
+    }
+
+    if(localStorage.getItem("other_reason")){
+      localStorage.removeItem("other_reason");
     }
   </script>
 @endsection

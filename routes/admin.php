@@ -192,5 +192,6 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.'], function () {
     Route::group(['namespace' => 'Resigns', 'prefix' => 'resigns', 'as' => 'resigns.', 'middleware' => 'is_admin'], function () {
         Route::get('/', ['as' => 'index', 'uses' => 'ResignController@index']);
         Route::get('/{id}', ['as' => 'show', 'uses' => 'ResignController@show']);
+        Route::delete('/', ['as' => 'delete', 'uses' => 'ResignController@resign']);
     });
 });

@@ -15,7 +15,7 @@ class AddResignStatusToUsersTable extends Migration
     public function up()
     {
         Schema::table('users', function (Blueprint $table) {
-            $table->tinyInteger('resign_status')->default(ResignStatus::NULL)->after('is_multi_payment_method');
+            $table->tinyInteger('resign_status')->default(ResignStatus::NOT_RESIGN)->after('is_multi_payment_method');
             $table->text('first_resign_description')->after('resign_status')->nullable();
             $table->text('second_resign_description')->after('first_resign_description')->nullable();
         });
