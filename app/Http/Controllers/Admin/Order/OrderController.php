@@ -226,7 +226,6 @@ class OrderController extends Controller
         $data = [];
         foreach ($realOrdersExport as $item) {
             $casts = $item->casts;
-
             foreach ($casts as $cast) {
                 if ($cast) {
                     $startTime = Carbon::parse($cast->pivot->started_at);
@@ -243,6 +242,8 @@ class OrderController extends Controller
                         $item->orderFee($cast, $cast->pivot->started_at, $cast->pivot->stopped_at),
                         $cast->pivot->allowance_point,
                         $cast->pivot->total_point,
+                        \App\Enums\DeviceType::getDescription($item->user->device_type),
+                        $item->coupon_id,
                     ];
 
                     array_push($data, $array);
@@ -261,6 +262,8 @@ class OrderController extends Controller
             '指名料',
             '深夜手当',
             '実績合計ポイント',
+            '利用ゲストのデバイス',
+            'クーポン利用状況',
         ];
 
         try {
