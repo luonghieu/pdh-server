@@ -242,7 +242,7 @@ class OrderController extends Controller
                         $item->orderFee($cast, $cast->pivot->started_at, $cast->pivot->stopped_at),
                         $cast->pivot->allowance_point,
                         $cast->pivot->total_point,
-                        \App\Enums\DeviceType::getDescription($cast->device_type),
+                        \App\Enums\DeviceType::getDescription($item->user->device_type),
                         $item->coupon_id,
                     ];
 
