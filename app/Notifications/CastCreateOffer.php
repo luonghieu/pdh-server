@@ -92,7 +92,6 @@ class CastCreateOffer extends Notification implements ShouldQueue
                         'send_from' => $send_from,
                         'order_id' => $this->order->id,
                         'room_id' => $room->id,
-                        'order_status' => $this->order->status
                     ],
                 ],
                 'android' => [
@@ -102,7 +101,6 @@ class CastCreateOffer extends Notification implements ShouldQueue
                         'send_from' => $send_from,
                         'order_id' => $this->order->id,
                         'room_id' => $room->id,
-                        'order_status' => $this->order->status
                     ],
                 ],
             ],

@@ -68,6 +68,7 @@ class CastOfferController extends ApiController
         }
 
         $guest = User::where('id', $request->user_id)->where('type', UserType::GUEST)->first();
+
         if (!$guest) {
             return $this->respondErrorMessage(trans('messages.user_not_found'), 404);
         }
@@ -111,7 +112,6 @@ class CastOfferController extends ApiController
 
             return $this->respondWithData(OrderResource::make($order));
         } catch (\Exception $e) {
-            dd($e->getMessage());
             LogService::writeErrorLog($e);
 
             return $this->respondServerError();
