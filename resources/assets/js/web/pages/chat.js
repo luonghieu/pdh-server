@@ -543,6 +543,7 @@ $('.msg-system').each(function(index, val) {
     var content = $(this).text();
     var missingPoint = $(this).data('missing-point');
     var offerId = $(this).data('offer');
+    var castOrderId = $(this).data('cast-order-id');
     var text2 = 'コチラ';
     var n = content.search(text2);
 
@@ -554,6 +555,8 @@ $('.msg-system').each(function(index, val) {
             var result = text2.link('/payment/transfer?point='+ parseInt(missingPoint));
         } else if (offerId) {
             var result = text2.link('/offers/'+ parseInt(offerId));
+        } else if (castOrderId) {
+            var result = text2.link('/cast_offers/'+ parseInt(castOrderId));
         } else {
             var result = text2.link('/history/'+ orderId);
         }
