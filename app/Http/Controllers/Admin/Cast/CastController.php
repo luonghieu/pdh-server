@@ -48,6 +48,13 @@ class CastController extends Controller
             ]);
         });
 
+        $casts = $casts->where(function($query) {
+            $query->where('resign_status', ResignStatus::APPROVED)
+                ->orWhere(function($sq) {
+                    $sq->where('type', '<>', UserType::ADMIN)->where('deleted_at', null);
+                });
+        });
+
         $fromDate = $request->from_date ? Carbon::parse($request->from_date)->startOfDay() : null;
         $toDate = $request->to_date ? Carbon::parse($request->to_date)->endOfDay() : null;
 

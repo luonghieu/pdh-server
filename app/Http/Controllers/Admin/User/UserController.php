@@ -28,11 +28,11 @@ class UserController extends Controller
         $orderBy = $request->only('id', 'status', 'last_active_at');
         $keyword = $request->search;
 
-        $users = User::withTrashed()->where('type', '<>', UserType::ADMIN)->where(function ($query) {
-            $query->whereNull('users.deleted_at')->orWhere([
-                ['users.deleted_at', '<>', null],
-                ['users.resign_status', '=', 2],
-            ]);
+        $users = User::withTrashed()->where(function($query) {
+            $query->where('resign_status', ResignStatus::APPROVED)
+                ->orWhere(function($sq) {
+                    $sq->where('type', '<>', UserType::ADMIN)->where('deleted_at', null);
+                });
         });
 
         if ($request->has('from_date') && !empty($request->from_date)) {
