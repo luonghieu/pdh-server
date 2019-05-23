@@ -11,20 +11,30 @@
         <div class="clearfix"></div>
         <div class="panel-body handling">
           <div class="search">
-            <form class="navbar-form navbar-left form-search" action="#" method="GET">
+            @php
+            if (request()->resign_status == App\Enums\ResignStatus::PENDING) {
+              $route = route('admin.resigns.index', ['resign_status' => App\Enums\ResignStatus::PENDING]);
+            } else {
+              $route = route('admin.resigns.index', ['resign_status' => App\Enums\ResignStatus::APPROVED]);
+            }
+            @endphp
+            <form class="navbar-form navbar-left form-search" action="{{ $route }}" method="GET">
               <input type="hidden" name="hidden" value="{{ request()->hidden }}" />
               <input type="text" class="form-control init-input-search" placeholder="ユーザーID,名前" name="search" value="{{ request()->search }}">
               <label for="">From date: </label>
               <input type="text" class="form-control date-picker init-input-search" name="from_date" id="date01" data-date-format="yyyy/mm/dd" value="{{ request()->from_date }}" placeholder="yyyy/mm/dd" />
               <label for="">To date: </label>
               <input type="text" class="form-control date-picker" name="to_date" id="date01" data-date-format="yyyy/mm/dd" value="{{ request()->to_date }}" placeholder="yyyy/mm/dd"/>
+              <input type="hidden" name="resign_status" value="{{ request()->resign_status }}">
+              <input type="hidden" name="limit" value="{{ request()->limit }}">
+              <input type="hidden" name="page" value="{{ request()->page }}">
               <button type="submit" class="fa fa-search btn btn-search"></button>
             </form>
           </div>
         </div>
         <div class="clearfix"></div>
         <div class="panel-body">
-          <form class="navbar-form navbar-left form-search" action="#" id="limit-page" method="GET">
+          <form class="navbar-form navbar-left form-search" action="{{ $route }}" id="limit-page" method="GET">
               <div class="form-group">
                 <label class="col-md-1 limit-page">表示件数：</label>
                 <div class="col-md-1">
@@ -37,10 +47,16 @@
                   <input type="hidden" name="to_date" value="{{ request()->to_date }}" />
                   <input type="hidden" name="search" value="{{ request()->search }}" />
                   <input type="hidden" name="hidden" value="{{ request()->hidden }}" />
+                  <input type="hidden" name="resign_status" value="{{ request()->resign_status }}" />
                 </div>
               </div>
           </form>
         </div>
+        @if(request()->resign_status == \App\Enums\ResignStatus::PENDING)
+          <div class="init-btn-confirm-resign">
+            <button class="btn btn-info" data-toggle="modal" data-target="#confirm-resign">退会済みにする</button>
+          </div>
+        @endif
         <div class="panel-body">
           @php
             $request = [
@@ -50,12 +66,15 @@
               'from_date' => request()->from_date,
               'to_date' => request()->to_date,
               'hidden' => request()->hidden,
+              'resign_status' => request()->resign_status,
            ];
           @endphp
           <table class="table table-striped table-bordered bootstrap-datatable">
             <thead>
               <tr>
+                @if(request()->resign_status == \App\Enums\ResignStatus::PENDING)
                 <th></th>
+                @endif
                 <th>ユーザーID</th>
                 <th>ユーザー名</th>
                 <th>申請日</th>
@@ -66,9 +85,11 @@
             <tbody>
               @foreach($users as $user)
                 <tr>
-                  <td class="select-checkbox">
+                  @if(request()->resign_status == \App\Enums\ResignStatus::PENDING)
+                    <td class="select-checkbox">
                       <input type="checkbox" class="verify-checkboxs" value="{{ $user->id }}">
-                  </td>
+                    </td>
+                  @endif
                   <td>{{ $user->id }}</td>
                   <td>{{ $user->nickname }}</td>
                   <td>{{ $user->resign_date }}</td>
@@ -129,14 +150,36 @@
           </div>
         </div>
         <!--  -->
+        <!-- popup confirm resign -->
+        <div class="modal fade" id="confirm-resign" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+          <div class="modal-dialog" role="document">
+            <div class="modal-content">
+              <div class="modal-body">
+                <p>チェックを付けたレコードを"退会済み"に変更しますか？</p>
+              </div>
+              <form action="{{ route('admin.resigns.delete') }}" method="POST">
+                {{ csrf_field() }}
+                {{ method_field('DELETE') }}
+                <input type="hidden" id="user_ids" name="user_ids" value="{{ old('user_ids') }}" />
+                <div class="modal-footer">
+                  <button type="button" class="btn btn-canceled" data-dismiss="modal">キャンセル</button>
+                  <button type="submit" class="btn btn-accept confirm-resign">はい</button>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+        <!--  -->
         <div class="col-lg-12">
           <div class="dataTables_info" id="DataTables_Table_0_info">
-              全 2323件中 1~2件を表示しています
+            @if ($users->total())
+              全 {{ $users->total() }}件中 {{ $users->firstItem() }}~{{ $users->lastItem() }}件を表示しています
+            @endif
           </div>
         </div>
         <div class="pagination-outter">
           <ul class="pagination">
-            {{--{{ $timelines->appends(request()->all())->links() }}--}}
+            {{ $users->appends(request()->all())->links() }}
           </ul>
         </div>
       </div>
@@ -147,7 +190,16 @@
 </div>
 @endsection
 @section('admin.js')
-  <script>
+  <script type="text/javascript">
+    $('.confirm-resign').on('click', function() {
+      var user_ids = [];
+      $('.verify-checkboxs:checked').each(function() {
+        user_ids.push(this.value);
+      });
 
+      $('#user_ids').val(user_ids.join(','));
+
+      return true;
+    });
   </script>
-@endsection
+@stop
