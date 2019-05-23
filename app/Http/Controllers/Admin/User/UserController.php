@@ -4,13 +4,11 @@ namespace App\Http\Controllers\Admin\User;
 
 use App\Enums\OrderPaymentStatus;
 use App\Enums\OrderStatus;
-use App\Enums\Status;
 use App\Enums\UserType;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\CheckDateRequest;
 use App\Prefecture;
 use App\Repositories\CastClassRepository;
-use App\Repositories\PrefectureRepository;
 use App\User;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -29,7 +27,12 @@ class UserController extends Controller
         $orderBy = $request->only('id', 'status', 'last_active_at');
         $keyword = $request->search;
 
-        $users = User::where('type', '<>', UserType::ADMIN);
+        $users = User::withTrashed()->where('type', '<>', UserType::ADMIN)->where(function ($query) {
+            $query->whereNull('users.deleted_at')->orWhere([
+                ['users.deleted_at', '<>', null],
+                ['users.resign_status', '=', 2],
+            ]);
+        });
 
         if ($request->has('from_date') && !empty($request->from_date)) {
             $fromDate = Carbon::parse($request->from_date)->startOfDay();
