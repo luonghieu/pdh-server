@@ -58,7 +58,7 @@ class CastOfferController extends ApiController
         }
     }
 
-    public function create(Request $request)
+    public function accept(Request $request)
     {
         $user = $this->guard()->user();
 
