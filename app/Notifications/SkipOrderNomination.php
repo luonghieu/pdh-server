@@ -15,15 +15,12 @@ use App\Enums\SystemMessageType;
 class SkipOrderNomination extends Notification implements ShouldQueue
 {
     use Queueable;
-    public $nominee;
     /**
      * Create a new notification instance.
      *
      * @param $orderId
      */
-    public function __construct($nominee){
-        $this->nominee = $nominee;
-    }
+    public function __construct(){}
 
     /**
      * Get the notification's delivery channels.
@@ -68,11 +65,10 @@ class SkipOrderNomination extends Notification implements ShouldQueue
         ]);
 
         $roomMessage->recipients()->attach($notifiable->id, ['room_id' => $room->id]);
-        $roomMessage->recipients()->attach($this->nominee->id, ['room_id' => $room->id]);
 
         $namedUser = 'user_' . $notifiable->id;
         $send_from = UserType::ADMIN;
-        $pushId = 'g_24';
+        $pushId = 'c_25';
 
         return [
             'audienceOptions' => ['named_user' => $namedUser],
@@ -86,6 +82,7 @@ class SkipOrderNomination extends Notification implements ShouldQueue
                     'extra' => [
                         'push_id' => $pushId,
                         'send_from' => $send_from,
+                        'room_id' => $room->id,
                     ],
                 ],
                 'android' => [
@@ -93,6 +90,7 @@ class SkipOrderNomination extends Notification implements ShouldQueue
                     'extra' => [
                         'push_id' => $pushId,
                         'send_from' => $send_from,
+                        'room_id' => $room->id,
                     ],
                 ]
             ],
@@ -115,7 +113,6 @@ class SkipOrderNomination extends Notification implements ShouldQueue
         ]);
 
         $roomMessage->recipients()->attach($notifiable->id, ['room_id' => $room->id]);
-        $roomMessage->recipients()->attach($this->nominee->id, ['room_id' => $room->id]);
 
         return [
             [
