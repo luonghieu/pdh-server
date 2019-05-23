@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Admin\User;
 
 use App\Enums\OrderPaymentStatus;
 use App\Enums\OrderStatus;
+use App\Enums\ResignStatus;
 use App\Enums\UserType;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\CheckDateRequest;
@@ -150,36 +151,44 @@ class UserController extends Controller
             OrderStatus::ACTIVE,
             OrderStatus::PROCESSING,
         ])
-        ->orWhere(function ($query) {
-            $query->where('status', OrderStatus::DONE)
-                ->where(function ($subQuery) {
-                    $subQuery->where('payment_status', '!=', OrderPaymentStatus::PAYMENT_FINISHED)
-                        ->orWhere('payment_status', OrderPaymentStatus::PAYMENT_FAILED);
-                });
-        })
-        ->orWhere(function ($query) {
-            $query->where('status', OrderStatus::CANCELED)
-                ->where(function ($subQuery) {
-                    $subQuery->where('payment_status', '!=', OrderPaymentStatus::CANCEL_FEE_PAYMENT_FINISHED)
-                        ->whereNotNull('cancel_fee_percent');
-                });
-        })
-        ->exists();
+            ->orWhere(function ($query) use ($user) {
+                $query->where('user_id', $user->id)->where('status', OrderStatus::DONE)
+                    ->where(function ($subQuery) {
+                        $subQuery->where('payment_status', '!=', OrderPaymentStatus::PAYMENT_FINISHED)
+                            ->orWhere('payment_status', OrderPaymentStatus::PAYMENT_FAILED);
+                    });
+            })
+            ->orWhere(function ($query) use ($user) {
+                $query->where('user_id', $user->id)->where('status', OrderStatus::CANCELED)
+                    ->where(function ($subQuery) {
+                        $subQuery->where('payment_status', '!=', OrderPaymentStatus::CANCEL_FEE_PAYMENT_FINISHED)
+                            ->whereNotNull('cancel_fee_percent');
+                    });
+            })
+            ->exists();
 
         if ($isUnpaidOrder) {
             return redirect()->route('admin.users.show', compact('id'))->with('error', trans('messages.can_not_be_resign'));
         }
 
-        $user->facebook_id = null;
-        $user->line_user_id = null;
-        $user->email = null;
+        $card = $user->card;
 
-        if ($user->type == UserType::CAST) {
-            $user->resign_status = ResignStatus::APPROVED;
+        if ($card) {
+            $card->delete();
         }
 
-        $user->save();
+        $user->stripe_id = null;
+        $user->square_id = null;
+        $user->tc_send_id = null;
+        $user->facebook_id = null;
+        $user->line_id = null;
+        $user->line_user_id = null;
+        $user->line_qr = null;
+        $user->email = null;
+        $user->password = null;
+        $user->resign_status = ResignStatus::APPROVED;
 
+        $user->save();
         $user->delete();
 
         return redirect()->route('admin.users.index');
