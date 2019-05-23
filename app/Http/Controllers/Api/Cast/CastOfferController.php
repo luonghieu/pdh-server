@@ -10,6 +10,7 @@ use App\Enums\OrderType;
 use App\Enums\UserType;
 use App\Http\Controllers\Api\ApiController;
 use App\Http\Resources\OrderResource;
+use App\Notifications\CancelOrderCreateByCast;
 use App\Notifications\CastCreateOffer;
 use App\Order;
 use App\Services\LogService;
@@ -110,6 +111,7 @@ class CastOfferController extends ApiController
 
             return $this->respondWithData(OrderResource::make($order));
         } catch (\Exception $e) {
+            dd($e->getMessage());
             LogService::writeErrorLog($e);
 
             return $this->respondServerError();
@@ -195,6 +197,10 @@ class CastOfferController extends ApiController
             $order->canceled_at = now();
 
             $order->save();
+
+            $nominee->notify(
+                (new CancelOrderCreateByCast($order))->delay(now()->addSeconds(3))
+            );
 
             return $this->respondWithData(OrderResource::make($order));
         } catch (\Exception $e) {
