@@ -41,7 +41,7 @@ $(function() {
   })
 
   $("#leaveSubmit").on("click", function() {
-    if ($("#textareaCheck").prop("checked") == true && $(".leave-comment__input textarea").val().length < 1 ){
+    if ($("#textareaCheck").prop("checked") == true && $(".leave-comment__input textarea").val().trim().length < 1 ){
       $('.js-resign-message').text("その他の理由が入力されていません");
 
       return false;
@@ -66,11 +66,10 @@ $(function() {
     }
 
     if (document.getElementById("textareaCheck").checked) {
-      other_reason = $('textarea#description').val();
+      other_reason = $('textarea#description').val().trim();
 
       localStorage.setItem('other_reason', other_reason);
     }
-
 
     window.location.href = '/resigns/confirm';
   })
