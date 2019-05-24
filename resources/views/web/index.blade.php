@@ -264,8 +264,12 @@
       localStorage.removeItem("reason3");
     }
 
-    if(localStorage.getItem("other_reason")){
-      localStorage.removeItem("other_reason");
+    if(localStorage.getItem("other_reason")) {
+        localStorage.removeItem("other_reason");
+    }
+
+    if (localStorage.getItem("cast_offer")) {
+      localStorage.removeItem("cast_offer");
     }
   </script>
 @endsection

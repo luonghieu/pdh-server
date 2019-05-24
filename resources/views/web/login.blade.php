@@ -53,4 +53,8 @@
       localStorage.removeItem("order_params");
     }
 
+    if (localStorage.getItem("cast_offer")) {
+      localStorage.removeItem("cast_offer");
+    }
+
 </script>

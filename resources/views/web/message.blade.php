@@ -116,7 +116,11 @@
   @if ($room->type != \App\Enums\RoomType::SYSTEM)
     @if ($messages['order'] == null || (count($messages['room']['users']) == 2 && $messages['order']['status'] == App\Enums\OrderStatus::DONE))
     <div class="msg-head">
-      <h2><span class="mitei msg-head-ttl">日程未定</span> {{ (Auth::user()->type == App\Enums\UserType::GUEST) ? 'ゲストに予約リクエストしよう！' : 'ゲストにメッセージを送ってみよう！' }}</h2>
+      @if($messages['order'] == null && (Auth::user()->type == App\Enums\UserType::GUEST))
+        <h2><span class="mitei msg-head-ttl">日程未定</span>キャストに予約リクエストしよう！</h2>
+      @else
+        <h2><span class="mitei msg-head-ttl">日程未定</span> {{ (Auth::user()->type == App\Enums\UserType::GUEST) ? 'ゲストに予約リクエストしよう！' : 'ゲストにメッセージを送ってみよう！' }}</h2>
+      @endif
     </div>
     @endif
     @if ($messages['order']['status'] == App\Enums\OrderStatus::DONE && count($messages['room']['users']) > 2)
@@ -127,6 +131,11 @@
     @if ($messages['order']['status'] == App\Enums\OrderStatus::OPEN && $messages['order']['type'] != App\Enums\OrderType::CALL)
     <div class="msg-head">
       <h2><span class="teian msg-head-ttl">提案中</span>キャストの回答待ちです。</h2>
+    </div>
+    @endif
+    @if ($messages['order']['status'] == App\Enums\OrderStatus::OPEN_FOR_GUEST && $messages['order']['cast_offer_id'])
+    <div class="msg-head">
+      <h2><span class="teian msg-head-ttl">提案中</span>ゲストの回答待ちです。</h2>
     </div>
     @endif
     @if (in_array($messages['order']['status'], [App\Enums\OrderStatus::ACTIVE, App\Enums\OrderStatus::PROCESSING]))
