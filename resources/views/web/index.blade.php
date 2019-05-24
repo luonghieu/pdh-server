@@ -247,6 +247,7 @@
     if(localStorage.getItem("order_call")){
       localStorage.removeItem("order_call");
     }
+
     if (localStorage.getItem("order_offer")) {
       localStorage.removeItem("order_offer");
     }
@@ -267,8 +268,13 @@
       localStorage.removeItem("reason3");
     }
 
-    if(localStorage.getItem("other_reason")){
-      localStorage.removeItem("other_reason");
+    if(localStorage.getItem("other_reason")) {
+        localStorage.removeItem("other_reason");
     }
+
+    if(localStorage.getItem("other_reason")) {
+        localStorage.removeItem("other_reason");
+    }
+
   </script>
 @endsection
