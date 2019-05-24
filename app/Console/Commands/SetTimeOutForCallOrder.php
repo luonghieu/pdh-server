@@ -69,6 +69,8 @@ class SetTimeOutForCallOrder extends Command
                     if ($order->status == OrderStatus::OPEN) {
                         $this->setTimeoutForOrder($order);
                     } else {
+                        $order->status = OrderStatus::TIMEOUT;
+                        $order->canceled_at = now();
                         $casts = $order->nominees()->first();
                         $order->castOrder()->updateExistingPivot(
                             $casts->id,
@@ -89,6 +91,8 @@ class SetTimeOutForCallOrder extends Command
                     if ($order->status == OrderStatus::OPEN) {
                         $this->setTimeoutForOrder($order);
                     } else {
+                        $order->status = OrderStatus::TIMEOUT;
+                        $order->canceled_at = now();
                         $casts = $order->nominees()->first();
                         $order->castOrder()->updateExistingPivot(
                             $casts->id,
