@@ -4116,9 +4116,7 @@ body #star-rating-schedule {
 
 .timeline-edit__text {
   outline: none !important;
-  font-size: 20px;
-  height: 145px;
-  overflow: auto;
+  font-size: 14px;
   margin-bottom: 15px;
 }
 
@@ -4257,12 +4255,41 @@ a.init-text-color {
 .timeline-edit__input {
   z-index: 99999;
   background-color: #ffffff;
+  padding-bottom: 35px !important;
 }
 
-.remove-height {
-  height: inherit !important;
+.set-height-mmpage {
+  height: 320px !important;
+  overflow: auto;
+  position: relative;
+}
+
+.set-height-mmpage-ipx {
+  height: 370px !important;
+  overflow: auto;
+  position: relative;
+}
+
+.timeline-edit__text_overflow__ipx {
+  height: 140px;
+  overflow: auto;
+}
+
+.timeline-edit__text_overflow {
+  height: 120px;
+  overflow: auto;
 }
 
 #time-line-show-controller .timeline-list .timeline-images__item img{
   height: auto;
+}
+
+#guest_profile_controller .timeline-item, #cast_profile_controller .timeline-item{
+  margin-bottom: 15px;
+  border-bottom: 1px #e9e5e7 solid;
+}
+
+#guest_profile_controller .timeline-delete, #cast_profile_controller .timeline-delete, #time-line-show-controller .timeline-delete {
+  position: absolute;
+  right: 25px;
 }

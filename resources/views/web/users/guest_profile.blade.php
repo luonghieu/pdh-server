@@ -1,8 +1,27 @@
-@section('title', 'キャスト詳細')
+@section('title', 'ゲスト詳細')
 @section('screen.id', 'gf2')
-
+@section('controller.id', 'guest_profile_controller')
 @extends('layouts.web')
 @section('web.extra')
+    <div class="modal_wrap modal-confirm">
+        <input id="timeline-del" type="checkbox">
+        <div class="modal_overlay">
+            <label for="timeline-del" class="modal_trigger"></label>
+            <div class="modal_content modal_content-btn2">
+                <div class="text-box">
+                    <h2>投稿を削除しますか？</h2>
+                </div>
+                <div class="close_button-box">
+                    <div class="close_button-block">
+                        <label for="timeline-del" class="close_button  left ">キャンセル</label>
+                    </div>
+                    <div class="close_button-block">
+                        <label for="timeline-del" data-id='' class="close_button right" id="btn-del-timeline">削除</label>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
 @endsection
 @section('web.content')
 <div class="cast-call">
@@ -130,6 +149,11 @@
                                     <p>{{ Carbon\Carbon::parse($timeline['created_at'])->format('m/d H:i') }}</p>
                                 </div>
                             </div>
+                            @if ($timeline['user']['id'] == Auth::user()->id)
+                            <div class="timeline-delete" data-id="{{ $timeline['id'] }}">
+                                <img src="{{ asset('assets/web/images/common/timeline-like-button_del.svg') }}" alt="">
+                            </div>
+                            @endif
                         </div>
                         <div class="timeline-content">
                             <a href="{{ route('web.timelines.show', ['timeline' => $timeline['id']]) }}" class="init-text-color">
@@ -173,6 +197,39 @@
         </div>
     </section>
 </div>
+@endsection
+@section('web.extra_js')
+    <script>
+        $('body').on('click', ".timeline-delete", function(){
+            var id = $(this).data("id");
+            $('#btn-del-timeline').data('id', '');
+            $('#btn-del-timeline').data('id', id);
+
+            $('#timeline-del').prop('checked', true);
+        });
+
+        $('body').on('click', "#btn-del-timeline", function(){
+            var id = $(this).data("id");
+            if(id) {
+                window.axios.delete('/api/v1/timelines/' + id)
+                    .then(function(response) {
+                        window.location.reload();
+                    })
+                    .catch(function (error) {
+                        console.log(error);
+                        if (error.response.status == 401) {
+                            window.location = '/login';
+                        }
+
+                        if (error.response.status == 404) {
+                            $('#timeline-not-found').prop('checked', true);
+                        }
+                    });
+            } else {
+                window.location = '/login';
+            }
+        })
+    </script>
 @endsection
 @section('web.extra_css')
     <style>
