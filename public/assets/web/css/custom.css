@@ -4379,5 +4379,9 @@ background: #c4c4c4;
 }
 
 .time-order-nonimee {
-  display: none;
+    display: none;
+}
+
+#time-line-create-controller .page-title {
+  padding: 10px;
 }
