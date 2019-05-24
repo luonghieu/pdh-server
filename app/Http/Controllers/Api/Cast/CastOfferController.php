@@ -44,24 +44,55 @@ class CastOfferController extends ApiController
         $orderEndTime = $orderStartTime->copy()->addMinutes($request->duration * 60);
 
         $user = $this->guard()->user();
-        // $prevOrders = Order::whereIn('status', [
-        //     OrderStatus::OPEN,
-        //     OrderStatus::ACTIVE,
-        //     OrderStatus::PROCESSING,
-        //     OrderStatus::OPEN_FOR_GUEST,
-        // ])->whereHas('nominees', function ($query) use ($user) {
-        //     $query->where('user_id', $user->id);
-        // })->get();
+         $prevOrders = Order::whereIn('status', [
+             OrderStatus::OPEN,
+             OrderStatus::ACTIVE,
+             OrderStatus::PROCESSING,
+             OrderStatus::OPEN_FOR_GUEST,
+         ])->whereHas('nominees', function ($query) use ($user) {
+             $query->where('user_id', $user->id);
+         })->get();
 
-        // foreach ($prevOrders as $order) {
-        //     $startTime = Carbon::parse($order->date . ' ' . $order->start_time);
-        //     $endTime = $startTime->copy()->addMinutes($order->duration * 60);
-        //     dump($endTime);
-        //     dump($orderStartTime);
-        //     if ($endTime->gte($orderStartTime)) {
-        //         return $this->respondErrorMessage(trans('messages.time_invalid'), 400);
-        //     }
-        // }
+         $count = 1;
+         $prevStartTime = null;
+         $prevEndTime = null;
+         foreach ($prevOrders as $order) {
+             if ($count == 1) {
+                 $prevStartTime = Carbon::parse($order->date . ' ' . $order->start_time);
+                 $prevEndTime = $prevStartTime->copy()->addMinutes($order->duration * 60);
+                 $now = now();
+                 $isValid = true;
+                 if ($now->between($prevStartTime, $prevEndTime) || $now->between($prevStartTime, $prevEndTime)) {
+                     $isValid = false;
+                 }
+
+                 if ($now < $prevStartTime && $now > $prevEndTime) {
+                     $isValid = false;
+                 }
+
+                 if (!$isValid) {
+                     return $this->respondErrorMessage(trans('messages.time_invalid'), 400);
+                 }
+             } else {
+                 $startTime = Carbon::parse($order->date . ' ' . $order->start_time);
+                 $endTime = $startTime->copy()->addMinutes($order->duration * 60);
+                 $isValid = true;
+
+                 if ($prevStartTime->between($startTime, $endTime) || $prevStartTime->between($startTime, $endTime)) {
+                     $isValid = false;
+                 }
+
+                 if ($prevStartTime < $startTime && $prevStartTime > $endTime) {
+                     $isValid = false;
+                 }
+
+                 if (!$isValid) {
+                     return $this->respondErrorMessage(trans('messages.time_invalid'), 400);
+                 }
+             }
+
+             $count++;
+         }
 
         if (now()->second(0)->diffInMinutes($orderStartTime, false) < 29) {
             return $this->respondErrorMessage(trans('messages.time_invalid'), 400);
