@@ -114,13 +114,14 @@
     </div>
   </div>
   @if ($room->type != \App\Enums\RoomType::SYSTEM)
+    @if(($messages['order']['status'] == App\Enums\OrderStatus::GUEST_DENIED) && (Auth::user()->type == App\Enums\UserType::GUEST))
+    <div class="msg-head">
+      <h2><span class="mitei msg-head-ttl">日程未定</span>キャストに予約リクエストしよう！</h2>
+    </div>
+    @endif
     @if ($messages['order'] == null || (count($messages['room']['users']) == 2 && $messages['order']['status'] == App\Enums\OrderStatus::DONE))
     <div class="msg-head">
-      @if($messages['order'] == null && (Auth::user()->type == App\Enums\UserType::GUEST))
-        <h2><span class="mitei msg-head-ttl">日程未定</span>キャストに予約リクエストしよう！</h2>
-      @else
-        <h2><span class="mitei msg-head-ttl">日程未定</span> {{ (Auth::user()->type == App\Enums\UserType::GUEST) ? 'ゲストに予約リクエストしよう！' : 'ゲストにメッセージを送ってみよう！' }}</h2>
-      @endif
+      <h2><span class="mitei msg-head-ttl">日程未定</span> {{ (Auth::user()->type == App\Enums\UserType::GUEST) ? 'ゲストに予約リクエストしよう！' : 'ゲストにメッセージを送ってみよう！' }}</h2>
     </div>
     @endif
     @if ($messages['order']['status'] == App\Enums\OrderStatus::DONE && count($messages['room']['users']) > 2)
