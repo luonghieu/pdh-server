@@ -299,7 +299,7 @@ class CastController extends Controller
         return $sumConsumedPoint;
     }
 
-    public function getOperationHistory(Cast $user, CheckDateRequest $request)
+    public function getOperationHistory($castId, CheckDateRequest $request)
     {
         $keyword = $request->search_point_type;
         $pointTypes = [
@@ -317,6 +317,9 @@ class CastController extends Controller
         $with['order'] = function ($query) {
             return $query->withTrashed();
         };
+
+        $user = Cast::withTrashed()->find($castId);
+
         $points = $user->points()->with($with)
             ->whereIn('type', [PointType::RECEIVE, PointType::TRANSFER, PointType::ADJUSTED])
             ->where('status', Status::ACTIVE);
