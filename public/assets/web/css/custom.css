@@ -4377,3 +4377,7 @@ background: #c4c4c4;
 #offer .reservation-cast__name p:last-child {
   width: 115px;
 }
+
+.time-order-nonimee {
+  display: none;
+}

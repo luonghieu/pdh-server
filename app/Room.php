@@ -136,6 +136,7 @@ class Room extends Model
                         OrderStatus::SKIP_NOMINATION,
                         OrderStatus::DONE
                     ];
+
                     $order = Order::where('room_id', $this->id)
                         ->where(function ($query) {
                             $query->where('type', '!=', OrderType::CALL)

@@ -84,7 +84,7 @@ class MessageController extends ApiController
 
         $messages->setCollection(collect($messagesData->values()->all()));
         $messages = $messages->toArray();
-        $messages['order'] = $room->room_order ? OrderResource::make($room->room_order->load(['casts', 'user'])) : null;
+        $messages['order'] = $room->room_order ? OrderResource::make($room->room_order->load(['casts', 'user', 'nominees'])) : null;
         $messages['room'] = RoomResource::make($room->load('users'));
 
         if ('html' == $request->response_type) {

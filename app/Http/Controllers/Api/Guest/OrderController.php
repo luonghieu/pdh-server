@@ -13,6 +13,7 @@ use App\Http\Resources\OrderResource;
 use App\Notifications\AutoChargeFailedLineNotify;
 use App\Notifications\AutoChargeFailedWorkchatNotify;
 use App\Notifications\OrderDirectTransferChargeFailed;
+use App\Notifications\SkipOrderNomination;
 use App\Order;
 use App\Point;
 use App\Services\LogService;
@@ -179,5 +180,33 @@ class OrderController extends ApiController
 
         $user->point += $receive;
         $user->update();
+    }
+
+    public function skipOrderNominee($id)
+    {
+        $user = $this->guard()->user();
+        $order = $user->orders()->find($id);
+        $nominee = $order->nominees()->first();
+
+        if (!$order) {
+            return $this->respondErrorMessage(trans('messages.order_not_found'), 404);
+        }
+
+        if ($order->status != OrderStatus::OPEN) {
+            return $this->respondErrorMessage(trans('messages.action_not_performed'), 422);
+        }
+
+        try {
+            $order->status = OrderStatus::SKIP_NOMINATION;
+            $order->save();
+
+            $nominee->notify(new SkipOrderNomination($user));
+
+            return $this->respondWithNoData(trans('messages.skip_order_noninee'));
+        } catch (\Exception $e) {
+            LogService::writeErrorLog($e);
+
+            return $this->respondServerError();
+        }
     }
 }

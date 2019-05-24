@@ -36,6 +36,8 @@ final class OrderStatus extends Enum
             return '解散中';
         } elseif (self::TIMEOUT === $value || self::CANCELED === $value || self::DENIED === $value || self::GUEST_DENIED === $value || self::CAST_CANCELED === $value) {
             return 'マッチング不成立';
+        } elseif (self::SKIP_NOMINATION === $value) {
+            return '提案取り下げ';
         }
 
         return parent::getDescription($value);
