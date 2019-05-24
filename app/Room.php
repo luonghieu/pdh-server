@@ -114,7 +114,6 @@ class Room extends Model
                     OrderStatus::PROCESSING,
                     OrderStatus::ACTIVE,
                     OrderStatus::OPEN,
-                    OrderStatus::SKIP_NOMINATION,
                     OrderStatus::OPEN_FOR_GUEST,
                 ];
 
