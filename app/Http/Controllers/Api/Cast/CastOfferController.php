@@ -53,45 +53,24 @@ class CastOfferController extends ApiController
              $query->where('cast_order.user_id', $user->id);
          })->get();
 
-         $count = 1;
          $prevStartTime = null;
          $prevEndTime = null;
          foreach ($prevOrders as $order) {
-             if ($count == 1) {
-                 $prevStartTime = Carbon::parse($order->date . ' ' . $order->start_time);
-                 $prevEndTime = $prevStartTime->copy()->addMinutes($order->duration * 60);
-                 $now = now();
-                 $isValid = true;
-                 if ($now->between($prevStartTime, $prevEndTime) || $now->between($prevStartTime, $prevEndTime)) {
-                     $isValid = false;
-                 }
+             $startTime = Carbon::parse($order->date . ' ' . $order->start_time);
+             $endTime = $startTime->copy()->addMinutes($order->duration * 60);
+             $isValid = true;
 
-                 if ($now < $prevStartTime && $now > $prevEndTime) {
-                     $isValid = false;
-                 }
-
-                 if (!$isValid) {
-                     return $this->respondErrorMessage(trans('messages.action_not_performed'), 400);
-                 }
-             } else {
-                 $startTime = Carbon::parse($order->date . ' ' . $order->start_time);
-                 $endTime = $startTime->copy()->addMinutes($order->duration * 60);
-                 $isValid = true;
-
-                 if ($prevStartTime->between($startTime, $endTime) || $prevStartTime->between($startTime, $endTime)) {
-                     $isValid = false;
-                 }
-
-                 if ($prevStartTime < $startTime && $prevStartTime > $endTime) {
-                     $isValid = false;
-                 }
-
-                 if (!$isValid) {
-                     return $this->respondErrorMessage(trans('messages.action_not_performed'), 400);
-                 }
+             if ($orderStartTime->between($startTime, $endTime) || $orderStartTime->between($startTime, $endTime)) {
+                 $isValid = false;
              }
 
-             $count++;
+             if ($orderStartTime < $startTime && $orderStartTime > $endTime) {
+                 $isValid = false;
+             }
+
+             if (!$isValid) {
+                 return $this->respondErrorMessage(trans('messages.action_not_performed'), 400);
+             }
          }
 
         if (now()->second(0)->diffInMinutes($orderStartTime, false) < 29) {
