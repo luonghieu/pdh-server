@@ -271,5 +271,7 @@
     if (localStorage.getItem("cast_offer")) {
       localStorage.removeItem("cast_offer");
     }
+
+    localStorage.removeItem("textarea_reason");
   </script>
 @endsection
