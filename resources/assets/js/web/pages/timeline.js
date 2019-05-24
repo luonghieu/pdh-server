@@ -21,7 +21,8 @@ $(document).ready(function () {
 
           $(".timeline-edit__text").addClass("timeline-edit__text_overflow");
         }
-        $('body').css('height', 'intrinsic')
+        $('body').css('height', 'intrinsic');
+        $('.timeline-edit__text').css('font-size', '14px');
         $("html, body").animate({ scrollTop: 0 }, "fast");
       } else {
         setTimeout(() => {
@@ -38,6 +39,7 @@ $(document).ready(function () {
           }
 
           $('body').css('height', '100%');
+          $('.timeline-edit__text').css('font-size', '20px');
         }, 100);
       }
     }
@@ -59,6 +61,8 @@ $(document).ready(function () {
         }
 
         $('body').css('height', '100%');
+        $('.timeline-edit__text').css('font-size', '20px');
+
       }, 100);
     });
   };
