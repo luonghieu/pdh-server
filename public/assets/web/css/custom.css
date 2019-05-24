@@ -4116,7 +4116,7 @@ body #star-rating-schedule {
 
 .timeline-edit__text {
   outline: none !important;
-  font-size: 20px;
+  font-size: 17px;
   margin-bottom: 15px;
 }
 
@@ -4292,4 +4292,8 @@ a.init-text-color {
 #guest_profile_controller .timeline-delete, #cast_profile_controller .timeline-delete, #time-line-show-controller .timeline-delete {
   position: absolute;
   right: 25px;
+}
+
+#time-line-create-controller .page-title {
+  padding: 10px;
 }
