@@ -8,8 +8,10 @@ use App\User;
 
 class OrderController extends Controller
 {
-    public function getOrderHistory(User $user)
+    public function getOrderHistory($userId)
     {
+        $user = User::withTrashed()->find($userId);
+
         $orders = $user->orders()->with('casts')->where('status', OrderStatus::DONE)->latest()->paginate();
 
         return view('admin.users.orders_history', compact('orders', 'user'));
