@@ -448,7 +448,17 @@
               </tr>
               <tr>
                 <th>ステータス</th>
-                <td>{{ App\Enums\Status::getDescription($user->status) }}</td>
+                <td>
+                  @if($user->status == App\Enums\Status::ACTIVE)
+                    {{ App\Enums\Status::getDescription($user->status) }}
+                  @else
+                    @if($user->resign_status == App\Enums\ResignStatus::APPROVED)
+                      退会
+                    @else
+                      凍結
+                    @endif
+                  @endif
+                </td>
               </tr>
               @if ($user->is_cast)
               <tr>
@@ -476,7 +486,7 @@
           <div class="col-lg-9">
             @if (!$user->deleted_at)
             <div class="delete-user pull-left">
-              <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#delete_user">アカウントを削除する</button>
+              <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#delete_user">退会済みにする</button>
             </div>
             @endif
             <div class="active-user pull-right">

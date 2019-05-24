@@ -81,4 +81,8 @@ return [
     'offer_not_found' => 'Offer is not found',
     'timeline_not_found' => 'Timeline is not found',
     'timeline_deleted' => 'Timeline has been deleted',
+    'can_not_be_resign' => 'Can not be resign, because there is a reservation that has not been completed',
+    'created_request_resign' => 'You created request resign',
+    'resign_status_pending' => 'You account resign status is pending',
+    'resign_success' => 'Account request resign pending successfully',
 ];

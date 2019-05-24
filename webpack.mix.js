@@ -21,6 +21,7 @@ mix.styles([
 'public/assets/web/css/style.css',
 'public/assets/web/css/custom.css',
 'public/assets/web/css/timeline.css',
+'public/assets/web/css/leave.css',
 ], 'public/assets/web/css/web.css').version();
 
 mix.styles('public/assets/webview/css/style.css', 'public/assets/webview/css/style.min.css').version();
@@ -43,7 +44,8 @@ mix.js('public/assets/web/js/gf-2.js', 'public/assets/web/js/gf-2.min.js').versi
 mix.js('public/assets/web/js/gf-3.js', 'public/assets/web/js/gf-3.min.js').version();
 mix.js('public/assets/web/js/ge-2-1-a.js', 'public/assets/web/js/ge-2-1-a.min.js').version();
 mix.js('public/assets/web/js/lazy/loading_image.js', 'public/assets/web/js/lazy/loading_image.min.js').version();
+mix.js('public/assets/web/js/leave.js', 'public/assets/web/js/leave.min.js').version();
+
 mix.js('public/assets/webview/js/script.js', 'public/assets/webview/js/script.min.js').version();
 mix.js('public/assets/webview/js/create_card.js', 'public/assets/webview/js/create_card.min.js').version();
-
 

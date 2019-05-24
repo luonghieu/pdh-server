@@ -83,6 +83,7 @@ class GuestResource extends Resource
             'is_guest_active' => $this->is_guest_active,
             'is_new_user' => $this->is_new_user,
             'is_multi_payment_method' => $this->is_multi_payment_method,
+            'resign_status' => $this->resign_status
         ]);
     }
 }

@@ -4366,3 +4366,6 @@ a.init-text-color {
   margin-top: 18px; }
 
 /*# sourceMappingURL=../../sass */
+.leave-done__title {
+  font-weight: bold;
+}

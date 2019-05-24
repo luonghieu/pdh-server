@@ -80,7 +80,7 @@ class PointController extends Controller
         return $sumPointBuy;
     }
 
-    public function getPointHistory(User $user, CheckDateRequest $request)
+    public function getPointHistory($userId, CheckDateRequest $request)
     {
         $keyword = $request->search_point_type;
         $pointTypes = [
@@ -96,6 +96,8 @@ class PointController extends Controller
             PointCorrectionType::ACQUISITION => '取得ポイント',
             PointCorrectionType::CONSUMPTION => '消費ポイント',
         ];
+
+        $user = User::withTrashed()->find($userId);
 
         if ($user->is_multi_payment_method) {
             $pointCorrectionTypes[PointType::DIRECT_TRANSFER] = 'ポイント付与';

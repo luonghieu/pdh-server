@@ -8,8 +8,9 @@ use App\Cast;
 use Carbon\Carbon;
 class ShiftController extends Controller
 {
-    public function index(Cast $user)
+    public function index($userId)
     {
+        $user = Cast::withTrashed()->find($userId);
         $from = now()->copy()->startOfDay();
         $to = now()->copy()->addDays(13)->startOfDay();
         $updateShiftLatest = $user->shifts()->orderBy('shift_user.updated_at', 'DESC')->first();

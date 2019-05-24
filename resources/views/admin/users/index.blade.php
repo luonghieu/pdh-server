@@ -105,7 +105,17 @@
                     @endphp
                     {{ App\Enums\UserType::getDescription($user->type) }}{{ $textCastTemp }}
                   </td>
-                  <td>{{ App\Enums\Status::getDescription($user->status) }}</td>
+                  <td>
+                    @if($user->status == App\Enums\Status::ACTIVE)
+                      {{ App\Enums\Status::getDescription($user->status) }}
+                    @else
+                      @if($user->resign_status == App\Enums\ResignStatus::APPROVED)
+                        退会
+                      @else
+                        凍結
+                      @endif
+                    @endif
+                  </td>
                   @if ($user->is_online == true)
                   <td>オンライン中</td>
                   @else

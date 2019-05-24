@@ -184,4 +184,8 @@ Route::group(['prefix' => 'v1'], function () {
         Route::post('/{id}/favorites', ['as' => 'favorite_update', 'uses' => 'TimeLineController@updateFavorite'])->where('id', '[0-9]+');
         Route::delete('/{id}', ['as' => 'delete', 'uses' => 'TimeLineController@delete'])->where('id', '[0-9]+');
     });
+
+    Route::group(['middleware' => ['auth:api'], 'prefix' => 'resigns', 'as' => 'resigns.'], function () {
+        Route::post('/create', ['as' => 'create', 'uses' => 'ResignController@create']);
+    });
 });

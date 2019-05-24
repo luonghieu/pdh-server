@@ -144,4 +144,10 @@ Route::group(['middleware' => ['auth'], 'prefix' => 'guest', 'as' => 'guest.'], 
     Route::get('/{id}', ['as' => 'show', 'uses' => 'UserController@show'])->where('id', '[0-9]+');
 });
 
+Route::group(['middleware' => ['auth'], 'prefix' => 'resigns', 'as' => 'resigns.'], function () {
+    Route::get('/reason', ['as' => 'reason', 'uses' => 'ResignController@reason']);
+    Route::get('/confirm', ['as' => 'confirm', 'uses' => 'ResignController@confirm']);
+    Route::get('/complete', ['as' => 'complete', 'uses' => 'ResignController@complete']);
+});
+
 Route::view('tc_register_card', 'web.cards.telecom_credit');

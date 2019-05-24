@@ -6,6 +6,7 @@ use App\BankAccount;
 use App\Cast;
 use App\CastClass;
 use App\Enums\BankAccountType;
+use App\Enums\ResignStatus;
 use App\Enums\CastTransferStatus;
 use App\Enums\PointCorrectionType;
 use App\Enums\PointType;
@@ -35,10 +36,17 @@ class CastController extends Controller
         $keyword = $request->search;
         $isSchedule = $request->is_schedule;
         $orderBy = $request->only('last_active_at', 'rank', 'class_id');
-        $casts = User::where('type', UserType::CAST)->where(function($query) {
+        $casts = User::withTrashed()->where('type', UserType::CAST)->where(function($query) {
             $query->whereNull('cast_transfer_status')
                 ->orWhere('cast_transfer_status', CastTransferStatus::APPROVED)
                 ->orWhere('cast_transfer_status', CastTransferStatus::OFFICIAL);
+        });
+
+        $casts = $casts->where(function($query) {
+            $query->where('resign_status', ResignStatus::APPROVED)
+                ->orWhere(function($sq) {
+                    $sq->where('deleted_at', null);
+                });
         });
 
         $fromDate = $request->from_date ? Carbon::parse($request->from_date)->startOfDay() : null;
@@ -291,7 +299,7 @@ class CastController extends Controller
         return $sumConsumedPoint;
     }
 
-    public function getOperationHistory(Cast $user, CheckDateRequest $request)
+    public function getOperationHistory($castId, CheckDateRequest $request)
     {
         $keyword = $request->search_point_type;
         $pointTypes = [
@@ -309,6 +317,9 @@ class CastController extends Controller
         $with['order'] = function ($query) {
             return $query->withTrashed();
         };
+
+        $user = Cast::withTrashed()->find($castId);
+
         $points = $user->points()->with($with)
             ->whereIn('type', [PointType::RECEIVE, PointType::TRANSFER, PointType::ADJUSTED])
             ->where('status', Status::ACTIVE);

@@ -11,10 +11,10 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.'], function () {
         Route::put('{user}', ['as' => 'change_active', 'uses' => 'UserController@changeActive'])->where('user', '[0-9]+');
         Route::post('{user}', ['as' => 'change_cast_class', 'uses' => 'UserController@changeCastClass'])->where('user', '[0-9]+');
         Route::put('{user}/register_guest', ['as' => 'register_guest', 'uses' => 'UserController@registerGuest']);
-        Route::get('{user}/orders', ['as' => 'orders_history', 'uses' => 'OrderController@getOrderHistory'])->where('user', '[0-9]+');
-        Route::get('{user}/points', ['as' => 'points_history', 'uses' => 'PointController@getPointHistory'])->where('user', '[0-9]+');
+        Route::get('{userId}/orders', ['as' => 'orders_history', 'uses' => 'OrderController@getOrderHistory']);
+        Route::get('{userId}/points', ['as' => 'points_history', 'uses' => 'PointController@getPointHistory']);
         Route::put('{user}/points', ['as' => 'change_point', 'uses' => 'PointController@changePoint'])->where('user', '[0-9]+');
-        Route::get('{user}/cast_ratings', ['as' => 'cast_ratings', 'uses' => 'RatingController@ratings'])->where('user', '[0-9]+');
+        Route::get('{userId}/cast_ratings', ['as' => 'cast_ratings', 'uses' => 'RatingController@ratings']);
         Route::post('{user}/change_prefecture', ['as' => 'change_prefecture', 'uses' => 'UserController@changePrefecture'])->where('user', '[0-9]+');
         Route::post('{user}/change_cost', ['as' => 'change_cost', 'uses' => 'UserController@changeCost'])->where('user', '[0-9]+');
         Route::post('{user}/change_rank', ['as' => 'change_rank', 'uses' => 'UserController@changeRank'])->where('user', '[0-9]+');
@@ -45,19 +45,19 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.'], function () {
         Route::post('{user}/save', ['as' => 'save', 'uses' => 'CastController@saveCast']);
         Route::post('{user}/change_status_work', ['as' => 'change_status_work', 'uses' => 'CastController@changeStatusWork'])->where('user', '[0-9]+');
 
-        Route::get('{user}/guest_ratings', ['as' => 'guest_ratings', 'uses' => 'RatingController@ratings'])->where('user', '[0-9]+');
+        Route::get('{userId}/guest_ratings', ['as' => 'guest_ratings', 'uses' => 'RatingController@ratings']);
         Route::get('{user}/guest_ratings/{rating}', ['as' => 'guest_rating_detail', 'uses' => 'RatingController@detail'])
             ->where('user', '[0-9]+')->where('rating', '[0-9]+');
         Route::post('{user}/guest_ratings/{rating}', ['as' => 'guest_rating_update', 'uses' => 'RatingController@update'])
             ->where('user', '[0-9]+')->where('rating', '[0-9]+');
 
-        Route::get('{user}/operation_history', ['as' => 'operation_history', 'uses' => 'CastController@getOperationHistory'])->where('user', '[0-9]+');
+        Route::get('{castId}/operation_history', ['as' => 'operation_history', 'uses' => 'CastController@getOperationHistory']);
         Route::put('{user}/operation_history', ['as' => 'change_point', 'uses' => 'CastController@changePoint'])->where('user', '[0-9]+');
         Route::get('/export_bank_accounts', ['as' => 'export_bank_accounts', 'uses' => 'CastController@exportBankAccounts']);
         Route::get('/{user}/bank_account', ['as' => 'bank_account', 'uses' => 'CastController@bankAccount'])->where('user', '[0-9]+');
         Route::put('/{user}/update_note', ['as' => 'update_note', 'uses' => 'CastController@updateNote'])->where('user', '[0-9]+');
         Route::put('/{user}/update_cost_rate', ['as' => 'update_cost_rate', 'uses' => 'CastController@updateCostRate'])->where('user', '[0-9]+');
-        Route::get('/{user}/schedule', ['as' => 'schedule', 'uses' => 'ShiftController@index'])->where('user', '[0-9]+');
+        Route::get('/{userId}/schedule', ['as' => 'schedule', 'uses' => 'ShiftController@index']);
     });
 
     Route::group(['middleware' => 'is_admin'], function () {
@@ -187,5 +187,11 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.'], function () {
     Route::group(['namespace' => 'Timeline', 'prefix' => 'timelines', 'as' => 'timelines.', 'middleware' => 'is_admin'], function () {
         Route::get('/', ['as' => 'index', 'uses' => 'TimelineController@index']);
         Route::post('/{timeline}/change_status_hidden', ['as' => 'change_status_hidden', 'uses' => 'TimelineController@changeStatusHidden'])->where('timeline', '[0-9]+');
+    });
+
+    Route::group(['namespace' => 'Resigns', 'prefix' => 'resigns', 'as' => 'resigns.', 'middleware' => 'is_admin'], function () {
+        Route::get('/', ['as' => 'index', 'uses' => 'ResignController@index']);
+        Route::get('/{id}', ['as' => 'show', 'uses' => 'ResignController@show']);
+        Route::delete('/', ['as' => 'delete', 'uses' => 'ResignController@resign']);
     });
 });

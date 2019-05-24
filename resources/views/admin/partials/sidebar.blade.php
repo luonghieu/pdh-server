@@ -232,6 +232,15 @@ $routes = [
         ],
     ],
 
+    'resign' => [
+    [
+            'name' => 'admin.resigns.index',
+            'value' => '退会申請_申請一覧',
+            'url' => route('admin.resigns.index', ['resign_status' => 1]),
+            'submenu' => [],
+        ],
+    ],
+
     'app_version' => [
         [
             'name' => 'admin.app_versions.index',
