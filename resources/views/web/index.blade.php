@@ -276,5 +276,6 @@
         localStorage.removeItem("other_reason");
     }
 
+    localStorage.removeItem("textarea_reason");
   </script>
 @endsection
