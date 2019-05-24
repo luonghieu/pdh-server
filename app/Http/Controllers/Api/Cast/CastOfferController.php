@@ -50,7 +50,7 @@ class CastOfferController extends ApiController
              OrderStatus::PROCESSING,
              OrderStatus::OPEN_FOR_GUEST,
          ])->whereHas('nominees', function ($query) use ($user) {
-             $query->where('user_id', $user->id);
+             $query->where('cast_order.user_id', $user->id);
          })->get();
 
          $count = 1;
@@ -71,7 +71,7 @@ class CastOfferController extends ApiController
                  }
 
                  if (!$isValid) {
-                     return $this->respondErrorMessage(trans('messages.time_invalid'), 400);
+                     return $this->respondErrorMessage(trans('messages.action_not_performed'), 400);
                  }
              } else {
                  $startTime = Carbon::parse($order->date . ' ' . $order->start_time);
@@ -87,7 +87,7 @@ class CastOfferController extends ApiController
                  }
 
                  if (!$isValid) {
-                     return $this->respondErrorMessage(trans('messages.time_invalid'), 400);
+                     return $this->respondErrorMessage(trans('messages.action_not_performed'), 400);
                  }
              }
 
