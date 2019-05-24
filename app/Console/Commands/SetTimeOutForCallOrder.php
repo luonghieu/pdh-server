@@ -71,6 +71,8 @@ class SetTimeOutForCallOrder extends Command
                     } else {
                         $order->status = OrderStatus::TIMEOUT;
                         $order->canceled_at = now();
+                        $order->save();
+
                         $casts = $order->nominees()->first();
                         $order->castOrder()->updateExistingPivot(
                             $casts->id,
@@ -93,6 +95,8 @@ class SetTimeOutForCallOrder extends Command
                     } else {
                         $order->status = OrderStatus::TIMEOUT;
                         $order->canceled_at = now();
+                        $order->save();
+
                         $casts = $order->nominees()->first();
                         $order->castOrder()->updateExistingPivot(
                             $casts->id,
