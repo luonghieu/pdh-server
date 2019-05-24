@@ -4293,3 +4293,7 @@ a.init-text-color {
   position: absolute;
   right: 25px;
 }
+
+#time-line-create-controller .page-title {
+  padding: 10px;
+}
