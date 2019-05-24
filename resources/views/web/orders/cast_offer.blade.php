@@ -78,7 +78,7 @@
 @section('web.content')
   @if(isset($order))
   <div class="page-header-timeline">
-        <h1 class="text-bold">タイムライン</h1>
+        <h1 class="text-bold">キャスト予約</h1>
     </div>
   <div class="offer-wrap">
     <section class="reservation-cast">
@@ -89,8 +89,8 @@
         <div class="reservation-cast__info">
           <div class="reservation-cast__photo">
             @if($order->nominees[0]->avatars)
-              @if (@getimagesize($order->nominees[0]->avatars['thumbnail']))
-                <img style="border-radius: 15px;" src="{{ $order->nominees[0]->avatars['thumbnail'] }}" alt="">
+              @if (@getimagesize($order->nominees[0]->avatars[0]->thumbnail))
+                <img style="border-radius: 15px;" src="{{ $order->nominees[0]->avatars[0]->thumbnail }}" alt="">
                 @else
                 <img src="{{ asset('assets/web/images/gm1/ic_default_avatar@3x.png') }}" alt="">
               @endif
@@ -103,7 +103,21 @@
             <p>{{ $order->nominees[0]->age }}歳</p>
           </div>
           <div class="reservation-cast__level">
-            <p class="reservation-cast__daiamond">{{ $order->castClass->name }}</p>
+            @php
+              $class = '';
+              switch ($order->nominees[0]->class_id) {
+                  case 1:
+                      $class = 'bronz-class';
+                      break;
+                  case 2:
+                      $class = 'platinum-class';
+                      break;
+                  case 3:
+                      $class = 'daiamond-class';
+                      break;
+              }
+            @endphp
+            <p class="reservation-cast__daiamond {{ $class }}">{{ $order->castClass->name }}</p>
             <p class="reservation-cast__pric">30分あたりの料金<span style="font-weight: bold;">{{ number_format($order->nominees[0]->cost ) }} P</span>
             </p>
           </div>

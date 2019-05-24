@@ -27,6 +27,7 @@
     color: #fff;
     border: none;
     width: 100%;
+    font-weight: bold;
     height: 60px;
     color: #fff;
     font-family: 'Noto Sans Japanese';
@@ -88,7 +89,6 @@
     height: auto;
     width: 80px;
     height: 24px;
-    background-image: linear-gradient(35deg, #0df 0, #acffdd 100%);
     font-size: 11px;
     display: flex;
     align-items: center;
