@@ -134,8 +134,11 @@ class Room extends Model
                 if (!$order) {
                     $statuses = [
                         OrderStatus::SKIP_NOMINATION,
-                        OrderStatus::DONE
+                        OrderStatus::GUEST_DENIED,
+                        OrderStatus::CAST_CANCELED,
+                        OrderStatus::DONE,
                     ];
+
                     $order = Order::where('room_id', $this->id)
                         ->where(function ($query) {
                             $query->where('type', '!=', OrderType::CALL)
@@ -144,6 +147,7 @@ class Room extends Model
                                         ->where('status', '!=', OrderStatus::OPEN);
                                 });
                         })
+                        ->whereIn('status', $statuses)
                         ->orderByRaw('FIELD(status, ' . implode(',', $statuses) . ' )')
                         ->orderByDesc('actual_ended_at')
                         ->first();
