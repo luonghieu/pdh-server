@@ -235,6 +235,7 @@ class User extends Authenticatable implements JWTSubject
     public function getIsCardRegisteredAttribute()
     {
         $paymentService = config('common.payment_service');
+
         $isCardRegistered = false;
 
         switch ($paymentService) {

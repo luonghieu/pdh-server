@@ -1,5 +1,42 @@
 $(function() {
-  //
+  $(".leave-reason-list__item input:checkbox").change(function() {
+    if (document.getElementById("reason1").checked) {
+      localStorage.setItem('reason1', 'サービスの使い方が分からない');
+    } else {
+      localStorage.removeItem("reason1");
+    }
+
+    if (document.getElementById("reason2").checked) {
+      localStorage.setItem('reason2', '金額が高すぎる');
+    } else {
+      localStorage.removeItem("reason2");
+    }
+
+    if (document.getElementById("reason3").checked) {
+      localStorage.setItem('reason3', '一緒に飲みたいキャストがいない');
+    } else {
+      localStorage.removeItem("reason3");
+    }
+
+    if (document.getElementById("textareaCheck").checked) {
+      localStorage.setItem('other_reason', 'checked');
+    } else {
+      $('.js-resign-message').text('');
+
+      localStorage.removeItem("other_reason");
+    }
+  });
+
+  $("#leaveSubmit").on("click", function() {
+    if ($("#textareaCheck").prop("checked") == true && $(".leave-comment__input textarea").val().trim().length < 1 ){
+      $('.js-resign-message').text("その他の理由が入力されていません");
+
+      return false;
+    }
+
+    window.location.href = '/resigns/confirm';
+  })
+
   $("#textareaCheck").on("click", function(){
     if ($("#textareaCheck").prop("checked") == true ) {
       $(".leave-comment__input textarea").prop("disabled", false).focus();
@@ -8,9 +45,33 @@ $(function() {
     }
   });
   // textarea 文字数　コントロール
-  $(".leave-comment__input textarea").on("keydown keyup keypress change", function(e) {
+  $(".leave-comment__input textarea").on("keyup keypress change", function(e) {
     let sum = $(this).val().length;
+    if(sum > 180) {
+      sum = 180;
+    } else {
+        var textarea_reason = $(this).val().trim();
+        
+        localStorage.setItem('textarea_reason', textarea_reason);
+    }
+    
     $(".leave-comment__sum p").text(sum.toFixed());
+
+  });
+
+  $(document).on("keydown", ".leave-comment__input textarea", function(e){
+    const str = $(".leave-comment__input textarea").val();
+    let sum = Array.from(str.split(/['\ud83c[\udf00-\udfff]','\ud83d[\udc00-\ude4f]','\ud83d[\ude80-\udeff]', ' ']/).join("|")).length;
+
+    var keyCode = e.keyCode;
+
+    if(keyCode == 8 || keyCode == 46 || keyCode == 37 || keyCode == 39) {
+      return true;
+    }
+
+    if (sum >= 180) {
+      return false;
+    }
   });
 
   //checkbox 判定
@@ -26,44 +87,9 @@ $(function() {
   $('textarea#description').focusout(function() {
     $('.js-resign-message').text('');
 
-    if ($(this).val().length < 1) {
+    if ($(this).val().trim().length < 1) {
       $('.js-resign-message').text("その他の理由が入力されていません");
     }
-  })
-
-  $("#leaveSubmit").on("click", function() {
-    if ($("#textareaCheck").prop("checked") == true && $(".leave-comment__input textarea").val().length < 1 ){
-      $('.js-resign-message').text("その他の理由が入力されていません");
-
-      return false;
-    }
-
-    var reason1 = '';
-    var reason2 = '';
-    var reason3 = '';
-    var other_reason = '';
-    if (document.getElementById("reason1").checked) {
-      var reason1 = 'サービスの使い方が分からない';
-    }
-
-    if (document.getElementById("reason2").checked) {
-      var reason2 = '金額が高すぎる';
-    }
-
-    if (document.getElementById("reason3").checked) {
-      var reason3 = '一緒に飲みたいキャストがいない';
-    }
-
-    if (document.getElementById("textareaCheck").checked) {
-      var other_reason = $('textarea#description').val();
-    }
-
-    localStorage.setItem('reason1', reason1);
-    localStorage.setItem('reason2', reason2);
-    localStorage.setItem('reason3', reason3);
-    localStorage.setItem('other_reason', other_reason);
-
-    window.location.href = '/resigns/confirm';
   })
 
   // leave_confirm page
@@ -75,8 +101,31 @@ $(function() {
     }
   })
 
-  // check data when back
-  if (localStorage.getItem('reason1') || localStorage.getItem('reason2') || localStorage.getItem('reason3') || localStorage.getItem('other_reason')) {
-    $("#leaveSubmit").prop("disabled", false);
+  if($("#leaveSubmit").length) {
+    if(localStorage.getItem("reason1")){
+      $("#reason1").prop('checked', true);
+    }
+    
+    if(localStorage.getItem("reason2")){
+      $("#reason2").prop('checked', true);
+    }
+
+    if(localStorage.getItem("reason3")){
+      $("#reason3").prop('checked', true);
+    }
+  
+    if(localStorage.getItem("other_reason")){
+      $("#textareaCheck").prop('checked', true);
+      $(".leave-comment__input textarea").prop("disabled", false).focus();
+
+      if(localStorage.getItem("textarea_reason")){
+        $(".leave-comment__input textarea").val(localStorage.getItem("textarea_reason"))
+      }
+    }
+    
+    // check data when back
+    if (localStorage.getItem('reason1') || localStorage.getItem('reason2') || localStorage.getItem('reason3') || localStorage.getItem('other_reason')) {
+      $("#leaveSubmit").prop("disabled", false);
+    }
   }
 })
