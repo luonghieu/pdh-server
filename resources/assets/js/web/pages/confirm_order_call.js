@@ -31,7 +31,7 @@ function showCoupons(coupon, params)
   view += '<div class="details-total__content show_point-coupon">';
   view += '<div class="details-list__header"> <div class="">割引額</div> </div>';
   view += '<div class="details-total__marks sale-point-coupon" id="sale_point-coupon" ></div> </div>';
-          
+
   $('#show-point-coupon').html(view);
 
   if (couponType.DURATION == coupon.type) {
@@ -155,11 +155,11 @@ function createOrderCall(orderCall, data = [], currentTime)
   }
 
   if(orderCall.coupon) {
-    var coupon = orderCall.coupon;            
+    var coupon = orderCall.coupon;
     params.coupon_id = coupon.id;
     params.coupon_name = coupon.name;
     params.coupon_type = coupon.type;
-    
+
     if(coupon.max_point) {
       params.coupon_max_point = coupon.max_point;
     } else {
@@ -193,41 +193,49 @@ function createOrderCall(orderCall, data = [], currentTime)
     $('.modal-confirm').css('display', 'inline-block');
     $('#btn-confirm-orders').prop('disabled', false);
     $('#order-call-popup').prop('checked',false);
-      if (error.response.status == 401) {
-        window.location = '/login';
+
+    if (error.response.status == 401) {
+      window.location = '/login';
+    } else {
+      if (error.response.status == 404) {
+        $('#md-require-card').prop('checked',true);
       } else {
-        if(error.response.status == 404) {
+        if (error.response.status == 406) {
+          $('.card-expired h2').text('');
+          var content = '予約日までにクレジットカードの <br> 1有効期限が切れます  <br> <br> 予約を完了するには  <br> カード情報を更新してください';
+          $('.card-expired p').html(content);
+          $('.lable-register-card').text('クレジットカード情報を更新する');
           $('#md-require-card').prop('checked',true);
         } else {
-          if(error.response.status == 406) {
-            $('.card-expired h2').text('');
-            var content = '予約日までにクレジットカードの <br> 1有効期限が切れます  <br> <br> 予約を完了するには  <br> カード情報を更新してください';
-            $('.card-expired p').html(content);
-            $('.lable-register-card').text('クレジットカード情報を更新する');
-            $('#md-require-card').prop('checked',true);
-          } else {
-            if (error.response.status == 400) {
+          switch(error.response.status) {
+            case 400:
               var title = '開始時間は現在時刻から30分以降の時間を選択してください';
-            }
-
-            if(error.response.status == 422) {
-              var title = 'この操作は実行できません';
-            }
-
-            if(error.response.status == 500) {
-              var title = 'サーバーエラーが発生しました';
-            }
-
-            if(error.response.status == 409) {
+              break;
+            case 403:
+              var title = 'アカウントが凍結されています';
+              break;
+            case 409:
               var title = 'クーポンが無効です';
-            }
+              break;
+            case 412:
+              var title = '退会申請中のため、予約することはできません。';
+              break;
+            case 422:
+              var title = 'この操作は実行できません';
+              break;
+            case 500:
+              var title = 'サーバーエラーが発生しました';
+              break;
 
-            $('.show-message-order-call h2').html(title);
-
-            $('#order-call-popup').prop('checked',true);
+            default:break;
           }
+
+          $('.show-message-order-call h2').html(title);
+
+          $('#order-call-popup').prop('checked',true);
         }
       }
+    }
   })
 }
 
@@ -326,7 +334,7 @@ $(document).ready(function(){
         //     }
         //   } else {
         //     var type = 2;
-        //   }      
+        //   }
         // } else {
         //   var castIds = '';
         //   type = 2;
@@ -457,7 +465,7 @@ $(document).ready(function(){
           if(OrderPaymentMethod.Direct_Payment == transfer) {
             checkCard = false;
           }
-              
+
           if(checkCard) {
             $(this).prop('checked', false);
             $('#sp-cancel').addClass("sp-disable");
@@ -511,7 +519,7 @@ $(document).ready(function(){
                       } else {
                         var point = parseInt(tempPointOrder) - parseInt(pointUser);
                       }
-                  
+
                       window.location.href = '/payment/transfer?point=' + point;
 
                       return ;
@@ -539,8 +547,6 @@ $(document).ready(function(){
         } else {
           createOrderCall(orderCall, data, currentTime);
         }
-
-        
       });
     } else {
       window.location.href = '/mypage';

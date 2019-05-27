@@ -216,7 +216,7 @@ function selectedCouponsOffer()
     }
 
     var couponIds = couponOffer.map(function (e) {
-      return e.id; 
+      return e.id;
     });
 
     var coupon = null;
@@ -294,7 +294,7 @@ function showPoint(input, offerId, coupon = null)
 
         $('#order-point').html(orderPoint + 'P');
         $('#night-fee').html(nightFee+'P');
-        
+
         if (coupon) {
           if (couponType.PERCENT == coupon.type) {
               var pointCoupon = (parseInt(coupon.percent)/100)*tempPoint;
@@ -331,10 +331,10 @@ function showPoint(input, offerId, coupon = null)
         var data = {
           current_total_point: currentPoint,
         };
-        
+
         helper.updateLocalStorageKey('order_offer', data, offerId);
         $('#temp-point-offer').val(currentPoint);
-        
+
         currentPoint = parseInt(currentPoint).toLocaleString(undefined,{ minimumFractionDigits: 0 });
         $('#total-point-order').html(currentPoint+'P');
         $('.total-amount').text(currentPoint +'P');
@@ -447,11 +447,11 @@ function createOrderOffer(transfer = null)
   }
 
   if(orderOffer.coupon) {
-    var coupon = orderOffer.coupon;            
+    var coupon = orderOffer.coupon;
     params.coupon_id = coupon.id;
     params.coupon_name = coupon.name;
     params.coupon_type = coupon.type;
-    
+
     if(coupon.max_point) {
       params.coupon_max_point = coupon.max_point;
     } else {
@@ -503,7 +503,7 @@ function createOrderOffer(transfer = null)
           } else {
             if (error.response.status == 406) {
               $('#admin-edited').prop('checked',true);
-              
+
               $('#reload-offer').on("click",function(event){
                 if (localStorage.getItem("order_offer")) {
                   localStorage.removeItem("order_offer");
@@ -514,20 +514,24 @@ function createOrderOffer(transfer = null)
               var content = '';
               var err ='';
 
-              if (error.response.status == 400) {
-                var err = '開始時間は現在時刻から30分以降の時間を選択してください';
-              }
+              switch(error.response.status) {
+                case 400:
+                  var err = '開始時間は現在時刻から30分以降の時間を選択してください';
+                  break;
+                case 404:
+                  var err = '支払い方法が未登録です';
+                  break;
+                case 409:
+                  var err = 'クーポンが無効です';
+                  break;
+                case 412:
+                  var err = '退会申請中のため、予約することはできません。';
+                  break;
+                case 500:
+                  var err = 'この操作は実行できません';
+                  break;
 
-              if(error.response.status == 500) {
-              var err = 'この操作は実行できません';
-              }
-
-              if(error.response.status == 404) {
-                var err = '支払い方法が未登録です';
-              }
-
-              if(error.response.status == 409) {
-                var err = 'クーポンが無効です';
+                default:break;
               }
 
               $('#err-offer-message h2').html(err);
@@ -668,7 +672,7 @@ $(document).ready(function(){
                     } else {
                       var point = parseInt(tempPointOrder) - parseInt(pointUser);
                     }
-                
+
                     window.location.href = '/payment/transfer?point=' + point;
 
                     return ;
@@ -696,8 +700,8 @@ $(document).ready(function(){
     } else {
       createOrderOffer();
     }
-        
-    
+
+
 
 
   })
@@ -960,7 +964,7 @@ $(document).ready(function(){
     }
 
     var couponIds = couponOffer.map(function (e) {
-      return e.id; 
+      return e.id;
     });
 
     var coupon = null;
@@ -1107,7 +1111,7 @@ $(document).ready(function(){
                 html += '<label class="button button--green area">';
                 html += '<input class="input-area-offer" type="radio" name="offer_area" value="'+ name +'">' + name +'</label>';
               })
-              
+
               html += '<label id="area_input" class="button button--green area ">';
               html += '<input class="input-area-offer" type="radio" name="offer_area" value="その他">その他</label>';
               html += '<label class="area-input area-offer"><span>希望エリア</span>';
@@ -1237,7 +1241,7 @@ $(document).ready(function(){
 
     helper.deleteLocalStorageKey('order_offer','select_area', offerId);
     helper.deleteLocalStorageKey('order_offer','text_area', offerId);
-    
+
     var params = {
       prefecture_id : this.value,
     };
@@ -1255,7 +1259,7 @@ $(document).ready(function(){
           html += '<label class="button button--green area">';
           html += '<input class="input-area-offer" type="radio" name="offer_area" value="'+ name +'">' + name +'</label>';
         })
-        
+
         html += '<label id="area_input" class="button button--green area ">';
         html += '<input class="input-area-offer" type="radio" name="offer_area" value="その他">その他</label>';
         html += '<label class="area-input area-offer"><span>希望エリア</span>';

@@ -18,7 +18,7 @@ class PointController extends ApiController
     {
         $user = $this->guard()->user();
         if ($user->resign_status == ResignStatus::PENDING) {
-            return $this->respondErrorMessage(trans('messages.resign_status_pending'), 403);
+            return $this->respondErrorMessage(trans('messages.buy_point_resign_status_pending'), 403);
         }
 
         $rules = [

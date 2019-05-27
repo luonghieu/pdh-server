@@ -160,7 +160,7 @@
       <label for="order-call-popup" class="modal_trigger"></label>
       <div class="modal_content modal_content-btn1">
         <div class="text-box show-message-order-call">
-          <h2></h2>
+          <h2 class="init-padding"></h2>
           <p></p>
         </div>
         <label for="order-call-popup" class="close_button" id="label-show-message">OK</label>
