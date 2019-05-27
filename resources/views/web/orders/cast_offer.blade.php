@@ -33,7 +33,7 @@
     <label for="err-offer" class="modal_trigger" id="lb-err-offer"></label>
     <div class="modal_content modal_content-btn1">
       <div class="text-box" id="err-offer-message">
-        <h2></h2>
+        <h2 style="font-size: 15px;"></h2>
         <p></p>
       </div>
       <label for="err-offer" class="close_button">OK</label>

@@ -27,6 +27,13 @@ class CastOfferController extends ApiController
     public function deny($id)
     {
         $user = $this->guard()->user();
+
+        $checkOrder = Order::where('status', OrderStatus::CAST_CANCELED)->find($id);
+
+        if ($checkOrder) {
+            return $this->respondErrorMessage(trans('messages.cast_canceled_order'), 406);
+        }
+
         $order = Order::where('status', OrderStatus::OPEN_FOR_GUEST)->find($id);
 
         if (!$order) {
@@ -77,6 +84,12 @@ class CastOfferController extends ApiController
             return $this->respondErrorMessage(trans('messages.freezing_account'), 403);
         }
 
+        $checkOrder = Order::where('status', OrderStatus::CAST_CANCELED)->find($request->order_id);
+
+        if ($checkOrder) {
+            return $this->respondErrorMessage(trans('messages.cast_canceled_order'), 406);
+        }
+
         $order = Order::where('status', OrderStatus::OPEN_FOR_GUEST)->find($request->order_id);
 
         if (!$order) {
@@ -114,13 +127,6 @@ class CastOfferController extends ApiController
             } else {
                 return $this->respondErrorMessage(trans('messages.action_not_performed'), 422);
             }
-        }
-
-        $start_time = Carbon::parse($order->date . ' ' . $order->start_time);
-        $end_time = $start_time->copy()->addHours((int) $order->duration);
-
-        if (now()->second(0)->diffInMinutes($start_time, false) < 29) {
-            return $this->respondErrorMessage(trans('messages.time_invalid'), 400);
         }
 
         if (!$request->payment_method || OrderPaymentMethod::DIRECT_PAYMENT != $request->payment_method) {
