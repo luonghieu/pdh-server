@@ -51,6 +51,19 @@
     </div>
 </div>
 
+<div class="modal_wrap">
+    <input id="popup-resign-error" type="checkbox">
+    <div class="modal_overlay">
+        <label for="popup-resign-error" class="modal_trigger" id="popup-resign-error-label"></label>
+        <div class="modal_content modal_content-btn1">
+            <div class="text-box">
+                <h2>退会申請中のため、ポイント購入をすることはできません。</h2>
+            </div>
+            <label for="popup-resign-error" class="close_button">OK</label>
+        </div>
+    </div>
+</div>
+
 @endsection
 @section('web.content')
 <div class="list_wrap">
@@ -142,6 +155,12 @@
         });
 
         function buyPoint(point) {
+            var hasResign = '{!! $user->resign_status != null ? 1 : 0 !!}';
+            if (hasResign) {
+                document.getElementById('popup-resign-error').click();
+                return false;
+            }
+
             var hasCard = '{!! $user->is_card_registered ? 1 : 0 !!}';
             if ($('#is_multi_payment_method').val() != true) {
                 if (!hasCard) {
