@@ -46,9 +46,13 @@ $(function() {
   });
   // textarea 文字数　コントロール
   $(".leave-comment__input textarea").on("keyup keypress change", function(e) {
-    let sum = $(this).val().length;
+    const str = $(this).val();
+
+    let sum = Array.from(str.split(/[\ufe00-\ufe0f]/).join("")).length;
+
     if(sum > 180) {
-      sum = 180;
+      
+      return false;
     } else {
         var textarea_reason = $(this).val().trim();
         
@@ -119,7 +123,8 @@ $(function() {
       $(".leave-comment__input textarea").prop("disabled", false).focus();
 
       if(localStorage.getItem("textarea_reason")){
-        $(".leave-comment__input textarea").val(localStorage.getItem("textarea_reason"))
+        $(".leave-comment__input textarea").val(localStorage.getItem("textarea_reason"));
+        $(".leave-comment__sum p").text(localStorage.getItem("textarea_reason").length);
       }
     }
     
