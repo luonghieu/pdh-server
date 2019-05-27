@@ -4389,3 +4389,7 @@ background: #c4c4c4;
 .modal_content-btn1 h2.init-padding {
   padding: 0em 1em .8em 1em;
 }
+
+#top .timeline {
+  padding: 0;
+}
