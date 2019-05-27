@@ -24,7 +24,7 @@ use JWTAuth;
 
 class CastOfferController extends ApiController
 {
-    public function denied($id)
+    public function deny($id)
     {
         $user = $this->guard()->user();
         $order = Order::where('status', OrderStatus::OPEN_FOR_GUEST)->find($id);
