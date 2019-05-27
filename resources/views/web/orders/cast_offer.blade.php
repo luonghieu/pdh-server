@@ -117,7 +117,7 @@
                       break;
               }
             @endphp
-            <p class="reservation-cast__daiamond {{ $class }}">{{ $order->castClass->name }}</p>
+            <p class="reservation-cast__daiamond {{ $class }}">{{ $order->nominees[0]->castClass->name }}</p>
             <p class="reservation-cast__pric">30分あたりの料金<span style="font-weight: bold;">{{ number_format($order->nominees[0]->cost ) }} P</span>
             </p>
           </div>

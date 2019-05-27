@@ -118,13 +118,7 @@ class Room extends Model
                 ];
 
                 $order = Order::where('room_id', $this->id)
-                    ->where(function ($query) {
-                        $query->where('type', '!=', OrderType::CALL)
-                            ->orWhere(function ($query) {
-                                $query->orWhere('type', OrderType::CALL)
-                                    ->where('status', '!=', OrderStatus::OPEN);
-                            });
-                    })
+                    ->whereNotIn('type', [OrderType::CALL, OrderType::HYBRID])
                     ->whereIn('status', $statuses)
                     ->orderByRaw('FIELD(status, ' . implode(',', $statuses) . ' )')
                     ->orderBy('date')
@@ -134,19 +128,15 @@ class Room extends Model
                 if (!$order) {
                     $statuses = [
                         OrderStatus::SKIP_NOMINATION,
-                        OrderStatus::DONE
+                        OrderStatus::GUEST_DENIED,
+                        OrderStatus::CAST_CANCELED,
+                        OrderStatus::DONE,
                     ];
 
                     $order = Order::where('room_id', $this->id)
-                        ->where(function ($query) {
-                            $query->where('type', '!=', OrderType::CALL)
-                                ->orWhere(function ($query) {
-                                    $query->orWhere('type', OrderType::CALL)
-                                        ->where('status', '!=', OrderStatus::OPEN);
-                                });
-                        })
-                        ->orderByRaw('FIELD(status, ' . implode(',', $statuses) . ' )')
-                        ->orderByDesc('actual_ended_at')
+                        ->whereNotIn('type', [OrderType::CALL, OrderType::HYBRID])
+                        ->whereIn('status', $statuses)
+                        ->orderByDesc('updated_at')
                         ->first();
                 }
 
