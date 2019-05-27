@@ -49,29 +49,29 @@
       <div class="text-box" id="timeout-offer-message">
         <h2></h2>
       </div>
-      <label for="" class="close_button" id="close-offer">OK</label>
+      <label for="" class="close_button redirect-mypage" id="close-offer">OK</label>
     </div>
   </div>
 </div>
 
 <div class="modal_wrap ">
-    <input id="cancel-cast-offer" type="checkbox">
-    <div class="modal_overlay">
-      <label for="cancel-cast-offer" class="modal_trigger"></label>
-      <div class="modal_content modal_content-btn2">
-        <div class="text-box">
-          <h2 style="padding-top: 0px;">本当にキャンセルしますか？</h2>
+  <input id="cancel-cast-offer" type="checkbox">
+  <div class="modal_overlay">
+    <label for="cancel-cast-offer" class="modal_trigger"></label>
+    <div class="modal_content modal_content-btn2">
+      <div class="text-box">
+        <h2 style="padding-top: 0px;">本当にキャンセルしますか？</h2>
+      </div>
+      <div class="close_button-box">
+        <div class="close_button-block">
+          <label for="cancel-cast-offer" class="close_button  left">キャンセル</label>
         </div>
-        <div class="close_button-box">
-          <div class="close_button-block">
-            <label for="cancel-cast-offer" class="close_button  left">キャンセル</label>
-          </div>
-          <div class="close_button-block" id="canceled-cast-offer">
-            <label class="close_button right">はい</label>
-          </div>
+        <div class="close_button-block" id="canceled-cast-offer">
+          <label for="cancel-cast-offer" class="close_button right ">はい</label>
         </div>
-        </div>
-    </div>
+      </div>
+      </div>
+  </div>
 </div>
 
 @endsection
@@ -138,7 +138,8 @@
           <input type="hidden" id="address-cast-offer" value="{{ $order->address }}">
           <input type="hidden" id="cast_offer-id" value="{{ $order->id }}">
           <input type="hidden" id="cast-id" value="{{ $order->nominees[0]->id }}">
-          <input type="hidden" id="class_cast-id" value="{{ $order->castClass->id }}">
+          <input type="hidden" id="class_cast-id" value="{{ $order->nominees[0]->castClass->id }}">
+          <input type="hidden" id="order-status" value="{{ $order->status }}">
           <input type="hidden" id="date-cast-offer" value="{{ Carbon\Carbon::parse($order->date)->format('Y-m-d') }}">
           <input type="hidden" id="time-cast-offer" value="{{ Carbon\Carbon::parse($order->start_time)->format('H:i') }}">
         </div>

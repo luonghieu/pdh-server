@@ -118,7 +118,13 @@ class Room extends Model
                 ];
 
                 $order = Order::where('room_id', $this->id)
-                    ->whereNotIn('type', [OrderType::CALL, OrderType::HYBRID])
+                    ->where(function ($query) {
+                        $query->where('type', '!=', OrderType::CALL)
+                            ->orWhere(function ($query) {
+                                $query->orWhere('type', OrderType::CALL)
+                                    ->where('status', '!=', OrderStatus::OPEN);
+                            });
+                    })
                     ->whereIn('status', $statuses)
                     ->orderByRaw('FIELD(status, ' . implode(',', $statuses) . ' )')
                     ->orderBy('date')
@@ -134,7 +140,13 @@ class Room extends Model
                     ];
 
                     $order = Order::where('room_id', $this->id)
-                        ->whereNotIn('type', [OrderType::CALL, OrderType::HYBRID])
+                        ->where(function ($query) {
+                            $query->where('type', '!=', OrderType::CALL)
+                                ->orWhere(function ($query) {
+                                    $query->orWhere('type', OrderType::CALL)
+                                        ->where('status', '!=', OrderStatus::OPEN);
+                                });
+                        })
                         ->whereIn('status', $statuses)
                         ->orderByDesc('updated_at')
                         ->first();
