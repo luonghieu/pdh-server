@@ -27,6 +27,13 @@ class CastOfferController extends ApiController
     public function deny($id)
     {
         $user = $this->guard()->user();
+
+        $checkOrder = Order::where('status', OrderStatus::CAST_CANCELED)->find($id);
+
+        if ($checkOrder) {
+            return $this->respondErrorMessage(trans('messages.cast_canceled_order'), 406);
+        }
+
         $order = Order::where('status', OrderStatus::OPEN_FOR_GUEST)->find($id);
 
         if (!$order) {
@@ -75,6 +82,12 @@ class CastOfferController extends ApiController
 
         if (!$user->status) {
             return $this->respondErrorMessage(trans('messages.freezing_account'), 403);
+        }
+
+        $checkOrder = Order::where('status', OrderStatus::CAST_CANCELED)->find($request->order_id);
+
+        if ($checkOrder) {
+            return $this->respondErrorMessage(trans('messages.cast_canceled_order'), 406);
         }
 
         $order = Order::where('status', OrderStatus::OPEN_FOR_GUEST)->find($request->order_id);

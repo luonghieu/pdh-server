@@ -380,6 +380,10 @@ function createCastOffer(transfer = null)
             var err = 'クーポンが無効です';
           }
 
+          if(error.response.status == 406) {
+            var err = 'こちらの飲み会の提案は取り下げられました。';
+          }
+
           $('#err-offer-message p').html(content);
           $('#err-offer-message h2').html(err);
 
@@ -456,6 +460,10 @@ function deniedCastOffer()
                 var err = '支払い方法が未登録です';
               }
 
+              if(error.response.status == 406) {
+                var err = 'こちらの飲み会の提案は取り下げられました。';
+              }
+              
               $('#err-offer-message p').html(content);
               $('#err-offer-message h2').html(err);
 

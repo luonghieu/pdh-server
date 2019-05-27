@@ -84,4 +84,8 @@ return [
     'offer_not_found' => 'オファーが見つかれません',
     'timeline_not_found' => 'タイムラインません',
     'timeline_deleted' => '削除しました',
+    'cast_canceled_order' => 'こちらの飲み会の提案は取り下げられました。',
+    'guest_denied_order_from_cast' => '既に予約キャンセルしています。',
+    'guest_accept_order_from_cast' => '既に予約確定しています。',
+    'order_from_cast_time_out' => 'この予約の回答期限は終了しました',
 ];
