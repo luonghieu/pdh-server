@@ -161,10 +161,11 @@ class CastOfferController extends ApiController
                 $order->coupon_type = $request->coupon_type;
                 $order->coupon_value = $request->coupon_value;
                 $order->coupon_max_point = $request->coupon_max_point;
-                $order->save();
 
                 $user->coupons()->attach($request->coupon_id, ['order_id' => $order->id]);
             }
+
+            $order->save();
 
             $order->nominees()->updateExistingPivot(
                 $nominee->id,
