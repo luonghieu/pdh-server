@@ -6,7 +6,7 @@
     <div class="modal-leave__top">
       <div class="modal-leave__title">ご確認ください</div>
       <div class="modal-leave__text">決済が完了していない予約があるため、
-        <br>退会が出来ません。マイページから決済を
+        <br>退会ができません。マイページから決済を
         <br>行ってください。</div>
     </div>
     <div class="modal-leave__bottom"><a href="{{ route('web.index') }}">マイページへ戻る  </a>

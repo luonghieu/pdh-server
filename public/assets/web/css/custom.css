@@ -4385,3 +4385,7 @@ background: #c4c4c4;
 #time-line-create-controller .page-title {
   padding: 10px;
 }
+
+.modal_content-btn1 h2.init-padding {
+  padding: 0em 1em .8em 1em;
+}
