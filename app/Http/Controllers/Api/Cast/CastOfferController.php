@@ -44,34 +44,34 @@ class CastOfferController extends ApiController
         $orderEndTime = $orderStartTime->copy()->addMinutes($request->duration * 60);
 
         $user = $this->guard()->user();
-         $prevOrders = Order::whereIn('status', [
-             OrderStatus::OPEN,
-             OrderStatus::ACTIVE,
-             OrderStatus::PROCESSING,
-             OrderStatus::OPEN_FOR_GUEST,
-         ])->whereHas('nominees', function ($query) use ($user) {
-             $query->where('cast_order.user_id', $user->id);
-         })->get();
+        $prevOrders = Order::whereIn('status', [
+            OrderStatus::OPEN,
+            OrderStatus::ACTIVE,
+            OrderStatus::PROCESSING,
+            OrderStatus::OPEN_FOR_GUEST,
+        ])->whereHas('casts', function ($query) use ($user) {
+            $query->where('cast_order.user_id', $user->id);
+        })->get();
 
-         $prevStartTime = null;
-         $prevEndTime = null;
-         foreach ($prevOrders as $order) {
-             $startTime = Carbon::parse($order->date . ' ' . $order->start_time);
-             $endTime = $startTime->copy()->addMinutes($order->duration * 60);
-             $isValid = true;
+        $prevStartTime = null;
+        $prevEndTime = null;
+        foreach ($prevOrders as $order) {
+            $startTime = Carbon::parse($order->date . ' ' . $order->start_time);
+            $endTime = $startTime->copy()->addMinutes($order->duration * 60);
+            $isValid = true;
 
-             if ($orderStartTime->between($startTime, $endTime) || $orderStartTime->between($startTime, $endTime)) {
-                 $isValid = false;
-             }
+            if ($orderStartTime->between($startTime, $endTime) || $orderStartTime->between($startTime, $endTime)) {
+                $isValid = false;
+            }
 
-             if ($orderStartTime < $startTime && $orderStartTime > $endTime) {
-                 $isValid = false;
-             }
+            if ($orderStartTime < $startTime && $orderStartTime > $endTime) {
+                $isValid = false;
+            }
 
-             if (!$isValid) {
-                 return $this->respondErrorMessage(trans('messages.action_not_performed'), 400);
-             }
-         }
+            if (!$isValid) {
+                return $this->respondErrorMessage(trans('messages.action_not_performed'), 400);
+            }
+        }
 
         if (now()->second(0)->diffInMinutes($orderStartTime, false) < 29) {
             return $this->respondErrorMessage(trans('messages.time_invalid'), 400);
