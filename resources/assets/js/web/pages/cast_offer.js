@@ -426,7 +426,7 @@ function deniedCastOffer()
   $('body').on('click', "#canceled-cast-offer", function(){
     var castOrderId = $('#cast_offer-id').val();
 
-    window.axios.post('/api/v1/guest/cast_offers/' + parseInt(castOrderId) +'/denied')
+    window.axios.post('/api/v1/guest/cast_offers/' + parseInt(castOrderId) +'/deny')
       .then(function(response) {
         window.location.href = '/mypage';
       })
