@@ -86,12 +86,12 @@ return [
     'timeline_deleted' => '削除しました',
     'can_not_be_resign' => '完了していない予約があるため、退会ができません。',
     'created_request_resign' => 'すでに退会申請は完了しています',
-    'resign_status_pending' => '提案中の予約やマッチング中の予約など、決済が完了していない予約がある場合は、退会申請を行うことはできません。'
-                               . PHP_EOL . 'ご不明点がございましたら、運営局までお問い合わせください。',
-    'resign_success' => 'Account request resign pending successfully',
     'skip_order_noninee' => '指名予約の提案が取り下げられました',
     'cast_canceled_order' => 'こちらの飲み会の提案は取り下げられました。',
     'guest_denied_order_from_cast' => '既に予約キャンセルしています。',
     'guest_accept_order_from_cast' => '既に予約確定しています。',
     'order_from_cast_time_out' => 'この予約の回答期限は終了しました',
+    'resign_success' => '',
+    'order_resign_status_pending' => '退会申請中のため、予約することはできません。',
+    'buy_point_resign_status_pending' => '退会申請中のため、ポイント購入をすることはできません。',
 ];
