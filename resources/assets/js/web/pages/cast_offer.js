@@ -355,8 +355,6 @@ function createCastOffer(transfer = null)
 
             $('#timeout-offer-message h2').html('この予約は募集が締め切られました');
 
-            $('#close-offer').addClass('redirect-mypage');
-
             $('#timeout-offer').prop('checked',true);     
         } else {
           var content = '';
@@ -422,13 +420,13 @@ function checkedCastOffer()
   });
 }
 
-function cancelCastOffer()
+function deniedCastOffer()
 {
   
   $('body').on('click', "#canceled-cast-offer", function(){
     var castOrderId = $('#cast_offer-id').val();
 
-    window.axios.post('/api/v1/guest/cast_offers/' + parseInt(castOrderId) +'/cancel')
+    window.axios.post('/api/v1/guest/cast_offers/' + parseInt(castOrderId) +'/denied')
       .then(function(response) {
         window.location.href = '/mypage';
       })
@@ -475,7 +473,7 @@ $(document).ready(function(){
     checkedCastOffer();
     handlerPaymentMethod();
     selectedCouponsCastOffer();
-    cancelCastOffer();
+    deniedCastOffer();
     var castOrderId = $('#cast_offer-id').val();
 
     if(localStorage.getItem("cast_offer")){
@@ -583,5 +581,17 @@ $(document).ready(function(){
     $('#btn-cancel-offer').on("click",function(event){
       $('#cancel-cast-offer').prop('checked', true);
     })
+
+    if($('#order-status').length) {
+      let orderStatus = parseInt($('#order-status').val());
+
+      if(9 != orderStatus) { // 9 ~ status OPEN_FOR_GUEST
+        $('#timeout-offer-message h2').css('font-size', '15px');
+
+        $('#timeout-offer-message h2').html('この予約は募集が締め切られました');
+
+        $('#timeout-offer').prop('checked',true);
+      }
+    }
   }
 })
