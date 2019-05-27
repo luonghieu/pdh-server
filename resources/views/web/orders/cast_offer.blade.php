@@ -47,7 +47,7 @@
     <label for="err-offer" id="lb-err-offer"></label>
     <div class="modal_content modal_content-btn1">
       <div class="text-box" id="timeout-offer-message">
-        <h2></h2>
+        <h2 style="font-size: 15px;"></h2>
       </div>
       <label for="" class="close_button redirect-mypage" id="close-offer">OK</label>
     </div>

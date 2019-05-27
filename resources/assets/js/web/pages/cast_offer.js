@@ -439,7 +439,7 @@ function deniedCastOffer()
             if(error.response.status == 400) {
                 $('#timeout-offer-message h2').css('font-size', '15px');
 
-                $('#timeout-offer-message h2').html('この予約は募集が締め切られました');
+                $('#timeout-offer-message h2').html('この予約の回答期限は終了しました');
 
                 $('#close-offer').addClass('redirect-mypage');
 
@@ -585,13 +585,36 @@ $(document).ready(function(){
     if($('#order-status').length) {
       let orderStatus = parseInt($('#order-status').val());
 
-      if(9 != orderStatus) { // 9 ~ status OPEN_FOR_GUEST
-        $('#timeout-offer-message h2').css('font-size', '15px');
+      switch (orderStatus){
+        case 7: // Order time out
+          $('#timeout-offer-message h2').html('この予約の回答期限は終了しました');
 
-        $('#timeout-offer-message h2').html('この予約は募集が締め切られました');
+          break;
 
-        $('#timeout-offer').prop('checked',true);
+        case 2: //active
+        case 3: //processing
+        case 4: //done
+          $('#timeout-offer-message h2').html('既に予約確定しています。');
+
+          break;
+
+        case 10: //guest denied order
+          $('#timeout-offer-message h2').html('既に予約キャンセルしています。');
+
+          break;
+
+        case 11: //cast cancel order
+          $('#timeout-offer-message h2').html('こちらの飲み会の提案は取り下げられました。');
+
+          break;
+
+        default: //cast cancel order
+          $('#timeout-offer-message h2').html('この予約の回答期限は終了しました');
+
+          break;
       }
+
+      $('#timeout-offer').prop('checked',true);
     }
   }
 })
