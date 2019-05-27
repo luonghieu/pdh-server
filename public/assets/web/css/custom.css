@@ -4270,3 +4270,7 @@ a.init-text-color {
 .modal_content-btn1 h2.init-padding {
   padding: 0em 1em .8em 1em;
 }
+
+.init-mb-5 {
+  margin-bottom: 2.5rem
+}
