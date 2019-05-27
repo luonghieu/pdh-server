@@ -318,33 +318,38 @@
       $statusCode = Session::get('status_code');
       $triggerId = $statusCode;
       $label = $statusCode;
+      $content = '';
 
-      if (406 == $statusCode) {
-        $button = 'クレジットカード情報を更新する';
-        $triggerClass = 'lable-register-card';
-        $content = '予約日までにクレジットカードの <br> 有効期限が切れます <br><br> 予約を完了するには <br> カード情報を更新してください';
+      switch ($statusCode) {
+        case 400:
+          $content = '開始時間は現在時刻から30分以降の時間を選択してください';
+          break;
+        case 403:
+          $content = 'アカウントが凍結されています';
+          break;
+        case 404:
+          $content = '支払い方法が未登録です';
+          break;
+        case 406:
+          $button = 'クレジットカード情報を更新する';
+          $triggerClass = 'lable-register-card';
+          $content = '予約日までにクレジットカードの <br> 有効期限が切れます <br><br> 予約を完了するには <br> カード情報を更新してください';
+          break;
+        case 409:
+          $content = 'クーポンが無効です';
+          break;
+        case 412:
+          $content = '退会申請中のため、予約することはできません。';
+          break;
+        case 422:
+          $content = 'この操作は実行できません';
+          break;
+        case 500:
+          $content = 'サーバーエラーが発生しました';
+          break;
+
+        default:break;
       }
-
-      if (400 == $statusCode) {
-        $content = '開始時間は現在時刻から30分以降の時間を選択してください';
-      }
-
-      if (409 == $statusCode) {
-        $content = 'クーポンが無効です';
-      }
-
-      if (422 == $statusCode) {
-        $content = 'この操作は実行できません';
-      }
-
-      if (500 == $statusCode) {
-        $content = 'サーバーエラーが発生しました';
-      }
-
-      if (404 == $statusCode) {
-        $content = '支払い方法が未登録です';
-      }
-
     @endphp
 
     <div class="modal_wrap">
@@ -360,7 +365,5 @@
         </div>
       </div>
     </div>
-
   @endif
-
 @endsection
