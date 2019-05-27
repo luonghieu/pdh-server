@@ -337,7 +337,7 @@ function createCastOffer(transfer = null)
     }
   }
 
-  window.axios.post('/api/v1/guest/cast_offers/create', params)
+  window.axios.post('/api/v1/guest/cast_offers/accept', params)
   .then(function(response) {
     $('#cast-offer-popup').prop('checked',false);
     var roomId = response.data.data.room_id;
