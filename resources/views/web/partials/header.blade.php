@@ -1,4 +1,16 @@
 <div class="modal_wrap">
+  <input id="trigger-resign-error" type="checkbox">
+  <div class="modal_overlay">
+    <label for="trigger-resign-error" class="modal_trigger"></label>
+    <div class="modal_content modal_content-btn1">
+      <div class="text-box">
+        <h2 class="init-padding">{{ trans('messages.created_request_resign') }}</h2>
+      </div>
+      <label for="trigger-resign-error" class="close_button">OK</label>
+    </div>
+  </div>
+</div>
+<div class="modal_wrap">
   <input id="trigger-freezed-account" type="checkbox">
   <div class="modal_overlay">
     <label for="trigger-freezed-account" class="modal_trigger"></label>
@@ -110,7 +122,7 @@
           <li><a href="{{ url('/service/contact') }}">お問い合わせ</a></li>
           <li id="resign-status">
             @if (Auth::user()->resign_status != null)
-            <a href="javascript:void(0)" id="menu-freezed-account">退会</a>
+            <a href="javascript:void(0)" id="menu-resign-error">退会</a>
             @else
             <a href="{{ route('resigns.reason') }}">退会</a>
             @endif

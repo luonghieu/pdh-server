@@ -37,5 +37,14 @@
     $('body').on('click', '.redirect-top', function () {
       window.location = '/mypage';
     })
+
+    // resign
+    $('body').on('click', '#menu-resign-error', function () {
+      MenuAPI.close();
+
+      setTimeout(function () {
+        $('#trigger-resign-error').trigger('click');
+      }, 500)
+    })
   })
 </script>
