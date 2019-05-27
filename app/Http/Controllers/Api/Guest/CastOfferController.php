@@ -116,13 +116,6 @@ class CastOfferController extends ApiController
             }
         }
 
-        $start_time = Carbon::parse($order->date . ' ' . $order->start_time);
-        $end_time = $start_time->copy()->addHours((int) $order->duration);
-
-        if (now()->second(0)->diffInMinutes($start_time, false) < 29) {
-            return $this->respondErrorMessage(trans('messages.time_invalid'), 400);
-        }
-
         if (!$request->payment_method || OrderPaymentMethod::DIRECT_PAYMENT != $request->payment_method) {
             if (!$user->is_card_registered) {
                 return $this->respondErrorMessage(trans('messages.card_not_exist'), 404);
