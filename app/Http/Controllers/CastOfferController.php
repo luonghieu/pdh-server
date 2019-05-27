@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use App\Enums\OrderStatus;
 use App\Order;
 use App\Services\LogService;
 use Auth;
@@ -15,8 +14,7 @@ class CastOfferController extends Controller
     public function index(Request $request)
     {
         if ($request->id) {
-            $order = Order::where('status', OrderStatus::OPEN_FOR_GUEST)->whereNull('canceled_at')
-                ->find($request->id);
+            $order = Order::find($request->id);
 
             if (!isset($order)) {
                 return redirect()->route('web.index');
