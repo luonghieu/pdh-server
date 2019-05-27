@@ -73,13 +73,18 @@
             <thead>
               <tr>
                 @if(request()->resign_status == \App\Enums\ResignStatus::PENDING)
-                <th></th>
+                  <th></th>
                 @endif
-                <th>ユーザーID</th>
-                <th>ユーザー名</th>
-                <th>申請日</th>
-                <th>ゲスト詳細</th>
-                <th>退会申請詳細</th>
+                  <th>ユーザーID</th>
+                  <th>ユーザー名</th>
+                @if(request()->resign_status == \App\Enums\ResignStatus::PENDING)
+                  <th>申請日</th>
+                  <th>ゲスト詳細</th>
+                  <th>退会申請詳細</th>
+                @else
+                    <th>退会日時</th>
+                    <th></th>
+                @endif
               </tr>
             </thead>
             <tbody>
@@ -92,9 +97,14 @@
                   @endif
                   <td>{{ $user->id }}</td>
                   <td>{{ $user->nickname }}</td>
-                  <td>{{ $user->resign_date }}</td>
-                  <td><a href="{{ route('admin.users.show', ['user' => $user->id]) }}" class="btn btn-detail">詳細</a></td>
-                  <td><a href="{{ route('admin.resigns.show', ['user' => $user->id]) }}" class="btn btn-detail">詳細</a></td>
+                    @if(request()->resign_status == \App\Enums\ResignStatus::PENDING)
+                      <td>{{ Carbon\Carbon::parse($user->resign_date)->format('Y年m月d日') }}</td>
+                      <td><a href="{{ route('admin.users.show', ['user' => $user->id]) }}" class="btn btn-detail">詳細</a></td>
+                      <td><a href="{{ route('admin.resigns.show', ['user' => $user->id]) }}" class="btn btn-detail">詳細</a></td>
+                    @else
+                      <td>{{ Carbon\Carbon::parse($user->resign_date)->format('Y年m月d日　h:m') }}</td>
+                      <td><a href="{{ route('admin.resigns.show', ['user' => $user->id]) }}" class="btn btn-detail">詳細</a></td>
+                    @endif
                 </tr>
               @endforeach
             </tbody>
