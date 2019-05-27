@@ -6,11 +6,13 @@ use App\Coupon;
 use App\Enums\CastOrderStatus;
 use App\Enums\CouponType;
 use App\Enums\InviteCodeHistoryStatus;
+use App\Enums\MessageType;
 use App\Enums\OrderPaymentMethod;
 use App\Enums\OrderStatus;
+use App\Enums\SystemMessageType;
 use App\Http\Controllers\Api\ApiController;
 use App\Http\Resources\OrderResource;
-use App\Notifications\CreateNominationOrdersForCast;
+use App\Notifications\GuestAcceptOrderFromCast;
 use App\Notifications\GuestCancelOrderOfferFromCast;
 use App\Order;
 use App\Point;
@@ -181,9 +183,34 @@ class CastOfferController extends ApiController
                 false
             );
 
-            $nominee->notify(
-                (new CreateNominationOrdersForCast($order->id))->delay(now()->addSeconds(3))
-            );
+            $room = $order->room;
+
+            $userIds = [$user->id, $nominee->id];
+
+            $firstMessage = 'マッチングが確定しました。';
+            $roomMessage = $room->messages()->create([
+                'user_id' => 1,
+                'type' => MessageType::SYSTEM,
+                'system_type' => SystemMessageType::NOTIFY,
+                'message' => $firstMessage,
+            ]);
+            $roomMessage->recipients()->attach($userIds, ['room_id' => $room->id]);
+
+            $secondMessage = 'マッチング確定おめでとうございます♪'
+                . PHP_EOL . '合流後はタイマーで時間計測を行い、解散予定の10分前には通知が届きます。'
+                . PHP_EOL . '※解散予定時刻後は自動で延長されます。'
+                . PHP_EOL . PHP_EOL . 'その他ご不明点がある場合は運営までお問い合わせください。'
+                . PHP_EOL . PHP_EOL . 'それでは素敵な時間をお楽しみください♪';
+
+            $roomMessage = $room->messages()->create([
+                'user_id' => 1,
+                'type' => MessageType::SYSTEM,
+                'system_type' => SystemMessageType::NORMAL,
+                'message' => $secondMessage,
+            ]);
+            $roomMessage->recipients()->attach($userIds, ['room_id' => $room->id]);
+
+            \Notification::send([$nominee, $user], new GuestAcceptOrderFromCast($order->id));
 
             $inviteCodeHistory = $user->inviteCodeHistory;
             if ($inviteCodeHistory) {
