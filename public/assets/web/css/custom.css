@@ -4426,3 +4426,7 @@ background: #c4c4c4;
 .init-mb-5 {
   margin-bottom: 2.5rem
 }
+
+#top .timeline {
+  padding: 0;
+}
