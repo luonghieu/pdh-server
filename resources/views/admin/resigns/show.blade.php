@@ -30,7 +30,7 @@
                                     </tr>
                                     <tr>
                                         <td>その他の退会理由</td>
-                                        <td>{{ $user->second_resign_description }}</td>
+                                        <td>{!! nl2br($user->second_resign_description) !!}</td>
                                     </tr>
                                 </tbody>
                             </table>
