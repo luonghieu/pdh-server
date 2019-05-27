@@ -8,7 +8,7 @@
   <div class="leave-content">
     <section class="portlet">
       <div class="portlet-header">
-        <div class="portlet-header__title">退会理由を教えてください(複数選択可)</div>
+        <div class="portlet-header__title" style="letter-spacing: 0px;">退会理由を教えてください(複数選択可)</div>
       </div>
       <div class="portlet-content">
         <div class="leave-reason-list">
