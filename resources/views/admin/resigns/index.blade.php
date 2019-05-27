@@ -88,25 +88,31 @@
               </tr>
             </thead>
             <tbody>
-              @foreach($users as $user)
+              @if (empty($users->count()))
                 <tr>
-                  @if(request()->resign_status == \App\Enums\ResignStatus::PENDING)
-                    <td class="select-checkbox">
-                      <input type="checkbox" class="verify-checkboxs" value="{{ $user->id }}">
-                    </td>
-                  @endif
-                  <td>{{ $user->id }}</td>
-                  <td>{{ $user->nickname }}</td>
-                    @if(request()->resign_status == \App\Enums\ResignStatus::PENDING)
-                      <td>{{ Carbon\Carbon::parse($user->resign_date)->format('Y年m月d日') }}</td>
-                      <td><a href="{{ route('admin.users.show', ['user' => $user->id]) }}" class="btn btn-detail">詳細</a></td>
-                      <td><a href="{{ route('admin.resigns.show', ['user' => $user->id]) }}" class="btn btn-detail">詳細</a></td>
-                    @else
-                      <td>{{ Carbon\Carbon::parse($user->resign_date)->format('Y年m月d日　h:m') }}</td>
-                      <td><a href="{{ route('admin.resigns.show', ['user' => $user->id]) }}" class="btn btn-detail">詳細</a></td>
-                    @endif
+                  <td colspan="6">{{ trans('messages.result_not_found') }}</td>
                 </tr>
-              @endforeach
+              @else
+                @foreach($users as $user)
+                  <tr>
+                    @if(request()->resign_status == \App\Enums\ResignStatus::PENDING)
+                      <td class="select-checkbox">
+                        <input type="checkbox" class="verify-checkboxs" value="{{ $user->id }}">
+                      </td>
+                    @endif
+                    <td>{{ $user->id }}</td>
+                    <td>{{ $user->nickname }}</td>
+                      @if(request()->resign_status == \App\Enums\ResignStatus::PENDING)
+                        <td>{{ Carbon\Carbon::parse($user->resign_date)->format('Y年m月d日') }}</td>
+                        <td><a href="{{ route('admin.users.show', ['user' => $user->id]) }}" class="btn btn-detail">詳細</a></td>
+                        <td><a href="{{ route('admin.resigns.show', ['user' => $user->id]) }}" class="btn btn-detail">詳細</a></td>
+                      @else
+                        <td>{{ Carbon\Carbon::parse($user->resign_date)->format('Y年m月d日　h:m') }}</td>
+                        <td><a href="{{ route('admin.resigns.show', ['user' => $user->id]) }}" class="btn btn-detail">詳細</a></td>
+                      @endif
+                  </tr>
+                @endforeach
+              @endif
             </tbody>
           </table>
         </div>

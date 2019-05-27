@@ -86,4 +86,5 @@ return [
     'resign_success' => 'Account request resign pending successfully',
     'order_resign_status_pending' => 'You can not make a reservation as it is being withdrawn.',
     'buy_point_resign_status_pending' => 'You can not purchase points because you are applying for withdrawal.',
+    'result_not_found' => 'Result is not found',
 ];

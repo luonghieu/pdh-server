@@ -89,4 +89,5 @@ return [
     'resign_success' => '',
     'order_resign_status_pending' => '退会申請中のため、予約することはできません。',
     'buy_point_resign_status_pending' => '退会申請中のため、ポイント購入をすることはできません。',
+    'result_not_found' => '結果が見つかりません',
 ];
