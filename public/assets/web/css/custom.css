@@ -4270,3 +4270,7 @@ background: #c4c4c4;
 #offer .reservation-cast__name p:last-child {
   width: 115px;
 }
+
+#offer .reservation-info__time {
+  width: 154px !important;
+}
