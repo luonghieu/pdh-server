@@ -16,8 +16,8 @@ class PointController extends ApiController
 {
     public function buy(Request $request)
     {
-        $resignStatus = Auth::user()->resign_status;
-        if ($resignStatus == ResignStatus::PENDING) {
+        $user = $this->guard()->user();
+        if ($user->resign_status == ResignStatus::PENDING) {
             return $this->respondErrorMessage(trans('messages.resign_status_pending'), 403);
         }
 
@@ -31,7 +31,7 @@ class PointController extends ApiController
             return $this->respondWithValidationError($validator->errors()->messages());
         }
 
-        $user = $this->guard()->user();
+
         $now = Carbon::now();
 
         if (!$user->is_card_registered) {
