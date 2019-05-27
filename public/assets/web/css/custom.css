@@ -4430,3 +4430,7 @@ background: #c4c4c4;
 #top .timeline {
   padding: 0;
 }
+
+#offer .reservation-info__time {
+  width: 154px !important;
+}
