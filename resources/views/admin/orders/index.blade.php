@@ -153,7 +153,7 @@
                       $castIds = $order->castOrderWithTrashedRejectCastDenied->pluck('id')->toArray();
                       $countOfCast = count($castIds);
                   @endphp
-                  @if (App\Enums\OrderType::CALL == $order->type)
+                  @if (App\Enums\OrderType::CALL == $order->type || $order->cast_offer_id)
                   <td>-</td>
                   @else
                     @if ($order->nomineesWithTrashedRejectCastDenied->count() > 1)
