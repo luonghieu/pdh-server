@@ -9,7 +9,7 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use App\Services\LogService;
 use App\Http\Requests\CheckDateRequest;
-
+use Carbon\Carbon;
 class ResignController extends Controller
 {
     public function index(CheckDateRequest $request)
@@ -21,7 +21,6 @@ class ResignController extends Controller
         } else {
             $users = User::onlyTrashed()->where('resign_status', ResignStatus::APPROVED);
         }
-
         if ($request->has('from_date') && !empty($request->from_date)) {
             $fromDate = Carbon::parse($request->from_date)->startOfDay();
             $users->where(function ($query) use ($fromDate) {
@@ -43,7 +42,7 @@ class ResignController extends Controller
             });
         }
 
-        $users = $users->paginate($request->limit ?: 10);
+        $users = $users->orderBy('resign_date', 'DESC')->paginate($request->limit ?: 10);
 
         return view('admin.resigns.index', compact('users'));
     }
