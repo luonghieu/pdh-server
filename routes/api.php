@@ -99,8 +99,9 @@ Route::group(['prefix' => 'v1'], function () {
 
         Route::group(['prefix' => 'cast_offers', 'as' => 'cast_offers'], function () {
             Route::get('/{id}', ['as' => 'show', 'uses' => 'Guest\CastOfferController@show'])->where('id', '[0-9]+');
+
             Route::post('/{id}/denied', ['as' => 'denied', 'uses' => 'Guest\CastOfferController@denied'])->where('id', '[0-9]+');
-            Route::post('/accept', ['as' => 'create', 'uses' => 'Guest\CastOfferController@accept']);
+            Route::post('/accept', ['as' => 'accept', 'uses' => 'Guest\CastOfferController@accept']);
         });
     });
 

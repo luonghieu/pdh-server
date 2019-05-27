@@ -114,7 +114,7 @@
     </div>
   </div>
   @if ($room->type != \App\Enums\RoomType::SYSTEM)
-    @if(($messages['order']['status'] == App\Enums\OrderStatus::GUEST_DENIED) && (Auth::user()->type == App\Enums\UserType::GUEST))
+    @if((in_array($messages['order']['status'], [App\Enums\OrderStatus::GUEST_DENIED, App\Enums\OrderStatus::CAST_CANCELED])) && (Auth::user()->type == App\Enums\UserType::GUEST))
     <div class="msg-head">
       <h2><span class="mitei msg-head-ttl">日程未定</span>キャストに予約リクエストしよう！</h2>
     </div>
