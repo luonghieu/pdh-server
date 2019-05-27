@@ -71,7 +71,7 @@ class GuestCancelOrderOfferFromCast extends Notification implements ShouldQueue
 
         $castPrivateRoomMessage->recipients()->attach($notifiable->id, ['room_id' => $castPrivateRoom->id]);
 
-        $pushId = 'c_25';
+        $pushId = 'g_25';
         $room = $castPrivateRoom;
 
         $namedUser = 'user_' . $notifiable->id;
