@@ -2,9 +2,11 @@
 
 namespace App\Http\Controllers\Api\Guest;
 
+use App\Enums\CastOrderStatus;
 use App\Enums\OrderPaymentMethod;
 use App\Enums\OrderPaymentStatus;
 use App\Enums\OrderStatus;
+use App\Enums\OrderType;
 use App\Enums\PaymentRequestStatus;
 use App\Enums\PointType;
 use App\Enums\UserType;
@@ -192,13 +194,21 @@ class OrderController extends ApiController
             return $this->respondErrorMessage(trans('messages.order_not_found'), 404);
         }
 
-        if ($order->status != OrderStatus::OPEN) {
+        if ($order->status != OrderStatus::OPEN || $order->type != OrderType::NOMINATION) {
             return $this->respondErrorMessage(trans('messages.action_not_performed'), 422);
         }
 
         try {
             $order->status = OrderStatus::SKIP_NOMINATION;
             $order->save();
+
+            $order->nominees()->updateExistingPivot(
+                $nominee->id,
+                [
+                    'status' => CastOrderStatus::TIMEOUT,
+                ],
+                false
+            );
 
             $nominee->notify(new SkipOrderNomination($user));
 
