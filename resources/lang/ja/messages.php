@@ -90,4 +90,8 @@ return [
                                . PHP_EOL . 'ご不明点がございましたら、運営局までお問い合わせください。',
     'resign_success' => 'Account request resign pending successfully',
     'skip_order_noninee' => '指名予約の提案が取り下げられました',
+    'cast_canceled_order' => 'こちらの飲み会の提案は取り下げられました。',
+    'guest_denied_order_from_cast' => '既に予約キャンセルしています。',
+    'guest_accept_order_from_cast' => '既に予約確定しています。',
+    'order_from_cast_time_out' => 'この予約の回答期限は終了しました',
 ];
