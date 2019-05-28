@@ -4,7 +4,7 @@ $(document).ready(function() {
       reason1: localStorage.getItem('reason1'),
       reason2: localStorage.getItem('reason2'),
       reason3: localStorage.getItem('reason3'),
-      other_reason: localStorage.getItem('textarea_reason'),
+      other_reason: localStorage.getItem("other_reason") ? localStorage.getItem('textarea_reason') : '',
     }
 
     window.axios.post('/api/v1/resigns/create', params)
