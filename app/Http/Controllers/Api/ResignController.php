@@ -27,8 +27,11 @@ class ResignController extends ApiController
             ->orWhere(function ($query) use ($user) {
                 $query->where('user_id', $user->id)->where('status', OrderStatus::DONE)
                     ->where(function ($subQuery) {
-                        $subQuery->where('payment_status', '!=', OrderPaymentStatus::PAYMENT_FINISHED)
-                            ->orWhere('payment_status', OrderPaymentStatus::PAYMENT_FAILED);
+                        $subQuery->whereNull('payment_status')
+                            ->orWhere(function($s) {
+                               $s->where('payment_status', '!=', OrderPaymentStatus::PAYMENT_FINISHED)
+                                   ->orWhere('payment_status', OrderPaymentStatus::PAYMENT_FAILED);
+                            });
                     });
             })
             ->orWhere(function ($query) use ($user) {
