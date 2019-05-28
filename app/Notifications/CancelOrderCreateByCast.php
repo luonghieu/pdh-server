@@ -69,7 +69,7 @@ class CancelOrderCreateByCast extends Notification implements ShouldQueue
         $sendMessage->recipients()->attach($notifiable->id, ['room_id' => $room->id]);
 
         $content = '指名予約の提案が取り下げられました';
-        $pushId = 'c_25';
+        $pushId = 'g_26';
 
         $namedUser = 'user_' . $notifiable->id;
         $send_from = UserType::ADMIN;
