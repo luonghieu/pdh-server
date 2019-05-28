@@ -215,9 +215,16 @@ class UserController extends Controller
         }
 
         $card = $user->card;
+        $avatars = $user->avatars;
 
         if ($card) {
             $card->delete();
+        }
+
+        if($avatars->first()) {
+            foreach ($avatars as $avatar) {
+                $avatar->delete();
+            }
         }
 
         $user->stripe_id = null;

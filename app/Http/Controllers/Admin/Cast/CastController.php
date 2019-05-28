@@ -318,7 +318,7 @@ class CastController extends Controller
             return $query->withTrashed();
         };
 
-        $user = Cast::withTrashed()->find($castId);
+        $user = User::withTrashed()->find($castId);
 
         $points = $user->points()->with($with)
             ->whereIn('type', [PointType::RECEIVE, PointType::TRANSFER, PointType::ADJUSTED])
