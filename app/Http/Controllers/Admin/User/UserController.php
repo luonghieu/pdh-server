@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin\User;
 use App\Enums\OrderPaymentStatus;
 use App\Enums\OrderStatus;
 use App\Enums\ResignStatus;
+use App\Enums\Status;
 use App\Enums\UserType;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\CheckDateRequest;
