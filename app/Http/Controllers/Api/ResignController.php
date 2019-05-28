@@ -47,7 +47,7 @@ class ResignController extends ApiController
             ->exists();
 
         if ($isUnpaidOrder || !$user->status) {
-            return $this->respondErrorMessage(trans('messages.can_not_be_resign'), 422);
+            return $this->respondErrorMessage(trans('messages.order_exist_can_not_resign'), 422);
         }
 
         $input = $request->only('reason1', 'reason2', 'reason3');

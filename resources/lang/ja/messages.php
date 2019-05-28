@@ -90,4 +90,5 @@ return [
     'order_resign_status_pending' => '退会申請中のため、予約することはできません。',
     'buy_point_resign_status_pending' => '退会申請中のため、ポイント購入をすることはできません。',
     'result_not_found' => '結果が見つかりません',
+    'order_exist_can_not_resign' => '完了していない予約があるため、退会ができません。' . PHP_EOL . '詳しくはメッセージから運営者にお問い合わせください。',
 ];
