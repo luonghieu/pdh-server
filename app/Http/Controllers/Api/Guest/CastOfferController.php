@@ -9,6 +9,7 @@ use App\Enums\InviteCodeHistoryStatus;
 use App\Enums\MessageType;
 use App\Enums\OrderPaymentMethod;
 use App\Enums\OrderStatus;
+use App\Enums\ResignStatus;
 use App\Enums\SystemMessageType;
 use App\Http\Controllers\Api\ApiController;
 use App\Http\Resources\OrderResource;
@@ -70,6 +71,10 @@ class CastOfferController extends ApiController
     public function accept(Request $request)
     {
         $user = $this->guard()->user();
+
+        if (ResignStatus::PENDING == $user->resign_status) {
+            return $this->respondErrorMessage(trans('messages.order_resign_status_pending'), 412);
+        }
 
         $rules = [
             'temp_point' => 'required',
