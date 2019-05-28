@@ -27,8 +27,11 @@ class ResignController extends ApiController
             ->orWhere(function ($query) use ($user) {
                 $query->where('user_id', $user->id)->where('status', OrderStatus::DONE)
                     ->where(function ($subQuery) {
-                        $subQuery->where('payment_status', '!=', OrderPaymentStatus::PAYMENT_FINISHED)
-                            ->orWhere('payment_status', OrderPaymentStatus::PAYMENT_FAILED);
+                        $subQuery->whereNull('payment_status')
+                            ->orWhere(function($s) {
+                               $s->where('payment_status', '!=', OrderPaymentStatus::PAYMENT_FINISHED)
+                                   ->orWhere('payment_status', OrderPaymentStatus::PAYMENT_FAILED);
+                            });
                     });
             })
             ->orWhere(function ($query) use ($user) {
@@ -44,7 +47,7 @@ class ResignController extends ApiController
             ->exists();
 
         if ($isUnpaidOrder || !$user->status) {
-            return $this->respondErrorMessage(trans('messages.can_not_be_resign'), 422);
+            return $this->respondErrorMessage(trans('messages.order_exist_can_not_resign'), 422);
         }
 
         $input = $request->only('reason1', 'reason2', 'reason3');
