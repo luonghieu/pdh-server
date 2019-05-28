@@ -87,4 +87,5 @@ return [
     'skip_order_noninee' => 'Your proposal has been cancelled.',
     'order_resign_status_pending' => 'You can not make a reservation as it is being withdrawn.',
     'buy_point_resign_status_pending' => 'You can not purchase points because you are applying for withdrawal.',
+    'result_not_found' => 'Result is not found',
 ];
