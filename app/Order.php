@@ -89,7 +89,9 @@ class Order extends Model
         return $this->belongsToMany(Cast::class)
             ->where('cast_order.type', CastOrderType::NOMINEE)
             ->whereNull('cast_order.deleted_at')
-            ->withPivot('accepted_at', 'status', 'type', 'cost', 'started_at', 'stopped_at')
+            ->withPivot('order_time', 'extra_time', 'order_point', 'extra_point', 'allowance_point', 'fee_point',
+                'total_point', 'type', 'started_at', 'stopped_at', 'status', 'accepted_at', 'canceled_at', 'guest_rated',
+                'cast_rated', 'is_thanked', 'temp_point', 'cost', 'id')
             ->withTimestamps();
     }
 
