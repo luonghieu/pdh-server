@@ -126,7 +126,7 @@
                             <li><a href="{{ url('/service/contact') }}">お問い合わせ</a></li>
                             <li>
                                 @if (Auth::user()->resign_status != null)
-                                    <a href="javascript:void(0)" id="menu-freezed-account">退会</a>
+                                    <a href="javascript:void(0)" id="menu-resign-error">退会</a>
                                 @else
                                     <a href="{{ route('resigns.reason') }}">退会</a>
                                 @endif
