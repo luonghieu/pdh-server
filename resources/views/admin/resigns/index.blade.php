@@ -47,7 +47,7 @@
               </div>
               @if(request()->resign_status == \App\Enums\ResignStatus::PENDING)
                 <div class="init-btn-confirm-resign">
-                  <button class="btn btn-info" data-toggle="modal" data-target="#confirm-resign">退会済みにする</button>
+                  <button onclick="return false;" class="btn btn-info" data-toggle="modal" data-target="#confirm-resign">退会済みにする</button>
                 </div>
               @else
                 <div class="init-btn-export-resign">
