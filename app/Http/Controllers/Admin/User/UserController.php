@@ -13,6 +13,7 @@ use App\Notifications\FrozenUser;
 use App\Prefecture;
 use App\Repositories\CastClassRepository;
 use App\User;
+use App\Cast;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 
@@ -151,27 +152,63 @@ class UserController extends Controller
     public function delete($id)
     {
         $user = User::findOrFail($id);
+        if ($user->type == UserType::CAST) {
+            $user = Cast::findOrFail($id);
 
-        $isUnpaidOrder = $user->orders()->whereIn('status', [
-            OrderStatus::OPEN,
-            OrderStatus::ACTIVE,
-            OrderStatus::PROCESSING,
-        ])
-            ->orWhere(function ($query) use ($user) {
-                $query->where('user_id', $user->id)->where('status', OrderStatus::DONE)
-                    ->where(function ($subQuery) {
-                        $subQuery->where('payment_status', '!=', OrderPaymentStatus::PAYMENT_FINISHED)
-                            ->orWhere('payment_status', OrderPaymentStatus::PAYMENT_FAILED);
-                    });
-            })
-            ->orWhere(function ($query) use ($user) {
-                $query->where('user_id', $user->id)->where('status', OrderStatus::CANCELED)
-                    ->where(function ($subQuery) {
-                        $subQuery->where('payment_status', '!=', OrderPaymentStatus::CANCEL_FEE_PAYMENT_FINISHED)
-                            ->whereNotNull('cancel_fee_percent');
-                    });
-            })
-            ->exists();
+            $isUnpaidOrder = $user->orders()->whereIn('orders.status', [
+                OrderStatus::OPEN,
+                OrderStatus::ACTIVE,
+                OrderStatus::PROCESSING,
+            ])
+                ->orWhere(function ($query) use ($user) {
+                    $query->where('cast_order.user_id', $user->id)->where('cast_order.status', OrderStatus::DONE)
+                        ->where(function ($subQuery) {
+                            $subQuery->whereNull('orders.payment_status')
+                                ->orWhere(function($s) {
+                                    $s->where('orders.payment_status', '!=', OrderPaymentStatus::PAYMENT_FINISHED)
+                                        ->orWhere('orders.payment_status', OrderPaymentStatus::PAYMENT_FAILED);
+                                });
+                        });
+                })
+                ->orWhere(function ($query) use ($user) {
+                    $query->where('cast_order.user_id', $user->id)->where('cast_order.status', OrderStatus::CANCELED)
+                        ->where(function ($subQuery) {
+                            $subQuery->where(function($sQ) {
+                                $sQ->where('orders.payment_status', null)
+                                    ->orWhere('orders.payment_status', '<>', OrderPaymentStatus::CANCEL_FEE_PAYMENT_FINISHED);
+                            })->whereNotNull('orders.cancel_fee_percent');
+                        });
+
+                })
+                ->exists();
+        } else {
+            $isUnpaidOrder = $user->orders()->whereIn('status', [
+                OrderStatus::OPEN,
+                OrderStatus::ACTIVE,
+                OrderStatus::PROCESSING,
+            ])
+                ->orWhere(function ($query) use ($user) {
+                    $query->where('user_id', $user->id)->where('status', OrderStatus::DONE)
+                        ->where(function ($subQuery) {
+                            $subQuery->whereNull('payment_status')
+                                ->orWhere(function($s) {
+                                    $s->where('payment_status', '!=', OrderPaymentStatus::PAYMENT_FINISHED)
+                                        ->orWhere('payment_status', OrderPaymentStatus::PAYMENT_FAILED);
+                                });
+                        });
+                })
+                ->orWhere(function ($query) use ($user) {
+                    $query->where('user_id', $user->id)->where('status', OrderStatus::CANCELED)
+                        ->where(function ($subQuery) {
+                            $subQuery->where(function($sQ) {
+                                $sQ->where('payment_status', null)
+                                    ->orWhere('payment_status', '<>', OrderPaymentStatus::CANCEL_FEE_PAYMENT_FINISHED);
+                            })->whereNotNull('cancel_fee_percent');
+                        });
+
+                })
+                ->exists();
+        }
 
         if ($isUnpaidOrder) {
             return redirect()->route('admin.users.show', compact('id'))->with('error', trans('messages.can_not_be_resign'));
