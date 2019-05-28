@@ -51,6 +51,7 @@ class ResignController extends Controller
 
             return $this->exportResign($resignExport);
         }
+
         $users = $users->paginate($request->limit ?: 10);
 
         return view('admin.resigns.index', compact('users'));
