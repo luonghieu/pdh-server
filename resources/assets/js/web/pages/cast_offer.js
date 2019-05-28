@@ -357,34 +357,45 @@ function createCastOffer(transfer = null)
 
             $('#timeout-offer').prop('checked',true);     
         } else {
-          var content = '';
           var err ='';
 
-          if (error.response.status == 403) {
-            var err = 'アカウントが凍結されています';
+          switch (parseInt(error.response.status)){
+            case 400:
+              err = '開始時間は現在時刻から30分以降の時間を選択してください';
+
+              break;
+
+            case 403:
+              err = 'アカウントが凍結されています';
+
+              break;
+
+            case 404:
+              err = '支払い方法が未登録です';
+
+              break;
+
+            case 406:
+              err = 'こちらの飲み会の提案は取り下げられました。';
+
+              break;
+
+            case 409:
+              err = 'クーポンが無効です';
+
+              break;
+
+            case 412:
+              err = '退会申請中のため、予約することはできません。';
+
+              break;
+
+            default:
+              err = 'この操作は実行できません';
+
+              break;
           }
 
-          if (error.response.status == 400) {
-            var err = '開始時間は現在時刻から30分以降の時間を選択してください';
-          }
-
-          if(error.response.status == 500) {
-          var err = 'この操作は実行できません';
-          }
-
-          if(error.response.status == 404) {
-            var err = '支払い方法が未登録です';
-          }
-
-          if(error.response.status == 409) {
-            var err = 'クーポンが無効です';
-          }
-
-          if(error.response.status == 406) {
-            var err = 'こちらの飲み会の提案は取り下げられました。';
-          }
-
-          $('#err-offer-message p').html(content);
           $('#err-offer-message h2').html(err);
 
           $('#err-offer').prop('checked',true);
@@ -424,9 +435,8 @@ function checkedCastOffer()
   });
 }
 
-function deniedCastOffer()
+function denyCastOffer()
 {
-  
   $('body').on('click', "#canceled-cast-offer", function(){
     var castOrderId = $('#cast_offer-id').val();
 
@@ -481,7 +491,7 @@ $(document).ready(function(){
     checkedCastOffer();
     handlerPaymentMethod();
     selectedCouponsCastOffer();
-    deniedCastOffer();
+    denyCastOffer();
     var castOrderId = $('#cast_offer-id').val();
 
     if(localStorage.getItem("cast_offer")){
