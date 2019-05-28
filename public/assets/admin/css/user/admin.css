@@ -1910,6 +1910,13 @@ tbody td {
   top: 90px;
 }
 
+.init-btn-export-resign {
+  display: inline-block;
+  position: absolute;
+  right: 32px;
+  top: 90px;
+}
+
 .init-dis {
   display: inline-block;
   position: inherit;
