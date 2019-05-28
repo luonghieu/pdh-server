@@ -93,6 +93,11 @@
               </tr>
             </thead>
             <tbody>
+            @if (empty($users->count()))
+              <tr>
+                <td colspan="10">{{ trans('messages.results_not_found') }}</td>
+              </tr>
+            @else
               @foreach($users as $user)
                 <tr>
                 @if(request()->resign_status == \App\Enums\ResignStatus::PENDING)
@@ -112,6 +117,7 @@
                 @endif
                 </tr>
               @endforeach
+            @endif
             </tbody>
           </table>
         </div>
