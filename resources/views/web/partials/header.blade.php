@@ -147,6 +147,13 @@
           <li><a href="{{ url('/service/sct_law') }}">特定商取引法に基づく表記について</a></li>
           <li><a href="{{ url('/service/guest_ht') }}">ご利用方法</a></li>
           <li><a href="{{ url('/service/contact') }}">お問い合わせ</a></li>
+          <li>
+            @if (Auth::user()->resign_status != null)
+            <a href="javascript:void(0)" id="menu-resign-error">退会</a>
+            @else
+            <a href="{{ route('resigns.reason') }}">退会</a>
+            @endif
+          </li>
         </ul>
       </li>
     @endif
