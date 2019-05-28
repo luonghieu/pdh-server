@@ -40,7 +40,7 @@ class ResignController extends ApiController
                         $subQuery->where(function($sQ) {
                             $sQ->where('payment_status', null)
                                 ->orWhere('payment_status', '<>', OrderPaymentStatus::CANCEL_FEE_PAYMENT_FINISHED);
-                        })->whereNotNull('cancel_fee_percent');
+                        })->where('cancel_fee_percent', '>', 0);
                     });
 
             })
