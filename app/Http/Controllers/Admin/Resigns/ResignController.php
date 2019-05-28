@@ -10,6 +10,8 @@ use App\Http\Controllers\Controller;
 use App\Services\LogService;
 use App\Http\Requests\CheckDateRequest;
 use Carbon\Carbon;
+use App\Services\CSVExport;
+
 class ResignController extends Controller
 {
     public function index(CheckDateRequest $request)
@@ -42,7 +44,14 @@ class ResignController extends Controller
             });
         }
 
-        $users = $users->orderBy('resign_date', 'DESC')->paginate($request->limit ?: 10);
+        $users = $users->orderBy('resign_date', 'DESC');
+//         Export resign
+        if ($request->has('is_export_resign')) {
+            $resignExport = $users->get();
+
+            return $this->exportResign($resignExport);
+        }
+        $users = $users->paginate($request->limit ?: 10);
 
         return view('admin.resigns.index', compact('users'));
     }
@@ -92,5 +101,38 @@ class ResignController extends Controller
             \DB::rollBack();
             LogService::writeErrorLog($e);
         }
+    }
+
+    public function exportResign($resignExport)
+    {
+        $data = collect($resignExport)->map(function ($item) {
+            return [
+                $item->id,
+                $item->nickname,
+                Carbon::parse($item->deleted_at)->format('Y年m月d日　H:i'),
+                $item->first_resign_description,
+                $item->second_resign_description,
+            ];
+        })->toArray();
+
+        $header = [
+            'ユーザーID',
+            'ユーザー名',
+            '退会日時',
+            '退会理由',
+            '退会理由(フリー入力)',
+        ];
+
+        try {
+            $file = CSVExport::toCSV($data, $header);
+        } catch (\Exception $e) {
+            LogService::writeErrorLog($e);
+            request()->session()->flash('msg', trans('messages.server_error'));
+
+            return redirect()->route('admin.resigns.index', ['resign_status' => ResignStatus::APPROVED]);
+        }
+        $file->output('resigns_' . Carbon::now()->format('Ymd_Hi') . '.csv');
+
+        return;
     }
 }

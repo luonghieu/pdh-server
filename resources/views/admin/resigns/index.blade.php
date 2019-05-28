@@ -43,20 +43,25 @@
                       <option value="{{ $limit }}" {{ request()->limit == $limit ? 'selected' : '' }}>{{ $limit }}</option>
                     @endforeach
                   </select>
-                  <input type="hidden" name="from_date" value="{{ request()->from_date }}" />
-                  <input type="hidden" name="to_date" value="{{ request()->to_date }}" />
-                  <input type="hidden" name="search" value="{{ request()->search }}" />
-                  <input type="hidden" name="hidden" value="{{ request()->hidden }}" />
-                  <input type="hidden" name="resign_status" value="{{ request()->resign_status }}" />
                 </div>
               </div>
+              @if(request()->resign_status == \App\Enums\ResignStatus::PENDING)
+                <div class="init-btn-confirm-resign">
+                  <button class="btn btn-info" data-toggle="modal" data-target="#confirm-resign">退会済みにする</button>
+                </div>
+              @else
+                <div class="init-btn-export-resign">
+                  <input type="hidden" name="is_export_resign" value="1">
+                  <button type="submit" class="btn btn-info" name="submit" value="export_resign">エクスポートする</button>
+                </div>
+              @endif
+            <input type="hidden" name="from_date" value="{{ request()->from_date }}" />
+            <input type="hidden" name="to_date" value="{{ request()->to_date }}" />
+            <input type="hidden" name="search" value="{{ request()->search }}" />
+            <input type="hidden" name="hidden" value="{{ request()->hidden }}" />
+            <input type="hidden" name="resign_status" value="{{ request()->resign_status }}" />
           </form>
         </div>
-        @if(request()->resign_status == \App\Enums\ResignStatus::PENDING)
-          <div class="init-btn-confirm-resign">
-            <button class="btn btn-info" data-toggle="modal" data-target="#confirm-resign">退会済みにする</button>
-          </div>
-        @endif
         <div class="panel-body">
           @php
             $request = [
@@ -73,46 +78,30 @@
             <thead>
               <tr>
                 @if(request()->resign_status == \App\Enums\ResignStatus::PENDING)
-                  <th></th>
+                <th></th>
                 @endif
-                  <th>ユーザーID</th>
-                  <th>ユーザー名</th>
-                @if(request()->resign_status == \App\Enums\ResignStatus::PENDING)
-                  <th>申請日</th>
-                  <th>ゲスト詳細</th>
-                  <th>退会申請詳細</th>
-                @else
-                    <th>退会日時</th>
-                    <th></th>
-                @endif
+                <th>ユーザーID</th>
+                <th>ユーザー名</th>
+                <th>申請日</th>
+                <th>ゲスト詳細</th>
+                <th>退会申請詳細</th>
               </tr>
             </thead>
             <tbody>
-              @if (empty($users->count()))
+              @foreach($users as $user)
                 <tr>
-                  <td colspan="6">{{ trans('messages.result_not_found') }}</td>
+                  @if(request()->resign_status == \App\Enums\ResignStatus::PENDING)
+                    <td class="select-checkbox">
+                      <input type="checkbox" class="verify-checkboxs" value="{{ $user->id }}">
+                    </td>
+                  @endif
+                  <td>{{ $user->id }}</td>
+                  <td>{{ $user->nickname }}</td>
+                  <td>{{ $user->resign_date }}</td>
+                  <td><a href="{{ route('admin.users.show', ['user' => $user->id]) }}" class="btn btn-detail">詳細</a></td>
+                  <td><a href="{{ route('admin.resigns.show', ['user' => $user->id]) }}" class="btn btn-detail">詳細</a></td>
                 </tr>
-              @else
-                @foreach($users as $user)
-                  <tr>
-                    @if(request()->resign_status == \App\Enums\ResignStatus::PENDING)
-                      <td class="select-checkbox">
-                        <input type="checkbox" class="verify-checkboxs" value="{{ $user->id }}">
-                      </td>
-                    @endif
-                    <td>{{ $user->id }}</td>
-                    <td>{{ $user->nickname }}</td>
-                      @if(request()->resign_status == \App\Enums\ResignStatus::PENDING)
-                        <td>{{ Carbon\Carbon::parse($user->resign_date)->format('Y年m月d日') }}</td>
-                        <td><a href="{{ route('admin.users.show', ['user' => $user->id]) }}" class="btn btn-detail">詳細</a></td>
-                        <td><a href="{{ route('admin.resigns.show', ['user' => $user->id]) }}" class="btn btn-detail">詳細</a></td>
-                      @else
-                        <td>{{ Carbon\Carbon::parse($user->resign_date)->format('Y年m月d日　h:m') }}</td>
-                        <td><a href="{{ route('admin.resigns.show', ['user' => $user->id]) }}" class="btn btn-detail">詳細</a></td>
-                      @endif
-                  </tr>
-                @endforeach
-              @endif
+              @endforeach
             </tbody>
           </table>
         </div>
