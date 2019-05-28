@@ -208,7 +208,7 @@ class CastOfferController extends ApiController
 
             $order->save();
 
-            $nominee->notify(
+            $order->user->notify(
                 (new CancelOrderCreateByCast($order))->delay(now()->addSeconds(3))
             );
 
