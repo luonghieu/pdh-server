@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Cast;
 use App\CastClass;
 use App\Coupon;
+use App\Enums\CastClassType;
 use App\Enums\CastOrderStatus;
 use App\Enums\CastOrderType;
 use App\Enums\CouponType;
@@ -230,7 +231,11 @@ class OrderController extends ApiController
                     );
                 }
             } else {
-                $casts = Cast::where('class_id', $request->class_id)->get();
+                if ($request->class_id == CastClassType::BRONZE) {
+                    $casts = Cast::whereIn('class_id', [CastClassType::BRONZE, CastClassType::PLANTIUM])->get();
+                } else {
+                    $casts = Cast::where('class_id', $request->class_id)->get();
+                }
 
                 \Notification::send(
                     $casts,
