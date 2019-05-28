@@ -122,10 +122,11 @@ $(function() {
       $("#textareaCheck").prop('checked', true);
       $(".leave-comment__input textarea").prop("disabled", false).focus();
 
-      if(localStorage.getItem("textarea_reason")){
-        $(".leave-comment__input textarea").val(localStorage.getItem("textarea_reason"));
-        $(".leave-comment__sum p").text(localStorage.getItem("textarea_reason").length);
-      }
+    }
+    
+    if(localStorage.getItem("textarea_reason")){
+      $(".leave-comment__input textarea").val(localStorage.getItem("textarea_reason"));
+      $(".leave-comment__sum p").text(localStorage.getItem("textarea_reason").trim().length);
     }
     
     // check data when back
