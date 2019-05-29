@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Admin;
 
+use App\Enums\ResignStatus;
 use App\Enums\RoomType;
 use App\Enums\UserType;
 use App\Http\Controllers\Controller;
@@ -39,7 +40,13 @@ class ChatRoomController extends Controller
                 $j->on('avatars.user_id', '=', 'users.id')
                     ->where('is_default', true);
             })
-            ->where('users.deleted_at', null)
+            ->where(function($query) {
+                $query->whereNull('users.deleted_at')
+                    ->orWhere(function($sq) {
+                        $sq->where('users.deleted_at', '<>', null)
+                            ->where('users.resign_status', ResignStatus::APPROVED);
+                    });
+            })
             ->select('rooms.*', 'users.type As user_type', 'users.gender', 'users.nickname', 'avatars.thumbnail')
             ->orderBy('users.updated_at', 'DESC')
             ->paginate(100);
@@ -54,7 +61,13 @@ class ChatRoomController extends Controller
                 $j->on('avatars.user_id', '=', 'users.id')
                     ->where('is_default', true);
             })
-            ->where('users.deleted_at', null)
+            ->where(function($query) {
+                $query->whereNull('users.deleted_at')
+                    ->orWhere(function($sq) {
+                        $sq->where('users.deleted_at', '<>', null)
+                            ->where('users.resign_status', ResignStatus::APPROVED);
+                    });
+            })
             ->select('rooms.*', 'users.type As user_type', 'users.gender', 'users.nickname', 'avatars.thumbnail')
             ->orderBy('users.updated_at', 'DESC')
             ->paginate(100);
