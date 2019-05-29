@@ -77,9 +77,17 @@ class ResignController extends Controller
 
                     foreach ($users as $user) {
                         $card = $user->card;
+                        $avatars = $user->avatars;
                         if ($card) {
                             $card->delete();
                         }
+
+                        if($avatars->first()) {
+                            foreach ($avatars as $avatar) {
+                                $avatar->delete();
+                            }
+                        }
+
                         $user->stripe_id = null;
                         $user->square_id = null;
                         $user->tc_send_id = null;
@@ -89,6 +97,7 @@ class ResignController extends Controller
                         $user->line_qr = null;
                         $user->email = null;
                         $user->password = null;
+                        $user->is_verified = 0;
                         $user->status = Status::INACTIVE;
                         $user->resign_status = ResignStatus::APPROVED;
                         $user->save();
