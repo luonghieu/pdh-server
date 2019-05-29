@@ -353,18 +353,13 @@ function createCastOffer(transfer = null)
         if(error.response.status == 422) {
             $('#timeout-offer-message h2').css('font-size', '15px');
 
-            $('#timeout-offer-message h2').html('この予約は募集が締め切られました');
+            $('#timeout-offer-message h2').html('この操作は実行できません');
 
             $('#timeout-offer').prop('checked',true);     
         } else {
           var err ='';
 
           switch (parseInt(error.response.status)){
-            case 400:
-              err = '開始時間は現在時刻から30分以降の時間を選択してください';
-
-              break;
-
             case 403:
               err = 'アカウントが凍結されています';
 
@@ -391,7 +386,7 @@ function createCastOffer(transfer = null)
               break;
 
             default:
-              err = 'この操作は実行できません';
+              err = 'サーバーエラーが発生しました';
 
               break;
           }
@@ -450,31 +445,27 @@ function denyCastOffer()
          if (error.response.status == 401) {
             window.location = '/login';
           } else {
-            if(error.response.status == 400) {
+            if(error.response.status == 422) {
                 $('#timeout-offer-message h2').css('font-size', '15px');
 
-                $('#timeout-offer-message h2').html('この予約の回答期限は終了しました');
-
-                $('#close-offer').addClass('redirect-mypage');
+                $('#timeout-offer-message h2').html('この操作は実行できません');
 
                 $('#timeout-offer').prop('checked',true);     
             } else {
-              var content = '';
               var err ='';
 
-              if(error.response.status == 500) {
-              var err = 'この操作は実行できません';
+              switch (error.response.status){
+                case 406:
+                  err = 'こちらの飲み会の提案は取り下げられました。';
+
+                  break;
+
+                default:
+                  err = 'サーバーエラーが発生しました';
+
+                  break;
               }
 
-              if(error.response.status == 404) {
-                var err = '支払い方法が未登録です';
-              }
-
-              if(error.response.status == 406) {
-                var err = 'こちらの飲み会の提案は取り下げられました。';
-              }
-              
-              $('#err-offer-message p').html(content);
               $('#err-offer-message h2').html(err);
 
               $('#err-offer').prop('checked',true);
