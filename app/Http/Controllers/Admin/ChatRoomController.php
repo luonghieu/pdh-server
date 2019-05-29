@@ -43,13 +43,6 @@ class ChatRoomController extends Controller
             ->where(function($query) {
                 $query->whereNull('users.deleted_at')
                     ->orWhere(function($sq) {
-                       $sq->where('users.deleted_at', '<>', null)
-                       ->where('users.resign_status', ResignStatus::APPROVED);
-                    });
-            })
-            ->where(function($query) {
-                $query->whereNull('users.deleted_at')
-                    ->orWhere(function($sq) {
                         $sq->where('users.deleted_at', '<>', null)
                             ->where('users.resign_status', ResignStatus::APPROVED);
                     });
