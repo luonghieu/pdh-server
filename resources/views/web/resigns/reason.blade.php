@@ -39,7 +39,7 @@
       <div class="portlet-content">
         <div class="leave-comment init-mb-5">
           <div class="leave-comment__input">
-            <textarea rows="8" maxlength="180" id="description" name="description" placeholder="退会理由をお聞かせいただきますか?"
+            <textarea rows="8" id="description" name="description" placeholder="退会理由をお聞かせいただきますか?"
                       disabled></textarea>
           </div>
           <div class="js-resign-message color-error"></div>
