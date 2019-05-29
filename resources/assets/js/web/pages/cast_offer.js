@@ -350,10 +350,14 @@ function createCastOffer(transfer = null)
      if (error.response.status == 401) {
         window.location = '/login';
       } else {
-        if(error.response.status == 422) {
+        if(error.response.status == 422 || error.response.status == 400) {
             $('#timeout-offer-message h2').css('font-size', '15px');
 
-            $('#timeout-offer-message h2').html('この操作は実行できません');
+            if(error.response.status == 422) {
+              $('#timeout-offer-message h2').html('この操作は実行できません');
+            } else {
+              $('#timeout-offer-message h2').html('この予約の回答期限は終了しました');
+            }
 
             $('#timeout-offer').prop('checked',true);     
         } else {
@@ -445,10 +449,14 @@ function denyCastOffer()
          if (error.response.status == 401) {
             window.location = '/login';
           } else {
-            if(error.response.status == 422) {
+            if(error.response.status == 422 || error.response.status == 409) {
                 $('#timeout-offer-message h2').css('font-size', '15px');
 
-                $('#timeout-offer-message h2').html('この操作は実行できません');
+                if(error.response.status == 422) {
+                  $('#timeout-offer-message h2').html('この操作は実行できません');
+                } else {
+                  $('#timeout-offer-message h2').html('この予約の回答期限は終了しました');
+                }
 
                 $('#timeout-offer').prop('checked',true);     
             } else {
