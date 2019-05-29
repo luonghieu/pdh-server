@@ -3,14 +3,16 @@
 namespace App\Http\Controllers\Admin\Resigns;
 
 use App\Enums\ResignStatus;
+use App\Enums\RoomType;
 use App\Enums\Status;
-use App\User;
-use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
-use App\Services\LogService;
 use App\Http\Requests\CheckDateRequest;
-use Carbon\Carbon;
 use App\Services\CSVExport;
+use App\Services\LogService;
+use App\User;
+use Carbon\Carbon;
+use DB;
+use Illuminate\Http\Request;
 
 class ResignController extends Controller
 {
@@ -45,7 +47,8 @@ class ResignController extends Controller
         }
 
         $users = $users->orderBy('resign_date', 'DESC');
-//         Export resign
+
+        // Export resign
         if ($request->has('is_export_resign')) {
             $resignExport = $users->get();
 
@@ -67,7 +70,6 @@ class ResignController extends Controller
     public function resign(Request $request) {
         try {
             if ($request->has('user_ids')) {
-
                 $userIds = array_map('intval', explode(',', $request->user_ids));
 
                 $checkUserIdExist = User::whereIn('id', $userIds)->where('resign_status', ResignStatus::PENDING)->whereNull('deleted_at')->exists();
@@ -76,10 +78,23 @@ class ResignController extends Controller
                     $users = User::whereIn('id', $userIds)->get();
 
                     foreach ($users as $user) {
+                        DB::beginTransaction();
+
+                        // Delete card
                         $card = $user->card;
                         if ($card) {
                             $card->delete();
                         }
+
+                        // Delete room 1-1
+                        $rooms = $user->rooms()->where('type', RoomType::DIRECT);
+                        $roomIds = $rooms->pluck('rooms.id')->toArray();
+                        if ($rooms->exists()) {
+                            DB::table('room_user')->whereIn('room_id', $roomIds)->delete();
+                            DB::table('rooms')->where('type', RoomType::DIRECT)->delete();
+                        }
+
+                        // Delete user
                         $user->stripe_id = null;
                         $user->square_id = null;
                         $user->tc_send_id = null;
@@ -93,13 +108,15 @@ class ResignController extends Controller
                         $user->resign_status = ResignStatus::APPROVED;
                         $user->save();
                         $user->delete();
+
+                        DB::commit();
                     }
                 }
             }
 
             return redirect(route('admin.resigns.index', ['resign_status'=> ResignStatus::PENDING]));
         } catch (\Exception $e) {
-            \DB::rollBack();
+            DB::rollBack();
             LogService::writeErrorLog($e);
         }
     }
