@@ -40,7 +40,7 @@ class CastOfferController extends ApiController
         $order = Order::where('status', OrderStatus::OPEN_FOR_GUEST)->find($id);
 
         if (!$order) {
-            return $this->respondErrorMessage(trans('messages.order_not_found'), 404);
+            return $this->respondErrorMessage(trans('messages.action_not_performed'), 422);
         }
 
         try {
