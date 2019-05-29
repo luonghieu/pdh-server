@@ -37,6 +37,12 @@ class CastOfferController extends ApiController
             return $this->respondErrorMessage(trans('messages.cast_canceled_order'), 406);
         }
 
+        $checkOrder = Order::where('status', OrderStatus::TIMEOUT)->find($id);
+
+        if ($checkOrder) {
+            return $this->respondErrorMessage(trans('messages.order_from_cast_time_out'), 409);
+        }
+
         $order = Order::where('status', OrderStatus::OPEN_FOR_GUEST)->find($id);
 
         if (!$order) {
@@ -95,6 +101,12 @@ class CastOfferController extends ApiController
 
         if ($checkOrder) {
             return $this->respondErrorMessage(trans('messages.cast_canceled_order'), 406);
+        }
+
+        $checkOrder = Order::where('status', OrderStatus::TIMEOUT)->find($request->order_id);
+
+        if ($checkOrder) {
+            return $this->respondErrorMessage(trans('messages.order_from_cast_time_out'), 400);
         }
 
         $order = Order::where('status', OrderStatus::OPEN_FOR_GUEST)->find($request->order_id);
