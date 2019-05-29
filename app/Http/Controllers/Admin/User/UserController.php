@@ -164,19 +164,21 @@ class UserController extends Controller
                 OrderStatus::ACTIVE,
                 OrderStatus::PROCESSING,
             ])
-                ->orWhere(function ($q) {
-                    $q->where('orders.type', OrderType::NOMINATION)
+                ->orWhere(function ($q) use ($user) {
+                    $q->where('cast_order.user_id', $user->id)
+                        ->where('orders.type', OrderType::NOMINATION)
                         ->whereIn('orders.status', [
                             OrderStatus::ACTIVE,
                             OrderStatus::PROCESSING,
                         ]);
                 })
-                ->orWhere(function ($q) {
-                    $q->where([
-                        ['orders.type', '<>', OrderType::NOMINATION],
-                        ['orders.status', '=', OrderStatus::OPEN],
-                        ['cast_order.status', '=', CastOrderStatus::ACCEPTED],
-                    ]);
+                ->where(function ($q) use ($user) {
+                    $q->where('cast_order.user_id', $user->id)
+                        ->where([
+                            ['orders.type', '<>', OrderType::NOMINATION],
+                            ['orders.status', '=', OrderStatus::OPEN],
+                            ['cast_order.status', '=', CastOrderStatus::ACCEPTED],
+                        ]);
                 })
                 ->orWhere(function ($query) use ($user) {
                     $query->where('cast_order.user_id', $user->id)->where('orders.status', OrderStatus::DONE)
