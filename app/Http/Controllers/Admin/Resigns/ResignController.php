@@ -82,6 +82,7 @@ class ResignController extends Controller
 
                         // Delete card
                         $card = $user->card;
+                        $avatars = $user->avatars;
                         if ($card) {
                             $card->delete();
                         }
@@ -94,6 +95,12 @@ class ResignController extends Controller
                             DB::table('rooms')->where('type', RoomType::DIRECT)->delete();
                         }
 
+                        if($avatars->first()) {
+                            foreach ($avatars as $avatar) {
+                                $avatar->delete();
+                            }
+                        }
+
                         // Delete user
                         $user->stripe_id = null;
                         $user->square_id = null;
@@ -104,6 +111,7 @@ class ResignController extends Controller
                         $user->line_qr = null;
                         $user->email = null;
                         $user->password = null;
+                        $user->is_verified = 0;
                         $user->status = Status::INACTIVE;
                         $user->resign_status = ResignStatus::APPROVED;
                         $user->save();

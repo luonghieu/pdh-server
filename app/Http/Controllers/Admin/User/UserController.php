@@ -16,6 +16,7 @@ use App\User;
 use App\Cast;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
+use App\Services\LogService;
 
 class UserController extends Controller
 {
@@ -152,7 +153,9 @@ class UserController extends Controller
     public function delete($id)
     {
         $user = User::findOrFail($id);
+
         if ($user->type == UserType::CAST) {
+
             $user = Cast::findOrFail($id);
 
             $isUnpaidOrder = $user->orders()->whereIn('orders.status', [
@@ -161,7 +164,7 @@ class UserController extends Controller
                 OrderStatus::PROCESSING,
             ])
                 ->orWhere(function ($query) use ($user) {
-                    $query->where('cast_order.user_id', $user->id)->where('cast_order.status', OrderStatus::DONE)
+                    $query->where('cast_order.user_id', $user->id)->where('orders.status', OrderStatus::DONE)
                         ->where(function ($subQuery) {
                             $subQuery->whereNull('orders.payment_status')
                                 ->orWhere(function($s) {
@@ -171,12 +174,12 @@ class UserController extends Controller
                         });
                 })
                 ->orWhere(function ($query) use ($user) {
-                    $query->where('cast_order.user_id', $user->id)->where('cast_order.status', OrderStatus::CANCELED)
+                    $query->where('cast_order.user_id', $user->id)->where('orders.status', OrderStatus::CANCELED)
                         ->where(function ($subQuery) {
                             $subQuery->where(function($sQ) {
                                 $sQ->where('orders.payment_status', null)
                                     ->orWhere('orders.payment_status', '<>', OrderPaymentStatus::CANCEL_FEE_PAYMENT_FINISHED);
-                            })->whereNotNull('orders.cancel_fee_percent');
+                            })->where('orders.cancel_fee_percent', '>', 0);
                         });
 
                 })
@@ -203,7 +206,7 @@ class UserController extends Controller
                             $subQuery->where(function($sQ) {
                                 $sQ->where('payment_status', null)
                                     ->orWhere('payment_status', '<>', OrderPaymentStatus::CANCEL_FEE_PAYMENT_FINISHED);
-                            })->whereNotNull('cancel_fee_percent');
+                            })->where('cancel_fee_percent', '>', 0);
                         });
 
                 })
@@ -214,35 +217,47 @@ class UserController extends Controller
             return redirect()->route('admin.users.show', compact('id'))->with('error', trans('messages.can_not_be_resign'));
         }
 
-        $card = $user->card;
-        $avatars = $user->avatars;
+        try {
+            $card = $user->card;
+            $avatars = $user->avatars;
+            $shifts = $user->shifts;
 
-        if ($card) {
-            $card->delete();
-        }
-
-        if($avatars->first()) {
-            foreach ($avatars as $avatar) {
-                $avatar->delete();
+            if ($card) {
+                $card->delete();
             }
+
+            if($avatars->first()) {
+                foreach ($avatars as $avatar) {
+                    $avatar->delete();
+                }
+            }
+
+            if($shifts->first()) {
+                $user->shifts()->detach();
+            }
+
+            $user->stripe_id = null;
+            $user->square_id = null;
+            $user->tc_send_id = null;
+            $user->facebook_id = null;
+            $user->line_id = null;
+            $user->line_user_id = null;
+            $user->line_qr = null;
+            $user->email = null;
+            $user->password = null;
+            $user->is_verified = 0;
+            $user->status = Status::INACTIVE;
+            $user->resign_status = ResignStatus::APPROVED;
+
+            $user->save();
+            $user->delete();
+
+            return redirect()->route('admin.users.index');
+
+        } catch (\Exception $e) {
+            \DB::rollBack();
+            LogService::writeErrorLog($e);
         }
-
-        $user->stripe_id = null;
-        $user->square_id = null;
-        $user->tc_send_id = null;
-        $user->facebook_id = null;
-        $user->line_id = null;
-        $user->line_user_id = null;
-        $user->line_qr = null;
-        $user->email = null;
-        $user->password = null;
-        $user->status = Status::INACTIVE;
-        $user->resign_status = ResignStatus::APPROVED;
-
-        $user->save();
-        $user->delete();
-
-        return redirect()->route('admin.users.index');
     }
 
     public function campaignParticipated(User $user)
