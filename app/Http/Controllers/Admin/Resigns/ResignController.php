@@ -81,10 +81,14 @@ class ResignController extends Controller
                         DB::beginTransaction();
 
                         // Delete card
-                        $card = $user->card;
+                        $cards = $user->cards;
+
                         $avatars = $user->avatars;
-                        if ($card) {
-                            $card->delete();
+
+                        if ($cards->first()) {
+                            foreach ($cards as $card) {
+                                $card->delete();
+                            }
                         }
 
                         // Delete room 1-1
