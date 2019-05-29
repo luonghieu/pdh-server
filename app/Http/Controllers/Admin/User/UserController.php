@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers\Admin\User;
 
+use App\Enums\CastOrderStatus;
 use App\Enums\OrderPaymentStatus;
 use App\Enums\OrderStatus;
+use App\Enums\OrderType;
 use App\Enums\ResignStatus;
 use App\Enums\Status;
 use App\Enums\UserType;
@@ -159,10 +161,23 @@ class UserController extends Controller
             $user = Cast::findOrFail($id);
 
             $isUnpaidOrder = $user->orders()->whereIn('orders.status', [
-                OrderStatus::OPEN,
                 OrderStatus::ACTIVE,
                 OrderStatus::PROCESSING,
             ])
+                ->orWhere(function ($q) {
+                    $q->where('orders.type', OrderType::NOMINATION)
+                        ->whereIn('orders.status', [
+                            OrderStatus::ACTIVE,
+                            OrderStatus::PROCESSING,
+                        ]);
+                })
+                ->orWhere(function ($q) {
+                    $q->where([
+                        ['orders.type', '<>', OrderType::NOMINATION],
+                        ['orders.status', '=', OrderStatus::OPEN],
+                        ['cast_order.status', '=', CastOrderStatus::ACCEPTED],
+                    ]);
+                })
                 ->orWhere(function ($query) use ($user) {
                     $query->where('cast_order.user_id', $user->id)->where('orders.status', OrderStatus::DONE)
                         ->where(function ($subQuery) {
