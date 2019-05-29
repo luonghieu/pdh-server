@@ -76,10 +76,13 @@ class ResignController extends Controller
                     $users = User::whereIn('id', $userIds)->get();
 
                     foreach ($users as $user) {
-                        $card = $user->card;
+                        $cards = $user->cards;
                         $avatars = $user->avatars;
-                        if ($card) {
-                            $card->delete();
+
+                        if ($cards->first()) {
+                            foreach ($cards as $card) {
+                                $card->delete();
+                            }
                         }
 
                         if($avatars->first()) {

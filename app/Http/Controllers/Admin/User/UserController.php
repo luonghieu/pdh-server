@@ -218,12 +218,14 @@ class UserController extends Controller
         }
 
         try {
-            $card = $user->card;
+            $cards = $user->cards;
             $avatars = $user->avatars;
             $shifts = $user->shifts;
 
-            if ($card) {
-                $card->delete();
+            if($cards->first()) {
+                foreach ($cards as $card) {
+                    $card->delete();
+                }
             }
 
             if($avatars->first()) {
