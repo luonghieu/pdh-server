@@ -4,7 +4,7 @@ $(function() {
    */
   var str = localStorage.getItem('textarea_reason');
 
-  if (str.toString().length > 0) {
+  if (str) {
     let sum = Array.from(str.split(/[\ufe00-\ufe0f]/).join("")).length;
     if (sum > 180) {
         $(".leave-comment__sum p").css("color", "red");
