@@ -18,7 +18,7 @@
                                     </tr>
                                     <tr>
                                         <td>申請日</td>
-                                        <td>{{ \Carbon\Carbon::parse($user->resign_date)->format('Y年m月d日') }}</td>
+                                        <td>{{ ($user->resign_date) ? \Carbon\Carbon::parse($user->resign_date)->format('Y年m月d日') : '' }}</td>
                                     </tr>
                                     <tr>
                                         <td>退会日時</td>
