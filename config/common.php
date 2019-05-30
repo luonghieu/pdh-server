@@ -26,12 +26,12 @@ return [
 
     'order_options' => [
         'call_time' => [
-            [
-                'id' => 1,
-                'name' => '20分後',
-                'value' => '20',
-                'is_active' => 0,
-            ],
+//            [
+//                'id' => 1,
+//                'name' => '20分後',
+//                'value' => '20',
+//                'is_active' => 0,
+//            ],
             [
                 'id' => 2,
                 'name' => '30分後',
