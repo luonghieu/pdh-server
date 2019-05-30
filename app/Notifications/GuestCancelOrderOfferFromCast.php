@@ -5,9 +5,9 @@ namespace App\Notifications;
 use App\Enums\DeviceType;
 use App\Enums\MessageType;
 use App\Enums\ProviderType;
-use App\Enums\RoomType;
 use App\Enums\SystemMessageType;
 use App\Enums\UserType;
+use App\Order;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Notification;
@@ -16,16 +16,16 @@ class GuestCancelOrderOfferFromCast extends Notification implements ShouldQueue
 {
     use Queueable;
 
-    public $offer;
+    public $order;
 
     /**
      * Create a new notification instance.
      *
-     * @param $offer
+     * @param $order
      */
-    public function __construct($offer)
+    public function __construct($orderId)
     {
-        $this->offer = $offer;
+        $this->order = Order::onWriteConnection()->findOrFail($orderId);
     }
 
     /**
@@ -57,9 +57,8 @@ class GuestCancelOrderOfferFromCast extends Notification implements ShouldQueue
 
     public function pushData($notifiable)
     {
-        $castPrivateRoom = $notifiable->rooms()
-            ->where('rooms.type', RoomType::SYSTEM)
-            ->where('rooms.is_active', true)->first();
+        $castPrivateRoom = $this->order->room;
+
         $message = '予約リクエストがキャンセルされました';
 
         $castPrivateRoomMessage = $castPrivateRoom->messages()->create([
@@ -69,9 +68,11 @@ class GuestCancelOrderOfferFromCast extends Notification implements ShouldQueue
             'system_type' => SystemMessageType::NOTIFY,
         ]);
 
-        $castPrivateRoomMessage->recipients()->attach($notifiable->id, ['room_id' => $castPrivateRoom->id]);
+        $userIds = [$notifiable->id, $this->order->user->id];
 
-        $pushId = 'g_25';
+        $castPrivateRoomMessage->recipients()->attach($userIds, ['room_id' => $castPrivateRoom->id]);
+
+        $pushId = 'c_26';
         $room = $castPrivateRoom;
 
         $namedUser = 'user_' . $notifiable->id;
@@ -89,7 +90,7 @@ class GuestCancelOrderOfferFromCast extends Notification implements ShouldQueue
                     'extra' => [
                         'push_id' => $pushId,
                         'send_from' => $send_from,
-                        'cast_offer_id' => $this->offer->id,
+                        'cast_offer_id' => $this->order->id,
                         'room_id' => $room->id,
                     ],
                 ],
@@ -98,7 +99,7 @@ class GuestCancelOrderOfferFromCast extends Notification implements ShouldQueue
                     'extra' => [
                         'push_id' => $pushId,
                         'send_from' => $send_from,
-                        'cast_offer_id' => $this->offer->id,
+                        'cast_offer_id' => $this->order->id,
                         'room_id' => $room->id,
                     ],
                 ],
@@ -108,10 +109,10 @@ class GuestCancelOrderOfferFromCast extends Notification implements ShouldQueue
 
     public function lineBotPushData($notifiable)
     {
-        $castPrivateRoom = $notifiable->rooms()
-            ->where('rooms.type', RoomType::SYSTEM)
-            ->where('rooms.is_active', true)->first();
+        $castPrivateRoom = $this->order->room;
+
         $message = '予約リクエストがキャンセルされました';
+
         $castPrivateRoomMessage = $castPrivateRoom->messages()->create([
             'user_id' => 1,
             'type' => MessageType::SYSTEM,
@@ -119,7 +120,9 @@ class GuestCancelOrderOfferFromCast extends Notification implements ShouldQueue
             'system_type' => SystemMessageType::NOTIFY,
         ]);
 
-        $castPrivateRoomMessage->recipients()->attach($notifiable->id, ['room_id' => $castPrivateRoom->id]);
+        $userIds = [$notifiable->id, $this->order->user->id];
+
+        $castPrivateRoomMessage->recipients()->attach($userIds, ['room_id' => $castPrivateRoom->id]);
 
         return [
             [

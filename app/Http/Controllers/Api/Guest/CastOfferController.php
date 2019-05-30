@@ -66,7 +66,7 @@ class CastOfferController extends ApiController
 
             $order->save();
 
-            \Notification::send($nominee, new GuestCancelOrderOfferFromCast($order));
+            \Notification::send($nominee, new GuestCancelOrderOfferFromCast($order->id));
 
             return $this->respondWithData(new OrderResource($order));
         } catch (\Exception $e) {
