@@ -285,6 +285,7 @@ class UserController extends Controller
             $user->is_verified = 0;
             $user->status = Status::INACTIVE;
             $user->resign_status = ResignStatus::APPROVED;
+            $user->resign_date = Carbon::now();
 
             $user->save();
             $user->delete();

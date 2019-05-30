@@ -45,16 +45,6 @@
                   </select>
                 </div>
               </div>
-              @if(request()->resign_status == \App\Enums\ResignStatus::PENDING)
-                <div class="init-btn-confirm-resign">
-                  <button onclick="return false;" class="btn btn-info" data-toggle="modal" data-target="#confirm-resign">退会済みにする</button>
-                </div>
-              @else
-                <div class="init-btn-export-resign">
-                  <input type="hidden" name="is_export_resign" value="1">
-                  <button type="submit" class="btn btn-info" name="submit" value="export_resign">エクスポートする</button>
-                </div>
-              @endif
             <input type="hidden" name="from_date" value="{{ request()->from_date }}" />
             <input type="hidden" name="to_date" value="{{ request()->to_date }}" />
             <input type="hidden" name="search" value="{{ request()->search }}" />
@@ -62,6 +52,18 @@
             <input type="hidden" name="resign_status" value="{{ request()->resign_status }}" />
           </form>
         </div>
+        <form class="navbar-form navbar-left form-search" action="{{ $route }}" id="limit-page" method="GET">
+          @if(request()->resign_status == \App\Enums\ResignStatus::PENDING)
+            <div class="init-btn-confirm-resign">
+              <button onclick="return false;" class="btn btn-info" data-toggle="modal" data-target="#confirm-resign">退会済みにする</button>
+            </div>
+          @else
+            <div class="init-btn-export-resign">
+              <input type="hidden" name="is_export_resign" value="1">
+              <button type="submit" class="btn btn-info" name="submit" value="export_resign">エクスポートする</button>
+            </div>
+          @endif
+        </form>
         <div class="panel-body">
           @php
             $request = [
