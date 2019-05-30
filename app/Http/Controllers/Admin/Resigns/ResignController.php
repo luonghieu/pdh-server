@@ -3,7 +3,6 @@
 namespace App\Http\Controllers\Admin\Resigns;
 
 use App\Enums\ResignStatus;
-use App\Enums\RoomType;
 use App\Enums\Status;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\CheckDateRequest;
@@ -92,19 +91,19 @@ class ResignController extends Controller
                         }
 
                         // Delete room 1-1
-                        $rooms = DB::table('rooms')
-                            ->join('room_user', function ($join) use ($user) {
-                                $join->on('rooms.id', '=', 'room_user.room_id')
-                                    ->where('room_user.user_id', '=', $user->id);
-                            })
-                            ->where('rooms.type', '=', RoomType::DIRECT);
+                        // $rooms = DB::table('rooms')
+                        //     ->join('room_user', function ($join) use ($user) {
+                        //         $join->on('rooms.id', '=', 'room_user.room_id')
+                        //             ->where('room_user.user_id', '=', $user->id);
+                        //     })
+                        //     ->where('rooms.type', '=', RoomType::DIRECT);
 
-                        $roomIds = $rooms->pluck('room_id')->toArray();
+                        // $roomIds = $rooms->pluck('room_id')->toArray();
 
-                        if ($rooms->exists()) {
-                            DB::table('room_user')->whereIn('room_id', $roomIds)->delete();
-                            DB::table('rooms')->whereIn('id', $roomIds)->delete();
-                        }
+                        // if ($rooms->exists()) {
+                        //     DB::table('room_user')->whereIn('room_id', $roomIds)->delete();
+                        //     DB::table('rooms')->whereIn('id', $roomIds)->delete();
+                        // }
 
                         if($avatars->first()) {
                             foreach ($avatars as $avatar) {
