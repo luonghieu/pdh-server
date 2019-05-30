@@ -92,11 +92,18 @@ class ResignController extends Controller
                         }
 
                         // Delete room 1-1
-                        $rooms = $user->rooms()->where('type', RoomType::DIRECT);
-                        $roomIds = $rooms->pluck('rooms.id')->toArray();
+                        $rooms = DB::table('rooms')
+                            ->join('room_user', function ($join) use ($user) {
+                                $join->on('rooms.id', '=', 'room_user.room_id')
+                                    ->where('room_user.user_id', '=', $user->id);
+                            })
+                            ->where('rooms.type', '=', RoomType::DIRECT);
+
+                        $roomIds = $rooms->pluck('room_id')->toArray();
+
                         if ($rooms->exists()) {
                             DB::table('room_user')->whereIn('room_id', $roomIds)->delete();
-                            DB::table('rooms')->where('type', RoomType::DIRECT)->delete();
+                            DB::table('rooms')->whereIn('id', $roomIds)->delete();
                         }
 
                         if($avatars->first()) {
