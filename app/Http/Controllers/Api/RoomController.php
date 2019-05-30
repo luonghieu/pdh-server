@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Enums\ResignStatus;
 use App\Enums\RoomType;
 use App\Enums\UserType;
 use App\Http\Resources\RoomResource;
@@ -143,7 +144,13 @@ class RoomController extends ApiController
             $rooms = $rooms->leftJoin('avatars', function ($j) {
                 $j->on('avatars.user_id', '=', 'users.id')
                     ->where('is_default', true);
-            })->where('users.deleted_at', null)
+            })->where(function($query) {
+                $query->whereNull('users.deleted_at')
+                    ->orWhere(function($sq) {
+                        $sq->where('users.deleted_at', '<>', null)
+                            ->where('users.resign_status', ResignStatus::APPROVED);
+                    });
+            })
                 ->select('rooms.*', 'users.type As user_type', 'users.gender', 'users.nickname', 'avatars.thumbnail')
                 ->orderBy('users.updated_at', 'DESC')->get();
         } else {
@@ -157,7 +164,13 @@ class RoomController extends ApiController
                     $j->on('avatars.user_id', '=', 'users.id')
                         ->where('is_default', true);
                 })
-                ->where('users.deleted_at', null)
+                ->where(function($query) {
+                    $query->whereNull('users.deleted_at')
+                        ->orWhere(function($sq) {
+                            $sq->where('users.deleted_at', '<>', null)
+                                ->where('users.resign_status', ResignStatus::APPROVED);
+                        });
+                })
                 ->select('rooms.*', 'users.type As user_type', 'users.gender', 'users.nickname', 'avatars.thumbnail')
                 ->orderBy('users.updated_at', 'DESC')
                 ->paginate(100)->appends($request->query());;
@@ -172,7 +185,13 @@ class RoomController extends ApiController
                     $j->on('avatars.user_id', '=', 'users.id')
                         ->where('is_default', true);
                 })
-                ->where('users.deleted_at', null)
+                ->where(function($query) {
+                    $query->whereNull('users.deleted_at')
+                        ->orWhere(function($sq) {
+                            $sq->where('users.deleted_at', '<>', null)
+                                ->where('users.resign_status', ResignStatus::APPROVED);
+                        });
+                })
                 ->select('rooms.*', 'users.type As user_type', 'users.gender', 'users.nickname', 'avatars.thumbnail')
                 ->orderBy('users.updated_at', 'DESC')
                 ->paginate(100)->appends($request->query());;
