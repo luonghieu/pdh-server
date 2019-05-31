@@ -1,6 +1,6 @@
 @extends('layouts.admin')
 @section('admin.content')
-    <div class="col-md-10 col-sm-11 main ">
+    <div class="col-md-10 col-sm-11 main">
         <div class="row">
             <div class="col-lg-12">
                 <div class="panel panel-default">
@@ -34,6 +34,9 @@
                                     </tr>
                                 </tbody>
                             </table>
+                            <div class="pull-right">
+                                <button type="button" data-toggle="modal" data-target="#revert-request-resign" class="btn btn-info">退会申請を取り下げる</button>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -41,5 +44,23 @@
             <!--/col-->
         </div>
         <!--/row-->
+    </div>
+
+    <div class="modal fade" id="revert-request-resign" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-body">
+                    <p>退会申請を取り下げますか？</p>
+                </div>
+                <div class="modal-footer">
+                    <form action="{{ route('admin.resigns.revert_request', ['resign' => $user->id]) }}" method="post">
+                        {{ csrf_field() }}
+                        {{ method_field('PUT') }}
+                        <button type="button" class="btn btn-canceled" data-dismiss="modal">キャンセル</button>
+                        <button type="submit" class="btn btn-accept">取り下げる</button>
+                    </form>
+                </div>
+            </div>
+        </div>
     </div>
 @endsection
