@@ -78,9 +78,7 @@ trait DeleteUser
         $user->intro_updated_at = null;
         $user->description = null;
         $user->note = null;
-        $user->type = null;
         $user->device_type = null;
-        $user->cast_transfer_status = null;
         $user->request_transfer_date = null;
         $user->accept_request_transfer_date = null;
         $user->accept_verified_step_one_date = null;
