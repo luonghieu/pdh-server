@@ -60,7 +60,7 @@ class CastOfferController extends ApiController
             $endTime = $startTime->copy()->addMinutes($order->duration * 60);
             $isValid = true;
 
-            if ($orderStartTime->between($startTime, $endTime) || $orderStartTime->between($startTime, $endTime)) {
+            if ($orderStartTime->between($startTime, $endTime)) {
                 $isValid = false;
             }
 
@@ -69,7 +69,7 @@ class CastOfferController extends ApiController
             }
 
             if (!$isValid) {
-                return $this->respondErrorMessage(trans('messages.action_not_performed'), 400);
+                return $this->respondErrorMessage(trans('messages.order_time_error'), 422);
             }
         }
 
