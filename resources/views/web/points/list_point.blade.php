@@ -50,10 +50,14 @@
         {{ number_format($pointView) }}P
       </span>
     </div>
-    @if ($point['type'] == \App\Enums\PointType::EVICT || $point['type'] == \App\Enums\PointType::INVITE_CODE || !Auth::user()->status)
+    @if ($point['type'] == \App\Enums\PointType::EVICT || $point['type'] == \App\Enums\PointType::INVITE_CODE)
       <div class="item_right">
       </div>
     @elseif ($pointView <= 0)
+      @if (!Auth::user()->status)
+      <div class="item_right">
+      </div>
+      @else
       <div class="item_right">
         <div class="">
           @if ($point['order_id'])
@@ -62,6 +66,7 @@
           <a href="javascript:void(0)" id="popup-error-order"><img src="{{ asset('assets/web/images/gl2-1/arrow.svg') }}" alt=">"></a></div>
           @endif
       </div>
+      @endif
     @else
       <div class="item_right" id="point-{{ $point['id'] }}-btn">
         @if (!$point['receipt'])
