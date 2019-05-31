@@ -31,7 +31,7 @@ class Frozened
 
             if (!$request->is('api/v1/*') && $user->is_verified == 1 && $user->status == 0 && !$request->is('admin/*'))
             {
-                if (!$request->is('history*') && !$request->is('logout')) {
+                if (!$request->is('history') && !$request->is('logout')) {
                     return response()->view('web.frozend');
                 }
             }

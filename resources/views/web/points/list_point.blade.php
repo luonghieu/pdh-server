@@ -50,7 +50,7 @@
         {{ number_format($pointView) }}P
       </span>
     </div>
-    @if ($point['type'] == \App\Enums\PointType::EVICT || $point['type'] == \App\Enums\PointType::INVITE_CODE)
+    @if ($point['type'] == \App\Enums\PointType::EVICT || $point['type'] == \App\Enums\PointType::INVITE_CODE || !Auth::user()->status)
       <div class="item_right">
       </div>
     @elseif ($pointView <= 0)
