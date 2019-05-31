@@ -64,6 +64,7 @@ class Order extends Model
     public function casts()
     {
         return $this->belongsToMany(Cast::class)
+            ->withTrashed()
             ->whereNotNull('cast_order.accepted_at')
             ->whereNull('cast_order.canceled_at')
             ->whereNull('cast_order.deleted_at')
