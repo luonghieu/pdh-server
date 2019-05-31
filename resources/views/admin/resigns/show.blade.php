@@ -34,9 +34,11 @@
                                     </tr>
                                 </tbody>
                             </table>
+                            @if ($user->resign_status == \App\Enums\ResignStatus::PENDING)
                             <div class="pull-right">
                                 <button type="button" data-toggle="modal" data-target="#revert-request-resign" class="btn btn-info">退会申請を取り下げる</button>
                             </div>
+                            @endif
                         </div>
                     </div>
                 </div>
