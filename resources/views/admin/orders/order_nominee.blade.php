@@ -44,7 +44,7 @@
                     <div class="content-modal">
                       <p>① 予約者ID: {{ $order->id }}</p>
                       <p>② 予約者名: {{ $order->user->nickname }}</p>
-                      <p>③ 指名キャスト名: {{ $order->nomineesWithTrashed->first()->nickname }}</p>
+                      <p>③ 指名キャスト名: {{ ($order->nomineesWithTrashed->first()) ? $order->nomineesWithTrashed->first()->nickname : '' }}</p>
                       <div class="wrap-edit-start-time">
                         <p>④ キャストとの合流時間</p>
                         @php

@@ -8,7 +8,6 @@ use App\Enums\OrderPaymentStatus;
 use App\Enums\OrderStatus;
 use App\Enums\OrderType;
 use App\Enums\ResignStatus;
-use App\Enums\Status;
 use App\Enums\UserType;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\CheckDateRequest;
@@ -20,9 +19,11 @@ use App\Services\LogService;
 use Carbon\Carbon;
 use DB;
 use Illuminate\Http\Request;
+use App\Traits\DeleteUser;
 
 class UserController extends Controller
 {
+    use DeleteUser;
     protected $castClass;
 
     public function __construct()
@@ -237,59 +238,7 @@ class UserController extends Controller
 
         try {
             DB::beginTransaction();
-
-            $cards = $user->cards;
-            $avatars = $user->avatars;
-            $shifts = $user->shifts;
-
-            if($cards->first()) {
-                foreach ($cards as $card) {
-                    $card->delete();
-                }
-            }
-
-            if($avatars->first()) {
-                foreach ($avatars as $avatar) {
-                    $avatar->delete();
-                }
-            }
-
-            if($shifts->first()) {
-                $user->shifts()->detach();
-            }
-
-            // Delete room 1-1
-            // $rooms = DB::table('rooms')
-            //     ->join('room_user', function ($join) use ($user) {
-            //         $join->on('rooms.id', '=', 'room_user.room_id')
-            //             ->where('room_user.user_id', '=', $user->id);
-            //     })
-            //     ->where('rooms.type', '=', RoomType::DIRECT);
-
-            // $roomIds = $rooms->pluck('room_id')->toArray();
-
-            // if ($rooms->exists()) {
-            //     DB::table('room_user')->whereIn('room_id', $roomIds)->delete();
-            //     DB::table('rooms')->whereIn('id', $roomIds)->delete();
-            // }
-
-            $user->stripe_id = null;
-            $user->square_id = null;
-            $user->tc_send_id = null;
-            $user->facebook_id = null;
-            $user->line_id = null;
-            $user->line_user_id = null;
-            $user->line_qr = null;
-            $user->email = null;
-            $user->password = null;
-            $user->is_verified = 0;
-            $user->status = Status::INACTIVE;
-            $user->resign_status = ResignStatus::APPROVED;
-            $user->resign_date = Carbon::now();
-
-            $user->save();
-            $user->delete();
-
+            $this->deleteUser($user);
             DB::commit();
 
             return redirect()->route('admin.users.index');

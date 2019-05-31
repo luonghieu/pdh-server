@@ -12,9 +12,12 @@ use App\User;
 use Carbon\Carbon;
 use DB;
 use Illuminate\Http\Request;
+use App\Traits\DeleteUser;
 
 class ResignController extends Controller
 {
+    use DeleteUser;
+
     public function index(CheckDateRequest $request)
     {
         $keyword = $request->search;
@@ -67,6 +70,7 @@ class ResignController extends Controller
     }
 
     public function resign(Request $request) {
+
         try {
             if ($request->has('user_ids')) {
                 $userIds = array_map('intval', explode(',', $request->user_ids));
@@ -79,54 +83,7 @@ class ResignController extends Controller
                     foreach ($users as $user) {
                         DB::beginTransaction();
 
-                        // Delete card
-                        $cards = $user->cards;
-
-                        $avatars = $user->avatars;
-
-                        if ($cards->first()) {
-                            foreach ($cards as $card) {
-                                $card->delete();
-                            }
-                        }
-
-                        // Delete room 1-1
-                        // $rooms = DB::table('rooms')
-                        //     ->join('room_user', function ($join) use ($user) {
-                        //         $join->on('rooms.id', '=', 'room_user.room_id')
-                        //             ->where('room_user.user_id', '=', $user->id);
-                        //     })
-                        //     ->where('rooms.type', '=', RoomType::DIRECT);
-
-                        // $roomIds = $rooms->pluck('room_id')->toArray();
-
-                        // if ($rooms->exists()) {
-                        //     DB::table('room_user')->whereIn('room_id', $roomIds)->delete();
-                        //     DB::table('rooms')->whereIn('id', $roomIds)->delete();
-                        // }
-
-                        if($avatars->first()) {
-                            foreach ($avatars as $avatar) {
-                                $avatar->delete();
-                            }
-                        }
-
-                        // Delete user
-                        $user->stripe_id = null;
-                        $user->square_id = null;
-                        $user->tc_send_id = null;
-                        $user->facebook_id = null;
-                        $user->line_id = null;
-                        $user->line_user_id = null;
-                        $user->line_qr = null;
-                        $user->email = null;
-                        $user->password = null;
-                        $user->is_verified = 0;
-                        $user->status = Status::INACTIVE;
-                        $user->resign_status = ResignStatus::APPROVED;
-                        $user->resign_date = Carbon::now();
-                        $user->save();
-                        $user->delete();
+                        $this->deleteUser($user);
 
                         DB::commit();
                     }
