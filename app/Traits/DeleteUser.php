@@ -13,6 +13,7 @@ trait DeleteUser
     {
         $cards = $user->cards;
         $avatars = $user->avatars;
+        $bankAccount = $user->bankAccount;
 
         if ($user->type == UserType::CAST) {
             $shifts = $user->shifts;
@@ -32,6 +33,10 @@ trait DeleteUser
             foreach ($cards as $card) {
                 $card->delete();
             }
+        }
+
+        if($bankAccount) {
+            $bankAccount->delete();
         }
 
         // Delete room 1-1
