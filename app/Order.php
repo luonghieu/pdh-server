@@ -98,8 +98,9 @@ class Order extends Model
     public function nomineesWithTrashed()
     {
         return $this->belongsToMany(Cast::class)
+            ->withTrashed()
             ->where('cast_order.type', CastOrderType::NOMINEE)
-            ->withPivot('status', 'type', 'cost')
+            ->withPivot('status', 'type', 'cost', 'started_at', 'temp_point')
             ->withTimestamps();
     }
 

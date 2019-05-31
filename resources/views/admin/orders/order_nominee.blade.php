@@ -44,7 +44,7 @@
                     <div class="content-modal">
                       <p>① 予約者ID: {{ $order->id }}</p>
                       <p>② 予約者名: {{ $order->user->nickname }}</p>
-                      <p>③ 指名キャスト名: {{ $order->nomineesWithTrashed->first()->nickname }}</p>
+                      <p>③ 指名キャスト名: {{ ($order->nomineesWithTrashed->first()) ? $order->nomineesWithTrashed->first()->nickname : '' }}</p>
                       <div class="wrap-edit-start-time">
                         <p>④ キャストとの合流時間</p>
                         @php
@@ -483,7 +483,7 @@
     const baseOrderStartDate = '<?= \Carbon\Carbon::parse($order->date . ' ' . $order->start_time)?>';
     const baseTempPoint = '<?= number_format($order->temp_point) ?>';
     const baseDuration = '<?= $order->duration ?>';
-    let nomineeCost ='<?php echo $order->castOrder()->first()->pivot->cost ?>';
+    let nomineeCost ='<?php echo $order->nomineesWithTrashed()->first()->pivot->cost ?>';
     let orderDuration = '<?= $order->duration ?>';
     let dayOfWeek = JSON.parse('<?= json_encode(dayOfWeek()) ?>');
     let clickComfirm = 0;
