@@ -51,7 +51,7 @@
     </div>
 </div>
 
-<div class="modal_wrap">]
+<div class="modal_wrap">
     <input id="popup-resign-error" type="checkbox">
     <div class="modal_overlay">
         <label for="popup-resign-error" class="modal_trigger" id="popup-resign-error-label"></label>
