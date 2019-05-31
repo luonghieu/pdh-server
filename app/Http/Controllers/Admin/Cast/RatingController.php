@@ -48,8 +48,10 @@ class RatingController extends Controller
         return view('admin.casts.rating', compact('ratings', 'user'));
     }
 
-    public function detail(User $user, Rating $rating)
+    public function detail($user, $rating)
     {
+        $rating = Rating::find($rating);
+
         return view('admin.casts.rating_detail', compact('rating'));
     }
 
