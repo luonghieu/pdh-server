@@ -483,7 +483,7 @@
     const baseOrderStartDate = '<?= \Carbon\Carbon::parse($order->date . ' ' . $order->start_time)?>';
     const baseTempPoint = '<?= number_format($order->temp_point) ?>';
     const baseDuration = '<?= $order->duration ?>';
-    let nomineeCost ='<?php echo $order->castOrder()->first()->pivot->cost ?>';
+    let nomineeCost ='<?php echo $order->nomineesWithTrashed()->first()->pivot->cost ?>';
     let orderDuration = '<?= $order->duration ?>';
     let dayOfWeek = JSON.parse('<?= json_encode(dayOfWeek()) ?>');
     let clickComfirm = 0;
