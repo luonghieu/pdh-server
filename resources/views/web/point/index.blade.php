@@ -156,14 +156,14 @@
 
         function buyPoint(point) {
             var hasResign = '{!! $user->resign_status != null ? 1 : 0 !!}';
-            if (hasResign) {
+            if (parseInt(hasResign)) {
                 document.getElementById('popup-resign-error').click();
                 return false;
             }
 
             var hasCard = '{!! $user->is_card_registered ? 1 : 0 !!}';
             if ($('#is_multi_payment_method').val() != true) {
-                if (!hasCard) {
+                if (!parseInt(hasCard)) {
                     document.getElementById('popup-require-card').click();
                     return false;
                 }
