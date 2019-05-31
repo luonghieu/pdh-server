@@ -193,5 +193,6 @@ Route::group(['prefix' => 'admin', 'as' => 'admin.'], function () {
         Route::get('/', ['as' => 'index', 'uses' => 'ResignController@index']);
         Route::get('/{id}', ['as' => 'show', 'uses' => 'ResignController@show']);
         Route::delete('/', ['as' => 'delete', 'uses' => 'ResignController@resign']);
+        Route::put('/{resign}/revert_request', ['as' => 'revert_request', 'uses' => 'ResignController@revertRequest'])->where('resign', '[0-9]+');;
     });
 });

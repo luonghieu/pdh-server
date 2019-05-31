@@ -172,4 +172,22 @@ class ResignController extends Controller
 
         return;
     }
+
+    public function revertRequest($resign)
+    {
+        $user = User::findOrFail($resign);
+
+        try {
+            $user->resign_status = ResignStatus::NOT_RESIGN;
+            $user->resign_date = null;
+            $user->first_resign_description = null;
+            $user->second_resign_description = null;
+
+            $user->save();
+
+            return redirect(route('admin.resigns.index', ['resign_status'=> ResignStatus::PENDING]));
+        } catch (\Exception $e) {
+            LogService::writeErrorLog($e);
+        }
+    }
 }
