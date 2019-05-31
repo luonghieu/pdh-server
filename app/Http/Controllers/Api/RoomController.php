@@ -12,6 +12,7 @@ use App\User;
 use Carbon\Carbon;
 use DB;
 use Illuminate\Http\Request;
+use Illuminate\Pagination\LengthAwarePaginator;
 use Storage;
 
 class RoomController extends ApiController
@@ -54,7 +55,27 @@ class RoomController extends ApiController
             });
         }
 
-        $rooms = $rooms->with('latestMessage', 'users')->orderBy('updated_at', 'DESC')->paginate($request->per_page)->appends($request->query());
+        $rooms = $rooms->with('latestMessage', 'users')->orderBy('updated_at', 'DESC')->get();
+
+        // Reject room 1-1 when deleted user
+        $collection = $rooms->reject(function ($room) {
+            if ($room->type == RoomType::DIRECT) {
+                $users = $room->users;
+
+                foreach($users as $user) {
+                    if ($user->deleted_at) {
+                        return true;
+                    }
+                }
+            }
+        });
+
+        $path = url()->current();
+        $total = $collection->count();
+        $rooms = $collection->forPage($request->per_page, $request->limit ?: 15);
+
+        $rooms = new LengthAwarePaginator($rooms, $total, $request->limit ?: 15);
+        $rooms = $rooms->withPath($path);
 
         if ('html' == $request->response_type) {
             $rooms = $this->respondWithData(RoomResource::collection($rooms));
