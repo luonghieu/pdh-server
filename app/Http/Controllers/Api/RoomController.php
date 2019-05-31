@@ -67,6 +67,8 @@ class RoomController extends ApiController
                         return true;
                     }
                 }
+
+                return false;
             }
         });
 
@@ -450,7 +452,17 @@ class RoomController extends ApiController
                 });
                 $rooms->setCollection($collection);
             } else {
-                $rooms->setCollection($collection);
+                $collection = $collection->reject(function ($item) {
+                    $users = $item->users;
+                    foreach ($users as $user) {
+                        if ($user['deleted_at']) {
+                            return true;
+                        }
+                    }
+                    return false;
+                });
+
+                $rooms->setCollection($collection->values());
             }
 
             if ('html' == $request->response_type) {
