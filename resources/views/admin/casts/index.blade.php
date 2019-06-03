@@ -133,11 +133,15 @@
                       @endif
                     @endif
                   </td>
-                  @if ($cast->is_online == true)
-                  <td>オンライン中</td>
-                  @else
-                  <td>{{ $cast->last_active }}</td>
-                  @endif
+                  <td>
+                    @if($cast->resign_status != App\Enums\ResignStatus::APPROVED)
+                      @if ($cast->is_online == true)
+                        オンライン中
+                      @else
+                        {{ $cast->last_active }}
+                      @endif
+                    @endif
+                  </td>
                   <td>
                     {{ App\Enums\WorkingType::getDescription($cast->is_working_today) }}
                     @php

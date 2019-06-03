@@ -116,11 +116,15 @@
                       @endif
                     @endif
                   </td>
-                  @if ($user->is_online == true)
-                  <td>オンライン中</td>
-                  @else
-                  <td>{{ $user->last_active }}</td>
-                  @endif
+                  <td>
+                    @if($user->resign_status != App\Enums\ResignStatus::APPROVED)
+                      @if ($user->is_online == true)
+                        オンライン中
+                      @else
+                        {{ $user->last_active }}
+                      @endif
+                    @endif
+                  </td>
                   <td>{{ Carbon\Carbon::parse($user->created_at)->format('Y/m/d H:i') }}</td>
                   <td><a href="{{ route('admin.users.show', ['user' => $user->id]) }}" class=" btn btn-detail">詳細</a></td>
                 </tr>
