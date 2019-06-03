@@ -4440,3 +4440,7 @@ background: #c4c4c4;
   overflow: hidden;
   text-overflow: ellipsis;
 }
+
+#ge2-1-x .wrap-btn-time-join-order label {
+  padding: 0 17px !important;
+}
