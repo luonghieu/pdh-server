@@ -219,6 +219,7 @@
     <!-- profile-word -->
   </div>
 </div>
+@if(env('ENABLE_TIMELINE'))
 <div class="timeline">
   <section class="portlet">
     <div class="portlet-header">
@@ -291,6 +292,7 @@
     </div>
   </section>
 </div>
+@endif
 <div class="cast-call-btn">
   <a class="heart" id="favorite-cast-detail" data-user-id="{{ $cast['id'] }}" data-is-favorited="{{ $cast['is_favorited'] }}">
     @if ($cast['is_favorited'])
