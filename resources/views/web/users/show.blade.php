@@ -1,9 +1,29 @@
 @section('title', 'キャスト詳細')
 @section('screen.id', 'gf2')
-
+@section('controller.id', 'cast_profile_controller')
 @extends('layouts.web')
 @section('web.content')
 @section('web.extra')
+
+  <div class="modal_wrap modal-confirm">
+    <input id="timeline-del" type="checkbox">
+    <div class="modal_overlay">
+      <label for="timeline-del" class="modal_trigger"></label>
+      <div class="modal_content modal_content-btn2">
+        <div class="text-box">
+          <h2>投稿を削除しますか？</h2>
+        </div>
+        <div class="close_button-box">
+          <div class="close_button-block">
+            <label for="timeline-del" class="close_button  left ">キャンセル</label>
+          </div>
+          <div class="close_button-block">
+            <label for="timeline-del" data-id='' class="close_button right" id="btn-del-timeline">削除</label>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
 @endsection
 <div class="cast-call">
   @if($cast['is_new_user'])
@@ -199,6 +219,80 @@
     <!-- profile-word -->
   </div>
 </div>
+@if(env('ENABLE_TIMELINE'))
+<div class="timeline">
+  <section class="portlet">
+    <div class="portlet-header">
+      <h2 class="portlet-header__title title-shifts">タイムライン</h2>
+    </div>
+    <div class="portlet-content--timeline">
+      @foreach($timelines as $key => $timeline)
+      @if ($key < 5)
+      <div class="timeline-list">
+        <div class="timeline-item">
+          <div class="user-info">
+            <div class="user-info__profile">
+              <img src="{{ $timeline['user']['avatars'] ? $timeline['user']['avatars'][0]['path'] : '/assets/web/images/gm1/ic_default_avatar@3x.png' }}" alt="">
+            </div>
+            <div class="user-info__text">
+              <div class="user-info__top">
+                <p>{{ $timeline['user']['nickname'] }}</p>
+                <p>{{ $timeline['user']['age'] }}歳</p>
+              </div>
+              <div class="user-info__bottom">
+                <p>{{ $timeline['location'] }}</p><p>{{ $timeline['location'] ? '・' : '' }}</p>
+                <p>{{ Carbon\Carbon::parse($timeline['created_at'])->format('m/d H:i') }}</p>
+              </div>
+            </div>
+            @if ($timeline['user']['id'] == Auth::user()->id)
+              <div class="timeline-delete" data-id="{{ $timeline['id'] }}">
+                <img src="{{ asset('assets/web/images/common/timeline-like-button_del.svg') }}" alt="">
+              </div>
+            @endif
+          </div>
+          <div class="timeline-content">
+            <a href="{{ route('web.timelines.show', ['timeline' => $timeline['id']]) }}" class="init-text-color">
+              <div class="timeline-article">
+                <div class="timeline-article__text init-text-justify">
+                  {!! nl2br($timeline['content']) !!}
+                </div>
+              </div>
+              <div class="timeline-images">
+                <div class="timeline-images__list">
+                  <div class="timeline-images__item">
+                    @if ($timeline['image'])
+                    <img src="{{ $timeline['image'] }}">
+                    @endif
+                  </div>
+                </div>
+              </div>
+            </a>
+            <div class="timeline-like heart-timeline" data-timeline-id="{{ $timeline['id'] }}">
+              <button class="timeline-like__icon">
+                <div id="heart-timeline-{{ $timeline['id'] }}" data-is-favorited-timeline="{{ $timeline['is_favourited'] }}" data-total-favorites-timeline="{{ $timeline['total_favorites'] }}">
+                  @if($timeline['is_favourited'])
+                  <img src="{{ asset('assets/web/images/common/like.svg ') }}" alt="">
+                  @else
+                  <img src="{{ asset('assets/web/images/common/unlike.svg ') }}" alt="">
+                  @endif
+                </div>
+              </button>
+              <p class="timeline-like__sum" id="total-favorites-{{ $timeline['id'] }}">{{ $timeline['total_favorites'] }}</p>
+            </div>
+          </div>
+        </div>
+      </div>
+      @endif
+      @endforeach
+      @if (count($timelines) > 5)
+      <div class="timeline-more">
+        <a href="{{ route('web.timelines.index', ['user_id' => $cast['id']]) }}"><p>さらに見る</p></a>
+      </div>
+      @endif
+    </div>
+  </section>
+</div>
+@endif
 <div class="cast-call-btn">
   <a class="heart" id="favorite-cast-detail" data-user-id="{{ $cast['id'] }}" data-is-favorited="{{ $cast['is_favorited'] }}">
     @if ($cast['is_favorited'])
@@ -233,8 +327,41 @@
         $("html, body").animate({scrollTop: $('#list-shift-of-cast').offset().top }, 1000);
     });
   });
+
+  $('body').on('click', ".timeline-delete", function(){
+      var id = $(this).data("id");
+      $('#btn-del-timeline').data('id', '');
+      $('#btn-del-timeline').data('id', id);
+
+      $('#timeline-del').prop('checked', true);
+
+  });
+
+  $('body').on('click', "#btn-del-timeline", function(){
+      var id = $(this).data("id");
+      if(id) {
+          window.axios.delete('/api/v1/timelines/' + id)
+              .then(function(response) {
+                  window.location.reload();
+              })
+              .catch(function (error) {
+                  console.log(error);
+                  if (error.response.status == 401) {
+                      window.location = '/login';
+                  }
+
+                  if (error.response.status == 404) {
+                      $('#timeline-not-found').prop('checked', true);
+                  }
+              });
+      } else {
+          window.location = '/login';
+      }
+  })
 </script>
+
 @stop
+
 @section('web.extra_css')
 <style>
   footer {

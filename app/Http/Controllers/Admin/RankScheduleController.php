@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\CheckDateRequest;
 use App\Cast;
 use App\Enums\OrderStatus;
 use App\Order;
@@ -66,7 +67,7 @@ class RankScheduleController extends Controller
         }
     }
 
-    public function getListCast(Request $request)
+    public function getListCast(CheckDateRequest $request)
     {
         $fromDate = '';
         $toDate = '';

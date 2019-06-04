@@ -4,29 +4,26 @@ namespace App\Http\Controllers\Admin\Room;
 
 use App\Enums\RoomType;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\CheckDateRequest;
 use App\Room;
 use Carbon\Carbon;
-use Illuminate\Http\Request;
 
 class RoomController extends Controller
 {
-    public function getMessageByRoom(Room $room, Request $request)
+    public function getMessageByRoom(Room $room, CheckDateRequest $request)
     {
-
         $messages = $room->messages()->with('user');
 
         if ($request->has('from_date') && !empty($request->from_date)) {
             $fromDate = Carbon::parse($request->from_date)->startOfDay();
-            $toDate = Carbon::parse($request->to_date)->endOfDay();
-            $messages->where(function ($query) use ($fromDate, $toDate) {
+            $messages->where(function ($query) use ($fromDate) {
                 $query->where('created_at', '>=', $fromDate);
             });
         }
 
         if ($request->has('to_date') && !empty($request->to_date)) {
-            $fromDate = Carbon::parse($request->from_date)->startOfDay();
             $toDate = Carbon::parse($request->to_date)->endOfDay();
-            $messages->where(function ($query) use ($fromDate, $toDate) {
+            $messages->where(function ($query) use ($toDate) {
                 $query->where('created_at', '<=', $toDate);
             });
         }
@@ -54,7 +51,7 @@ class RoomController extends Controller
         return redirect()->route('admin.rooms.messages_by_room', ['room' => $room->id]);
     }
 
-    public function index(Request $request)
+    public function index(CheckDateRequest $request)
     {
         $keyword = $request->search;
 
@@ -62,16 +59,14 @@ class RoomController extends Controller
 
         if ($request->from_date) {
             $fromDate = Carbon::parse($request->from_date)->startOfDay();
-            $toDate = Carbon::parse($request->to_date)->endOfDay();
-            $rooms->where(function ($query) use ($fromDate, $toDate) {
+            $rooms->where(function ($query) use ($fromDate) {
                 $query->where('created_at', '>=', $fromDate);
             });
         }
 
         if ($request->to_date) {
-            $fromDate = Carbon::parse($request->from_date)->startOfDay();
             $toDate = Carbon::parse($request->to_date)->endOfDay();
-            $rooms->where(function ($query) use ($fromDate, $toDate) {
+            $rooms->where(function ($query) use ($toDate) {
                 $query->where('created_at', '<=', $toDate);
             });
         }

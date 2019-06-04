@@ -88,6 +88,10 @@ Route::group(['middleware' => ['auth', 'guest', 'check_info'], 'as' => 'guest.']
     });
 
     Route::get('/payment/transfer', ['as' => 'transfer', 'uses' => 'PaymentController@transfer']);
+
+    Route::group(['prefix' => '/cast_offers', 'as' => 'cast_offers.'], function () {
+        Route::get('/{id}', ['as' => 'index', 'uses' => 'CastOfferController@index'])->where('id', '[0-9]+');
+    });
 });
 
 Route::group(['middleware' => ['auth', 'is_active'], 'as' => 'guest.'], function () {
@@ -128,6 +132,26 @@ Route::group(['middleware' => ['auth', 'cast'], 'prefix' => 'cast_mypage'], func
             Route::post('/edit/branch', ['as' => 'branch_bank_name', 'uses' => 'BankAccountController@branchBankName']);
         });
     });
+});
+
+Route::group(['middleware' => ['auth', 'guest', 'check_info'], 'prefix' => 'timelines', 'as' => 'web.'], function () {
+    Route::group(['as' => 'timelines.'], function () {
+        Route::get('/', ['as' => 'index', 'uses' => 'TimeLineController@index']);
+        Route::get('/create', ['as' => 'create', 'uses' => 'TimeLineController@create']);
+        Route::get('/load_more', ['as' => 'load_more', 'uses' => 'TimeLineController@loadMoreListTimelines']);
+        Route::get('/{id}', ['as' => 'show', 'uses' => 'TimeLineController@show']);
+        Route::get('/favorites/load_more', ['as' => 'favorites.load_more', 'uses' => 'TimeLineController@loadMoreFavorites']);
+    });
+});
+
+Route::group(['middleware' => ['auth'], 'prefix' => 'guest', 'as' => 'guest.'], function () {
+    Route::get('/{id}', ['as' => 'show', 'uses' => 'UserController@show'])->where('id', '[0-9]+');
+});
+
+Route::group(['middleware' => ['auth'], 'prefix' => 'resigns', 'as' => 'resigns.'], function () {
+    Route::get('/reason', ['as' => 'reason', 'uses' => 'ResignController@reason']);
+    Route::get('/confirm', ['as' => 'confirm', 'uses' => 'ResignController@confirm']);
+    Route::get('/complete', ['as' => 'complete', 'uses' => 'ResignController@complete']);
 });
 
 Route::view('tc_register_card', 'web.cards.telecom_credit');

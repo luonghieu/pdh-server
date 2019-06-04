@@ -1,6 +1,7 @@
 @extends('layouts.admin')
 @section('admin.content')
-<div class="col-md-10 col-sm-11 main ">
+<div class="col-md-10 col-sm-11 main">
+  @include('admin.partials.alert-error', compact('errors'))
   <div class="row">
     <div class="col-lg-12">
       <div class="panel panel-default">
@@ -17,7 +18,7 @@
                   <option value="{{ $key }}" {{ request()->search_point_type == $key ? 'selected' : '' }}>{{ $pointType }}</option>
                 @endforeach
               </select>
-              <button type="submit" class="fa fa-search btn-search" name="submit" value="search"></button>
+              <button type="submit" class="fa fa-search btn btn-search" name="submit" value="search"></button>
               <input type="hidden" name="limit" value="{{ request()->limit }}" />
               <input type="hidden" name="page" value="{{ request()->page }}" />
               <div class="export-csv">

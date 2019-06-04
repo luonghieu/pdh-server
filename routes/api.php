@@ -96,6 +96,13 @@ Route::group(['prefix' => 'v1'], function () {
         Route::get('/points_used', ['as' => 'points_used', 'uses' => 'Guest\GuestController@getPointUsed']);
 
         Route::get('/offers/{id}', ['as' => 'offers.show', 'uses' => 'Guest\OfferController@show'])->where('id', '[0-9]+');
+
+        Route::group(['prefix' => 'cast_offers', 'as' => 'cast_offers'], function () {
+            Route::get('/{id}', ['as' => 'show', 'uses' => 'Guest\CastOfferController@show'])->where('id', '[0-9]+');
+
+            Route::post('/{id}/deny', ['as' => 'deny', 'uses' => 'Guest\CastOfferController@deny'])->where('id', '[0-9]+');
+            Route::post('/accept', ['as' => 'accept', 'uses' => 'Guest\CastOfferController@accept']);
+        });
     });
 
     Route::group(['middleware' => ['auth:api', 'cast'], 'prefix' => 'cast', 'as' => 'cast.'], function () {
@@ -111,6 +118,11 @@ Route::group(['prefix' => 'v1'], function () {
         Route::group(['prefix' => 'bank_accounts', 'as' => 'bank_accounts.'], function () {
             Route::post('/{id}', ['as' => 'update', 'uses' => 'Cast\BankAccountController@update']);
             Route::post('/', ['as' => 'bank_accounts', 'uses' => 'Cast\BankAccountController@create']);
+        });
+
+        Route::group(['as' => 'offers.'], function () {
+            Route::post('/orders/{id}/cancel', ['as' => 'cancel', 'uses' => 'Cast\CastOfferController@cancel']);
+            Route::post('/order_create', ['as' => 'create', 'uses' => 'Cast\CastOfferController@create']);
         });
     });
 
@@ -150,6 +162,8 @@ Route::group(['prefix' => 'v1'], function () {
         Route::group(['prefix' => 'orders', 'as' => 'orders.'], function () {
             Route::post('/{id}/cancel', ['as' => 'cancel', 'uses' => 'Guest\OrderController@cancel'])
                 ->where('id', '[0-9]+');
+            Route::post('/{id}/skip', ['as' => 'skip', 'uses' => 'Guest\OrderController@skipOrderNominee'])
+                ->where('id', '[0-9]+');
         });
 
         Route::group(['prefix' => 'cards', 'as' => 'cards.'], function () {
@@ -174,5 +188,18 @@ Route::group(['prefix' => 'v1'], function () {
 
     Route::group(['middleware' => ['auth:api'], 'prefix' => 'shifts', 'as' => 'shifts.'], function () {
         Route::get('/', ['as' => 'index', 'uses' => 'ShiftController@index']);
+    });
+
+    Route::group(['middleware' => ['auth:api'], 'prefix' => 'timelines', 'as' => 'timelines.'], function () {
+        Route::get('/', ['as' => 'index', 'uses' => 'TimeLineController@index']);
+        Route::get('/{id}', ['as' => 'show', 'uses' => 'TimeLineController@show'])->where('id', '[0-9]+');
+        Route::post('/create', ['as' => 'create', 'uses' => 'TimeLineController@create']);
+        Route::get('/{id}/favorites', ['as' => 'favorites', 'uses' => 'TimeLineController@favorites'])->where('id', '[0-9]+');
+        Route::post('/{id}/favorites', ['as' => 'favorite_update', 'uses' => 'TimeLineController@updateFavorite'])->where('id', '[0-9]+');
+        Route::delete('/{id}', ['as' => 'delete', 'uses' => 'TimeLineController@delete'])->where('id', '[0-9]+');
+    });
+
+    Route::group(['middleware' => ['auth:api'], 'prefix' => 'resigns', 'as' => 'resigns.'], function () {
+        Route::post('/create', ['as' => 'create', 'uses' => 'ResignController@create']);
     });
 });

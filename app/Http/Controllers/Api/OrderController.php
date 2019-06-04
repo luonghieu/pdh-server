@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Cast;
 use App\CastClass;
 use App\Coupon;
+use App\Enums\CastClassType;
 use App\Enums\CastOrderStatus;
 use App\Enums\CastOrderType;
 use App\Enums\CouponType;
@@ -13,6 +14,7 @@ use App\Enums\OfferStatus;
 use App\Enums\OrderPaymentMethod;
 use App\Enums\OrderStatus;
 use App\Enums\OrderType;
+use App\Enums\ResignStatus;
 use App\Enums\RoomType;
 use App\Enums\TagType;
 use App\Http\Resources\OrderResource;
@@ -39,6 +41,11 @@ class OrderController extends ApiController
     public function create(Request $request)
     {
         $user = $this->guard()->user();
+
+        if ($user->resign_status == ResignStatus::PENDING) {
+            return $this->respondErrorMessage(trans('messages.order_resign_status_pending'), 412);
+        }
+
         $rules = [
             'prefecture_id' => 'nullable|exists:prefectures,id',
             'address' => 'required',
@@ -224,7 +231,11 @@ class OrderController extends ApiController
                     );
                 }
             } else {
-                $casts = Cast::where('class_id', $request->class_id)->get();
+                if ($request->class_id == CastClassType::BRONZE) {
+                    $casts = Cast::whereIn('class_id', [CastClassType::BRONZE, CastClassType::PLANTIUM])->get();
+                } else {
+                    $casts = Cast::where('class_id', $request->class_id)->get();
+                }
 
                 \Notification::send(
                     $casts,
@@ -403,6 +414,11 @@ class OrderController extends ApiController
     public function createOrderOffer(Request $request)
     {
         $user = $this->guard()->user();
+
+        if ($user->resign_status == ResignStatus::PENDING) {
+            return $this->respondErrorMessage(trans('messages.order_resign_status_pending'), 412);
+        }
+
         $input = $request->only([
             'prefecture_id',
             'address',
@@ -447,6 +463,10 @@ class OrderController extends ApiController
             return $this->respondErrorMessage(trans('messages.admin_edited_order'), 406);
         }
 
+        if ($offer->prefecture_id != $request->prefecture_id) {
+            return $this->respondErrorMessage(trans('messages.admin_edited_order'), 406);
+        }
+
         $now = Carbon::now()->second(0);
 
         $start_time = Carbon::parse($request->date . ' ' . $request->start_time);
@@ -487,7 +507,6 @@ class OrderController extends ApiController
 
         $input['end_time'] = $end_time->format('H:i');
 
-        $input['end_time'] = $end_time->format('H:i');
         $input['status'] = OrderStatus::ACTIVE;
 
         if ($request->payment_method) {

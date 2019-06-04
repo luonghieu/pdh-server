@@ -1,6 +1,7 @@
 @extends('layouts.admin')
 @section('admin.content')
-<div class="col-md-10 col-sm-11 main ">
+<div class="col-md-10 col-sm-11 main">
+  @include('admin.partials.alert-error', compact('errors'))
   <div class="row">
     <div class="col-lg-12">
       <div class="panel panel-default">
@@ -12,7 +13,7 @@
               <input type="text" class="form-control date-picker input-search" name="from_date" id="date01" data-date-format="yyyy/mm/dd" value="{{request()->from_date}}" placeholder="yyyy/mm/dd" />
               <label for="">To date: </label>
               <input type="text" class="form-control date-picker" name="to_date" id="date01" data-date-format="yyyy/mm/dd" value="{{request()->to_date}}" placeholder="yyyy/mm/dd"/>
-              <button type="submit" class="fa fa-search btn-search"></button>
+              <button type="submit" class="fa fa-search btn btn-search"></button>
             </form>
           </div>
         </div>
@@ -104,12 +105,26 @@
                     @endphp
                     {{ App\Enums\UserType::getDescription($user->type) }}{{ $textCastTemp }}
                   </td>
-                  <td>{{ App\Enums\Status::getDescription($user->status) }}</td>
-                  @if ($user->is_online == true)
-                  <td>オンライン中</td>
-                  @else
-                  <td>{{ $user->last_active }}</td>
-                  @endif
+                  <td>
+                    @if($user->status == App\Enums\Status::ACTIVE)
+                      {{ App\Enums\Status::getDescription($user->status) }}
+                    @else
+                      @if($user->resign_status == App\Enums\ResignStatus::APPROVED)
+                        退会
+                      @else
+                        凍結
+                      @endif
+                    @endif
+                  </td>
+                  <td>
+                    @if($user->resign_status != App\Enums\ResignStatus::APPROVED)
+                      @if ($user->is_online == true)
+                        オンライン中
+                      @else
+                        {{ $user->last_active }}
+                      @endif
+                    @endif
+                  </td>
                   <td>{{ Carbon\Carbon::parse($user->created_at)->format('Y/m/d H:i') }}</td>
                   <td><a href="{{ route('admin.users.show', ['user' => $user->id]) }}" class=" btn btn-detail">詳細</a></td>
                 </tr>

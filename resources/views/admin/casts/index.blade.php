@@ -1,6 +1,7 @@
 @extends('layouts.admin')
 @section('admin.content')
 <div class="col-md-10 col-sm-11 main">
+  @include('admin.partials.alert-error', compact('errors'))
   <div class="row">
     <div class="col-lg-12">
       <div class="panel panel-default">
@@ -121,12 +122,26 @@
                     @endphp
                     {{ App\Enums\UserType::getDescription($cast->type) }}{{ $textCastTemp }}
                   </td>
-                  <td>{{ App\Enums\Status::getDescription($cast->status) }}</td>
-                  @if ($cast->is_online == true)
-                  <td>オンライン中</td>
-                  @else
-                  <td>{{ $cast->last_active }}</td>
-                  @endif
+                  <td>
+                    @if($cast->status == App\Enums\Status::ACTIVE)
+                      {{ App\Enums\Status::getDescription($cast->status) }}
+                    @else
+                      @if($cast->resign_status == App\Enums\ResignStatus::APPROVED)
+                        退会
+                      @else
+                        凍結
+                      @endif
+                    @endif
+                  </td>
+                  <td>
+                    @if($cast->resign_status != App\Enums\ResignStatus::APPROVED)
+                      @if ($cast->is_online == true)
+                        オンライン中
+                      @else
+                        {{ $cast->last_active }}
+                      @endif
+                    @endif
+                  </td>
                   <td>
                     {{ App\Enums\WorkingType::getDescription($cast->is_working_today) }}
                     @php

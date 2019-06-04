@@ -41,6 +41,27 @@
     </div>
   </div>
 
+  <div class="modal_wrap">
+    <input id="modal-confirm-skip-order-nominee" type="checkbox">
+    <div class="modal_overlay">
+      <label for="modal-confirm-skip-order-nominee" class="modal_trigger"></label>
+      <div class="modal_content modal_content-btn2">
+        <div class="text-box">
+          <h2>指名予約の提案を取り下げますか？</h2>
+          <p>※キャンセル料は発生しません</p>
+        </div>
+        <div class="close_button-box">
+          <div class="close_button-block">
+            <label for="modal-confirm-skip-order-nominee" class="close_button  left">いいえ</label>
+          </div>
+          <div class="close_button-block">
+            <label for="modal-confirm-skip-order-nominee" class="close_button skip-order-nominee right">取り下げる</label>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
   <div class="modal_wrap wrap-alert-image-oversize">
     <input id="alert-image-oversize" type="checkbox">
     <div class="modal_overlay">
@@ -114,6 +135,16 @@
     </div>
   </div>
   @if ($room->type != \App\Enums\RoomType::SYSTEM)
+    @if ($messages['order']['status'] == App\Enums\OrderStatus::SKIP_NOMINATION && $messages['order']['type'] == App\Enums\OrderType::NOMINATION)
+      <div class="msg-head">
+        <h2><span class="mitei msg-head-ttl">日程未定</span>キャストに予約リクエストしよう！</h2>
+      </div>
+    @endif
+    @if((in_array($messages['order']['status'], [App\Enums\OrderStatus::GUEST_DENIED, App\Enums\OrderStatus::CAST_CANCELED])) && (Auth::user()->type == App\Enums\UserType::GUEST))
+    <div class="msg-head">
+      <h2><span class="mitei msg-head-ttl">日程未定</span>キャストに予約リクエストしよう！</h2>
+    </div>
+    @endif
     @if ($messages['order'] == null || (count($messages['room']['users']) == 2 && $messages['order']['status'] == App\Enums\OrderStatus::DONE))
     <div class="msg-head">
       <h2><span class="mitei msg-head-ttl">日程未定</span> {{ (Auth::user()->type == App\Enums\UserType::GUEST) ? 'ゲストに予約リクエストしよう！' : 'ゲストにメッセージを送ってみよう！' }}</h2>
@@ -124,9 +155,52 @@
       <h2><span class="mitei msg-head-ttl">完了</span> このチャットは終了から24時間使用できます</h2>
     </div>
     @endif
-    @if ($messages['order']['status'] == App\Enums\OrderStatus::OPEN && $messages['order']['type'] != App\Enums\OrderType::CALL)
+    @if ($messages['order']['status'] == App\Enums\OrderStatus::OPEN)
+      @if($messages['order']['type'] == App\Enums\OrderType::NOMINATION)
+        <div class="msg-head tgl">
+          <dl>
+            <dt class="msg-detail-order-nominee">
+              <h2>
+                <span class="teian msg-head-ttl">提案中</span>
+                <span class="status-bar-nominee">キャストの回答待ちです。</span>
+                <span class="time-order-nonimee">{{ Carbon\Carbon::parse($messages['order']['date'])->format('Y年m月d日') }} {{ Carbon\Carbon::parse($messages['order']['start_time'])->format('H:i') }}〜</span>
+              </h2>
+              <i><img src="/assets/web/images/gg2/arrow.svg"></i>
+            </dt>
+            <dd class="msg-head-detail">
+              <dl>
+                <dt>
+                  <ul class="detail d-top">
+                    <li class="d-top-place">{{ $messages['order']['address'] }}</li>
+                    @php
+                      $cost = $messages['order']['nominees'] ? $messages['order']['nominees'][0]['cost'] : 0;
+                    @endphp
+                    <li class="d-top-time">{{ $messages['order']['duration'] }}時間({{ number_format($cost) }}P/30分)</li>
+                  </ul>
+                </dt>
+                <dt>
+                  <ul class="detail d-btm">
+                    <li class="d-btm-money"><p>予定料金：<span>{{ number_format($messages['order']['temp_point']) }}P〜</span></p></li>
+                    <li class="d-btm-cancel">
+                      <section class="button-box">
+                        <label for="modal-confirm-skip-order-nominee" class="open_button"><span class="btn-cancel">キャンセル</span></label>
+                      </section>
+                    </li>
+                  </ul>
+                </dt>
+              </dl>
+            </dd>
+          </dl>
+        </div>
+      @else
+        <div class="msg-head">
+          <h2><span class="teian msg-head-ttl">提案中</span>キャストの回答待ちです。</h2>
+        </div>
+      @endif
+    @endif
+    @if ($messages['order']['status'] == App\Enums\OrderStatus::OPEN_FOR_GUEST && $messages['order']['cast_offer_id'])
     <div class="msg-head">
-      <h2><span class="teian msg-head-ttl">提案中</span>キャストの回答待ちです。</h2>
+      <h2><span class="teian msg-head-ttl">提案中</span>ゲストの回答待ちです。</h2>
     </div>
     @endif
     @if (in_array($messages['order']['status'], [App\Enums\OrderStatus::ACTIVE, App\Enums\OrderStatus::PROCESSING]))
@@ -290,5 +364,10 @@
   if(localStorage.getItem("order_offer")){
     localStorage.removeItem("order_offer");
   }
+
+  if(localStorage.getItem("cast_offer")){
+    localStorage.removeItem("cast_offer");
+  }
+
 </script>
 @stop

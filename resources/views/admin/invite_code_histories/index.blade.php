@@ -1,6 +1,7 @@
 @extends('layouts.admin')
 @section('admin.content')
-<div class="col-md-10 col-sm-11 main ">
+<div class="col-md-10 col-sm-11 main">
+  @include('admin.partials.alert-error', compact('errors'))
   <div class="row">
     <div class="col-lg-12">
       <div class="panel panel-default">
@@ -40,14 +41,14 @@
           @include('admin.partials.notification')
           <table class="table table-striped table-bordered bootstrap-datatable">
             <thead>
-              @php 
+              @php
                 $request = [
                   'page' => request()->page,
                   'limit' => request()->limit,
                   'search' => request()->search,
                   'from_date' => request()->from_date,
                   'to_date' => request()->to_date,
-                ]; 
+                ];
               @endphp
               <tr>
                 <th>No.</th>
@@ -118,8 +119,8 @@
                   @endif
                   <td>{{ \App\Enums\InviteCodeHistoryStatus::getDescription($inviteCodeHistory->status) }}</td>
                   @php
-                  $pointId = ''; 
-                  $pointReceiveId = ''; 
+                  $pointId = '';
+                  $pointReceiveId = '';
                   foreach($inviteCodeHistory->points as $point)
                     if ($point->user_id == $inviteCodeHistory->inviteCode->user_id) {
                       $pointId = $point->id;

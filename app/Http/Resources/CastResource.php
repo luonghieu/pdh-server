@@ -94,6 +94,7 @@ class CastResource extends Resource
             'rank' => $this->rank,
             'deleted_at' => $this->deleted_at,
             'is_new_user' => $this->is_new_user,
+            'resign_status' => $this->resign_status
         ]);
     }
 }

@@ -12,7 +12,7 @@
       <div class="details-header__title">予約内容</div>
         <div class="details-list-box">
           <ul class="details-header__list">
-            <li><i><img src="{{ asset('assets/web/images/common/map.svg') }}"></i><p class="word18"></p></li>
+            <li><i><img src="{{ asset('assets/web/images/common/map.svg') }}"></i><p class="word18 address-detail"></p></li>
             <li><i><img src="{{ asset('assets/web/images/common/clock.svg') }}"></i>
               <p class="time-detail-call"></p>
             </li>
@@ -160,7 +160,7 @@
       <label for="order-call-popup" class="modal_trigger"></label>
       <div class="modal_content modal_content-btn1">
         <div class="text-box show-message-order-call">
-          <h2></h2>
+          <h2 class="init-padding"></h2>
           <p></p>
         </div>
         <label for="order-call-popup" class="close_button" id="label-show-message">OK</label>

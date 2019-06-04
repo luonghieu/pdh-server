@@ -1,6 +1,7 @@
 @extends('layouts.admin')
 @section('admin.content')
-<div class="col-md-10 col-sm-11 main ">
+<div class="col-md-10 col-sm-11 main">
+  @include('admin.partials.alert-error', compact('errors'))
   <div class="row">
     <div class="col-lg-12">
       <div class="panel panel-default">
@@ -109,6 +110,7 @@
                 </th>
                 <th>希望人数</th>
                 <th>指名キャスト</th>
+                <th>提案したキャスト</th>
                 <th>応募キャスト</th>
                 <th class="sorting{{ (request()->status) ? '_' . request()->status : '' }}">
                   <a href="{{ route('admin.orders.index',
@@ -151,7 +153,7 @@
                       $castIds = $order->castOrderWithTrashedRejectCastDenied->pluck('id')->toArray();
                       $countOfCast = count($castIds);
                   @endphp
-                  @if (App\Enums\OrderType::CALL == $order->type)
+                  @if (App\Enums\OrderType::CALL == $order->type || $order->cast_offer_id)
                   <td>-</td>
                   @else
                     @if ($order->nomineesWithTrashedRejectCastDenied->count() > 1)
@@ -171,6 +173,14 @@
                     </td>
                     @endif
                   @endif
+                  <td>
+                    @if ($order->cast_offer_id)
+                      <a href="{{ route('admin.users.show', ['user' => $order->cast_offer_id]) }}">{{
+                    $order->cast_offer_id }}</a>
+                    @else
+                      -
+                    @endif
+                  </td>
                   @if (App\Enums\OrderType::NOMINATION == $order->type)
                   <td>-</td>
                   @else

@@ -223,6 +223,23 @@ $routes = [
             'submenu' => [],
         ],
     ],
+    'timeline' => [
+        [
+            'name' => 'admin.timelines.index',
+            'value' => 'タイムライン管理',
+            'url' => route('admin.timelines.index'),
+            'submenu' => [],
+        ],
+    ],
+
+    'resign' => [
+    [
+            'name' => 'admin.resigns.index',
+            'value' => '退会申請_申請一覧',
+            'url' => route('admin.resigns.index', ['resign_status' => 1]),
+            'submenu' => ['admin.resigns.show'],
+        ],
+    ],
 
     'app_version' => [
         [

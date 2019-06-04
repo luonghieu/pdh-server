@@ -55,7 +55,7 @@ class SetTimeOutForCallOrder extends Command
             OrderType::HYBRID,
         ];
 
-        $orders = Order::where('status', OrderStatus::OPEN)
+        $orders = Order::whereIn('status', [OrderStatus::OPEN, OrderStatus::OPEN_FOR_GUEST])
             ->whereIn('type', $validOrderTypes)->get();
 
         foreach ($orders as $order) {
@@ -66,7 +66,23 @@ class SetTimeOutForCallOrder extends Command
             if (($timeApply > 60)) {
                 $timeout = $startTime->copy()->subMinute(30);
                 if ($timeout < $now) {
-                    $this->setTimeoutForOrder($order);
+                    if ($order->status == OrderStatus::OPEN) {
+                        $this->setTimeoutForOrder($order);
+                    } else {
+                        $order->status = OrderStatus::TIMEOUT;
+                        $order->canceled_at = now();
+                        $order->save();
+
+                        $casts = $order->nominees()->first();
+                        $order->castOrder()->updateExistingPivot(
+                            $casts->id,
+                            [
+                                'status' => CastOrderStatus::TIMEOUT,
+                                'canceled_at' => now()
+                            ],
+                            false
+                        );
+                    }
                 }
             }
 
@@ -74,7 +90,23 @@ class SetTimeOutForCallOrder extends Command
                 $timeApplyHalf = $startTime->copy()->diffInMinutes($createdAt) / 2;
                 $timeout = $startTime->copy()->subMinute($timeApplyHalf);
                 if ($timeout < $now) {
-                    $this->setTimeoutForOrder($order);
+                    if ($order->status == OrderStatus::OPEN) {
+                        $this->setTimeoutForOrder($order);
+                    } else {
+                        $order->status = OrderStatus::TIMEOUT;
+                        $order->canceled_at = now();
+                        $order->save();
+
+                        $casts = $order->nominees()->first();
+                        $order->castOrder()->updateExistingPivot(
+                            $casts->id,
+                            [
+                                'status' => CastOrderStatus::TIMEOUT,
+                                'canceled_at' => now()
+                            ],
+                            false
+                        );
+                    }
                 }
             }
         }

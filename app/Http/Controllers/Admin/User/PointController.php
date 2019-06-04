@@ -6,6 +6,7 @@ use App\Enums\PointCorrectionType;
 use App\Enums\PointType;
 use App\Enums\Status;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\CheckDateRequest;
 use App\Payment;
 use App\Point;
 use App\Services\CSVExport;
@@ -79,7 +80,7 @@ class PointController extends Controller
         return $sumPointBuy;
     }
 
-    public function getPointHistory(User $user, Request $request)
+    public function getPointHistory($userId, CheckDateRequest $request)
     {
         $keyword = $request->search_point_type;
         $pointTypes = [
@@ -95,6 +96,8 @@ class PointController extends Controller
             PointCorrectionType::ACQUISITION => '取得ポイント',
             PointCorrectionType::CONSUMPTION => '消費ポイント',
         ];
+
+        $user = User::withTrashed()->find($userId);
 
         if ($user->is_multi_payment_method) {
             $pointCorrectionTypes[PointType::DIRECT_TRANSFER] = 'ポイント付与';

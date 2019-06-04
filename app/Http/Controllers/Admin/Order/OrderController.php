@@ -16,6 +16,7 @@ use App\Enums\RoomType;
 use App\Enums\SystemMessageType;
 use App\Guest;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\CheckDateRequest;
 use App\Jobs\PointSettlement;
 use App\Notification;
 use App\Notifications\AdminEditOrder;
@@ -41,7 +42,7 @@ class OrderController extends Controller
 {
     use DirectRoom, InviteCode;
 
-    public function index(Request $request)
+    public function index(CheckDateRequest $request)
     {
         $pointStatus = [
             OrderStatus::PROCESSING,
@@ -225,7 +226,6 @@ class OrderController extends Controller
         $data = [];
         foreach ($realOrdersExport as $item) {
             $casts = $item->casts;
-
             foreach ($casts as $cast) {
                 if ($cast) {
                     $startTime = Carbon::parse($cast->pivot->started_at);
@@ -242,6 +242,8 @@ class OrderController extends Controller
                         $item->orderFee($cast, $cast->pivot->started_at, $cast->pivot->stopped_at),
                         $cast->pivot->allowance_point,
                         $cast->pivot->total_point,
+                        \App\Enums\DeviceType::getDescription($item->user->device_type),
+                        $item->coupon_id,
                     ];
 
                     array_push($data, $array);
@@ -260,6 +262,8 @@ class OrderController extends Controller
             '指名料',
             '深夜手当',
             '実績合計ポイント',
+            '利用ゲストのデバイス',
+            'クーポン利用状況',
         ];
 
         try {
@@ -1013,6 +1017,45 @@ class OrderController extends Controller
         ]);
     }
 
+    public function updateOrderStatusToActive(Request $request)
+    {
+        $order = Order::where(function($q) {
+            $q->where('status', OrderStatus::CANCELED)
+                ->orWhere('status', OrderStatus::DENIED);
+        })->where(function($q) {
+            $q->whereNull('payment_status')
+                ->orWhere('payment_status', '<>', OrderPaymentStatus::CANCEL_FEE_PAYMENT_FINISHED);
+        })->find($request->id);
+
+        if (!$order) {
+            return redirect()->back();
+        }
+
+        $cast = $order->castOrder()->first();
+        if (!$cast) {
+            return redirect()->back();
+        }
+
+        $order->status = OrderStatus::ACTIVE;
+        $order->canceled_at = null;
+        $order->cancel_fee_percent = null;
+        $order->save();
+
+        $casts = $order->castOrder()->get();
+        foreach ($casts as $cast) {
+            $cast->pivot->canceled_at = null;
+            $cast->pivot->deleted_at = null;
+            $cast->pivot->status = CastOrderStatus::ACCEPTED;
+            $cast->pivot->save();
+        }
+
+        if ($order->type == OrderType::NOMINATION) {
+            return redirect()->route('admin.orders.order_nominee', ['order' => $order->id]);
+        }
+
+        return redirect()->route('admin.orders.call', ['order' => $order->id]);
+    }
+
     public function updateNomineeOrder(Request $request, $id)
     {
         try {
@@ -1078,45 +1121,5 @@ class OrderController extends Controller
 
         \Notification::send($users, new AdminEditOrderNominee($order->id));
         return redirect()->route('admin.orders.order_nominee', ['order' => $order->id]);
-    }
-
-    public function updateOrderStatusToActive(Request $request)
-    {
-        $order = Order::where(function($q) {
-            $q->where('status', OrderStatus::CANCELED)
-                ->orWhere('status', OrderStatus::DENIED);
-        })->where(function($q) {
-            $q->whereNull('payment_status')
-                ->orWhere('payment_status', '<>', OrderPaymentStatus::CANCEL_FEE_PAYMENT_FINISHED);
-        })->find($request->id);
-
-        if (!$order) {
-            return redirect()->route('admin.orders.call', ['order' => $order->id]);
-        }
-
-        $cast = $order->castOrder()->first();
-        if (!$cast) {
-            return redirect()->route('admin.orders.call', ['order' => $order->id]);
-        }
-
-        $order->status = OrderStatus::ACTIVE;
-        $order->canceled_at = null;
-        $order->cancel_fee_percent = null;
-        $order->save();
-
-        $casts = $order->castOrder()->get();
-        foreach ($casts as $cast) {
-            $cast->pivot->canceled_at = null;
-            $cast->pivot->deleted_at = null;
-            $cast->pivot->status = CastOrderStatus::ACCEPTED;
-            $cast->pivot->save();
-        }
-
-
-        if ($order->type == OrderType::NOMINATION) {
-            return redirect()->route('admin.orders.order_nominee', ['order' => $order->id]);
-        }
-
-        return redirect()->route('admin.orders.call', ['order' => $order->id]);
     }
 }
