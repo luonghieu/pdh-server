@@ -12,8 +12,9 @@ use Illuminate\Http\Request;
 
 class RatingController extends Controller
 {
-    public function ratings(Request $request, User $user)
+    public function ratings(Request $request, $userId)
     {
+        $user = User::withTrashed()->find($userId);
         $ratings = $user->ratings()->with('order', 'user');
 
         $keyword = $request->search;
@@ -47,8 +48,10 @@ class RatingController extends Controller
         return view('admin.casts.rating', compact('ratings', 'user'));
     }
 
-    public function detail(User $user, Rating $rating)
+    public function detail($user, $rating)
     {
+        $rating = Rating::find($rating);
+
         return view('admin.casts.rating_detail', compact('rating'));
     }
 

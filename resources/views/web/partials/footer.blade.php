@@ -29,13 +29,22 @@
     $('body').on('click', '#menu-freezed-account', function () {
       MenuAPI.close();
 
-      setTimeout(function () {
-        $('#trigger-freezed-account').trigger('click');
-      }, 500)
-    })
+      // setTimeout(function () {
+      //   $('#trigger-freezed-account').trigger('click');
+      // }, 500)
+    });
 
     $('body').on('click', '.redirect-top', function () {
       window.location = '/mypage';
+    })
+
+    // resign
+    $('body').on('click', '#menu-resign-error', function () {
+      MenuAPI.close();
+
+      setTimeout(function () {
+        $('#trigger-resign-error').trigger('click');
+      }, 500)
     })
   })
 </script>

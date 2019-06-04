@@ -350,8 +350,7 @@
       </div>
     </section>
     <!-- profile-word -->
-
-    <div class="btn-l init-button"><button type="submit">完了</button></div>
+    <div class="btn-l init-button edit-user-profile"><button type="submit">完了</button></div>
   </div>
 </form>
 @endsection

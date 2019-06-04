@@ -7,6 +7,7 @@ use App\Enums\CastTransferStatus;
 use App\Enums\UserGender;
 use App\Enums\UserType;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\CheckDateRequest;
 use App\Notifications\RequestTransferNotify;
 use App\Services\LogService;
 use App\Shift;
@@ -16,7 +17,7 @@ use Illuminate\Http\Request;
 
 class RequestTransferController extends Controller
 {
-    public function index(Request $request)
+    public function index(CheckDateRequest $request)
     {
         $keyword = $request->search;
         $orderBy = $request->only('nickname', 'request_transfer_date');

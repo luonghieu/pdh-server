@@ -1903,6 +1903,20 @@ tbody td {
   top: 90px;
 }
 
+.init-btn-confirm-resign {
+  display: inline-block;
+  position: absolute;
+  right: 32px;
+  top: 90px;
+}
+
+.init-btn-export-resign {
+  display: inline-block;
+  position: absolute;
+  right: 32px;
+  top: 90px;
+}
+
 .init-dis {
   display: inline-block;
   position: inherit;
@@ -1979,9 +1993,11 @@ select.init-option-search {
   bottom: 6px;
   width: 112px;
 }
+
 .wrap-status.text-left {
   text-indent: 70px;
 }
+
 .wrap-status.text-left span {
   padding-right: 0;
 }

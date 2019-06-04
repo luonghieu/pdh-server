@@ -235,6 +235,7 @@ class User extends Authenticatable implements JWTSubject
     public function getIsCardRegisteredAttribute()
     {
         $paymentService = config('common.payment_service');
+
         $isCardRegistered = false;
 
         switch ($paymentService) {
@@ -616,5 +617,10 @@ class User extends Authenticatable implements JWTSubject
     public function getJobNameAttribute()
     {
         return  $this->job_id ? app(JobRepository::class)->find($this->job_id)->name : '';
+    }
+
+    public function timelines()
+    {
+        return $this->hasMany(TimeLine::class);
     }
 }

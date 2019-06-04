@@ -26,7 +26,7 @@
     <div class="caption"><!-- 見出し用div -->
       <h2>キャストとの合流時間</h2>
     </div>
-    <div class="form-grpup"><!-- フォーム内容 -->
+    <div class="form-grpup wrap-btn-time-join-order"><!-- フォーム内容 -->
       @if(isset($orderOptions['call_time']))
         @foreach($orderOptions['call_time'] as $callTime)
         <label class="button button--green date {{ $callTime['value'] == 30 ? 'active' : '' }} {{ !$callTime['is_active'] ? 'inactive' : '' }} ">

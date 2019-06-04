@@ -31,6 +31,7 @@ class MessageResource extends Resource
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
             'missing_point' => $this->missing_point,
+            'cast_order_id' => $this->cast_order_id,
         ]);
     }
 }

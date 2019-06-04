@@ -165,6 +165,12 @@
     </div>
   </div>
 </div>
+@php
+  $resigned = true;
+  if($user->resign_status != \App\Enums\ResignStatus::APPROVED) {
+    $resigned = false;
+  }
+@endphp
 @if($user->is_guest)
 <div class="modal fade" id="change-payment-method" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
   <div class="modal-dialog" role="document">
@@ -215,6 +221,7 @@
         @include('admin.partials.notification')
         <div class="clearfix"></div>
         <div class="panel-body">
+          @if (!$resigned)
           <div class="col-lg-6 wrap-qr-code">
             <div class="list-avatar">
               @include('admin.users.content_image', ['avatars' => $user->avatars])
@@ -227,6 +234,7 @@
             </div>
             @endif
           </div>
+          @endif
           <div class="clearfix"></div>
           <div class="info-table col-lg-8">
             <table class="table table-bordered">
@@ -237,42 +245,45 @@
               </tr>
               <tr>
                 <th>利用サービス</th>
-                <td>{{ App\Enums\DeviceType::getDescription($user->device_type) }}</td>
+                <td>{{ (!$resigned) ? App\Enums\DeviceType::getDescription($user->device_type) : '' }}</td>
               </tr>
               @if ($user->is_cast)
                 <tr>
                   <th>メールアドレス</th>
-                  <td>{{ $user->email }}</td>
+                  <td>{{ (!$resigned) ? $user->email : '' }}</td>
                 </tr>
                 <tr>
                   <th>氏名</th>
-                  <td>{{ $user->fullname }}</td>
+                  <td>{{ (!$resigned) ? $user->fullname : '' }}</td>
                 </tr>
                 <tr>
                   <th>ふりがな</th>
-                  <td>{{ $user->fullname_kana }}</td>
+                  <td>{{ (!$resigned) ? $user->fullname_kana : '' }}</td>
                 </tr>
                 <tr>
                   <th>キャストクラス</th>
                   <td>
-                    @php
-                      $classes = config('common.default_cost_rate');
-                    @endphp
-                    <form action="{{ route('admin.users.change_cast_class', ['user' => $user->id]) }}" class="form-cast-class" method="post">
-                      {{ csrf_field() }}
-                      <input type="hidden" id="input-cost-rate" name="input_cost_rate">
-                      <select class="cast-class" id="class-id" name="cast_class">
-                        @foreach ($castClasses as $castClass)
-                          <option value="{{ $castClass->id }}" {{ ($user->class_id == $castClass->id) ? 'selected' : '' }}>{{ $castClass->name }}</option>
-                        @endforeach
-                      </select>
-                      <button type="submit" class="btn btn-info btn-sm mt-2">変更する</button>
-                    </form>
+                    @if(!$resigned)
+                      @php
+                        $classes = config('common.default_cost_rate');
+                      @endphp
+                      <form action="{{ route('admin.users.change_cast_class', ['user' => $user->id]) }}" class="form-cast-class" method="post">
+                        {{ csrf_field() }}
+                        <input type="hidden" id="input-cost-rate" name="input_cost_rate">
+                        <select class="cast-class" id="class-id" name="cast_class">
+                          @foreach ($castClasses as $castClass)
+                            <option value="{{ $castClass->id }}" {{ ($user->class_id == $castClass->id) ? 'selected' : '' }}>{{ $castClass->name }}</option>
+                          @endforeach
+                        </select>
+                        <button type="submit" class="btn btn-info btn-sm mt-2">変更する</button>
+                      </form>
+                    @endif
                   </td>
                 </tr>
                 <tr>
                   <th>報酬</th>
                   <td>
+                    @if(!$resigned)
                     <form action="{{ route('admin.casts.update_cost_rate', ['user' => $user->id]) }}" class="w-form" method="POST">
                       {{ csrf_field() }}
                       {{ method_field('PUT') }}
@@ -283,12 +294,14 @@
                       </select>
                       <button type="submit" class="btn btn-info btn-sm mt-2">変更する</button>
                     </form>
+                    @endif
                   </td>
                 </tr>
                 @if ($prefectures->count())
                 <tr>
                   <th style="color: red;">エリア</th>
                   <td>
+                    @if(!$resigned)
                     <form action="{{ route('admin.users.change_prefecture', ['user' => $user->id]) }}" class="form-cast-class" method="post">
                       {{ csrf_field() }}
                       <select class="cast-class" name="prefecture">
@@ -298,6 +311,7 @@
                       </select>
                       <button type="submit" class="btn btn-info btn-sm mt-2">変更する</button>
                     </form>
+                    @endif
                   </td>
                 </tr>
                 @endif
@@ -309,157 +323,177 @@
               @if($user->is_guest)
               <tr>
                 <th>電話番号</th>
-                <td>{{ $user->phone ? $user->phone : '-' }}</td>
+                <td>{{ (!$resigned) ? ($user->phone ? $user->phone : '-') : '' }}</td>
               </tr>
               @endif
               @if ($user->is_cast)
               <tr>
                 <th>30分あたりのポイント</th>
                 <td>
-                  @php
-                    $arrCost = [];
-                    for($i =0; $i<15000; $i+=100) {
-                      array_push($arrCost, $i);
-                    }
+                  @if(!$resigned)
+                    @php
+                      $arrCost = [];
+                      for($i =0; $i<15000; $i+=100) {
+                        array_push($arrCost, $i);
+                      }
 
-                    for($i =15000; $i<=75000; $i+=5000) {
-                      array_push($arrCost, $i);
-                    }
+                      for($i =15000; $i<=75000; $i+=5000) {
+                        array_push($arrCost, $i);
+                      }
 
-                    sort($arrCost);
-                  @endphp
-                  <form action="{{ route('admin.users.change_cost', ['user' => $user->id]) }}" class="form-cast-class" method="post">
-                    {{ csrf_field() }}
-                    <select class="cast-class" name="cast_cost">
-                      @foreach($arrCost as $cost)
-                        <option value="{{ $cost }}" {{ $user->cost == $cost ? 'selected' : ''}}>{{number_format($cost) }}</option>
-                      @endforeach
-                    </select>
-                    <button type="submit" class="btn btn-info btn-sm mt-2">変更する</button>
-                  </form>
+                      sort($arrCost);
+                    @endphp
+                    <form action="{{ route('admin.users.change_cost', ['user' => $user->id]) }}" class="form-cast-class" method="post">
+                      {{ csrf_field() }}
+                      <select class="cast-class" name="cast_cost">
+                        @foreach($arrCost as $cost)
+                          <option value="{{ $cost }}" {{ $user->cost == $cost ? 'selected' : ''}}>{{number_format($cost) }}</option>
+                        @endforeach
+                      </select>
+                      <button type="submit" class="btn btn-info btn-sm mt-2">変更する</button>
+                    </form>
+                  @endif
                 </td>
               </tr>
               <tr>
                 <th>キャスト一覧表示優先ランク</th>
                 <td>
-                  @php
-                    $arrRank = App\Enums\UserRank::toSelectArray();
-                    krsort($arrRank);
-                  @endphp
-                  <form action="{{ route('admin.users.change_rank', ['user' => $user->id]) }}" class="form-cast-class" method="post">
-                    {{ csrf_field() }}
-                    <select class="cast-class" name="cast_rank">
-                      @foreach($arrRank as $key => $rank)
-                        <option value="{{ $key }}" {{ $user->rank == $key ? 'selected' : ''}}>{{ $rank }}</option>
-                      @endforeach
-                    </select>
-                    <button type="submit" class="btn btn-info btn-sm mt-2">変更する</button>
-                  </form>
+                  @if(!$resigned)
+                    @php
+                      $arrRank = App\Enums\UserRank::toSelectArray();
+                      krsort($arrRank);
+                    @endphp
+                    <form action="{{ route('admin.users.change_rank', ['user' => $user->id]) }}" class="form-cast-class" method="post">
+                      {{ csrf_field() }}
+                      <select class="cast-class" name="cast_rank">
+                        @foreach($arrRank as $key => $rank)
+                          <option value="{{ $key }}" {{ $user->rank == $key ? 'selected' : ''}}>{{ $rank }}</option>
+                        @endforeach
+                      </select>
+                      <button type="submit" class="btn btn-info btn-sm mt-2">変更する</button>
+                    </form>
+                  @endif
                 </td>
               </tr>
               @endif
               <tr>
                 <th>性別</th>
-                <td>{{ App\Enums\UserGender::getDescription($user->gender) }}</td>
+                <td>{{ (!$resigned) ? App\Enums\UserGender::getDescription($user->gender) : '' }}</td>
               </tr>
               <tr>
                 <th>生年月日</th>
-                <td>{{ ($user->date_of_birth) ? Carbon\Carbon::parse($user->date_of_birth)->format('Y年m月d日') : "" }}</td>
+                <td>{{ (!$resigned) ? (($user->date_of_birth) ? Carbon\Carbon::parse($user->date_of_birth)->format('Y年m月d日') : "") : '' }}</td>
               </tr>
               <tr>
                 <th>年齢</th>
-                <td>{{ $user->age }}</td>
+                <td>{{ (!$resigned) ? $user->age : '' }}</td>
               </tr>
               @if ($user->is_cast)
               <tr>
                 <th>電話番号</th>
-                <td>{{ $user->phone }}</td>
+                <td>{{ (!$resigned) ? $user->phone : '' }}</td>
               </tr>
               <tr>
                 <th>LINE ID</th>
-                <td>{{ $user->line_id }}</td>
+                <td>{{ (!$resigned) ? $user->line_id : '' }}</td>
               </tr>
               @endif
               <tr>
                 <th>基本情報：身長</th>
-                <td>{{ ($user->height === null) ? '':getUserHeight($user->height) }}</td>
+                <td>{{ (!$resigned) ? (($user->height === null) ? '':getUserHeight($user->height)) : '' }}</td>
               </tr>
               <tr>
                 <th>基本情報：年収</th>
-                <td>{{ $user->salary ? $user->salary->name : "" }}</td>
+                <td>{{ (!$resigned) ? ($user->salary ? $user->salary->name : "") : '' }}</td>
               </tr>
               <tr>
                 <th>基本情報：体型</th>
-                <td>{{ $user->bodyType ? $user->bodyType->name : "" }}</td>
+                <td>{{ (!$resigned) ? ($user->bodyType ? $user->bodyType->name : "") : '' }}</td>
               </tr>
               <tr>
                 <th>基本情報：稼働エリア</th>
-                <td>{{ ($user->prefecture_id) ? $user->prefecture->name : "" }}</td>
+                <td>{{ (!$resigned) ? (($user->prefecture_id) ? $user->prefecture->name : "") : '' }}</td>
               </tr>
               <tr>
                 <th>基本情報：出身地</th>
-                <td>{{ $user->hometown ? $user->hometown->name : "" }}</td>
+                <td>{{ (!$resigned) ? ($user->hometown ? $user->hometown->name : "") : '' }}</td>
               </tr>
               <tr>
                 <th>基本情報：お仕事</th>
                 <td>
-                  {{ $user->job ? $user->job->name : "" }}
+                  {{ (!$resigned) ? ($user->job ? $user->job->name : "") : '' }}
                 </td>
               </tr>
               <tr>
                 <th>基本情報：お酒</th>
-                <td>{{ App\Enums\DrinkVolumeType::getDescription($user->drink_volume_type) }}</td>
+                <td>{{ (!$resigned) ? (App\Enums\DrinkVolumeType::getDescription($user->drink_volume_type)) : '' }}</td>
               </tr>
               <tr>
                 <th>基本情報：タバコ</th>
-                <td>{{ App\Enums\SmokingType::getDescription($user->smoking_type) }}</td>
+                <td>{{ (!$resigned) ? (App\Enums\SmokingType::getDescription($user->smoking_type)) : '' }}</td>
               </tr>
               <tr>
                 <th>基本情報：兄弟姉妹</th>
-                <td>{{ App\Enums\SiblingsType::getDescription($user->siblings_type) }}</td>
+                <td>{{ (!$resigned) ? (App\Enums\SiblingsType::getDescription($user->siblings_type)) : '' }}</td>
               </tr>
               <tr>
                 <th>基本情報：同居人</th>
-                <td>{{ App\Enums\CohabitantType::getDescription($user->cohabitant_type) }}</td>
+                <td>{{ (!$resigned) ? (App\Enums\CohabitantType::getDescription($user->cohabitant_type)) : '' }}</td>
               </tr>
               <tr>
                 <th>自己紹介</th>
-                <td>{{ $user->description }}</td>
+                <td>{{ (!$resigned) ? $user->description : '' }}</td>
               </tr>
               <tr>
                 <th>ひとこと</th>
-                <td>{{ $user->intro}}</td>
+                <td>{{ (!$resigned) ? $user->intro : '' }}</td>
               </tr>
               <tr>
                 <th>会員区分</th>
                 <td>
-                  @php
-                      $textCastTemp = '';
-                      if ($user->cast_transfer_status == App\Enums\CastTransferStatus::VERIFIED_STEP_ONE
-                          || $user->cast_transfer_status == App\Enums\CastTransferStatus::PENDING
-                          || $user->cast_transfer_status == App\Enums\CastTransferStatus::APPROVED
-                          || ($user->cast_transfer_status == App\Enums\CastTransferStatus::DENIED
-                              && $user->gender == App\Enums\UserGender::FEMALE)) {
-                          $textCastTemp = '(仮)';
-                      }
-                  @endphp
-                  {{ App\Enums\UserType::getDescription($user->type) }}{{ $textCastTemp }}
+                  @if(!$resigned)
+                    @php
+                        $textCastTemp = '';
+                        if ($user->cast_transfer_status == App\Enums\CastTransferStatus::VERIFIED_STEP_ONE
+                            || $user->cast_transfer_status == App\Enums\CastTransferStatus::PENDING
+                            || $user->cast_transfer_status == App\Enums\CastTransferStatus::APPROVED
+                            || ($user->cast_transfer_status == App\Enums\CastTransferStatus::DENIED
+                                && $user->gender == App\Enums\UserGender::FEMALE)) {
+                            $textCastTemp = '(仮)';
+                        }
+                    @endphp
+                    {{ App\Enums\UserType::getDescription($user->type) }}{{ $textCastTemp }}
+                  @endif
                 </td>
               </tr>
               <tr>
                 <th>ステータス</th>
-                <td>{{ App\Enums\Status::getDescription($user->status) }}</td>
+                <td>
+                  @if(!$resigned)
+                    @if($user->status == App\Enums\Status::ACTIVE)
+                      {{ App\Enums\Status::getDescription($user->status) }}
+                    @else
+                      @if($user->resign_status == App\Enums\ResignStatus::APPROVED)
+                        退会
+                      @else
+                        凍結
+                      @endif
+                    @endif
+                  @endif
+                </td>
               </tr>
               @if ($user->is_cast)
               <tr>
                 <th>備考</th>
                 <td>
-                  <form action="{{ route('admin.casts.update_note', ['user' => $user->id]) }}" method="POST">
-                    {{ csrf_field() }}
-                    {{ method_field('PUT') }}
-                    <textarea name="note" class="h-5" placeholder="入力してください">{!! $user->note !!}</textarea>
-                    <button type="submit" class="pull-right btn btn-info btn-sm">変更する</button>
-                  </form>
+                  @if(!$resigned)
+                    <form action="{{ route('admin.casts.update_note', ['user' => $user->id]) }}" method="POST">
+                      {{ csrf_field() }}
+                      {{ method_field('PUT') }}
+                      <textarea name="note" class="h-5" placeholder="入力してください">{!! $user->note !!}</textarea>
+                      <button type="submit" class="pull-right btn btn-info btn-sm">変更する</button>
+                    </form>
+                  @endif
                 </td>
               </tr>
               <tr>
@@ -473,46 +507,48 @@
               </tr>
             </table>
           </div>
-          <div class="col-lg-9">
-            @if (!$user->deleted_at)
-            <div class="delete-user pull-left">
-              <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#delete_user">アカウントを削除する</button>
-            </div>
-            @endif
-            <div class="active-user pull-right">
-              @php
-                if($user->status == App\Enums\Status::ACTIVE) {
-                  $nameId = "#inactiveModal";
-                  $title = "アカウントを凍結する";
-                } else {
-                  $nameId = "#activeModal";
-                  $title = "凍結を解除する";
-                }
-              @endphp
-              @if($user->is_guest)
-                <button type="button" class="btn btn-info" data-toggle="modal" data-target="#change-payment-method">
-                  @if(!$user->is_multi_payment_method)
-                  銀行振込を可能にする
+          @if(!$resigned)
+            <div class="col-lg-9">
+              @if (!$user->deleted_at)
+              <div class="delete-user pull-left">
+                <button type="button" class="btn btn-danger" data-toggle="modal" data-target="#delete_user">退会済みにする</button>
+              </div>
+              @endif
+              <div class="active-user pull-right">
+                @php
+                  if($user->status == App\Enums\Status::ACTIVE) {
+                    $nameId = "#inactiveModal";
+                    $title = "アカウントを凍結する";
+                  } else {
+                    $nameId = "#activeModal";
+                    $title = "凍結を解除する";
+                  }
+                @endphp
+                @if($user->is_guest)
+                  <button type="button" class="btn btn-info" data-toggle="modal" data-target="#change-payment-method">
+                    @if(!$user->is_multi_payment_method)
+                    銀行振込を可能にする
+                    @else
+                    銀行振込を不可にする
+                    @endif
+                  </button>
+                  <button type="button" class="btn {{ !$user->campaign_participated ? 'btn-info' : 'btn-default' }}"
+                    data-toggle="modal" data-target="#campaign_participated" {{ !$user->campaign_participated ?: 'disabled' }}>
+                    11月キャンペーン利用完了
+                  </button>
+                  @if ($user->gender == App\Enums\UserGender::MALE && $user->cast_transfer_status == App\Enums\CastTransferStatus::DENIED)
                   @else
-                  銀行振込を不可にする
+                  <button type="button" class="btn btn-info" data-toggle="modal" data-target="#register_cast">キャストへ変更する</button>
                   @endif
-                </button>
-                <button type="button" class="btn {{ !$user->campaign_participated ? 'btn-info' : 'btn-default' }}"
-                  data-toggle="modal" data-target="#campaign_participated" {{ !$user->campaign_participated ?: 'disabled' }}>
-                  11月キャンペーン利用完了
-                </button>
-                @if ($user->gender == App\Enums\UserGender::MALE && $user->cast_transfer_status == App\Enums\CastTransferStatus::DENIED)
-                @else
-                <button type="button" class="btn btn-info" data-toggle="modal" data-target="#register_cast">キャストへ変更する</button>
                 @endif
-              @endif
-              @if($user->is_cast)
-                <button type="button" class="btn btn-info" data-toggle="modal" data-target="#register_guest">ゲストに変更する</button>
-              @endif
+                @if($user->is_cast)
+                  <button type="button" class="btn btn-info" data-toggle="modal" data-target="#register_guest">ゲストに変更する</button>
+                @endif
 
-              <button type="submit" class="btn btn-info" data-toggle="modal" data-target="{{ $nameId }}">{{ $title }}</button>
+                <button type="submit" class="btn btn-info" data-toggle="modal" data-target="{{ $nameId }}">{{ $title }}</button>
+              </div>
             </div>
-          </div>
+          @endif
         </div>
 
       </div>

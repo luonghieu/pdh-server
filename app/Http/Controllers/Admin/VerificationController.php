@@ -3,13 +3,13 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\CheckDateRequest;
 use App\Verification;
 use Carbon\Carbon;
-use Illuminate\Http\Request;
 
 class VerificationController extends Controller
 {
-    public function index(Request $request)
+    public function index(CheckDateRequest $request)
     {
         $verifications = Verification::whereNull('status')->where('is_resend', true);
 

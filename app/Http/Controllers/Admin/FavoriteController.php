@@ -2,15 +2,15 @@
 
 namespace App\Http\Controllers\Admin;
 
-use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\CheckDateRequest;
 use App\Favorite;
 use App\Enums\UserType;
 use Carbon\Carbon;
 
 class FavoriteController extends Controller
 {
-    public function guest(Request $request)
+    public function guest(CheckDateRequest $request)
     {
         $favorites = Favorite::whereHas('user', function ($query) {
             $query->where('type', UserType::GUEST);
@@ -53,7 +53,7 @@ class FavoriteController extends Controller
         return view('admin.favorites.guest', compact('favorites'));
     }
 
-    public function cast(Request $request)
+    public function cast(CheckDateRequest $request)
     {
         $favorites = Favorite::whereHas('user', function ($query) {
             $query->where('type', UserType::CAST);

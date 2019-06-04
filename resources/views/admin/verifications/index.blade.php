@@ -1,6 +1,7 @@
 @extends('layouts.admin')
 @section('admin.content')
-<div class="col-md-10 col-sm-11 main ">
+<div class="col-md-10 col-sm-11 main">
+  @include('admin.partials.alert-error', compact('errors'))
   <div class="row">
     <div class="col-lg-12">
       <div class="panel panel-default">
@@ -12,7 +13,7 @@
               <input type="text" class="form-control date-picker input-search" name="from_date" id="date01" data-date-format="yyyy/mm/dd" value="{{request()->from_date}}" placeholder="yyyy/mm/dd" />
               <label for="">To date: </label>
               <input type="text" class="form-control date-picker" name="to_date" id="date01" data-date-format="yyyy/mm/dd" value="{{request()->to_date}}" placeholder="yyyy/mm/dd"/>
-              <button type="submit" class="fa fa-search btn-search"></button>
+              <button type="submit" class="fa fa-search btn btn-search"></button>
               <input type="hidden" name="limit" value="{{ request()->limit }}" />
             </form>
           </div>
@@ -59,7 +60,7 @@
             <tbody>
               @if (empty($verifications->count()))
                 <tr>
-                  <td colspan="8">{{ trans('messages.results_not_found') }}</td>
+                  <td colspan="5">{{ trans('messages.results_not_found') }}</td>
                 </tr>
               @else
                 @foreach ($verifications as $key => $verification)

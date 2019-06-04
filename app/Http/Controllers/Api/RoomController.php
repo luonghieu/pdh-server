@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api;
 
+use App\Enums\ResignStatus;
 use App\Enums\RoomType;
 use App\Enums\UserType;
 use App\Http\Resources\RoomResource;
@@ -11,6 +12,7 @@ use App\User;
 use Carbon\Carbon;
 use DB;
 use Illuminate\Http\Request;
+use Illuminate\Pagination\LengthAwarePaginator;
 use Storage;
 
 class RoomController extends ApiController
@@ -53,7 +55,29 @@ class RoomController extends ApiController
             });
         }
 
-        $rooms = $rooms->with('latestMessage', 'users')->orderBy('updated_at', 'DESC')->paginate($request->per_page)->appends($request->query());
+        $rooms = $rooms->with('latestMessage', 'users')->orderBy('updated_at', 'DESC')->get();
+
+        // Reject room 1-1 when deleted user
+        $collection = $rooms->reject(function ($room) {
+            if ($room->type == RoomType::DIRECT) {
+                $users = $room->users;
+
+                foreach($users as $user) {
+                    if ($user->deleted_at) {
+                        return true;
+                    }
+                }
+
+                return false;
+            }
+        });
+
+        $path = url()->current();
+        $total = $collection->count();
+        $rooms = $collection->forPage($request->per_page, $request->limit ?: 15);
+
+        $rooms = new LengthAwarePaginator($rooms, $total, $request->limit ?: 15);
+        $rooms = $rooms->withPath($path);
 
         if ('html' == $request->response_type) {
             $rooms = $this->respondWithData(RoomResource::collection($rooms));
@@ -143,7 +167,13 @@ class RoomController extends ApiController
             $rooms = $rooms->leftJoin('avatars', function ($j) {
                 $j->on('avatars.user_id', '=', 'users.id')
                     ->where('is_default', true);
-            })->where('users.deleted_at', null)
+            })->where(function($query) {
+                $query->whereNull('users.deleted_at')
+                    ->orWhere(function($sq) {
+                        $sq->where('users.deleted_at', '<>', null)
+                            ->where('users.resign_status', ResignStatus::APPROVED);
+                    });
+            })
                 ->select('rooms.*', 'users.type As user_type', 'users.gender', 'users.nickname', 'avatars.thumbnail')
                 ->orderBy('users.updated_at', 'DESC')->get();
         } else {
@@ -157,7 +187,13 @@ class RoomController extends ApiController
                     $j->on('avatars.user_id', '=', 'users.id')
                         ->where('is_default', true);
                 })
-                ->where('users.deleted_at', null)
+                ->where(function($query) {
+                    $query->whereNull('users.deleted_at')
+                        ->orWhere(function($sq) {
+                            $sq->where('users.deleted_at', '<>', null)
+                                ->where('users.resign_status', ResignStatus::APPROVED);
+                        });
+                })
                 ->select('rooms.*', 'users.type As user_type', 'users.gender', 'users.nickname', 'avatars.thumbnail')
                 ->orderBy('users.updated_at', 'DESC')
                 ->paginate(100)->appends($request->query());;
@@ -172,7 +208,13 @@ class RoomController extends ApiController
                     $j->on('avatars.user_id', '=', 'users.id')
                         ->where('is_default', true);
                 })
-                ->where('users.deleted_at', null)
+                ->where(function($query) {
+                    $query->whereNull('users.deleted_at')
+                        ->orWhere(function($sq) {
+                            $sq->where('users.deleted_at', '<>', null)
+                                ->where('users.resign_status', ResignStatus::APPROVED);
+                        });
+                })
                 ->select('rooms.*', 'users.type As user_type', 'users.gender', 'users.nickname', 'avatars.thumbnail')
                 ->orderBy('users.updated_at', 'DESC')
                 ->paginate(100)->appends($request->query());;
@@ -410,7 +452,17 @@ class RoomController extends ApiController
                 });
                 $rooms->setCollection($collection);
             } else {
-                $rooms->setCollection($collection);
+                $collection = $collection->reject(function ($item) {
+                    $users = $item->users;
+                    foreach ($users as $user) {
+                        if ($user['deleted_at']) {
+                            return true;
+                        }
+                    }
+                    return false;
+                });
+
+                $rooms->setCollection($collection->values());
             }
 
             if ('html' == $request->response_type) {

@@ -2,18 +2,28 @@
 
 namespace App\Http\Controllers\Admin\User;
 
-use App\Enums\Status;
+use App\Cast;
+use App\Enums\CastOrderStatus;
+use App\Enums\OrderPaymentStatus;
+use App\Enums\OrderStatus;
+use App\Enums\OrderType;
+use App\Enums\ResignStatus;
 use App\Enums\UserType;
 use App\Http\Controllers\Controller;
+use App\Http\Requests\CheckDateRequest;
+use App\Notifications\FrozenUser;
 use App\Prefecture;
 use App\Repositories\CastClassRepository;
-use App\Repositories\PrefectureRepository;
 use App\User;
+use App\Services\LogService;
 use Carbon\Carbon;
+use DB;
 use Illuminate\Http\Request;
+use App\Traits\DeleteUser;
 
 class UserController extends Controller
 {
+    use DeleteUser;
     protected $castClass;
 
     public function __construct()
@@ -21,25 +31,28 @@ class UserController extends Controller
         $this->castClass = app(CastClassRepository::class);
     }
 
-    public function index(Request $request)
+    public function index(CheckDateRequest $request)
     {
         $orderBy = $request->only('id', 'status', 'last_active_at');
         $keyword = $request->search;
 
-        $users = User::where('type', '<>', UserType::ADMIN);
+        $users = User::withTrashed()->where(function($query) {
+            $query->where('resign_status', ResignStatus::APPROVED)
+                ->orWhere(function($sq) {
+                    $sq->where('type', '<>', UserType::ADMIN)->where('deleted_at', null);
+                });
+        });
 
         if ($request->has('from_date') && !empty($request->from_date)) {
             $fromDate = Carbon::parse($request->from_date)->startOfDay();
-            $toDate = Carbon::parse($request->to_date)->endOfDay();
-            $users->where(function ($query) use ($fromDate, $toDate) {
+            $users->where(function ($query) use ($fromDate) {
                 $query->where('created_at', '>=', $fromDate);
             });
         }
 
         if ($request->has('to_date') && !empty($request->to_date)) {
-            $fromDate = Carbon::parse($request->from_date)->startOfDay();
             $toDate = Carbon::parse($request->to_date)->endOfDay();
-            $users->where(function ($query) use ($fromDate, $toDate) {
+            $users->where(function ($query) use ($toDate) {
                 $query->where('created_at', '<=', $toDate);
             });
         }
@@ -82,6 +95,10 @@ class UserController extends Controller
         $user->status = !$user->status;
 
         $user->save();
+
+        if ($user->status == 0) {
+            $user->notify(new FrozenUser());
+        }
 
         return redirect()->route('admin.users.show', ['user' => $user->id]);
     }
@@ -140,14 +157,96 @@ class UserController extends Controller
     public function delete($id)
     {
         $user = User::findOrFail($id);
-        $user->facebook_id = null;
-        $user->line_user_id = null;
-        $user->email = null;
-        $user->save();
 
-        $user->delete();
+        if ($user->type == UserType::CAST) {
 
-        return redirect()->route('admin.users.index');
+            $user = Cast::findOrFail($id);
+
+            $isUnpaidOrder = $user->orders()->whereIn('orders.status', [
+                OrderStatus::ACTIVE,
+                OrderStatus::PROCESSING,
+            ])
+                ->orWhere(function ($q) use ($user) {
+                    $q->where('cast_order.user_id', $user->id)
+                        ->where('orders.type', OrderType::NOMINATION)
+                        ->whereIn('orders.status', [
+                            OrderStatus::ACTIVE,
+                            OrderStatus::PROCESSING,
+                        ]);
+                })
+                ->where(function ($q) use ($user) {
+                    $q->where('cast_order.user_id', $user->id)
+                        ->where([
+                            ['orders.type', '<>', OrderType::NOMINATION],
+                            ['orders.status', '=', OrderStatus::OPEN],
+                            ['cast_order.status', '=', CastOrderStatus::ACCEPTED],
+                        ]);
+                })
+                ->orWhere(function ($query) use ($user) {
+                    $query->where('cast_order.user_id', $user->id)->where('orders.status', OrderStatus::DONE)
+                        ->where(function ($subQuery) {
+                            $subQuery->whereNull('orders.payment_status')
+                                ->orWhere(function($s) {
+                                    $s->where('orders.payment_status', '!=', OrderPaymentStatus::PAYMENT_FINISHED)
+                                        ->orWhere('orders.payment_status', OrderPaymentStatus::PAYMENT_FAILED);
+                                });
+                        });
+                })
+                ->orWhere(function ($query) use ($user) {
+                    $query->where('cast_order.user_id', $user->id)->where('orders.status', OrderStatus::CANCELED)
+                        ->where(function ($subQuery) {
+                            $subQuery->where(function($sQ) {
+                                $sQ->where('orders.payment_status', null)
+                                    ->orWhere('orders.payment_status', '<>', OrderPaymentStatus::CANCEL_FEE_PAYMENT_FINISHED);
+                            })->where('orders.cancel_fee_percent', '>', 0);
+                        });
+
+                })
+                ->exists();
+        } else {
+            $isUnpaidOrder = $user->orders()->whereIn('status', [
+                OrderStatus::OPEN,
+                OrderStatus::ACTIVE,
+                OrderStatus::PROCESSING,
+            ])
+                ->orWhere(function ($query) use ($user) {
+                    $query->where('user_id', $user->id)->where('status', OrderStatus::DONE)
+                        ->where(function ($subQuery) {
+                            $subQuery->whereNull('payment_status')
+                                ->orWhere(function($s) {
+                                    $s->where('payment_status', '!=', OrderPaymentStatus::PAYMENT_FINISHED)
+                                        ->orWhere('payment_status', OrderPaymentStatus::PAYMENT_FAILED);
+                                });
+                        });
+                })
+                ->orWhere(function ($query) use ($user) {
+                    $query->where('user_id', $user->id)->where('status', OrderStatus::CANCELED)
+                        ->where(function ($subQuery) {
+                            $subQuery->where(function($sQ) {
+                                $sQ->where('payment_status', null)
+                                    ->orWhere('payment_status', '<>', OrderPaymentStatus::CANCEL_FEE_PAYMENT_FINISHED);
+                            })->where('cancel_fee_percent', '>', 0);
+                        });
+
+                })
+                ->exists();
+        }
+
+        if ($isUnpaidOrder) {
+            return redirect()->route('admin.users.show', compact('id'))->with('error', trans('messages.can_not_be_resign'));
+        }
+
+        try {
+            DB::beginTransaction();
+            $this->deleteUser($user);
+            DB::commit();
+
+            return redirect()->route('admin.users.index');
+
+        } catch (\Exception $e) {
+            DB::rollBack();
+            LogService::writeErrorLog($e);
+        }
     }
 
     public function campaignParticipated(User $user)

@@ -84,7 +84,7 @@ class MessageController extends ApiController
 
         $messages->setCollection(collect($messagesData->values()->all()));
         $messages = $messages->toArray();
-        $messages['order'] = $room->room_order ? OrderResource::make($room->room_order->load(['casts', 'user'])) : null;
+        $messages['order'] = $room->room_order ? OrderResource::make($room->room_order->load(['casts', 'user', 'nominees'])) : null;
         $messages['room'] = RoomResource::make($room->load('users'));
 
         if ('html' == $request->response_type) {
@@ -137,7 +137,7 @@ class MessageController extends ApiController
         $message->user_id = $this->guard()->id();
         $message->type = $request->type;
 
-        if ($this->guard()->user()->id == 1) {
+        if (1 == $this->guard()->user()->id) {
             $message->system_type = SystemMessageType::NORMAL;
         }
 

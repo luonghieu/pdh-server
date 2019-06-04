@@ -80,9 +80,9 @@
               <div class="text-wrapper">
                 @if ($element['order_id'])
                 <p class="msg-system" data-id='{{ $element['order_id'] }}' data-missing-point="{{ $element['missing_point'] }}"
-                 data-offer="{{ $element['offer_id'] }}" >{!! nl2br($element['message']) !!}</p>
+                 data-offer="{{ $element['offer_id'] }}" data-cast-order-id="{{ $element['cast_order_id'] }}" >{!! nl2br($element['message']) !!}</p>
                 @else
-                <p class="msg-system"  data-offer="{{ $element['offer_id'] }}">
+                <p class="msg-system"  data-offer="{{ $element['offer_id'] }}" data-cast-order-id="{{ $element['cast_order_id'] }}">
                   {!! nl2br(transferLinkMessage($element['message'])) !!}
                 </p>
                 @endif

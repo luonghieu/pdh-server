@@ -79,4 +79,12 @@ return [
     'invite_code_history_not_found' => 'Invite code history not found',
     'update_shifts_success' => 'Update shifts successfully',
     'offer_not_found' => 'Offer is not found',
+    'timeline_not_found' => 'Timeline is not found',
+    'timeline_deleted' => 'Timeline has been deleted',
+    'can_not_be_resign' => 'Can not be resign, because there is a reservation that has not been completed',
+    'created_request_resign' => 'You created request resign',
+    'resign_success' => 'Account request resign pending successfully',
+    'skip_order_noninee' => 'Your proposal has been cancelled.',
+    'order_resign_status_pending' => 'You can not make a reservation as it is being withdrawn.',
+    'buy_point_resign_status_pending' => 'You can not purchase points because you are applying for withdrawal.',
 ];

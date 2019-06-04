@@ -6,8 +6,8 @@ use App\Enums\CastOrderStatus;
 use App\Enums\CastOrderType;
 use App\Enums\CouponType;
 use App\Enums\InviteCodeHistoryStatus;
-use App\Enums\OrderStatus;
 use App\Enums\OrderPaymentStatus;
+use App\Enums\OrderStatus;
 use App\Enums\OrderType;
 use App\Enums\PointType;
 use App\Enums\RoomType;
@@ -53,6 +53,7 @@ class Order extends Model
         'coupon_name',
         'coupon_type',
         'coupon_value',
+        'cast_offer_id',
     ];
 
     public function user()
@@ -63,6 +64,7 @@ class Order extends Model
     public function casts()
     {
         return $this->belongsToMany(Cast::class)
+            ->withTrashed()
             ->whereNotNull('cast_order.accepted_at')
             ->whereNull('cast_order.canceled_at')
             ->whereNull('cast_order.deleted_at')
@@ -88,15 +90,18 @@ class Order extends Model
         return $this->belongsToMany(Cast::class)
             ->where('cast_order.type', CastOrderType::NOMINEE)
             ->whereNull('cast_order.deleted_at')
-            ->withPivot('accepted_at', 'status', 'type', 'cost', 'started_at', 'stopped_at')
+            ->withPivot('order_time', 'extra_time', 'order_point', 'extra_point', 'allowance_point', 'fee_point',
+                'total_point', 'type', 'started_at', 'stopped_at', 'status', 'accepted_at', 'canceled_at', 'guest_rated',
+                'cast_rated', 'is_thanked', 'temp_point', 'cost', 'id')
             ->withTimestamps();
     }
 
     public function nomineesWithTrashed()
     {
         return $this->belongsToMany(Cast::class)
+            ->withTrashed()
             ->where('cast_order.type', CastOrderType::NOMINEE)
-            ->withPivot('status', 'type', 'cost')
+            ->withPivot('status', 'type', 'cost', 'started_at', 'temp_point')
             ->withTimestamps();
     }
 
@@ -633,14 +638,12 @@ class Order extends Model
 
     protected function isValidForSettlement()
     {
-        if ($this->status == OrderStatus::DONE && $this->payment_status != OrderPaymentStatus::PAYMENT_FINISHED) {
+        if (OrderStatus::DONE == $this->status && OrderPaymentStatus::PAYMENT_FINISHED != $this->payment_status) {
             return true;
         }
 
-        if ($this->status == OrderStatus::CANCELED
-            && $this->cancel_fee_percent > 0
-            && $this->payment_status != OrderPaymentStatus::CANCEL_FEE_PAYMENT_FINISHED
-        ) {
+        if (OrderStatus::CANCELED == $this->status && $this->cancel_fee_percent > 0
+            && OrderPaymentStatus::CANCEL_FEE_PAYMENT_FINISHED != $this->payment_status) {
             return true;
         }
 
