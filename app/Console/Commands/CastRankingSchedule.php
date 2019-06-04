@@ -51,7 +51,7 @@ class CastRankingSchedule extends Command
             }
 
             CastRanking::truncate();
-            $users = Cast::select('id')
+            $users = Cast::whereNotIn('id', [2302])->select('id')
                 ->selectRaw('(IFNULL(total_point, 0) + IFNULL(point, 0)) as total_point')
                 ->get()
                 ->sortByDesc('total_point')
