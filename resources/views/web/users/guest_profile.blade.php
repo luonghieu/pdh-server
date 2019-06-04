@@ -127,6 +127,7 @@
     </div>
 </div>
 
+@if(env('ENABLE_TIMELINE'))
 <div class="timeline">
     <section class="portlet">
         <div class="portlet-header">
@@ -199,6 +200,7 @@
         </div>
     </section>
 </div>
+@endif
 @endsection
 @section('web.extra_js')
     <script>

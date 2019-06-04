@@ -91,6 +91,7 @@
                             <a href="javascript:void(0)" id="menu-freezed-account"><i><img src="{{ asset('assets/web/images/common/msg.svg') }}"></i>メッセージ</a>
                         @endif
                     </li>
+                    @if (env('ENABLE_TIMELINE'))
                     <li>
                         @if (Auth::user()->status)
                             <a href="{{ route('web.timelines.index') }}"><i><img src="{{ asset('assets/web/images/common/ic_timeline.svg')}}"></i>タイムライン</a>
@@ -98,6 +99,7 @@
                             <a href="javascript:void(0)" id="menu-freezed-account"><i><img src="{{ asset('assets/web/images/common/ic_timeline.svg') }}"></i>タイムライン</a>
                         @endif
                     </li>
+                    @endif
                     <li>
                         @if (Auth::user()->status)
                             <a href="{{ route('guest.orders.reserve') }}"><i><img src="{{ asset('assets/web/images/common/glass.svg') }}"></i>予約一覧</a>
