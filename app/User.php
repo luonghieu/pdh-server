@@ -359,7 +359,7 @@ class User extends Authenticatable implements JWTSubject
             }
 
             $point->status = true;
-            $point->balance = $amount;
+            $point->balance = $point->point;
             $point->save();
 
             $this->point = $this->point + $amount;
