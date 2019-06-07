@@ -43,5 +43,7 @@ class PointController extends ApiController
         if (!$point) {
             return $this->respondServerError();
         }
+
+        return $this->respondWithNoData(trans('messages.buy_point_success'));
     }
 }
