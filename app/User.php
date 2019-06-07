@@ -355,7 +355,7 @@ class User extends Authenticatable implements JWTSubject
             $charged = $payment->charge();
 
             if (!$charged) {
-                throw new \Exception('Auto charge failed');
+                return false;
             }
 
             $point->status = true;
