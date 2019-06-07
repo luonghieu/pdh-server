@@ -111,7 +111,7 @@ class PointController extends Controller
             PointType::ADJUSTED,
             PointType::INVITE_CODE,
             PointType::DIRECT_TRANSFER,
-        ])->where('status', 1);
+        ])->where('status', true);
 
         $fromDate = $request->from_date ? Carbon::parse($request->from_date)->startOfDay() : null;
         $toDate = $request->to_date ? Carbon::parse($request->to_date)->endOfDay() : null;
