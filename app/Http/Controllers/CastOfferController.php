@@ -35,7 +35,7 @@ class CastOfferController extends Controller
         ];
 
         try {
-            $coupons = $client->get(route('coupons.index'), $option);
+            $coupons = $client->get(route('coupons.index', ['duration' => $order->duration]), $option);
             $coupons = json_decode(($coupons->getBody())->getContents(), JSON_NUMERIC_CHECK);
             $coupons = $coupons['data'];
         } catch (\Exception $e) {
