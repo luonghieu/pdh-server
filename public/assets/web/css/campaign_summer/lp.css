@@ -346,7 +346,7 @@ main {
         color: #E31313; }
       /* line 347, source/_sass/lp.scss */
       .reservation-item__text span.icon-yukata {
-        width: auto;
+        width: 46px;
         height: auto;
         margin-right: 5px;
         display: inline-block; }
