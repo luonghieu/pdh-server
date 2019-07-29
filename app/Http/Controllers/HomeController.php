@@ -24,6 +24,11 @@ class HomeController extends Controller
         return view('web.ld');
     }
 
+    public function campaignSummer()
+    {
+        return view('web.campaign_summer');
+    }
+
     public function index(Request $request)
     {
         if (Auth::check()) {
