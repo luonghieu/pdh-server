@@ -68,7 +68,7 @@
 @endsection
 @section('web.content')
   @if(Auth::user() && (Auth::user()->type == \App\Enums\UserType::GUEST))
-    <a href="javascript::void(0)"><img src="/assets/web/images/campaign/cheers_summer.png" alt=""></a>
+    <a href="{{ route('web.campaign_summer') }}"><img src="/assets/web/images/campaign/cheers_summer.png" alt=""></a>
   @endif
   @if (!Auth::check())
     <a href="{{ route('auth.line') }}">

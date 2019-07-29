@@ -9,6 +9,7 @@ Route::group(['namespace' => 'Webview', 'prefix' => 'webview', 'as' => 'webview.
         Route::get('card/edit/{card}', ['as' => 'edit', 'uses' => 'CreditCardController@edit'])->where('card', '[0-9]+');
     });
 });
+Route::get('/campaign_summer', 'HomeController@campaignSummer')->name('web.campaign_summer');
 
 Route::group(['middleware' => 'auth'], function () {
     Route::get('/logout', 'HomeController@logout')->name('web.logout');
