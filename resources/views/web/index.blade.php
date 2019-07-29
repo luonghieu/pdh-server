@@ -68,7 +68,7 @@
 @endsection
 @section('web.content')
   @if(Auth::user() && (Auth::user()->type == \App\Enums\UserType::GUEST))
-    <a href="{{route('invite_code.get_invite_code')}}"><img src="/assets/web/images/invite_code/banner_top.png" alt=""></a>
+    <a href="javascript::void(0)"><img src="/assets/web/images/campaign/cheers_summer.png" alt=""></a>
   @endif
   @if (!Auth::check())
     <a href="{{ route('auth.line') }}">
@@ -211,6 +211,9 @@
     </div>
   </div>
   <div class="wrap-banner-methods-used">
+    @if(Auth::user() && (Auth::user()->type == \App\Enums\UserType::GUEST))
+      <a href="{{route('invite_code.get_invite_code')}}"><img src="/assets/web/images/invite_code/banner_top.png" alt=""></a>
+    @endif
     <a href="/service/guest_ht"><img src="/assets/web/images/ge1/banner_methods_used.png" alt=""></a>
   </div>
 @endsection
