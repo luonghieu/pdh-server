@@ -75,7 +75,7 @@
                   <tr>
                     <td>{{ $user->id }}</td>
                     <td>{{ $user->fullname }}</td>
-                    <td>{{ $userTypes[$user->type] }}</td>
+                    <td>{{ ($user->type) ? $userTypes[$user->type] : '' }}</td>
                     <td>{{ number_format($user->positivePoints($user->points)) }}</td>
                     <td>{{ number_format($user->negativePoints($user->points)) }}</td>
                     <td>{{ number_format($user->totalBalance($user->points)) }}</td>

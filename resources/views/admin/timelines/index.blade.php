@@ -100,7 +100,7 @@
                   <td class="text-justify">{!! nl2br($timeline->content) !!}</td>
                   <td>
                     @if ($timeline->image)
-                    <a href="javascript::void(0)" class="js-pop-img">
+                    <a href="javascript:void(0)" class="js-pop-img">
                       <button class="btn btn-default" data-src="{{ $timeline->image }}">表示する</button>
                     </a>
                     @endif
