@@ -72,7 +72,7 @@
   <section class="button-box">
     <label for="lb-update-cost" class="update-cost"></label>
   </section>
-  <span class="ml-2">※入力した金額の{{ $user->cost_rate * 100 }}割が振り込まれます。</span>
+  <span class="ml-2">※入力した金額の{{ $user->cost_rate * 100 }}%が振り込まれます。</span>
   <a href="javascript:void(0)" id="change-point">変更する</a>
   <div class="cast-call btn-circle wrap-btn-circle" id="btn-circle">
       <div class="display-flex">
