@@ -2,23 +2,31 @@
 
 namespace App\Http\Controllers\Api;
 
-use App\Notifications\VoiceCallVerification;
 use App\User;
 use App\Enums\Status;
 use App\Enums\UserType;
 use App\Enums\DeviceType;
 use App\Enums\ProviderType;
 use Illuminate\Http\Request;
+use Illuminate\Validation\Rule;
 use Tymon\JWTAuth\Facades\JWTAuth;
 use App\Notifications\SendVerificationCode;
+use App\Notifications\VoiceCallVerification;
 use App\Notifications\ResendVerificationCode;
 
 class VerificationController extends ApiController
 {
     public function code(Request $request)
     {
+        $user = $this->guard()->user();
+
         $rules = [
-            'phone' => 'phone:' . config('common.phone_number_rule'),
+            'phone' => [
+                'phone:' . config('common.phone_number_rule'),
+                Rule::unique('users', 'phone')
+                    ->whereNull('deleted_at')
+                    ->ignore($user->id)
+            ],
         ];
 
         $validator = validator($request->all(), $rules);
@@ -28,9 +36,6 @@ class VerificationController extends ApiController
         }
 
         $phone = $request->phone;
-
-        $user = $this->guard()->user();
-
         $verification = $user->generateVerifyCode($phone);
 
         $user->notify(
