@@ -2,6 +2,7 @@
 
 namespace App;
 
+use App\Enums\CastClassType;
 use App\Enums\CastOrderStatus;
 use App\Enums\CastOrderType;
 use App\Enums\CouponType;
@@ -557,7 +558,11 @@ class Order extends Model
             }
 
             if (OrderType::NOMINATION != $order->type) {
-                $costPerFifteenMins = $cast->castClass->cost / 2;
+                if ($order->castClass->id == CastClassType::BRONZE) {
+                    $costPerFifteenMins = $order->castClass->cost / 2;
+                } else {
+                    $costPerFifteenMins = $cast->castClass->cost / 2;
+                }
             } else {
                 $costPerFifteenMins = $cast->pivot->cost / 2;
             }

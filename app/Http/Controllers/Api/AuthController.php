@@ -12,6 +12,7 @@ use App\Services\LogService;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Validation\Rule;
 use Webpatser\Uuid\Uuid;
 
 class AuthController extends ApiController
@@ -83,7 +84,15 @@ class AuthController extends ApiController
             'gender' => 'in:0,1,2',
             'intro' => 'max:30',
             'description' => 'max:1000',
-            'phone' => 'max:13',
+            'phone' => [
+                'sometimes',
+                'bail',
+                'regex:/^[0-9]+$/',
+                'digits_between:10,13',
+                Rule::unique('users', 'phone')
+                    ->whereNull('deleted_at')
+                    ->ignore($user->id)
+            ],
             'living_id' => 'numeric|exists:prefectures,id',
             'cost' => 'numeric',
             'salary_id' => 'numeric|exists:salaries,id',
@@ -101,7 +110,12 @@ class AuthController extends ApiController
             'fullname_kana' => 'regex:/^[ぁ-ん ]/u',
             'prefecture_id' => 'numeric|exists:prefectures,id',
         ];
-        $validator = validator(request()->all(), $rules);
+
+        $messages = [
+            'phone.unique' => 'この電話番号はすでに別のアカウントで使用されています。',
+        ];
+
+        $validator = validator(request()->all(), $rules, $messages);
 
         if ($validator->fails()) {
             return $this->respondWithValidationError($validator->errors()->messages());
