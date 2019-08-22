@@ -29,7 +29,11 @@ class VerificationController extends ApiController
             ],
         ];
 
-        $validator = validator($request->all(), $rules);
+        $messages = [
+            'phone.unique' => 'この電話番号はすでに別のアカウントで使用されています。',
+        ];
+
+        $validator = validator(request()->all(), $rules, $messages);
 
         if ($validator->fails()) {
             return $this->respondWithValidationError($validator->errors()->messages());
