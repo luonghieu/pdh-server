@@ -12,7 +12,6 @@ use Illuminate\Http\Request;
 use Tymon\JWTAuth\Facades\JWTAuth;
 use App\Notifications\SendVerificationCode;
 use App\Notifications\ResendVerificationCode;
-use App\Notifications\ResendVerificationCodeLineNotify;
 
 class VerificationController extends ApiController
 {
