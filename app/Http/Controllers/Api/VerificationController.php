@@ -2,36 +2,44 @@
 
 namespace App\Http\Controllers\Api;
 
-use App\Notifications\VoiceCallVerification;
 use App\User;
 use App\Enums\Status;
 use App\Enums\UserType;
 use App\Enums\DeviceType;
 use App\Enums\ProviderType;
 use Illuminate\Http\Request;
+use Illuminate\Validation\Rule;
 use Tymon\JWTAuth\Facades\JWTAuth;
 use App\Notifications\SendVerificationCode;
+use App\Notifications\VoiceCallVerification;
 use App\Notifications\ResendVerificationCode;
-use App\Notifications\ResendVerificationCodeLineNotify;
 
 class VerificationController extends ApiController
 {
     public function code(Request $request)
     {
+        $user = $this->guard()->user();
+
         $rules = [
-            'phone' => 'phone:' . config('common.phone_number_rule'),
+            'phone' => [
+                'phone:' . config('common.phone_number_rule'),
+                Rule::unique('users', 'phone')
+                    ->whereNull('deleted_at')
+                    ->ignore($user->id)
+            ],
         ];
 
-        $validator = validator($request->all(), $rules);
+        $messages = [
+            'phone.unique' => 'この電話番号はすでに別のアカウントで使用されています。',
+        ];
+
+        $validator = validator(request()->all(), $rules, $messages);
 
         if ($validator->fails()) {
             return $this->respondWithValidationError($validator->errors()->messages());
         }
 
         $phone = $request->phone;
-
-        $user = $this->guard()->user();
-
         $verification = $user->generateVerifyCode($phone);
 
         $user->notify(
