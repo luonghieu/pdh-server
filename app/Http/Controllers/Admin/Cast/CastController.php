@@ -126,7 +126,7 @@ class CastController extends Controller
 
     public function validRegister($request, $user)
     {
-        $rules = $this->validate($request,
+        $this->validate($request,
             [
                 'last_name' => 'required',
                 'first_name' => 'required',
@@ -146,18 +146,11 @@ class CastController extends Controller
                 'number' => 'nullable|numeric|digits:7',
                 'front_side' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:5120',
                 'back_side' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:5120',
+            ],
+            [
+                'phone.unique' => 'この電話番号はすでに別のアカウントで使用されています。',
             ]
         );
-
-        $messages = [
-            'phone.unique' => 'この電話番号はすでに別のアカウントで使用されています。',
-        ];
-
-        $validator = validator(request()->all(), $rules, $messages);
-
-        if ($validator->fails()) {
-            return back()->withErrors($validator->errors())->withInput();
-        }
 
         $year = $request->start_year;
         $month = $request->start_month;
