@@ -2,32 +2,33 @@
 
 namespace App\Http\Controllers\Admin\Cast;
 
-use App\BankAccount;
+use DB;
 use App\Cast;
+use App\Room;
+use App\User;
+use App\Shift;
 use App\CastClass;
-use App\Enums\BankAccountType;
-use App\Enums\ResignStatus;
-use App\Enums\CastTransferStatus;
-use App\Enums\PointCorrectionType;
-use App\Enums\PointType;
-use App\Enums\ProviderType;
+use Carbon\Carbon;
+use App\Prefecture;
+use App\BankAccount;
 use App\Enums\Status;
 use App\Enums\UserType;
-use App\Room;
-use App\Http\Controllers\Controller;
-use App\Http\Requests\CheckDateRequest;
-use App\Notifications\CreateCast;
-use App\Prefecture;
+use App\Enums\PointType;
+use Webpatser\Uuid\Uuid;
+use App\Enums\ProviderType;
+use App\Enums\ResignStatus;
 use App\Services\CSVExport;
 use App\Services\LogService;
-use App\Shift;
-use App\User;
-use Carbon\Carbon;
-use DB;
 use Illuminate\Http\Request;
+use App\Enums\BankAccountType;
+use Illuminate\Validation\Rule;
+use App\Enums\CastTransferStatus;
+use App\Notifications\CreateCast;
+use App\Enums\PointCorrectionType;
+use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Hash;
+use App\Http\Requests\CheckDateRequest;
 use Illuminate\Support\Facades\Storage;
-use Webpatser\Uuid\Uuid;
 
 class CastController extends Controller
 {
@@ -123,20 +124,31 @@ class CastController extends Controller
         return view('admin.casts.register', compact('user', 'castClass', 'prefectures'));
     }
 
-    public function validRegister($request)
+    public function validRegister($request, $user)
     {
-        $rules = $this->validate($request,
+        $this->validate($request,
             [
                 'last_name' => 'required',
                 'first_name' => 'required',
                 'last_name_kana' => 'required|string|regex:/^[ぁ-ん ]/u',
                 'first_name_kana' => 'required|string|regex:/^[ぁ-ん ]/u',
                 'nick_name' => 'required',
-                'phone' => 'required|regex:/^[0-9]+$/',
+                'phone' => [
+                    'required',
+                    'bail',
+                    'regex:/^[0-9]+$/',
+                    'digits_between:10,13',
+                    Rule::unique('users', 'phone')
+                        ->whereNull('deleted_at')
+                        ->ignore($user->id)
+                ],
                 'line' => 'required',
                 'number' => 'nullable|numeric|digits:7',
                 'front_side' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:5120',
                 'back_side' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:5120',
+            ],
+            [
+                'phone.unique' => 'この電話番号はすでに別のアカウントで使用されています。',
             ]
         );
 
@@ -194,7 +206,7 @@ class CastController extends Controller
 
     public function confirmRegister(Request $request, User $user)
     {
-        $data = $this->validRegister($request);
+        $data = $this->validRegister($request, $user);
 
         if (!$data) {
             $request->session()->flash('msgdate', trans('messages.date_not_valid'));
@@ -517,7 +529,14 @@ class CastController extends Controller
                 'lastname_kana' => 'required|string|regex:/^[ぁ-ん ]/u',
                 'firstname_kana' => 'required|string|regex:/^[ぁ-ん ]/u',
                 'nickname' => 'required|string|max:20',
-                'phone' => 'required|regex:/^[0-9]+$/|digits_between:10,11|unique:users',
+                'phone' => [
+                    'required',
+                    'bail',
+                    'regex:/^[0-9]+$/',
+                    'digits_between:10,13',
+                    Rule::unique('users', 'phone')
+                        ->whereNull('deleted_at')
+                ],
                 'line_id' => 'required|string',
                 'front_side' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:5120',
                 'back_side' => 'required|image|mimes:jpeg,png,jpg,gif,svg|max:5120',
@@ -527,7 +546,11 @@ class CastController extends Controller
                 'branch_name' => 'required_with:bank_name,account_number',
             ];
 
-            $validator = validator($request->all(), $rules);
+            $messages = [
+                'phone.unique' => 'この電話番号はすでに別のアカウントで使用されています。',
+            ];
+    
+            $validator = validator(request()->all(), $rules, $messages);
 
             if ($validator->fails()) {
                 return back()->withErrors($validator->errors())->withInput();
@@ -613,21 +636,21 @@ class CastController extends Controller
         $bankAccounts = BankAccount::all();
 
         $data = collect($bankAccounts)->map(function ($item) {
-                return [
-                    $item->id,
-                    $item->user_id,
-                    $item->bank_name,
-                    $item->bank_code,
-                    $item->branch_name,
-                    $item->branch_code,
-                    $item->number,
-                    $item->holder_name,
-                    $item->holder_type,
-                    BankAccountType::getDescription($item->type),
-                    Carbon::parse($item->created_at)->format('Y年m月d日'),
-                    Carbon::parse($item->updated_at)->format('Y年m月d日'),
-                ];
-            })->toArray();
+            return [
+                $item->id,
+                $item->user_id,
+                $item->bank_name,
+                $item->bank_code,
+                $item->branch_name,
+                $item->branch_code,
+                $item->number,
+                $item->holder_name,
+                $item->holder_type,
+                BankAccountType::getDescription($item->type),
+                Carbon::parse($item->created_at)->format('Y年m月d日'),
+                Carbon::parse($item->updated_at)->format('Y年m月d日'),
+            ];
+        })->toArray();
 
         $header = [
             'No.',
