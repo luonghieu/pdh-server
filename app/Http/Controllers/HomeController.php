@@ -12,7 +12,6 @@ use App\Http\Resources\OrderResource;
 use App\Order;
 use App\Prefecture;
 use App\RankSchedule;
-use GuzzleHttp\Client;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Tymon\JWTAuth\Facades\JWTAuth;
@@ -22,11 +21,6 @@ class HomeController extends Controller
     public function ld()
     {
         return view('web.ld');
-    }
-
-    public function campaignSummer()
-    {
-        return view('web.campaign_summer');
     }
 
     public function index(Request $request)
