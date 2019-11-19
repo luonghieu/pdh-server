@@ -106,6 +106,38 @@ class DeleteUnusedPointAfter180Days extends Command
                     $user = User::withTrashed()->find($point->user->id);
                     $user->point -= $balancePoint;
                     $user->save();
+
+                    // Update points after subtracting expired points
+                    $subPoint = $data['point'];
+                    $points = Point::where('user_id', $user->id)
+                        ->where('balance', '>', 0)
+                        ->where('point', '>=', 0)
+                        ->whereIn('type', [
+                            PointType::BUY,
+                            PointType::ADJUSTED,
+                            PointType::AUTO_CHARGE,
+                            PointType::INVITE_CODE,
+                            PointType::DIRECT_TRANSFER
+                        ])
+                        ->where('is_cast_adjusted', false)
+                        ->orderBy('created_at')
+                        ->get();
+
+                    foreach ($points as $value) {
+                        if (0 == $subPoint) {
+                            break;
+                        } elseif ($value->balance > $subPoint && $subPoint > 0) {
+                            $value->balance = $value->balance - $subPoint;
+                            $value->update();
+
+                            break;
+                        } elseif ($value->balance <= $subPoint) {
+                            $subPoint -= $value->balance;
+
+                            $value->balance = 0;
+                            $value->update();
+                        }
+                    }
                 }
 
                 DB::commit();
