@@ -109,7 +109,7 @@ class DeleteUnusedPointAfter180Days extends Command
 
                     // Update points after subtracting expired points
                     $subPoint = $data['point'];
-                    $points = Point::where('user_id', $user->id)
+                    $pointsNeedUpdates = Point::where('user_id', $user->id)
                         ->where('balance', '>', 0)
                         ->where('point', '>=', 0)
                         ->whereIn('type', [
@@ -123,7 +123,7 @@ class DeleteUnusedPointAfter180Days extends Command
                         ->orderBy('created_at')
                         ->get();
 
-                    foreach ($points as $value) {
+                    foreach ($pointsNeedUpdates as $value) {
                         if (0 == $subPoint) {
                             break;
                         } elseif ($value->balance > $subPoint && $subPoint > 0) {

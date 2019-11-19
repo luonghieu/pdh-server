@@ -280,8 +280,6 @@ class PointController extends Controller
 
                         break;
                     } elseif ($value->balance <= $subPoint) {
-                        $subPoint -= $value->balance;
-
                         $value->balance = 0;
                         $value->update();
                     }
