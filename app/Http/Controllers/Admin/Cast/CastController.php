@@ -469,6 +469,7 @@ class CastController extends Controller
 
             $user->point = $newPoint;
             $user->save();
+
             DB::commit();
         } catch (\Exception $e) {
             DB::rollBack();

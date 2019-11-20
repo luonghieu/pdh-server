@@ -255,6 +255,37 @@ class PointController extends Controller
 
             $user->point = $newPoint;
             $user->save();
+
+            if ($request->correction_type == PointCorrectionType::CONSUMPTION) {
+                $subPoint = $request->point;
+                $points = Point::where('user_id', $user->id)
+                    ->where('balance', '>', 0)
+                    ->where('point', '>=', 0)
+                    ->whereIn('type', [
+                        PointType::BUY,
+                        PointType::ADJUSTED,
+                        PointType::AUTO_CHARGE,
+                        PointType::INVITE_CODE,
+                        PointType::DIRECT_TRANSFER
+                    ])
+                    ->orderBy('created_at')
+                    ->get();
+
+                foreach ($points as $value) {
+                    if (0 == $subPoint) {
+                        break;
+                    } elseif ($value->balance > $subPoint && $subPoint > 0) {
+                        $value->balance = $value->balance - $subPoint;
+                        $value->update();
+
+                        break;
+                    } elseif ($value->balance <= $subPoint) {
+                        $value->balance = 0;
+                        $value->update();
+                    }
+                }
+            }
+
             DB::commit();
         } catch (\Exception $e) {
             DB::rollBack();
