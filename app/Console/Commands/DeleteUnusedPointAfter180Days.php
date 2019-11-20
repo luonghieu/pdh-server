@@ -2,12 +2,13 @@
 
 namespace App\Console\Commands;
 
-use App\Enums\PointType;
-use App\Point;
-use App\Services\LogService;
-use App\User;
-use Carbon\Carbon;
 use DB;
+use App\User;
+use App\Point;
+use Carbon\Carbon;
+use App\Enums\UserType;
+use App\Enums\PointType;
+use App\Services\LogService;
 use Illuminate\Console\Command;
 
 class DeleteUnusedPointAfter180Days extends Command
@@ -44,7 +45,9 @@ class DeleteUnusedPointAfter180Days extends Command
     public function handle()
     {
         $dateTime = Carbon::now()->subDays(180)->format('Y-m-d H');
-        $points = Point::where(function ($query) {
+        $points = Point::whereHas('user', function ($query) {
+            $query->where('user.type', UserType::GUEST);
+        })->where(function ($query) {
             $query->whereIn('type',
                 [
                     PointType::BUY,
