@@ -268,6 +268,7 @@ class PointController extends Controller
                         PointType::INVITE_CODE,
                         PointType::DIRECT_TRANSFER
                     ])
+                    ->where('is_cast_adjusted', false)
                     ->orderBy('created_at')
                     ->get();
 
