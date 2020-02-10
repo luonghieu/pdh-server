@@ -28,14 +28,12 @@ class PointController extends Controller
         $sumDirectTransferPoint = Point::whereIn('id', $directTransferPointIds)->sum('point');
         $sumDirectTransferAmount = $sumDirectTransferPoint * $pointRate;
 
-        $sum = $sumDirectTransferAmount + $sumAmount;
-
-        return $sum;
+        return ($sumDirectTransferAmount + $sumAmount);
     }
 
     public function sumPointBuy($points)
     {
-        $sumPointBuy = $points->sum(function ($product) {
+        return $points->sum(function ($product) {
             $sum = 0;
             if ($product->is_buy) {
                 $sum += $product->point;
@@ -59,13 +57,11 @@ class PointController extends Controller
 
             return $sum;
         });
-
-        return $sumPointBuy;
     }
 
     public function sumPointIncrease($points)
     {
-        $sumPointIncrease = $points->sum(function ($product) {
+        return $points->sum(function ($product) {
             $sum = 0;
             if ($product->point > 0) {
                 $sum += $product->point;
@@ -73,13 +69,11 @@ class PointController extends Controller
 
             return $sum;
         });
-
-        return $sumPointIncrease;
     }
 
     public function sumPointReduction($points)
     {
-        $sumPointReduction = $points->sum(function ($product) {
+        return $points->sum(function ($product) {
             $sum = 0;
             if ($product->point < 0) {
                 $sum += $product->point;
@@ -87,8 +81,6 @@ class PointController extends Controller
 
             return $sum;
         });
-
-        return $sumPointReduction;
     }
 
     public function index(CheckDateRequest $request)

@@ -2,13 +2,7 @@
 
 namespace App\Http\Controllers\Api\Guest;
 
-use App\Point;
-use App\Payment;
-use App\Enums\PaymentStatus;
 use App\Enums\ResignStatus;
-use App\Services\LogService;
-use Auth;
-use Carbon\Carbon;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Api\ApiController;
 
@@ -30,9 +24,6 @@ class PointController extends ApiController
         if ($validator->fails()) {
             return $this->respondWithValidationError($validator->errors()->messages());
         }
-
-
-        $now = Carbon::now();
 
         if (!$user->is_card_registered) {
             return $this->respondErrorMessage(trans('messages.card_not_exist'), 404);

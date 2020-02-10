@@ -453,10 +453,11 @@ class CastController extends Controller
         }
 
         $newPoint = $user->point + $point;
+        $balance = ($point < 0) ? $newPoint : $point;
 
         $input = [
             'point' => $point,
-            'balance' => $newPoint,
+            'balance' => $balance,
             'type' => PointType::ADJUSTED,
             'status' => Status::ACTIVE,
             'is_cast_adjusted' => true,
