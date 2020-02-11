@@ -254,15 +254,20 @@ class PointController extends Controller
                 $subPoint = $request->point;
                 $points = Point::where('user_id', $user->id)
                     ->where('balance', '>', 0)
-                    ->where('point', '>=', 0)
-                    ->whereIn('type', [
-                        PointType::BUY,
-                        PointType::ADJUSTED,
-                        PointType::AUTO_CHARGE,
-                        PointType::INVITE_CODE,
-                        PointType::DIRECT_TRANSFER
-                    ])
-                    ->where('is_cast_adjusted', false)
+                    ->where(function ($query) {
+                        $query->whereIn('type',
+                            [
+                                PointType::BUY,
+                                PointType::AUTO_CHARGE,
+                                PointType::INVITE_CODE, 
+                                PointType::DIRECT_TRANSFER,
+                            ])
+                            ->orWhere(function ($subQ) {
+                                $subQ->where('type', PointType::ADJUSTED)
+                                    ->where('is_cast_adjusted', false)
+                                    ->where('point', '>=', 0);
+                            });
+                        })
                     ->orderBy('created_at')
                     ->get();
 
@@ -275,6 +280,8 @@ class PointController extends Controller
 
                         break;
                     } elseif ($value->balance <= $subPoint) {
+                        $subPoint -= $value->balance;
+                        
                         $value->balance = 0;
                         $value->update();
                     }
