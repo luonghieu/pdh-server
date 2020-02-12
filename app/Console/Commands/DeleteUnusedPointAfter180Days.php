@@ -46,7 +46,7 @@ class DeleteUnusedPointAfter180Days extends Command
     {
         $dateTime = Carbon::now()->subDays(180)->format('Y-m-d H');
         $points = Point::whereHas('user', function ($query) {
-            $query->where('user.type', UserType::GUEST);
+            $query->where('users.type', UserType::GUEST);
         })->where(function ($query) {
             $query->whereIn('type',
                 [
@@ -102,9 +102,6 @@ class DeleteUnusedPointAfter180Days extends Command
                     $admin->save();
                 }
 
-                $point->balance = 0;
-                $point->save();
-
                 if ($point->user) {
                     $user = User::withTrashed()->find($point->user->id);
                     $user->point -= $balancePoint;
@@ -114,15 +111,20 @@ class DeleteUnusedPointAfter180Days extends Command
                     $subPoint = $data['point'];
                     $pointsNeedUpdates = Point::where('user_id', $user->id)
                         ->where('balance', '>', 0)
-                        ->where('point', '>=', 0)
-                        ->whereIn('type', [
-                            PointType::BUY,
-                            PointType::ADJUSTED,
-                            PointType::AUTO_CHARGE,
-                            PointType::INVITE_CODE,
-                            PointType::DIRECT_TRANSFER
-                        ])
-                        ->where('is_cast_adjusted', false)
+                        ->where(function ($query) {
+                            $query->whereIn('type',
+                                [
+                                    PointType::BUY,
+                                    PointType::AUTO_CHARGE,
+                                    PointType::INVITE_CODE, 
+                                    PointType::DIRECT_TRANSFER,
+                                ])
+                                ->orWhere(function ($subQ) {
+                                    $subQ->where('type', PointType::ADJUSTED)
+                                        ->where('is_cast_adjusted', false)
+                                        ->where('point', '>=', 0);
+                                });
+                            })
                         ->orderBy('created_at')
                         ->get();
 

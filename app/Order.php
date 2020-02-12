@@ -683,7 +683,7 @@ class Order extends Model
         }
 
         // Hard delete TEMP point
-        $tempPoints = Point::withTrashed()->where('order_id', $this->id)->where('type', PointType::TEMP)->forceDelete();
+        // $tempPoints = Point::withTrashed()->where('order_id', $this->id)->where('type', PointType::TEMP)->forceDelete();
 
         $point = new Point;
         $point->point = -$totalPoint;
@@ -700,7 +700,14 @@ class Order extends Model
         $subPoint = $totalPoint;
         $points = Point::where('user_id', $user->id)
             ->where('balance', '>', 0)
-            ->whereIn('type', [PointType::BUY, PointType::AUTO_CHARGE, PointType::INVITE_CODE, PointType::DIRECT_TRANSFER])
+            ->where(function ($query) {
+                $query->whereIn('type', [PointType::BUY, PointType::AUTO_CHARGE, PointType::INVITE_CODE, PointType::DIRECT_TRANSFER])
+                    ->orWhere(function ($subQ) {
+                        $subQ->where('type', PointType::ADJUSTED)
+                            ->where('is_cast_adjusted', false)
+                            ->where('point', '>=', 0);
+                });
+            })
             ->orderBy('created_at')
             ->get();
 
