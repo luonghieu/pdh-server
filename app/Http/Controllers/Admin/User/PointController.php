@@ -31,14 +31,12 @@ class PointController extends Controller
             ->pluck('id');
         $sumAmount = Payment::whereIn('point_id', $pointIds)->sum('amount');
 
-        $sum = $sumDirectTransferAmount + $sumAmount;
-
-        return $sum;
+        return ($sumDirectTransferAmount + $sumAmount);
     }
 
     public function sumPointPay($points)
     {
-        $sumPointPay = $points->sum(function ($product) {
+        return $points->sum(function ($product) {
             $sum = 0;
             if ($product->is_pay) {
                 $sum += $product->point;
@@ -46,13 +44,11 @@ class PointController extends Controller
 
             return $sum;
         });
-
-        return $sumPointPay;
     }
 
     public function sumPointBuy($points)
     {
-        $sumPointBuy = $points->sum(function ($product) {
+        return $points->sum(function ($product) {
             $sum = 0;
             if ($product->is_buy) {
                 $sum += $product->point;
@@ -76,8 +72,6 @@ class PointController extends Controller
 
             return $sum;
         });
-
-        return $sumPointBuy;
     }
 
     public function getPointHistory($userId, CheckDateRequest $request)
@@ -107,7 +101,6 @@ class PointController extends Controller
 
         $fromDate = $request->from_date ? Carbon::parse($request->from_date)->startOfDay() : null;
         $toDate = $request->to_date ? Carbon::parse($request->to_date)->endOfDay() : null;
-        $limit = $request->limit;
 
         if ($fromDate) {
             $points->where(function ($query) use ($fromDate) {
@@ -240,10 +233,11 @@ class PointController extends Controller
         }
 
         $newPoint = $user->point + $point;
+        $balance = ($point < 0) ? $newPoint : $point;
 
         $input = [
             'point' => $point,
-            'balance' => $newPoint,
+            'balance' => $balance,
             'type' => $type,
             'status' => Status::ACTIVE,
         ];
@@ -260,15 +254,20 @@ class PointController extends Controller
                 $subPoint = $request->point;
                 $points = Point::where('user_id', $user->id)
                     ->where('balance', '>', 0)
-                    ->where('point', '>=', 0)
-                    ->whereIn('type', [
-                        PointType::BUY,
-                        PointType::ADJUSTED,
-                        PointType::AUTO_CHARGE,
-                        PointType::INVITE_CODE,
-                        PointType::DIRECT_TRANSFER
-                    ])
-                    ->where('is_cast_adjusted', false)
+                    ->where(function ($query) {
+                        $query->whereIn('type',
+                            [
+                                PointType::BUY,
+                                PointType::AUTO_CHARGE,
+                                PointType::INVITE_CODE, 
+                                PointType::DIRECT_TRANSFER,
+                            ])
+                            ->orWhere(function ($subQ) {
+                                $subQ->where('type', PointType::ADJUSTED)
+                                    ->where('is_cast_adjusted', false)
+                                    ->where('point', '>=', 0);
+                            });
+                        })
                     ->orderBy('created_at')
                     ->get();
 
@@ -281,6 +280,8 @@ class PointController extends Controller
 
                         break;
                     } elseif ($value->balance <= $subPoint) {
+                        $subPoint -= $value->balance;
+                        
                         $value->balance = 0;
                         $value->update();
                     }

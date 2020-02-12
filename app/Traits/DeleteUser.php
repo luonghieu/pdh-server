@@ -107,58 +107,63 @@ trait DeleteUser
 
     public function removePoint($user)
     {
-        $points = Point::whereIn('type',
-            [
-                PointType::BUY,
-                PointType::AUTO_CHARGE,
-                PointType::INVITE_CODE,
-                PointType::DIRECT_TRANSFER,
-            ])
+        $points = Point::where(function ($query) {
+            $query->whereIn('type',
+                [
+                    PointType::BUY,
+                    PointType::AUTO_CHARGE,
+                    PointType::INVITE_CODE, 
+                    PointType::DIRECT_TRANSFER,
+                ])
+                ->orWhere(function ($subQ) {
+                    $subQ->where('type', PointType::ADJUSTED)
+                        ->where('point', '>=', 0);
+                });
+            })
             ->where('user_id', $user->id)
             ->where('balance', '>', 0);
-
+        
         foreach ($points->cursor() as $point) {
+            $balancePoint = $point->balance;
+            $data = [
+                'point' => -$balancePoint,
+                'balance' => $point->user->point - $balancePoint,
+                'user_id' => $point->user_id,
+                'type' => PointType::EVICT,
+            ];
 
-                $balancePoint = $point->balance;
-                $data = [
-                    'point' => -$balancePoint,
-                    'balance' => $point->user->point - $balancePoint,
-                    'user_id' => $point->user_id,
-                    'type' => PointType::EVICT,
-                ];
-
-                if ($point->invite_code_history_id) {
-                    $data['invite_code_history_id'] = $point->invite_code_history_id;
-                }
-
-                if ($point->order_id) {
-                    $data['order_id'] = $point->order_id;
-                }
-
-                $pointUnused = new Point;
-                $pointUnused->createPoint($data, true);
-
-                $admin = User::find(1);
-                if ($admin->is_admin) {
-                    $data['user_id'] = 1;
-                    $data['type'] = PointType::RECEIVE;
-                    $data['point'] = $point->balance;
-                    $data['balance'] = $admin->point + $balancePoint;
-
-                    $pointAdmin = new Point;
-                    $pointAdmin->createPoint($data, true);
-
-                    $admin->point += $balancePoint;
-
-                    $admin->save();
-                }
-
-                $point->balance = 0;
-                $point->save();
-
-                $user = User::withTrashed()->find($point->user->id);
-                $user->point -= $balancePoint;
-                $user->save();
+            if ($point->invite_code_history_id) {
+                $data['invite_code_history_id'] = $point->invite_code_history_id;
             }
+
+            if ($point->order_id) {
+                $data['order_id'] = $point->order_id;
+            }
+
+            $pointUnused = new Point;
+            $pointUnused->createPoint($data, true);
+
+            $admin = User::find(1);
+            if ($admin->is_admin) {
+                $data['user_id'] = 1;
+                $data['type'] = PointType::RECEIVE;
+                $data['point'] = $point->balance;
+                $data['balance'] = $admin->point + $balancePoint;
+
+                $pointAdmin = new Point;
+                $pointAdmin->createPoint($data, true);
+
+                $admin->point += $balancePoint;
+
+                $admin->save();
+            }
+
+            $point->balance = 0;
+            $point->save();
+
+            $user = User::withTrashed()->find($point->user->id);
+            $user->point -= $balancePoint;
+            $user->save();
+        }
     }
 }
