@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-<title>Cheers</title>
+<title>Cheers様検証用</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
 <meta name="csrf-token" content="{{ csrf_token() }}">
 <link rel="stylesheet" href="{{ mix('assets/webview/css/style.min.css') }}"/>
@@ -16,7 +16,7 @@
         <a href="cheers://back"><img src="/assets/webview/images/back.png" alt=""></a>
       </div>
       <div class="title-main header-item">
-        <span>クレジットカード登録</span>
+        <span>クレジットカード認証、従量決済</span>
       </div>
       <div class="btn-register header-item">
         <a id="sq-creditcard" onclick="requestCardNonce(event)" class="color-btn-create">登録</a>

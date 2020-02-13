@@ -1,4 +1,4 @@
-@section('title', 'クレジットカード登録')
+@section('title', 'クレジットカード認証、従量決済')
 @section('screen.id', 'gl1')
 @extends('layouts.tc')
 @section('web.content')
