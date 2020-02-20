@@ -117,6 +117,7 @@ trait DeleteUser
                 ])
                 ->orWhere(function ($subQ) {
                     $subQ->where('type', PointType::ADJUSTED)
+                        ->where('is_cast_adjusted', false)
                         ->where('point', '>=', 0);
                 });
             })
