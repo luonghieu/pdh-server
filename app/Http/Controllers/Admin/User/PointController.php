@@ -25,10 +25,11 @@ class PointController extends Controller
         $sumDirectTransferPoint = Point::whereIn('id', $directTransferPointIds)->sum('point');
         $sumDirectTransferAmount = $sumDirectTransferPoint * $pointRate;
 
-        $pointIds = $points->where('type', '<>', PointType::ADJUSTED)
-            ->where('type', '<>', PointType::INVITE_CODE)
-            ->where('type', '<>', PointType::DIRECT_TRANSFER)
-            ->pluck('id');
+        $pointIds = $points->whereNotIn('type', [
+            PointType::ADJUSTED,
+            PointType::INVITE_CODE,
+            PointType::DIRECT_TRANSFER
+            ])->pluck('id');
         $sumAmount = Payment::whereIn('point_id', $pointIds)->sum('amount');
 
         return ($sumDirectTransferAmount + $sumAmount);
@@ -97,7 +98,23 @@ class PointController extends Controller
             $pointCorrectionTypes[PointType::DIRECT_TRANSFER] = 'ポイント付与';
         }
 
-        $points = $user->points()->with('payment', 'order')->where('status', Status::ACTIVE);
+        $points = $user->points()->with('payment', 'order')
+            ->where(function ($query) {
+                $query->whereIn('type',
+                    [
+                        PointType::BUY,
+                        PointType::PAY,
+                        PointType::AUTO_CHARGE,
+                        PointType::EVICT,
+                        PointType::INVITE_CODE,
+                        PointType::DIRECT_TRANSFER,
+                    ])
+                    ->orWhere(function ($subQ) {
+                        $subQ->where('type', PointType::ADJUSTED)
+                            ->where('is_cast_adjusted', false);
+                    });
+                })
+            ->where('status', Status::ACTIVE);
 
         $fromDate = $request->from_date ? Carbon::parse($request->from_date)->startOfDay() : null;
         $toDate = $request->to_date ? Carbon::parse($request->to_date)->endOfDay() : null;
