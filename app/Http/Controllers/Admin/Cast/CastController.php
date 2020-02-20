@@ -281,7 +281,7 @@ class CastController extends Controller
 
     public function sumPointReceive($points)
     {
-        $sumPointReceive = $points->sum(function ($product) {
+        return $points->sum(function ($product) {
             $sum = 0;
             if ($product->is_receive) {
                 $sum += $product->point;
@@ -289,13 +289,11 @@ class CastController extends Controller
 
             return $sum;
         });
-
-        return $sumPointReceive;
     }
 
     public function sumConsumedPoint($points)
     {
-        $sumConsumedPoint = $points->sum(function ($product) {
+        return $points->sum(function ($product) {
             $sum = 0;
             if ($product->is_transfer) {
                 $sum += $product->point;
@@ -307,8 +305,6 @@ class CastController extends Controller
 
             return $sum;
         });
-
-        return $sumConsumedPoint;
     }
 
     public function getOperationHistory($castId, CheckDateRequest $request)
@@ -333,7 +329,17 @@ class CastController extends Controller
         $user = User::withTrashed()->find($castId);
 
         $points = $user->points()->with($with)
-            ->whereIn('type', [PointType::RECEIVE, PointType::TRANSFER, PointType::ADJUSTED])
+            ->where(function ($query) {
+                $query->whereIn('type',
+                    [
+                        PointType::RECEIVE,
+                        PointType::TRANSFER,
+                    ])
+                    ->orWhere(function ($subQ) {
+                        $subQ->where('type', PointType::ADJUSTED)
+                            ->where('is_cast_adjusted', true);
+                    });
+                })
             ->where('status', Status::ACTIVE);
 
         $fromDate = $request->from_date ? Carbon::parse($request->from_date)->startOfDay() : null;
