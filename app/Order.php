@@ -683,7 +683,7 @@ class Order extends Model
         }
 
         // Hard delete TEMP point
-        // $tempPoints = Point::withTrashed()->where('order_id', $this->id)->where('type', PointType::TEMP)->forceDelete();
+        Point::withTrashed()->where('order_id', $this->id)->where('type', PointType::TEMP)->forceDelete();
 
         $point = new Point;
         $point->point = -$totalPoint;
