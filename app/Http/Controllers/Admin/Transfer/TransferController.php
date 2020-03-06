@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers\Admin\Transfer;
 
-use App\Enums\BankAccountType;
 use App\Enums\PointType;
 use App\Enums\UserType;
 use App\Http\Controllers\Controller;
@@ -11,12 +10,9 @@ use App\Point;
 use App\Services\CSVExport;
 use App\Services\LogService;
 use App\Transfer;
-use App\User;
 use Carbon\Carbon;
 use DB;
 use Illuminate\Http\Request;
-use Session;
-use Validator;
 
 class TransferController extends Controller
 {
@@ -247,7 +243,7 @@ class TransferController extends Controller
             $checkTransferExist = Point::whereIn('id', $transferIds)
                 ->where('is_transfered', false)
                 ->where(function ($query) {
-                    $query->orWhere('type', PointType::RECEIVE)
+                    $query->where('type', PointType::RECEIVE)
                         ->orWhere([
                             ['points.type', '=', PointType::ADJUSTED],
                             ['points.is_cast_adjusted', '=', true],

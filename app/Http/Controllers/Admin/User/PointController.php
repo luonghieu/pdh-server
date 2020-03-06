@@ -25,20 +25,19 @@ class PointController extends Controller
         $sumDirectTransferPoint = Point::whereIn('id', $directTransferPointIds)->sum('point');
         $sumDirectTransferAmount = $sumDirectTransferPoint * $pointRate;
 
-        $pointIds = $points->where('type', '<>', PointType::ADJUSTED)
-            ->where('type', '<>', PointType::INVITE_CODE)
-            ->where('type', '<>', PointType::DIRECT_TRANSFER)
-            ->pluck('id');
+        $pointIds = $points->whereNotIn('type', [
+            PointType::ADJUSTED,
+            PointType::INVITE_CODE,
+            PointType::DIRECT_TRANSFER
+            ])->pluck('id');
         $sumAmount = Payment::whereIn('point_id', $pointIds)->sum('amount');
 
-        $sum = $sumDirectTransferAmount + $sumAmount;
-
-        return $sum;
+        return ($sumDirectTransferAmount + $sumAmount);
     }
 
     public function sumPointPay($points)
     {
-        $sumPointPay = $points->sum(function ($product) {
+        return $points->sum(function ($product) {
             $sum = 0;
             if ($product->is_pay) {
                 $sum += $product->point;
@@ -46,13 +45,11 @@ class PointController extends Controller
 
             return $sum;
         });
-
-        return $sumPointPay;
     }
 
     public function sumPointBuy($points)
     {
-        $sumPointBuy = $points->sum(function ($product) {
+        return $points->sum(function ($product) {
             $sum = 0;
             if ($product->is_buy) {
                 $sum += $product->point;
@@ -76,8 +73,6 @@ class PointController extends Controller
 
             return $sum;
         });
-
-        return $sumPointBuy;
     }
 
     public function getPointHistory($userId, CheckDateRequest $request)
@@ -103,11 +98,26 @@ class PointController extends Controller
             $pointCorrectionTypes[PointType::DIRECT_TRANSFER] = 'ポイント付与';
         }
 
-        $points = $user->points()->with('payment', 'order')->where('status', Status::ACTIVE);
+        $points = $user->points()->with('payment', 'order')
+            ->where(function ($query) {
+                $query->whereIn('type',
+                    [
+                        PointType::BUY,
+                        PointType::PAY,
+                        PointType::AUTO_CHARGE,
+                        PointType::EVICT,
+                        PointType::INVITE_CODE,
+                        PointType::DIRECT_TRANSFER,
+                    ])
+                    ->orWhere(function ($subQ) {
+                        $subQ->where('type', PointType::ADJUSTED)
+                            ->where('is_cast_adjusted', false);
+                    });
+                })
+            ->where('status', Status::ACTIVE);
 
         $fromDate = $request->from_date ? Carbon::parse($request->from_date)->startOfDay() : null;
         $toDate = $request->to_date ? Carbon::parse($request->to_date)->endOfDay() : null;
-        $limit = $request->limit;
 
         if ($fromDate) {
             $points->where(function ($query) use ($fromDate) {
@@ -240,10 +250,11 @@ class PointController extends Controller
         }
 
         $newPoint = $user->point + $point;
+        $balance = ($point < 0) ? $newPoint : $point;
 
         $input = [
             'point' => $point,
-            'balance' => $newPoint,
+            'balance' => $balance,
             'type' => $type,
             'status' => Status::ACTIVE,
         ];
@@ -255,6 +266,45 @@ class PointController extends Controller
 
             $user->point = $newPoint;
             $user->save();
+
+            if ($request->correction_type == PointCorrectionType::CONSUMPTION) {
+                $subPoint = $request->point;
+                $points = Point::where('user_id', $user->id)
+                    ->where('balance', '>', 0)
+                    ->where(function ($query) {
+                        $query->whereIn('type',
+                            [
+                                PointType::BUY,
+                                PointType::AUTO_CHARGE,
+                                PointType::INVITE_CODE, 
+                                PointType::DIRECT_TRANSFER,
+                            ])
+                            ->orWhere(function ($subQ) {
+                                $subQ->where('type', PointType::ADJUSTED)
+                                    ->where('is_cast_adjusted', false)
+                                    ->where('point', '>=', 0);
+                            });
+                        })
+                    ->orderBy('created_at')
+                    ->get();
+
+                foreach ($points as $value) {
+                    if (0 == $subPoint) {
+                        break;
+                    } elseif ($value->balance > $subPoint && $subPoint > 0) {
+                        $value->balance = $value->balance - $subPoint;
+                        $value->update();
+
+                        break;
+                    } elseif ($value->balance <= $subPoint) {
+                        $subPoint -= $value->balance;
+                        
+                        $value->balance = 0;
+                        $value->update();
+                    }
+                }
+            }
+
             DB::commit();
         } catch (\Exception $e) {
             DB::rollBack();
