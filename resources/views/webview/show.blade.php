@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>Cheers様検証用</title>
+    <title>Cheers</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
     <link rel="stylesheet" href="{{ mix('assets/webview/css/style.min.css') }}"/>
@@ -15,7 +15,7 @@
         <a href="cheers://back"><img src="/assets/webview/images/back.png" alt=""></a>
       </div>
       <div class="title-main header-item">
-        <span>クレジットカード認証、従量決済</span>
+        <span>クレジットカード登録</span>
       </div>
       <div class="btn-register header-item">
         <a href="{{ route('webview.edit', ['card' => $card->id]) }}" class="btn-redirect-edit">編集</a>
