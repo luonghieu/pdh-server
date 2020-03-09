@@ -95,4 +95,7 @@ return [
     'order_resign_status_pending' => '退会申請中のため、予約することはできません。',
     'buy_point_resign_status_pending' => '退会申請中のため、ポイント購入をすることはできません。',
     'order_exist_can_not_resign' => '完了していない予約があるため、退会ができません。' . PHP_EOL . '詳しくはメッセージから運営者にお問い合わせください。',
+    'friend_invitation_campaign_has_expired' => '友達招待キャンペーンは●/●を持ちまして' . PHP_EOL . '終了させていただきました' 
+        . PHP_EOL . 'ご入力いただきましたクーポンコードは' . PHP_EOL . 'すべて無効となっております' . PHP_EOL . 'ご不明点などございましたらお問い合わせください',
+    'invite_code_ended' => '友達招待キャンペーンは●/●を持ちまして' . PHP_EOL . '終了とさせていただきました',
 ];

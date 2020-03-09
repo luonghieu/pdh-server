@@ -171,18 +171,20 @@ class AuthController extends ApiController
             'is_guest_active',
         ]);
 
-        if ($request->invite_code) {
-            $checkInviteCode = InviteCode::where('code', $request->invite_code)->first();
+        if ($request->invite_code && now() >= Carbon::parse(InviteCode::DATE_STOP_INVITE_CODE)) {
+            return $this->respondErrorMessage(trans('messages.friend_invitation_campaign_has_expired'), 400);
+            
+            // $checkInviteCode = InviteCode::where('code', $request->invite_code)->first();
 
-            if (!isset($checkInviteCode)) {
-                return $this->respondErrorMessage(trans('messages.invite_code_error'), 404);
-            }
+            // if (!isset($checkInviteCode)) {
+            //     return $this->respondErrorMessage(trans('messages.invite_code_error'), 404);
+            // }
 
-            InviteCodeHistory::create([
-                'invite_code_id' => $checkInviteCode->id,
-                'point' => config('common.invite_code_point'),
-                'receive_user_id' => $user->id,
-            ]);
+            // InviteCodeHistory::create([
+            //     'invite_code_id' => $checkInviteCode->id,
+            //     'point' => config('common.invite_code_point'),
+            //     'receive_user_id' => $user->id,
+            // ]);
         }
 
         try {
