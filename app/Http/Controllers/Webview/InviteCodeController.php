@@ -8,7 +8,7 @@ class InviteCodeController extends Controller
 {
     public function inviteCode(Request $request)
     {
-        return trans('messages.invite_code_ended');
+        return view('web.invite_codes.invite_code_ended');
 
         // try {
         //     if ($request->has('access_token')) {
