@@ -5,8 +5,6 @@ namespace App\Http\Controllers\Api;
 use App\Enums\UserType;
 use App\Http\Resources\CastResource;
 use App\Http\Resources\GuestResource;
-use App\InviteCode;
-use App\InviteCodeHistory;
 use App\Rules\CheckHeight;
 use App\Services\LogService;
 use Carbon\Carbon;
@@ -171,7 +169,7 @@ class AuthController extends ApiController
             'is_guest_active',
         ]);
 
-        if ($request->invite_code && now() >= Carbon::parse(InviteCode::DATE_STOP_INVITE_CODE)) {
+        if ($request->invite_code) {
             return $this->respondErrorMessage(trans('messages.friend_invitation_campaign_has_expired'), 400);
             
             // $checkInviteCode = InviteCode::where('code', $request->invite_code)->first();

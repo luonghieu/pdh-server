@@ -6,8 +6,6 @@ use Illuminate\Database\Eloquent\Model;
 
 class InviteCode extends Model
 {
-    const DATE_STOP_INVITE_CODE = '2020-03-06';
-    
     protected $fillable = [
         'code'
     ];
