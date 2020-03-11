@@ -2,44 +2,42 @@
 
 namespace App\Http\Controllers\Webview;
 
-use App\Services\LogService;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
-use JWTAuth;
-use Auth;
-use App\InviteCode;
 class InviteCodeController extends Controller
 {
     public function inviteCode(Request $request)
     {
-        try {
-            if ($request->has('access_token')) {
-                $user = JWTAuth::setToken($request->access_token)->toUser();
-                if ($user) {
-                    Auth::loginUsingId($user->id);
+        return view('web.invite_codes.invite_code_ended');
 
-                    $inviteCode = $user->inviteCode;
-                    if (!$inviteCode) {
-                        do {
-                            $code = generateInviteCode();
-                            $checkCodeExist = InviteCode::where('code', $code)->first();
-                        } while($checkCodeExist);
+        // try {
+        //     if ($request->has('access_token')) {
+        //         $user = JWTAuth::setToken($request->access_token)->toUser();
+        //         if ($user) {
+        //             Auth::loginUsingId($user->id);
 
-                        $data = [
-                            'code' => $code,
-                        ];
+        //             $inviteCode = $user->inviteCode;
+        //             if (!$inviteCode) {
+        //                 do {
+        //                     $code = generateInviteCode();
+        //                     $checkCodeExist = InviteCode::where('code', $code)->first();
+        //                 } while($checkCodeExist);
 
-                        $user->inviteCode()->create($data);
-                        $inviteCode = $user->inviteCode()->first();
-                    }
-                    return view('webview.invite_codes.get_invite_code', compact('inviteCode'));
-                }
-            } else {
-                return abort(403);
-            }
-        } catch (\Exception $e) {
-            LogService::writeErrorLog($e);
-            return abort(403);
-        }
+        //                 $data = [
+        //                     'code' => $code,
+        //                 ];
+
+        //                 $user->inviteCode()->create($data);
+        //                 $inviteCode = $user->inviteCode()->first();
+        //             }
+        //             return view('webview.invite_codes.get_invite_code', compact('inviteCode'));
+        //         }
+        //     } else {
+        //         return abort(403);
+        //     }
+        // } catch (\Exception $e) {
+        //     LogService::writeErrorLog($e);
+        //     return abort(403);
+        // }
     }
 }

@@ -2,11 +2,10 @@
 
 namespace App\Providers;
 
-use App\InviteCodeHistory;
-use App\Observers\InviteCodeHistoryObserver;
 use App\Order;
 use App\Message;
 use App\PaymentRequest;
+use App\InviteCodeHistory;
 use Laravel\Horizon\Horizon;
 use App\Observers\OrderObserver;
 use App\Observers\MessageObserver;
@@ -17,6 +16,7 @@ use Illuminate\Queue\Events\JobFailed;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\ServiceProvider;
 use App\Observers\PaymentRequestObserver;
+use App\Observers\InviteCodeHistoryObserver;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -34,7 +34,7 @@ class AppServiceProvider extends ServiceProvider
             $this->app['request']->server->set('HTTPS', true);
         }
 
-        Horizon::auth(function ($request) {
+        Horizon::auth(function () {
             return auth()->check() && auth()->user()->is_admin;
         });
 
