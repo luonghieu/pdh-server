@@ -20,7 +20,6 @@ use App\Notifications\CancelOrderFromCast;
 use App\Notifications\CastDenyOrders;
 use App\Services\LogService;
 use App\Traits\DirectRoom;
-use App\Traits\InviteCode;
 use Auth;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
@@ -28,7 +27,7 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Order extends Model
 {
-    use DirectRoom, InviteCode;
+    use DirectRoom;
 
     use SoftDeletes;
 
@@ -202,7 +201,7 @@ class Order extends Model
                     $user->coupons()->detach([$this->coupon_id]);
                 }
 
-                $this->updateInviteCodeHistory($this->id);
+                // $this->updateInviteCodeHistory($this->id);
                 $this->user->notify(new CastDenyOrders($this, $cast));
             }
 
@@ -240,7 +239,7 @@ class Order extends Model
             $involvedUsers[] = $cast;
 
             \Notification::send($involvedUsers, new CancelOrderFromCast($this));
-            $this->updateInviteCodeHistory($this->id);
+            // $this->updateInviteCodeHistory($this->id);
             return true;
         } catch (\Exception $e) {
             LogService::writeErrorLog($e);
@@ -257,7 +256,7 @@ class Order extends Model
                 'canceled_at' => Carbon::now(),
             ]);
             CancelOrder::dispatchNow($this->id);
-            $this->updateInviteCodeHistory($this->id);
+            // $this->updateInviteCodeHistory($this->id);
             return true;
         } catch (\Exception $e) {
             LogService::writeErrorLog($e);
@@ -784,32 +783,32 @@ class Order extends Model
         $inviteCodeHistory = $user->inviteCodeHistory;
         if ($inviteCodeHistory) {
             if (InviteCodeHistoryStatus::PENDING == $inviteCodeHistory->status && $inviteCodeHistory->order_id == $this->id) {
-                $userInvite = $inviteCodeHistory->inviteCode->user;
-                $point = new Point;
-                $point->point = $inviteCodeHistory->point;
-                $point->balance = $inviteCodeHistory->point;
-                $point->user_id = $userInvite->id;
-                $point->order_id = $this->id;
-                $point->type = PointType::INVITE_CODE;
-                $point->invite_code_history_id = $inviteCodeHistory->id;
-                $point->status = true;
-                $point->created_at = now()->addSeconds(3);
-                $point->save();
-                $userInvite->point = $userInvite->point + $inviteCodeHistory->point;
-                $userInvite->save();
+                // $userInvite = $inviteCodeHistory->inviteCode->user;
+                // $point = new Point;
+                // $point->point = $inviteCodeHistory->point;
+                // $point->balance = $inviteCodeHistory->point;
+                // $point->user_id = $userInvite->id;
+                // $point->order_id = $this->id;
+                // $point->type = PointType::INVITE_CODE;
+                // $point->invite_code_history_id = $inviteCodeHistory->id;
+                // $point->status = true;
+                // $point->created_at = now()->addSeconds(3);
+                // $point->save();
+                // $userInvite->point = $userInvite->point + $inviteCodeHistory->point;
+                // $userInvite->save();
 
-                $point = new Point;
-                $point->point = $inviteCodeHistory->point;
-                $point->balance = $inviteCodeHistory->point;
-                $point->user_id = $user->id;
-                $point->order_id = $this->id;
-                $point->type = PointType::INVITE_CODE;
-                $point->invite_code_history_id = $inviteCodeHistory->id;
-                $point->status = true;
-                $point->created_at = now()->addSeconds(3);
-                $point->save();
-                $user->point = $user->point + $inviteCodeHistory->point;
-                $user->save();
+                // $point = new Point;
+                // $point->point = $inviteCodeHistory->point;
+                // $point->balance = $inviteCodeHistory->point;
+                // $point->user_id = $user->id;
+                // $point->order_id = $this->id;
+                // $point->type = PointType::INVITE_CODE;
+                // $point->invite_code_history_id = $inviteCodeHistory->id;
+                // $point->status = true;
+                // $point->created_at = now()->addSeconds(3);
+                // $point->save();
+                // $user->point = $user->point + $inviteCodeHistory->point;
+                // $user->save();
 
                 $inviteCodeHistory->status = InviteCodeHistoryStatus::RECEIVED;
                 $inviteCodeHistory->order_id = $this->id;
