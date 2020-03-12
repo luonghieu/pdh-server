@@ -169,7 +169,7 @@ $(document).ready(function() {
       var param = {
         date_of_birth: $('#date-of-birth').val(),
         prefecture_id: $('#prefecture-id').val(),
-        // invite_code: $('#input_invite-code').val(),
+        invite_code: $('#input_invite-code').val(),
       };
 
       if (!param['date_of_birth']) {
@@ -194,9 +194,9 @@ $(document).ready(function() {
             window.location = '/login/line';
           }
 
-          // if(error.response.status == 404) {
-          //   $('#invite-code-error').prop('checked',true);
-          // }
+          if(error.response.status == 404) {
+            $('#invite-code-error').prop('checked',true);
+          }
 
           if(error.response.status == 409) {
             $('#date-of-birth-error').prop('checked',true);
