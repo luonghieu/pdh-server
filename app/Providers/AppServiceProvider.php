@@ -41,7 +41,7 @@ class AppServiceProvider extends ServiceProvider
         Message::observe(MessageObserver::class);
         Order::observe(OrderObserver::class);
         PaymentRequest::observe(PaymentRequestObserver::class);
-        InviteCodeHistory::observe(InviteCodeHistoryObserver::class);
+        // InviteCodeHistory::observe(InviteCodeHistoryObserver::class);
 
         Blade::component('web.components.modal', 'modal');
         Blade::component('web.components.confirm_modal', 'confirm');

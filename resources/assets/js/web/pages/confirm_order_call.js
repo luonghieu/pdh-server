@@ -200,7 +200,9 @@ function createOrderCall(orderCall, data = [], currentTime)
       if (error.response.status == 404) {
         $('#md-require-card').prop('checked',true);
       } else {
-        if (error.response.status == 406) {
+        if (error.response.status == 405) {
+          $('#invite-code-ended').prop('checked',true);
+        } else if (error.response.status == 406) {
           $('.card-expired h2').text('');
           var content = '予約日までにクレジットカードの <br> 1有効期限が切れます  <br> <br> 予約を完了するには  <br> カード情報を更新してください';
           $('.card-expired p').html(content);

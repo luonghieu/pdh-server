@@ -183,6 +183,24 @@
   </div>
 
   <div class="modal_wrap">
+    <input id="invite-code-ended" type="checkbox">
+    <div class="modal_overlay">
+      <div class="modal_content modal_content-btn1">
+        <div class="text-box messeage-invite-code-ended">
+          <p>
+            友達招待キャンペーンは3/13を持ちまして <br />
+            終了させていただきました <br />
+            ご入力いただきましたクーポンコードは <br />
+            すべて無効となっております <br />
+            ご不明点などございましたらお問い合わせください
+          </p>
+        </div>
+        <label for="invite-code-ended" class="close_button">OK</label>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal_wrap">
     <input id="md-require-card" type="checkbox">
     <div class="modal_overlay">
       <label for="md-require-card" class="modal_trigger"></label>

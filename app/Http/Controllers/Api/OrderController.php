@@ -70,8 +70,16 @@ class OrderController extends ApiController
             return $this->respondErrorMessage(trans('messages.freezing_account'), 403);
         }
 
-        $transfer = $request->payment_method;
+        // Popup expired code invite
+        $inviteCodeHistory = $user->inviteCodeHistory;
+        if ($inviteCodeHistory && InviteCodeHistoryStatus::PENDING == $inviteCodeHistory->status) {
+            $inviteCodeHistory->status = InviteCodeHistoryStatus::RECEIVED;
+            $inviteCodeHistory->save();
 
+            return $this->respondErrorMessage(trans('messages.friend_invitation_campaign_has_expired'), 405);
+        }
+
+        $transfer = $request->payment_method;
         if (isset($transfer)) {
             if (OrderPaymentMethod::CREDIT_CARD == $transfer || OrderPaymentMethod::DIRECT_PAYMENT == $transfer) {
                 if (OrderPaymentMethod::DIRECT_PAYMENT == $transfer) {
