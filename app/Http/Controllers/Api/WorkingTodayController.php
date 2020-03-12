@@ -16,15 +16,17 @@ class WorkingTodayController extends ApiController
         $today = Carbon::today();
         $user->working_today = !$user->working_today;
         $shiftToday = $user->shifts()->where('date', $today)->first();
-        if ($user->working_today) {
-            $shiftToday->pivot->day_shift = $user->working_today;
-            $shiftToday->pivot->off_shift = false;
-            $shiftToday->pivot->save();
-        } else {
-            $shiftToday->pivot->day_shift = $user->working_today;
-            $shiftToday->pivot->night_shift = $user->working_today;
-            $shiftToday->pivot->off_shift = true;
-            $shiftToday->pivot->save();
+        if ($shiftToday) {
+            if ($user->working_today) {
+                $shiftToday->pivot->day_shift = $user->working_today;
+                $shiftToday->pivot->off_shift = false;
+                $shiftToday->pivot->save();
+            } else {
+                $shiftToday->pivot->day_shift = $user->working_today;
+                $shiftToday->pivot->night_shift = $user->working_today;
+                $shiftToday->pivot->off_shift = true;
+                $shiftToday->pivot->save();
+            }
         }
 
         $user->update();
