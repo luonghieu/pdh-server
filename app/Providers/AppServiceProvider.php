@@ -34,7 +34,7 @@ class AppServiceProvider extends ServiceProvider
             $this->app['request']->server->set('HTTPS', true);
         }
 
-        Horizon::auth(function ($request) {
+        Horizon::auth(function () {
             return auth()->check() && auth()->user()->is_admin;
         });
 

@@ -196,47 +196,52 @@ function createOrderCall(orderCall, data = [], currentTime)
 
     if (error.response.status == 401) {
       window.location = '/login';
-    } else {
-      if (error.response.status == 404) {
+    }
+    
+    switch (error.response.status) {
+      case 404:
         $('#md-require-card').prop('checked',true);
-      } else {
-        if (error.response.status == 405) {
-          $('#invite-code-ended').prop('checked',true);
-        } else if (error.response.status == 406) {
-          $('.card-expired h2').text('');
-          var content = '予約日までにクレジットカードの <br> 1有効期限が切れます  <br> <br> 予約を完了するには  <br> カード情報を更新してください';
-          $('.card-expired p').html(content);
-          $('.lable-register-card').text('クレジットカード情報を更新する');
-          $('#md-require-card').prop('checked',true);
-        } else {
-          switch(error.response.status) {
-            case 400:
-              var title = '開始時間は現在時刻から30分以降の時間を選択してください';
-              break;
-            case 403:
-              var title = 'アカウントが凍結されています';
-              break;
-            case 409:
-              var title = 'クーポンが無効です';
-              break;
-            case 412:
-              var title = '退会申請中のため、予約することはできません。';
-              break;
-            case 422:
-              var title = 'この操作は実行できません';
-              break;
-            case 500:
-              var title = 'サーバーエラーが発生しました';
-              break;
+        break;
+      case 405:
+        $('#invite-code-ended').prop('checked',true);
+        break;
+      case 406:
+        $('.card-expired h2').text('');
+        var content = '予約日までにクレジットカードの <br> 1有効期限が切れます  <br> <br> 予約を完了するには  <br> カード情報を更新してください';
+        $('.card-expired p').html(content);
+        $('.lable-register-card').text('クレジットカード情報を更新する');
+        $('#md-require-card').prop('checked',true);
+        break;
+    
+      default:break;
+    }
+    
+    switch(error.response.status) {
+      case 400:
+        var title = '開始時間は現在時刻から30分以降の時間を選択してください';
+        break;
+      case 403:
+        var title = 'アカウントが凍結されています';
+        break;
+      case 409:
+        var title = 'クーポンが無効です';
+        break;
+      case 412:
+        var title = '退会申請中のため、予約することはできません。';
+        break;
+      case 422:
+        var title = 'この操作は実行できません';
+        break;
+      case 500:
+        var title = 'サーバーエラーが発生しました';
+        break;
 
-            default:break;
-          }
+      default:break;
+    }
 
-          $('.show-message-order-call h2').html(title);
-
-          $('#order-call-popup').prop('checked',true);
-        }
-      }
+    if (title) {
+      $('.show-message-order-call h2').html(title);
+      $('#order-call-popup').prop('checked',true);
     }
   })
 }
