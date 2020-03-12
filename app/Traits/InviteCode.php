@@ -6,8 +6,11 @@ use App\Enums\InviteCodeHistoryStatus;
 use App\Enums\OrderPaymentStatus;
 use App\Enums\OrderStatus;
 use App\Enums\PointType;
+use App\Enums\RoomType;
+use App\Notifications\AddedInvitePoint;
 use App\Order;
 use App\Point;
+use App\Room;
 
 trait InviteCode
 {
