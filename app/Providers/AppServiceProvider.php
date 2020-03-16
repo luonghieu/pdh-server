@@ -2,8 +2,6 @@
 
 namespace App\Providers;
 
-use App\InviteCodeHistory;
-use App\Observers\InviteCodeHistoryObserver;
 use App\Order;
 use App\Message;
 use App\PaymentRequest;

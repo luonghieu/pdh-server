@@ -188,7 +188,7 @@
       <div class="modal_content modal_content-btn1">
         <div class="text-box messeage-invite-code-ended">
           <h2>
-            友達招待キャンペーンは3/13を持ちまして <br />
+            友達招待キャンペーンは3/17を持ちまして <br />
             終了させていただきました <br />
             ご入力いただきましたクーポンコードは <br />
             すべて無効となっております <br />
