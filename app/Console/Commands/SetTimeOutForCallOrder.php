@@ -5,7 +5,6 @@ namespace App\Console\Commands;
 use App\Notifications\CallOrdersTimeOut;
 use App\Notifications\CallOrdersTimeOutForCast;
 use App\Order;
-use App\Traits\InviteCode;
 use App\User;
 use Carbon\Carbon;
 use App\Enums\OrderType;
@@ -15,7 +14,6 @@ use Illuminate\Console\Command;
 
 class SetTimeOutForCallOrder extends Command
 {
-    use InviteCode;
     /**
      * The name and signature of the console command.
      *
@@ -132,7 +130,7 @@ class SetTimeOutForCallOrder extends Command
 
         $listCast = $casts->get();
         \Notification::send($listCast, new CallOrdersTimeOutForCast($order));
-        $this->updateInviteCodeHistory($order->id);
+        // $this->updateInviteCodeHistory($order->id);
         foreach ($castIds as $id) {
             $order->castOrder()->updateExistingPivot(
                 $id,
