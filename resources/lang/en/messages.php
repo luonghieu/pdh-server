@@ -87,4 +87,7 @@ return [
     'skip_order_noninee' => 'Your proposal has been cancelled.',
     'order_resign_status_pending' => 'You can not make a reservation as it is being withdrawn.',
     'buy_point_resign_status_pending' => 'You can not purchase points because you are applying for withdrawal.',
+    'friend_invitation_campaign_has_expired' => 'The friend invitation campaign has 3/17 ended.' 
+        . PHP_EOL . 'The coupon code you entered is all disabled. '
+        . PHP_EOL . 'Please contact us if you have any questions',
 ];

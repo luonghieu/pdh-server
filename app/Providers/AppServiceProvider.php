@@ -2,8 +2,6 @@
 
 namespace App\Providers;
 
-use App\InviteCodeHistory;
-use App\Observers\InviteCodeHistoryObserver;
 use App\Order;
 use App\Message;
 use App\PaymentRequest;
@@ -34,14 +32,14 @@ class AppServiceProvider extends ServiceProvider
             $this->app['request']->server->set('HTTPS', true);
         }
 
-        Horizon::auth(function ($request) {
+        Horizon::auth(function () {
             return auth()->check() && auth()->user()->is_admin;
         });
 
         Message::observe(MessageObserver::class);
         Order::observe(OrderObserver::class);
         PaymentRequest::observe(PaymentRequestObserver::class);
-        InviteCodeHistory::observe(InviteCodeHistoryObserver::class);
+        // InviteCodeHistory::observe(InviteCodeHistoryObserver::class);
 
         Blade::component('web.components.modal', 'modal');
         Blade::component('web.components.confirm_modal', 'confirm');

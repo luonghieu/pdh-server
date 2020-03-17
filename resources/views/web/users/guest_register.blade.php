@@ -92,7 +92,7 @@
       </div>
     </section>
 
-    <section class="portlet" id="invite-code">
+    {{-- <section class="portlet" id="invite-code">
       <div class="portlet-header">
         <h2>招待コード</h2>
       </div>
@@ -105,7 +105,7 @@
           ※これ以降で、招待コードを入力することはできません
         </p>
       </div>
-    </section>
+    </section> --}}
 
     <div class="btn-l init-button"><button type="submit">登録する</button></div>
   </div>
